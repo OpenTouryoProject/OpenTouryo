@@ -1,11 +1,16 @@
-﻿<%@ Page Language="_CodebehindLanguage_" MasterPageFile="~/Aspx/Common/testBlankScreen.master"
+﻿<%@ Page Language="_CodebehindLanguage_" MasterPageFile="~/Aspx/Common/Master/testBlankScreen.master"
     AutoEventWireup="true" CodeFile="_TableName_ConditionalSearch.aspx._ClassTemplateFileExtension_"
     Inherits="_TableName_ConditionalSearch" Title="_TableName_ConditionalSearch" %>
 
-<%@ Register Assembly="CustomControl" Namespace="Touryo.Infrastructure.CustomControl"
+<%@ Register Assembly="OpenTouryo.CustomControl" Namespace="Touryo.Infrastructure.CustomControl"
     TagPrefix="cc1" %>
-<asp:Content ID="Content1" ContentPlaceHolderID="ContentPlaceHolder_A" runat="Server">
-    <table width="100%">
+    
+<asp:Content ID="cphHeaderScripts" ContentPlaceHolderID="cphHeaderScripts" Runat="Server">
+    <!-- Head 部の ContentPlaceHolder -->
+</asp:Content>
+
+<asp:Content ID="ContentPlaceHolder_A" ContentPlaceHolderID="ContentPlaceHolder_A" Runat="Server">
+    <table style="width:100%;">
         <tr>
             <td>
                 AND = 条件<br />
@@ -143,4 +148,8 @@
     <asp:ObjectDataSource ID="ObjectDataSource1" runat="server" EnablePaging="True" TypeName="_TableName_TableAdapter"
         SelectCountMethod="SelectCountMethod" SelectMethod="SelectMethod" MaximumRowsParameterName="maximumRows"
         StartRowIndexParameterName="startRowIndex"></asp:ObjectDataSource>
+</asp:Content>
+
+<asp:Content ID="cphFooterScripts" ContentPlaceHolderID="cphFooterScripts" Runat="Server">
+    <!-- Footer 部の ContentPlaceHolder -->
 </asp:Content>

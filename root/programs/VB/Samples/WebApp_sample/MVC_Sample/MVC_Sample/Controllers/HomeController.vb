@@ -31,6 +31,7 @@ Imports Touryo.Infrastructure.Business.Presentation
 Imports Touryo.Infrastructure.Business.Util
 Imports Touryo.Infrastructure.Framework.Authentication
 Imports Touryo.Infrastructure.Framework.Util
+Imports Touryo.Infrastructure.Public.Str
 Imports Touryo.Infrastructure.Public.Security.Pwd
 
 Namespace Controllers
@@ -122,14 +123,16 @@ Namespace Controllers
             Else
                 ' 外部ログイン
                 Return Redirect(String.Format(
-                                "https://localhost:44300/MultiPurposeAuthSite/authorize" _
+                                CmnClientParams.SpRp_AuthRequestUri _
                                 & "?client_id=" & OAuth2AndOIDCParams.ClientID _
                                 & "&response_type=code" _
                                 & "&scope=profile%20email%20phone%20address%20openid" _
                                 & "&state={0}" _
                                 & "&nonce={1}" _
+                                & "&redirect_uri={2}" _
                                 & "&prompt=none",
-                                Me.State, Me.Nonce))
+                                Me.State, Me.Nonce,
+                                CustomEncode.UrlEncode(CmnClientParams.SpRp_RedirectUri)))
             End If
         End Function
 
@@ -165,9 +168,8 @@ Namespace Controllers
                 If state = Me.State Then
                     ' CSRF(XSRF)対策のstateの検証は重要
                     response = Await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
-                        New Uri("https://localhost:44300/MultiPurposeAuthSite/token"),
-                        OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
-                        HttpUtility.HtmlEncode("http://localhost:58496/MVC_Sample/Home/OAuth2AuthorizationCodeGrantClient"), code)
+                        New Uri(CmnClientParams.SpRp_TokenRequestUri),
+                        OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret, "", code)
 
                     ' 汎用認証サイトはOIDCをサポートしたのでid_tokenを取得し、検証可能。
                     Dim base64UrlEncoder As New Base64UrlTextEncoder()
@@ -186,7 +188,7 @@ Namespace Controllers
 
                             ' /userinfoエンドポイントにアクセスする場合
                             response = Await OAuth2AndOIDCClient.GetUserInfoAsync(
-                                New Uri("https://localhost:44300/MultiPurposeAuthSite/userinfo"), dic("access_token"))
+                                New Uri(CmnClientParams.SpRp_UserInfoUri), dic("access_token"))
 
                             FormsAuthentication.RedirectFromLoginPage([sub], False)
                             Dim ui As New MyUserInfo([sub], Request.UserHostAddress)

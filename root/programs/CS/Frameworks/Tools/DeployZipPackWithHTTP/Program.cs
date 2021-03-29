@@ -267,6 +267,12 @@ namespace DeployZipPackWithHTTP
         [STAThread]
         static void Main()
         {
+#if NETCOREAPP
+            // configの初期化
+            GetConfigParameter.InitConfiguration("appsettings.json");
+#else
+#endif
+
             // Add DefaultCulture key in app.Config file and take the culture value from app.Config file.
             string culture = GetConfigParameter.GetConfigValue("DefaultCulture");
             if (!string.IsNullOrEmpty(culture))

@@ -54,13 +54,13 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
+    <DebugType>portable</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\Build_net47r\</OutputPath>
+    <OutputPath>..\Build_net47\</OutputPath>
     <DefineConstants>TRACE;NET47</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\Build_net47r\OpenTouryo.Framework.XML</DocumentationFile>
+    <DocumentationFile>..\Build_net47\OpenTouryo.Framework.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
@@ -143,6 +143,7 @@
     <Compile Include="Common\BaseParameterValue.cs" />
     <Compile Include="Common\BaseReturnValue.cs" />
     <Compile Include="Dao\BaseDao.cs" />
+    <Compile Include="Dao\DaoParam.cs" />
     <Compile Include="Exceptions\BusinessApplicationException.cs" />
     <Compile Include="Exceptions\FrameworkException.cs" />
     <Compile Include="Exceptions\BusinessSystemException.cs" />

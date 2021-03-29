@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <AssemblyName>OpenTouryo.Public</AssemblyName>
     <RootNamespace>Touryo.Infrastructure.Public</RootNamespace>
-    <Version>2.6.0.0</Version>
+    <Version>2.7.0.0</Version>
     <Company>Hitachi Solutions</Company>
   </PropertyGroup>
 
@@ -12,14 +12,16 @@
     <DefineConstants>TRACE;DEBUG;NETSTD</DefineConstants>
     <OutputPath>..\Build_netstd21\</OutputPath>
     <DocumentationFile>..\Build_netstd21\netstandard2.1\OpenTouryo.Public.xml</DocumentationFile>
-    <DebugType>portable</DebugType>
+    <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>TRACE;NETSTD</DefineConstants>
-    <DocumentationFile>..\Build_netstd21r\netstandard2.1\OpenTouryo.Public.xml</DocumentationFile>
-    <OutputPath>..\Build_netstd21r\</OutputPath>
+    <OutputPath>..\Build_netstd21\</OutputPath>
+    <DocumentationFile>..\Build_netstd21\netstandard2.1\OpenTouryo.Public.xml</DocumentationFile>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
@@ -61,9 +63,6 @@
   <ItemGroup>
     <Compile Remove="Db\DamOLEDB.cs" />
     <Compile Remove="Db\DamOraClient.cs" />
-    <Compile Remove="IO\UnZipper.cs" />
-    <Compile Remove="IO\ZipBase.cs" />
-    <Compile Remove="IO\Zipper.cs" />
     <Compile Remove="Log\CustomEventLog.cs" />
     <Compile Remove="Log\SecurityEventLog.cs" />
     <Compile Remove="Properties\AssemblyInfo.cs" />
@@ -91,6 +90,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="DotNetZip" Version="1.13.8" />
     <PackageReference Include="log4net" Version="2.0.8" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="2.2.0" />

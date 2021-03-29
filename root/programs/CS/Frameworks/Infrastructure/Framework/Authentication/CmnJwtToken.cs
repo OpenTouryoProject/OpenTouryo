@@ -30,6 +30,7 @@
 //*  2018/11/28  西野 大介         新規作成（分割）
 //*  2020/03/02  西野 大介         検証メソッドの追加
 //*  2020/03/04  西野 大介         Claim生成メソッドの追加
+//*  2020/06/20  西野 大介         jku無しでもjwks_uriを使うように変更
 //**********************************************************************************
 
 using System;
@@ -108,8 +109,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             else { throw new NotSupportedException("Unexpected combination of JWS and JWE."); }
 
             // 証明書を使用するか、Jwkを使用するか判定
-            if (string.IsNullOrEmpty(jwsHeader.jku)
-                || string.IsNullOrEmpty(jwsHeader.kid))
+            if ( //string.IsNullOrEmpty(jwsHeader.jku) || // jkuは非推奨
+                string.IsNullOrEmpty(jwsHeader.kid))
             {
                 // 旧バージョン（証明書を使用
                 if (isJWE_FAPI2)
@@ -139,7 +140,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     if (jwkObject == null)
                     {
                         // 書込
-                        jwkObject = JwkSetStore.GetInstance().SetJwkSetObject(jwsHeader.jku, jwsHeader.kid);
+                        jwkObject = JwkSetStore.GetInstance().SetJwkSetObject(
+                            // jwsHeader.jku, // jku廃止
+                            jwsHeader.kid);
                     }
 
                     // チェック

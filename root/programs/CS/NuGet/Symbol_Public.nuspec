@@ -3,13 +3,12 @@
   <metadata>
     <id>Touryo.Infrastructure.Public</id>
     <title>OpenTouryo.Public</title>
-    <version>2.6.0</version>
+    <version>2.7.0</version>
     <authors>OSS Consortium .net subcommittee</authors>
     <owners>daisukenishino77</owners>
     <license type="expression">Apache-2.0</license>
     <projectUrl>https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root/programs/CS/Frameworks/Infrastructure/Public</projectUrl>
     <icon>_OpenTouryo.png</icon>
-    <iconUrl>https://opentouryo.osscons.jp/OpenTouryo.ico</iconUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <summary>Common library of OpenTouryo.</summary>
     <description>Common library of OpenTouryo. This package is used from template of OpenTouryo.</description>
@@ -17,12 +16,28 @@
     <copyright></copyright>
     <tags>OpenTouryo Open棟梁</tags>
     <dependencies>
-      <group targetFramework="net452,net46,net47,net48">
+      <group targetFramework=".NETFramework4.5.2">
         <dependency id="DotNetZip" version="1.12.0" />
         <dependency id="log4net" version="2.0.8" />
         <dependency id="Newtonsoft.Json" version="11.0.2" />
       </group>
-      <group targetFramework="netstandard2.0,netstandard2.1">
+      <group targetFramework=".NETFramework4.6">
+        <dependency id="DotNetZip" version="1.12.0" />
+        <dependency id="log4net" version="2.0.8" />
+        <dependency id="Newtonsoft.Json" version="11.0.2" />
+      </group>
+      <group targetFramework=".NETFramework4.7">
+        <dependency id="DotNetZip" version="1.12.0" />
+        <dependency id="log4net" version="2.0.8" />
+        <dependency id="Newtonsoft.Json" version="11.0.2" />
+      </group>
+      <group targetFramework=".NETFramework4.8">
+        <dependency id="DotNetZip" version="1.12.0" />
+        <dependency id="log4net" version="2.0.8" />
+        <dependency id="Newtonsoft.Json" version="11.0.2" />
+      </group>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="DotNetZip" version="1.13.8" />
         <dependency id="log4net" version="2.0.8" />
         <dependency id="Microsoft.Extensions.Configuration" version="2.2.0" />
         <dependency id="Microsoft.Extensions.Configuration.Binder" version="2.2.0" />
@@ -33,6 +48,21 @@
         <dependency id="System.Data.SqlClient" version="4.5.1" />
         <dependency id="System.Reflection.Emit.ILGeneration" version="4.3.0" />
         <dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" />
+        <dependency id="Zipangu" version="1.1.8" />
+      </group>
+      <group targetFramework=".NETStandard2.1">
+        <dependency id="DotNetZip" version="1.13.8" />
+        <dependency id="log4net" version="2.0.8" />
+        <dependency id="Microsoft.Extensions.Configuration" version="2.2.0" />
+        <dependency id="Microsoft.Extensions.Configuration.Binder" version="2.2.0" />
+        <dependency id="Microsoft.Extensions.Configuration.FileExtensions" version="2.2.0" />
+        <dependency id="Microsoft.Extensions.Configuration.Json" version="2.2.0" />
+        <dependency id="Newtonsoft.Json" version="11.0.2" />
+        <dependency id="System.Data.Odbc" version="4.5.0" />
+        <dependency id="System.Data.SqlClient" version="4.5.1" />
+        <dependency id="System.Reflection.Emit.ILGeneration" version="4.3.0" />
+        <dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" />
+        <dependency id="Zipangu" version="1.1.8" />
       </group>
     </dependencies>
   </metadata>

@@ -29,6 +29,9 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/02/06  西野 大介         新規作成
 //*  2019/12/25  西野 大介         PPID対応による見直し
+//*  2020/02/27  西野 大介         FAPI CIBAのパラメタを追加
+//*  2020/12/18  西野 大介         Device AuthZのパラメタを追加
+//*  2020/12/21  西野 大介         ClientModeにdeviceとfapi_cibaを追加
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Framework.Authentication
@@ -105,7 +108,45 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
-        #region CIBA
+        #region Device AuthZ
+
+        // CibaState と同じになってしまった...。
+        /// <summary>Device AuthZのState</summary>
+        public enum DeviceAuthZState : int
+        {
+            /// <summary>
+            /// 保留中
+            /// </summary>
+            authorization_pending,
+            /// <summary>
+            /// 許可された（仕様外）
+            /// </summary>
+            access_permitted,
+            /// <summary>
+            /// 拒否された
+            /// </summary>
+            access_denied,
+            /// <summary>
+            /// 期限切れ
+            /// </summary>
+            expired_token,
+            /// <summary>
+            /// Polling間隔を5秒遅らせる。
+            /// </summary>
+            slow_down,
+            /// <summary>
+            /// 見つからない（仕様外）
+            /// </summary>
+            not_found,
+            /// <summary>
+            /// データ不正（仕様外）
+            /// </summary>
+            irregularity_data
+        }
+
+        #endregion
+
+        #region FAPI CIBA
 
         #region CIBA mode
 
@@ -188,7 +229,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
             fapi1,
 
             /// <summary>fapi2</summary>
-            fapi2
+            fapi2,
+
+            /// <summary>device</summary>
+            device,
+
+            /// <summary>fapi-ciba</summary>
+            fapi_ciba
         }
 
         #endregion

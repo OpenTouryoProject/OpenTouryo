@@ -52,6 +52,7 @@
 //*  2017/09/15  西野 大介         UserControlのネスト対応のため、FindControlの内容をFindUCControlに変更。
 //*  2018/01/31  西野 大介         ネストしたユーザ コントロールに対応（senderで親UCを確認する）
 //*  2019/05/07  西野 大介         ShowDialogによるEventHandler二重登録問題への対応
+//*  2021/03/26  西野 大介         .NET CoreのデザイナでForm_Loadが動作してしまう問題への対応
 //**********************************************************************************
 
 using System;
@@ -268,9 +269,12 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
         /// <summary>Form_Loadのイベントハンドラ</summary>
         private void Form_Load(object sender, EventArgs e)
         {
+#if NETCOREAPP
+            if (this.DesignMode) return;
+#endif
             try
             {
-                #region ウィンドウ数・インスタンス管理
+#region ウィンドウ数・インスタンス管理
 
                 //lock (_lock)
                 //{
@@ -313,9 +317,9 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
 
                 //}
 
-                #endregion
+#endregion
 
-                #region コントロールの初期化
+#region コントロールの初期化
                 if (!this.IsInitializedEvent)
                 {
                     // ユーザ コントロールの検索＆取得
@@ -325,15 +329,15 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
                     RcFxCmnFunction.GetCtrlAndSetClickEventHandler2(
                         this, this.CreatePrefixAndEvtHndHt(), this.ControlHt);
                 }
-                #endregion
+#endregion
 
-                #region 画面の初期処理
+#region 画面の初期処理
 
                 this.UOC_CMNFormInit();
                 this.UOC_FormInit();
                 this.UOC_CMNAfterFormInit();
 
-                #endregion
+#endregion
             }
             catch (BusinessApplicationException baEx)
             {
@@ -431,9 +435,9 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
             return prefixAndEvtHndHt;
         }
 
-        #endregion
+#endregion
 
-        #region フォームクローズドのイベントハンドラ
+#region フォームクローズドのイベントハンドラ
 
         /// <summary>Form_Closedのイベントハンドラ</summary>
         private void Form_Closed(object sender, FormClosedEventArgs e)
@@ -448,13 +452,13 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
 
             try
             {
-                #region 画面の終了処理
+#region 画面の終了処理
 
                 this.UOC_CMNFormEnd();
                 this.UOC_FormEnd();
                 this.UOC_CMNAfterFormEnd();
 
-                #endregion
+#endregion
             }
             catch (BusinessApplicationException baEx)
             {
@@ -493,7 +497,7 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
                 this.UOC_Finally(new RcFxEventArgs(
                     FxLiteral.EVENT_FORM_CLOSED, "", sender, e));
 
-                #region ウィンドウ数・インスタンス管理
+#region ウィンドウ数・インスタンス管理
 
                 // ウィンドウ数管理
 
@@ -508,15 +512,15 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
                 List<Form> list = BaseControllerWin._windowInstances[this.GetType()];
                 list.Remove(this);
 
-                #endregion
+#endregion
             }
         }
 
-        #endregion
+#endregion
 
-        # region   集約イベント ハンドラ
+#region   集約イベント ハンドラ
 
-        #region 各種イベントに対応した集約イベント ハンドラ
+#region 各種イベントに対応した集約イベント ハンドラ
 
         /// <summary>
         /// ボタン系のClickイベントに対応した集約イベント ハンドラ
@@ -569,7 +573,7 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
             this.CMN_Event_Handler(rcFxEventArgs);
         }
 
-        #region Form
+#region Form
 
         /// <summary>
         /// FormのKeyDownイベントに対応した集約イベント ハンドラ
@@ -622,11 +626,11 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
             this.CMN_Event_Handler(rcFxEventArgs);
         }
 
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
-        #region メソッド名生成
+#region メソッド名生成
 
         /// <summary>ユーザ コントロール名を記憶しておくワーク</summary>
         private string UserControlImplementingMethod = "";
@@ -662,9 +666,9 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
             }
         }
 
-        #endregion
+#endregion
 
-        #region イベント処理の共通メソッド
+#region イベント処理の共通メソッド
 
         /// <summary>イベント処理の共通メソッド</summary>
         /// <param name="rcFxEventArgs">イベント ハンドラの共通引数</param>
@@ -674,7 +678,7 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
             // UOCメソッドの戻り値、urlを受ける。
             //string url = "";
             
-            #region メソッドが無ければ、何もしないコードを追加。
+#region メソッドが無ければ、何もしないコードを追加。
 
             // Formをチェック
             if (!Latebind.CheckTypeOfMethodByName(this, rcFxEventArgs.MethodName))
@@ -703,7 +707,7 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
                 }
             }
 
-            #endregion
+#endregion
 
             try
             {
@@ -751,9 +755,9 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
             }
         }
 
-        #endregion
+#endregion
 
-        #region レイトバインドするメソッド
+#region レイトバインドするメソッド
 
         /// <summary>レイトバインドするメソッド</summary>
         /// <param name="rcFxEventArgs">イベントハンドラの共通引数</param>
@@ -810,15 +814,15 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
             //return url;
         }
 
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
-        #region ユーティリティ メソッド
+#region ユーティリティ メソッド
 
-        #region コントロール取得メソッド
+#region コントロール取得メソッド
 
         /// <summary>Fxでハンドルしているコントロールを取得するメソッド</summary>
         /// <param name="controlName">取得したいコントロールのコントロール名</param>
@@ -889,7 +893,7 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
             }
         }
 
-        #region ユーザ コントロールの情報を初期化する
+#region ユーザ コントロールの情報を初期化する
 
         /// <summary>ユーザ コントロールの情報を初期化する</summary>
         /// <param name="ctrl">コントロール（再起するため）</param>
@@ -924,9 +928,9 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
             }
         }
 
-        #endregion
+#endregion
 
-        #region ユーザ コントロール上のコントロールを取得するメソッド
+#region ユーザ コントロール上のコントロールを取得するメソッド
 
         /// <summary>ユーザ コントロール上のコントロールを取得するメソッド</summary>
         /// <param name="sender">取得したいコントロール</param>
@@ -987,15 +991,15 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
             return null;
         }
 
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
-        #endregion
+#endregion
 
-        #region ＵＯＣメソッド
+#region ＵＯＣメソッド
 
-        #region ページ ロード イベント内のＵＯＣメソッド
+#region ページ ロード イベント内のＵＯＣメソッド
 
         /// <summary>画面開始に対応した共通UOCメソッド</summary>
         /// <remarks>派生の画面コード親クラス２でオーバーライドする。</remarks>
@@ -1021,9 +1025,9 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
         /// <remarks>派生の画面コード クラスでオーバーライドする。</remarks>
         protected abstract void UOC_FormEnd();
 
-        #endregion
+#endregion
 
-        #region イベント処理の開始前、終了後処理のＵＯＣメソッド
+#region イベント処理の開始前、終了後処理のＵＯＣメソッド
 
         /// <summary>イベントの開始前の処理を実装</summary>
         /// <param name="rcFxEventArgs">イベントハンドラの共通引数</param>
@@ -1040,9 +1044,9 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
         /// <remarks>派生の画面コード親クラス２でオーバーライドする。</remarks>
         protected virtual void UOC_Finally(RcFxEventArgs rcFxEventArgs) { }
 
-        #endregion
+#endregion
 
-        #region エラー処理のＵＯＣメソッド
+#region エラー処理のＵＯＣメソッド
 
         /// <summary>BusinessApplicationExceptionの例外処理用のUOCメソッド</summary>
         /// <param name="baEx">BusinessApplicationException</param>
@@ -1062,8 +1066,8 @@ namespace Touryo.Infrastructure.Framework.RichClient.Presentation
         /// <remarks>派生の画面コード親クラス２でオーバーライドする。</remarks>
         protected virtual void UOC_ABEND(Exception ex, RcFxEventArgs rcFxEventArgs) { }
 
-        #endregion
+#endregion
 
-        #endregion
+#endregion
     }
 }

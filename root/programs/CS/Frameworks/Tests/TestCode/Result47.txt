@@ -1,4 +1,2280 @@
 ----------------------------------------------------------------------------------------------------
+log4net: Configuration update mode [Merge].
+log4net: Retrieving an instance of log4net.Repository.Logger for logger [ACCESS].
+log4net: Setting [ACCESS] additivity to [True].
+log4net: Logger [ACCESS] Level string is [All].
+log4net: Logger [ACCESS] level set to [name="ALL",value=-2147483648].
+log4net: Loading Appender [ACCESS2] type: [log4net.Appender.ConsoleAppender]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [ConversionPattern] to String value [[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline]
+log4net: Converter [literal] Option [[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [date] Option [yyyy/MM/dd HH:mm:ss,fff] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [level] Option [] Format [min=5,max=2147483647,leftAlign=True]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [thread] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [Layout] to object [log4net.Layout.PatternLayout]
+log4net: Setting Property [LevelMin] to Level value [DEBUG]
+log4net: Setting Property [LevelMax] to Level value [FATAL]
+log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.LevelRangeFilter]
+log4net: Created Appender [ACCESS2]
+log4net: Adding appender named [ACCESS2] to logger [ACCESS].
+log4net: Retrieving an instance of log4net.Repository.Logger for logger [SQLTRACE].
+log4net: Setting [SQLTRACE] additivity to [True].
+log4net: Logger [SQLTRACE] Level string is [All].
+log4net: Logger [SQLTRACE] level set to [name="ALL",value=-2147483648].
+log4net: Loading Appender [SQLTRACE2] type: [log4net.Appender.ConsoleAppender]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [ConversionPattern] to String value [[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline]
+log4net: Converter [literal] Option [[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [date] Option [yyyy/MM/dd HH:mm:ss,fff] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [level] Option [] Format [min=5,max=2147483647,leftAlign=True]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [thread] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [Layout] to object [log4net.Layout.PatternLayout]
+log4net: Setting Property [LevelMin] to Level value [DEBUG]
+log4net: Setting Property [LevelMax] to Level value [FATAL]
+log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.LevelRangeFilter]
+log4net: Created Appender [SQLTRACE2]
+log4net: Adding appender named [SQLTRACE2] to logger [SQLTRACE].
+log4net: Retrieving an instance of log4net.Repository.Logger for logger [OPERATION].
+log4net: Setting [OPERATION] additivity to [True].
+log4net: Logger [OPERATION] Level string is [All].
+log4net: Logger [OPERATION] level set to [name="ALL",value=-2147483648].
+log4net: Loading Appender [OPERATION2] type: [log4net.Appender.ConsoleAppender]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [ConversionPattern] to String value [[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline]
+log4net: Converter [literal] Option [[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [date] Option [yyyy/MM/dd HH:mm:ss,fff] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [level] Option [] Format [min=5,max=2147483647,leftAlign=True]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [thread] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [Layout] to object [log4net.Layout.PatternLayout]
+log4net: Setting Property [LevelMin] to Level value [DEBUG]
+log4net: Setting Property [LevelMax] to Level value [FATAL]
+log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.LevelRangeFilter]
+log4net: Created Appender [OPERATION2]
+log4net: Adding appender named [OPERATION2] to logger [OPERATION].
+log4net: Hierarchy Threshold []
+[2020/08/01 03:01:51,025],[DEBUG],[1],LogIF.DebugLog("ACCESS");
+[2020/08/01 03:01:51,030],[INFO ],[1],LogIF.InfoLog("ACCESS");
+[2020/08/01 03:01:51,031],[WARN ],[1],LogIF.WarnLog("ACCESS");
+[2020/08/01 03:01:51,031],[ERROR],[1],LogIF.ErrorLog("ACCESS");
+[2020/08/01 03:01:51,031],[FATAL],[1],LogIF.FatalLog("ACCESS");
+----------------------------------------------------------------------------------------------------
+GetMessage: ～メッセージID:I0001に対応する記述（正常系）～
+GetMessage: ～メッセージID:E0001に対応する記述（異常系）～
+--------------------------------------------------
+GetSharedProperty: てすと１
+GetSharedProperty: てすと３
+----------------------------------------------------------------------------------------------------
+StringChecker.IsNumbers - あああ: False
+StringChecker.IsNumbers - １１１: True
+StringChecker.IsNumbers_Hankaku - あああ: False
+StringChecker.IsNumbers_Hankaku - 111111: True
+StringChecker.IsNumbers_Zenkaku - あああ: False
+StringChecker.IsNumbers_Zenkaku - １１１: True
+----------------------------------------------------------------------------------------------------
+StringChecker.IsAlphabet - あああ: False
+StringChecker.IsAlphabet - ａａａ: True
+StringChecker.IsAlphabet_Hankaku - あああ: False
+StringChecker.IsAlphabet_Hankaku - aaaaaa: True
+StringChecker.IsAlphabet_Zenkaku - あああ: False
+StringChecker.IsAlphabet_Zenkaku - ａａａ: True
+----------------------------------------------------------------------------------------------------
+StringChecker.IsHiragana - ａａａ: False
+StringChecker.IsHiragana - あああ: True
+----------------------------------------------------------------------------------------------------
+StringChecker.IsKatakana - あああ: False
+StringChecker.IsKatakana - アアア: True
+StringChecker.IsKatakana_Zenkaku - あああ: False
+StringChecker.IsKatakana_Zenkaku - アアア: True
+StringChecker.IsKatakana_Zenkaku - アアア: False
+StringChecker.IsKatakana_Zenkaku - ｱｱｱｱｱｱ: True
+----------------------------------------------------------------------------------------------------
+StringChecker.IsKanji - あああ: False
+StringChecker.IsKanji - 亜亜亜: True
+----------------------------------------------------------------------------------------------------
+StringChecker.IsShift_Jis - ???: False
+StringChecker.IsShift_Jis - 亜亜亜: True
+StringChecker.IsShift_Jis_Zenkaku - aaaaaa: False
+StringChecker.IsShift_Jis_Zenkaku - 亜亜亜: True
+StringChecker.IsShift_Jis_Hankaku - ａａａ: False
+StringChecker.IsShift_Jis_Hankaku - aaaaaa: True
+----------------------------------------------------------------------------------------------------
+TestFormatChecker.IsJpZipCode
+JpZipCode_Hyphen
+000-0000: True
+aaa-aaaa: False
+0000-00000: False
+0000-0000: False
+000-00000: False
+00-000: False
+00-0000: False
+000-000: False
+JpZipKuCode1_Hyphen
+000-00: True
+aaa-aa: False
+0000-000: False
+0000-00: False
+000-000: False
+00-0: False
+00-00: False
+000-0: False
+JpZipKuCode2_Hyphen
+000: True
+aaa: False
+0000: False
+00: False
+JpZipCode_NoHyphen
+0000000: True
+aaaaaaa: False
+00000000: False
+000000: False
+JpZipKuCode1_NoHyphen
+00000: True
+aaaaa: False
+000000: False
+0000: False
+JpZipKuCode2_NoHyphen
+000: True
+aaa: False
+0000: False
+00: False
+--------------------------------------------------
+TestFormatChecker.IsJpZipCode_Hyphen
+JpZipCode_Hyphen
+000-0000: True
+aaa-aaaa: False
+0000-00000: False
+0000-0000: False
+000-00000: False
+00-000: False
+00-0000: False
+000-000: False
+JpZipKuCode1_Hyphen
+000-00: True
+aaa-aa: False
+0000-000: False
+0000-00: False
+000-000: False
+00-0: False
+00-00: False
+000-0: False
+JpZipKuCode2_Hyphen
+000: True
+aaa: False
+0000: False
+00: False
+--------------------------------------------------
+TestFormatChecker.IsJpZipCode_NoHyphen
+JpZipCode_NoHyphen
+0000000: True
+aaaaaaa: False
+00000000: False
+000000: False
+JpZipKuCode1_NoHyphen
+00000: True
+aaaaa: False
+000000: False
+0000: False
+JpZipKuCode2_NoHyphen
+000: True
+aaa: False
+0000: False
+00: False
+--------------------------------------------------
+TestFormatChecker.IsJpZipCode7
+JpZipCode_Hyphen
+000-0000: True
+aaa-aaaa: False
+0000-00000: False
+0000-0000: False
+000-00000: False
+00-000: False
+00-0000: False
+000-000: False
+JpZipCode_NoHyphen
+0000000: True
+aaaaaaa: False
+00000000: False
+000000: False
+--------------------------------------------------
+TestFormatChecker.IsJpZipCode7_Hyphen
+JpZipCode_Hyphen
+000-0000: True
+aaa-aaaa: False
+0000-00000: False
+0000-0000: False
+000-00000: False
+00-000: False
+00-0000: False
+000-000: False
+--------------------------------------------------
+TestFormatChecker.IsJpZipCode7_NoHyphen
+JpZipCode_NoHyphen
+0000000: True
+aaaaaaa: False
+00000000: False
+000000: False
+--------------------------------------------------
+TestFormatChecker.IsJpZipCode5
+JpZipKuCode1_Hyphen
+000-00: True
+aaa-aa: False
+0000-000: False
+0000-00: False
+000-000: False
+00-0: False
+00-00: False
+000-0: False
+JpZipKuCode2_Hyphen
+000: True
+aaa: False
+0000: False
+00: False
+JpZipKuCode1_NoHyphen
+00000: True
+aaaaa: False
+000000: False
+0000: False
+JpZipKuCode2_NoHyphen
+000: True
+aaa: False
+0000: False
+00: False
+--------------------------------------------------
+TestFormatChecker.IsJpZipCode5_Hyphen
+JpZipKuCode1_Hyphen
+000-00: True
+aaa-aa: False
+0000-000: False
+0000-00: False
+000-000: False
+00-0: False
+00-00: False
+000-0: False
+JpZipKuCode2_Hyphen
+000: True
+aaa: False
+0000: False
+00: False
+--------------------------------------------------
+TestFormatChecker.IsJpZipCode5_NoHyphen
+JpZipKuCode1_NoHyphen
+00000: True
+aaaaa: False
+000000: False
+0000: False
+JpZipKuCode2_NoHyphen
+000: True
+aaa: False
+0000: False
+00: False
+--------------------------------------------------
+TestFormatChecker.IsJpTelephoneNumber
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: True
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: True
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: True
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: True
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: True
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: True
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: True
+020-999-9999: True
+020-9999-999: False
+060-9999-9999: True
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: True
+060-999-9999: True
+060-9999-999: False
+070-9999-9999: True
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: True
+070-999-9999: True
+070-9999-999: False
+080-9999-9999: True
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: True
+080-999-9999: True
+080-9999-999: False
+090-9999-9999: True
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: True
+090-999-9999: True
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: True
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: True
+06099999999: True
+07099999999: True
+08099999999: True
+09099999999: True
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: True
+JpIpPhoneNumber_Hyphen
+050-9999-9999: True
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: True
+050-999-9999: True
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: True
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: True
+070-9999-9999: True
+080-9999-9999: True
+090-9999-9999: True
+JpIpPhoneNumber_NoHyphen
+05099999999: True
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: True
+01099999999: False
+02099999999: True
+03099999999: False
+04099999999: False
+06099999999: True
+07099999999: True
+08099999999: True
+09099999999: True
+--------------------------------------------------
+TestFormatChecker.IsJpTelephoneNumber_Hyphen
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: True
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: True
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: True
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: True
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: False
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: True
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: True
+020-999-9999: True
+020-9999-999: False
+060-9999-9999: True
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: True
+060-999-9999: True
+060-9999-999: False
+070-9999-9999: True
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: True
+070-999-9999: True
+070-9999-999: False
+080-9999-9999: True
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: True
+080-999-9999: True
+080-9999-999: False
+090-9999-9999: True
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: True
+090-999-9999: True
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: False
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: False
+JpIpPhoneNumber_Hyphen
+050-9999-9999: True
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: True
+050-999-9999: True
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: True
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: True
+070-9999-9999: True
+080-9999-9999: True
+090-9999-9999: True
+JpIpPhoneNumber_NoHyphen
+05099999999: False
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: False
+01099999999: False
+02099999999: False
+03099999999: False
+04099999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+--------------------------------------------------
+TestFormatChecker.IsJpTelephoneNumber_NoHyphen
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: False
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: False
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: False
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: False
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: True
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: False
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: False
+020-999-9999: False
+020-9999-999: False
+060-9999-9999: False
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: False
+060-999-9999: False
+060-9999-999: False
+070-9999-9999: False
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: False
+070-999-9999: False
+070-9999-999: False
+080-9999-9999: False
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: False
+080-999-9999: False
+080-9999-999: False
+090-9999-9999: False
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: False
+090-999-9999: False
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: True
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: True
+06099999999: True
+07099999999: True
+08099999999: True
+09099999999: True
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: True
+JpIpPhoneNumber_Hyphen
+050-9999-9999: False
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: False
+050-999-9999: False
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: False
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: False
+070-9999-9999: False
+080-9999-9999: False
+090-9999-9999: False
+JpIpPhoneNumber_NoHyphen
+05099999999: True
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: True
+01099999999: False
+02099999999: True
+03099999999: False
+04099999999: False
+06099999999: True
+07099999999: True
+08099999999: True
+09099999999: True
+--------------------------------------------------
+TestFormatChecker.IsJpFixedLinePhoneNumber
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: True
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: True
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: True
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: True
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: True
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: False
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: True
+020-999-9999: True
+020-9999-999: False
+060-9999-9999: False
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: True
+060-999-9999: True
+060-9999-999: False
+070-9999-9999: False
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: True
+070-999-9999: True
+070-9999-999: False
+080-9999-9999: False
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: True
+080-999-9999: True
+080-9999-999: False
+090-9999-9999: False
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: True
+090-999-9999: True
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: False
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: True
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: False
+JpIpPhoneNumber_Hyphen
+050-9999-9999: False
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: True
+050-999-9999: True
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: False
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: False
+070-9999-9999: False
+080-9999-9999: False
+090-9999-9999: False
+JpIpPhoneNumber_NoHyphen
+05099999999: False
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: True
+01099999999: False
+02099999999: False
+03099999999: False
+04099999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+--------------------------------------------------
+TestFormatChecker.IsJpFixedLinePhoneNumber_Hyphen
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: True
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: True
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: True
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: True
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: False
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: False
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: True
+020-999-9999: True
+020-9999-999: False
+060-9999-9999: False
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: True
+060-999-9999: True
+060-9999-999: False
+070-9999-9999: False
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: True
+070-999-9999: True
+070-9999-999: False
+080-9999-9999: False
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: True
+080-999-9999: True
+080-9999-999: False
+090-9999-9999: False
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: True
+090-999-9999: True
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: False
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: False
+JpIpPhoneNumber_Hyphen
+050-9999-9999: False
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: True
+050-999-9999: True
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: False
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: False
+070-9999-9999: False
+080-9999-9999: False
+090-9999-9999: False
+JpIpPhoneNumber_NoHyphen
+05099999999: False
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: False
+01099999999: False
+02099999999: False
+03099999999: False
+04099999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+--------------------------------------------------
+TestFormatChecker.IsJpFixedLinePhoneNumber_NoHyphen
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: False
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: False
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: False
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: False
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: True
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: False
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: False
+020-999-9999: False
+020-9999-999: False
+060-9999-9999: False
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: False
+060-999-9999: False
+060-9999-999: False
+070-9999-9999: False
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: False
+070-999-9999: False
+070-9999-999: False
+080-9999-9999: False
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: False
+080-999-9999: False
+080-9999-999: False
+090-9999-9999: False
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: False
+090-999-9999: False
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: False
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: True
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: False
+JpIpPhoneNumber_Hyphen
+050-9999-9999: False
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: False
+050-999-9999: False
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: False
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: False
+070-9999-9999: False
+080-9999-9999: False
+090-9999-9999: False
+JpIpPhoneNumber_NoHyphen
+05099999999: False
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: True
+01099999999: False
+02099999999: False
+03099999999: False
+04099999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+--------------------------------------------------
+TestFormatChecker.IsJpCellularPhoneNumber
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: False
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: False
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: False
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: False
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: False
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: True
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: False
+020-999-9999: False
+020-9999-999: False
+060-9999-9999: True
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: False
+060-999-9999: False
+060-9999-999: False
+070-9999-9999: True
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: False
+070-999-9999: False
+070-9999-999: False
+080-9999-9999: True
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: False
+080-999-9999: False
+080-9999-999: False
+090-9999-9999: True
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: False
+090-999-9999: False
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: True
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: False
+06099999999: True
+07099999999: True
+08099999999: True
+09099999999: True
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: False
+JpIpPhoneNumber_Hyphen
+050-9999-9999: False
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: False
+050-999-9999: False
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: True
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: True
+070-9999-9999: True
+080-9999-9999: True
+090-9999-9999: True
+JpIpPhoneNumber_NoHyphen
+05099999999: False
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: False
+01099999999: False
+02099999999: True
+03099999999: False
+04099999999: False
+06099999999: True
+07099999999: True
+08099999999: True
+09099999999: True
+--------------------------------------------------
+TestFormatChecker.IsJpCellularPhoneNumber_Hyphen
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: False
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: False
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: False
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: False
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: False
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: True
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: False
+020-999-9999: False
+020-9999-999: False
+060-9999-9999: True
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: False
+060-999-9999: False
+060-9999-999: False
+070-9999-9999: True
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: False
+070-999-9999: False
+070-9999-999: False
+080-9999-9999: True
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: False
+080-999-9999: False
+080-9999-999: False
+090-9999-9999: True
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: False
+090-999-9999: False
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: False
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: False
+JpIpPhoneNumber_Hyphen
+050-9999-9999: False
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: False
+050-999-9999: False
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: True
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: True
+070-9999-9999: True
+080-9999-9999: True
+090-9999-9999: True
+JpIpPhoneNumber_NoHyphen
+05099999999: False
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: False
+01099999999: False
+02099999999: False
+03099999999: False
+04099999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+--------------------------------------------------
+TestFormatChecker.IsJpCellularPhoneNumber_NoHyphen
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: False
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: False
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: False
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: False
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: False
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: False
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: False
+020-999-9999: False
+020-9999-999: False
+060-9999-9999: False
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: False
+060-999-9999: False
+060-9999-999: False
+070-9999-9999: False
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: False
+070-999-9999: False
+070-9999-999: False
+080-9999-9999: False
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: False
+080-999-9999: False
+080-9999-999: False
+090-9999-9999: False
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: False
+090-999-9999: False
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: True
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: False
+06099999999: True
+07099999999: True
+08099999999: True
+09099999999: True
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: False
+JpIpPhoneNumber_Hyphen
+050-9999-9999: False
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: False
+050-999-9999: False
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: False
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: False
+070-9999-9999: False
+080-9999-9999: False
+090-9999-9999: False
+JpIpPhoneNumber_NoHyphen
+05099999999: False
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: False
+01099999999: False
+02099999999: True
+03099999999: False
+04099999999: False
+06099999999: True
+07099999999: True
+08099999999: True
+09099999999: True
+--------------------------------------------------
+TestFormatChecker.IsJpIpPhoneNumber
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: False
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: False
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: False
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: False
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: False
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: False
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: False
+020-999-9999: False
+020-9999-999: False
+060-9999-9999: False
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: False
+060-999-9999: False
+060-9999-999: False
+070-9999-9999: False
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: False
+070-999-9999: False
+070-9999-999: False
+080-9999-9999: False
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: False
+080-999-9999: False
+080-9999-999: False
+090-9999-9999: False
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: False
+090-999-9999: False
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: False
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: True
+JpIpPhoneNumber_Hyphen
+050-9999-9999: True
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: False
+050-999-9999: False
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: False
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: False
+070-9999-9999: False
+080-9999-9999: False
+090-9999-9999: False
+JpIpPhoneNumber_NoHyphen
+05099999999: True
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: False
+01099999999: False
+02099999999: False
+03099999999: False
+04099999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+--------------------------------------------------
+TestFormatChecker.IsJpIpPhoneNumber_Hyphen
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: False
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: False
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: False
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: False
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: False
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: False
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: False
+020-999-9999: False
+020-9999-999: False
+060-9999-9999: False
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: False
+060-999-9999: False
+060-9999-999: False
+070-9999-9999: False
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: False
+070-999-9999: False
+070-9999-999: False
+080-9999-9999: False
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: False
+080-999-9999: False
+080-9999-999: False
+090-9999-9999: False
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: False
+090-999-9999: False
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: False
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: False
+JpIpPhoneNumber_Hyphen
+050-9999-9999: True
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: False
+050-999-9999: False
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: False
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: False
+070-9999-9999: False
+080-9999-9999: False
+090-9999-9999: False
+JpIpPhoneNumber_NoHyphen
+05099999999: False
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: False
+01099999999: False
+02099999999: False
+03099999999: False
+04099999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+--------------------------------------------------
+TestFormatChecker.IsJpIpPhoneNumber_NoHyphen
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: False
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: False
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: False
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: False
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: False
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: False
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: False
+020-999-9999: False
+020-9999-999: False
+060-9999-9999: False
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: False
+060-999-9999: False
+060-9999-999: False
+070-9999-9999: False
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: False
+070-999-9999: False
+070-9999-999: False
+080-9999-9999: False
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: False
+080-999-9999: False
+080-9999-999: False
+090-9999-9999: False
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: False
+090-999-9999: False
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: False
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: True
+JpIpPhoneNumber_Hyphen
+050-9999-9999: False
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: False
+050-999-9999: False
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: False
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: False
+070-9999-9999: False
+080-9999-9999: False
+090-9999-9999: False
+JpIpPhoneNumber_NoHyphen
+05099999999: True
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: False
+01099999999: False
+02099999999: False
+03099999999: False
+04099999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+----------------------------------------------------------------------------------------------------
+StringConverter.ToHankaku - アアア: ｱｱｱ
+StringConverter.ToZenkaku - ｱｱｱ: アアア
+StringConverter.ToHiragana - アアア: あああ
+StringConverter.ToKatakana - あああ: アアア
+----------------------------------------------------------------------------------------------------
+FormatConverter.SeirekiToWareki
+1977/4/24, ggy年M月d日（ddd）: 昭和52年4月24日（日）
+1977/4/24, ggy年M月d日（ddd）H:m:s: 昭和52年4月24日（日）0:0:0
+1977/4/24 19:15:12, ggy年M月d日（ddd）: 昭和52年4月24日（日）
+1977/4/24 19:15:12, ggy年M月d日（ddd）H:m:s: 昭和52年4月24日（日）19:15:12
+1977/4/24 19:15:12, ggy年M月d日（ddd）tt h:m:s: 昭和52年4月24日（日）午後 7:15:12
+1992/2/6 1:1:1, ggyy年MM月dd日 dddd HH:mm:ss: 平成04年02月06日 木曜日 01:01:01
+1992/2/6 13:1:1, ggyy年MM月dd日 dddd tt hh:mm:ss: 平成04年02月06日 木曜日 午後 01:01:01
+--------------------------------------------------
+FormatConverter.WarekiToSeireki
+昭和52年4月24日（日）, ggy年M月d日（ddd）: 1977/04/24 0:00:00
+昭和52年4月24日（日）19:15:12, ggy年M月d日（ddd）H:m:s: 1977/04/24 19:15:12
+昭和52年4月24日（日）午後 7:15:12, ggy年M月d日（ddd）tt h:m:s: 1977/04/24 19:15:12
+平成04年02月06日 木曜日 01:01:01, ggyy年MM月dd日 dddd HH:mm:ss: 1992/02/06 1:01:01
+平成04年02月06日 木曜日 午後 01:01:01, ggyy年MM月dd日 dddd tt hh:mm:ss: 1992/02/06 13:01:01
+--------------------------------------------------
+FormatConverter.AddFigure3
+12,345
+123,456,789
+123.45
+12,345.6789
+-12,345
+-123,456,789
+-123.45
+-12,345.6789
+12,345
+123,456,789
+123.45
+12,345.6789
+-12,345
+-123,456,789
+-123.45
+-12,345.6789
+----------------------------------------------------------------------------------------------------
+FormatConverter.AddFigure4
+1,2345
+1,2345,6789
+123.45
+1,2345.6789
+-1,2345
+-1,2345,6789
+-123.45
+-1,2345.6789
+1,2345
+1,2345,6789
+123.45
+1,2345.6789
+-1,2345
+-1,2345,6789
+-123.45
+-1,2345.6789
+----------------------------------------------------------------------------------------------------
+FormatConverter.Suppress
+"", 10, '＠': ＠＠＠＠＠＠＠＠＠＠
+"123456789", 0, '＠': 123456789
+"123456789", 1, '＠': 123456789
+"123456789", 5, '＠': 123456789
+"123456789", 9, '＠': 123456789
+"123456789", 10, '＠': ＠123456789
+"123456789", 11, '＠': ＠＠123456789
+"123456789", 20, '＠': ＠＠＠＠＠＠＠＠＠＠＠123456789
+"", 10, '＠': ＠＠＠＠＠＠＠＠＠＠
+"123456789", 0, '＠': abcdefg
+"123456789", 1, '＠': abcdefg
+"123456789", 5, '＠': abcdefg
+"123456789", 9, '＠': ＠＠abcdefg
+"123456789", 10, '＠': ＠＠＠abcdefg
+"123456789", 11, '＠': ＠＠＠＠abcdefg
+"123456789", 20, '＠': ＠＠＠＠＠＠＠＠＠＠＠＠＠abcdefg
+----------------------------------------------------------------------------------------------------
+CustomEncode.HtmlEncode: &quot; id=&quot;txtXXXXX&quot; /&gt;&lt;script type=&quot;text/javascript&quot;&gt;alert(&quot;XSS!!!&quot;)&lt;/script&gt;&lt;input name=&quot;txtXXXXX&quot; type=&quot;text&quot; value=&quot;
+----------------------------------------------------------------------------------------------------
+CustomEncode.UrlEncode: http://www.google.co.jp/search?hl=ja&q=%26
+CustomEncode.UrlEncode2: http://www.google.co.jp/search?hl=ja&q=&
+CustomEncode.UrlEncode2: http://www.google.co.jp/search?hl=ja&q=%3C%3E
+----------------------------------------------------------------------------------------------------
+jis2k4.GetStringInfo - あああ: 
+Char長:3; 
+文字列長3; 
+バイト長6; 
+
+----------------------------------------------------------------------------------------------------
+jis2k4.CheckSurrogatesPairChar - あああ: False
+jis2k4.CheckSurrogatesPairChar - あ??あ: True
+jis2k4.CheckSurrogatesPairChar - あああ: -1文字目
+jis2k4.CheckSurrogatesPairChar - あ??あ: 1文字目
+----------------------------------------------------------------------------------------------------
+jis2k4.DeleteSurrogatesPairChar - あ??あ: ああ
+jis2k4.DeleteSurrogatesPairChar - あ??あ: あ●あ
+jis2k4.DeleteSurrogatesPairChar - あ??あ: あ●あ
+----------------------------------------------------------------------------------------------------
+jis2k4.CheckCharAddedWithJIS2k4 - あああ: False
+jis2k4.CheckCharAddedWithJIS2k4 - あ?あ: True
+jis2k4.CheckCharAddedWithJIS2k4 - あああ: -1文字目
+jis2k4.CheckCharAddedWithJIS2k4 - あ?あ: 1文字目
+----------------------------------------------------------------------------------------------------
+jis2k4.DeleteCharAddedWithJIS2k4 - あ?あ: ああ
+jis2k4.DeleteCharAddedWithJIS2k4 - あ?あ: あ●あ
+jis2k4.DeleteCharAddedWithJIS2k4 - あ?あ: あ●あ
+----------------------------------------------------------------------------------------------------
 Friday > Friday
 Wednesday > Wednesday
 Saturday > Saturday
@@ -25,4 +2301,4 @@ DeflateCompression(FileStream)-2 > is working properly.
 --------------------------------------------------
 DeflateCompression(MemoryStream) > is working properly.
 ----------------------------------------------------------------------------------------------------
-
+log4net: Shutdown called on Hierarchy [log4net-default-repository]

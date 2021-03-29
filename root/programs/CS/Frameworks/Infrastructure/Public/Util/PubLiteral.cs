@@ -38,6 +38,7 @@
 //*  2012/09/10  西野 大介         CDATAタグの追加（チェック緩和）
 //*  2013/12/23  西野 大介         アクセス修飾子をすべてpublicに変更した。
 //*  2014/02/03  西野 大介         国際化対応のスイッチ（app.config）を追加した。
+//*  2020/06/19  西野 大介         コンテナ化のスイッチ（app.config）を追加した。
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Public.Util
@@ -67,6 +68,9 @@ namespace Touryo.Infrastructure.Public.Util
 
         /// <summary>国際化対応のスイッチ（例外メッセージ）</summary>
         public const string EXCEPTIONMESSAGECULTUER = "FxExceptionMessageCulture";
+
+        /// <summary>コンテナ化する（設定値の取得方法等の動作変更）</summary>
+        public const string CONTAINERIZATION = "FxContainerization";
 
         #endregion
 

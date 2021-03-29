@@ -250,10 +250,10 @@ public class _DaoClassName_ : MyBaseDao
             {
                 // キャッシュ設定あり
                 string temp = this.CacheId + sqlFileName;
-                if (DaoShippers.CDicQueryCache.ContainsKey(temp))
+                if (_DaoClassName_.CDicQueryCache.ContainsKey(temp))
                 {
                     // キャッシュからSQL（Insert）を設定する。
-                    this.SetSqlByCommand(DaoShippers.CDicQueryCache[temp]);
+                    this.SetSqlByCommand(_DaoClassName_.CDicQueryCache[temp]);
                 }
                 else
                 {
@@ -270,10 +270,10 @@ public class _DaoClassName_ : MyBaseDao
             string temp = this.CacheId + sqlFileName;
 
             if (!string.IsNullOrEmpty(this.CacheId)
-                && !DaoShippers.CDicQueryCache.ContainsKey(temp))
+                && !_DaoClassName_.CDicQueryCache.ContainsKey(temp))
             {
                 // クエリをキャッシュ
-                DaoShippers.CDicQueryCache[temp] = this.GetDam().DamIDbCommand.CommandText;
+                _DaoClassName_.CDicQueryCache[temp] = this.GetDam().DamIDbCommand.CommandText;
             }
         }
 

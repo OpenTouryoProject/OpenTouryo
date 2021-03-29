@@ -9,3 +9,8 @@ echo | call y_Build_TestCode_SecGUI.bat
 timeout 5
 
 echo | call y_Build_TestCode_SecCUI.bat
+
+@echo on
+timeout 5
+
+echo | call y_Build_TestCode_Batch.bat

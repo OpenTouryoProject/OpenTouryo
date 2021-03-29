@@ -30,6 +30,12 @@
 //*  2007/xx/xx  西野 大介         新規作成
 //*  2010/11/22  西野 大介         NullReferenceException対応
 //*  2018/03/28  西野 大介         .NET Standard対応で、I/F変更あり。
+//*  2020/06/19  西野 大介         コンテナ・モードの時は環境変数を優先する。
+//*  2020/06/19  西野 大介         GetConfigSectionメソッドを廃止した（appSettingsのみ対象で無意味）。
+//*  2021/03/22  西野 大介         GetAnyConfigValueメソッドでコンテナ・モードに対応する。
+//*                                ※ JSONキーの「:」を「__」で処理する。
+//*                                GetAnyConfigSectionメソッドでコンテナ・モードに対応しない。
+//*                                ※ コンテナ・モードでは、セクションを返せない。
 //**********************************************************************************
 
 #if NETSTD
@@ -37,6 +43,7 @@ using System;
 using System.IO;
 using Microsoft.Extensions.Configuration;
 #else
+using System;
 using System.Configuration;
 #endif
 
@@ -128,33 +135,52 @@ namespace Touryo.Infrastructure.Public.Util
 
         #endregion
 
+        #region JSONキー
+
         /// <summary>
         /// 設定ファイルに定義されている任意の値を取得する
+        /// ※ コンテナ・モードの時は環境変数のstringを優先する。
         /// </summary>
-        /// <param name="key">設定ファイルに定義されているJSONキー</param>
+        /// <param name="key">設定ファイルに定義されているキー名</param>
+        /// <param name="checkContainerization">コンテナ・モードのチェックの要否</param>
         /// <returns>設定ファイルに定義されている値</returns>
         /// <remarks>自由に利用できる。</remarks>
-        public static string GetAnyConfigValue(string key)
+        public static string GetAnyConfigValue(string key, bool checkContainerization = true)
         {
-            // 設定ファイルの内容を返す
-            if (GetConfigParameter._configuration == null)
+            string temp = null;
+
+            // コンテナ・モードの時は環境変数を優先する（Section名を考慮する）。
+            if (checkContainerization)
+                temp = GetConfigParameter.CheckContainerization(key.Replace(":", "__"));
+
+            if (string.IsNullOrEmpty(temp))
             {
-                throw new ArgumentException(
-                    // Resource は NG（無限ループになる。
-                    //PublicExceptionMessage.NOT_INITIALIZED,
-                    "NOT_INITIALIZED",
-                    "InitConfiguration method is not called.");
+                // 設定ファイルの内容を返す
+                if (GetConfigParameter._configuration == null)
+                {
+                    throw new ArgumentException(
+                        // Resource は NG（無限ループになる。
+                        //PublicExceptionMessage.NOT_INITIALIZED,
+                        "NOT_INITIALIZED",
+                        "InitConfiguration method is not called.");
+                }
+                else
+                {
+                    return GetConfigParameter._configuration[key];
+                }
             }
             else
             {
-                return GetConfigParameter._configuration[key];
+                // コンテナ・モードの時、環境変数の内容を返す。
+                return temp;
             }
         }
 
         /// <summary>
         /// 設定ファイルに定義されている任意のセクションを取得する
+        /// ※ コンテナ・モードには対応しない（IConfigurationSectionを返せないので）。
         /// </summary>
-        /// <param name="key">設定ファイルに定義されているキー名</param>
+        /// <param name="key">設定ファイルに定義されているセクションのJSONキー</param>
         /// <returns>設定ファイルに定義されているセクション</returns>
         /// <remarks>自由に利用できる。</remarks>
         public static IConfigurationSection GetAnyConfigSection(string key)
@@ -174,97 +200,140 @@ namespace Touryo.Infrastructure.Public.Util
             }
         }
 
-        /// <summary>
-        /// 設定ファイルのappSettingsタグに定義されているセクションを取得する
-        /// </summary>
-        /// <param name="key">設定ファイルに定義されているキー名</param>
-        /// <returns>設定ファイルに定義されているセクション</returns>
-        /// <remarks>自由に利用できる。</remarks>
-        public static IConfigurationSection GetConfigSection(string key)
-        {
-            // 設定ファイルの内容を返す
-            if (GetConfigParameter._configuration == null)
-            {
-                throw new ArgumentException(
-                    // Resource は NG（無限ループになる。
-                    //PublicExceptionMessage.NOT_INITIALIZED,
-                    "NOT_INITIALIZED",
-                    "InitConfiguration method is not called.");
-            }
-            else
-            {
-                return GetConfigParameter._configuration.GetSection("appSettings:" + key);
-            }
-        }
-
-#else
-
+        #endregion
 #endif
 
         /// <summary>
-        /// 設定ファイルのappSettingsタグに定義されている値を取得する
+        /// 設定ファイルのappSettingsSectionに定義されている値を取得する
+        /// ※ コンテナ・モードの時は環境変数のstringを優先する。
         /// </summary>
-        /// <param name="key">設定ファイルに定義されているキー名</param>
-        /// <returns>設定ファイルに定義されている値</returns>
+        /// <param name="key">設定ファイルのappSettingsSectionに定義されているキー名</param>
+        /// <param name="checkContainerization">コンテナ・モードのチェックの要否</param>
+        /// <returns>設定ファイルのappSettingsSectionに定義されている値</returns>
         /// <remarks>自由に利用できる。</remarks>
-        public static string GetConfigValue(string key)
+        public static string GetConfigValue(string key, bool checkContainerization = true)
         {
-            // 設定ファイルの内容を返す
+            string temp = null;
+
+            // コンテナ・モードの時は環境変数を優先する（Section名を考慮しない）。
+            if (checkContainerization)
+                temp = GetConfigParameter.CheckContainerization(key);
+
+            if (string.IsNullOrEmpty(temp))
+            {
+                // 通常時、設定ファイルの内容を返す。
 #if NETSTD
-            if (GetConfigParameter._configuration == null)
-            {
-                throw new ArgumentException(
-                    // Resource は NG（無限ループになる。
-                    //PublicExceptionMessage.NOT_INITIALIZED,
-                    "NOT_INITIALIZED",
-                    "InitConfiguration method is not called.");
+                if (GetConfigParameter._configuration == null)
+                {
+                    throw new ArgumentException(
+                        // Resource は NG（無限ループになる。
+                        //PublicExceptionMessage.NOT_INITIALIZED,
+                        "NOT_INITIALIZED",
+                        "InitConfiguration method is not called.");
+                }
+                else
+                {
+                    return GetConfigParameter._configuration["appSettings:" + key];
+                }
+#else
+                return ConfigurationManager.AppSettings[key];
+#endif
             }
             else
             {
-                return GetConfigParameter._configuration["appSettings:" + key];
+                // コンテナ・モードの時、環境変数の内容を返す。
+                return temp;
             }
-#else
-            return ConfigurationManager.AppSettings[key];
-#endif
-
         }
 
         /// <summary>
-        /// 設定ファイルのconnectionStringsタグに定義
+        /// 設定ファイルのconnectionStringsSectionに定義
         /// されているデータベースへの接続文字列を取得する
+        /// ※ コンテナ・モードの時は環境変数のstringを優先する。
         /// </summary>
-        /// <param name="key">設定ファイルに定義されているキー名</param>
-        /// <returns>設定ファイルに定義されている接続文字列</returns>
+        /// <param name="key">設定ファイルのconnectionStringsSectionに定義されているキー名</param>
+        /// <param name="checkContainerization">コンテナ・モードのチェックの要否</param>
+        /// <returns>設定ファイルのconnectionStringsSectionに定義されている接続文字列</returns>
         /// <remarks>自由に利用できる。</remarks>
-        public static string GetConnectionString(string key)
+        public static string GetConnectionString(string key, bool checkContainerization = true)
         {
-            // 接続文字列の取得
-#if NETSTD
-            if (GetConfigParameter._configuration == null)
+            string temp = null;
+
+            // コンテナ・モードの時は環境変数を優先する（Section名を考慮しない）。
+            if (checkContainerization)
+                temp = GetConfigParameter.CheckContainerization(key);
+
+            if (string.IsNullOrEmpty(temp))
             {
-                throw new ArgumentException(
-                    // Resource は NG（無限ループになる。
-                    //PublicExceptionMessage.NOT_INITIALIZED,
-                    "NOT_INITIALIZED",
-                    "InitConfiguration method is not called.");
+                // 通常時、設定ファイルの内容を返す。
+#if NETSTD
+                if (GetConfigParameter._configuration == null)
+                {
+                    throw new ArgumentException(
+                        // Resource は NG（無限ループになる。
+                        //PublicExceptionMessage.NOT_INITIALIZED,
+                        "NOT_INITIALIZED",
+                        "InitConfiguration method is not called.");
+                }
+                else
+                {
+                    return GetConfigParameter._configuration["connectionStrings:" + key];
+                }
+#else
+                ConnectionStringSettings connString = ConfigurationManager.ConnectionStrings[key];
+
+                // NullReferenceException対応
+                if (connString == null)
+                {
+                    return null;
+                }
+                else
+                {
+                    return connString.ConnectionString;
+                }
+#endif
             }
             else
             {
-                return GetConfigParameter._configuration["connectionStrings:" + key];
-            }            
-#else
-            ConnectionStringSettings connString = ConfigurationManager.ConnectionStrings[key];
+                // コンテナ・モードの時、環境変数の内容を返す。
+                return temp;
+            }
+        }
 
-            // NullReferenceException対応
-            if (connString == null)
+        /// <summary>コンテナ化されている場合、環境変数の取得を試みる。</summary>
+        /// <param name="key">環境変数として定義されているキー名</param>
+        /// <returns>環境変数として定義されている値</returns>
+        /// <remarks>自由に利用できる。</remarks>
+        private static string CheckContainerization(string key)
+        {
+            // モードのチェック
+            string containerization =
+                GetConfigParameter.GetConfigValue(PubLiteral.CONTAINERIZATION, false);
+
+            // デフォルト値対策：設定なし（null）の場合の扱いを決定
+            if (containerization == null)
             {
+                // OFF扱い
+                containerization = PubLiteral.OFF;
+            }
+
+            // ON / OFF
+            if (containerization.ToUpper() == PubLiteral.ON)
+            {
+                // 環境変数の値を返す。
+                return System.Environment.GetEnvironmentVariable(key);
+            }
+            else if (containerization.ToUpper() == PubLiteral.OFF)
+            {
+                // null を返す。
                 return null;
             }
             else
             {
-                return connString.ConnectionString;    
+                // パラメータ・エラー（書式不正）
+                throw new ArgumentException(String.Format(
+                    PublicExceptionMessage.SWITCH_ERROR, PubLiteral.CONTAINERIZATION));
             }
-#endif
         }
     }
 }

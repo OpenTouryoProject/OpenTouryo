@@ -24,6 +24,8 @@ rem --------------------------------------------------
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\EncAndDecUtil\EncAndDecUtil46.sln"
 ..\nuget.exe restore "Frameworks\Tests\EncAndDecUtil\EncAndDecUtil47.sln"
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\EncAndDecUtil\EncAndDecUtil47.sln"
+..\nuget.exe restore "Frameworks\Tests\EncAndDecUtil\EncAndDecUtil48.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\EncAndDecUtil\EncAndDecUtil48.sln"
 
 pause
 

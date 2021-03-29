@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/06/07  西野 大介         新規作成（分割
+//*  2020/08/04  西野 大介         AuthZ(N) Uirの追加
 //**********************************************************************************
 
 using System.Collections.Generic;
@@ -56,6 +57,44 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
         }
 
+        #endregion
+
+        #region AuthZ(N) Uir
+        /// <summary>SpRp_AuthRequestUri</summary>
+        public static string SpRp_AuthRequestUri
+        {
+            get
+            {
+                return GetConfigParameter.GetConfigValue("SpRp_AuthRequestUri");
+            }
+        }
+
+        /// <summary>SpRp_TokenRequestUri</summary>
+        public static string SpRp_TokenRequestUri
+        {
+            get
+            {
+                return GetConfigParameter.GetConfigValue("SpRp_TokenRequestUri");
+            }
+        }
+
+        /// <summary>SpRp_UserInfoUri</summary>
+        public static string SpRp_UserInfoUri
+        {
+            get
+            {
+                return GetConfigParameter.GetConfigValue("SpRp_UserInfoUri");
+            }
+        }
+        
+        /// <summary>SpRp_RedirectUri</summary>
+        public static string SpRp_RedirectUri
+        {
+            get
+            {
+                return GetConfigParameter.GetConfigValue("SpRp_RedirectUri");
+            }
+        }
         #endregion
 
         #region 鍵関連

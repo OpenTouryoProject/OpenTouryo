@@ -31,7 +31,8 @@
 //*  2017/04/24  西野 大介         新規
 //*  2018/08/10  西野 大介         汎用認証サイトからのコード移行
 //*  2019/08/01  西野 大介         client_secret_postのサポートを追加
-//*  2020/03/04  西野 大介         CIBAの認可リクエスト（WebAPI）を追加
+//*  2020/03/04  西野 大介         FAPI CIBAの認可リクエスト（WebAPI）を追加
+//*  2020/12/18  西野 大介         Device AuthZの認可リクエスト（WebAPI）を追加
 //**********************************************************************************
 
 using System;
@@ -571,6 +572,72 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
+        #region Device AuthZ
+        /// <summary>Device AuthZの認可リクエスト（WebAPI）</summary>
+        /// <param name="deviceAuthZUri">Uri</param>
+        /// <param name="clientId">string</param>
+        /// <returns>結果のJSON文字列</returns>
+        public static async Task<string> DeviceAuthZRequestAsync(Uri deviceAuthZUri, string clientId)
+        {
+            // 通信用の変数
+            HttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage httpResponseMessage = null;
+
+            // HttpRequestMessage (Method & RequestUri)
+            httpRequestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = deviceAuthZUri,
+            };
+
+            httpRequestMessage.Content = new FormUrlEncodedContent(
+                new Dictionary<string, string>
+                {
+                    { OAuth2AndOIDCConst.client_id, clientId }
+                });
+
+            // HttpResponseMessage
+            httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+        }
+
+        /// <summary>Device AuthZのTokenリクエスト</summary>
+        /// <param name="tokenEndpointUri">Uri</param>
+        /// <param name="client_id">client_id</param>
+        /// <param name="device_code">string</param>    
+        /// <returns>結果のJSON文字列</returns>
+        public static async Task<string> GetAccessTokenByDeviceAuthZAsync(
+            Uri tokenEndpointUri, string client_id, string device_code)
+        {
+            // 通信用の変数
+            HttpRequestMessage httpRequestMessage = null;
+            HttpResponseMessage httpResponseMessage = null;
+
+            // HttpRequestMessage (Method & RequestUri)
+            httpRequestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = tokenEndpointUri,
+            };
+
+            // body
+            Dictionary<string, string> body = new Dictionary<string, string>
+            {
+                { OAuth2AndOIDCConst.grant_type, OAuth2AndOIDCConst.DeviceAuthZGrantType },
+                { OAuth2AndOIDCConst.client_id, client_id },
+                { OAuth2AndOIDCConst.device_code, device_code }
+            };
+
+            // 認証情報の付加（不要
+
+            httpRequestMessage.Content = new FormUrlEncodedContent(body);
+
+            // HttpResponseMessage
+            httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+        }
+        #endregion
+
         #endregion
 
         #region OpenID Connect
@@ -620,6 +687,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #region FAPI (Financial-grade API) 
 
+        #region PAR (Pushed Authorization Requests)
         /// <summary>RequestObjectを登録する</summary>
         /// <param name="requestObjectRegUri">Uri</param>
         /// <param name="requestObject">string</param>
@@ -645,12 +713,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
-        #region CIBA
+        #endregion
+
+        #region FAPI CIBA
         /// <summary>FAPI CIBAの認可リクエスト（WebAPI）</summary>
         /// <param name="cibaAuthZUri">Uri</param>
         /// <param name="requestObjectUri">string</param>
         /// <returns>結果のJSON文字列</returns>
-        public static async Task<string> CibaAuthZRequestAsyncAsync(Uri cibaAuthZUri, string requestObjectUri)
+        public static async Task<string> CibaAuthZRequestAsync(Uri cibaAuthZUri, string requestObjectUri)
         {
             // 通信用の変数
             HttpRequestMessage httpRequestMessage = null;
@@ -700,7 +770,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             Dictionary<string, string> body = new Dictionary<string, string>
             {
                 { OAuth2AndOIDCConst.grant_type, OAuth2AndOIDCConst.CibaGrantType },
-                { "auth_req_id", auth_req_id }
+                { OAuth2AndOIDCConst.auth_req_id, auth_req_id }
             };
 
             // 認証情報の付加

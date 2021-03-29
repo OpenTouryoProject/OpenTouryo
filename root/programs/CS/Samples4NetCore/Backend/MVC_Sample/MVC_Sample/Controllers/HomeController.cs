@@ -41,6 +41,7 @@ using Touryo.Infrastructure.Business.Presentation;
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Framework.Util;
+using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Security.Pwd;
 
 namespace MVC_Sample.Controllers
@@ -157,14 +158,16 @@ namespace MVC_Sample.Controllers
             {
                 // 外部ログイン
                 return Redirect(string.Format(
-                    "https://localhost:44300/MultiPurposeAuthSite/authorize"
+                    CmnClientParams.SpRp_AuthRequestUri
                     + "?client_id=" + OAuth2AndOIDCParams.ClientID
                     + "&response_type=code"
                     + "&scope=profile%20email%20phone%20address%20openid"
                     + "&state={0}"
                     + "&nonce={1}"
-                    + "&prompt=none",
-                    this.State, this.Nonce));
+                    + "&prompt=none"
+                    + "&redirect_uri={2}",
+                    this.State, this.Nonce,
+                    CustomEncode.UrlEncode(CmnClientParams.SpRp_RedirectUri)));
             }
         }
 
@@ -208,9 +211,8 @@ namespace MVC_Sample.Controllers
                 if (state == this.State) // CSRF(XSRF)対策のstateの検証は重要
                 {
                     response = await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
-                        new Uri("https://localhost:44300/MultiPurposeAuthSite/token"),
-                        OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret,
-                        HttpUtility.HtmlEncode("http://localhost:58496/Home/OAuth2AuthorizationCodeGrantClient"), code);
+                        new Uri(CmnClientParams.SpRp_TokenRequestUri),
+                        OAuth2AndOIDCParams.ClientID, OAuth2AndOIDCParams.ClientSecret, "", code);
 
                     // 汎用認証サイトはOIDCをサポートしたのでid_tokenを取得し、検証可能。
                     //Base64UrlTextEncoder base64UrlEncoder = new Base64UrlTextEncoder();
@@ -230,7 +232,7 @@ namespace MVC_Sample.Controllers
 
                             // /userinfoエンドポイントにアクセスする場合
                             response = await OAuth2AndOIDCClient.GetUserInfoAsync(
-                                new Uri("https://localhost:44300/MultiPurposeAuthSite/userinfo"), dic["access_token"]);
+                                new Uri(CmnClientParams.SpRp_UserInfoUri), dic["access_token"]);
 
                             // 認証情報を作成する。
                             List<Claim> claims = new List<Claim>();

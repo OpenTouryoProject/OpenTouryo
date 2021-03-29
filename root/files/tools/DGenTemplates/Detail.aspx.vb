@@ -12,7 +12,7 @@
 '*
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
-'*  2015/12/22 Sai         Modified ReadOnly property of the primary key column textbox to true.  
+'*  2015/12/22  Sai               Modified ReadOnly property of the primary key column textbox to true.
 '**********************************************************************************
 
 Imports MyType
@@ -113,7 +113,6 @@ Partial Public Class _TableName_Detail
             ' ControlComment:LoopEnd-ElseColumn
             ' 編集
             Me.SetControlReadOnly(True)
-            Session("PrimaryKeyAndTimeStamp") = Nothing
         End If
     End Sub
 

@@ -56,11 +56,11 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\Build_net45r\</OutputPath>
+    <OutputPath>..\Build_net45\</OutputPath>
     <DefineConstants>TRACE;NET45</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>..\Build_net45r\OpenTouryo.Business.XML</DocumentationFile>
+    <DocumentationFile>..\Build_net45\OpenTouryo.Business.XML</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
@@ -185,12 +185,6 @@
     <Compile Include="Util\MyLiteral.cs" />
     <Compile Include="Util\MySubsysInfo.cs" />
     <Compile Include="Util\MyUserInfo.cs" />
-    <Compile Include="Workflow\DaoM_User.cs" />
-    <Compile Include="Workflow\DaoM_Workflow.cs" />
-    <Compile Include="Workflow\DaoT_CurrentWorkflow.cs" />
-    <Compile Include="Workflow\DaoT_Workflow.cs" />
-    <Compile Include="Workflow\DaoT_WorkflowHistory.cs" />
-    <Compile Include="Workflow\Workflow.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\MyBusinessApplicationExceptionMessageResource.ja-JP.resx">

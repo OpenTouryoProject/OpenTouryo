@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2011/04/18  西野 大介         新規作成
+//*  2020/08/03  西野 大介         .NET Standard対応
 //**********************************************************************************
 
 using System;
@@ -62,6 +63,28 @@ namespace Touryo.Infrastructure.Public.IO
     {
         #region CreateZipFromFolder（１）
 
+#if NETSTD
+        /// <summary>フォルダ以下を圧縮</summary>
+        /// <param name="zipFileToCreate">圧縮ファイル名（zip、exe）</param>
+        /// <param name="directoryToZip">圧縮対象フォルダ</param>
+        /// <param name="selectionDlgt">ファイル選択デリゲード</param>
+        /// <param name="selectionCriteriaInfo">ファイル選択基準情報</param>
+        /// <param name="rootPathInArchive">書庫内ルートフォルダ</param>
+        /// <param name="enc">エンコーディング</param>
+        /// <param name="cyp">暗号化</param>
+        /// <param name="zipPassword">パスワード</param>
+        /// <param name="cmpLv">圧縮レベル</param>
+        public void CreateZipFromFolder(
+            string zipFileToCreate,
+            string directoryToZip,
+            SelectionDelegate selectionDlgt,
+            object selectionCriteriaInfo,
+            string rootPathInArchive,
+            Encoding enc,
+            EncryptionAlgorithm cyp,
+            string zipPassword,
+            CompressionLevel cmpLv)
+#else
         /// <summary>フォルダ以下を圧縮</summary>
         /// <param name="zipFileToCreate">圧縮ファイル名（zip、exe）</param>
         /// <param name="directoryToZip">圧縮対象フォルダ</param>
@@ -84,6 +107,7 @@ namespace Touryo.Infrastructure.Public.IO
             string zipPassword,
             CompressionLevel cmpLv,
             SelfExtractorFlavor? selfEx)
+#endif
         {
             #region ファイル選択基準
 
@@ -99,8 +123,13 @@ namespace Touryo.Infrastructure.Public.IO
             #endregion
 
             // ZipFileを取得
+#if NETSTD
+            ZipFile zip = this.GetZipFile(
+                enc, cyp, zipPassword, cmpLv);
+#else
             ZipFile zip = this.GetZipFile(
                 enc, cyp, zipPassword, cmpLv, selfEx);
+#endif
 
             using (zip) // 使い終ったら「zip.Dispose」する。
             {
@@ -111,6 +140,10 @@ namespace Touryo.Infrastructure.Public.IO
                 this.CreateZipFromFolderRecursive(
                     zip, directoryToZip, rootPathInArchive);
 
+#if NETSTD
+                // ZIPファイル
+                zip.Save(zipFileToCreate + ".zip");
+#else
                 if (selfEx == null)
                 {
                     // ZIPファイル
@@ -123,6 +156,7 @@ namespace Touryo.Infrastructure.Public.IO
                         zipFileToCreate + ".exe",
                         (SelfExtractorFlavor)selfEx);
                 }
+#endif
             }
         }
 
@@ -171,6 +205,26 @@ namespace Touryo.Infrastructure.Public.IO
 
         #region CreateZipFromFolder（２）
 
+#if NETSTD
+        /// <summary>フォルダ以下を圧縮</summary>
+        /// <param name="zipFileToCreate">圧縮ファイル名（zip、exe）</param>
+        /// <param name="directoryToZip">圧縮対象フォルダ</param>
+        /// <param name="selectionCriteriaString">ファイル選択基準文字列</param>
+        /// <param name="rootPathInArchive">書庫内ルートフォルダ</param>
+        /// <param name="enc">エンコーディング</param>
+        /// <param name="cyp">暗号化</param>
+        /// <param name="zipPassword">パスワード</param>
+        /// <param name="cmpLv">圧縮レベル</param>
+        public void CreateZipFromFolder(
+            string zipFileToCreate,
+            string directoryToZip,
+            string selectionCriteriaString,
+            string rootPathInArchive,
+            Encoding enc,
+            EncryptionAlgorithm cyp,
+            string zipPassword,
+            CompressionLevel cmpLv)
+#else
         /// <summary>フォルダ以下を圧縮</summary>
         /// <param name="zipFileToCreate">圧縮ファイル名（zip、exe）</param>
         /// <param name="directoryToZip">圧縮対象フォルダ</param>
@@ -191,10 +245,16 @@ namespace Touryo.Infrastructure.Public.IO
             string zipPassword,
             CompressionLevel cmpLv,
             SelfExtractorFlavor? selfEx)
+#endif
         {
             // ZipFileを取得
+#if NETSTD
+            ZipFile zip = this.GetZipFile(
+                enc, cyp, zipPassword, cmpLv);
+#else
             ZipFile zip = this.GetZipFile(
                 enc, cyp, zipPassword, cmpLv, selfEx);
+#endif
 
             using (zip)
             {
@@ -212,6 +272,10 @@ namespace Touryo.Infrastructure.Public.IO
                     zip.AddSelectedFiles(selectionCriteriaString, directoryToZip, rootPathInArchive, true);
                 }
 
+#if NETSTD
+                // ZIPファイル
+                zip.Save(zipFileToCreate + ".zip");
+#else
                 if (selfEx == null)
                 {
                     // ZIPファイル
@@ -224,6 +288,8 @@ namespace Touryo.Infrastructure.Public.IO
                         zipFileToCreate + ".exe",
                         (SelfExtractorFlavor)selfEx);
                 }
+#endif
+
             }
         }
 
@@ -231,6 +297,19 @@ namespace Touryo.Infrastructure.Public.IO
 
         #region 共通関数
 
+#if NETSTD
+        /// <summary>ZipFileを取得</summary>
+        /// <param name="enc">エンコーディング</param>
+        /// <param name="cyp">暗号化</param>
+        /// <param name="zipPassword">パスワード</param>
+        /// <param name="cmpLv">圧縮レベル</param>
+        /// <returns>ZipFile</returns>
+        protected ZipFile GetZipFile(
+            Encoding enc,
+            EncryptionAlgorithm cyp,
+            string zipPassword,
+            CompressionLevel cmpLv)
+#else
         /// <summary>ZipFileを取得</summary>
         /// <param name="enc">エンコーディング</param>
         /// <param name="cyp">暗号化</param>
@@ -244,12 +323,18 @@ namespace Touryo.Infrastructure.Public.IO
             string zipPassword,
             CompressionLevel cmpLv,
             SelfExtractorFlavor? selfEx)
+#endif
         {
             // ZipFileの初期化
             ZipFile zip = null;
             if (enc == null) { zip = new ZipFile(); }
             else { zip = new ZipFile(enc); }
+
+#if NETSTD
+            zip = base.SetZipFile(zip);
+#else
             zip = base.SetZipFile(zip, selfEx);
+#endif
 
             // 圧縮方法の指定
 

@@ -1,9 +1,9 @@
 module.exports = function (grunt) {
     grunt.initConfig({
-        // package.jsonƒtƒ@ƒCƒ‹“à‚ÌƒvƒƒpƒeƒB‚Ì’l‚ğQÆ‚·‚é
+        // package.jsonãƒ•ã‚¡ã‚¤ãƒ«å†…ã®ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ã®å€¤ã‚’å‚ç…§ã™ã‚‹
         pkg: grunt.file.readJSON('package.json'),
-        // Šeƒ^ƒXƒN‚Ì\¬‚ğ’è‹`
-        // package.json ‚Ì scripts ‚©‚ç "grunt cssmin" ‚È‚Ç‚ÅŒÄ‚Ño‚¹‚éB
+        // å„ã‚¿ã‚¹ã‚¯ã®æ§‹æˆã‚’å®šç¾©
+        // package.json ã® scripts ã‹ã‚‰ "grunt cssmin" ãªã©ã§å‘¼ã³å‡ºã›ã‚‹ã€‚
         copy: {
             bundle: {
                 files: [
@@ -70,13 +70,13 @@ module.exports = function (grunt) {
             }
         }
     });
-    // •K—v‚ÈGruntƒvƒ‰ƒOƒCƒ“‚ğ“Ç‚İ‚ŞB
+    // å¿…è¦ãªGruntãƒ—ãƒ©ã‚°ã‚¤ãƒ³ã‚’èª­ã¿è¾¼ã‚€ã€‚
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-uglify-es');
-    // Šeƒ^ƒXƒN‚ğ‘g‡‚¹‚½ƒJƒXƒ^ƒ€ ƒ^ƒXƒN‚ğ“o˜^‚·‚éB
-    // package.json ‚Ì scripts ‚©‚ç "grunt bundle" ‚ÅŒÄ‚Ño‚¹‚éB
+    // å„ã‚¿ã‚¹ã‚¯ã‚’çµ„åˆã›ãŸã‚«ã‚¹ã‚¿ãƒ  ã‚¿ã‚¹ã‚¯ã‚’ç™»éŒ²ã™ã‚‹ã€‚
+    // package.json ã® scripts ã‹ã‚‰ "grunt bundle" ã§å‘¼ã³å‡ºã›ã‚‹ã€‚
     grunt.registerTask('bundle', ['copy', 'cssmin', 'uglify']);
 };

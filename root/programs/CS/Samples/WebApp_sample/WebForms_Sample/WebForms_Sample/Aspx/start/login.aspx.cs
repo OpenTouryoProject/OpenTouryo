@@ -24,6 +24,7 @@ using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Presentation;
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Framework.Util;
+using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Security.Pwd;
 
 namespace WebForms_Sample.Aspx.Start
@@ -144,12 +145,13 @@ namespace WebForms_Sample.Aspx.Start
         /// <returns>URL</returns>
         protected string UOC_btnButton2_Click(FxEventArgs fxEventArgs)
         {
-            return "https://localhost:44300/MultiPurposeAuthSite/authorize"
+            return CmnClientParams.SpRp_AuthRequestUri
                 + "?client_id=" + OAuth2AndOIDCParams.ClientID
                 + "&response_type=code"
                 + "&scope=profile%20email%20phone%20address%20roles%20openid"
                 + "&state=" + this.State
                 + "&nonce=" + this.Nonce
+                + "&redirect_uri=" + CustomEncode.UrlEncode(CmnClientParams.SpRp_RedirectUri)
                 + "&prompt=none";
         }
 

@@ -32,6 +32,9 @@ cd %CURRENTDIR%
 ..\nuget.exe restore "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUIFx47.sln"
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUIFx47.sln"
 
+..\nuget.exe restore "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUIFx48.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUIFx48.sln"
+
 dotnet restore "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUICore20.sln"
 dotnet msbuild %COMMANDLINE% "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUICore20.sln"
 
@@ -60,6 +63,14 @@ cd %CURRENTDIR%
 set CURRENTDIR=%cd%
 cd "Frameworks\Tests\EncAndDecUtilCUI\net47\bin\Debug"
 "EncAndDecUtilCUIFx.exe" > ..\..\..\Result47.txt
+cd %CURRENTDIR%
+
+@echo --------------------------------------------------
+@echo Test the EncAndDecUtilCUIFx(48).
+@echo --------------------------------------------------
+set CURRENTDIR=%cd%
+cd "Frameworks\Tests\EncAndDecUtilCUI\net48\bin\Debug"
+"EncAndDecUtilCUIFx.exe" > ..\..\..\Result48.txt
 cd %CURRENTDIR%
 
 @echo --------------------------------------------------
