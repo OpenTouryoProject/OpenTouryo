@@ -27,8 +27,8 @@ rem --------------------------------------------------
 dotnet restore "Samples4NetCore\Legacy\WS_sample\WSServer_sample\WSServer_sample.sln"
 dotnet msbuild %COMMANDLINE% "Samples4NetCore\Legacy\WS_sample\WSServer_sample\WSServer_sample.sln"
 
-xcopy /E /Y "Samples4NetCore\Legacy\WS_sample\WSServer_sample\bin\%BUILD_CONFIG%\netcoreapp3.0" "Samples4NetCore\Legacy\WS_sample\Temp\%BUILD_CONFIG%\netcoreapp3.0\"
-xcopy /E /Y "Samples4NetCore\Legacy\WS_sample\Temp\%BUILD_CONFIG%\netcoreapp3.0" "Samples4NetCore\Legacy\WS_sample\Build\netcoreapp3.0\"
+xcopy /E /Y "Samples4NetCore\Legacy\WS_sample\WSServer_sample\bin\%BUILD_CONFIG%\net5.0" "Samples4NetCore\Legacy\WS_sample\Temp\%BUILD_CONFIG%\net5.0\"
+xcopy /E /Y "Samples4NetCore\Legacy\WS_sample\Temp\%BUILD_CONFIG%\net5.0" "Samples4NetCore\Legacy\WS_sample\Build\net5.0\"
 
 pause
 

@@ -17,12 +17,12 @@
   - .NET Framework 4.8 (net48)
   - .NET Core 2.0 (netcoreapp2.0)
   - .NET Core 3.0 (netcoreapp3.0)
+  - .NET 5.0 (net5.0)
   - .NET Standard 2.0 (netstandard2.0)
   - .NET Standard 2.1 (netstandard2.1)
   
 
-プロジェクト・ソリューションの既定の targetFramework は net46(.NET Framework 4.6) です。
-その他の targetFramework 向けのプロジェクト・ソリューションには、それぞれ targetFramework がプロジェクト・ソリューション名に含まれます。
+プロジェクトやソリューションの名前には、targetFrameworkが含まれます。
 たとえば、net47(.NET Framework 4.7) を対象としたプロジェクト・ソリューションは、"{identifier}_net47.{ext}" と命名しています。
 
 このリポジトリのプログラムは、OSS 開発者向けのものです。
