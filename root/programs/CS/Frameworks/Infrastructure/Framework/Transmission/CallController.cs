@@ -60,6 +60,7 @@
 //*  2018/08/04  西野 大介         regionディレクティブのインデントの問題を修正
 //*  2018/08/04  西野 大介         HttpClientにpropsの設定値を反映する。
 //*  2019/10/01  西野 大介         .NET Standard対応：ASP.NET WebAPI (JSON-RPC)の復元
+//*  2021/05/18  西野 大介         ASP.NET WebAPI（JSON）の例外処理の問題を修正
 //**********************************************************************************
 
 using System;
@@ -767,15 +768,16 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     // 例外処理
                     WSErrorInfo wsErrorInfo = (WSErrorInfo)BinarySerialize.BytesToObject(ret);
 
-                    if (wsErrorInfo.ErrorType == FxEnum.ErrorType.BusinessApplicationException) // #18-このコードブロック
-                    {
-                        // 業務例外
-                        throw new BusinessApplicationException(
-                            wsErrorInfo.ErrorMessageID,
-                            wsErrorInfo.ErrorMessage,
-                            wsErrorInfo.ErrorInformation);
-                    }
-                    else if (wsErrorInfo.ErrorType == FxEnum.ErrorType.BusinessSystemException)
+                    //if (wsErrorInfo.ErrorType == FxEnum.ErrorType.BusinessApplicationException) // #18-このコードブロック
+                    //{
+                    //    // 業務例外
+                    //    throw new BusinessApplicationException(
+                    //        wsErrorInfo.ErrorMessageID,
+                    //        wsErrorInfo.ErrorMessage,
+                    //        wsErrorInfo.ErrorInformation);
+                    //}
+                    //else
+                    if (wsErrorInfo.ErrorType == FxEnum.ErrorType.BusinessSystemException)
                     {
                         // システム例外
                         throw new BusinessSystemException(
@@ -788,6 +790,11 @@ namespace Touryo.Infrastructure.Framework.Transmission
                         throw new FrameworkException(
                             wsErrorInfo.ErrorMessageID,
                             wsErrorInfo.ErrorMessage);
+                    }
+                    else if (wsErrorInfo.ErrorType == FxEnum.ErrorType.ElseException)
+                    {
+                        // その他、一般的な例外
+                        throw new Exception(wsErrorInfo.ErrorMessage);
                     }
                 }
 

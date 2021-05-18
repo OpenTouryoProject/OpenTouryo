@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2CSClientWin_sample", "2CSClientWin_sample.csproj", "{386EA604-40DB-44A8-87AE-F29B209BA9CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "2CSClientWin_sample", "2CSClientWin_sample.csproj", "{386EA604-40DB-44A8-87AE-F29B209BA9CF}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASPNETWebServiceCore", "..\..\..\..\Frameworks\Infrastructure\ServiceInterface\ASPNETWebServiceCore\ASPNETWebServiceCore\ASPNETWebServiceCore.csproj", "{37C55C28-A72B-4A15-9A2B-832082D51A5C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,8 +17,15 @@ Global
 		{386EA604-40DB-44A8-87AE-F29B209BA9CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{386EA604-40DB-44A8-87AE-F29B209BA9CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{386EA604-40DB-44A8-87AE-F29B209BA9CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37C55C28-A72B-4A15-9A2B-832082D51A5C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37C55C28-A72B-4A15-9A2B-832082D51A5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37C55C28-A72B-4A15-9A2B-832082D51A5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37C55C28-A72B-4A15-9A2B-832082D51A5C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {16589D88-D4B8-4BF4-9F99-ECEAEAD62EC0}
 	EndGlobalSection
 EndGlobal

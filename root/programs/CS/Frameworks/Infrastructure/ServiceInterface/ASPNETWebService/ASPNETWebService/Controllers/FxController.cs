@@ -30,6 +30,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/08/18  西野 大介         新規作成
+//*  2021/05/18  西野 大介         ASP.NET WebAPI（JSON）の例外処理の問題を修正
 //**********************************************************************************
 
 using System;
@@ -326,6 +327,11 @@ namespace ASPNETWebService.Controllers
             }
             catch (Exception ex)
             {
+                // エラー情報を設定する。
+                wsErrorInfo.ErrorType = FxEnum.ErrorType.ElseException;
+                //wsErrorInfo.ErrorMessageID = fxEx.messageID;
+                wsErrorInfo.ErrorMessage = ex.Message;
+
                 // ログ出力用の情報を保存
                 errorType = FxEnum.ErrorType.ElseException.ToString(); // 2009/09/15-この行
                 errorMessageID = "－";
@@ -333,7 +339,10 @@ namespace ASPNETWebService.Controllers
 
                 errorToString = ex.ToString();
 
-                throw; // SoapExceptionになって伝播
+                //throw; // SoapExceptionになって伝播しない
+
+                // エラー情報を戻す。
+                ret = BinarySerialize.ObjectToBytes(wsErrorInfo);
             }
             finally
             {
@@ -362,7 +371,14 @@ namespace ASPNETWebService.Controllers
 
             returnDic.Add("Return", CustomEncode.ToBase64String(ret));
             returnDic.Add("ContextObject", CustomEncode.ToBase64String(contextObject));
-            returnDic.Add("ReturnValueObject", CustomEncode.ToBase64String(returnValueObject));
+            if (returnValueObject != null)
+            {
+                returnDic.Add("ReturnValueObject", CustomEncode.ToBase64String(returnValueObject));
+            }
+            else
+            {
+                returnDic.Add("ReturnValueObject", CustomEncode.ToBase64String(BinarySerialize.ObjectToBytes("")));
+            }
             
             return returnDic;
         }
