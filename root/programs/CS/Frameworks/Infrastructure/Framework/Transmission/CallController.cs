@@ -198,12 +198,208 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
         #region Web参照と関連プロパティ
 
+        /// <summary>インスタンス内をスレッドセーフに</summary>
+        private static object syncObject = new object();
+
 #if NETSTD
 #else
         #region ASP.NET WebサービスのWeb参照
 
-        /// <summary>ASP.NET WebサービスのWeb参照</summary>
-        private Reference WR;
+        /// <summary>ASP.NET WebサービスのWeb参照（props毎）</summary>
+        private Dictionary<string, Reference> WEB_REF
+            = new Dictionary<string, Reference>();
+
+        /// <summary>InitReferences</summary>
+        /// <param name="url">string</param>
+        /// <param name="timeout">int</param>
+        /// <param name="props">Dictionary(string, string)</param>
+        /// <returns>Reference</returns>
+        private Reference InitReferences(string url, int timeout, Dictionary<string, string> props)
+        {
+            Reference reference = null;
+
+            lock (syncObject)
+            {
+                string key = JsonConvert.SerializeObject(props);
+
+                if (!this.WEB_REF.ContainsKey(key))
+                {
+                    reference = new Reference();
+
+                    #region CookieContainer
+                    reference.CookieContainer = this.CookieContainer;
+                    #endregion
+
+                    #region その他（固定）
+
+                    // 実行アカウントでのWindows認証の有効・無効（Default：false）。
+                    reference.UseDefaultCredentials = true; // 有効
+
+                    // 事前認証の有効・無効（Default：false）。
+                    reference.PreAuthenticate = false; // 無効
+                    // → 認証後の要求でも「WWW-authenticate HTTP」ヘッダーを
+                    //    ・ 送信する場合　：true
+                    //    ・ それ以外の場合：false
+
+                    // Webサービスを要求するときに使用されるEncoding（Default：UTF-8）。 
+                    reference.RequestEncoding = Encoding.GetEncoding(CustomEncode.UTF_8); // #36-この行
+                    // → サービスIFの仕様として「UTF-8」前提で考える。
+
+                    // Redirectを受け付けるか、受け付けないか（Default：false）
+                    reference.AllowAutoRedirect = false; // 受け付けない
+
+                    // SOAP プロトコルのバージョン（Default：Soap11）
+                    // WR.SoapProtocolVersion // 変更しない;
+
+                    // NTLM認証で、接続共有の有効・無効（Default：false）
+                    // WR.UnsafeAuthenticatedConnectionSharing // 変更しない;
+
+                    // Componentを格納しているIContainer
+                    // WR.Container // 変更しない;
+
+                    // ComponentのISite
+                    // WR.Site // 変更しない;
+
+                    #endregion
+
+                    #region WASのクライアント認証のセキュリティ資格情報
+
+                    NetworkCredential nwcWAS = this.CreateCredentials(props);
+                    if (nwcWAS != null)
+                    {
+                        reference.Credentials = nwcWAS;
+                    }
+
+                    #endregion
+
+                    #region プロキシ経由の要求を行うためのプロキシ情報
+
+                    WebProxy proxy = this.CreateProxy(props);
+                    if (proxy != null)
+                    {
+                        reference.Proxy = proxy;
+                    }
+
+                    #endregion
+
+                    #region クライアント証明書、HTTP圧縮、エージェント ヘッダ、接続グループ.etc
+
+                    #region クライアント証明書（#z-このregion）
+
+                    X509Certificate2 x509 = this.CreateX509Certificate(props);
+                    if (x509 != null)
+                    {
+                        reference.ClientCertificates.Add(x509);
+                    }
+
+                    #endregion
+
+                    #region HTTP圧縮の有効・無効（Default：false）
+
+                    if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION))// Dic化でnullチェック変更
+                    {
+                        // XML定義：キーが無い
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION]))
+                        {
+                            // XML定義：null or 空文字列
+                        }
+                        else
+                        {
+                            // XML定義：あり
+
+                            bool compress;
+
+                            if (Boolean.TryParse(props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION], out compress))
+                            {
+                                // 書式正常
+                                reference.EnableDecompression = compress;
+                            }
+                            else
+                            {
+                                // パラメータ・エラー（書式不正）
+                                throw new FrameworkException(
+                                    FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH2[0],
+                                    String.Format(FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH2[1],
+                                        FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION
+                                        + "=" + props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION]));
+                            }
+                        }
+                    }
+
+                    #endregion
+
+                    #region ユーザ エージェント ヘッダ値
+
+                    // （Default：MS Web Services Client Protocol number、numberは、CLRのver）
+                    if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT))// Dic化でnullチェック変更
+                    {
+                        // XML定義：キーが無い
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT]))
+                        {
+                            // XML定義：null or 空文字列
+                        }
+                        else
+                        {
+                            // XML定義：あり
+                            reference.UserAgent = props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT]; // #34-この行
+                        }
+                    }
+
+                    #endregion
+
+                    #region 接続グループ（Default：Empty）
+
+                    if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_CONNECTION_GROUP_NAME))// Dic化でnullチェック変更
+                    {
+                        // XML定義：キーが無い
+                    }
+                    else
+                    {
+                        if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_CONNECTION_GROUP_NAME]))
+                        {
+                            // XML定義：null or 空文字列
+                        }
+                        else
+                        {
+                            // XML定義：あり
+                            reference.ConnectionGroupName = props[FxLiteral.TRANSMISSION_HTTP_PROP_CONNECTION_GROUP_NAME];
+                        }
+                    }
+
+                    #endregion
+
+                    #endregion
+
+                    this.WEB_REF.Add(key, reference);
+                }
+                else
+                {
+                    // 初期化済み
+                }
+
+                reference = this.WEB_REF[key];
+
+                #region URL、タイムアウト
+
+                // URL
+                reference.Url = url;
+                // タイムアウト
+                if (0 <= timeout)
+                {
+                    reference.Timeout = timeout * 1000;
+                }
+
+                #endregion
+
+                return reference;
+            }
+        }
 
         #endregion
 
@@ -221,10 +417,6 @@ namespace Touryo.Infrastructure.Framework.Transmission
             set;
             get;
         }
-
-        #endregion
-
-        #region WCF_HTTP_BindingConfiguration
 
         /// <summary>To get/set Binding Configuration of WCF HTTP</summary>        
         public string WCF_HTTP_BindingConfiguration
@@ -260,11 +452,8 @@ namespace Touryo.Infrastructure.Framework.Transmission
         #region ASPNETWebAPI → HttpClient
 
         /// <summary>ASPNETWebAPIのHttpClients（props毎）</summary>
-        private Dictionary<string, HttpClient> WEB_API　
+        private Dictionary<string, HttpClient> WEB_API
             = new Dictionary<string, HttpClient>();
-
-        /// <summary>インスタンス内をスレッドセーフに</summary>
-        private static object syncObject = new object();
 
         /// <summary>InitHttpClients</summary>
         /// <param name="props">Dictionary(string, string)</param>
@@ -575,173 +764,11 @@ namespace Touryo.Infrastructure.Framework.Transmission
                 {
                     #region WS-I Basic Profile v1.1、IIS ＋ ASP.NET
 
-                    // 都度newしても接続はプールされているので、オーバーヘッドは少ない。
-                    WR = new Reference();
-
-                    #region URL、タイムアウト
-
-                    // URL
-                    WR.Url = url;
-                    // タイムアウト
-                    if (0 <= timeout)
-                    {
-                        WR.Timeout = timeout * 1000;
-                    }
-
-                    #endregion
-
-                    #region CookieContainer
-                    WR.CookieContainer = this.CookieContainer;
-                    #endregion
-
-                    #region その他（固定）
-
-                    // 実行アカウントでのWindows認証の有効・無効（Default：false）。
-                    WR.UseDefaultCredentials = true; // 有効
-
-                    // 事前認証の有効・無効（Default：false）。
-                    WR.PreAuthenticate = false; // 無効
-                    // → 認証後の要求でも「WWW-authenticate HTTP」ヘッダーを
-                    //    ・ 送信する場合　：true
-                    //    ・ それ以外の場合：false
-
-                    // Webサービスを要求するときに使用されるEncoding（Default：UTF-8）。 
-                    WR.RequestEncoding = Encoding.GetEncoding(CustomEncode.UTF_8); // #36-この行
-                    // → サービスIFの仕様として「UTF-8」前提で考える。
-
-                    // Redirectを受け付けるか、受け付けないか（Default：false）
-                    WR.AllowAutoRedirect = false; // 受け付けない
-
-                    // SOAP プロトコルのバージョン（Default：Soap11）
-                    // WR.SoapProtocolVersion // 変更しない;
-
-                    // NTLM認証で、接続共有の有効・無効（Default：false）
-                    // WR.UnsafeAuthenticatedConnectionSharing // 変更しない;
-
-                    // Componentを格納しているIContainer
-                    // WR.Container // 変更しない;
-
-                    // ComponentのISite
-                    // WR.Site // 変更しない;
-
-                    #endregion
-
-                    #region WASのクライアント認証のセキュリティ資格情報
-
-                    NetworkCredential nwcWAS = this.CreateCredentials(props);
-                    if (nwcWAS != null)
-                    {
-                        WR.Credentials = nwcWAS;
-                    }
-
-                    #endregion
-
-                    #region プロキシ経由の要求を行うためのプロキシ情報
-
-                    WebProxy proxy = this.CreateProxy(props);
-                    if (proxy != null)
-                    {
-                        WR.Proxy = proxy;
-                    }
-
-                    #endregion
-
-                    #region クライアント証明書、HTTP圧縮、エージェント ヘッダ、接続グループ.etc
-
-                    #region クライアント証明書（#z-このregion）
-
-                    X509Certificate2 x509 = this.CreateX509Certificate(props);
-                    if (x509 != null)
-                    {
-                        WR.ClientCertificates.Add(x509);
-                    }
-
-                    #endregion
-
-                    #region HTTP圧縮の有効・無効（Default：false）
-
-                    if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION))// Dic化でnullチェック変更
-                    {
-                        // XML定義：キーが無い
-                    }
-                    else
-                    {
-                        if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION]))
-                        {
-                            // XML定義：null or 空文字列
-                        }
-                        else
-                        {
-                            // XML定義：あり
-
-                            bool compress;
-
-                            if (Boolean.TryParse(props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION], out compress))
-                            {
-                                // 書式正常
-                                WR.EnableDecompression = compress;
-                            }
-                            else
-                            {
-                                // パラメータ・エラー（書式不正）
-                                throw new FrameworkException(
-                                    FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH2[0],
-                                    String.Format(FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH2[1],
-                                        FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION
-                                        + "=" + props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION]));
-                            }
-                        }
-                    }
-
-                    #endregion
-
-                    #region ユーザ エージェント ヘッダ値
-
-                    // （Default：MS Web Services Client Protocol number、numberは、CLRのver）
-                    if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT))// Dic化でnullチェック変更
-                    {
-                        // XML定義：キーが無い
-                    }
-                    else
-                    {
-                        if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT]))
-                        {
-                            // XML定義：null or 空文字列
-                        }
-                        else
-                        {
-                            // XML定義：あり
-                            WR.UserAgent = props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT]; // #34-この行
-                        }
-                    }
-
-                    #endregion
-
-                    #region 接続グループ（Default：Empty）
-
-                    if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_CONNECTION_GROUP_NAME))// Dic化でnullチェック変更
-                    {
-                        // XML定義：キーが無い
-                    }
-                    else
-                    {
-                        if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_CONNECTION_GROUP_NAME]))
-                        {
-                            // XML定義：null or 空文字列
-                        }
-                        else
-                        {
-                            // XML定義：あり
-                            WR.ConnectionGroupName = props[FxLiteral.TRANSMISSION_HTTP_PROP_CONNECTION_GROUP_NAME];
-                        }
-                    }
-
-                    #endregion
-
-                    #endregion
+                    // Referenceの初期化
+                    Reference reference = this.InitReferences(url, timeout, props);
 
                     // 同期呼び出しで実行
-                    ret = WR.DotNETOnlineWS(
+                    ret = reference.DotNETOnlineWS(
                         serviceName, ref contextObject,
                         parameterValueObject, out returnValueObject); // #x-この行
 
