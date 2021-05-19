@@ -61,6 +61,7 @@
 //*  2018/08/04  西野 大介         HttpClientにpropsの設定値を反映する。
 //*  2019/10/01  西野 大介         .NET Standard対応：ASP.NET WebAPI (JSON-RPC)の復元
 //*  2021/05/18  西野 大介         ASP.NET WebAPI（JSON）の例外処理の問題を修正
+//*  2021/05/18  西野 大介         SOAP、WebAPIのCookieコンテナ対応
 //**********************************************************************************
 
 using System;
@@ -186,29 +187,19 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
         #endregion
 
+        #region CookieContainer
+        /// <summary>CookieContainer</summary>
+        public CookieContainer CookieContainer
+        {
+            set;
+            get;
+        }
+        #endregion
+
         #region Web参照と関連プロパティ
 
 #if NETSTD
 #else
-        #region ASP.NET WebサービスのWeb参照
-
-        /// <summary>ASP.NET WebサービスのWeb参照</summary>
-        private Reference WR;
-
-        #region プロパティ直接公開
-
-
-        /// <summary>Web参照のCookieContainer</summary>
-        public CookieContainer CookieContainer
-                {
-            set { this.WR.CookieContainer = value; }
-            get { return this.WR.CookieContainer; }
-                }
-
-                #endregion
-
-        #endregion
-
         #region WCF HTTP WebサービスのWeb参照
 
         /// <summary>WCF HTTP WebサービスのWeb参照</summary>
@@ -223,10 +214,6 @@ namespace Touryo.Infrastructure.Framework.Transmission
             set;
             get;
         }
-
-        #endregion
-
-        #region WCF_HTTP_BindingConfiguration
 
         /// <summary>To get/set Binding Configuration of WCF HTTP</summary>        
         public string WCF_HTTP_BindingConfiguration
@@ -301,7 +288,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
         #endregion
 
-        #region インボーク
+        #region Invoke
 
         #region 非同期バージョン
 
@@ -337,8 +324,6 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
             // クラス名
             string className = "";
-
-            #endregion
 
             #endregion
 
@@ -460,16 +445,16 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     #region WS-I Basic Profile v1.1、IIS ＋ ASP.NET
 
                     // 都度newしても接続はプールされているので、オーバーヘッドは少ない。
-                    WR = new Reference();
+                    Reference reference = new Reference();
 
                     #region URL、タイムアウト
 
                     // URL
-                    WR.Url = url;
+                    reference.Url = url;
                     // タイムアウト
                     if (0 <= timeout)
                     {
-                        WR.Timeout = timeout * 1000;
+                        reference.Timeout = timeout * 1000;
                     }
 
                     #endregion
@@ -477,23 +462,22 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     #region その他（固定）
 
                     // 実行アカウントでのWindows認証の有効・無効（Default：false）。
-                    WR.UseDefaultCredentials = true; // 有効
+                    reference.UseDefaultCredentials = true; // 有効
 
                     // 事前認証の有効・無効（Default：false）。
-                    WR.PreAuthenticate = false; // 無効
+                    reference.PreAuthenticate = false; // 無効
                     // → 認証後の要求でも「WWW-authenticate HTTP」ヘッダーを
                     //    ・ 送信する場合　：true
                     //    ・ それ以外の場合：false
 
                     // Webサービスを要求するときに使用されるEncoding（Default：UTF-8）。 
-                    WR.RequestEncoding = Encoding.GetEncoding(CustomEncode.UTF_8); // #36-この行
-                    // → サービスIFの仕様として「UTF-8」前提で考える。
+                    reference.RequestEncoding = Encoding.GetEncoding(CustomEncode.UTF_8); // #36-この行IFの仕様として「UTF-8」前提で考える。
 
-                    // Cookieの有効・無効（Default：null）
-                    WR.CookieContainer = null;　// 無効
+                    // Cookieの有効化（Default：null）
+                    reference.CookieContainer = this.CookieContainer;
 
                     // Redirectを受け付けるか、受け付けないか（Default：false）
-                    WR.AllowAutoRedirect = false; // 受け付けない
+                    reference.AllowAutoRedirect = false; // 受け付けない
 
                     // SOAP プロトコルのバージョン（Default：Soap11）
                     // WR.SoapProtocolVersion // 変更しない;
@@ -514,7 +498,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     NetworkCredential nwcWAS = this.CreateCredentials(props);
                     if (nwcWAS != null)
                     {
-                        WR.Credentials = nwcWAS;
+                        reference.Credentials = nwcWAS;
                     }
 
                     #endregion
@@ -524,7 +508,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     WebProxy proxy = this.CreateProxy(props);
                     if (proxy != null)
                     {
-                        WR.Proxy = proxy;
+                        reference.Proxy = proxy;
                     }
 
                     #endregion
@@ -536,7 +520,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     X509Certificate2 x509 = this.CreateX509Certificate(props);
                     if (x509 != null)
                     {
-                        WR.ClientCertificates.Add(x509);
+                        reference.ClientCertificates.Add(x509);
                     }
 
                     #endregion
@@ -562,7 +546,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
                             if (Boolean.TryParse(props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION], out compress))
                             {
                                 // 書式正常
-                                WR.EnableDecompression = compress;
+                                reference.EnableDecompression = compress;
                             }
                             else
                             {
@@ -594,7 +578,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
                         else
                         {
                             // XML定義：あり
-                            WR.UserAgent = props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT]; // #34-この行
+                            reference.UserAgent = props[FxLiteral.TRANSMISSION_HTTP_PROP_USER_AGENT]; // #34-この行
                         }
                     }
 
@@ -615,7 +599,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
                         else
                         {
                             // XML定義：あり
-                            WR.ConnectionGroupName = props[FxLiteral.TRANSMISSION_HTTP_PROP_CONNECTION_GROUP_NAME];
+                            reference.ConnectionGroupName = props[FxLiteral.TRANSMISSION_HTTP_PROP_CONNECTION_GROUP_NAME];
                         }
                     }
 
@@ -624,7 +608,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     #endregion
 
                     // 同期呼び出しで実行
-                    ret = WR.DotNETOnlineWS(
+                    ret = reference.DotNETOnlineWS(
                         serviceName, ref contextObject,
                         parameterValueObject, out returnValueObject); // #x-この行
 
@@ -825,6 +809,9 @@ namespace Touryo.Infrastructure.Framework.Transmission
             }
         }
 
+        #endregion
+
+        #region ASPNETWebAPI
         /// <summary>
         /// ASP.NET WebAPI (JSON-RPC)
         /// .NETCoreでも利用するため共通化
@@ -841,17 +828,21 @@ namespace Touryo.Infrastructure.Framework.Transmission
             string serviceName, string url, int timeout, Dictionary<string, string> props,
             byte[] contextObject, byte[] parameterValueObject, out byte[] returnValueObject)
         {
+            #region Handler
+
             // Equivalent to WebRequestHandler in .net Core · Issue #26223 · dotnet/corefx
             // https://github.com/dotnet/corefx/issues/26223
-
-            // 通信用の変数
 #if NETSTD
             #region HttpClientHandler
             HttpClientHandler handler = new HttpClientHandler();
+            if (this.CookieContainer != null)
+                handler.CookieContainer = this.CookieContainer;
             #endregion
 #else
             #region WebRequestHandler
             WebRequestHandler handler = new WebRequestHandler();
+            if (this.CookieContainer != null)
+                handler.CookieContainer = this.CookieContainer;
             #endregion
 #endif
 
@@ -916,6 +907,8 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
             #endregion
 
+            #endregion
+
             #region HttpClient
 
             HttpClient client = new HttpClient(handler);
@@ -936,11 +929,12 @@ namespace Touryo.Infrastructure.Framework.Transmission
                     Encoding.UTF8, "application/json"),
             };
 
-            // タイムアウト指定、有り
+            #region タイムアウト
             if (0 <= timeout)
             {
                 client.Timeout = TimeSpan.FromSeconds(timeout);
             }
+            #endregion
 
             #region クライアント証明書、エージェント ヘッダ、接続グループ.etc
 
@@ -986,11 +980,6 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
             #endregion
 
-            // HttpRequestMessage (Headers)
-            //httpRequestMessage.Headers.Add("Authorization", authHeader);
-            //httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue("OAuth", authHeader);
-            //httpRequestMessage.Headers.ExpectContinue = false;
-
             #endregion
 
             // 同期呼び出しで実行
@@ -1004,6 +993,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
             return ret;
         }
+        #endregion
 
         #region ヘルパー
 
