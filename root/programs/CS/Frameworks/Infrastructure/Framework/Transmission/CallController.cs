@@ -62,6 +62,13 @@
 //*  2019/10/01  西野 大介         .NET Standard対応：ASP.NET WebAPI (JSON-RPC)の復元
 //*  2021/05/18  西野 大介         ASP.NET WebAPI（JSON）の例外処理の問題を修正
 //*  2021/05/18  西野 大介         SOAP、WebAPIのCookieコンテナ対応
+//*  2021/05/21  西野 大介         HTTPClientのサーバーサイド実行を可能にするが、
+//*                                ・HTTPClientは内部で都度生成せず、
+//*                                ・serviceName毎にプールする。
+//*                                以下が制約として追加される。
+//*                                ・マルチスレッド・クライアントから利用不可。
+//*                                  ・Critical Section内で利用する。
+//*                                  ・Concurrent Collectionでプールを作成する。
 //**********************************************************************************
 
 using System;
@@ -161,22 +168,6 @@ namespace Touryo.Infrastructure.Framework.Transmission
         /// <summary>コンテキスト情報</summary>
         private object _context;
 
-        /// <summary>コンストラクタ</summary>
-        /// <param name="context">コンテキスト情報</param>
-        /// <remarks>自由に利用できる。</remarks>
-        public CallController(object context)
-        {
-            // コンテキスト情報
-            this._context = context;
-
-#if NETSTD
-#else
-            // EndPointConfigName（の既定値
-            this.WCF_HTTP_EndPointConfigName = FxLiteral.WCF_HTTP_ENDPOINT_CONFIGNAME;
-            this.WCF_TCPIP_EndPointConfigName = FxLiteral.WCF_TCPIP_ENDPOINT_CONFIGNAME;
-#endif
-        }
-
         /// <summary>コンテキスト情報</summary>
         /// <remarks>自由に利用できる。</remarks>
         public object Context
@@ -246,6 +237,21 @@ namespace Touryo.Infrastructure.Framework.Transmission
         #endregion
 #endif
 
+        #region ASPNETWebAPI → HttpClient
+
+#if NETSTD
+        /// <summary>HttpClientHandlerのDictionary</summary>
+        private Dictionary<string, HttpClientHandler> _handlerCD = new Dictionary<string, HttpClientHandler>();
+#else
+        /// <summary>WebRequestHandlerのDictionary</summary>
+        private Dictionary<string, WebRequestHandler> _handlerCD = new Dictionary<string, WebRequestHandler>();
+#endif
+
+        /// <summary>HttpClientのDictionary</summary>
+        private Dictionary<string, HttpClient> _httpClientCD = new Dictionary<string, HttpClient>();
+
+        #endregion
+
         #region プロキシのURL
 
         /// <summary>プロキシのURL</summary>
@@ -260,7 +266,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
         #endregion
 
-        #region クライアント認証のセキュリティ資格情報
+        #region セキュリティ資格情報
 
         /// <summary>クライアント認証情報（WAS）</summary>
         private NetworkCredential _nwcWAS;
@@ -285,6 +291,25 @@ namespace Touryo.Infrastructure.Framework.Transmission
         #endregion
 
         #endregion
+
+        #endregion
+
+        #region Constructor
+
+        /// <summary>コンストラクタ</summary>
+        /// <param name="context">コンテキスト情報</param>
+        /// <remarks>自由に利用できる。</remarks>
+        public CallController(object context)
+        {
+            // コンテキスト情報
+            this._context = context;
+#if NETSTD
+#else
+            // EndPointConfigName（の既定値
+            this.WCF_HTTP_EndPointConfigName = FxLiteral.WCF_HTTP_ENDPOINT_CONFIGNAME;
+            this.WCF_TCPIP_EndPointConfigName = FxLiteral.WCF_TCPIP_ENDPOINT_CONFIGNAME;
+#endif
+        }
 
         #endregion
 
@@ -832,86 +857,129 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
             // Equivalent to WebRequestHandler in .net Core · Issue #26223 · dotnet/corefx
             // https://github.com/dotnet/corefx/issues/26223
+
+            #region Handlerの変数宣言
 #if NETSTD
             #region HttpClientHandler
-            HttpClientHandler handler = new HttpClientHandler();
-            if (this.CookieContainer != null)
-                handler.CookieContainer = this.CookieContainer;
+            HttpClientHandler handler = null;
             #endregion
 #else
             #region WebRequestHandler
-            WebRequestHandler handler = new WebRequestHandler();
-            if (this.CookieContainer != null)
-                handler.CookieContainer = this.CookieContainer;
+            WebRequestHandler handler = null;
             #endregion
 #endif
-
-            #region WASのクライアント認証のセキュリティ資格情報 for WCF
-
-            NetworkCredential nwcWAS = this.CreateCredentials(props);
-            if (nwcWAS != null)
-            {
-                handler.Credentials = nwcWAS;
-            }
-
             #endregion
 
-            #region プロキシ経由の要求を行うためのプロキシ情報
+            #region DictionaryをCheckし...
 
-            WebProxy proxy = this.CreateProxy(props);
-            if (proxy != null)
+            if (!this._handlerCD.ContainsKey(serviceName))
             {
-                handler.Proxy = proxy;
-            }
+                #region new ...Handler();
+#if NETSTD
+                #region HttpClientHandler
+                handler  = new HttpClientHandler();
+                #endregion
+#else
+                #region WebRequestHandler
+                handler = new WebRequestHandler();
+                #endregion
+#endif
+                #endregion
 
-            #endregion
+                #region CookieContainerの設定
+                if (this.CookieContainer != null)
+                    handler.CookieContainer = this.CookieContainer;
+                #endregion
 
-            #region HTTP圧縮の有効・無効（Default：false）
+                #region WASのクライアント認証のセキュリティ資格情報 for WCF
 
-            if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION))// Dic化でnullチェック変更
-            {
-                // XML定義：キーが無い
-            }
-            else
-            {
-                if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION]))
+                NetworkCredential nwcWAS = this.CreateCredentials(props);
+                if (nwcWAS != null)
                 {
-                    // XML定義：null or 空文字列
+                    handler.Credentials = nwcWAS;
+                }
+
+                #endregion
+
+                #region プロキシ経由の要求を行うためのプロキシ情報
+
+                WebProxy proxy = this.CreateProxy(props);
+                if (proxy != null)
+                {
+                    handler.Proxy = proxy;
+                }
+
+                #endregion
+
+                #region HTTP圧縮の有効・無効（Default：false）
+
+                if (!props.ContainsKey(FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION))// Dic化でnullチェック変更
+                {
+                    // XML定義：キーが無い
                 }
                 else
                 {
-                    // XML定義：あり
-
-                    bool compress;
-
-                    if (Boolean.TryParse(props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION], out compress))
+                    if (string.IsNullOrEmpty(props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION]))
                     {
-                        // 書式正常
-                        if (compress)
-                        {
-                            handler.AutomaticDecompression =
-                                DecompressionMethods.GZip | DecompressionMethods.Deflate;
-                        }
+                        // XML定義：null or 空文字列
                     }
                     else
                     {
-                        // パラメータ・エラー（書式不正）
-                        throw new FrameworkException(
-                            FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH2[0],
-                            String.Format(FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH2[1],
-                                FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION
-                                + "=" + props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION]));
+                        // XML定義：あり
+
+                        bool compress;
+
+                        if (Boolean.TryParse(props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION], out compress))
+                        {
+                            // 書式正常
+                            if (compress)
+                            {
+                                handler.AutomaticDecompression =
+                                    DecompressionMethods.GZip | DecompressionMethods.Deflate;
+                            }
+                        }
+                        else
+                        {
+                            // パラメータ・エラー（書式不正）
+                            throw new FrameworkException(
+                                FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH2[0],
+                                String.Format(FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH2[1],
+                                    FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION
+                                    + "=" + props[FxLiteral.TRANSMISSION_HTTP_PROP_ENABLEDE_COMPRESSION]));
+                        }
                     }
                 }
-            }
 
+                #endregion
+
+                this._handlerCD[serviceName] = handler;
+            }
+            else
+            {
+                handler = this._handlerCD[serviceName];
+            }
+            
             #endregion
 
             #endregion
 
             #region HttpClient
 
-            HttpClient client = new HttpClient(handler);
+            HttpClient client = null;
+
+            #region DictionaryをCheckし...
+            if (!this._httpClientCD.ContainsKey(serviceName))
+            {
+                client = new HttpClient(handler); //, disposeHandler: xxx);
+                // HttpClientFactoryはdisposeHandlerをfalseにして、
+                // handlerをプールするらしいが、handler構築するには、
+                // HttpClientBuilderなどを使う必要があるとか。
+            }
+            else
+            {
+                client = this._httpClientCD[serviceName];
+            }
+            #endregion
 
             HttpRequestMessage httpRequestMessage = null;
             HttpResponseMessage httpResponseMessage = null;
