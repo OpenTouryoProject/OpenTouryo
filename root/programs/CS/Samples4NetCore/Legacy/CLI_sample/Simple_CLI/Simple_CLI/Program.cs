@@ -152,7 +152,7 @@ namespace Simple_CLI
             subCommandDelay.Handler = CommandHandler.Create<string, IConsole, CancellationToken>(
                 async (string aString, IConsole console, CancellationToken token) =>
                 {
-                    Console.WriteLine($"Sub command delay (Ctrl-C terminate): {aString}");
+                    Console.WriteLine($"Sub command delay(Ctrl-C terminate): {aString}");
 
                     try
                     {
@@ -162,7 +162,7 @@ namespace Simple_CLI
 
                             await Task.Delay(1000, token);
                         }
-                        
+
                         // 例えば...
                         //using (var httpClient = new HttpClient())
                         //{
@@ -333,5 +333,5 @@ namespace Simple_CLI
         // }
         public int AnInt { get; set; }
         public string AString { get; set; }
-    } 
+    }
 }
