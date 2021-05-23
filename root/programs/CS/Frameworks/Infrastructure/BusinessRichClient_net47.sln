@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1209
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business.RichClient", "Business\RichClient\Business.RichClient_net47.csproj", "{46E0BD62-9451-431C-A75F-EE7B8CC5D6D9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business.RichClient_net47", "Business\RichClient\Business.RichClient_net47.csproj", "{46E0BD62-9451-431C-A75F-EE7B8CC5D6D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomControl.RichClient", "CustomControl\RichClient\CustomControl.RichClient_net47.csproj", "{85861BE7-A77E-46BE-9FFE-330654571C32}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomControl.RichClient_net47", "CustomControl\RichClient\CustomControl.RichClient_net47.csproj", "{85861BE7-A77E-46BE-9FFE-330654571C32}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +24,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C0FECE7E-6DC7-4738-8EBD-EE4A690E0624}
 	EndGlobalSection
 EndGlobal
