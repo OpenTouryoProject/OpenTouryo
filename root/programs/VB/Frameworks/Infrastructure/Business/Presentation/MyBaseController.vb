@@ -57,6 +57,7 @@
 '*  2016/03/03  Supragyan         Modified default relative path of the sample application screens (merge)
 '*  2017/02/28  西野 大介         エラーログの見直し（その他の例外の場合、ex.ToString()を出力）
 '*  2018/07/19  西野 大介         復元後のユーザー情報をSessionに設定するコードを追加
+'*  2021/05/23  西野 大介         キャッシュ制御ヘッダの二重追加エラーの対応
 '**********************************************************************************
 
 Imports System.Web
@@ -347,14 +348,17 @@ Namespace Touryo.Infrastructure.Business.Presentation
                 ' http://stackoverflow.com/questions/49547/how-to-control-web-page-caching-across-all-browsers
 
                 ' Using ASP.NET:
-                Response.AppendHeader("Cache-Control", "no-cache, no-store, must-revalidate")
+                Me.Response.Headers.Remove("Cache-Control")
+                Me.Response.AppendHeader("Cache-Control", "no-cache, no-store, must-revalidate")
                 ' HTTP 1.1.
-                Response.AppendHeader("Pragma", "no-cache")
+                Me.Response.Headers.Remove("Pragma")
+                Me.Response.AppendHeader("Pragma", "no-cache")
                 ' HTTP 1.0.
                 ' Proxies.
-                Response.AppendHeader("Expires", "0")
-                ' OFF
+                Me.Response.Headers.Remove("Expires")
+                Me.Response.AppendHeader("Expires", "0")
             ElseIf noCache.ToUpper() = FxLiteral.OFF Then
+                ' OFF
             Else
                 ' パラメータ・エラー（書式不正）
                 Throw New FrameworkException(FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH1(0), [String].Format(FrameworkExceptionMessage.ERROR_IN_WRITING_OF_FX_SWITCH1(1), MyLiteral.CACHE_CONTROL))
