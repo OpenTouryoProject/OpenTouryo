@@ -27,10 +27,10 @@ using System.IO;
 using System.Threading;
 using System.Diagnostics;
 
-using Sharprompt;
-
 using System.CommandLine;
 using System.CommandLine.Invocation;
+
+using Sharprompt;
 
 using Newtonsoft;
 using Newtonsoft.Json;

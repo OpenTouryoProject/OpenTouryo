@@ -27,14 +27,20 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Threading;
 using System.Diagnostics;
+using System.Net.Http;
 
-using Sharprompt;
+using Touryo.Infrastructure.Public.IO;
+using Touryo.Infrastructure.Public.FastReflection;
+using Touryo.Infrastructure.Framework.Authentication;
 
 using System.CommandLine;
 using System.CommandLine.Invocation;
 
+using Sharprompt;
+
 using Newtonsoft;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace DAG_Login_CLI
 {
@@ -48,6 +54,10 @@ namespace DAG_Login_CLI
         /// <returns>int</returns>
         static async Task<int> Main(string[] args)
         {
+            // 初期化
+            // デバイスフロー用
+            OAuth2AndOIDCClient.HttpClient = new HttpClient();
+
             #region rootCommand
             // Create a root command with some options
             Command rootCommand = new RootCommand
@@ -139,9 +149,93 @@ namespace DAG_Login_CLI
         #region LoginCommand
         /// <summary>LoginCommand</summary>
         /// <param name="aString">aString</param>
-        private static void LoginCommand(string aString)
+        private static async Task LoginCommand(string aString)
         {
             Console.WriteLine($"Sub command login: {aString}");
+
+            // リクエスト
+            string client_id = "67d328bfe8604aae83fb15fa44780d8b";
+            string device_code = "";
+            string userCode = "";
+            string rootURI = "https://localhost:44300/MultiPurposeAuthSite";
+            string oAuth2TokenEndpoint = "/token";
+            string oAuth2UselInfoEndpoint = "/userinfo";
+            string deviceAuthZAuthorizeEndpoint = "/device_authz";
+
+            // URL
+            Uri tokenEndpointUri = new Uri(rootURI + oAuth2TokenEndpoint);
+            Uri uselInfoEndpointUri = new Uri(rootURI + oAuth2UselInfoEndpoint);
+            Uri deviceAuthZAuthorizeEndpointUri = new Uri(rootURI + deviceAuthZAuthorizeEndpoint);
+
+            // DeviceAuthZRequestAsync
+            string responseString = await OAuth2AndOIDCClient
+                .DeviceAuthZRequestAsync(deviceAuthZAuthorizeEndpointUri, client_id);
+
+            // レスポンス
+            JObject responseJObject = (JObject)JsonConvert.DeserializeObject(responseString);
+            device_code = (string)responseJObject[OAuth2AndOIDCConst.device_code];
+            userCode = (string)responseJObject[OAuth2AndOIDCConst.user_code];
+            string verificationUri = rootURI + (string)responseJObject[OAuth2AndOIDCConst.verification_uri];
+            string verificationUriComplete = rootURI + (string)responseJObject[OAuth2AndOIDCConst.verification_uri_complete];
+
+            // 表示
+            //Console.WriteLine("deviceCode: " + deviceCode);
+            Console.WriteLine("userCode: " + userCode);
+            Console.WriteLine("verificationUri: " + verificationUri);
+            Console.WriteLine("verificationUriComplete: " + verificationUriComplete);
+
+            // ポーリングを開始します。
+            bool answer = Prompt.Confirm("Are you ready?");
+            Console.WriteLine($"Your answer is {answer}");
+
+            // Tokenリクエスト
+            bool continueLoop = true;
+            ExponentialBackoff exponentialBackoff = new ExponentialBackoff(10, 5); // config化必要？
+
+            while (continueLoop)
+            {
+                Console.WriteLine("... polling ...");
+                // GetAccessTokenByDeviceAuthZAsync
+                string response = await OAuth2AndOIDCClient
+                    .GetAccessTokenByDeviceAuthZAsync(tokenEndpointUri, client_id, device_code);
+
+                JObject temp = (JObject)JsonConvert.DeserializeObject(response);
+
+                if (!temp.ContainsKey(OAuth2AndOIDCConst.error))
+                {
+                    // 正常系
+                    continueLoop = false;
+
+                    // GetUserInfoAsync
+                    string userInfo = await OAuth2AndOIDCClient
+                        .GetUserInfoAsync(uselInfoEndpointUri, (string)temp[OAuth2AndOIDCConst.AccessToken]);
+
+                    Console.WriteLine("NORMAL_END :");
+                    Console.WriteLine(userInfo);
+                }
+                else
+                {
+                    // 異常系
+                    if ((string)temp[OAuth2AndOIDCConst.error] == OAuth2AndOIDCEnum.CibaState.authorization_pending.ToStringByEmit())
+                    {
+                        // authorization_pending
+                        continueLoop = exponentialBackoff.Sleep();
+                    }
+                    else
+                    {
+                        // authorization_pending以外
+                        // 終了
+                        continueLoop = false;
+                        Console.WriteLine("ABNORMAL_END");
+                    }
+                }
+            }
+
+            /*
+            // 
+            // 完了（SAMLのテストコードっぽくした）
+            return Redirect(Config.OAuth2AuthorizationServerEndpointsRootURI + "?ret=OK_" + result);
+            */
         }
         #endregion
 
