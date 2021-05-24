@@ -44,6 +44,9 @@ echo | call 5_Build_2CSCore_sample.bat
 echo | call 5_Build_Bat_sample.bat
 echo | call 5_Build_BatCore_sample.bat
 
+echo | call 5_Build_CLI_sample.bat
+echo | call 5_Build_CLICore_sample.bat
+
 echo | call 6_Build_WSSrv_sample.bat
 echo | call 6_Build_WSSrvCore_sample.bat
 
