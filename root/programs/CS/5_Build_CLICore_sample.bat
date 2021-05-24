@@ -34,8 +34,8 @@ pause
 rem --------------------------------------------------
 rem Batch build of LIR _Login_CLI.
 rem --------------------------------------------------
-dotnet restore "Samples4NetCore\Legacy\CLI_sample\LIR _Login_CLI\LIR _Login_CLI.sln"
-dotnet msbuild %COMMANDLINE% "Samples4NetCore\Legacy\CLI_sample\LIR _Login_CLI\LIR _Login_CLI.sln"
+dotnet restore "Samples4NetCore\Legacy\CLI_sample\LIR_Login_CLI\LIR_Login_CLI.sln"
+dotnet msbuild %COMMANDLINE% "Samples4NetCore\Legacy\CLI_sample\LIR_Login_CLI\LIR_Login_CLI.sln"
 
 pause
 
