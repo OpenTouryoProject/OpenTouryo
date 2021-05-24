@@ -162,7 +162,7 @@ namespace DAG_Login_CLI
             string deviceAuthZAuthorizeEndpoint = "/device_authz";
 
             // パラメタ
-            string client_id = "67d328bfe8604aae83fb15fa44780d8b";
+            string client_id = "ae5a179813234ca290c8de93ef2e31dc";
             string device_code = "";
             string userCode = "";
 
