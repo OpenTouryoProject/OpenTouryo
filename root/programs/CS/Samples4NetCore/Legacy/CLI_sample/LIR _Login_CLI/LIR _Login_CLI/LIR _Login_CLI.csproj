@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BouncyCastle.NetCore" Version="1.8.8" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Sharprompt" Version="2.2.1" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21216.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\..\..\..\..\..\..\..\..\OAuthOIDC\MultiPurposeAuthSite\root\programs\OpenTouryoAssemblies\Build_netcore50\net5.0\OpenTouryo.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\..\..\..\..\..\..\..\OAuthOIDC\MultiPurposeAuthSite\root\programs\OpenTouryoAssemblies\Build_netcore50\net5.0\OpenTouryo.Public.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public.Security">
+      <HintPath>..\..\..\..\..\..\..\..\..\OAuthOIDC\MultiPurposeAuthSite\root\programs\OpenTouryoAssemblies\Build_netcore50\net5.0\OpenTouryo.Public.Security.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

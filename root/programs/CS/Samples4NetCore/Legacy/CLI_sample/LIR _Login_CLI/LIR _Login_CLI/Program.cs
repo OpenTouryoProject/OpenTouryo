@@ -1,13 +1,13 @@
 ﻿//**********************************************************************************
-//* DAGログインCLIサンプル アプリ
+//* LIRログインCLIサンプル アプリ
 //**********************************************************************************
 
 // テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
 
 //**********************************************************************************
 //* クラス名        ：Program
-//* クラス日本語名  ：DAGログインCLIサンプル アプリ
-//*                   DAG : OAuth 2.0 Device Authorization Grant
+//* クラス日本語名  ：LIRログインCLIサンプル アプリ
+//*                   LIR：Loopback Interface Redirection of OAuth 2.0 for Native Apps
 //*
 //* 作成日時        ：－
 //* 作成者          ：開発基盤部会
@@ -27,10 +27,14 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Threading;
 using System.Diagnostics;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
+using System.Net;
 using System.Net.Http;
 
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.FastReflection;
+using Touryo.Infrastructure.Public.Security.Pwd;
 using Touryo.Infrastructure.Framework.Authentication;
 
 using System.CommandLine;
@@ -42,7 +46,7 @@ using Newtonsoft;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace DAG_Login_CLI
+namespace LIR_Login_CLI
 {
     /// <summary>Program</summary>
     public class Program
@@ -151,91 +155,143 @@ namespace DAG_Login_CLI
         /// <param name="aString">aString</param>
         private static async Task LoginCommand(string aString)
         {
+            if (!HttpListener.IsSupported)
+            {
+                Console.WriteLine("HttpListener is not supported.");
+                return;
+            }
+
             Console.WriteLine($"Sub command login: {aString}");
 
             // リクエスト
 
             // URL
             string rootURI = "https://localhost:44300/MultiPurposeAuthSite";
+            string oAuth2AuthorizeEndpoint = "/authorize";
             string oAuth2TokenEndpoint = "/token";
             string oAuth2UselInfoEndpoint = "/userinfo";
-            string deviceAuthZAuthorizeEndpoint = "/device_authz";
 
             // パラメタ
-            string client_id = "67d328bfe8604aae83fb15fa44780d8b";
-            string device_code = "";
-            string userCode = "";
+            string client_id = "ae5a179813234ca290c8de93ef2e31dc";
+            string redirect_uri = "http://localhost:12345/";
+            string state = GetPassword.Generate(10, 0);
+            string code_verifier = GetPassword.Base64UrlSecret(50);
+            string code_challenge = OAuth2AndOIDCClient.PKCE_S256_CodeChallengeMethod(code_verifier);
+            string target = rootURI + oAuth2AuthorizeEndpoint + string.Format(
+                "?client_id={0}&response_type={1}&scope={2}&state={3}&code_challenge={4}&code_challenge_method={5}",
+                    client_id,
+                    OAuth2AndOIDCConst.AuthorizationCodeResponseType,
+                    OAuth2AndOIDCConst.email_verified,
+                    state, code_challenge,
+                    OAuth2AndOIDCConst.PKCE_S256);
 
             // URI
             Uri tokenEndpointUri = new Uri(rootURI + oAuth2TokenEndpoint);
             Uri uselInfoEndpointUri = new Uri(rootURI + oAuth2UselInfoEndpoint);
-            Uri deviceAuthZAuthorizeEndpointUri = new Uri(rootURI + deviceAuthZAuthorizeEndpoint);
+            //Uri authorizeEndpointUri = new Uri(target);
 
-            // DeviceAuthZRequestAsync
-            // リクエスト
-            string responseString = await OAuth2AndOIDCClient
-                .DeviceAuthZRequestAsync(deviceAuthZAuthorizeEndpointUri, client_id);
-
-            // レスポンス
-            JObject responseJObject = (JObject)JsonConvert.DeserializeObject(responseString);
-            device_code = (string)responseJObject[OAuth2AndOIDCConst.device_code];
-            userCode = (string)responseJObject[OAuth2AndOIDCConst.user_code];
-            string verificationUri = rootURI + (string)responseJObject[OAuth2AndOIDCConst.verification_uri];
-            string verificationUriComplete = rootURI + (string)responseJObject[OAuth2AndOIDCConst.verification_uri_complete];
-
-            // 結果表示
-            //Console.WriteLine("deviceCode: " + deviceCode);
-            Console.WriteLine("userCode: " + userCode);
-            Console.WriteLine("verificationUri: " + verificationUri);
-            Console.WriteLine("verificationUriComplete: " + verificationUriComplete);
-
-            // ポーリング開始
-            bool answer = Prompt.Confirm("Are you ready?");
-            Console.WriteLine($"Your answer is {answer}");
-
-            bool continueLoop = true;
-            ExponentialBackoff exponentialBackoff = new ExponentialBackoff(10, 5); // config化必要？
-
-            while (continueLoop)
+            #region 認可リクエスト・レスポンス
+            HttpListener listener = null;
+            HttpListenerRequest listenerRequest = null;
+            HttpListenerResponse listenerResponse = null;
+            Stream output = null;
+            try
             {
-                Console.WriteLine("... polling ...");
+                #region レスポンスの準備
+                // リスナーを起動して受信
+                listener = new HttpListener();
+                listener.Prefixes.Add(redirect_uri);
+                listener.Start();
+                Console.WriteLine("Listening...");
+                #endregion
 
-                // Tokenリクエスト
-                // GetAccessTokenByDeviceAuthZAsync
-                string response = await OAuth2AndOIDCClient
-                    .GetAccessTokenByDeviceAuthZAsync(tokenEndpointUri, client_id, device_code);
-
-                JObject temp = (JObject)JsonConvert.DeserializeObject(response);
-
-                if (!temp.ContainsKey(OAuth2AndOIDCConst.error))
+                #region 認可リクエスト。
+                try
                 {
-                    // 正常系
-                    continueLoop = false;
-
-                    // UserInfoリクエスト
-                    // GetUserInfoAsync
-                    string userInfo = await OAuth2AndOIDCClient
-                        .GetUserInfoAsync(uselInfoEndpointUri, (string)temp[OAuth2AndOIDCConst.AccessToken]);
-
-                    Console.WriteLine("NORMAL_END :");
-                    Console.WriteLine(userInfo);
-                }
-                else
-                {
-                    // 異常系
-                    if ((string)temp[OAuth2AndOIDCConst.error] == OAuth2AndOIDCEnum.CibaState.authorization_pending.ToStringByEmit())
+                    // ブラウザを起動して送信
+                    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     {
-                        // authorization_pending
-                        continueLoop = exponentialBackoff.Sleep();
+                        //Windowsのとき  
+                        target = target.Replace("&", "^&");
+                        Process.Start(
+                            new ProcessStartInfo("cmd", $"/c start {target}") { CreateNoWindow = true });
+                    }
+                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                    {
+                        // Linuxのとき  
+                        Process.Start("xdg-open", target);
+                    }
+                    else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+                    {
+                        // Macのとき  
+                        Process.Start("open", target);
                     }
                     else
                     {
-                        // authorization_pending以外
-                        // 終了
-                        continueLoop = false;
-                        Console.WriteLine("ABNORMAL_END");
+                        throw new Exception("Unknown OS platform.");
                     }
                 }
+                catch (Win32Exception noBrowser)
+                {
+
+                    Console.WriteLine(noBrowser.Message);
+                    return;
+                }
+                catch (System.Exception other)
+                {
+                    Console.WriteLine(other.Message);
+                    return;
+                }
+
+                // 受信と返信
+                HttpListenerContext context = listener.GetContext();
+                listenerRequest = context.Request;
+                listenerResponse = context.Response;
+
+                byte[] buffer = System.Text.Encoding.UTF8.GetBytes(
+                    "<HTML><BODY>Accepted the authorization response.</BODY></HTML>");
+
+                // 返信
+                listenerResponse.ContentLength64 = buffer.Length;
+                output = listenerResponse.OutputStream;
+                output.Write(buffer, 0, buffer.Length);
+                #endregion
+            }
+            finally
+            {
+                // 後処理
+                output.Close();
+                listener.Stop();
+            }
+            #endregion
+
+            string code = listenerRequest.QueryString["code"];
+
+            // Tokenリクエスト
+            // GetAccessTokenByDeviceAuthZAsync
+            string response = await OAuth2AndOIDCClient
+                .GetAccessTokenByCodeAsync(
+                    tokenEndpointUri, client_id, "",
+                    redirect_uri, code, code_verifier);
+
+            JObject temp = (JObject)JsonConvert.DeserializeObject(response);
+
+            if (!temp.ContainsKey(OAuth2AndOIDCConst.error))
+            {
+                // 正常系
+
+                // UserInfoリクエスト
+                // GetUserInfoAsync
+                string userInfo = await OAuth2AndOIDCClient
+                    .GetUserInfoAsync(uselInfoEndpointUri, (string)temp[OAuth2AndOIDCConst.AccessToken]);
+
+                Console.WriteLine("NORMAL_END :");
+                Console.WriteLine(userInfo);
+            }
+            else
+            {
+                // 異常系
+                Console.WriteLine("ABNORMAL_END");
             }
         }
         #endregion
