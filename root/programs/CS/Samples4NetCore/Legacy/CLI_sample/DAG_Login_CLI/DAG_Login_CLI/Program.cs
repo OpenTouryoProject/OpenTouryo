@@ -30,6 +30,7 @@ using System.Diagnostics;
 using System.Net.Http;
 
 using Touryo.Infrastructure.Public.IO;
+using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.FastReflection;
 using Touryo.Infrastructure.Framework.Authentication;
 
@@ -55,6 +56,8 @@ namespace DAG_Login_CLI
         static async Task<int> Main(string[] args)
         {
             // 初期化
+            // configの初期化
+            GetConfigParameter.InitConfiguration("appsettings.json");
             // デバイスフロー用
             OAuth2AndOIDCClient.HttpClient = new HttpClient();
 
@@ -156,20 +159,20 @@ namespace DAG_Login_CLI
             // リクエスト
 
             // URL
-            string rootURI = "https://localhost:44300/MultiPurposeAuthSite";
-            string oAuth2TokenEndpoint = "/token";
-            string oAuth2UselInfoEndpoint = "/userinfo";
-            string deviceAuthZAuthorizeEndpoint = "/device_authz";
+            string rootAuthZUri = GetConfigParameter.GetConfigValue("RootAuthZUri");
+            string oAuth2TokenEndpoint = GetConfigParameter.GetConfigValue("OAuth2TokenEndpoint");
+            string oAuth2UselInfoEndpoint = GetConfigParameter.GetConfigValue("OAuth2UselInfoEndpoint");
+            string deviceAuthZAuthorizeEndpoint = GetConfigParameter.GetConfigValue("DeviceAuthZAuthorizeEndpoint");
 
             // パラメタ
-            string client_id = "ae5a179813234ca290c8de93ef2e31dc";
+            string client_id = GetConfigParameter.GetConfigValue("ClientId");
             string device_code = "";
             string userCode = "";
 
             // URI
-            Uri tokenEndpointUri = new Uri(rootURI + oAuth2TokenEndpoint);
-            Uri uselInfoEndpointUri = new Uri(rootURI + oAuth2UselInfoEndpoint);
-            Uri deviceAuthZAuthorizeEndpointUri = new Uri(rootURI + deviceAuthZAuthorizeEndpoint);
+            Uri tokenEndpointUri = new Uri(rootAuthZUri + oAuth2TokenEndpoint);
+            Uri uselInfoEndpointUri = new Uri(rootAuthZUri + oAuth2UselInfoEndpoint);
+            Uri deviceAuthZAuthorizeEndpointUri = new Uri(rootAuthZUri + deviceAuthZAuthorizeEndpoint);
 
             // DeviceAuthZRequestAsync
             // リクエスト
@@ -180,8 +183,8 @@ namespace DAG_Login_CLI
             JObject responseJObject = (JObject)JsonConvert.DeserializeObject(responseString);
             device_code = (string)responseJObject[OAuth2AndOIDCConst.device_code];
             userCode = (string)responseJObject[OAuth2AndOIDCConst.user_code];
-            string verificationUri = rootURI + (string)responseJObject[OAuth2AndOIDCConst.verification_uri];
-            string verificationUriComplete = rootURI + (string)responseJObject[OAuth2AndOIDCConst.verification_uri_complete];
+            string verificationUri = rootAuthZUri + (string)responseJObject[OAuth2AndOIDCConst.verification_uri];
+            string verificationUriComplete = rootAuthZUri + (string)responseJObject[OAuth2AndOIDCConst.verification_uri_complete];
 
             // 結果表示
             //Console.WriteLine("deviceCode: " + deviceCode);
