@@ -33,6 +33,7 @@ using System.Net;
 using System.Net.Http;
 
 using Touryo.Infrastructure.Public.IO;
+using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.FastReflection;
 using Touryo.Infrastructure.Public.Security.Pwd;
 using Touryo.Infrastructure.Framework.Authentication;
@@ -59,7 +60,9 @@ namespace LIR_Login_CLI
         static async Task<int> Main(string[] args)
         {
             // 初期化
-            // デバイスフロー用
+            // configの初期化
+            GetConfigParameter.InitConfiguration("appsettings.json");
+            // OAuth PKCE用
             OAuth2AndOIDCClient.HttpClient = new HttpClient();
 
             #region rootCommand
@@ -166,18 +169,18 @@ namespace LIR_Login_CLI
             // リクエスト
 
             // URL
-            string rootURI = "https://localhost:44300/MultiPurposeAuthSite";
-            string oAuth2AuthorizeEndpoint = "/authorize";
-            string oAuth2TokenEndpoint = "/token";
-            string oAuth2UselInfoEndpoint = "/userinfo";
+            string rootAuthZUri = GetConfigParameter.GetConfigValue("RootAuthZUri");
+            string oAuth2AuthorizeEndpoint = GetConfigParameter.GetConfigValue("OAuth2AuthorizeEndpoint");
+            string oAuth2TokenEndpoint = GetConfigParameter.GetConfigValue("OAuth2TokenEndpoint");
+            string oAuth2UselInfoEndpoint = GetConfigParameter.GetConfigValue("OAuth2UselInfoEndpoint");
 
             // パラメタ
-            string client_id = "ae5a179813234ca290c8de93ef2e31dc";
+            string client_id = GetConfigParameter.GetConfigValue("ClientId");
             string redirect_uri = "http://localhost:12345/";
             string state = GetPassword.Generate(10, 0);
             string code_verifier = GetPassword.Base64UrlSecret(50);
             string code_challenge = OAuth2AndOIDCClient.PKCE_S256_CodeChallengeMethod(code_verifier);
-            string target = rootURI + oAuth2AuthorizeEndpoint + string.Format(
+            string target = rootAuthZUri + oAuth2AuthorizeEndpoint + string.Format(
                 "?client_id={0}&response_type={1}&scope={2}&state={3}&code_challenge={4}&code_challenge_method={5}",
                     client_id,
                     OAuth2AndOIDCConst.AuthorizationCodeResponseType,
@@ -186,8 +189,8 @@ namespace LIR_Login_CLI
                     OAuth2AndOIDCConst.PKCE_S256);
 
             // URI
-            Uri tokenEndpointUri = new Uri(rootURI + oAuth2TokenEndpoint);
-            Uri uselInfoEndpointUri = new Uri(rootURI + oAuth2UselInfoEndpoint);
+            Uri tokenEndpointUri = new Uri(rootAuthZUri + oAuth2TokenEndpoint);
+            Uri uselInfoEndpointUri = new Uri(rootAuthZUri + oAuth2UselInfoEndpoint);
             //Uri authorizeEndpointUri = new Uri(target);
 
             #region 認可リクエスト・レスポンス
