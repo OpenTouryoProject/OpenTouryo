@@ -7,7 +7,7 @@
     <ProjectGuid>{2F7D1A24-3882-4425-AC49-1E623D19C549}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>DistributeFile_Tool</RootNamespace>
-    <AssemblyName>DistributeFile_Tool</AssemblyName>
+    <AssemblyName>OpenTouryo.DistributeFile_Tool</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>

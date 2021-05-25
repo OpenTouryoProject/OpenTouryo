@@ -198,7 +198,7 @@ namespace Simple_CLI
             // デバッグ実行時だけ実行
             if (!Debugger.IsAttached) return;
 
-            await rootCommand.InvokeAsync("--src-file DistributeFile_Tool.exe --dst-root-directory .");
+            await rootCommand.InvokeAsync("--src-file OpenTouryo.DistributeFile_Tool.exe --dst-root-directory .");
         }
         #endregion
     }
