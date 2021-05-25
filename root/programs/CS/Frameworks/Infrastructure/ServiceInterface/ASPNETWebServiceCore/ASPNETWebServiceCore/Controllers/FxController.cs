@@ -370,7 +370,7 @@ namespace ASPNETWebService.Controllers
             returnDic.Add("ContextObject", CustomEncode.ToBase64String(contextObject));
             if (returnValueObject != null)
             {
-            returnDic.Add("ReturnValueObject", CustomEncode.ToBase64String(returnValueObject));
+                returnDic.Add("ReturnValueObject", CustomEncode.ToBase64String(returnValueObject));
             }
             else
             {
