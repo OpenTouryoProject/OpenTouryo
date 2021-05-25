@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 
 using System.IO;
 using System.Threading;
+using System.Reflection;
 using System.Diagnostics;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
@@ -60,8 +61,9 @@ namespace LIR_Login_CLI
         static async Task<int> Main(string[] args)
         {
             // 初期化
-            // configの初期化
-            GetConfigParameter.InitConfiguration("appsettings.json");
+            string dir = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory
+                .FullName.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            GetConfigParameter.InitConfiguration(dir + "/appsettings.json");
             // OAuth PKCE用
             OAuth2AndOIDCClient.HttpClient = new HttpClient();
 

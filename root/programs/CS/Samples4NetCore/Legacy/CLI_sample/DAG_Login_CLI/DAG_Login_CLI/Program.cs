@@ -26,6 +26,7 @@ using System.Threading.Tasks;
 
 using System.IO;
 using System.Threading;
+using System.Reflection;
 using System.Diagnostics;
 using System.Net.Http;
 
@@ -57,7 +58,9 @@ namespace DAG_Login_CLI
         {
             // 初期化
             // configの初期化
-            GetConfigParameter.InitConfiguration("appsettings.json");
+            string dir = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory
+                .FullName.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            GetConfigParameter.InitConfiguration(dir + "/appsettings.json");
             // デバイスフロー用
             OAuth2AndOIDCClient.HttpClient = new HttpClient();
 
