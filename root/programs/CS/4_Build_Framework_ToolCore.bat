@@ -39,5 +39,13 @@ call dotnet msbuild %COMMANDLINE% "Frameworks\Tools\DeployZipPackWithHTTP\Deploy
 
 pause
 
+rem --------------------------------------------------
+rem Batch build of Deploy DistributeFile_Tool.
+rem --------------------------------------------------
+call dotnet restore "Frameworks\Tools\DistributeFile_Tool\DistributeFile_ToolCore.sln"
+call dotnet msbuild %COMMANDLINE% "Frameworks\Tools\DistributeFile_Tool\DistributeFile_ToolCore.sln"
+
+pause
+
 rem -------------------------------------------------------
 endlocal

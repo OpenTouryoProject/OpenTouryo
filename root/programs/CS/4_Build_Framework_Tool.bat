@@ -37,5 +37,13 @@ rem --------------------------------------------------
 
 pause
 
+rem --------------------------------------------------
+rem Batch build of Deploy DistributeFile_Tool.
+rem --------------------------------------------------
+..\nuget.exe restore "Frameworks\Tools\DistributeFile_Tool\DistributeFile_Tool.sln"
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\DistributeFile_Tool\DistributeFile_Tool.sln"
+
+pause
+
 rem -------------------------------------------------------
 endlocal
