@@ -54,7 +54,7 @@ namespace Simple_CLI
                     description: "Copy destination root directory."),
                 new Option<string>(
                     alias: "--excluded-directory-list",
-                    getDefaultValue: () => "bin;obj;.git;.svn;.vs;node_modules",
+                    getDefaultValue: () => "bin;obj;.git;.svn;.vs;packages;node_modules;temp",
                     description: "Semicolon delimited excluded directory list."),
             };
 
@@ -113,6 +113,9 @@ namespace Simple_CLI
             int prePos = Console.CursorLeft;//現在カーソル位置を取得
             Console.SetCursorPosition(0, Console.CursorTop);
             Console.Write(str.PadRight(prePos));//前のカーソル位置まで空白埋めする
+
+            //（進行が見えるように）処理を5ミリ秒間休止
+            Thread.Sleep(5);
         }
 
         /// <summary>WalkDirectoryTree</summary>
@@ -133,9 +136,6 @@ namespace Simple_CLI
             {
                 // 進行状況を表示
                 Program.ShowProgress(currentDirectory.Name);
-
-                //（進行が見えるように）処理を100ミリ秒間休止
-                Thread.Sleep(100);
             }
 
             // First, process all the files directly under this folder
