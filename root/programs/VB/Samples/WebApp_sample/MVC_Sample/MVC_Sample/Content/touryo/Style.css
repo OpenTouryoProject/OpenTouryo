@@ -128,19 +128,6 @@
   margin: 0px;
   line-height: 35px;
   cursor: pointer;
-  /*    
-    .collapsed{
-       .arrow:before{
-                 font-family: FontAwesome;
-                 content: "\f053";
-                 display: inline-block;
-                 padding-left:10px;
-                 padding-right: 10px;
-                 vertical-align: middle;
-                 float:right;
-            }
-     }
-*/
 }
 .nav-side-menu ul :not(collapsed) .arrow:before,
 .nav-side-menu li :not(collapsed) .arrow:before {
@@ -194,15 +181,6 @@
   text-decoration: none;
   color: #e1ffff;
 }
-/*.nav-side-menu li a {
-  text-decoration: none;
-  color: #e1ffff;
-}
-.nav-side-menu li a i {
-  padding-left: 10px;
-  width: 20px;
-  padding-right: 20px;
-}*/
 .nav-side-menu li i {
   padding-left: 10px;
   width: 20px;
@@ -217,10 +195,6 @@
   -ms-transition: all 1s ease;
   transition: all 1s ease;
 }
-/*body {
-  margin: 0px;
-  padding: 0px;
-}*/
 
 /* コンテンツの定義 */
 #contents{
@@ -228,61 +202,4 @@
     float            : left;
     margin           : 0;
     padding          : 5px 0 50px 5px;
-}
-
-/* メディアクエリ */
-@media (max-width: 767px) {
-  .page-header{
-      height: 60px;
-  }
-  #header-logo img {
-      width: 40px;
-      height: 40px;
-  }
-  #header-title{
-     padding: 10px;
-  }
-  #header-button{
-    padding-top: 10px;
-  }
-  #header-button button{
-    padding: 1px 5px;
-    font-size: 12px;
-    line-height: 1.5;
-    border-radius: 3px;
-  }
-  .nav-side-menu {
-    position: fixed;
-    width: 100%;
-    height: auto;
-    z-index: 100;
-    margin-bottom: 10px;
-  }
-  #body-bk {
-      padding-top: 110px;
-  }
-  .nav-side-menu .toggle-btn {
-    display: block;
-    cursor: pointer;
-    position: absolute;
-    right: 10px;
-    top: 10px;
-    z-index: 10 !important;
-    padding: 3px;
-    background-color: #ffffff;
-    color: #000;
-    width: 40px;
-    text-align: center;
-  }
-  .brand {
-    text-align: left !important;
-    font-size: 22px;
-    padding-left: 20px;
-    line-height: 50px !important;
-  }
-}
-@media (min-width: 767px) {
-  .nav-side-menu .menu-list .menu-content {
-    display: block;
-  }
 }
