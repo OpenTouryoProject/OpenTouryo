@@ -1,0 +1,124 @@
+﻿@*
+    //**********************************************************************************
+    //* サンプル アプリ・モデル
+    //**********************************************************************************
+
+    // テスト用クラスなので、必要に応じて流用 or 削除して下さい。
+
+    //**********************************************************************************
+    //* クラス名        ：Index
+    //* クラス日本語名  ：CRUDサンプル（Html.BeginForm）
+    //*
+    //* 作成日時        ：－
+    //* 作成者          ：－
+    //* 更新履歴        ：－
+    //*
+    //*  日時        更新者            内容
+    //*  ----------  ----------------  -------------------------------------------------
+    //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+    //**********************************************************************************
+*@
+
+@using MVC_Sample.Models.ViewModels
+@model CrudViweModel
+
+@{
+    // ページタイトル
+    ViewBag.Title = "CRUDサンプル（Html.BeginForm）";
+}
+
+@* スクリプト・セクション（RenderSection("HeaderScriptsSection", required: true)に出力されます） *@
+@section HeaderScriptsSection{
+    <!-- Head 部の section -->
+}
+
+@* 本文レイアウト（RenderBodyに出力されます） *@
+@* Html.BeginFormは従来の全体方式、Ajax.BeginFormは部分更新方式（UpdateTargetIdの範囲を部分更新） *@
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "form1", onsubmit = "Fx_OnSubmit();" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-4 col-sm-4 col-md-4 col-lg-4">
+            <div class="form-group">
+                <label>データアクセス制御クラス（データプロバイダ）を選択</label>
+                @Html.DropDownListFor(model => model.DdlDap, Model.DdlDapItems, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>個別、共通、自動生成のＤａｏ種別</label>
+                @Html.DropDownListFor(model => model.DdlMode1, Model.DdlMode1Items, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>静的、動的のクエリ モードを選択</label>
+                @Html.DropDownListFor(model => model.DdlMode2, Model.DdlMode2Items, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>分離レベルを選択</label>
+                @Html.DropDownListFor(model => model.DdlIso, Model.DdlIsoItems, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>コミット、ロールバックを設定（例外発生時、ロールバック）</label>
+                @Html.DropDownListFor(model => model.DdlExRollback, Model.DdlExRollbackItems, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="col-4 col-sm-4 col-md-4 col-lg-4">
+            <div class="form-group">
+                <label>ShipperID：</label>
+                @Html.TextBoxFor(model => model.Shipper.ShipperID, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>CompanyName：</label>
+                @Html.TextBoxFor(model => model.Shipper.CompanyName, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>Phone：</label>
+                @Html.TextBoxFor(model => model.Shipper.Phone, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>並び替え対象列</label>
+                @Html.DropDownListFor(model => model.DdlOrderColumn, Model.DdlOrderColumnItems, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label>昇順・降順</label>
+                @Html.DropDownListFor(model => model.DdlOrderSequence, Model.DdlOrderSequenceItems, new { @class = "form-control" })
+            </div>
+            <span>処理結果：</span>
+            <div id="messageResult">@await Html.PartialAsync("_MessageView")</div>
+        </div>
+        <div class="col-4 col-sm-4 col-md-4 col-lg-4">
+            <div id="chartResult" style="width: 100%; height: 100%;">@await Html.PartialAsync("_ChartView")</div>
+            <button id="button10" class="btn btn-primary">クリア</button>
+        </div>
+    </div>
+    <div>
+        <input type="submit" id="button1" class="btn btn-primary" value="件数取得" formaction="@Url.Action("SelectCount")" />
+        <input type="submit" id="button2" class="btn btn-primary" value="一覧取得（dt）" formaction="@Url.Action("SelectAll_DT")" />
+        <input type="submit" id="button3" class="btn btn-primary" value="一覧取得（ds）" formaction="@Url.Action("SelectAll_DS")" />
+        <input type="submit" id="button4" class="btn btn-primary" value="一覧取得（dr）" formaction="@Url.Action("SelectAll_DR")" />
+        <input type="submit" id="button5" class="btn btn-primary" value="一覧取得（動的SQL）" formaction="@Url.Action("SelectAll_DSQL")" />
+    </div>
+    <div>
+        <input type="submit" id="button6" class="btn btn-primary" value="一件参照" formaction="@Url.Action("Select")" />
+        <input type="submit" id="button7" class="btn btn-primary" value="追加" formaction="@Url.Action("Insert")" />
+        <input type="submit" id="button8" class="btn btn-primary" value="更新" formaction="@Url.Action("Update")" />
+        <input type="submit" id="button9" class="btn btn-primary" value="削除" formaction="@Url.Action("Delete")" />
+    </div>
+    <div>
+        <label id="lblErrorMessage"></label>
+        <input type="submit" id="button21" class="btn btn-primary" value="二重送信防止" formaction="@Url.Action("PreventDoubleSubmission")" />
+        <input type="submit" id="button22" class="btn btn-primary" value="画面遷移（ポストバック後リダイレクト）" formaction="@Url.Action("Transitions")" />
+    </div>
+}
+
+@* スクリプト・セクション（RenderSection("FooterScriptsSection", required: true)に出力されます） *@
+@section FooterScriptsSection{
+    <script type="text/javascript">
+        $('#button10').click(function () {
+            // 結果をクリアする
+            $('#chartResult').html('');
+
+            // Form をサブミットしないよう、false を返す
+            return false;
+        });
+    </script>
+}
