@@ -30,6 +30,7 @@
 //*  2018/08/16  西野 大介         新規作成
 //*  2018/11/28  西野 大介         jkuチェック対応の追加
 //*  2020/06/20  西野 大介         jku無しでもjwks_uriを使うように変更
+//*  2021/06/20  西野 大介         ConstructorでTypeInitializationExceptionが発生
 //**********************************************************************************
 
 using System;
@@ -67,28 +68,35 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>constructor</summary>
         public JwkSetStore()
         {
-            if (string.IsNullOrEmpty(OAuth2AndOIDCParams.JwkSetUri))
+            try
             {
-                this._jwkSet = new JwkSet();
-            }
-            else
-            {
-                // _jwkSet 更新
-                this._jwkSet = JsonConvert.DeserializeObject<JwkSet>(
-                    OAuth2AndOIDCClient.GetJwkSetAsync(
-                        new Uri(OAuth2AndOIDCParams.JwkSetUri)).Result);
-
-                // _dateTime 更新
-                this._dateTime = DateTime.Now;
-
-                if (this._jwkSet.keys.Count == 0)
+                if (string.IsNullOrEmpty(OAuth2AndOIDCParams.JwkSetUri))
                 {
-                    Debug.WriteLine("JwkSet was abnormally initarized with an empty state in JwkSetStore constructor.");
+                    this._jwkSet = new JwkSet();
                 }
                 else
                 {
-                    Debug.WriteLine("JwkSet was initarized normally in JwkSetStore constructor.");
+                    // _jwkSet 更新
+                    this._jwkSet = JsonConvert.DeserializeObject<JwkSet>(
+                        OAuth2AndOIDCClient.GetJwkSetAsync(
+                            new Uri(OAuth2AndOIDCParams.JwkSetUri)).Result);
+
+                    // _dateTime 更新
+                    this._dateTime = DateTime.Now;
+
+                    if (this._jwkSet.keys.Count == 0)
+                    {
+                        Debug.WriteLine("JwkSet was abnormally initarized with an empty state in JwkSetStore constructor.");
+                    }
+                    else
+                    {
+                        Debug.WriteLine("JwkSet was initarized normally in JwkSetStore constructor.");
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("JwkSetStore constructor: " + ex.ToString());
             }
         }
 
@@ -105,6 +113,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
+        #region Get / Set
         /// <summary>GetJwkObject</summary>
         /// <param name="kid">string</param>
         /// <returns>JwkObject</returns>
@@ -210,5 +219,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // JwkSetからJwkを返す。
             return JwkSet.GetJwkObject(this._jwkSet, kid);
         }
+        #endregion
     }
 }
