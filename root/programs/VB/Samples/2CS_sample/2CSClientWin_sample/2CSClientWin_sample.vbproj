@@ -11,7 +11,7 @@
     <RootNamespace>_2CSClientWin_sample</RootNamespace>
     <AssemblyName>2CSClientWin_sample</AssemblyName>
     <MyType>WindowsFormsWithCustomSubMain</MyType>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <UpgradeBackupLocation>
@@ -113,6 +113,7 @@
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
       <DependentUpon>Application.myapp</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <Compile Include="Program.vb" />
     <Compile Include="Splash.Designer.vb">
