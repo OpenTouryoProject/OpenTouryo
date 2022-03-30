@@ -3,7 +3,7 @@
   <metadata>
     <id>Touryo.Infrastructure.Public.Db.DamMySQL</id>
     <title>OpenTouryo.DamMySQL</title>
-    <version>2.7.0</version>
+    <version>3.0.0-preview1</version>
     <authors>OSS Consortium .net subcommittee</authors>
     <owners>daisukenishino77</owners>
     <license type="expression">Apache-2.0</license>
@@ -17,31 +17,31 @@
     <tags>OpenTouryo Open棟梁</tags>
     <dependencies>
       <group targetFramework=".NETFramework4.5.2">
-        <dependency id="Touryo.Infrastructure.Public" version="2.7.0" />
+        <dependency id="Touryo.Infrastructure.Public" version="3.0.0-preview1" />
         <dependency id="Google.Protobuf" version="3.6.1" />
         <dependency id="MySql.Data" version="8.0.13" />
       </group>
       <group targetFramework=".NETFramework4.6">
-        <dependency id="Touryo.Infrastructure.Public" version="2.7.0" />
+        <dependency id="Touryo.Infrastructure.Public" version="3.0.0-preview1" />
         <dependency id="Google.Protobuf" version="3.6.1" />
         <dependency id="MySql.Data" version="8.0.13" />
       </group>
       <group targetFramework=".NETFramework4.7">
-        <dependency id="Touryo.Infrastructure.Public" version="2.7.0" />
+        <dependency id="Touryo.Infrastructure.Public" version="3.0.0-preview1" />
         <dependency id="Google.Protobuf" version="3.6.1" />
         <dependency id="MySql.Data" version="8.0.13" />
       </group>
       <group targetFramework=".NETFramework4.8">
-        <dependency id="Touryo.Infrastructure.Public" version="2.7.0" />
+        <dependency id="Touryo.Infrastructure.Public" version="3.0.0-preview1" />
         <dependency id="Google.Protobuf" version="3.6.1" />
         <dependency id="MySql.Data" version="8.0.13" />
       </group>
       <group targetFramework=".NETStandard2.0">
-        <dependency id="Touryo.Infrastructure.Public" version="2.7.0" />
+        <dependency id="Touryo.Infrastructure.Public" version="3.0.0-preview1" />
         <dependency id="MySql.Data" version="8.0.13" />
       </group>
       <group targetFramework=".NETStandard2.1">
-        <dependency id="Touryo.Infrastructure.Public" version="2.7.0" />
+        <dependency id="Touryo.Infrastructure.Public" version="3.0.0-preview1" />
         <dependency id="MySql.Data" version="8.0.13" />
       </group>
     </dependencies>
