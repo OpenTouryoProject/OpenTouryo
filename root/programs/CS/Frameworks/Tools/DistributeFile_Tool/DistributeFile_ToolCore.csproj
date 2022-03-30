@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>DistributeFile_Tool</RootNamespace>
     <AssemblyName>OpenTouryo.DistributeFile_Tool</AssemblyName>
   </PropertyGroup>

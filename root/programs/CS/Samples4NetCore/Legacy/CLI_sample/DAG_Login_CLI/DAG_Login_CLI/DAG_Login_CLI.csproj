@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,13 +16,13 @@
 
   <ItemGroup>
     <Reference Include="OpenTouryo.Framework">
-      <HintPath>..\..\..\..\..\..\..\..\..\OAuthOIDC\MultiPurposeAuthSite\root\programs\OpenTouryoAssemblies\Build_netcore50\net5.0\OpenTouryo.Framework.dll</HintPath>
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public">
-      <HintPath>..\..\..\..\..\..\..\..\..\OAuthOIDC\MultiPurposeAuthSite\root\programs\OpenTouryoAssemblies\Build_netcore50\net5.0\OpenTouryo.Public.dll</HintPath>
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public.Security">
-      <HintPath>..\..\..\..\..\..\..\..\..\OAuthOIDC\MultiPurposeAuthSite\root\programs\OpenTouryoAssemblies\Build_netcore50\net5.0\OpenTouryo.Public.Security.dll</HintPath>
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0\OpenTouryo.Public.Security.dll</HintPath>
     </Reference>
   </ItemGroup>
 

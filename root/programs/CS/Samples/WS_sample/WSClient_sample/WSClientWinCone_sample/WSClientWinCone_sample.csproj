@@ -11,13 +11,13 @@
     <RootNamespace>WSClientWinCone_sample</RootNamespace>
     <AssemblyName>WSClientWinCone_sample</AssemblyName>
     <SignManifests>true</SignManifests>
-    <ManifestCertificateThumbprint>7A5F68587972EC9A9F4493D3C883F9A865E8C3E1</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>3EF7975C53AD5C0AE4FF5B806D20C1C7A1A0372F</ManifestCertificateThumbprint>
     <TargetZone>Internet</TargetZone>
     <GenerateManifests>true</GenerateManifests>
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <SignAssembly>false</SignAssembly>
     <ManifestKeyFile>WSClientWinCone_sample_TemporaryKey.pfx</ManifestKeyFile>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>2.0</OldToolsVersion>
