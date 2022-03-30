@@ -10,6 +10,7 @@
   - Visual Studio 2015
   - Visual Studio 2017
   - Visual Studio 2019
+  - Visual Studio 2022
 - targetFramework（実行環境）
   - .NET Framework 4.5.2 (net452)
   - .NET Framework 4.6 (net46)
@@ -18,6 +19,7 @@
   - .NET Core 2.0 (netcoreapp2.0)
   - .NET Core 3.0 (netcoreapp3.0)
   - .NET 5.0 (net5.0)
+  - .NET 6.0 (net6.0)
   - .NET Standard 2.0 (netstandard2.0)
   - .NET Standard 2.1 (netstandard2.1)
   
