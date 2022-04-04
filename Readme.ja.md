@@ -6,23 +6,19 @@
 ## 開発 / 動作環境
 このリポジトリのプログラムは、以下のIDE/targetFramework を前提に開発しています。
 
-- IDE（統合開発環境）
-  - Visual Studio 2015
-  - Visual Studio 2017
-  - Visual Studio 2019
-  - Visual Studio 2022
+- IDE（統合開発環境）  
+  Visual Studio 2022
 - targetFramework（実行環境）
   - .NET Framework 4.5.2 (net452)
   - .NET Framework 4.6 (net46)
   - .NET Framework 4.7 (net47)
   - .NET Framework 4.8 (net48)
+  - .NET Standard 2.0 (netstandard2.0)
+  - .NET Standard 2.1 (netstandard2.1)
   - .NET Core 2.0 (netcoreapp2.0)
   - .NET Core 3.0 (netcoreapp3.0)
   - .NET 5.0 (net5.0)
   - .NET 6.0 (net6.0)
-  - .NET Standard 2.0 (netstandard2.0)
-  - .NET Standard 2.1 (netstandard2.1)
-  
 
 プロジェクトやソリューションの名前には、targetFrameworkが含まれます。
 たとえば、net47(.NET Framework 4.7) を対象としたプロジェクト・ソリューションは、"{identifier}_net47.{ext}" と命名しています。
