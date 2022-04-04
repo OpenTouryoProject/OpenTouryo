@@ -1,27 +1,24 @@
 # OpenTouryo
-*Open Touryo* is an application framework for .NET Framework which was developed using the accumulated know-how with a longstanding application development results.
+*Open Touryo* is an application framework for .NET which was developed using the accumulated know-how with a longstanding application development results.
 
 Click [here](Readme.ja.md) for Japanese version of this file.
 
 ## Develop/Run-time environment
 The programs in this repository are developed in the following IDE/targetFramework:
 
-- IDE (Integrated Development Environment)
-  - Visual Studio 2015
-  - Visual Studio 2017
-  - Visual Studio 2019
-  - Visual Studio 2022
+- IDE (Integrated Development Environment)  
+  Visual Studio 2022
 - targetFramework (Run-time environment)
   - .NET Framework 4.5.2 (net452)
   - .NET Framework 4.6 (net46)
   - .NET Framework 4.7 (net47)
   - .NET Framework 4.8 (net48)
+  - .NET Standard 2.0 (netstandard2.0)
+  - .NET Standard 2.1 (netstandard2.1)
   - .NET Core 2.0 (netcoreapp2.0)
   - .NET Core 3.0 (netcoreapp3.0)
   - .NET 5.0 (net5.0)
   - .NET 6.0 (net6.0)
-  - .NET Standard 2.0 (netstandard2.0)
-  - .NET Standard 2.1 (netstandard2.1)
 
 The name of projects and solutions include the targetFramework.
 For example, the projects and solutions for net47(.NET Framework 4.7) are named {identifier}_net47.{ext}.
