@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon />
+    <StartupObject />
+    <RootNamespace>Touryo.Infrastructure.Framework.RichClient</RootNamespace>
+    <AssemblyName>OpenTouryo.Framework.RichClient</AssemblyName>
+    <Version>3.0.0.0</Version>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\..\Build_netcore60\</OutputPath>
+    <DocumentationFile>..\..\Build_netcore60\net6.0-windows\OpenTouryo.Framework.RichClient.xml</DocumentationFile>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\..\Build_netcore60\</OutputPath>
+    <DocumentationFile>..\..\Build_netcore60\net6.0-windows\OpenTouryo.Framework.RichClient.xml</DocumentationFile>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Public\Public_netstd21.csproj" />
+    <ProjectReference Include="..\Framework_netstd21.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+</Project>

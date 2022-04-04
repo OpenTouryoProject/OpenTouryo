@@ -188,6 +188,20 @@ By executing `0_ExecAllBat.bat`, you can execute necessary batch files together.
 <Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
 </tr>
 <tr>
+<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">10</td>
+<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">2_Build_NuGet_nettcore50.bat</td>
+<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;framework&nbsp;(Base&nbsp;class&nbsp;1&nbsp;and&nbsp;library&nbsp;part)&nbsp;to&nbsp;make&nbsp;NuGet&nbsp;package&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;5.</td>
+<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*1,&nbsp;*3</td>
+<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
+</tr>
+<tr>
+<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">10</td>
+<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">2_Build_NuGet_nettcore60.bat</td>
+<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;framework&nbsp;(Base&nbsp;class&nbsp;1&nbsp;and&nbsp;library&nbsp;part)&nbsp;to&nbsp;make&nbsp;NuGet&nbsp;package&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;6.</td>
+<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*1,&nbsp;*3</td>
+<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
+</tr>
+<tr>
 <Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">11</td>
 <Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_Business_net45.bat</td>
 <Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;a&nbsp;framework&nbsp;(base&nbsp;class&nbsp;2,&nbsp;library&nbsp;part)&nbsp;of&nbsp;Business&nbsp;namespace&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;Framework&nbsp;4.5.2.</td>
@@ -250,9 +264,37 @@ By executing `0_ExecAllBat.bat`, you can execute necessary batch files together.
 <Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
 </tr>
 <tr>
+<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">20</td>
+<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_Business_netcore50.bat</td>
+<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;a&nbsp;framework&nbsp;(base&nbsp;class&nbsp;2,&nbsp;library&nbsp;part)&nbsp;of&nbsp;Business&nbsp;namespace&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;5.</td>
+<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*3</td>
+<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
+</tr>
+<tr>
+<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">20</td>
+<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_Business_netcore60.bat</td>
+<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;a&nbsp;framework&nbsp;(base&nbsp;class&nbsp;2,&nbsp;library&nbsp;part)&nbsp;of&nbsp;Business&nbsp;namespace&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;6.</td>
+<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*3</td>
+<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
+</tr>
+<tr>
 <Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">21</td>
 <Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_BusinessRichClient_netcore30.bat</td>
 <Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;a&nbsp;framework&nbsp;for&nbsp;rich&nbsp;client&nbsp;application&nbsp;(base&nbsp;class&nbsp;2,&nbsp;library&nbsp;part)&nbsp;of&nbsp;Business&nbsp;namespace&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;Core&nbsp;3.0.</td>
+<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*2,&nbsp;*3</td>
+<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
+</tr>
+<tr>
+<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">21</td>
+<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_BusinessRichClient_netcore50.bat</td>
+<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;a&nbsp;framework&nbsp;for&nbsp;rich&nbsp;client&nbsp;application&nbsp;(base&nbsp;class&nbsp;2,&nbsp;library&nbsp;part)&nbsp;of&nbsp;Business&nbsp;namespace&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;5.</td>
+<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*2,&nbsp;*3</td>
+<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
+</tr>
+<tr>
+<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">21</td>
+<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_BusinessRichClient_netcore60.bat</td>
+<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;a&nbsp;framework&nbsp;for&nbsp;rich&nbsp;client&nbsp;application&nbsp;(base&nbsp;class&nbsp;2,&nbsp;library&nbsp;part)&nbsp;of&nbsp;Business&nbsp;namespace&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;6.</td>
 <Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*2,&nbsp;*3</td>
 <Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
 </tr>

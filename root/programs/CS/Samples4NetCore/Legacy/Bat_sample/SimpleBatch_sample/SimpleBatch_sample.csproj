@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -28,19 +28,19 @@
 
   <ItemGroup>
     <Reference Include="OpenTouryo.Business">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore50\net5.0\OpenTouryo.Business.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0\OpenTouryo.Business.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Framework">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore50\net5.0\OpenTouryo.Framework.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore50\net5.0\OpenTouryo.Public.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public.DamMySQL">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore50\net5.0\OpenTouryo.DamMySQL.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0\OpenTouryo.DamMySQL.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public.DamPstGrS">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore50\net5.0\OpenTouryo.DamPstGrS.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0\OpenTouryo.DamPstGrS.dll</HintPath>
     </Reference>
   </ItemGroup>
 

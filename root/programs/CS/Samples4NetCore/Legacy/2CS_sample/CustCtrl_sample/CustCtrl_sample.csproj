@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon />
     <StartupObject />
@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <Reference Include="OpenTouryo.CustomControl.RichClient">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore50\net5.0-windows\OpenTouryo.CustomControl.RichClient.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0-windows\OpenTouryo.CustomControl.RichClient.dll</HintPath>
     </Reference>
   </ItemGroup>
 

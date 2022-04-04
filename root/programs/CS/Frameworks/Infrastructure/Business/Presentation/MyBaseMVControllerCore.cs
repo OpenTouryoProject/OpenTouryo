@@ -30,6 +30,7 @@
 //*  2018/04/19  西野 大介         新規作成
 //*  2018/07/19  西野 大介         復元後のユーザー情報をSessionに設定するコードを追加
 //*  2018/08/08  西野 大介         MyMVCCoreFilterAttributeをFilterAttributeとして設定
+//*  2021/05/23  西野 大介         キャッシュ制御ヘッダの二重追加エラーの対応
 //**********************************************************************************
 
 using System;
@@ -291,14 +292,12 @@ namespace Touryo.Infrastructure.Business.Presentation
                 // https://www.ipa.go.jp/security/awareness/vendor/programmingv2/contents/405.html
 
                 // Using ASP.NET-MVC:
-                //this.Response.Cache.SetCacheability(HttpCacheability.NoCache);  // HTTP 1.1.
-                //this.Response.Cache.AppendCacheExtension("no-store, must-revalidate");
+                MyHttpContext.Current.Response.Headers.Remove("Cache-Control");
                 MyHttpContext.Current.Response.Headers.Add("Cache-Control",
                     new StringValues(new string[] { "no-cache", "no-store", "must-revalidate" }));
-
-                //this.Response.AppendHeader("Pragma", "no-cache"); // HTTP 1.0.
+                MyHttpContext.Current.Response.Headers.Remove("Pragma");
                 MyHttpContext.Current.Response.Headers.Add("Pragma", new StringValues("no-cache"));
-                //this.Response.AppendHeader("Expires", "0"); // Proxies.
+                MyHttpContext.Current.Response.Headers.Remove("Expires");
                 MyHttpContext.Current.Response.Headers.Add("Expires", new StringValues("0"));
             }
             else if (noCache.ToUpper() == FxLiteral.OFF)

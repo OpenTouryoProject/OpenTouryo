@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29326.143
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "2CSClientWPF_sample", "2CSClientWPF_sample.csproj", "{F9737483-DC6C-45D1-8CB7-27138FD76D36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "2CSClientWPF_sample", "2CSClientWPF_sample.csproj", "{F9737483-DC6C-45D1-8CB7-27138FD76D36}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +18,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {042D9C6D-8D8A-4A5E-89D4-274F3A02DE37}
 	EndGlobalSection
 EndGlobal

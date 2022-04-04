@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27428.2015
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30717.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Business", "Business\Business_netcore50.csproj", "{87C03805-26A4-452B-97C7-2C8598722DDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Business_netcore50", "Business\Business_netcore50.csproj", "{87C03805-26A4-452B-97C7-2C8598722DDE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

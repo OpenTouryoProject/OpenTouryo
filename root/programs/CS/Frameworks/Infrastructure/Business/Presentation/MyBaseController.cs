@@ -57,6 +57,7 @@
 //*  2017/02/28  西野 大介         TransferErrorScreen2のErrorMessage生成処理の見直し。
 //*  2017/02/28  西野 大介         エラーログの見直し（その他の例外の場合、ex.ToString()を出力）
 //*  2018/07/19  西野 大介         復元後のユーザー情報をSessionに設定するコードを追加
+//*  2021/05/23  西野 大介         キャッシュ制御ヘッダの二重追加エラーの対応
 //**********************************************************************************
 
 using System;
@@ -383,9 +384,15 @@ namespace Touryo.Infrastructure.Business.Presentation
                 // http://stackoverflow.com/questions/49547/how-to-control-web-page-caching-across-all-browsers
 
                 // Using ASP.NET:
-                Response.AppendHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
-                Response.AppendHeader("Pragma", "no-cache"); // HTTP 1.0.
-                Response.AppendHeader("Expires", "0"); // Proxies.
+                // Cache-Control
+                this.Response.Headers.Remove("Cache-Control");
+                this.Response.AppendHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+                // Pragma
+                this.Response.Headers.Remove("Pragma");
+                this.Response.AppendHeader("Pragma", "no-cache"); // HTTP 1.0.
+                // Expires
+                this.Response.Headers.Remove("Expires");
+                this.Response.AppendHeader("Expires", "0"); // Proxies.
 
             }
             else if (noCache.ToUpper() == FxLiteral.OFF)

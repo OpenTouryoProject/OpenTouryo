@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>WpfApplication</RootNamespace>
     <AssemblyName>WpfApplication</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <MyType>Custom</MyType>
     <OptionExplicit>On</OptionExplicit>
     <OptionCompare>Binary</OptionCompare>

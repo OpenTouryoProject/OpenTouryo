@@ -3,7 +3,7 @@
   <metadata>
     <id>Touryo.Infrastructure.Framework.RichClient</id>
     <title>OpenTouryo.Framework.RichClient</title>
-    <version>2.7.0</version>
+    <version>3.0.0</version>
     <authors>OSS Consortium .net subcommittee</authors>
     <owners>daisukenishino77</owners>
     <license type="expression">Apache-2.0</license>
@@ -17,28 +17,32 @@
     <tags>OpenTouryo Open棟梁</tags>
     <dependencies>
       <group targetFramework=".NETFramework4.5.2">
-        <dependency id="Touryo.Infrastructure.Framework" version="2.7.0" />
-        <dependency id="Touryo.Infrastructure.Public" version="2.7.0" />
+        <dependency id="Touryo.Infrastructure.Framework" version="3.0.0" />
+        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
       </group>
       <group targetFramework=".NETFramework4.6">
-        <dependency id="Touryo.Infrastructure.Framework" version="2.7.0" />
-        <dependency id="Touryo.Infrastructure.Public" version="2.7.0" />
+        <dependency id="Touryo.Infrastructure.Framework" version="3.0.0" />
+        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
       </group>
       <group targetFramework=".NETFramework4.7">
-        <dependency id="Touryo.Infrastructure.Framework" version="2.7.0" />
-        <dependency id="Touryo.Infrastructure.Public" version="2.7.0" />
+        <dependency id="Touryo.Infrastructure.Framework" version="3.0.0" />
+        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
       </group>
       <group targetFramework=".NETFramework4.8">
-        <dependency id="Touryo.Infrastructure.Framework" version="2.7.0" />
-        <dependency id="Touryo.Infrastructure.Public" version="2.7.0" />
+        <dependency id="Touryo.Infrastructure.Framework" version="3.0.0" />
+        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
       </group>
       <group targetFramework=".NETCoreApp3.0">
-        <dependency id="Touryo.Infrastructure.Framework" version="2.7.0" />
-        <dependency id="Touryo.Infrastructure.Public" version="2.7.0" />
+        <dependency id="Touryo.Infrastructure.Framework" version="3.0.0" />
+        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
       </group>
       <group targetFramework=".NET5.0">
-        <dependency id="Touryo.Infrastructure.Framework" version="2.7.0" />
-        <dependency id="Touryo.Infrastructure.Public" version="2.7.0" />
+        <dependency id="Touryo.Infrastructure.Framework" version="3.0.0" />
+        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
+      </group>
+      <group targetFramework=".NET6.0">
+        <dependency id="Touryo.Infrastructure.Framework" version="3.0.0" />
+        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
       </group>
     </dependencies>
   </metadata>
@@ -68,6 +72,10 @@
     <file src="in\net5.0-windows\OpenTouryo.Framework.RichClient.dll" target="lib\net5.0" />
     <file src="in\net5.0-windows\OpenTouryo.Framework.RichClient.pdb" target="lib\net5.0" />
     <file src="in\net5.0-windows\OpenTouryo.Framework.RichClient.xml" target="lib\net5.0" />
+    
+    <file src="in\net6.0-windows\OpenTouryo.Framework.RichClient.dll" target="lib\net6.0" />
+    <file src="in\net6.0-windows\OpenTouryo.Framework.RichClient.pdb" target="lib\net6.0" />
+    <file src="in\net6.0-windows\OpenTouryo.Framework.RichClient.xml" target="lib\net6.0" />
 
     <file src="..\Frameworks\Infrastructure\Framework\RichClient\**\*.cs" target="src" />
   </files>

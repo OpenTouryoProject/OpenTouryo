@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1209
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business", "Business\Business_net47.csproj", "{7187571A-3A26-4363-9AB6-189CB5B58422}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business_net47", "Business\Business_net47.csproj", "{7187571A-3A26-4363-9AB6-189CB5B58422}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomControl", "CustomControl\CustomControl_net47.csproj", "{2C6108F5-DEB1-4821-8CE0-E80619A06E03}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomControl_net47", "CustomControl\CustomControl_net47.csproj", "{2C6108F5-DEB1-4821-8CE0-E80619A06E03}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,6 +24,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A8FA79C7-AF6F-4F3B-88F7-C7BA400D85FD}
 	EndGlobalSection
 	GlobalSection(DPCodeReviewSolutionGUID) = preSolution
 		DPCodeReviewSolutionGUID = {00000000-0000-0000-0000-000000000000}

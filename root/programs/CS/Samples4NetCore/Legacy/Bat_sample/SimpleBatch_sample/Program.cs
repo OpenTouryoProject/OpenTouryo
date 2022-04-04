@@ -23,6 +23,7 @@ using SimpleBatch_sample.Common;
 using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Reflection;
 
 using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Public.Db;
@@ -46,7 +47,9 @@ namespace SimpleBatch_sample
             ////////////////////////////////////////////////////////////////////////
 
             // configの初期化
-            GetConfigParameter.InitConfiguration("appsettings.json");
+            string dir = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory
+                .FullName.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            GetConfigParameter.InitConfiguration(dir + "/appsettings.json");
 
             // コマンドラインをバラす関数がある。
             List<string> valsLst = null;

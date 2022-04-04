@@ -12,6 +12,7 @@ echo | call 2_Build_NuGet_netstd20.bat
 echo | call 2_Build_NuGet_netstd21.bat
 echo | call 2_Build_NuGet_nettcore30.bat
 echo | call 2_Build_NuGet_nettcore50.bat
+echo | call 2_Build_NuGet_nettcore60.bat
 
 echo | call 4_Build_CopyAssemblies.bat
 

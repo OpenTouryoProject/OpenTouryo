@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WSClientWPF_sample", "WSClientWPF_sample.csproj", "{F9737483-DC6C-45D1-8CB7-27138FD76D36}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WSClientWPF_sample", "WSClientWPF_sample.csproj", "{F9737483-DC6C-45D1-8CB7-27138FD76D36}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASPNETWebServiceCore", "..\..\..\..\..\Frameworks\Infrastructure\ServiceInterface\ASPNETWebServiceCore\ASPNETWebServiceCore\ASPNETWebServiceCore.csproj", "{C24BC2FA-D423-4F0F-B2B0-E647B621683D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASPNETWebServiceCore", "..\..\..\..\..\Frameworks\Infrastructure\ServiceInterface\ASPNETWebServiceCore\ASPNETWebServiceCore\ASPNETWebServiceCore.csproj", "{C24BC2FA-D423-4F0F-B2B0-E647B621683D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,5 +34,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F39D98F3-8539-4D46-9501-AD17A4978939}
 	EndGlobalSection
 EndGlobal

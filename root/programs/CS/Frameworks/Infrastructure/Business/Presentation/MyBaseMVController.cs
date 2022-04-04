@@ -45,6 +45,7 @@
 //*  2017/02/28  西野 大介         TransferErrorScreenメソッドを追加した。
 //*  2017/02/28  西野 大介         エラーログの見直し（その他の例外の場合、ex.ToString()を出力）
 //*  2018/07/19  西野 大介         復元後のユーザー情報をSessionに設定するコードを追加
+//*  2021/05/23  西野 大介         キャッシュ制御ヘッダの二重追加エラーの対応
 //**********************************************************************************
 
 using System;
@@ -609,9 +610,12 @@ namespace Touryo.Infrastructure.Business.Presentation
                 // Using ASP.NET-MVC:
                 this.Response.Cache.SetCacheability(HttpCacheability.NoCache);  // HTTP 1.1.
                 this.Response.Cache.AppendCacheExtension("no-store, must-revalidate");
+                // Pragma
+                this.Response.Headers.Remove("Pragma");
                 this.Response.AppendHeader("Pragma", "no-cache"); // HTTP 1.0.
+                // Expires
+                this.Response.Headers.Remove("Expires");
                 this.Response.AppendHeader("Expires", "0"); // Proxies.
-
             }
             else if (noCache.ToUpper() == FxLiteral.OFF)
             {

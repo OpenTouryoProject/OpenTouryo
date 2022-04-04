@@ -10,6 +10,8 @@ xcopy /E /Y "..\Frameworks\Infrastructure\Build_netstd21\netstandard2.1" "in\net
 xcopy /E /Y "..\Frameworks\Infrastructure\Build_netcore30\netcoreapp3.0" "in\netcoreapp3.0"
 xcopy /E /Y "..\Frameworks\Infrastructure\Build_netcore50\net5.0" "in\net5.0"
 xcopy /E /Y "..\Frameworks\Infrastructure\Build_netcore50\net5.0-windows" "in\net5.0-windows"
+xcopy /E /Y "..\Frameworks\Infrastructure\Build_netcore60\net6.0" "in\net6.0"
+xcopy /E /Y "..\Frameworks\Infrastructure\Build_netcore60\net6.0-windows" "in\net6.0-windows"
 
 "..\..\nuget.exe" pack Symbol_Public.nuspec -OutputDirectory "out\sp" -Symbols -SymbolPackageFormat snupkg
 "..\..\nuget.exe" pack Symbol_Public.Security.nuspec -OutputDirectory "out\sp" -Symbols -SymbolPackageFormat snupkg

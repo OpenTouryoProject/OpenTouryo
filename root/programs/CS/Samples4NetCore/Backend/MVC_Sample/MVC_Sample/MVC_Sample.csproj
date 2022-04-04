@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
   </PropertyGroup>
 
@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="log4net" Version="2.0.12" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.5.1" />
     <PackageReference Include="System.Security.Cryptography.Xml" Version="4.5.0" />
@@ -17,22 +18,22 @@
 
   <ItemGroup>
     <Reference Include="OpenTouryo.Business">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore50\net5.0\OpenTouryo.Business.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0\OpenTouryo.Business.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.DamMySQL">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore50\net5.0\OpenTouryo.DamMySQL.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0\OpenTouryo.DamMySQL.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.DamPstGrS">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore50\net5.0\OpenTouryo.DamPstGrS.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0\OpenTouryo.DamPstGrS.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Framework">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore50\net5.0\OpenTouryo.Framework.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore50\net5.0\OpenTouryo.Public.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public.Security">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore50\net5.0\OpenTouryo.Public.Security.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0\OpenTouryo.Public.Security.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>

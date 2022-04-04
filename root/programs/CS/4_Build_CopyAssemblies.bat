@@ -6,5 +6,5 @@
 @rem --------------------------------------------------
 @rem Copy for build local repository.
 @rem --------------------------------------------------
-xcopy /E /Y "Frameworks\Infrastructure\Build_net46" "Frameworks\Infrastructure\Build\"
+xcopy /E /Y "Frameworks\Infrastructure\Build_net48" "Frameworks\Infrastructure\Build\"
 
