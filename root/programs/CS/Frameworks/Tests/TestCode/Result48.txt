@@ -70,17 +70,17 @@ log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.Level
 log4net: Created Appender [OPERATION2]
 log4net: Adding appender named [OPERATION2] to logger [OPERATION].
 log4net: Hierarchy Threshold []
-[2020/08/01 03:01:51,328],[DEBUG],[1],LogIF.DebugLog("ACCESS");
-[2020/08/01 03:01:51,333],[INFO ],[1],LogIF.InfoLog("ACCESS");
-[2020/08/01 03:01:51,333],[WARN ],[1],LogIF.WarnLog("ACCESS");
-[2020/08/01 03:01:51,334],[ERROR],[1],LogIF.ErrorLog("ACCESS");
-[2020/08/01 03:01:51,334],[FATAL],[1],LogIF.FatalLog("ACCESS");
+[2025/04/16 17:28:22,218],[DEBUG],[1],LogIF.DebugLog("ACCESS");
+[2025/04/16 17:28:22,224],[INFO ],[1],LogIF.InfoLog("ACCESS");
+[2025/04/16 17:28:22,224],[WARN ],[1],LogIF.WarnLog("ACCESS");
+[2025/04/16 17:28:22,224],[ERROR],[1],LogIF.ErrorLog("ACCESS");
+[2025/04/16 17:28:22,225],[FATAL],[1],LogIF.FatalLog("ACCESS");
 ----------------------------------------------------------------------------------------------------
-GetMessage: `ƒƒbƒZ[ƒWID:I0001‚É‘Î‰ž‚·‚é‹Lqi³íŒnj`
-GetMessage: `ƒƒbƒZ[ƒWID:E0001‚É‘Î‰ž‚·‚é‹LqiˆÙíŒnj`
+GetMessage: 
+GetMessage: 
 --------------------------------------------------
-GetSharedProperty: ‚Ä‚·‚Æ‚P
-GetSharedProperty: ‚Ä‚·‚Æ‚R
+GetSharedProperty: 
+GetSharedProperty: 
 ----------------------------------------------------------------------------------------------------
 StringChecker.IsNumbers - ‚ ‚ ‚ : False
 StringChecker.IsNumbers - ‚P‚P‚P: True
@@ -2301,4 +2301,4 @@ DeflateCompression(FileStream)-2 > is working properly.
 --------------------------------------------------
 DeflateCompression(MemoryStream) > is working properly.
 ----------------------------------------------------------------------------------------------------
-log4net: Shutdown called on Hierarchy [log4net-default-repository]
+log4net: Shutdown called on Hierarchy [log4net-default-repository]

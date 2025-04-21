@@ -58,7 +58,7 @@ namespace Touryo.Infrastructure.Public.Str
     {
         #region 数値チェック
 
-//#if NETSTD
+//#if (NETSTD || NETCOREAPP)
 //#else
         /// <summary>数字（double）に変換可能か確認する。</summary>
         /// <param name="input">入力文字列</param>

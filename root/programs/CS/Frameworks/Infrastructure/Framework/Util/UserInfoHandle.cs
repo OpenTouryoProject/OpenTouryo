@@ -33,7 +33,7 @@
 //*  2018/03/29  西野 大介         .NET Standard対応で、HttpSessionのポーティング
 //**********************************************************************************
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
 using Touryo.Infrastructure.Framework.StdMigration;
 using Microsoft.AspNetCore.Http;
 #else
@@ -54,7 +54,7 @@ namespace Touryo.Infrastructure.Framework.Util
         public static void SetUserInformation(UserInfo userInfo)
         {
             // Sessionに保存
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
             ISession session = MyHttpContext.Current.Session;
             session.SetObjectAsJson(FxHttpSessionIndex.AUTHENTICATION_USER_INFORMATION, userInfo);
 #else
@@ -62,7 +62,7 @@ namespace Touryo.Infrastructure.Framework.Util
 #endif
         }
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
 
         /// <summary>ユーザ情報をSessionから取得する。</summary>
         /// <returns>ユーザ情報</returns>
@@ -90,7 +90,7 @@ namespace Touryo.Infrastructure.Framework.Util
         public static void DeleteUserInformation()
         {
             // Sessionから削除
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
             ISession session = MyHttpContext.Current.Session;
             session.Remove(FxHttpSessionIndex.AUTHENTICATION_USER_INFORMATION);
 #else

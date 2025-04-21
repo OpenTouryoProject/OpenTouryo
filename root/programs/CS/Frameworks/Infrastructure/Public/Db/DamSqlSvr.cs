@@ -54,7 +54,13 @@
 
 using System;
 using System.Data;
+
+#if NETCOREAPP
+using Microsoft.Data.SqlClient;
+#else
 using System.Data.SqlClient;
+#endif
+
 using System.Collections;
 
 using Touryo.Infrastructure.Public.Util;

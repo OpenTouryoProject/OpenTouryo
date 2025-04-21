@@ -12,10 +12,6 @@
     <AssemblyName>SimpleBatch_sample</AssemblyName>
     <MyType>Console</MyType>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion>
-    <UpgradeBackupLocation />
     <TargetFrameworkProfile />
     <PublishUrl>http://localhost/SimpleBatch_sample/</PublishUrl>
     <Install>true</Install>
@@ -42,6 +38,7 @@
     <DocumentationFile>SimpleBatch_sample.xml</DocumentationFile>
     <NoWarn>42016,41999,42017,42018,42019,42032,42036,42020,42021,42022,42353,42354,42355</NoWarn>
     <Prefer32Bit>false</Prefer32Bit>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>

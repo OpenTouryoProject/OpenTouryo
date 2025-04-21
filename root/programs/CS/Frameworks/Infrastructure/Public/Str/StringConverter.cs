@@ -37,7 +37,7 @@
 //**********************************************************************************
 
 using System.Text;
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
 using Zipangu;
 #else
 using Microsoft.VisualBasic;
@@ -50,7 +50,7 @@ namespace Touryo.Infrastructure.Public.Str
     /// <summary>文字列の変換処理クラス</summary>
     public class StringConverter
     {
-//#if NETSTD
+//#if (NETSTD || NETCOREAPP)
 //#else
         #region 全角 / 半角 変換処理
 
@@ -59,7 +59,7 @@ namespace Touryo.Infrastructure.Public.Str
         /// <returns>（全角化された）出力文字列</returns>
         public static string ToZenkaku(string input)
         {
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
             // Zipanguを使用する。
             return input.AsciiToWide();
 #else
@@ -73,7 +73,7 @@ namespace Touryo.Infrastructure.Public.Str
         /// <returns>（半角化された）出力文字列</returns>
         public static string ToHankaku(string input)
         {
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
             // Zipanguを使用する。
             return input.AsciiToNarrow();
 #else
@@ -91,7 +91,7 @@ namespace Touryo.Infrastructure.Public.Str
         /// <returns>（平仮名化された）出力文字列</returns>
         public static string ToHiragana(string input)
         {
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
             // Zipanguを使用する。
             return input.KatakanaToHiragana();
 #else
@@ -105,7 +105,7 @@ namespace Touryo.Infrastructure.Public.Str
         /// <returns>（片仮名化された）出力文字列</returns>
         public static string ToKatakana(string input)
         {
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
             // Zipanguを使用する。
             return input.HiraganaToKatakana();
 #else

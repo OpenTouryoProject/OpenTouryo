@@ -252,7 +252,7 @@ namespace Touryo.Infrastructure.Public.IO
 
         #region ZipFile取得
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
         /// <summary>ZipFileを取得</summary>
         /// <param name="zip">ZipFile</param>
         /// <returns>ZipFile</returns>
@@ -284,7 +284,7 @@ namespace Touryo.Infrastructure.Public.IO
             // It will be removed in a future version of the library.
             // Your applications should  use AlternateEncoding and AlternateEncodingUsage instead.'
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
 #else
             // 必要に応じてUnicodeを使用（自動解凍書庫の文字化け対策）
             if (selfEx != null)

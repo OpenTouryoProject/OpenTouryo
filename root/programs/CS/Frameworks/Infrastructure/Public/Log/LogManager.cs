@@ -51,7 +51,7 @@ using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
 using System.Reflection;
 using log4net.Repository;
 #else
@@ -112,7 +112,7 @@ namespace Touryo.Infrastructure.Public.Log
                         // 定義ファイルのパスが無い場合
 
                         // 空のロガーを返す（エラーにはならない）
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
                         return log4net.LogManager.GetLogger(Assembly.GetEntryAssembly(), "");
 #else
                         return log4net.LogManager.GetLogger("");
@@ -120,7 +120,7 @@ namespace Touryo.Infrastructure.Public.Log
                     }
                     else
                     {
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
                         // Repositoryなる何か。
                         ILoggerRepository logRep = log4net.LogManager.CreateRepository(
                             Assembly.GetEntryAssembly(), typeof(log4net.Repository.Hierarchy.Hierarchy));
@@ -145,7 +145,7 @@ namespace Touryo.Infrastructure.Public.Log
                             }
 
                             // log4net
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
                             XmlConfigurator.Configure(logRep,
                                 (XmlElement)xmlDef["log4net"]);
 #else
@@ -163,7 +163,7 @@ namespace Touryo.Infrastructure.Public.Log
                                 FileMode.Open, FileAccess.Read, FileShare.Read);
 
                             // log4netのXML形式の設定ファイルを読み込む。
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
                             XmlConfigurator.Configure(logRep, s);
 #else
                             XmlConfigurator.Configure(s);
@@ -173,7 +173,7 @@ namespace Touryo.Infrastructure.Public.Log
                         }
 
                         // log4net.ILogインスタンスを初期化する。
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
                         LogManager._logIfHt.Add(
                             loggerName,
                             log4net.LogManager.GetLogger(Assembly.GetEntryAssembly(), loggerName));

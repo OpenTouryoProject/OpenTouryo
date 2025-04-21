@@ -64,7 +64,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
 using Touryo.Infrastructure.Framework.StdMigration;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.PlatformAbstractions;
@@ -115,7 +115,7 @@ namespace Touryo.Infrastructure.Framework.Util
 
         #endregion
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
 #else
         #region コントロール取得＆イベントハンドラ設定
 
@@ -936,7 +936,7 @@ namespace Touryo.Infrastructure.Framework.Util
 
         #region セッションタイムアウト検出用クッキー
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
         /// <summary>セッションタイムアウト検出用Cookieを生成</summary>
         /// <returns>セッションタイムアウト検出用Cookie（データ有）</returns>
         public static void CreateCookieForSessionTimeoutDetection()
