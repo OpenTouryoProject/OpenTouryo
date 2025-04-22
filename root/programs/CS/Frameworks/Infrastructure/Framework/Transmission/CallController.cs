@@ -449,8 +449,8 @@ namespace Touryo.Infrastructure.Framework.Transmission
                 #endregion
 
 //#if NETSTD
-                /*#region サービス呼び出し
-
+                //#region サービス呼び出し
+                /*
                 if (protocol == ((int)FxEnum.TmProtocol.AspNetWebAPI).ToString())
                 {
                     // ASP.NET WebAPI (JSON-RPC)
@@ -466,8 +466,8 @@ namespace Touryo.Infrastructure.Framework.Transmission
                         String.Format(FrameworkExceptionMessage.PARAMETER_CHECK_ERROR[1],
                             String.Format(FrameworkExceptionMessage.PARAMETER_CHECK_ERROR_null, "serviceName")));
                 }
-
-                #endregion*/
+                */
+                //#endregion
 //#else
                 #region サービス呼び出し
 
