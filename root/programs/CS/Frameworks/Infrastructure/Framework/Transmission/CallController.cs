@@ -93,7 +93,7 @@ using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
 #else
 using System.ServiceModel;
 using System.ServiceModel.Channels;
@@ -105,7 +105,7 @@ using Newtonsoft.Json.Linq;
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Str;
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
 #else
 #region 自動生成されたReference.csのヘッダー部分
 
@@ -189,7 +189,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
         #region Web参照と関連プロパティ
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
 #else
         #region WCF HTTP WebサービスのWeb参照
 
@@ -239,7 +239,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
         #region ASPNETWebAPI → HttpClient
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
         /// <summary>HttpClientHandlerのDictionary</summary>
         private Dictionary<string, HttpClientHandler> _handlerCD = new Dictionary<string, HttpClientHandler>();
 #else
@@ -303,7 +303,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
         {
             // コンテキスト情報
             this._context = context;
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
 #else
             // EndPointConfigName（の既定値
             this.WCF_HTTP_EndPointConfigName = FxLiteral.WCF_HTTP_ENDPOINT_CONFIGNAME;
@@ -386,6 +386,12 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
                 #endregion
             }
+#if (NETSTD || NETCOREAPP)
+            else
+            {
+                return null; // FxEnumを潰したので、ココには来ない想定
+            }
+#else
             else
             {
                 // ＵＲＬ
@@ -442,8 +448,8 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
                 #endregion
 
-#if NETSTD
-                #region サービス呼び出し
+//#if NETSTD
+                /*#region サービス呼び出し
 
                 if (protocol == ((int)FxEnum.TmProtocol.AspNetWebAPI).ToString())
                 {
@@ -461,8 +467,8 @@ namespace Touryo.Infrastructure.Framework.Transmission
                             String.Format(FrameworkExceptionMessage.PARAMETER_CHECK_ERROR_null, "serviceName")));
                 }
 
-                #endregion
-#else
+                #endregion*/
+//#else
                 #region サービス呼び出し
 
                 if (protocol == ((int)FxEnum.TmProtocol.AspNetWs).ToString())
@@ -756,7 +762,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
                 }
 
                 #endregion
-#endif
+//#endif
 
                 #region 戻り値のデシリアライズ（#y-このregion）
 
@@ -832,6 +838,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
                 #endregion
             }
+#endif
         }
 
         #endregion
@@ -859,7 +866,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
             // https://github.com/dotnet/corefx/issues/26223
 
             #region Handlerの変数宣言
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
             #region HttpClientHandler
             HttpClientHandler handler = null;
             #endregion
@@ -875,9 +882,9 @@ namespace Touryo.Infrastructure.Framework.Transmission
             if (!this._handlerCD.ContainsKey(serviceName))
             {
                 #region new ...Handler();
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
                 #region HttpClientHandler
-                handler  = new HttpClientHandler();
+                handler = new HttpClientHandler();
                 #endregion
 #else
                 #region WebRequestHandler
@@ -1285,7 +1292,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
 
         #region インナークラス（プロキシ類）
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
 #else
         #region WS-I Basic Profile v1.1、IIS ＋ ASP.NET（#y-このregion）
 

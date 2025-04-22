@@ -1,20 +1,26 @@
 @echo on
 timeout 5
 
-echo | call 2_Build_NuGet_net48.bat
 echo | call 2_Build_NuGet_netstd20.bat
-echo | call 2_Build_NuGet_nettcore60.bat
-echo | call 2_Build_NuGet_nettcore80.bat
 
 @echo on
 timeout 5
 
+echo | call 1_DeleteDir.bat
+echo | call 2_Build_NuGet_net48.bat
 echo | call 3_Build_Business_net48.bat
-echo | call 3_Build_Business_netcore60.bat
-echo | call 3_Build_Business_netcore80.bat
 echo | call 3_Build_BusinessRichClient_net48.bat
-echo | call 3_Build_BusinessRichClient_netcore60.bat
+
+@echo on
+timeout 5
+
+echo | call 1_DeleteDir.bat
+echo | call 2_Build_NuGet_nettcore80.bat
+echo | call 3_Build_Business_netcore80.bat
 echo | call 3_Build_BusinessRichClient_netcore80.bat
+
+@echo on
+timeout 5
 
 echo | call 4_Build_CopyAssemblies.bat
 

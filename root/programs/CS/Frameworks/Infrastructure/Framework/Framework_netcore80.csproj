@@ -37,7 +37,6 @@
     <Compile Remove="Presentation\BaseMVController.cs" />
     <Compile Remove="Presentation\FxEventArgs.cs" />
     <Compile Remove="Properties\AssemblyInfo.cs" />
-    <Compile Remove="Transmission\CallController.cs" />
     <Compile Remove="Transmission\IWCFTCPSvcForFx.cs" />
     <Compile Remove="Util\FxHttpQueryStringIndex.cs" />
     <Compile Remove="Util\FxSessionUtil.cs" />

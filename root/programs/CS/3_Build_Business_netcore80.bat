@@ -18,8 +18,8 @@ call %CURRENT_DIR%z_Common.bat
 rem --------------------------------------------------
 rem Build the batch Infrastructure
 rem --------------------------------------------------
-call dotnet restore "Frameworks\Infrastructure\Business_netcore60.sln"
-call dotnet msbuild %COMMANDLINE% "Frameworks\Infrastructure\Business_netcore60.sln"
+call dotnet restore "Frameworks\Infrastructure\Business_netcore80.sln"
+call dotnet msbuild %COMMANDLINE% "Frameworks\Infrastructure\Business_netcore80.sln"
 
 pause
 

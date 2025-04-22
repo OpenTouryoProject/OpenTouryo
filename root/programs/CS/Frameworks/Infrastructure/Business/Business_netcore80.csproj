@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <RootNamespace>Touryo.Infrastructure.Business</RootNamespace>
     <AssemblyName>OpenTouryo.Business</AssemblyName>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
@@ -9,8 +9,8 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;DEBUG;NETCOREAPP</DefineConstants>
-    <OutputPath>..\Build_netcore60\</OutputPath>
-    <DocumentationFile>..\Build_netcore60\net6.0\OpenTouryo.Business.xml</DocumentationFile>
+    <OutputPath>..\Build_netcore80\</OutputPath>
+    <DocumentationFile>..\Build_netcore80\net8.0\OpenTouryo.Business.xml</DocumentationFile>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <NoWarn>1701;1702;NU1701</NoWarn>
@@ -18,8 +18,8 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
-    <OutputPath>..\Build_netcore60\</OutputPath>
-    <DocumentationFile>..\Build_netcore60\net6.0\OpenTouryo.Business.xml</DocumentationFile>
+    <OutputPath>..\Build_netcore80\</OutputPath>
+    <DocumentationFile>..\Build_netcore80\net8.0\OpenTouryo.Business.xml</DocumentationFile>
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <NoWarn>1701;1702;NU1701</NoWarn>
@@ -50,11 +50,6 @@
 
   <ItemGroup>
     <None Remove="app.config" />
-    <None Remove="packages.config" />
-    <None Remove="packages_net45.config" />
-    <None Remove="packages_net46.config" />
-    <None Remove="packages_net47.config" />
-    <None Remove="packages_net48.config" />
   </ItemGroup>
 
   <ItemGroup>
@@ -62,34 +57,34 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.0.3" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.3" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="2.2.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-    <PackageReference Include="System.Security.Cryptography.Xml" Version="4.5.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.4" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="OpenTouryo.DamManagedOdp">
-      <HintPath>..\Build_netstd21\netstandard2.1\OpenTouryo.DamManagedOdp.dll</HintPath>
+      <HintPath>..\Build_netcore80\net8.0\OpenTouryo.DamManagedOdp.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.DamMySQL">
-      <HintPath>..\Build_netstd21\netstandard2.1\OpenTouryo.DamMySQL.dll</HintPath>
+      <HintPath>..\Build_netcore80\net8.0\OpenTouryo.DamMySQL.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.DamPstGrS">
-      <HintPath>..\Build_netstd21\netstandard2.1\OpenTouryo.DamPstGrS.dll</HintPath>
+      <HintPath>..\Build_netcore80\net8.0\OpenTouryo.DamPstGrS.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Framework">
-      <HintPath>..\Build_netstd21\netstandard2.1\OpenTouryo.Framework.dll</HintPath>
+      <HintPath>..\Build_netcore80\net8.0\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public">
-      <HintPath>..\Build_netstd21\netstandard2.1\OpenTouryo.Public.dll</HintPath>
+      <HintPath>..\Build_netcore80\net8.0\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public.Security">
-      <HintPath>..\Build_netstd21\netstandard2.1\OpenTouryo.Public.Security.dll</HintPath>
+      <HintPath>..\Build_netcore80\net8.0\OpenTouryo.Public.Security.dll</HintPath>
     </Reference>
   </ItemGroup>
 
