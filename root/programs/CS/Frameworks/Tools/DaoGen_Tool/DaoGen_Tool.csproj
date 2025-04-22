@@ -65,10 +65,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Infrastructure\Build\MySql.Data.dll</HintPath>
     </Reference>
-    <Reference Include="Npgsql, Version=3.0.5.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Infrastructure\Build\Npgsql.dll</HintPath>
-    </Reference>
     <Reference Include="Oracle.ManagedDataAccess">
       <HintPath>..\..\Infrastructure\Build\Oracle.ManagedDataAccess.dll</HintPath>
     </Reference>

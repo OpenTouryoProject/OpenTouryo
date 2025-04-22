@@ -69,9 +69,9 @@ using System.Data.SqlClient;
 //using Oracle.DataAccess.Client; // Managedに移行
 //using Oracle.ManagedDataAccess.Client; // 衝突するのでエイリアスを作成
 using System.Data.Odbc;
-using Npgsql;
 using MySql.Data.MySqlClient;
 #if NETCOREAPP
+using Npgsql;
 #else
 using System.Data.OleDb;
 using IBM.Data.DB2;
@@ -681,6 +681,7 @@ namespace DPQuery_Tool
                     ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_MySQL);
 
                 }
+#if NETCOREAPP
                 else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_PstgrS)
                 {
                     //Npgsql
@@ -706,6 +707,7 @@ namespace DPQuery_Tool
                     // 状態
                     ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_PstgrS);
                 }
+# endif
 #if NETCOREAPP
 #else
                 else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_OLE)
@@ -768,7 +770,7 @@ namespace DPQuery_Tool
                 //    // 状態
                 //    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_HRD_CREATED;
                 //}
-#endif          
+#endif
                 else
                 {
                     //ありえない
@@ -780,7 +782,7 @@ namespace DPQuery_Tool
             }
         }
 
-        #endregion
+#endregion
 
         #region コネクション オープン
 

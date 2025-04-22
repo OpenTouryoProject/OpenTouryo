@@ -58,9 +58,9 @@
 using System.Data.SqlClient;
 using Oracle.ManagedDataAccess.Client;
 using System.Data.Odbc;
-using Npgsql;
 using MySql.Data.MySqlClient;
 #if NETCOREAPP
+using Npgsql;
 #else
 using System.Data.OleDb;
 using IBM.Data.DB2;
@@ -101,10 +101,11 @@ namespace DaoGen_Tool
         private OracleConnection OdpCn;
         /// <summary>MySqlConnection</summary>
         private MySqlConnection MySqlCn;
-        /// <summary>NpgsqlConnection</summary>
-        private NpgsqlConnection NpgsqlCn;
+
 
 #if NETCOREAPP
+        /// <summary>NpgsqlConnection</summary>
+        private NpgsqlConnection NpgsqlCn;
 #else
         /// <summary>OleDbConnection</summary>
         private OleDbConnection OleCn;
@@ -234,12 +235,12 @@ namespace DaoGen_Tool
                 this.MySqlCn = new MySqlConnection(this.txtConnString.Text);
                 this.MySqlCn.Open();
             }
+#if NETCOREAPP
             else if (this.rbnPstgrs.Checked)
             {
                 this.NpgsqlCn = new NpgsqlConnection(this.txtConnString.Text);
                 this.NpgsqlCn.Open();
             }
-#if NETCOREAPP
 #else
             else if (this.rbnOLE.Checked)
             {
@@ -290,12 +291,11 @@ namespace DaoGen_Tool
                 this.MySqlCn.Close();
             }
 
+#if NETCOREAPP
             if (this.NpgsqlCn != null)
             {
                 this.NpgsqlCn.Close();
             }
-
-#if NETCOREAPP
 #else
             if (this.OleCn != null)
             {
@@ -769,6 +769,7 @@ namespace DaoGen_Tool
 
                     #endregion
                 }
+#if NETCOREAPP
                 else if (this.rbnPstgrs.Checked)
                 {
                     #region PostgreSQL
@@ -817,7 +818,6 @@ namespace DaoGen_Tool
 
                     #endregion
                 }
-#if NETCOREAPP
 #else
                 else if (this.rbnOLE.Checked)
                 {
@@ -1214,6 +1214,7 @@ namespace DaoGen_Tool
 
                     #endregion
                 }
+#if NETCOREAPP
                 else if (this.rbnPstgrs.Checked)
                 {
                     #region PostgreSQL
@@ -1250,7 +1251,6 @@ namespace DaoGen_Tool
 
                     #endregion
                 }
-#if NETCOREAPP
 #else
                 else if (this.rbnOLE.Checked)
                 {
@@ -1895,6 +1895,7 @@ namespace DaoGen_Tool
 
                     #endregion
                 }
+#if NETCOREAPP
                 else if (this.rbnPstgrs.Checked)
                 {
                     #region PostgreSQL
@@ -1935,7 +1936,6 @@ namespace DaoGen_Tool
 
                     #endregion
                 }
-#if NETCOREAPP
 #else
                 else if (this.rbnOLE.Checked)
                 {

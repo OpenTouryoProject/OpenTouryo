@@ -31,6 +31,7 @@ using Touryo.Infrastructure.Framework.RichClient.Presentation;
 using Touryo.Infrastructure.Framework.RichClient.Asynchronous;
 using Touryo.Infrastructure.Framework.Transmission;
 using Touryo.Infrastructure.Framework.Util;
+using System.Net;
 
 namespace WSClientWin_sample
 {
@@ -45,6 +46,7 @@ namespace WSClientWin_sample
         public Form1()
         {
             InitializeComponent();
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
         }
 
         /// <summary>
@@ -102,11 +104,11 @@ namespace WSClientWin_sample
             this.ddlExRollback.SelectedIndex = 0;
 
             // ddlTransmission
-            this.ddlTransmission.Items.Add(new ComboBoxItem("ASP.NET Webサービス呼出", "testWebService"));
-            this.ddlTransmission.Items.Add(new ComboBoxItem("WCF Webサービス呼出", "testWebService2"));
-            this.ddlTransmission.Items.Add(new ComboBoxItem("WCF TCPサービス呼出", "testWebService3"));
+            //this.ddlTransmission.Items.Add(new ComboBoxItem("ASP.NET Webサービス呼出", "testWebService"));
+            //this.ddlTransmission.Items.Add(new ComboBoxItem("WCF Webサービス呼出", "testWebService2"));
             this.ddlTransmission.Items.Add(new ComboBoxItem("ASP.NET WebAPI呼出", "testWebService4"));
             this.ddlTransmission.Items.Add(new ComboBoxItem("インプロセス呼出", "testInProcess"));
+            this.ddlTransmission.Items.Add(new ComboBoxItem("WCF TCPサービス呼出", "testWebService3"));
             this.ddlTransmission.SelectedIndex = 0;
 
             // ddlOrderColumn

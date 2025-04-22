@@ -13,16 +13,16 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\..\Build_netcore60\</OutputPath>
-    <DocumentationFile>..\..\Build_netcore60\net6.0-windows\OpenTouryo.Framework.RichClient.xml</DocumentationFile>
+    <OutputPath>..\..\Build_netcore80\</OutputPath>
+    <DocumentationFile>..\..\Build_netcore80\net8.0-windows7.0\OpenTouryo.Framework.RichClient.xml</DocumentationFile>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\..\Build_netcore60\</OutputPath>
-    <DocumentationFile>..\..\Build_netcore60\net6.0-windows\OpenTouryo.Framework.RichClient.xml</DocumentationFile>
+    <OutputPath>..\..\Build_netcore80\</OutputPath>
+    <DocumentationFile>..\..\Build_netcore80\net8.0-windows7.0\OpenTouryo.Framework.RichClient.xml</DocumentationFile>
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
