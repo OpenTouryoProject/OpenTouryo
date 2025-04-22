@@ -63,10 +63,10 @@ namespace WSClientWin_sample
             this.ddlDap.Items.Add(new ComboBoxItem("Multi-DB / OLEDB.NET", "OLE"));
             this.ddlDap.Items.Add(new ComboBoxItem("Multi-DB / ODCB.NET", "ODB"));
             this.ddlDap.Items.Add(new ComboBoxItem("Oracle / ODP.NET", "ODP"));
-            this.ddlDap.Items.Add(new ComboBoxItem("DB2 / DB2.NET", "DB2"));
-            this.ddlDap.Items.Add(new ComboBoxItem("HiRDB / HiRDB-DP", "HIR"));
+            //this.ddlDap.Items.Add(new ComboBoxItem("DB2 / DB2.NET", "DB2"));
+            //this.ddlDap.Items.Add(new ComboBoxItem("HiRDB / HiRDB-DP", "HIR"));
             this.ddlDap.Items.Add(new ComboBoxItem("MySQL Cnn/NET", "MCN"));
-            this.ddlDap.Items.Add(new ComboBoxItem("PostgreSQL / Npgsql", "NPS"));
+            //this.ddlDap.Items.Add(new ComboBoxItem("PostgreSQL / Npgsql", "NPS"));
             this.ddlDap.SelectedIndex = 0;
 
             // ddlMode1
