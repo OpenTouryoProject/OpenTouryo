@@ -24,6 +24,54 @@
     z-index          : 1001;                   /* dialog-maskより前面に出す。*/
 }
 
+.ok-dialog
+{
+    position         : fixed;
+    top              : 0;
+    left             : 0;
+    padding          : 10px 10px 0 10px;
+    text-align       : center;
+    overflow         : hidden;                 /* hiddenに変更*/
+    background-color : white;
+    z-index          : 1001;                   /* dialog-maskより前面に出す。*/
+
+    /* 角丸四角 */
+    border-radius         : 10px;
+    -webkit-border-radius : 10px;
+    -moz-border-radius    : 10px;
+
+    /* 影 */
+    box-shadow       : 10px 10px 10px rgba(0,0,0,0.6);
+}
+
+.ok-dialog iframe {
+    border           : none;
+}
+
+.yesno-dialog
+{
+    position         : fixed;
+    top              : 0;
+    left             : 0;
+    padding          : 10px 10px 0 10px;
+    text-align       : center;
+    overflow         : hidden;                 /* hiddenに変更*/
+    background-color : white;
+    z-index          : 1001;                   /* dialog-maskより前面に出す。*/
+
+    /* 角丸四角 */
+    border-radius         : 10px;
+    -webkit-border-radius : 10px;
+    -moz-border-radius    : 10px;
+
+    /* 影 */
+    box-shadow       : 10px 10px 10px rgba(0,0,0,0.6);
+}
+
+.yesno-dialog iframe {
+    border           : none;
+}
+
 /* *.master の 分割で使用している。 */
 
 /* ヘッダー固定 */
@@ -104,12 +152,15 @@
 
 /* 左メニューの定義 */
 .nav-side-menu {
+  position: relative;
+  top: 0px;
+  width: 20%;
+  height: 100%;
   overflow: auto;
   font-family: verdana;
   font-size: 12px;
   font-weight: 200;
   background-color: #2e353d;
-  height: 100%;
   color: #e1ffff;
 }
 .nav-side-menu .brand {
@@ -148,6 +199,7 @@
 .nav-side-menu li .sub-menu li.active {
   color: #d19b3d;
 }
+
 .nav-side-menu ul .sub-menu li.active a,
 .nav-side-menu li .sub-menu li.active a {
   color: #d19b3d;
@@ -177,7 +229,6 @@
   padding-left: 0px;
   border-left: 3px solid #2e353d;
   border-bottom: 1px solid #23282e;
-
   text-decoration: none;
   color: #e1ffff;
 }
@@ -195,11 +246,14 @@
   -ms-transition: all 1s ease;
   transition: all 1s ease;
 }
+.menu-list {
+    height: 100%;
+}
 
 /* コンテンツの定義 */
-#contents{
-    background-color : #FFFFFF;                /* 背景色 */
-    float            : left;
-    margin           : 0;
-    padding          : 5px 0 50px 5px;
+#contents {
+    background-color: #FFFFFF; /* 背景色 */
+    float: left;
+    margin: 0;
+    padding: 5px 0 50px 5px;
 }
