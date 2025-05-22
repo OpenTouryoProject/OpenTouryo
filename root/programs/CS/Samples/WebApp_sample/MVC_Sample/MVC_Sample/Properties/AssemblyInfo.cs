@@ -1,4 +1,23 @@
-﻿using System.Reflection;
+﻿//**********************************************************************************
+//* ASP.NET MVC・サンプル アプリ
+//**********************************************************************************
+
+// テスト用サンプルなので、必要に応じて流用 or 削除して下さい。
+
+//**********************************************************************************
+//* クラス名        ：AssemblyInfo
+//* クラス日本語名  ：AssemblyInfo設定
+//*
+//* 作成日時        ：－
+//* 作成者          ：生技
+//* 更新履歴        ：
+//*
+//*  日時        更新者            内容
+//*  ----------  ----------------  -------------------------------------------------
+//*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+//**********************************************************************************
+
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -8,9 +27,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("MVC_Sample")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("xxxx")]
 [assembly: AssemblyProduct("MVC_Sample")]
-[assembly: AssemblyCopyright("Copyright (C)  2025")]
+[assembly: AssemblyCopyright("Copyright (C) 20XX")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

@@ -1,0 +1,65 @@
+﻿@*
+    //**********************************************************************************
+    //* サンプル アプリ・モデル
+    //**********************************************************************************
+
+    // テスト用クラスなので、必要に応じて流用 or 削除して下さい。
+
+    //**********************************************************************************
+    //* クラス名        ：Sign-in
+    //* クラス日本語名  ：Sign-in
+    //*
+    //* 作成日時        ：－
+    //* 作成者          ：－
+    //* 更新履歴        ：－
+    //*
+    //*  日時        更新者            内容
+    //*  ----------  ----------------  -------------------------------------------------
+    //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+    //**********************************************************************************
+*@
+
+@using MVC_Sample.Models.ViewModels
+@model LoginViewModel
+@{
+    ViewBag.Title = "Sign-in";
+}
+
+<h2>Sign-in</h2>
+
+@* スクリプト・セクション（RenderSection("HeaderScriptsSection", required: true)に出力されます） *@
+@section HeaderScriptsSection{
+    <!-- Head 部の section -->
+}
+
+@using (@Html.BeginForm())
+{
+    @Html.ValidationSummary()
+    @Html.AntiForgeryToken()
+    
+    <table>
+        <tr>
+            <th>ユーザーID</th>
+            <td>@Html.TextBoxFor(model => model.UserName)</td>
+        </tr>
+        <tr>
+            <th>パスワード</th>
+            <td>@Html.PasswordFor(model => model.Password)</td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align:right;">
+                <input type="submit" name="normal" value="ログイン" style="width:150px" />
+            <td>
+        </tr>
+        <tr>
+            <td colspan="2" style="text-align:right;">
+                <input type="submit" name="external" value="外部ログイン" style="width:150px" />
+            <td>
+        </tr>
+    </table>
+}
+
+@* スクリプト・セクション（RenderSection("FooterScriptsSection", required: true)に出力されます） *@
+@section FooterScriptsSection{
+    <!-- Footer 部の section -->
+}
