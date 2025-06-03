@@ -1,6 +1,6 @@
 @echo off
 
-set DIRECTORIES=packages, obj, bin, bld, Temp, Build, PrecompiledWeb, .vs
+set DIRECTORIES=packages, obj, bin, bld, Temp, PrecompiledWeb, MigrationBackup, .vs
 @echo --------------------------------------------------
 @echo Delete the %DIRECTORIES% folders.
 @echo --------------------------------------------------

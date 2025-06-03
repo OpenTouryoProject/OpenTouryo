@@ -334,13 +334,13 @@ namespace MVC_Sample.Controllers
                     ShipperViweModel svm = null;
                     TestShipperViweModel tsvm = null;
 
-                    // テスト１
-                    svm = (ShipperViweModel)BinarySerialize.DeepClone(model.Shipper);
+                    //// テスト１
+                    //svm = (ShipperViweModel)BinarySerialize.DeepClone(model.Shipper);
 
                     if (testReturnValue.Obj2 != null)
                     {
                         PocoToPoco.Map<TestShipperViweModel, ShipperViweModel>(
-                            (TestShipperViweModel)testReturnValue.Obj2, svm,
+                            (TestShipperViweModel)testReturnValue.Obj2, model.Shipper, //svm,
                             // mapの書き方は、Key-Valueでdst-srcのproperty field名を書く
                             new Dictionary<string, string>()
                             {

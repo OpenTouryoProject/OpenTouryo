@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net8.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <AssemblyName>OpenTouryo.Business.RichClient</AssemblyName>
@@ -12,7 +12,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
     <OutputPath>..\..\Build_netcore80\</OutputPath>
-    <DocumentationFile>..\..\Build_netcore80\net8.0-windows\OpenTouryo.Business.RichClient.xml</DocumentationFile>
+    <DocumentationFile>..\..\Build_netcore80\net8.0-windows7.0\OpenTouryo.Business.RichClient.xml</DocumentationFile>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <NoWarn>1701;1702;NU1701</NoWarn>
@@ -21,7 +21,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
     <OutputPath>..\..\Build_netcore80\</OutputPath>
-    <DocumentationFile>..\..\Build_netcore80\net8.0-windows\OpenTouryo.Business.RichClient.xml</DocumentationFile>
+    <DocumentationFile>..\..\Build_netcore80\net8.0-windows7.0\OpenTouryo.Business.RichClient.xml</DocumentationFile>
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <NoWarn>1701;1702;NU1701</NoWarn>

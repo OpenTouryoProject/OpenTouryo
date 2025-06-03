@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <UseWPF>true</UseWPF>
     <RootNamespace>WSClientWPF_sample</RootNamespace>
     <AssemblyName>WSClientWPF_sample</AssemblyName>
@@ -40,46 +40,46 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0" />
-    <PackageReference Include="log4net" Version="2.0.8" />
-    <PackageReference Include="MySql.Data" Version="8.0.18" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="Npgsql" Version="4.1.1" />
-    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="2.19.50" />
-    <PackageReference Include="System.Data.Odbc" Version="4.6.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.7.0" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <Reference Include="OpenTouryo.Business">
-      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0-windows\OpenTouryo.Business.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTouryo.Business.RichClient">
-      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0-windows\OpenTouryo.Business.RichClient.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTouryo.Framework">
-      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0-windows\OpenTouryo.Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTouryo.Framework.RichClient">
-      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0-windows\OpenTouryo.Framework.RichClient.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTouryo.Public">
-      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0-windows\OpenTouryo.Public.dll</HintPath>
-    </Reference>
-    <Reference Include="WSIFType_sample">
-      <HintPath>..\..\Build\net6.0\WSIFType_sample.dll</HintPath>
-    </Reference>
-    <Reference Include="WSServer_sample">
-      <HintPath>..\..\Build\net6.0\WSServer_sample.dll</HintPath>
-    </Reference>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.5" />
+    <PackageReference Include="log4net" Version="3.1.0" />
+    <PackageReference Include="MySql.Data" Version="9.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Npgsql" Version="9.0.3" />
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.8.0" />
+    <PackageReference Include="System.Data.Odbc" Version="9.0.5" />
   </ItemGroup>
   
   <ItemGroup>
     <EmbeddedResource Include="SPDefinition.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Reference Include="OpenTouryo.Business">
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore80\net8.0-windows7.0\OpenTouryo.Business.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Business.RichClient">
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore80\net8.0-windows7.0\OpenTouryo.Business.RichClient.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore80\net8.0-windows7.0\OpenTouryo.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Framework.RichClient">
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore80\net8.0-windows7.0\OpenTouryo.Framework.RichClient.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore80\net8.0-windows7.0\OpenTouryo.Public.dll</HintPath>
+    </Reference>
+    <Reference Include="WSIFType_sample">
+      <HintPath>..\..\Build\net8.0\WSIFType_sample.dll</HintPath>
+    </Reference>
+    <Reference Include="WSServer_sample">
+      <HintPath>..\..\Build\net8.0\WSServer_sample.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>

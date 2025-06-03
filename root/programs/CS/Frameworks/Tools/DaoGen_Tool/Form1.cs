@@ -55,13 +55,14 @@
 // --------------------
 // データプロバイダ
 // --------------------
-using System.Data.SqlClient;
 using Oracle.ManagedDataAccess.Client;
 using System.Data.Odbc;
 using MySql.Data.MySqlClient;
 #if NETCOREAPP
+using Microsoft.Data.SqlClient;
 using Npgsql;
 #else
+using System.Data.SqlClient;
 using System.Data.OleDb;
 using IBM.Data.DB2;
 using Hitachi.HiRDB;

@@ -64,15 +64,16 @@
 // --------------------
 // データプロバイダ
 // --------------------
-using System.Data.SqlClient;
 //using System.Data.OracleClient; // 衝突するのでエイリアスを作成
 //using Oracle.DataAccess.Client; // Managedに移行
 //using Oracle.ManagedDataAccess.Client; // 衝突するのでエイリアスを作成
 using System.Data.Odbc;
 using MySql.Data.MySqlClient;
 #if NETCOREAPP
+using Microsoft.Data.SqlClient;
 using Npgsql;
 #else
+using System.Data.SqlClient;
 using System.Data.OleDb;
 using IBM.Data.DB2;
 //using Hitachi.HiRDB;
