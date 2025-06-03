@@ -6,7 +6,12 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>WpfApplication</RootNamespace>
     <AssemblyName>WpfApplication</AssemblyName>
+    <UseWindowsForms>True</UseWindowsForms>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.5" />
+  </ItemGroup>
 
   <ItemGroup>
     <Reference Include="OpenTouryo.Framework.RichClient">

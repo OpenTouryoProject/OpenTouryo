@@ -8,7 +8,12 @@
     <StartupObject />
     <RootNamespace>WindowsFormsApplication</RootNamespace>
     <AssemblyName>WindowsFormsApplication</AssemblyName>
+    <UseWPF>True</UseWPF>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.5" />
+  </ItemGroup>
 
   <ItemGroup>
     <Reference Include="OpenTouryo.Framework.RichClient">

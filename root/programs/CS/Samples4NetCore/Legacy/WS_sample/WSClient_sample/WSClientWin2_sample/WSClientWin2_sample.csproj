@@ -8,6 +8,7 @@
     <StartupObject />
     <RootNamespace>WSClientWin2_sample</RootNamespace>
     <AssemblyName>WSClientWin2_sample</AssemblyName>
+    <UseWPF>True</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,6 +27,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.5" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.5" />
     <PackageReference Include="log4net" Version="3.1.0" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.5" />
   </ItemGroup>
 
   <ItemGroup>

@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <PackageReference Include="log4net" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Bcl.Cryptography" Version="9.0.5" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.5" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.5" />
@@ -24,6 +25,7 @@
     <PackageReference Include="MySql.Data" Version="9.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Npgsql" Version="9.0.3" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.5" />
     <PackageReference Include="System.Security.Permissions" Version="9.0.5" />
   </ItemGroup>
 

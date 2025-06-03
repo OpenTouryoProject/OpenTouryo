@@ -3,9 +3,10 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows7.0</TargetFramework>
-    <UseWPF>true</UseWPF>
+    <UseWPF>True</UseWPF>
     <RootNamespace>_2CSClientWPF_sample</RootNamespace>
     <AssemblyName>2CSClientWPF_sample</AssemblyName>
+    <UseWindowsForms>True</UseWindowsForms>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,6 +28,7 @@
     <PackageReference Include="Npgsql" Version="9.0.3" />
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.8.0" />
     <PackageReference Include="System.Data.Odbc" Version="9.0.5" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.5" />
   </ItemGroup>
 
   <ItemGroup>

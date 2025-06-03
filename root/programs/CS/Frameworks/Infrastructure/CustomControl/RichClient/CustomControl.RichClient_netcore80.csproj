@@ -47,4 +47,8 @@
     <Folder Include="Properties\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.5" />
+  </ItemGroup>
+
 </Project>

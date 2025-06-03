@@ -8,6 +8,7 @@
     <StartupObject />
     <RootNamespace>_2CSClientWin_sample</RootNamespace>
     <AssemblyName>2CSClientWin_sample</AssemblyName>
+    <UseWPF>True</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,6 +30,7 @@
     <PackageReference Include="Npgsql" Version="9.0.3" />
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.8.0" />
     <PackageReference Include="System.Data.Odbc" Version="9.0.5" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.5" />
   </ItemGroup>
 
   <ItemGroup>
