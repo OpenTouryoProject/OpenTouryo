@@ -30,18 +30,13 @@
     <title>@ViewData["Title"]</title>
 
     @* ScriptTagHelperの属性を指定可能。*@
-    <environment include="Development">
-        <link rel="stylesheet" href="~/css/app/site.css" />
-        <link rel="stylesheet" href="~/css/touryo/Style.css" />
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/font-awesome.css" />
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-    </environment>
-    <environment exclude="Development">
-        <link rel="stylesheet" href="~/css/css.min.css" asp-append-version="true" />
-        <script src="~/js/header.min.js" asp-append-version="true"></script>
-    </environment>
+    <!--link rel="stylesheet" href="~/MVC_Sample.styles.css" asp-append-version="true" /-->
+    <!--link rel="stylesheet" href="~/css/site.css" asp-append-version="true" /-->
+    <link rel="stylesheet" href="~/css/app/site.css" />
+    <link rel="stylesheet" href="~/css/touryo/Style.css" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
     @RenderSection("HeaderScriptsSection", required: true)
 
@@ -74,7 +69,7 @@
                 <div class="brand">メニュー</div>
                 <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
                 <div class="menu-list">
-                    <ul id="menu-content" class="menu-content collapse out">
+                    <ul id="menu-content"><!-- class="menu-content collapse out" -->
                         <li onclick="window.location.href = '@Url.Action("Index", "Home")';">
                             <i class="fa fa-arrow-circle-right"></i> メニュートップ
                         </li>
@@ -102,25 +97,13 @@
         </div>
     </footer>
 
-    <environment include="Development">
-        <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
-        <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
-        <script src="~/js/app/site.js" asp-append-version="true"></script>
-        <script src="~/js/touryo/common.js" asp-append-version="true"></script>
-        <script src="~/js/touryo/else.js" asp-append-version="true"></script>
-        <script src="~/js/multiauthsite/qrcode.js" asp-append-version="true"></script>
-        <script src="~/js/multiauthsite/oauthimplicit.js" asp-append-version="true"></script>
-        <script src="~/js/multiauthsite/arrayBufferUtil.js" asp-append-version="true"></script>
-        <script src="~/js/multiauthsite/msWebauthn.js" asp-append-version="true"></script>
-        <script src="~/js/multiauthsite/ffWebauthn.js" asp-append-version="true"></script>        
-    </environment>
-    <environment exclude="Development">
-        <script src="~/js/footer.min.js" asp-append-version="true"></script>
-        <script src="~/js/app.min.js" asp-append-version="true"></script>
-        <script src="~/js/touryo.min.js" asp-append-version="true"></script>
-        <script src="~/js/multiauthsite.min.js" asp-append-version="true"></script>
-    </environment>
-
+    <!--script src="~/js/site.js" asp-append-version="true"></script-->
+    <script src="~/js/app/site.js" asp-append-version="true"></script>
+    <script src="~/js/touryo/common.js" asp-append-version="true"></script>
+    <script src="~/js/touryo/else.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+        
     @RenderSection("FooterScriptsSection", required: true)
 </body>
 </html>

@@ -104,12 +104,15 @@
 
 /* 左メニューの定義 */
 .nav-side-menu {
+  position: relative;
+  top: 0px;
+  width: 20%;
+  height: 100%;
   overflow: auto;
   font-family: verdana;
   font-size: 12px;
   font-weight: 200;
   background-color: #2e353d;
-  height: 100%;
   color: #e1ffff;
 }
 .nav-side-menu .brand {
@@ -177,7 +180,6 @@
   padding-left: 0px;
   border-left: 3px solid #2e353d;
   border-bottom: 1px solid #23282e;
-
   text-decoration: none;
   color: #e1ffff;
 }
@@ -194,6 +196,9 @@
   -o-transition: all 1s ease;
   -ms-transition: all 1s ease;
   transition: all 1s ease;
+}
+.menu-list {
+    height: 100%;
 }
 
 /* コンテンツの定義 */
