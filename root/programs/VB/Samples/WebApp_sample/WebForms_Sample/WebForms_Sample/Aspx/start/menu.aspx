@@ -51,7 +51,6 @@
                         <li><a href="<%= Me.ResolveUrl("~/Aspx/TestFxLayerP/Table/testRepeater.aspx") %>">Repeaterのイベントテスト</a></li>
                         <li><a href="<%= Me.ResolveUrl("~/Aspx/TestFxLayerP/Table/testGridView.aspx") %>">GridViewのイベントテスト</a></li>
                         <li><a href="<%= Me.ResolveUrl("~/Aspx/TestFxLayerP/Table/testListView.aspx") %>">ListViewのイベントテスト</a></li>
-                        <li><a href="<%= Me.ResolveUrl("~/Aspx/TestFxLayerP/Table/testJQGridJson.aspx") %>">JQGridのテスト</a></li>
                     </ul>
                 </li>
                 <li>Web Custom Control系
