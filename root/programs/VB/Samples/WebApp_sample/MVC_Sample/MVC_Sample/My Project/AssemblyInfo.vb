@@ -20,33 +20,30 @@
 Imports System.Reflection
 Imports System.Runtime.InteropServices
 
-' General Information about an assembly is controlled through the following 
-' set of attributes. Change these attribute values to modify the information
-' associated with an assembly.
+' アセンブリに関する一般的情報は、以下の属性セットによって
+' 制御されます。アセンブリに関連付けられている情報を変更するには、
+' これらの属性値を変更します。
 
-' Review the values of the assembly attributes
-<Assembly: AssemblyTitle("MVC_Sample")> 
-<Assembly: AssemblyDescription("")> 
+' アセンブリの属性値を確認します
+<Assembly: AssemblyTitle("MVC_Sample")>
+<Assembly: AssemblyDescription("")>
 <Assembly: AssemblyCompany("xxxx")> 
-<Assembly: AssemblyProduct("MVC_Sample")> 
-<Assembly: AssemblyCopyright("Copyright © xxxx")> 
-<Assembly: AssemblyTrademark("")> 
+<Assembly: AssemblyProduct("MVC_Sample")>
+<Assembly: AssemblyCopyright("Copyright (C)  2025")>
+<Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
 
-' The following GUID is for the ID of the typelib if this project is exposed to COM
-<Assembly: Guid("03bed7b5-8e99-4231-ada7-67cb77e95ada")> 
+' このプロジェクトが COM に公開される場合、次の GUID がタ typelib の ID になります。
+<Assembly: Guid("f2e20918-0c56-43da-a048-b9dd37a28fbf")>
 
-' Version information for an assembly consists of the following four values:
+' アセンブリのバージョン情報は、以下の 4 つの値で構成されています:
 '
-'      Major Version
-'      Minor Version 
-'      Build Number
-'      Revision
+'      メジャー バージョン
+'      マイナー バージョン
+'      ビルド番号
+'      リビジョン
 '
-' You can specify all the values or you can default the Build and Revision Numbers 
-' by using the '*' as shown below:
-' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("1.0.0.0")> 
-<Assembly: AssemblyFileVersion("1.0.0.0")> 
+<Assembly: AssemblyVersion("1.0.0.0")>
+<Assembly: AssemblyFileVersion("1.0.0.0")>
