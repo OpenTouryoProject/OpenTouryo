@@ -72,7 +72,7 @@ Namespace Models.ViewModels
         End Property
         Private m_DdlDap As String
 
-        ''' <summary>個別、共通、自動生成のＤａｏ種別</summary>
+        ''' <summary>個別、共通、自動生成のDao種別</summary>
         Public Property DdlMode1() As String
             Get
                 Return m_DdlMode1
@@ -160,40 +160,28 @@ Namespace Models.ViewModels
                         .Value = "ODP"
                     },
                     New SelectListItem() With {
-                        .Text = "DB2 / DB2.NET",
-                        .Value = "DB2"
-                    },
-                    New SelectListItem() With {
-                        .Text = "HiRDB / HiRDB-DP",
-                        .Value = "HIR"
-                    },
-                    New SelectListItem() With {
                         .Text = "MySQL Cnn/NET",
                         .Value = "MCN"
-                    },
-                    New SelectListItem() With {
-                        .Text = "PostgreSQL / Npgsql",
-                        .Value = "NPS"
                     }
                 }
             End Get
         End Property
 
-        ''' <summary>個別、共通、自動生成のＤａｏ種別 アイテムリスト</summary>
+        ''' <summary>個別、共通、自動生成のDao種別 アイテムリスト</summary>
         Public ReadOnly Property DdlMode1Items() As List(Of SelectListItem)
             Get
                 Return New List(Of SelectListItem)() From {
                     New SelectListItem() With {
-                        .Text = "個別Ｄａｏ",
+                        .Text = "個別Dao",
                         .Value = "individual",
                         .Selected = True
                     },
                     New SelectListItem() With {
-                        .Text = "共通Ｄａｏ",
+                        .Text = "共通Dao",
                         .Value = "common"
                     },
                     New SelectListItem() With {
-                        .Text = "自動生成Ｄａｏ（更新のみ）",
+                        .Text = "自動生成Dao（更新のみ）",
                         .Value = "generate"
                     }
                 }

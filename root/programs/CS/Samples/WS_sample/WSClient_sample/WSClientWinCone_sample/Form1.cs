@@ -71,9 +71,9 @@ namespace WSClientWinCone_sample
             this.ddlDap.SelectedIndex = 0;
 
             // ddlMode1
-            this.ddlMode1.Items.Add(new ComboBoxItem("個別Ｄａｏ", "individual"));
-            this.ddlMode1.Items.Add(new ComboBoxItem("共通Ｄａｏ", "common"));
-            this.ddlMode1.Items.Add(new ComboBoxItem("自動生成Ｄａｏ（更新のみ）", "generate"));
+            this.ddlMode1.Items.Add(new ComboBoxItem("個別Dao", "individual"));
+            this.ddlMode1.Items.Add(new ComboBoxItem("共通Dao", "common"));
+            this.ddlMode1.Items.Add(new ComboBoxItem("自動生成Dao（更新のみ）", "generate"));
             this.ddlMode1.SelectedIndex = 0;
 
             // ddlMode2

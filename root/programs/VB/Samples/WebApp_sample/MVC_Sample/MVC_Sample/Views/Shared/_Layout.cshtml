@@ -51,8 +51,8 @@
         <div id="header-button" class="col-2">
 @if (User.Identity.IsAuthenticated)
 {
-            @* サインアウトボタンは、ユーザーが認証されている時だけ表示する *@
-            <button type="button" class="btn btn-info float-right" onclick="window.location.href = '@Url.Action("Logout", "Home")';">Sign-out</button>
+                @* サインアウトボタンは、ユーザーが認証されている時だけ表示する *@
+                <button type="button" class="btn btn-info float-right" onclick="window.location.href = '@Url.Action("Logout", "Home")';">Sign-out</button>
 }
         </div>
     </div>
@@ -92,6 +92,7 @@
 
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jqueryajax")
     @Scripts.Render("~/bundles/touryo")
     @Scripts.Render("~/bundles/app")
 

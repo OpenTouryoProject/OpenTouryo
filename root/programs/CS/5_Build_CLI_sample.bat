@@ -4,7 +4,6 @@ setlocal
 @rem Turn off the echo function.
 @rem --------------------------------------------------
 @echo off
-@chcp 65001
 
 @rem --------------------------------------------------
 @rem Get the path to the executable file.

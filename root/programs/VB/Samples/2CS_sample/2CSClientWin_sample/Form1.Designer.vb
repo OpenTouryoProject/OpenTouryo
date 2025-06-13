@@ -353,7 +353,7 @@ Partial Class Form1
         Me.label2.Name = "label2"
         Me.label2.Size = New System.Drawing.Size(151, 12)
         Me.label2.TabIndex = 40
-        Me.label2.Text = "個別、共通のＤａｏ種別を選択"
+        Me.label2.Text = "個別、共通のDao種別を選択"
         '
         'label1
         '

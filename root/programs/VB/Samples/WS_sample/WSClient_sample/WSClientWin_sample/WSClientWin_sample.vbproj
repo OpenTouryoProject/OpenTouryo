@@ -84,6 +84,9 @@
     <Reference Include="WSIFType_sample">
       <HintPath>..\..\Build\WSIFType_sample.dll</HintPath>
     </Reference>
+    <Reference Include="WSServer_sample">
+      <HintPath>..\..\Build\WSServer_sample.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -165,6 +168,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient">
+      <Version>6.0.2</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.Owin.Security">
       <Version>4.2.2</Version>
     </PackageReference>

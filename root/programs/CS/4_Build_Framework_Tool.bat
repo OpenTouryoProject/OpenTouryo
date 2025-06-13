@@ -18,6 +18,7 @@ call %CURRENT_DIR%z_Common.bat
 rem --------------------------------------------------
 rem Batch build of DPQuery_Tool.
 rem --------------------------------------------------
+..\nuget.exe restore "Frameworks\Tools\DPQuery_Tool\DPQuery_Tool.sln"
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\DPQuery_Tool\DPQuery_Tool.sln"
 
 pause
@@ -25,6 +26,7 @@ pause
 rem --------------------------------------------------
 rem Batch build of DaoGen_Tool.
 rem --------------------------------------------------
+..\nuget.exe restore "Frameworks\Tools\DaoGen_Tool\DaoGen_Tool.sln"
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\DaoGen_Tool\DaoGen_Tool.sln"
 
 pause

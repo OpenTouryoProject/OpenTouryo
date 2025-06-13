@@ -166,6 +166,9 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient">
+      <Version>6.0.2</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.Owin.Security">
       <Version>4.2.2</Version>
     </PackageReference>

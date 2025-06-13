@@ -53,8 +53,11 @@ Public Module BundleConfig
         bundles.Add(New ScriptBundle("~/bundles/jqueryval").Include(
                     "~/Scripts/jquery.validate*"))
 
-        ' jqueryvaluno、jqueryunoajax (削除)
-        
+        bundles.Add(New ScriptBundle("~/bundles/jqueryajax").Include(
+                    "~/Scripts/jquery.unobtrusive-ajax*"))
+
+        ' jqueryvaluno (削除)
+
         'modernizr、bootstrapを新規作成テンプレ準拠に
         ' 開発と学習には、Modernizr の開発バージョンを使用します。次に、実稼働の準備が
         ' 運用の準備が完了したら、https://modernizr.com のビルド ツールを使用し、必要なテストのみを選択します。

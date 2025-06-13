@@ -95,9 +95,6 @@
     <Reference Include="WSIFType_sample">
       <HintPath>..\..\Build\WSIFType_sample.dll</HintPath>
     </Reference>
-    <Reference Include="WSServer_sample">
-      <HintPath>..\..\Build\WSServer_sample.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncFunc.cs" />

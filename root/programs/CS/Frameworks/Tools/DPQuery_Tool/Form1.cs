@@ -64,18 +64,18 @@
 // --------------------
 // データプロバイダ
 // --------------------
-//using System.Data.OracleClient; // 衝突するのでエイリアスを作成
-//using Oracle.DataAccess.Client; // Managedに移行
-//using Oracle.ManagedDataAccess.Client; // 衝突するのでエイリアスを作成
 using System.Data.Odbc;
-using MySql.Data.MySqlClient;
-#if NETCOREAPP
 using Microsoft.Data.SqlClient;
+using Oracle.ManagedDataAccess.Client;
+using MySql.Data.MySqlClient;
+
+#if NETCOREAPP
 using Npgsql;
 #else
-using System.Data.SqlClient;
 using System.Data.OleDb;
-using IBM.Data.DB2;
+//using System.Data.OracleClient; // ODP.NETに移行
+//using Oracle.DataAccess.Client; // Managedに移行
+//using IBM.Data.DB2;
 //using Hitachi.HiRDB;
 #endif
 // --------------------
@@ -732,7 +732,7 @@ namespace DPQuery_Tool
                     ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_OLE);
 
                 }
-                else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_DB2)
+                /*else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_DB2)
                 {
                     //DB2.NET
                     this._dam = new DamDB2();
@@ -751,26 +751,26 @@ namespace DPQuery_Tool
                     ((ToolStripStatusLabel)this.statBar.Items[0]).Text = string.Format(this.RM_GetString("STATUS_DATA_PROVIDER_SELECTED"), Literal.DAP_DB2);
 
                 }
-                //else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_HiRDB)
-                //{
-                //    //HiRDBデータ プロバイダ
-                //    this._dam = new DamHiRDB();
+                else if (this.cmbDataProvider.SelectedItem.ToString() == Literal.DAP_HiRDB)
+                {
+                    //HiRDBデータ プロバイダ
+                    this._dam = new DamHiRDB();
 
-                //    //接続文字列のサンプルを設定する（空の場合）。
-                //    //HiRDBデータ プロバイダは、ConnectionStringBuilderがない。
-                //    string csb = "";
-                //    csb += "DataSource=C:\\Windows\\HiRDB.ini;";
-                //    csb += "UID=" + this._uid + ";";
-                //    csb += "PWD=" + this._pwd + ";";
+                    //接続文字列のサンプルを設定する（空の場合）。
+                    //HiRDBデータ プロバイダは、ConnectionStringBuilderがない。
+                    string csb = "";
+                    csb += "DataSource=C:\\Windows\\HiRDB.ini;";
+                    csb += "UID=" + this._uid + ";";
+                    csb += "PWD=" + this._pwd + ";";
 
-                //    this.txtCnnStr.Text = csb;
+                    this.txtCnnStr.Text = csb;
 
-                //    // 活性
-                //    this.nudNumOfBind.Enabled = true;
+                    // 活性
+                    this.nudNumOfBind.Enabled = true;
 
-                //    // 状態
-                //    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_HRD_CREATED;
-                //}
+                    // 状態
+                    ((ToolStripStatusLabel)this.statBar.Items[0]).Text = Literal.STATUS_HRD_CREATED;
+                }*/
 #endif
                 else
                 {
@@ -1404,6 +1404,7 @@ namespace DPQuery_Tool
                                         // OLEDBの型情報を推論
                                         this.InferOLEType(dr[2].GetType(), out dbTypeInfo);
                                     }
+                                    /*
                                     else if (this._dam.GetType() == typeof(DamDB2))
                                     {
                                         // DB2.NETの型情報を推論
@@ -1411,6 +1412,7 @@ namespace DPQuery_Tool
                                     }
                                     // HiRDBデータプロバイダ、MySQL Connector/NET、PostgreSQL Npgsql
                                     // については、推論不明（マニュアル無し）。推論非対応。
+                                    */
 #endif
 
                                     // パラメタを設定（型情報・有）
@@ -2327,7 +2329,7 @@ namespace DPQuery_Tool
 #if NETCOREAPP
 #else
         #region DB2.NET
-
+        /*
         /// <summary>
         /// .NETの型情報（System.Type）から
         /// DB2.NETの型情報（DB2Type）を推論する。
@@ -2394,7 +2396,7 @@ namespace DPQuery_Tool
             db2DbType = null;
             return false;
         }
-
+        */
         #endregion
 #endif
 

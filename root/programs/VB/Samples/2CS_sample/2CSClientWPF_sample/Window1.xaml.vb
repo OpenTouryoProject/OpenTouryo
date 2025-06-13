@@ -49,17 +49,17 @@ Partial Public Class Window1
         Me.ddlDap.Items.Add(New ComboBoxItem("Multi-DB / OLEDB.NET", "OLE"))
         Me.ddlDap.Items.Add(New ComboBoxItem("Multi-DB / ODCB.NET", "ODB"))
         Me.ddlDap.Items.Add(New ComboBoxItem("Oracle / ODP.NET", "ODP"))
-        Me.ddlDap.Items.Add(New ComboBoxItem("DB2 / DB2.NET", "DB2"))
-        Me.ddlDap.Items.Add(New ComboBoxItem("HiRDB / HiRDB-DP", "HIR"))
+        'Me.ddlDap.Items.Add(New ComboBoxItem("DB2 / DB2.NET", "DB2"))
+        'Me.ddlDap.Items.Add(New ComboBoxItem("HiRDB / HiRDB-DP", "HIR"))
         Me.ddlDap.Items.Add(New ComboBoxItem("MySQL Cnn/NET", "MCN"))
-        Me.ddlDap.Items.Add(New ComboBoxItem("PostgreSQL / Npgsql", "NPS"))
+        'Me.ddlDap.Items.Add(New ComboBoxItem("PostgreSQL / Npgsql", "NPS"))
 
         Me.ddlDap.SelectedIndex = 0
 
         ' ddlMode1
-        Me.ddlMode1.Items.Add(New ComboBoxItem("個別Ｄａｏ", "individual"))
-        Me.ddlMode1.Items.Add(New ComboBoxItem("共通Ｄａｏ", "common"))
-        Me.ddlMode1.Items.Add(New ComboBoxItem("自動生成Ｄａｏ（更新のみ）", "generate"))
+        Me.ddlMode1.Items.Add(New ComboBoxItem("個別Dao", "individual"))
+        Me.ddlMode1.Items.Add(New ComboBoxItem("共通Dao", "common"))
+        Me.ddlMode1.Items.Add(New ComboBoxItem("自動生成Dao（更新のみ）", "generate"))
         Me.ddlMode1.SelectedIndex = 0
 
         ' ddlMode2
