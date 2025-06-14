@@ -20,7 +20,7 @@
 
 //**********************************************************************************
 //* クラス名        ：LogManager
-//* クラス日本語名  ：ロガー管理クラス
+//* クラス日本語名  ：log4netロガー管理クラス
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -59,13 +59,13 @@ using log4net.Repository;
 
 namespace Touryo.Infrastructure.Public.Log
 {
-    /// <summary>ロガー管理クラス</summary>
-    internal class LogManager
+    /// <summary>log4netロガー管理クラス</summary>
+    internal class LogManager_log4net
     {
         #region クラス変数
 
         /// <summary>
-        /// SQL（log4net.ILog）をキャッシュする
+        /// log4netロガー（log4net.ILog）をキャッシュする
         /// </summary>
         private static Dictionary<string, log4net.ILog> _logIfHt = new Dictionary<string, log4net.ILog>();
 
@@ -82,22 +82,22 @@ namespace Touryo.Infrastructure.Public.Log
         /// log4net.ILogインスタンスの取得
         /// </summary>
         /// <param name="loggerName">ロガー名</param>
-        /// <returns>log4netのインターフェイス</returns>
+        /// <returns>log4net.ILog</returns>
         public static log4net.ILog GetLog4netIf(string loggerName)
         {
-            lock (LogManager._lock)
+            lock (LogManager_log4net._lock)
             {
                 // null対策
-                if (LogManager._logIfHt == null)
+                if (LogManager_log4net._logIfHt == null)
                 {
-                    LogManager._logIfHt = new Dictionary<string, log4net.ILog>();
+                    LogManager_log4net._logIfHt = new Dictionary<string, log4net.ILog>();
                 }
 
                 // すでにlog4net.ILogインスタンスが存在する。
-                if (LogManager._logIfHt.ContainsKey(loggerName)) // Dic化でnullチェック変更
+                if (LogManager_log4net._logIfHt.ContainsKey(loggerName)) // Dic化でnullチェック変更
                 {
                     // 生成済みのlog4net.ILogインスタンスを返す。
-                    return (log4net.ILog)LogManager._logIfHt[loggerName];
+                    return (log4net.ILog)LogManager_log4net._logIfHt[loggerName];
                 }
                 else
                 {
@@ -174,15 +174,15 @@ namespace Touryo.Infrastructure.Public.Log
 
                         // log4net.ILogインスタンスを初期化する。
 #if (NETSTD || NETCOREAPP)
-                        LogManager._logIfHt.Add(
+                        LogManager_log4net._logIfHt.Add(
                             loggerName,
                             log4net.LogManager.GetLogger(Assembly.GetEntryAssembly(), loggerName));
 #else
-                        LogManager._logIfHt.Add(loggerName, log4net.LogManager.GetLogger(loggerName));
+                        LogManager_log4net._logIfHt.Add(loggerName, log4net.LogManager.GetLogger(loggerName));
 #endif
 
                         // 生成したlog4net.ILogインスタンスを返す。
-                        return (log4net.ILog)LogManager._logIfHt[loggerName];
+                        return (log4net.ILog)LogManager_log4net._logIfHt[loggerName];
                     }
 
                     // #12-end

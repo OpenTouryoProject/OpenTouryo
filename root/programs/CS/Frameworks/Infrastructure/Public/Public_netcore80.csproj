@@ -94,6 +94,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.4" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="NLog" Version="5.5.0" />
     <PackageReference Include="System.Data.Odbc" Version="9.0.4" />
     <PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" />
     <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />

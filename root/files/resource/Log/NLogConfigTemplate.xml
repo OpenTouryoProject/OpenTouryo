@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- NLog構成設定のセクション -->
+
+<nlog xmlns="http://www.nlog-project.org/schemas/NLog.xsd"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      autoReload="true"
+      internalLogLevel="Debug"
+      internalLogFile="C:\root\files\resource\Log\NLogInternalLog.log">
+
+  <!-- アペンダを選択することによって、ログの出力先を変更できる。 -->
+  <targets>
+    <!-- ローリング・ログファイル出力用アペンダ -->
+    <target xsi:type="File" name="（★アペンダ名１）"
+            fileName="（★ファイルパス）" encoding="utf-8" keepFileOpen="true"
+            layout="[${date:format=yyyy/MM/dd HH\:mm\:ss,fff}],[${level:uppercase=true}],[${threadid}],${message}"/>
+
+    <!-- ローリング・ログファイル出力用アペンダ -->
+    <target xsi:type="File" name="（★アペンダ名２）"
+            fileName="（★ファイルパス）" encoding="utf-8" keepFileOpen="true"
+            layout="[${date:format=yyyy/MM/dd HH\:mm\:ss,fff}],[${level:uppercase=true}],[${threadid}],${message}"/>
+
+    <!-- ログファイル出力用アペンダ -->
+    <target xsi:type="File" name="（★アペンダ名３）"
+            fileName="（★ファイルパス）" encoding="utf-8" keepFileOpen="true"
+            layout="[${date:format=yyyy/MM/dd HH\:mm\:ss,fff}],[${level:uppercase=true}],[${threadid}],${message}"/>
+  </targets>
+
+  <rules>
+    <!-- Rootロガー相当 -->
+    <logger name="*" minlevel="Debug" writeTo="（★アペンダ名１）,（★アペンダ名２）,（★アペンダ名３）" />
+
+    <!-- 個別ロガー名 -->
+    <logger name="（★ロガー名１）" minlevel="Debug" writeTo="（★アペンダ名１）" />
+    <logger name="（★ロガー名２）" minlevel="Debug" writeTo="（★アペンダ名２）" />
+    <logger name="（★ロガー名３）" minlevel="Debug" writeTo="（★アペンダ名３）" />
+  </rules>
+</nlog>
