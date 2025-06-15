@@ -1,9 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using System.Xml;
 using System.Data;
+using System.Xml;
 using System.Linq;
+using System.Xml.Linq;
 using System.Drawing;
 using System.Reflection;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 using log4net;
+using log4net.Core;
 using log4net.Config;
 using log4net.Repository;
 using log4net.Repository.Hierarchy;
@@ -20,8 +22,6 @@ using NLog;
 using NLog.Config;
 
 using Touryo.Infrastructure.Public.IO;
-using System.Xml.Linq;
-using log4net.Core;
 
 namespace TestLog
 {

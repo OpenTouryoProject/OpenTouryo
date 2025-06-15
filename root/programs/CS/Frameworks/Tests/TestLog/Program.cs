@@ -22,19 +22,15 @@ namespace TestLog
 #if NETCOREAPP
             // configの初期化
             GetConfigParameter.InitConfiguration("appsettings.json");
-#else
 #endif
-            //メッセージボックスを表示する
-            DialogResult result = MessageBox.Show("Form1", "？", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
 
-            if (result == DialogResult.Yes)
-            {
-                Application.Run(new Form1());
-            }
-            else
-            {
-                Application.Run(new Form2());
-            }
+#if Form1
+            Application.Run(new Form1());
+#elif Form2
+            Application.Run(new Form2());
+#else
+            Application.Run(new Form3());
+#endif
         }
     }
 }

@@ -18,29 +18,29 @@ using Touryo.Infrastructure.Public.Log;
 
 namespace TestLog
 {
-    public partial class Form2 : Form
+    public partial class Form3 : Form
     {
         /// <summary>メッセージ・ヘッダ</summary>
         private string message = "";
 
-        /// <summary>Form2</summary>
-        public Form2()
+        /// <summary>Form3</summary>
+        public Form3()
         {
             InitializeComponent();
 
             string fxLog4NetConfFile = GetConfigParameter.GetConfigValue("FxLog4NetConfFile");
-            if (fxLog4NetConfFile == "SampleLogConf.xml")
+            if (fxLog4NetConfFile == "SampleLogConf_N.xml")
             {
-                message = "log4netファイルからロード";
+                message = "NLogファイルからロード";
             }
-            else if (fxLog4NetConfFile == "TestLog.SampleLogConf.xml")
+            else if (fxLog4NetConfFile == "TestLog.SampleLogConf_N.xml")
             {
-                message = "log4net埋め込まれたリソースからロード";
+                message = "NLog埋め込まれたリソースからロード";
             }
             else
             {
                 throw new Exception("FxLog4NetConfFileの値が不正です。");
-            }   
+            }
         }
 
         /// <summary>button1_Click</summary>
