@@ -339,7 +339,7 @@ namespace Touryo.Infrastructure.Public.Db
 
         /// <summary>SQL文を記述したファイルへのパスを設定して、Commandオブジェクトを生成。</summary>
         /// <param name="sqlFilePath">SQL文を記述したファイルへのパス</param>
-        /// <remarks>通常、Ｄａｏ経由で利用する。</remarks>
+        /// <remarks>通常、Dao経由で利用する。</remarks>
         public override void SetSqlByFile(string sqlFilePath)
         {
             // CommandTypeをTextとしてCommandオブジェクトを生成する
@@ -349,7 +349,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// <summary>SQL文を記述したファイルへのパスとCommandTypeを設定して、Commandオブジェクトを生成。</summary>
         /// <param name="sqlFilePath">SQL文を記述したファイルへのパス</param>
         /// <param name="commandType">コマンドの種類</param>
-        /// <remarks>通常、Ｄａｏ経由で利用する。</remarks>
+        /// <remarks>通常、Dao経由で利用する。</remarks>
         public override void SetSqlByFile(string sqlFilePath, CommandType commandType)
         {
             // ファイルから、実行するSQL文を読み込む
@@ -361,7 +361,7 @@ namespace Touryo.Infrastructure.Public.Db
 
         /// <summary>SQL文を設定して、Commandオブジェクトを生成。</summary>
         /// <param name="commandText">実行するSQL文</param>
-        /// <remarks>通常、Ｄａｏ経由で利用する。</remarks>
+        /// <remarks>通常、Dao経由で利用する。</remarks>
         public override void SetSqlByCommand(string commandText)
         {
             // CommandTypeをTextとしてCommandオブジェクトを生成する
@@ -371,7 +371,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// <summary>SQL文とCommandTypeを設定して、Commandオブジェクトを生成。</summary>
         /// <param name="commandText">実行するSQL文</param>
         /// <param name="commandType">コマンドの種類</param>
-        /// <remarks>通常、Ｄａｏ経由で利用する。</remarks>
+        /// <remarks>通常、Dao経由で利用する。</remarks>
         public override void SetSqlByCommand(string commandText, CommandType commandType)
         {
             // コマンド テキストが、動的パラメタライズド クエリであるか確認する。
@@ -395,7 +395,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// <param name="parameterName">パラメタライズドクエリのパラメタ名</param>
         /// <returns>Out,RetValパラメタのバリュー</returns>
         /// <remarks>
-        /// 通常、Ｄａｏ経由で利用する。
+        /// 通常、Dao経由で利用する。
         /// 動的SQLの場合はSQL実行後に利用可能
         /// </remarks>
         public override object GetParameter(string parameterName)
@@ -415,7 +415,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// <summary>パラメタライズドクエリにパラメタを設定する。</summary>
         /// <param name="parameterName">パラメタライズドクエリのパラメタ名</param>
         /// <param name="obj">パラメタの値</param>
-        /// <remarks>通常、Ｄａｏ経由で利用する。</remarks>
+        /// <remarks>通常、Dao経由で利用する。</remarks>
         public override void SetParameter(string parameterName, object obj)
         {
             this.SetParameter(parameterName, obj, null, -1, ParameterDirection.Input);
@@ -425,7 +425,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// <param name="parameterName">パラメタライズドクエリのパラメタ名</param>
         /// <param name="obj">パラメタの値</param>
         /// <param name="dbTypeInfo">パラメタの型（OracleDbType）（設定しない場合は、nullを指定）</param>
-        /// <remarks>通常、Ｄａｏ経由で利用する。</remarks>
+        /// <remarks>通常、Dao経由で利用する。</remarks>
         public override void SetParameter(string parameterName, object obj, object dbTypeInfo)
         {
             this.SetParameter(parameterName, obj, dbTypeInfo, -1, ParameterDirection.Input);
@@ -436,7 +436,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// <param name="obj">パラメタの値</param>
         /// <param name="dbTypeInfo">パラメタの型（OracleDbType）（設定しない場合は、nullを指定）</param>
         /// <param name="size">パラメタのサイズ（設定しない場合は、-1を指定）</param>
-        /// <remarks>通常、Ｄａｏ経由で利用する。</remarks>
+        /// <remarks>通常、Dao経由で利用する。</remarks>
         public override void SetParameter(string parameterName, object obj, object dbTypeInfo, int size)
         {
             this.SetParameter(parameterName, obj, dbTypeInfo, size, ParameterDirection.Input);
@@ -448,7 +448,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// <param name="dbTypeInfo">パラメタの型（OracleDbType）（設定しない場合は、nullを指定）</param>
         /// <param name="size">パラメタのサイズ（設定しない場合は、-1を指定）</param>
         /// <param name="paramDirection">パラメタの方向</param>
-        /// <remarks>通常、Ｄａｏ経由で利用する。</remarks>
+        /// <remarks>通常、Dao経由で利用する。</remarks>
         public override void SetParameter(string parameterName, object obj,
             object dbTypeInfo, int size, ParameterDirection paramDirection)
         {
@@ -546,7 +546,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// <param name="userParameterValue">置換の文字列</param>
         /// <remarks>
         /// SQLインジェクションされる可能性があるユーザ入力は「userParameterValue」に指定しないこと。
-        /// 通常、Ｄａｏ経由で利用する。
+        /// 通常、Dao経由で利用する。
         /// </remarks>
         public override void SetUserParameter(string userParameterName, string userParameterValue)
         {
@@ -687,7 +687,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// <param name="dt">データテーブル</param>
         /// <remarks>
         /// OracleDataAdapterのFillを実行する。
-        /// 通常、Ｄａｏ経由で利用する。
+        /// 通常、Dao経由で利用する。
         /// </remarks>
         public override void ExecSelectFill_DT(DataTable dt)
         {
@@ -714,7 +714,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// <param name="ds">データセット</param>
         /// <remarks>
         /// OracleDataAdapterのFillを実行する。
-        /// 通常、Ｄａｏ経由で利用する。
+        /// 通常、Dao経由で利用する。
         /// </remarks>
         public override void ExecSelectFill_DS(DataSet ds)
         {
@@ -741,7 +741,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// <returns>OracleDataReader</returns>
         /// <remarks>
         /// OracleCommandのExecuteReaderを実行する。
-        /// 通常、Ｄａｏ経由で利用する。
+        /// 通常、Dao経由で利用する。
         /// </remarks>
         public override IDataReader ExecSelect_DR()
         {
@@ -765,7 +765,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// <returns>結果セットの最初の行の最初の列（オブジェクト型） </returns>
         /// <remarks>
         /// OracleCommandのExecuteScalarを実行する。
-        /// 通常、Ｄａｏ経由で利用する。
+        /// 通常、Dao経由で利用する。
         /// </remarks>
         public override object ExecSelectScalar()
         {
@@ -789,7 +789,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// <returns>影響を受けた行数</returns>
         /// <remarks>
         /// OracleCommandのExecuteNonQueryを実行する。
-        /// 通常、Ｄａｏ経由で利用する。
+        /// 通常、Dao経由で利用する。
         /// </remarks>
         public override int ExecInsUpDel_NonQuery()
         {
@@ -814,7 +814,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// <returns>SQL文</returns>
         /// <remarks>
         /// Commandでの実行はしない。
-        /// 通常、Ｄａｏ経由で利用する。
+        /// 通常、Dao経由で利用する。
         /// </remarks>
         public override string ExecGenerateSQL(SQLUtility sqlUtil)
         {

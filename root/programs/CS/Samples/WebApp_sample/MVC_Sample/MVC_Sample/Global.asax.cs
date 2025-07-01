@@ -1,30 +1,38 @@
-ï»¿//**********************************************************************************
-//* ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆ
+//**********************************************************************************
+//* ƒeƒ“ƒvƒŒ[ƒg
 //**********************************************************************************
 
-// ã‚µãƒ³ãƒ—ãƒ«ä¸­ã®ãƒ†ãƒ³ãƒ—ãƒ¬ãƒ¼ãƒˆãªã®ã§ã€å¿…è¦ã«å¿œã˜ã¦ä½¿ç”¨ã—ã¦ä¸‹ã•ã„ã€‚
+// ƒTƒ“ƒvƒ‹’†‚Ìƒeƒ“ƒvƒŒ[ƒg‚È‚Ì‚ÅA•K—v‚É‰ž‚¶‚ÄŽg—p‚µ‚Ä‰º‚³‚¢B
 
 //**********************************************************************************
-//* ã‚¯ãƒ©ã‚¹å        ï¼šGlobal
-//* ã‚¯ãƒ©ã‚¹æ—¥æœ¬èªžå  ï¼šGlobal.asaxã®ã‚³ãƒ¼ãƒ‰ ãƒ“ãƒã‚¤ãƒ³ãƒ‰
+//* ƒNƒ‰ƒX–¼        FGlobal
+//* ƒNƒ‰ƒX“ú–{Œê–¼  FGlobal.asax‚ÌƒR[ƒh ƒrƒnƒCƒ“ƒh
 //*
-//* ä½œæˆæ—¥æ™‚        ï¼šï¼
-//* ä½œæˆè€…          ï¼šï¼
-//* æ›´æ–°å±¥æ­´        ï¼šï¼
+//* ì¬“úŽž        F|
+//* ì¬ŽÒ          F|
+//* XV—š—ð        F|
 //*
-//*  æ—¥æ™‚        æ›´æ–°è€…            å†…å®¹
+//*  “úŽž        XVŽÒ            “à—e
 //*  ----------  ----------------  -------------------------------------------------
-//*  20xx/xx/xx  ï¼¸ï¼¸ ï¼¸ï¼¸         ï¼¸ï¼¸ï¼¸ï¼¸
-//*  2011/12/07  è¥¿é‡Ž å¤§ä»‹         Application_Errorã«ACCESSãƒ­ã‚°ã‚’è¿½åŠ 
-//*  2012/04/05  è¥¿é‡Ž å¤§ä»‹         Application_OnPreRequestHandlerExecute
-//*                                OnPostRequestHandlerExecuteã«ACCESSãƒ­ã‚°ã‚’è¿½åŠ 
+//*  20xx/xx/xx  ‚w‚w ‚w‚w         ‚w‚w‚w‚w
+//*  2011/12/07  ¼–ì ‘å‰î         Application_Error‚ÉACCESSƒƒO‚ð’Ç‰Á
+//*  2012/04/05  ¼–ì ‘å‰î         Application_OnPreRequestHandlerExecute
+//*                                OnPostRequestHandlerExecute‚ÉACCESSƒƒO‚ð’Ç‰Á
 //**********************************************************************************
 
 // System
 using System;
+using System.Net.Http;
+using System.Web.Http;
+using System.Web.Mvc;
+using System.Web.Optimization;
+
+using System.Web.Routing;
+
 // OpenTouryo
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Framework.Authentication;
 
 namespace MVC_Sample
 {
@@ -32,284 +40,309 @@ namespace MVC_Sample
     public class Global : System.Web.HttpApplication
     {
         /////////////////////////////////////////////////////////////////////////////////
-        // Global_asaxã®ãƒ¡ãƒ³ãƒå¤‰æ•°(ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å¤‰æ•°ï¼‰ã¯ã‚¹ãƒ¬ãƒƒãƒ‰ã‚»ãƒ¼ãƒ•
+        // Global_asax‚Ìƒƒ“ƒo•Ï”(ƒCƒ“ƒXƒ^ƒ“ƒX•Ï”j‚ÍƒXƒŒƒbƒhƒZ[ƒt
         /////////////////////////////////////////////////////////////////////////////////
 
-        // ã“ã“ã«ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹å¤‰æ•°ã‚’å®šç¾©ã—ãŸå ´åˆã€ã“ã‚Œã¯ã€å„ã‚¹ãƒ¬ãƒƒãƒ‰ã«å‰²ã‚Šå½“ã¦ã‚‰ã‚Œã‚‹ã€‚
-        // æ•…ã«ã€ãƒžãƒ«ãƒã‚¹ãƒ¬ãƒƒãƒ‰ï¼ˆãƒ¦ãƒ¼ã‚¶ï¼‰ã®ASP.NETã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã§ã‚‚ç«¶åˆã—ãªã„ã€‚
+        // ‚±‚±‚ÉƒCƒ“ƒXƒ^ƒ“ƒX•Ï”‚ð’è‹`‚µ‚½ê‡A‚±‚ê‚ÍAŠeƒXƒŒƒbƒh‚ÉŠ„‚è“–‚Ä‚ç‚ê‚éB
+        // ŒÌ‚ÉAƒ}ƒ‹ƒ`ƒXƒŒƒbƒhiƒ†[ƒUj‚ÌASP.NETƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚Å‚à‹£‡‚µ‚È‚¢B
         // http:// support.microsoft.com/kb/312607/ja
 
         // ---
 
-        // é™çš„å¤‰æ•°ã®å ´åˆã¯ç«¶åˆã™ã‚‹ã€‚
+        // Ã“I•Ï”‚Ìê‡‚Í‹£‡‚·‚éB
 
-        // ASP.NET1.0ã€1.1ã§ã¯ã€Applicationã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã§ã¯ãªãã€é™çš„å¤‰æ•°ã®ä½¿ç”¨ãŒæŽ¨å¥¨ã•ã‚Œã¦ã„ãŸãŒã€
-        // ASP.NET2.0ã§ã¯ã€é™çš„å¤‰æ•°ãŒä½¿ç”¨ã§ããªã„ã®ã§ã€é™çš„å¤‰æ•°ã§ã¯ãªãã€Applicationã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚’
-        // ä½¿ç”¨ã™ã‚‹ï¼ˆãŸã ã—ã€Applicationã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã‚‚ç«¶åˆã™ã‚‹ã®ã§æ³¨æ„ã™ã‚‹ï¼‰ã€‚
+        // ASP.NET1.0A1.1‚Å‚ÍAApplicationƒIƒuƒWƒFƒNƒg‚Å‚Í‚È‚­AÃ“I•Ï”‚ÌŽg—p‚ª„§‚³‚ê‚Ä‚¢‚½‚ªA
+        // ASP.NET2.0‚Å‚ÍAÃ“I•Ï”‚ªŽg—p‚Å‚«‚È‚¢‚Ì‚ÅAÃ“I•Ï”‚Å‚Í‚È‚­AApplicationƒIƒuƒWƒFƒNƒg‚ð
+        // Žg—p‚·‚éi‚½‚¾‚µAApplicationƒIƒuƒWƒFƒNƒg‚à‹£‡‚·‚é‚Ì‚Å’ˆÓ‚·‚éjB
 
-        /// <summary>æ€§èƒ½æ¸¬å®š</summary>                                                       
+        /// <summary>«”\‘ª’è</summary>                                                       
         private PerformanceRecorder perfRec;
 
         /////////////////////////////////////////////////////////////////////////////////
-        // ã‚¤ãƒ™ãƒ³ãƒˆ ãƒãƒ³ãƒ‰ãƒ©
+        // ƒCƒxƒ“ƒg ƒnƒ“ƒhƒ‰
         /////////////////////////////////////////////////////////////////////////////////
 
         ///////////////////////////////////////////////////
-        // ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã®é–‹å§‹ã€çµ‚äº†ã«é–¢ã™ã‚‹ã‚¤ãƒ™ãƒ³ãƒˆ
+        // ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ÌŠJŽnAI—¹‚ÉŠÖ‚·‚éƒCƒxƒ“ƒg
         ///////////////////////////////////////////////////
 
         /// <summary>
-        /// ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã®é–‹å§‹ã«é–¢ã™ã‚‹ã‚¤ãƒ™ãƒ³ãƒˆ
+        /// ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ÌŠJŽn‚ÉŠÖ‚·‚éƒCƒxƒ“ƒg
         /// </summary>
         void Application_Start(object sender, EventArgs e)
         {
-            // ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã®ã‚¹ã‚¿ãƒ¼ãƒˆã‚¢ãƒƒãƒ—ã§å®Ÿè¡Œã™ã‚‹ã‚³ãƒ¼ãƒ‰
+            // ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ÌƒXƒ^[ƒgƒAƒbƒv‚ÅŽÀs‚·‚éƒR[ƒh
+            // [!] Startup.Configuration‚ð”pŽ~A‚Ü‚½AMVC‚Ìƒeƒ“ƒvƒŒ‚Å‚ÍA
+            // [!] OnBeginRequest‚É‹LÚ‚³‚ê‚Ä‚¢‚½‚ªAWebForms‚É‡‚í‚¹ƒRƒ`ƒ‰‚ÉˆÚ“®
+
+            //
+            AreaRegistration.RegisterAllAreas();
+
+            // 
+            WebApiConfig.Register(GlobalConfiguration.Configuration);
+
+            // ƒOƒ[ƒoƒ‹ƒtƒBƒ‹ƒ^‚Ì“o˜^
+            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+
+            // URLƒ‹[ƒeƒBƒ“ƒO‚Ì“o˜^
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
+
+            // ƒoƒ“ƒhƒ‹•ƒ~ƒjƒtƒBƒP[ƒVƒ‡ƒ“‚Ì“o˜^
+            BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            // JwkSetŽæ“¾—p
+            OAuth2AndOIDCClient.HttpClient = new HttpClient();
         }
 
         /// <summary>
-        /// ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã®çµ‚äº†ã«é–¢ã™ã‚‹ã‚¤ãƒ™ãƒ³ãƒˆ
+        /// ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ÌI—¹‚ÉŠÖ‚·‚éƒCƒxƒ“ƒg
         /// </summary>
         void Application_End(object sender, EventArgs e)
         {
-            // ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã®ã‚·ãƒ£ãƒƒãƒˆãƒ€ã‚¦ãƒ³ã§å®Ÿè¡Œã™ã‚‹ã‚³ãƒ¼ãƒ‰
+            // ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ÌƒVƒƒƒbƒgƒ_ƒEƒ“‚ÅŽÀs‚·‚éƒR[ƒh
         }
 
         ///////////////////////////////////////////////////
-        // ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã®ã‚¨ãƒ©ãƒ¼ã«é–¢ã™ã‚‹ã‚¤ãƒ™ãƒ³ãƒˆ
+        // ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ÌƒGƒ‰[‚ÉŠÖ‚·‚éƒCƒxƒ“ƒg
         ///////////////////////////////////////////////////
 
         /// <summary>
-        /// ã‚¢ãƒ—ãƒªã‚±ãƒ¼ã‚·ãƒ§ãƒ³ã®ã‚¨ãƒ©ãƒ¼ã«é–¢ã™ã‚‹ã‚¤ãƒ™ãƒ³ãƒˆ
+        /// ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ÌƒGƒ‰[‚ÉŠÖ‚·‚éƒCƒxƒ“ƒg
         /// </summary>
         void Application_Error(object sender, EventArgs e)
         {
-            // ãƒãƒ³ãƒ‰ãƒ«ã•ã‚Œã¦ã„ãªã„ã‚¨ãƒ©ãƒ¼ãŒç™ºç”Ÿã—ãŸã¨ãã«å®Ÿè¡Œã™ã‚‹ã‚³ãƒ¼ãƒ‰
+            // ƒnƒ“ƒhƒ‹‚³‚ê‚Ä‚¢‚È‚¢ƒGƒ‰[‚ª”­¶‚µ‚½‚Æ‚«‚ÉŽÀs‚·‚éƒR[ƒh
 
             Exception ex = Server.GetLastError().GetBaseException();
-            //Server.ClearError(); // Server.GetLastError()ã‚’ã‚¯ãƒªã‚¢
+            //Server.ClearError(); // Server.GetLastError()‚ðƒNƒŠƒA
 
-            // ACCESSãƒ­ã‚°å‡ºåŠ› ----------------------------------------------
+            // ACCESSƒƒOo—Í ----------------------------------------------
 
             // ------------
-            // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸éƒ¨
+            // ƒƒbƒZ[ƒW•”
             // ------------
-            // ãƒ¦ãƒ¼ã‚¶å, IPã‚¢ãƒ‰ãƒ¬ã‚¹,ãƒ¬ã‚¤ãƒ¤, 
-            // ç”»é¢å, ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«å, ãƒ¡ã‚½ãƒƒãƒ‰å, å‡¦ç†å
-            // å‡¦ç†æ™‚é–“ï¼ˆå®Ÿè¡Œæ™‚é–“ï¼‰, å‡¦ç†æ™‚é–“ï¼ˆCPUæ™‚é–“ï¼‰
-            // ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ID, ã‚¨ãƒ©ãƒ¼ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ç­‰
+            // ƒ†[ƒU–¼, IPƒAƒhƒŒƒX,ƒŒƒCƒ„, 
+            // ‰æ–Ê–¼, ƒRƒ“ƒgƒ[ƒ‹–¼, ƒƒ\ƒbƒh–¼, ˆ—–¼
+            // ˆ—ŽžŠÔiŽÀsŽžŠÔj, ˆ—ŽžŠÔiCPUŽžŠÔj
+            // ƒGƒ‰[ƒƒbƒZ[ƒWID, ƒGƒ‰[ƒƒbƒZ[ƒW“™
             // ------------
             string strLogMessage =
-                "," + "ï¼" +
+                "," + "|" +
                 "," + Request.UserHostAddress +
-                "," + "ï¼" +
+                "," + "|" +
                 "," + "Global.asax" +
                 "," + "Application_Error" +
                 ",,,,," + ex.ToString();
 
-            // Log4Netã¸ãƒ­ã‚°å‡ºåŠ›
+            // Log4Net‚ÖƒƒOo—Í
             LogIF.FatalLog("ACCESS", strLogMessage);
 
             // -------------------------------------------------------------
         }
 
         ///////////////////////////////////////////////////
-        // ã‚»ãƒƒã‚·ãƒ§ãƒ³ã®é–‹å§‹ã€çµ‚äº†ã«é–¢ã™ã‚‹ã‚¤ãƒ™ãƒ³ãƒˆ
+        // ƒZƒbƒVƒ‡ƒ“‚ÌŠJŽnAI—¹‚ÉŠÖ‚·‚éƒCƒxƒ“ƒg
         ///////////////////////////////////////////////////
 
         /// <summary>
-        /// ã‚»ãƒƒã‚·ãƒ§ãƒ³ã®é–‹å§‹ã«é–¢ã™ã‚‹ã‚¤ãƒ™ãƒ³ãƒˆ
+        /// ƒZƒbƒVƒ‡ƒ“‚ÌŠJŽn‚ÉŠÖ‚·‚éƒCƒxƒ“ƒg
         /// </summary>
         void Session_Start(object sender, EventArgs e)
         {
-            // æ–°è¦ã‚»ãƒƒã‚·ãƒ§ãƒ³ã‚’é–‹å§‹ã—ãŸã¨ãã«å®Ÿè¡Œã™ã‚‹ã‚³ãƒ¼ãƒ‰
+            // V‹KƒZƒbƒVƒ‡ƒ“‚ðŠJŽn‚µ‚½‚Æ‚«‚ÉŽÀs‚·‚éƒR[ƒh
         }
 
         /// <summary>
-        /// ã‚»ãƒƒã‚·ãƒ§ãƒ³ã®çµ‚äº†ã«é–¢ã™ã‚‹ã‚¤ãƒ™ãƒ³ãƒˆ
+        /// ƒZƒbƒVƒ‡ƒ“‚ÌI—¹‚ÉŠÖ‚·‚éƒCƒxƒ“ƒg
         /// </summary>
         void Session_End(object sender, EventArgs e)
         {
-            // ã‚»ãƒƒã‚·ãƒ§ãƒ³ãŒçµ‚äº†ã—ãŸã¨ãã«å®Ÿè¡Œã™ã‚‹ã‚³ãƒ¼ãƒ‰
+            // ƒZƒbƒVƒ‡ƒ“‚ªI—¹‚µ‚½‚Æ‚«‚ÉŽÀs‚·‚éƒR[ƒh
 
-            // Web.configãƒ•ã‚¡ã‚¤ãƒ«å†…ã§sessionstateãƒ¢ãƒ¼ãƒ‰ãŒ[InProc]ã«è¨­å®šã•ã‚Œã¦ã„ã‚‹ã¨ãã®ã¿ã€Session_Endã‚¤ãƒ™ãƒ³ãƒˆãŒç™ºç”Ÿã™ã‚‹ã€‚
-            // sessionstateãƒ¢ãƒ¼ãƒ‰ãŒ[StateServer]ã‹ã€ã¾ãŸã¯[SQLServer]ã«è¨­å®šã•ã‚Œã¦ã„ã‚‹å ´åˆã€ã‚¤ãƒ™ãƒ³ãƒˆã¯ç™ºç”Ÿã—ãªã„ã€‚
+            // Web.configƒtƒ@ƒCƒ‹“à‚Åsessionstateƒ‚[ƒh‚ª[InProc]‚ÉÝ’è‚³‚ê‚Ä‚¢‚é‚Æ‚«‚Ì‚ÝASession_EndƒCƒxƒ“ƒg‚ª”­¶‚·‚éB
+            // sessionstateƒ‚[ƒh‚ª[StateServer]‚©A‚Ü‚½‚Í[SQLServer]‚ÉÝ’è‚³‚ê‚Ä‚¢‚éê‡AƒCƒxƒ“ƒg‚Í”­¶‚µ‚È‚¢B
 
         }
 
         /////////////////////////////////////////////////////////////////////////////////
-        // ASP.NETãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³å‡¦ç†ã®ã‚¤ãƒ™ãƒ³ãƒˆ ãƒãƒ³ãƒ‰ãƒ©
+        // ASP.NETƒpƒCƒvƒ‰ƒCƒ“ˆ—‚ÌƒCƒxƒ“ƒg ƒnƒ“ƒhƒ‰
         /////////////////////////////////////////////////////////////////////////////////
 
         ///////////////////////////////////////////////////
 
-        // Global.asaxãŒå¯¾å¿œã—ã¦ã„ã‚‹ASP.NETãƒ‘ã‚¤ãƒ—ãƒ©ã‚¤ãƒ³å‡¦ç†ã®ã‚¤ãƒ™ãƒ³ãƒˆ ãƒãƒ³ãƒ‰ãƒ©ã®ä¸€è¦§
+        // Global.asax‚ª‘Î‰ž‚µ‚Ä‚¢‚éASP.NETƒpƒCƒvƒ‰ƒCƒ“ˆ—‚ÌƒCƒxƒ“ƒg ƒnƒ“ƒhƒ‰‚Ìˆê——
         // -----------------------------------------------------------------------------------
-        // â‘  Application_OnBeginRequest                :ãƒªã‚¯ã‚¨ã‚¹ãƒˆå‡¦ç†ã‚’é–‹å§‹ã™ã‚‹å‰ã«ç™ºç”Ÿ 
-        // â‘¡ Application_OnAuthenticateRequest         :èªè¨¼ã®ç›´å‰ã«ç™ºç”Ÿ 
-        // â‘¢ Application_OnAuthorizeRequest            :èªè¨¼ãŒå®Œäº†ã—ãŸã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§ç™ºç”Ÿ 
-        // â‘£ Application_OnResolveRequestCache         :ãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚’ã‚­ãƒ£ãƒƒã‚·ãƒ³ã‚°ã™ã‚‹ã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§ç™ºç”Ÿ 
-        // â‘¤ Application_OnAcquireRequestState         :ã‚»ãƒƒã‚·ãƒ§ãƒ³çŠ¶æ…‹ãªã©ã‚’å–å¾—ã™ã‚‹ã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§ç™ºç”Ÿ 
-        // â‘¥ Application_OnPreRequestHandlerExecute    :ãƒšãƒ¼ã‚¸ã®å®Ÿè¡Œã‚’é–‹å§‹ã™ã‚‹ç›´å‰ã«ç™ºç”Ÿ 
-        // â‘¦ Application_OnPostRequestHandlerExecute   :ãƒšãƒ¼ã‚¸ã®å®Ÿè¡Œã‚’å®Œäº†ã—ãŸç›´å¾Œã«ç™ºç”Ÿ 
-        // â‘§ Application_OnReleaseRequestState         :ã™ã¹ã¦ã®å‡¦ç†ã‚’å®Œäº†ã—ãŸã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§ç™ºç”Ÿ 
-        // â‘¨ Application_OnUpdateRequestCache          :å‡ºåŠ›ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’æ›´æ–°ã—ãŸã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§ç™ºç”Ÿ 
-        // â‘© Application_OnEndRequest                  :ã™ã¹ã¦ã®ãƒªã‚¯ã‚¨ã‚¹ãƒˆå‡¦ç†ãŒå®Œäº†ã—ãŸã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§ç™ºç”Ÿ 
-        // â‘ª Application_OnPreSendRequestHeaders       :ãƒ˜ãƒƒãƒ€ã‚’ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«é€ä¿¡ã™ã‚‹ç›´å‰ã«ç™ºç”Ÿ 
-        // â‘« Application_OnPreSendRequestContent       :ã‚³ãƒ³ãƒ†ãƒ³ãƒ„ã‚’ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«é€ä¿¡ã™ã‚‹ç›´å‰ã«ç™ºç”Ÿ 
+        // ‡@ Application_OnBeginRequest                :ƒŠƒNƒGƒXƒgˆ—‚ðŠJŽn‚·‚é‘O‚É”­¶ 
+        // ‡A Application_OnAuthenticateRequest         :”FØ‚Ì’¼‘O‚É”­¶ 
+        // ‡B Application_OnAuthorizeRequest            :”FØ‚ªŠ®—¹‚µ‚½ƒ^ƒCƒ~ƒ“ƒO‚Å”­¶ 
+        // ‡C Application_OnResolveRequestCache         :ƒŠƒNƒGƒXƒg‚ðƒLƒƒƒbƒVƒ“ƒO‚·‚éƒ^ƒCƒ~ƒ“ƒO‚Å”­¶ 
+        // ‡D Application_OnAcquireRequestState         :ƒZƒbƒVƒ‡ƒ“ó‘Ô‚È‚Ç‚ðŽæ“¾‚·‚éƒ^ƒCƒ~ƒ“ƒO‚Å”­¶ 
+        // ‡E Application_OnPreRequestHandlerExecute    :ƒy[ƒW‚ÌŽÀs‚ðŠJŽn‚·‚é’¼‘O‚É”­¶ 
+        // ‡F Application_OnPostRequestHandlerExecute   :ƒy[ƒW‚ÌŽÀs‚ðŠ®—¹‚µ‚½’¼Œã‚É”­¶ 
+        // ‡G Application_OnReleaseRequestState         :‚·‚×‚Ä‚Ìˆ—‚ðŠ®—¹‚µ‚½ƒ^ƒCƒ~ƒ“ƒO‚Å”­¶ 
+        // ‡H Application_OnUpdateRequestCache          :o—ÍƒLƒƒƒbƒVƒ…‚ðXV‚µ‚½ƒ^ƒCƒ~ƒ“ƒO‚Å”­¶ 
+        // ‡I Application_OnEndRequest                  :‚·‚×‚Ä‚ÌƒŠƒNƒGƒXƒgˆ—‚ªŠ®—¹‚µ‚½ƒ^ƒCƒ~ƒ“ƒO‚Å”­¶ 
+        // ‡J Application_OnPreSendRequestHeaders       :ƒwƒbƒ_‚ðƒNƒ‰ƒCƒAƒ“ƒg‚É‘—M‚·‚é’¼‘O‚É”­¶ 
+        // ‡K Application_OnPreSendRequestContent       :ƒRƒ“ƒeƒ“ƒc‚ðƒNƒ‰ƒCƒAƒ“ƒg‚É‘—M‚·‚é’¼‘O‚É”­¶ 
 
-        // ã‚¤ãƒ™ãƒ³ãƒˆãƒ»ãƒãƒ³ãƒ‰ãƒ©ã¯ã“ã®è¡¨ã®é †ç•ªã§å‘¼ã³å‡ºã•ã‚Œã‚‹ã€‚
+        // ƒCƒxƒ“ƒgEƒnƒ“ƒhƒ‰‚Í‚±‚Ì•\‚Ì‡”Ô‚ÅŒÄ‚Ño‚³‚ê‚éB
 
-        // ãŸã ã—ã€Application_OnPreSendRequestHeadersãƒ¡ã‚½ãƒƒãƒ‰ã‚„
-        // Application_OnPreSendRequestContentãƒ¡ã‚½ãƒƒãƒ‰ã¯
-        // ãƒãƒƒãƒ•ã‚¡å‡¦ç†ï¼ˆHTTPå¿œç­”ãƒãƒƒãƒ•ã‚¡ãƒªãƒ³ã‚°ï¼‰ãŒæœ‰åŠ¹ã‹ã©ã†ã‹ã«ã‚ˆã£ã¦
-        // å‘¼ã³å‡ºã•ã‚Œã‚‹ã‚¿ã‚¤ãƒŸãƒ³ã‚°ãŒç•°ãªã‚‹ã®ã§æ³¨æ„ã™ã‚‹ã“ã¨ã€‚
+        // ‚½‚¾‚µAApplication_OnPreSendRequestHeadersƒƒ\ƒbƒh‚â
+        // Application_OnPreSendRequestContentƒƒ\ƒbƒh‚Í
+        // ƒoƒbƒtƒ@ˆ—iHTTP‰ž“šƒoƒbƒtƒ@ƒŠƒ“ƒOj‚ª—LŒø‚©‚Ç‚¤‚©‚É‚æ‚Á‚Ä
+        // ŒÄ‚Ño‚³‚ê‚éƒ^ƒCƒ~ƒ“ƒO‚ªˆÙ‚È‚é‚Ì‚Å’ˆÓ‚·‚é‚±‚ÆB
 
-        // ãƒãƒƒãƒ•ã‚¡å‡¦ç†ãŒæœ‰åŠ¹ã§ã‚ã‚‹å ´åˆã«ã¯ã€ä¸Šè¨˜è¡¨ã®é †ç•ªã§ç™ºç”Ÿã™ã‚‹ãŒã€
-        // ãƒãƒƒãƒ•ã‚¡å‡¦ç†ãŒç„¡åŠ¹ã§ã‚ã‚‹å ´åˆã«ã¯æœ€åˆã®ãƒšãƒ¼ã‚¸å‡ºåŠ›ãŒé–‹å§‹ã•ã‚Œã‚‹
-        // ä»»æ„ã®ã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§å‘¼ã³å‡ºã•ã‚Œã‚‹ã€‚
+        // ƒoƒbƒtƒ@ˆ—‚ª—LŒø‚Å‚ ‚éê‡‚É‚ÍAã‹L•\‚Ì‡”Ô‚Å”­¶‚·‚é‚ªA
+        // ƒoƒbƒtƒ@ˆ—‚ª–³Œø‚Å‚ ‚éê‡‚É‚ÍÅ‰‚Ìƒy[ƒWo—Í‚ªŠJŽn‚³‚ê‚é
+        // ”CˆÓ‚Ìƒ^ƒCƒ~ƒ“ƒO‚ÅŒÄ‚Ño‚³‚ê‚éB
 
-        // ãªãŠã€ãã‚Œãžã‚Œã®ã‚¤ãƒ™ãƒ³ãƒˆãƒ»ãƒãƒ³ãƒ‰ãƒ©ã®åå‰ã‹ã‚‰ã€ŒApplication_Onã€ã‚’
-        // å–ã‚Šé™¤ã„ãŸéƒ¨åˆ†ãŒGlobal.asaxã§ç™ºç”Ÿã™ã‚‹ã‚¤ãƒ™ãƒ³ãƒˆã®åå‰ã§ã‚ã‚‹ã€‚
-        // Global.asaxã§ã¯ã‚¤ãƒ™ãƒ³ãƒˆåã«ã€ŒApplication_Onã€ã‚ã‚‹ã„ã¯ã€ŒApplication_ã€ã‚’ä»˜ã‘ãŸ
-        // ã‚¤ãƒ™ãƒ³ãƒˆãƒ»ãƒãƒ³ãƒ‰ãƒ©ãŒäº‹å‰ã«å®šç¾©ã•ã‚Œã¦ãŠã‚Šã€ã‚¤ãƒ™ãƒ³ãƒˆã®ç™ºç”Ÿæ™‚ã«å‘¼ã³å‡ºã•ã‚Œã‚‹ã€‚     
+        // ‚È‚¨A‚»‚ê‚¼‚ê‚ÌƒCƒxƒ“ƒgEƒnƒ“ƒhƒ‰‚Ì–¼‘O‚©‚çuApplication_Onv‚ð
+        // Žæ‚èœ‚¢‚½•”•ª‚ªGlobal.asax‚Å”­¶‚·‚éƒCƒxƒ“ƒg‚Ì–¼‘O‚Å‚ ‚éB
+        // Global.asax‚Å‚ÍƒCƒxƒ“ƒg–¼‚ÉuApplication_Onv‚ ‚é‚¢‚ÍuApplication_v‚ð•t‚¯‚½
+        // ƒCƒxƒ“ƒgEƒnƒ“ƒhƒ‰‚ªŽ–‘O‚É’è‹`‚³‚ê‚Ä‚¨‚èAƒCƒxƒ“ƒg‚Ì”­¶Žž‚ÉŒÄ‚Ño‚³‚ê‚éB     
 
         /// <summary>
-        /// â‘  ãƒªã‚¯ã‚¨ã‚¹ãƒˆå‡¦ç†ã‚’é–‹å§‹ã™ã‚‹å‰ã«ç™ºç”Ÿ
+        /// ‡@ ƒŠƒNƒGƒXƒgˆ—‚ðŠJŽn‚·‚é‘O‚É”­¶
         /// </summary>
         void Application_OnBeginRequest(object sender, EventArgs e)
         {
+            // Application_Start‚ÉˆÚ“®
+            //AreaRegistration.RegisterAllAreas();
+            //FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
+            //RouteConfig.RegisterRoutes(RouteTable.Routes);
+            //BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
 
         /// <summary>
-        /// â‘¡ èªè¨¼ã®ç›´å‰ã«ç™ºç”Ÿ
+        /// ‡A ”FØ‚Ì’¼‘O‚É”­¶
         /// </summary>
         void Application_OnAuthenticateRequest(object sender, EventArgs e)
         {
         }
 
         /// <summary>
-        /// â‘¢ èªè¨¼ãŒå®Œäº†ã—ãŸã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§ç™ºç”Ÿ
+        /// ‡B ”FØ‚ªŠ®—¹‚µ‚½ƒ^ƒCƒ~ƒ“ƒO‚Å”­¶
         /// </summary>
         void Application_OnAuthorizeRequest(object sender, EventArgs e)
         {
         }
 
         /// <summary>
-        /// â‘£ ãƒªã‚¯ã‚¨ã‚¹ãƒˆã‚’ã‚­ãƒ£ãƒƒã‚·ãƒ³ã‚°ã™ã‚‹ã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§ç™ºç”Ÿ
+        /// ‡C ƒŠƒNƒGƒXƒg‚ðƒLƒƒƒbƒVƒ“ƒO‚·‚éƒ^ƒCƒ~ƒ“ƒO‚Å”­¶
         /// </summary>
         void Application_OnResolveRequestCache(object sender, EventArgs e)
         {
         }
 
         /// <summary>
-        /// â‘¤ ã‚»ãƒƒã‚·ãƒ§ãƒ³çŠ¶æ…‹ãªã©ã‚’å–å¾—ã™ã‚‹ã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§ç™ºç”Ÿ
+        /// ‡D ƒZƒbƒVƒ‡ƒ“ó‘Ô‚È‚Ç‚ðŽæ“¾‚·‚éƒ^ƒCƒ~ƒ“ƒO‚Å”­¶
         /// </summary>
         void Application_OnAcquireRequestState(object sender, EventArgs e)
         {
         }
 
         /// <summary>
-        /// â‘¥ ãƒšãƒ¼ã‚¸ã®å®Ÿè¡Œã‚’é–‹å§‹ã™ã‚‹ç›´å‰ã«ç™ºç”Ÿ
+        /// ‡E ƒy[ƒW‚ÌŽÀs‚ðŠJŽn‚·‚é’¼‘O‚É”­¶
         /// </summary>
         void Application_OnPreRequestHandlerExecute(object sender, EventArgs e)
         {
             // ------------
-            // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸éƒ¨
+            // ƒƒbƒZ[ƒW•”
             // ------------
-            // ãƒ¦ãƒ¼ã‚¶å, IPã‚¢ãƒ‰ãƒ¬ã‚¹, ãƒ¬ã‚¤ãƒ¤, 
-            // ç”»é¢å, ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«å, ãƒ¡ã‚½ãƒƒãƒ‰å, å‡¦ç†å
+            // ƒ†[ƒU–¼, IPƒAƒhƒŒƒX, ƒŒƒCƒ„, 
+            // ‰æ–Ê–¼, ƒRƒ“ƒgƒ[ƒ‹–¼, ƒƒ\ƒbƒh–¼, ˆ—–¼
             // ------------
             string strLogMessage =
-                "," + "ï¼" +
+                "," + "|" +
                 "," + Request.UserHostAddress +
-                "," + "-----â†“" +
+                "," + "-----«" +
                 "," + "Global.asax" +
                 "," + "Application_OnPreRequest";
 
-            // Log4Netã¸ãƒ­ã‚°å‡ºåŠ›
+            // Log4Net‚ÖƒƒOo—Í
             LogIF.DebugLog("ACCESS", strLogMessage);
 
             // -------------------------------------------------------------
 
-            // æ€§èƒ½æ¸¬å®šé–‹å§‹
+            // «”\‘ª’èŠJŽn
             this.perfRec = new PerformanceRecorder();
             this.perfRec.StartsPerformanceRecord();
         }
 
         ///////////////////////////////////////////////////////////////////
-        // ãƒšãƒ¼ã‚¸ã®å®Ÿè¡ŒãŒâ‘¥ï½žâ‘¦ã®é–“ã«å…¥ã‚‹ã€‚
+        // ƒy[ƒW‚ÌŽÀs‚ª‡E`‡F‚ÌŠÔ‚É“ü‚éB
         ///////////////////////////////////////////////////////////////////
 
         /// <summary>
-        /// â‘¦ ãƒšãƒ¼ã‚¸ã®å®Ÿè¡Œã‚’å®Œäº†ã—ãŸç›´å¾Œã«ç™ºç”Ÿ
+        /// ‡F ƒy[ƒW‚ÌŽÀs‚ðŠ®—¹‚µ‚½’¼Œã‚É”­¶
         /// </summary>
         void Application_OnPostRequestHandlerExecute(object sender, EventArgs e)
         {
-            // nullãƒã‚§ãƒƒã‚¯
+            // nullƒ`ƒFƒbƒN
             if (this.perfRec == null)
             {
-                // ãªã«ã‚‚ã—ãªã„
+                // ‚È‚É‚à‚µ‚È‚¢
             }
             else
             {
-                // æ€§èƒ½æ¸¬å®šçµ‚äº†
+                // «”\‘ª’èI—¹
                 this.perfRec.EndsPerformanceRecord();
 
-                // ACCESSãƒ­ã‚°å‡ºåŠ›-----------------------------------------------
+                // ACCESSƒƒOo—Í-----------------------------------------------
 
                 // ------------
-                // ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸éƒ¨
+                // ƒƒbƒZ[ƒW•”
                 // ------------
-                // ãƒ¦ãƒ¼ã‚¶å, IPã‚¢ãƒ‰ãƒ¬ã‚¹, ãƒ¬ã‚¤ãƒ¤, 
-                // ç”»é¢å, ã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«å, ãƒ¡ã‚½ãƒƒãƒ‰å, å‡¦ç†å
-                // å‡¦ç†æ™‚é–“ï¼ˆå®Ÿè¡Œæ™‚é–“ï¼‰, å‡¦ç†æ™‚é–“ï¼ˆCPUæ™‚é–“ï¼‰
+                // ƒ†[ƒU–¼, IPƒAƒhƒŒƒX, ƒŒƒCƒ„, 
+                // ‰æ–Ê–¼, ƒRƒ“ƒgƒ[ƒ‹–¼, ƒƒ\ƒbƒh–¼, ˆ—–¼
+                // ˆ—ŽžŠÔiŽÀsŽžŠÔj, ˆ—ŽžŠÔiCPUŽžŠÔj
                 // ------------
                 string strLogMessage =
-                    "," + "ï¼" +
+                    "," + "|" +
                     "," + Request.UserHostAddress +
-                    "," + "-----â†‘" +
+                    "," + "-----ª" +
                     "," + "Global.asax" +
                     "," + "Application_OnPostRequest" +
-                    "," + "ï¼" +
-                    "," + "ï¼" +
+                    "," + "|" +
+                    "," + "|" +
                     "," + this.perfRec.ExecTime +
                     "," + this.perfRec.CpuTime;
 
-                // Log4Netã¸ãƒ­ã‚°å‡ºåŠ›
+                // Log4Net‚ÖƒƒOo—Í
                 LogIF.DebugLog("ACCESS", strLogMessage);
             }
         }
 
         /// <summary>
-        /// â‘§ ã™ã¹ã¦ã®å‡¦ç†ã‚’å®Œäº†ã—ãŸã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§ç™ºç”Ÿ
+        /// ‡G ‚·‚×‚Ä‚Ìˆ—‚ðŠ®—¹‚µ‚½ƒ^ƒCƒ~ƒ“ƒO‚Å”­¶
         /// </summary>
         void Application_OnReleaseRequestState(object sender, EventArgs e)
         {
         }
 
         /// <summary>
-        /// â‘¨ å‡ºåŠ›ã‚­ãƒ£ãƒƒã‚·ãƒ¥ã‚’æ›´æ–°ã—ãŸã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§ç™ºç”Ÿ
+        /// ‡H o—ÍƒLƒƒƒbƒVƒ…‚ðXV‚µ‚½ƒ^ƒCƒ~ƒ“ƒO‚Å”­¶
         /// </summary>
         void Application_OnUpdateRequestCache(object sender, EventArgs e)
         {
         }
 
         /// <summary>
-        /// â‘© ã™ã¹ã¦ã®ãƒªã‚¯ã‚¨ã‚¹ãƒˆå‡¦ç†ãŒå®Œäº†ã—ãŸã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§ç™ºç”Ÿ
+        /// ‡I ‚·‚×‚Ä‚ÌƒŠƒNƒGƒXƒgˆ—‚ªŠ®—¹‚µ‚½ƒ^ƒCƒ~ƒ“ƒO‚Å”­¶
         /// </summary>
         void Application_OnEndRequest(object sender, EventArgs e)
         {
         }
 
         /// <summary>
-        /// â‘ª ãƒ˜ãƒƒãƒ€ã‚’ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«é€ä¿¡ã™ã‚‹ç›´å‰ã«ç™ºç”Ÿ
+        /// ‡J ƒwƒbƒ_‚ðƒNƒ‰ƒCƒAƒ“ƒg‚É‘—M‚·‚é’¼‘O‚É”­¶
         /// </summary>
         void Application_OnPreSendRequestHeaders(object sender, EventArgs e)
         {
         }
 
         /// <summary>
-        /// â‘« ã‚³ãƒ³ãƒ†ãƒ³ãƒ„ã‚’ã‚¯ãƒ©ã‚¤ã‚¢ãƒ³ãƒˆã«é€ä¿¡ã™ã‚‹ç›´å‰ã«ç™ºç”Ÿ
+        /// ‡K ƒRƒ“ƒeƒ“ƒc‚ðƒNƒ‰ƒCƒAƒ“ƒg‚É‘—M‚·‚é’¼‘O‚É”­¶
         /// </summary>
         void Application_OnPreSendRequestContent(object sender, EventArgs e)
         {

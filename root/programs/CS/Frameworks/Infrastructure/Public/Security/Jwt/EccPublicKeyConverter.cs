@@ -43,7 +43,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 //using Jose;
-using Security.Cryptography;
+//using Security.Cryptography;
+using Jose.keys;
 
 using Touryo.Infrastructure.Public.Str;
 

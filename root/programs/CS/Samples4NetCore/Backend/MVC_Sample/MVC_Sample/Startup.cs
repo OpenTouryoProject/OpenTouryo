@@ -175,8 +175,8 @@ namespace MVC_Sample
             // Core 3.0のテンプレートではUseMvcの
             // 代わりにこれらを使用するようになった。
             services
-                .AddControllersWithViews()// MVC & WebAPI
-                .AddNewtonsoftJson();// JSON シリアライザの変更
+                .AddControllersWithViews();// MVC & WebAPI
+                //.AddNewtonsoftJson();// JSON シリアライザの変更
 
             #region Add Frameworks
 

@@ -1,5 +1,5 @@
 ﻿接続文字列
-  Data Source=localhost\sqlexpress;Initial Catalog=Northwind;Integrated Security=True;
+  Data Source=localhost;Initial Catalog=Northwind;User ID=sa;Password=seigi@123;Encrypt=false;
 
 SELECT * FROM SHIPPERS
 

@@ -55,16 +55,19 @@
 // --------------------
 // データプロバイダ
 // --------------------
-using System.Data.SqlClient;
-using Oracle.ManagedDataAccess.Client;
 using System.Data.Odbc;
-using Npgsql;
+using Microsoft.Data.SqlClient;
+using Oracle.ManagedDataAccess.Client;
 using MySql.Data.MySqlClient;
+
 #if NETCOREAPP
+using Npgsql;
 #else
 using System.Data.OleDb;
-using IBM.Data.DB2;
-using Hitachi.HiRDB;
+//using System.Data.OracleClient; // ODP.NETに移行
+//using Oracle.DataAccess.Client; // Managedに移行
+//using IBM.Data.DB2;
+//using Hitachi.HiRDB;
 #endif
 // --------------------
 
@@ -101,17 +104,18 @@ namespace DaoGen_Tool
         private OracleConnection OdpCn;
         /// <summary>MySqlConnection</summary>
         private MySqlConnection MySqlCn;
-        /// <summary>NpgsqlConnection</summary>
-        private NpgsqlConnection NpgsqlCn;
+
 
 #if NETCOREAPP
+        /// <summary>NpgsqlConnection</summary>
+        private NpgsqlConnection NpgsqlCn;
 #else
         /// <summary>OleDbConnection</summary>
         private OleDbConnection OleCn;
         /// <summary>DB2Connection</summary>
-        private DB2Connection DB2Cn;
+        //private DB2Connection DB2Cn;
         /// <summary>HiRDBConnection</summary>
-        private HiRDBConnection HiRDBCn;
+        //private HiRDBConnection HiRDBCn;
 #endif
 
         #endregion
@@ -234,19 +238,19 @@ namespace DaoGen_Tool
                 this.MySqlCn = new MySqlConnection(this.txtConnString.Text);
                 this.MySqlCn.Open();
             }
+#if NETCOREAPP
             else if (this.rbnPstgrs.Checked)
             {
                 this.NpgsqlCn = new NpgsqlConnection(this.txtConnString.Text);
                 this.NpgsqlCn.Open();
             }
-#if NETCOREAPP
 #else
             else if (this.rbnOLE.Checked)
             {
                 this.OleCn = new OleDbConnection(this.txtConnString.Text);
                 this.OleCn.Open();
             }
-            else if (this.rbnDB2.Checked)
+            /*else if (this.rbnDB2.Checked)
             {
                 this.DB2Cn = new DB2Connection(this.txtConnString.Text);
                 this.DB2Cn.Open();
@@ -255,7 +259,7 @@ namespace DaoGen_Tool
             {
                 this.HiRDBCn = new HiRDBConnection(this.txtConnString.Text);
                 this.HiRDBCn.Open();
-            }
+            }*/
 #endif
             else
             {
@@ -290,19 +294,18 @@ namespace DaoGen_Tool
                 this.MySqlCn.Close();
             }
 
+#if NETCOREAPP
             if (this.NpgsqlCn != null)
             {
                 this.NpgsqlCn.Close();
             }
-
-#if NETCOREAPP
 #else
             if (this.OleCn != null)
             {
                 this.OleCn.Close();
             }
 
-            if (this.DB2Cn != null)
+            /*if (this.DB2Cn != null)
             {
                 this.DB2Cn.Close();
             }
@@ -310,7 +313,7 @@ namespace DaoGen_Tool
             if (this.HiRDBCn != null)
             {
                 this.HiRDBCn.Close();
-            }
+            }*/
 #endif
         }
 
@@ -769,6 +772,7 @@ namespace DaoGen_Tool
 
                     #endregion
                 }
+#if NETCOREAPP
                 else if (this.rbnPstgrs.Checked)
                 {
                     #region PostgreSQL
@@ -817,7 +821,6 @@ namespace DaoGen_Tool
 
                     #endregion
                 }
-#if NETCOREAPP
 #else
                 else if (this.rbnOLE.Checked)
                 {
@@ -871,7 +874,7 @@ namespace DaoGen_Tool
                 {
                     #region DB2
 
-                    if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("SummaryInfo"))
+                    /*if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("SummaryInfo"))
                     {
                         // DataSourceInformation
                         this.DtSchma = this.DB2Cn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataSourceInformation);
@@ -911,7 +914,7 @@ namespace DaoGen_Tool
                         // その他
                         this.DtSchma = this.DB2Cn.GetSchema(this.cmbSchemaInfo.SelectedItem.ToString().Substring(2));
                         writeLineFlag = true;
-                    }
+                    }*/
 
                     #endregion
                 }
@@ -919,7 +922,7 @@ namespace DaoGen_Tool
                 {
                     #region HiRDB
 
-                    if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("SummaryInfo"))
+                    /*if (this.cmbSchemaInfo.SelectedItem.ToString() == this.RM_GetString("SummaryInfo"))
                     {
                         // DataSourceInformation
                         this.DtSchma = this.HiRDBCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataSourceInformation);
@@ -959,7 +962,7 @@ namespace DaoGen_Tool
                         // その他
                         this.DtSchma = this.HiRDBCn.GetSchema(this.cmbSchemaInfo.SelectedItem.ToString().Substring(2));
                         writeLineFlag = true;
-                    }
+                    }*/
 
                     #endregion
                 }
@@ -1214,6 +1217,7 @@ namespace DaoGen_Tool
 
                     #endregion
                 }
+#if NETCOREAPP
                 else if (this.rbnPstgrs.Checked)
                 {
                     #region PostgreSQL
@@ -1250,7 +1254,6 @@ namespace DaoGen_Tool
 
                     #endregion
                 }
-#if NETCOREAPP
 #else
                 else if (this.rbnOLE.Checked)
                 {
@@ -1301,7 +1304,7 @@ namespace DaoGen_Tool
                     MessageBox.Show(string.Format(this.RM_GetString("CautionPrerequisite"), "DB2"), this.RM_GetString("CautionPrerequisiteCaption"));
 
                     #region テーブル・ビューの情報を取得
-
+                    /*
                     dtSchmaTables = this.DB2Cn.GetSchema("Tables");
 
                     // スキーマの情報（カスタム）の作成
@@ -1344,7 +1347,7 @@ namespace DaoGen_Tool
                             // 上記以外
                         }
                     }
-
+                    */
                     #endregion
 
                     #endregion
@@ -1358,7 +1361,7 @@ namespace DaoGen_Tool
                     MessageBox.Show(string.Format(this.RM_GetString("CautionPrerequisite"), "ODBC"), this.RM_GetString("CautionPrerequisiteCaption"));
 
                     #region テーブル・ビューの情報を取得
-
+                    /*
                     dtSchmaTables = this.HiRDBCn.GetSchema("Tables");
 
                     // スキーマの情報（カスタム）の作成
@@ -1401,7 +1404,7 @@ namespace DaoGen_Tool
                             // 上記以外
                         }
                     }
-
+                    */
                     #endregion
 
                     #endregion
@@ -1526,7 +1529,7 @@ namespace DaoGen_Tool
                     // DataTypes
                     CmnMethods.DataTypes = this.OleCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
                 }
-                else if (this.rbnDB2.Checked)
+                /*else if (this.rbnDB2.Checked)
                 {
                     // DataTypes
                     CmnMethods.DataTypes = this.DB2Cn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
@@ -1535,7 +1538,7 @@ namespace DaoGen_Tool
                 {
                     // DataTypes
                     CmnMethods.DataTypes = this.HiRDBCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
-                }
+                }*/
 #endif
                 else
                 {
@@ -1895,6 +1898,7 @@ namespace DaoGen_Tool
 
                     #endregion
                 }
+#if NETCOREAPP
                 else if (this.rbnPstgrs.Checked)
                 {
                     #region PostgreSQL
@@ -1935,7 +1939,6 @@ namespace DaoGen_Tool
 
                     #endregion
                 }
-#if NETCOREAPP
 #else
                 else if (this.rbnOLE.Checked)
                 {
@@ -1975,7 +1978,8 @@ namespace DaoGen_Tool
 
                     #endregion
                 }
-                else if (this.rbnDB2.Checked)
+
+                /*else if (this.rbnDB2.Checked)
                 {
                     #region DB2
 
@@ -2052,7 +2056,7 @@ namespace DaoGen_Tool
                     // 主キーの情報をロード・・・しない。
 
                     #endregion
-                }
+                }*/
 #endif
                 else
                 {

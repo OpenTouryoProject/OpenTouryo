@@ -177,12 +177,14 @@ Namespace Touryo.Infrastructure.Business.Business
 
                     ' 接続文字列をロード
                     connstring = GetConfigParameter.GetConnectionString("ConnectionString_MCN")
-                ElseIf parameterValue.ActionType.Split("%"c)(0) = "NPS" Then
-                    ' PostgreSQL / Npgsql用のDamを生成
-                    dam = New DamPstGrS()
 
-                    ' 接続文字列をロード
-                    connstring = GetConfigParameter.GetConnectionString("ConnectionString_NPS")
+                    'ElseIf parameterValue.ActionType.Split("%"c)(0) = "NPS" Then
+                    '    ' PostgreSQL / Npgsql用のDamを生成
+                    '    dam = New DamPstGrS()
+
+                    '    ' 接続文字列をロード
+                    '    connstring = GetConfigParameter.GetConnectionString("ConnectionString_NPS")
+
                 Else
                     ' ここは通らない
                 End If

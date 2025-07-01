@@ -11,7 +11,8 @@ using Newtonsoft.Json.Linq;
 // https://www.nuget.org/packages/jose-jwt/
 using Jose;
 // https://github.com/dvsekhvalnov/jose-jwt/tree/master/jose-jwt/Security/Cryptography
-using Security.Cryptography;
+//using Security.Cryptography;
+using Jose.keys;
 
 using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Str;
@@ -597,7 +598,7 @@ namespace EncAndDecUtilCUI
             #endregion
 
             #region Jwe
-            JWE jwe = null;
+            Touryo.Infrastructure.Public.Security.Jwt.JWE jwe = null;
             #endregion
 
             #endregion

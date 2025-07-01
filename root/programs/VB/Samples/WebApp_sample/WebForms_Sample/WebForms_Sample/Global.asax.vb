@@ -28,9 +28,17 @@ Imports System.Collections.Generic
 Imports System.Web
 Imports System.Web.Security
 
+Imports System.Net.Http
+Imports System.Web.Optimization
+Imports System.Web.Routing
+
+'Imports Owin
+'Imports Microsoft.Owin
+
 ' Touryo
 Imports Touryo.Infrastructure.Public.Log
 Imports Touryo.Infrastructure.Public.Util
+Imports Touryo.Infrastructure.Framework.Authentication
 
 Public Class [Global]
     Inherits System.Web.HttpApplication
@@ -66,7 +74,16 @@ Public Class [Global]
     ''' アプリケーションの開始に関するイベント
     ''' </summary>
     Private Sub Application_Start(ByVal sender As Object, ByVal e As EventArgs)
-        ' アプリケーションのスタートアップで実行するコード
+        ' アプリケーションのスタートアップで実行するコードです
+        ' Startup.Configurationを廃止したのでコチラに移動        
+
+        ' URLルーティングの登録
+        RouteConfig.RegisterRoutes(RouteTable.Routes)
+        ' バンドル＆ミニフィケーションの登録
+        BundleConfig.RegisterBundles(BundleTable.Bundles)
+
+        ' JwkSet取得用
+        OAuth2AndOIDCClient.HttpClient = New HttpClient()
     End Sub
 
     ''' <summary>

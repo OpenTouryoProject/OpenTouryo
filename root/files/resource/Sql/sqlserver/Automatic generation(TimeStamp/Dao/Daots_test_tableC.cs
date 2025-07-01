@@ -1,6 +1,6 @@
 ﻿//**********************************************************************************
 //* クラス名        ：Daots_test_tableC
-//* クラス日本語名  ：自動生成Ｄａｏクラス
+//* クラス日本語名  ：自動生成Daoクラス
 //*
 //* 作成日時        ：2014/2/9
 //* 作成者          ：棟梁 D層自動生成ツール（墨壺）, 日立 太郎
@@ -34,7 +34,7 @@ using Touryo.Infrastructure.Business.Dao;
 
 #endregion
 
-/// <summary>自動生成Ｄａｏクラス</summary>
+/// <summary>自動生成Daoクラス</summary>
 public class Daots_test_tableC : MyBaseDao
 {
     #region インスタンス変数

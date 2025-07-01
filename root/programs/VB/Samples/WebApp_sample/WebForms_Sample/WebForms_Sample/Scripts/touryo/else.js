@@ -1,5 +1,5 @@
 ﻿//**********************************************************************************
-//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
+//* Copyright (C) 2017 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
 // Apache License
@@ -15,6 +15,19 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+//**********************************************************************************
+//* ファイル名        ：else.js
+//* ファイル日本語名  ：その他のJS処理
+//*
+//* 作成日時        ：－
+//* 作成者          ：－
+//* 更新履歴        ：－
+//*
+//*  日時        更新者            内容
+//*  ----------  ----------------  -------------------------------------------------
+//*  201?/0?/0?  西野 大介         新規作成
+//**********************************************************************************
 
 function Fx_CommonAdjustStyle(offset) {
     var menuTopMargin = $('.page-header').height();

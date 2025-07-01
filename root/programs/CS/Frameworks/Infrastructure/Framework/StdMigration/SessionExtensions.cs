@@ -67,6 +67,8 @@ namespace Touryo.Infrastructure.Framework.StdMigration
         }
         #endregion
 
+#if (NETCOREAPP)
+#else
         #region Binary
         /// <summary>SetObjectAsBinary拡張メソッド</summary>
         /// <param name="session">ISession</param>
@@ -90,5 +92,6 @@ namespace Touryo.Infrastructure.Framework.StdMigration
                     session.GetString(key)));
         }
         #endregion
+#endif
     }
 }

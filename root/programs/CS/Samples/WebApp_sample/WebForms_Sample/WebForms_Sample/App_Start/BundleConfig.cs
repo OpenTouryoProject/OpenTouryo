@@ -17,8 +17,13 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //**********************************************************************************
 
+using System;
+using System.Web;
 using System.Web.UI;
 using System.Web.Optimization;
+
+using System.Linq;
+using System.Collections.Generic;
 
 namespace WebForms_Sample
 {
@@ -33,10 +38,12 @@ namespace WebForms_Sample
         /// http://www.atmarkit.co.jp/ait/articles/1303/08/news072_3.html
         /// ASP.NET 4.5では、リクエスト時のファイル読み込み時間を
         /// 削減するためにバンドル＆ミニフィケーションの仕組みが導入された。
-        /// Bundling の詳細については、http://go.microsoft.com/fwlink/?LinkId=254725 を参照してください
+        // バンドルの詳細については、https://go.microsoft.com/fwlink/?LinkID=303951 を参照してください
         /// </summary>
         public static void RegisterBundles(BundleCollection bundles)
         {
+            RegisterJQueryScriptManager();
+            
             BundleTable.EnableOptimizations = true;
             BundleTable.Bundles.UseCdn = true; // same as: bundles.UseCdn = true;
 
@@ -70,15 +77,12 @@ namespace WebForms_Sample
                     "~/Scripts/WebForms/MsAjax/MicrosoftAjaxTimer.js",
                     "~/Scripts/WebForms/MsAjax/MicrosoftAjaxWebForms.js"));
 
-            // 開発と学習には、Modernizr の開発バージョンを使用します。次に、実稼働の準備ができたら、
-            // http://modernizr.com にあるビルド ツールを使用して、必要なテストのみを選択します。
-            bundles.Add(new ScriptBundle(
-                "~/bundles/modernizr",
-                "//ajax.aspnetcdn.com/ajax/modernizr/modernizr-2.8.3.js") // min 無し
-                {
-                    CdnFallbackExpression = "window.Modernizr"
-                }.Include("~/Scripts/modernizr-*"));
+            // 開発に使用し、情報源である開発バージョンの Modernizr を使用します。続いて、
+            // 運用の準備が完了したら、https://modernizr.com のビルド ツールを使用し、必要なテストのみを選びます
+            bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
+                            "~/Scripts/modernizr-*"));
 
+            /*
             ScriptManager.ScriptResourceMapping.AddDefinition(
                 "respond",
                 new ScriptResourceDefinition
@@ -89,6 +93,19 @@ namespace WebForms_Sample
                     CdnDebugPath = "//ajax.aspnetcdn.com/ajax/respond/1.4.2/respond.js",
                     CdnSupportsSecureConnection = false,
                     LoadSuccessExpression = "window.respond"
+                });
+            */
+        }
+
+        public static void RegisterJQueryScriptManager()
+        {
+            ScriptManager.ScriptResourceMapping.AddDefinition("Jquery",
+                new ScriptResourceDefinition
+                {
+                    Path = "~/scripts/jquery-3.7.1.min.js",
+                    DebugPath = "~/scripts/jquery-3.7.1.js",
+                    CdnPath = "http://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.7.1.min.js",
+                    CdnDebugPath = "http://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.7.1.js"
                 });
         }
     }

@@ -47,7 +47,7 @@
                 <div class="brand">メニュー</div>
                 <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
                 <div class="menu-list">
-                    <ul id="menu-content" class="menu-content collapse out">
+                    <ul id="menu-content"><!-- class="menu-content collapse out" -->
                         <li onclick="window.location.href = '<%= Me.ResolveClientUrl("~/Aspx/Start/menu.aspx") %>';">
                             <i class="fa fa-arrow-circle-right"></i> メニュートップ
                         </li>

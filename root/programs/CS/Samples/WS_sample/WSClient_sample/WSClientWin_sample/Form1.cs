@@ -31,6 +31,7 @@ using Touryo.Infrastructure.Framework.RichClient.Presentation;
 using Touryo.Infrastructure.Framework.RichClient.Asynchronous;
 using Touryo.Infrastructure.Framework.Transmission;
 using Touryo.Infrastructure.Framework.Util;
+using System.Net;
 
 namespace WSClientWin_sample
 {
@@ -45,6 +46,7 @@ namespace WSClientWin_sample
         public Form1()
         {
             InitializeComponent();
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
         }
 
         /// <summary>
@@ -61,16 +63,16 @@ namespace WSClientWin_sample
             this.ddlDap.Items.Add(new ComboBoxItem("Multi-DB / OLEDB.NET", "OLE"));
             this.ddlDap.Items.Add(new ComboBoxItem("Multi-DB / ODCB.NET", "ODB"));
             this.ddlDap.Items.Add(new ComboBoxItem("Oracle / ODP.NET", "ODP"));
-            this.ddlDap.Items.Add(new ComboBoxItem("DB2 / DB2.NET", "DB2"));
-            this.ddlDap.Items.Add(new ComboBoxItem("HiRDB / HiRDB-DP", "HIR"));
+            //this.ddlDap.Items.Add(new ComboBoxItem("DB2 / DB2.NET", "DB2"));
+            //this.ddlDap.Items.Add(new ComboBoxItem("HiRDB / HiRDB-DP", "HIR"));
             this.ddlDap.Items.Add(new ComboBoxItem("MySQL Cnn/NET", "MCN"));
-            this.ddlDap.Items.Add(new ComboBoxItem("PostgreSQL / Npgsql", "NPS"));
+            //this.ddlDap.Items.Add(new ComboBoxItem("PostgreSQL / Npgsql", "NPS"));
             this.ddlDap.SelectedIndex = 0;
 
             // ddlMode1
-            this.ddlMode1.Items.Add(new ComboBoxItem("個別Ｄａｏ", "individual"));
-            this.ddlMode1.Items.Add(new ComboBoxItem("共通Ｄａｏ", "common"));
-            this.ddlMode1.Items.Add(new ComboBoxItem("自動生成Ｄａｏ（更新のみ）", "generate"));
+            this.ddlMode1.Items.Add(new ComboBoxItem("個別Dao", "individual"));
+            this.ddlMode1.Items.Add(new ComboBoxItem("共通Dao", "common"));
+            this.ddlMode1.Items.Add(new ComboBoxItem("自動生成Dao（更新のみ）", "generate"));
             this.ddlMode1.SelectedIndex = 0;
 
             // ddlMode2
@@ -102,11 +104,11 @@ namespace WSClientWin_sample
             this.ddlExRollback.SelectedIndex = 0;
 
             // ddlTransmission
-            this.ddlTransmission.Items.Add(new ComboBoxItem("ASP.NET Webサービス呼出", "testWebService"));
-            this.ddlTransmission.Items.Add(new ComboBoxItem("WCF Webサービス呼出", "testWebService2"));
-            this.ddlTransmission.Items.Add(new ComboBoxItem("WCF TCPサービス呼出", "testWebService3"));
-            this.ddlTransmission.Items.Add(new ComboBoxItem("ASP.NET WebAPI呼出", "testWebService4"));
+            //this.ddlTransmission.Items.Add(new ComboBoxItem("ASP.NET Webサービス呼出", "testWebService"));
+            //this.ddlTransmission.Items.Add(new ComboBoxItem("WCF Webサービス呼出", "testWebService2"));
             this.ddlTransmission.Items.Add(new ComboBoxItem("インプロセス呼出", "testInProcess"));
+            this.ddlTransmission.Items.Add(new ComboBoxItem("ASP.NET WebAPI呼出", "testWebService4"));
+            this.ddlTransmission.Items.Add(new ComboBoxItem("WCF TCPサービス呼出", "testWebService3"));
             this.ddlTransmission.SelectedIndex = 0;
 
             // ddlOrderColumn

@@ -38,7 +38,7 @@
 //*                                ※ コンテナ・モードでは、セクションを返せない。
 //**********************************************************************************
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
 using System;
 using System.IO;
 using Microsoft.Extensions.Configuration;
@@ -54,7 +54,7 @@ namespace Touryo.Infrastructure.Public.Util
     public static class GetConfigParameter
     {
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
 
         /// <summary>IConfiguration</summary>
         private static IConfiguration _configuration = null;
@@ -222,7 +222,7 @@ namespace Touryo.Infrastructure.Public.Util
             if (string.IsNullOrEmpty(temp))
             {
                 // 通常時、設定ファイルの内容を返す。
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
                 if (GetConfigParameter._configuration == null)
                 {
                     throw new ArgumentException(
@@ -266,7 +266,7 @@ namespace Touryo.Infrastructure.Public.Util
             if (string.IsNullOrEmpty(temp))
             {
                 // 通常時、設定ファイルの内容を返す。
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
                 if (GetConfigParameter._configuration == null)
                 {
                     throw new ArgumentException(

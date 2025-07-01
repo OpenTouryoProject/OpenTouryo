@@ -96,7 +96,7 @@ namespace Touryo.Infrastructure.Business.Util
             foreach (string key in MyHttpContext.Current.Session.Keys)
             {
                 // 当該キーのオブジェクト・サイズを足しこむ。
-                size += BinarySerialize.ObjectToBytes(MyHttpContext.Current.Session.GetString(key)).Length;
+                size += 1;//+= BinarySerialize.ObjectToBytes(MyHttpContext.Current.Session.GetString(key)).Length;
             }
 #else
             foreach (string key in HttpContext.Current.Session.Keys)

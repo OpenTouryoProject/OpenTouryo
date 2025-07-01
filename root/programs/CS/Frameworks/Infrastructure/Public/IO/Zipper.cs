@@ -63,7 +63,7 @@ namespace Touryo.Infrastructure.Public.IO
     {
         #region CreateZipFromFolder（１）
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
         /// <summary>フォルダ以下を圧縮</summary>
         /// <param name="zipFileToCreate">圧縮ファイル名（zip、exe）</param>
         /// <param name="directoryToZip">圧縮対象フォルダ</param>
@@ -123,7 +123,7 @@ namespace Touryo.Infrastructure.Public.IO
             #endregion
 
             // ZipFileを取得
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
             ZipFile zip = this.GetZipFile(
                 enc, cyp, zipPassword, cmpLv);
 #else
@@ -140,7 +140,7 @@ namespace Touryo.Infrastructure.Public.IO
                 this.CreateZipFromFolderRecursive(
                     zip, directoryToZip, rootPathInArchive);
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
                 // ZIPファイル
                 zip.Save(zipFileToCreate + ".zip");
 #else
@@ -205,7 +205,7 @@ namespace Touryo.Infrastructure.Public.IO
 
         #region CreateZipFromFolder（２）
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
         /// <summary>フォルダ以下を圧縮</summary>
         /// <param name="zipFileToCreate">圧縮ファイル名（zip、exe）</param>
         /// <param name="directoryToZip">圧縮対象フォルダ</param>
@@ -248,7 +248,7 @@ namespace Touryo.Infrastructure.Public.IO
 #endif
         {
             // ZipFileを取得
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
             ZipFile zip = this.GetZipFile(
                 enc, cyp, zipPassword, cmpLv);
 #else
@@ -272,7 +272,7 @@ namespace Touryo.Infrastructure.Public.IO
                     zip.AddSelectedFiles(selectionCriteriaString, directoryToZip, rootPathInArchive, true);
                 }
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
                 // ZIPファイル
                 zip.Save(zipFileToCreate + ".zip");
 #else
@@ -297,7 +297,7 @@ namespace Touryo.Infrastructure.Public.IO
 
         #region 共通関数
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
         /// <summary>ZipFileを取得</summary>
         /// <param name="enc">エンコーディング</param>
         /// <param name="cyp">暗号化</param>
@@ -330,7 +330,7 @@ namespace Touryo.Infrastructure.Public.IO
             if (enc == null) { zip = new ZipFile(); }
             else { zip = new ZipFile(enc); }
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
             zip = base.SetZipFile(zip);
 #else
             zip = base.SetZipFile(zip, selfEx);

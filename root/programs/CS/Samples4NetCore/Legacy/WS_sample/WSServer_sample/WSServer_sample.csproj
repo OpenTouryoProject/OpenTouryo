@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,7 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.1" />
+    <PackageReference Include="System.Formats.Asn1" Version="9.0.5" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,13 +21,13 @@
 
   <ItemGroup>
     <Reference Include="OpenTouryo.Business">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0\OpenTouryo.Business.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore80\net8.0\OpenTouryo.Business.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Framework">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0\OpenTouryo.Framework.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore80\net8.0\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0\OpenTouryo.Public.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore80\net8.0\OpenTouryo.Public.dll</HintPath>
     </Reference>
   </ItemGroup>
 

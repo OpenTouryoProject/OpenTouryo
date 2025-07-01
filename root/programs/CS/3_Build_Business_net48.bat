@@ -16,11 +16,6 @@ set CURRENT_DIR="%~dp0"
 call %CURRENT_DIR%z_Common.bat
 
 rem --------------------------------------------------
-rem Change the packages.config.
-rem --------------------------------------------------
-call %CURRENT_DIR%z_ChangePackages_net48.bat
-
-rem --------------------------------------------------
 rem Build the Infrastructures
 rem --------------------------------------------------
 

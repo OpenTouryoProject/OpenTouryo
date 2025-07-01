@@ -2,16 +2,18 @@
 // <自動生成>
 //     このコードはツールによって生成されました。
 //
-//     このファイルへの変更は、以下の状況下で不正な動作の原因になったり、
+//     このファイルへの変更は、正しくない動作の原因になる可能性があり、
 //     コードが再生成されるときに損失したりします。 
 // </自動生成>
 //------------------------------------------------------------------------------
 
-namespace WebForms_Sample.Aspx.Common.Master {
-    
-    
-    public partial class testBlankScreenNoJs {
-        
+namespace WebForms_Sample.Aspx.Common.Master
+{
+
+
+    public partial class testBlankScreenNoJs
+    {
+
         /// <summary>
         /// Head1 コントロール。
         /// </summary>
@@ -20,7 +22,7 @@ namespace WebForms_Sample.Aspx.Common.Master {
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlHead Head1;
-        
+
         /// <summary>
         /// cphHeaderScripts コントロール。
         /// </summary>
@@ -29,7 +31,7 @@ namespace WebForms_Sample.Aspx.Common.Master {
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
         protected global::System.Web.UI.WebControls.ContentPlaceHolder cphHeaderScripts;
-        
+
         /// <summary>
         /// form1 コントロール。
         /// </summary>
@@ -38,7 +40,7 @@ namespace WebForms_Sample.Aspx.Common.Master {
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlForm form1;
-        
+
         /// <summary>
         /// ContentPlaceHolder_A コントロール。
         /// </summary>
@@ -47,7 +49,7 @@ namespace WebForms_Sample.Aspx.Common.Master {
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
         protected global::System.Web.UI.WebControls.ContentPlaceHolder ContentPlaceHolder_A;
-        
+
         /// <summary>
         /// ChildScreenType コントロール。
         /// </summary>
@@ -56,7 +58,7 @@ namespace WebForms_Sample.Aspx.Common.Master {
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField ChildScreenType;
-        
+
         /// <summary>
         /// ChildScreenUrl コントロール。
         /// </summary>
@@ -65,7 +67,7 @@ namespace WebForms_Sample.Aspx.Common.Master {
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField ChildScreenUrl;
-        
+
         /// <summary>
         /// CloseFlag コントロール。
         /// </summary>
@@ -74,7 +76,7 @@ namespace WebForms_Sample.Aspx.Common.Master {
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField CloseFlag;
-        
+
         /// <summary>
         /// SubmitFlag コントロール。
         /// </summary>
@@ -83,7 +85,7 @@ namespace WebForms_Sample.Aspx.Common.Master {
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField SubmitFlag;
-        
+
         /// <summary>
         /// ScreenGuid コントロール。
         /// </summary>
@@ -92,7 +94,7 @@ namespace WebForms_Sample.Aspx.Common.Master {
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField ScreenGuid;
-        
+
         /// <summary>
         /// FxDialogStyle コントロール。
         /// </summary>
@@ -101,7 +103,7 @@ namespace WebForms_Sample.Aspx.Common.Master {
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField FxDialogStyle;
-        
+
         /// <summary>
         /// BusinessDialogStyle コントロール。
         /// </summary>
@@ -110,7 +112,7 @@ namespace WebForms_Sample.Aspx.Common.Master {
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField BusinessDialogStyle;
-        
+
         /// <summary>
         /// NormalScreenStyle コントロール。
         /// </summary>
@@ -119,7 +121,7 @@ namespace WebForms_Sample.Aspx.Common.Master {
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField NormalScreenStyle;
-        
+
         /// <summary>
         /// NormalScreenTarget コントロール。
         /// </summary>
@@ -128,7 +130,7 @@ namespace WebForms_Sample.Aspx.Common.Master {
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField NormalScreenTarget;
-        
+
         /// <summary>
         /// DialogFrameUrl コントロール。
         /// </summary>
@@ -137,7 +139,7 @@ namespace WebForms_Sample.Aspx.Common.Master {
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField DialogFrameUrl;
-        
+
         /// <summary>
         /// WindowGuid コントロール。
         /// </summary>
@@ -146,7 +148,7 @@ namespace WebForms_Sample.Aspx.Common.Master {
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField WindowGuid;
-        
+
         /// <summary>
         /// RequestTicketGuid コントロール。
         /// </summary>
@@ -155,7 +157,7 @@ namespace WebForms_Sample.Aspx.Common.Master {
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField RequestTicketGuid;
-        
+
         /// <summary>
         /// cphFooterScripts コントロール。
         /// </summary>

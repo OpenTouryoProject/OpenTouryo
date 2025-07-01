@@ -51,8 +51,8 @@
         <div id="header-button" class="col-2">
 @if (User.Identity.IsAuthenticated)
 {
-            @* サインアウトボタンは、ユーザーが認証されている時だけ表示する *@
-            <button type="button" class="btn btn-info float-right" onclick="window.location.href = '@Url.Action("Logout", "Home")';">Sign-out</button>
+                @* サインアウトボタンは、ユーザーが認証されている時だけ表示する *@
+                <button type="button" class="btn btn-info float-right" onclick="window.location.href = '@Url.Action("Logout", "Home")';">Sign-out</button>
 }
         </div>
     </div>
@@ -62,7 +62,7 @@
                 <div class="brand">メニュー</div>
                 <i class="fa fa-bars fa-2x toggle-btn" data-toggle="collapse" data-target="#menu-content"></i>
                 <div class="menu-list">
-                    <ul id="menu-content" class="menu-content collapse out">
+                    <ul id="menu-content"><!-- class="menu-content collapse out" -->
                         <li onclick="window.location.href = '@Url.Action("Index", "Home")';">
                             <i class="fa fa-arrow-circle-right"></i> メニュートップ
                         </li>
@@ -91,10 +91,8 @@
     </footer>
 
     @Scripts.Render("~/bundles/bootstrap")
-    @Scripts.Render("~/bundles/respond")
     @Scripts.Render("~/bundles/jqueryval")
-    @Scripts.Render("~/bundles/jqueryvaluno")
-    @Scripts.Render("~/bundles/jqueryunoajax")
+    @Scripts.Render("~/bundles/jqueryajax")
     @Scripts.Render("~/bundles/touryo")
     @Scripts.Render("~/bundles/app")
 

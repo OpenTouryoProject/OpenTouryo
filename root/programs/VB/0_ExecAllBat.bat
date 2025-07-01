@@ -1,15 +1,9 @@
 set CURRENTDIR=%cd%
 cd "..\CS"
 
-echo | call 1_DeleteDir.bat
-echo | call 1_DeleteFile.bat
-
 @echo on
 timeout 5
 
-echo | call 2_Build_NuGet_net45.bat
-echo | call 2_Build_NuGet_net46.bat
-echo | call 2_Build_NuGet_net47.bat
 echo | call 2_Build_NuGet_net48.bat
 
 @echo on
@@ -28,13 +22,7 @@ echo | call 1_GetLibrariesFromCS.bat
 @echo on
 timeout 5
 
-echo | call 3_Build_Business_net45.bat
-echo | call 3_Build_Business_net46.bat
-echo | call 3_Build_Business_net47.bat
 echo | call 3_Build_Business_net48.bat
-echo | call 3_Build_BusinessRichClient_net45.bat
-echo | call 3_Build_BusinessRichClient_net46.bat
-echo | call 3_Build_BusinessRichClient_net47.bat
 echo | call 3_Build_BusinessRichClient_net48.bat
 echo | call 4_Build_CopyAssemblies.bat
 

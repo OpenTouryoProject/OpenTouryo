@@ -21,9 +21,16 @@
 //**********************************************************************************
 
 using System;
+using System.Net.Http;
+using System.Web.Optimization;
+using System.Web.Routing;
+
+//using Owin;
+//using Microsoft.Owin;
 
 using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Framework.Authentication;
 
 namespace WebForms_Sample
 {
@@ -63,6 +70,15 @@ namespace WebForms_Sample
         void Application_Start(object sender, EventArgs e)
         {
             // アプリケーションのスタートアップで実行するコード
+            // Startup.Configurationを廃止したのでコチラに移動
+
+            // URLルーティングの登録
+            RouteConfig.RegisterRoutes(RouteTable.Routes);
+            // バンドル＆ミニフィケーションの登録
+            BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            // JwkSet取得用
+            OAuth2AndOIDCClient.HttpClient = new HttpClient();
         }
 
         /// <summary>

@@ -70,50 +70,50 @@ log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.Level
 log4net: Created Appender [OPERATION2]
 log4net: Adding appender named [OPERATION2] to logger [OPERATION].
 log4net: Hierarchy Threshold []
-[2020/08/01 03:01:52,193],[DEBUG],[1],LogIF.DebugLog("ACCESS");
-[2020/08/01 03:01:52,199],[INFO ],[1],LogIF.InfoLog("ACCESS");
-[2020/08/01 03:01:52,200],[WARN ],[1],LogIF.WarnLog("ACCESS");
-[2020/08/01 03:01:52,200],[ERROR],[1],LogIF.ErrorLog("ACCESS");
-[2020/08/01 03:01:52,200],[FATAL],[1],LogIF.FatalLog("ACCESS");
+[2025/06/30 17:26:24,235],[DEBUG],[1],LogIF.DebugLog("ACCESS");
+[2025/06/30 17:26:24,253],[INFO ],[1],LogIF.InfoLog("ACCESS");
+[2025/06/30 17:26:24,254],[WARN ],[1],LogIF.WarnLog("ACCESS");
+[2025/06/30 17:26:24,254],[ERROR],[1],LogIF.ErrorLog("ACCESS");
+[2025/06/30 17:26:24,254],[FATAL],[1],LogIF.FatalLog("ACCESS");
 ----------------------------------------------------------------------------------------------------
-GetMessage: `ƒƒbƒZ[ƒWID:I0001‚É‘Î‰ž‚·‚é‹Lqi³íŒnj`
-GetMessage: `ƒƒbƒZ[ƒWID:E0001‚É‘Î‰ž‚·‚é‹LqiˆÙíŒnj`
+GetMessage: ï½žãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ID:I0001ã«å¯¾å¿œã™ã‚‹è¨˜è¿°ï¼ˆæ­£å¸¸ç³»ï¼‰ï½ž
+GetMessage: ï½žãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ID:E0001ã«å¯¾å¿œã™ã‚‹è¨˜è¿°ï¼ˆç•°å¸¸ç³»ï¼‰ï½ž
 --------------------------------------------------
-GetSharedProperty: ‚Ä‚·‚Æ‚P
-GetSharedProperty: ‚Ä‚·‚Æ‚R
+GetSharedProperty: ã¦ã™ã¨ï¼‘
+GetSharedProperty: ã¦ã™ã¨ï¼“
 ----------------------------------------------------------------------------------------------------
-StringChecker.IsNumbers - ‚ ‚ ‚ : False
-StringChecker.IsNumbers - ‚P‚P‚P: True
-StringChecker.IsNumbers_Hankaku - ‚ ‚ ‚ : False
+StringChecker.IsNumbers - ã‚ã‚ã‚: False
+StringChecker.IsNumbers - ï¼‘ï¼‘ï¼‘: True
+StringChecker.IsNumbers_Hankaku - ã‚ã‚ã‚: False
 StringChecker.IsNumbers_Hankaku - 111111: True
-StringChecker.IsNumbers_Zenkaku - ‚ ‚ ‚ : False
-StringChecker.IsNumbers_Zenkaku - ‚P‚P‚P: True
+StringChecker.IsNumbers_Zenkaku - ã‚ã‚ã‚: False
+StringChecker.IsNumbers_Zenkaku - ï¼‘ï¼‘ï¼‘: True
 ----------------------------------------------------------------------------------------------------
-StringChecker.IsAlphabet - ‚ ‚ ‚ : False
-StringChecker.IsAlphabet - ‚‚‚: True
-StringChecker.IsAlphabet_Hankaku - ‚ ‚ ‚ : False
+StringChecker.IsAlphabet - ã‚ã‚ã‚: False
+StringChecker.IsAlphabet - ï½ï½ï½: True
+StringChecker.IsAlphabet_Hankaku - ã‚ã‚ã‚: False
 StringChecker.IsAlphabet_Hankaku - aaaaaa: True
-StringChecker.IsAlphabet_Zenkaku - ‚ ‚ ‚ : False
-StringChecker.IsAlphabet_Zenkaku - ‚‚‚: True
+StringChecker.IsAlphabet_Zenkaku - ã‚ã‚ã‚: False
+StringChecker.IsAlphabet_Zenkaku - ï½ï½ï½: True
 ----------------------------------------------------------------------------------------------------
-StringChecker.IsHiragana - ‚‚‚: False
-StringChecker.IsHiragana - ‚ ‚ ‚ : True
+StringChecker.IsHiragana - ï½ï½ï½: False
+StringChecker.IsHiragana - ã‚ã‚ã‚: True
 ----------------------------------------------------------------------------------------------------
-StringChecker.IsKatakana - ‚ ‚ ‚ : False
-StringChecker.IsKatakana - ƒAƒAƒA: True
-StringChecker.IsKatakana_Zenkaku - ‚ ‚ ‚ : False
-StringChecker.IsKatakana_Zenkaku - ƒAƒAƒA: True
-StringChecker.IsKatakana_Zenkaku - ƒAƒAƒA: False
-StringChecker.IsKatakana_Zenkaku - ±±±±±±: True
+StringChecker.IsKatakana - ã‚ã‚ã‚: False
+StringChecker.IsKatakana - ã‚¢ã‚¢ã‚¢: True
+StringChecker.IsKatakana_Zenkaku - ã‚ã‚ã‚: False
+StringChecker.IsKatakana_Zenkaku - ã‚¢ã‚¢ã‚¢: True
+StringChecker.IsKatakana_Zenkaku - ã‚¢ã‚¢ã‚¢: False
+StringChecker.IsKatakana_Zenkaku - ï½±ï½±ï½±ï½±ï½±ï½±: True
 ----------------------------------------------------------------------------------------------------
-StringChecker.IsKanji - ‚ ‚ ‚ : False
-StringChecker.IsKanji - ˆŸˆŸˆŸ: True
+StringChecker.IsKanji - ã‚ã‚ã‚: False
+StringChecker.IsKanji - äºœäºœäºœ: True
 ----------------------------------------------------------------------------------------------------
-StringChecker.IsShift_Jis - ???: False
-StringChecker.IsShift_Jis - ˆŸˆŸˆŸ: True
+StringChecker.IsShift_Jis - é±“é±“é±“: False
+StringChecker.IsShift_Jis - äºœäºœäºœ: True
 StringChecker.IsShift_Jis_Zenkaku - aaaaaa: False
-StringChecker.IsShift_Jis_Zenkaku - ˆŸˆŸˆŸ: True
-StringChecker.IsShift_Jis_Hankaku - ‚‚‚: False
+StringChecker.IsShift_Jis_Zenkaku - äºœäºœäºœ: True
+StringChecker.IsShift_Jis_Hankaku - ï½ï½ï½: False
 StringChecker.IsShift_Jis_Hankaku - aaaaaa: True
 ----------------------------------------------------------------------------------------------------
 TestFormatChecker.IsJpZipCode
@@ -2170,26 +2170,26 @@ JpIpPhoneNumber_NoHyphen
 08099999999: False
 09099999999: False
 ----------------------------------------------------------------------------------------------------
-StringConverter.ToHankaku - ƒAƒAƒA: ƒAƒAƒA
-StringConverter.ToZenkaku - ƒAƒAƒA: ƒAƒAƒA
-StringConverter.ToHiragana - ƒAƒAƒA: ‚ ‚ ‚ 
-StringConverter.ToKatakana - ‚ ‚ ‚ : ƒAƒAƒA
+StringConverter.ToHankaku - ã‚¢ã‚¢ã‚¢: ã‚¢ã‚¢ã‚¢
+StringConverter.ToZenkaku - ã‚¢ã‚¢ã‚¢: ã‚¢ã‚¢ã‚¢
+StringConverter.ToHiragana - ã‚¢ã‚¢ã‚¢: ã‚ã‚ã‚
+StringConverter.ToKatakana - ã‚ã‚ã‚: ã‚¢ã‚¢ã‚¢
 ----------------------------------------------------------------------------------------------------
 FormatConverter.SeirekiToWareki
-1977/4/24, ggy”NMŒŽd“úidddj: º˜a52”N4ŒŽ24“úi“új
-1977/4/24, ggy”NMŒŽd“úidddjH:m:s: º˜a52”N4ŒŽ24“úi“új0:0:0
-1977/4/24 19:15:12, ggy”NMŒŽd“úidddj: º˜a52”N4ŒŽ24“úi“új
-1977/4/24 19:15:12, ggy”NMŒŽd“úidddjH:m:s: º˜a52”N4ŒŽ24“úi“új19:15:12
-1977/4/24 19:15:12, ggy”NMŒŽd“úidddjtt h:m:s: º˜a52”N4ŒŽ24“úi“újŒßŒã 7:15:12
-1992/2/6 1:1:1, ggyy”NMMŒŽdd“ú dddd HH:mm:ss: •½¬04”N02ŒŽ06“ú –Ø—j“ú 01:01:01
-1992/2/6 13:1:1, ggyy”NMMŒŽdd“ú dddd tt hh:mm:ss: •½¬04”N02ŒŽ06“ú –Ø—j“ú ŒßŒã 01:01:01
+1977/4/24, ggyå¹´Mæœˆdæ—¥ï¼ˆdddï¼‰: æ˜­å’Œ52å¹´4æœˆ24æ—¥ï¼ˆæ—¥ï¼‰
+1977/4/24, ggyå¹´Mæœˆdæ—¥ï¼ˆdddï¼‰H:m:s: æ˜­å’Œ52å¹´4æœˆ24æ—¥ï¼ˆæ—¥ï¼‰0:0:0
+1977/4/24 19:15:12, ggyå¹´Mæœˆdæ—¥ï¼ˆdddï¼‰: æ˜­å’Œ52å¹´4æœˆ24æ—¥ï¼ˆæ—¥ï¼‰
+1977/4/24 19:15:12, ggyå¹´Mæœˆdæ—¥ï¼ˆdddï¼‰H:m:s: æ˜­å’Œ52å¹´4æœˆ24æ—¥ï¼ˆæ—¥ï¼‰19:15:12
+1977/4/24 19:15:12, ggyå¹´Mæœˆdæ—¥ï¼ˆdddï¼‰tt h:m:s: æ˜­å’Œ52å¹´4æœˆ24æ—¥ï¼ˆæ—¥ï¼‰åˆå¾Œ 7:15:12
+1992/2/6 1:1:1, ggyyå¹´MMæœˆddæ—¥ dddd HH:mm:ss: å¹³æˆ04å¹´02æœˆ06æ—¥ æœ¨æ›œæ—¥ 01:01:01
+1992/2/6 13:1:1, ggyyå¹´MMæœˆddæ—¥ dddd tt hh:mm:ss: å¹³æˆ04å¹´02æœˆ06æ—¥ æœ¨æ›œæ—¥ åˆå¾Œ 01:01:01
 --------------------------------------------------
 FormatConverter.WarekiToSeireki
-º˜a52”N4ŒŽ24“úi“új, ggy”NMŒŽd“úidddj: 1977/04/24 0:00:00
-º˜a52”N4ŒŽ24“úi“új19:15:12, ggy”NMŒŽd“úidddjH:m:s: 1977/04/24 19:15:12
-º˜a52”N4ŒŽ24“úi“újŒßŒã 7:15:12, ggy”NMŒŽd“úidddjtt h:m:s: 1977/04/24 19:15:12
-•½¬04”N02ŒŽ06“ú –Ø—j“ú 01:01:01, ggyy”NMMŒŽdd“ú dddd HH:mm:ss: 1992/02/06 1:01:01
-•½¬04”N02ŒŽ06“ú –Ø—j“ú ŒßŒã 01:01:01, ggyy”NMMŒŽdd“ú dddd tt hh:mm:ss: 1992/02/06 13:01:01
+æ˜­å’Œ52å¹´4æœˆ24æ—¥ï¼ˆæ—¥ï¼‰, ggyå¹´Mæœˆdæ—¥ï¼ˆdddï¼‰: 1977/04/24 0:00:00
+æ˜­å’Œ52å¹´4æœˆ24æ—¥ï¼ˆæ—¥ï¼‰19:15:12, ggyå¹´Mæœˆdæ—¥ï¼ˆdddï¼‰H:m:s: 1977/04/24 19:15:12
+æ˜­å’Œ52å¹´4æœˆ24æ—¥ï¼ˆæ—¥ï¼‰åˆå¾Œ 7:15:12, ggyå¹´Mæœˆdæ—¥ï¼ˆdddï¼‰tt h:m:s: 1977/04/24 19:15:12
+å¹³æˆ04å¹´02æœˆ06æ—¥ æœ¨æ›œæ—¥ 01:01:01, ggyyå¹´MMæœˆddæ—¥ dddd HH:mm:ss: 1992/02/06 1:01:01
+å¹³æˆ04å¹´02æœˆ06æ—¥ æœ¨æ›œæ—¥ åˆå¾Œ 01:01:01, ggyyå¹´MMæœˆddæ—¥ dddd tt hh:mm:ss: 1992/02/06 13:01:01
 --------------------------------------------------
 FormatConverter.AddFigure3
 12,345
@@ -2228,52 +2228,52 @@ FormatConverter.AddFigure4
 -1,2345.6789
 ----------------------------------------------------------------------------------------------------
 FormatConverter.Suppress
-"", 10, '—': ——————————
-"123456789", 0, '—': 123456789
-"123456789", 1, '—': 123456789
-"123456789", 5, '—': 123456789
-"123456789", 9, '—': 123456789
-"123456789", 10, '—': —123456789
-"123456789", 11, '—': ——123456789
-"123456789", 20, '—': ———————————123456789
-"", 10, '—': ——————————
-"123456789", 0, '—': abcdefg
-"123456789", 1, '—': abcdefg
-"123456789", 5, '—': abcdefg
-"123456789", 9, '—': ——abcdefg
-"123456789", 10, '—': ———abcdefg
-"123456789", 11, '—': ————abcdefg
-"123456789", 20, '—': —————————————abcdefg
+"", 10, 'ï¼ ': ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ 
+"123456789", 0, 'ï¼ ': 123456789
+"123456789", 1, 'ï¼ ': 123456789
+"123456789", 5, 'ï¼ ': 123456789
+"123456789", 9, 'ï¼ ': 123456789
+"123456789", 10, 'ï¼ ': ï¼ 123456789
+"123456789", 11, 'ï¼ ': ï¼ ï¼ 123456789
+"123456789", 20, 'ï¼ ': ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ 123456789
+"", 10, 'ï¼ ': ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ 
+"123456789", 0, 'ï¼ ': abcdefg
+"123456789", 1, 'ï¼ ': abcdefg
+"123456789", 5, 'ï¼ ': abcdefg
+"123456789", 9, 'ï¼ ': ï¼ ï¼ abcdefg
+"123456789", 10, 'ï¼ ': ï¼ ï¼ ï¼ abcdefg
+"123456789", 11, 'ï¼ ': ï¼ ï¼ ï¼ ï¼ abcdefg
+"123456789", 20, 'ï¼ ': ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ ï¼ abcdefg
 ----------------------------------------------------------------------------------------------------
 CustomEncode.HtmlEncode: &quot; id=&quot;txtXXXXX&quot; /&gt;&lt;script type=&quot;text/javascript&quot;&gt;alert(&quot;XSS!!!&quot;)&lt;/script&gt;&lt;input name=&quot;txtXXXXX&quot; type=&quot;text&quot; value=&quot;
 ----------------------------------------------------------------------------------------------------
 CustomEncode.UrlEncode: http://www.google.co.jp/search?hl=ja&q=%26
-CustomEncode.UrlEncode2: http://www.google.co.jp/search?hl=ja&q=&
-CustomEncode.UrlEncode2: http://www.google.co.jp/search?hl=ja&q=%3C%3E
+CustomEncode.UrlEncode2: http%3A%2F%2Fwww.google.co.jp%2Fsearch%3Fhl%3Dja%26q%3D%26
+CustomEncode.UrlEncode2: http%3A%2F%2Fwww.google.co.jp%2Fsearch%3Fhl%3Dja%26q%3D%3C%3E
 ----------------------------------------------------------------------------------------------------
-jis2k4.GetStringInfo - ‚ ‚ ‚ : 
-Char’·:3; 
-•¶Žš—ñ’·3; 
-ƒoƒCƒg’·6; 
+jis2k4.GetStringInfo - ã‚ã‚ã‚: 
+Charé•·:3; 
+æ–‡å­—åˆ—é•·3; 
+ãƒã‚¤ãƒˆé•·6; 
 
 ----------------------------------------------------------------------------------------------------
-jis2k4.CheckSurrogatesPairChar - ‚ ‚ ‚ : False
-jis2k4.CheckSurrogatesPairChar - ‚ ??‚ : True
-jis2k4.CheckSurrogatesPairChar - ‚ ‚ ‚ : -1•¶Žš–Ú
-jis2k4.CheckSurrogatesPairChar - ‚ ??‚ : 1•¶Žš–Ú
+jis2k4.CheckSurrogatesPairChar - ã‚ã‚ã‚: False
+jis2k4.CheckSurrogatesPairChar - ã‚ð©¸½ã‚: True
+jis2k4.CheckSurrogatesPairChar - ã‚ã‚ã‚: -1æ–‡å­—ç›®
+jis2k4.CheckSurrogatesPairChar - ã‚ð©¸½ã‚: 1æ–‡å­—ç›®
 ----------------------------------------------------------------------------------------------------
-jis2k4.DeleteSurrogatesPairChar - ‚ ??‚ : ‚ ‚ 
-jis2k4.DeleteSurrogatesPairChar - ‚ ??‚ : ‚ œ‚ 
-jis2k4.DeleteSurrogatesPairChar - ‚ ??‚ : ‚ œ‚ 
+jis2k4.DeleteSurrogatesPairChar - ã‚ð©¸½ã‚: ã‚ã‚
+jis2k4.DeleteSurrogatesPairChar - ã‚ð©¸½ã‚: ã‚â—ã‚
+jis2k4.DeleteSurrogatesPairChar - ã‚ð©¸½ã‚: ã‚â—ã‚
 ----------------------------------------------------------------------------------------------------
-jis2k4.CheckCharAddedWithJIS2k4 - ‚ ‚ ‚ : False
-jis2k4.CheckCharAddedWithJIS2k4 - ‚ ?‚ : True
-jis2k4.CheckCharAddedWithJIS2k4 - ‚ ‚ ‚ : -1•¶Žš–Ú
-jis2k4.CheckCharAddedWithJIS2k4 - ‚ ?‚ : 1•¶Žš–Ú
+jis2k4.CheckCharAddedWithJIS2k4 - ã‚ã‚ã‚: False
+jis2k4.CheckCharAddedWithJIS2k4 - ã‚å™“ã‚: True
+jis2k4.CheckCharAddedWithJIS2k4 - ã‚ã‚ã‚: -1æ–‡å­—ç›®
+jis2k4.CheckCharAddedWithJIS2k4 - ã‚å™“ã‚: 1æ–‡å­—ç›®
 ----------------------------------------------------------------------------------------------------
-jis2k4.DeleteCharAddedWithJIS2k4 - ‚ ?‚ : ‚ ‚ 
-jis2k4.DeleteCharAddedWithJIS2k4 - ‚ ?‚ : ‚ œ‚ 
-jis2k4.DeleteCharAddedWithJIS2k4 - ‚ ?‚ : ‚ œ‚ 
+jis2k4.DeleteCharAddedWithJIS2k4 - ã‚å™“ã‚: ã‚ã‚
+jis2k4.DeleteCharAddedWithJIS2k4 - ã‚å™“ã‚: ã‚â—ã‚
+jis2k4.DeleteCharAddedWithJIS2k4 - ã‚å™“ã‚: ã‚â—ã‚
 ----------------------------------------------------------------------------------------------------
 Friday > Friday
 Wednesday > Wednesday
@@ -2320,4 +2320,4 @@ DeflateCompression(FileStream)-2 > is working properly.
 --------------------------------------------------
 DeflateCompression(MemoryStream) > is working properly.
 ----------------------------------------------------------------------------------------------------
-
+log4net: Shutdown called on Hierarchy [log4net-default-repository]

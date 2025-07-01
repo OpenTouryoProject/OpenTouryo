@@ -33,7 +33,7 @@
 using System;
 using System.Net;
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
 #else
 using Microsoft.Win32;
 #endif
@@ -75,7 +75,7 @@ namespace Touryo.Infrastructure.Public.Util
         /// <summary>MachineName</summary>
         public static string MachineName { get; private set;  }
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
 #else
         /// <summary>OsProductName</summary>
         public static string OsProductName { get; private set;  }
@@ -119,7 +119,7 @@ namespace Touryo.Infrastructure.Public.Util
             EnvInfo.DnsHostName = Dns.GetHostName();
             EnvInfo.MachineName = Environment.MachineName;
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
 #else
             EnvInfo.OsProductName = EnvInfo.GetRegistryValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName");
             EnvInfo.OsRelease = EnvInfo.GetRegistryValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ReleaseId");

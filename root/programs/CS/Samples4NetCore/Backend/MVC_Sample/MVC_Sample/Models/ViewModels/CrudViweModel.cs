@@ -44,7 +44,7 @@ namespace MVC_Sample.Models.ViewModels
         /// <summary>データアクセス制御クラス（データプロバイダ）</summary>
         public string DdlDap { get; set; }
         
-        /// <summary>個別、共通、自動生成のＤａｏ種別</summary>
+        /// <summary>個別、共通、自動生成のDao種別</summary>
         public string DdlMode1 { get; set; }
         
         /// <summary>静的、動的のクエリ モード</summary>
@@ -81,16 +81,16 @@ namespace MVC_Sample.Models.ViewModels
             }
         }
 
-        /// <summary>個別、共通、自動生成のＤａｏ種別 アイテムリスト</summary>
+        /// <summary>個別、共通、自動生成のDao種別 アイテムリスト</summary>
         public List<SelectListItem> DdlMode1Items
         {
             get
             {
                 return new List<SelectListItem>()
                 {
-                    new SelectListItem() { Text = "個別Ｄａｏ", Value = "individual", Selected = true }, 
-                    new SelectListItem() { Text = "共通Ｄａｏ", Value = "common" }, 
-                    new SelectListItem() { Text = "自動生成Ｄａｏ（更新のみ）", Value = "generate" }
+                    new SelectListItem() { Text = "個別Dao", Value = "individual", Selected = true }, 
+                    new SelectListItem() { Text = "共通Dao", Value = "common" }, 
+                    new SelectListItem() { Text = "自動生成Dao（更新のみ）", Value = "generate" }
                 };
             }
         }

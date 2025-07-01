@@ -18,6 +18,7 @@ call %CURRENT_DIR%z_Common.bat
 rem --------------------------------------------------
 rem Batch build of DPQuery_Tool.
 rem --------------------------------------------------
+..\nuget.exe restore "Frameworks\Tools\DPQuery_Tool\DPQuery_Tool.sln"
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\DPQuery_Tool\DPQuery_Tool.sln"
 
 pause
@@ -25,6 +26,7 @@ pause
 rem --------------------------------------------------
 rem Batch build of DaoGen_Tool.
 rem --------------------------------------------------
+..\nuget.exe restore "Frameworks\Tools\DaoGen_Tool\DaoGen_Tool.sln"
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\DaoGen_Tool\DaoGen_Tool.sln"
 
 pause
@@ -34,14 +36,6 @@ rem Batch build of Deploy ZipPack With HTTP.
 rem --------------------------------------------------
 ..\nuget.exe restore "Frameworks\Tools\DeployZipPackWithHTTP\DeployZipPackWithHTTP.sln"
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\DeployZipPackWithHTTP\DeployZipPackWithHTTP.sln"
-
-pause
-
-rem --------------------------------------------------
-rem Batch build of Deploy DistributeFile_Tool.
-rem --------------------------------------------------
-..\nuget.exe restore "Frameworks\Tools\DistributeFile_Tool\DistributeFile_Tool.sln"
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\DistributeFile_Tool\DistributeFile_Tool.sln"
 
 pause
 

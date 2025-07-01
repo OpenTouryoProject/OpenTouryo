@@ -26,8 +26,8 @@ pause
 rem --------------------------------------------------
 rem Batch build of WSClientWPF_sample.
 rem --------------------------------------------------
-rem dotnet restore "Samples4NetCore\Legacy\WS_sample\WSClient_sample\WSClientWinWPF_sample\WSClientWinWPF_sample.sln"
-rem dotnet msbuild "Samples4NetCore\Legacy\WS_sample\WSClient_sample\WSClientWinWPF_sample\WSClientWinWPF_sample.sln"
+dotnet restore "Samples4NetCore\Legacy\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln"
+dotnet msbuild "Samples4NetCore\Legacy\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln"
 
 pause
 

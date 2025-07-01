@@ -168,7 +168,7 @@ namespace Touryo.Infrastructure.Public.IO
             if (enc == null) { zip = ZipFile.Read(zipFileName); }
             else { zip = new ZipFile(zipFileName, enc); }
 
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
             zip = base.SetZipFile(zip);
 #else
             zip = base.SetZipFile(zip, null);

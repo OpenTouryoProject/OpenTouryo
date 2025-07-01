@@ -209,6 +209,8 @@ namespace Touryo.Infrastructure.Business.Business
                     // 接続文字列をロード
                     connstring = GetConfigParameter.GetConnectionString("ConnectionString_MCN");
                 }
+#if NET48
+#else
                 else if (parameterValue.ActionType.Split('%')[0] == "NPS")
                 {
                     // PostgreSQL / Npgsql用のDamを生成
@@ -217,6 +219,7 @@ namespace Touryo.Infrastructure.Business.Business
                     // 接続文字列をロード
                     connstring = GetConfigParameter.GetConnectionString("ConnectionString_NPS");
                 }
+#endif
                 else
                 {
                     // SQL Server / SQL Client用のDamを生成

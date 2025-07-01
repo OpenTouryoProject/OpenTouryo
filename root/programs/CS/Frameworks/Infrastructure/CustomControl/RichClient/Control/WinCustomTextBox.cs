@@ -46,6 +46,7 @@ using System.Windows.Forms.Design;
 using Touryo.Infrastructure.Framework.RichClient.Util;
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Str;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Touryo.Infrastructure.CustomControl.RichClient
 {
@@ -1143,7 +1144,8 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
 
             // 無限ループ対応
 #if NETCOREAPP
-            string txt = this.StringCopy(base.Text);
+            //string txt = this.StringCopy(base.Text);
+            string txt = new string(base.Text.ToCharArray());
 #else
             string txt = String.Copy(base.Text);
 #endif
@@ -1185,7 +1187,8 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
         {
             // 生入力
 #if NETCOREAPP
-            string txt = this.StringCopy(base.Text);
+            //string txt = this.StringCopy(base.Text);
+            string txt = new string(base.Text.ToCharArray());
 #else
             string txt = String.Copy(base.Text);
 #endif
@@ -1368,7 +1371,8 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
             List<string> lstRet = new List<string>();
 
 #if NETCOREAPP
-            string txt = this.StringCopy(base.Text);
+            //string txt = this.StringCopy(base.Text);
+            string txt = new string(base.Text.ToCharArray());
 #else
             string txt = String.Copy(base.Text);
 #endif
@@ -1586,7 +1590,8 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
             {
                 // DisplayUnitsがNULLである。
 #if NETCOREAPP
-                txt = this.StringCopy(base.Text);
+                //txt = this.StringCopy(base.Text);
+                txt = new string(base.Text.ToCharArray());
 #else
                 txt = String.Copy(base.Text);
 #endif
@@ -1595,7 +1600,8 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
             {
                 // DisplayUnitsがNULLでない。
 #if NETCOREAPP
-                txt = this.StringCopy(this._Value);
+                //txt = this.StringCopy(this._Value);
+                txt = new string(this._Value.ToCharArray());
 #else
                 txt = String.Copy(this._Value);
 #endif
@@ -1668,7 +1674,8 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
             string temp = "";
 
 #if NETCOREAPP
-            string txt = this.StringCopy(base.Text);
+            //string txt = this.StringCopy(base.Text);
+            string txt = new string(base.Text.ToCharArray());
 #else
             string txt = String.Copy(base.Text);
 #endif
@@ -2013,11 +2020,13 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
         #endregion
 
 #if NETCOREAPP
+        /*
         /// <summary>StringCopy</summary>
         private string StringCopy(string input)
         {
             return (string)BinarySerialize.DeepClone(input);
         }
+        */
 #else
 #endif
     }
