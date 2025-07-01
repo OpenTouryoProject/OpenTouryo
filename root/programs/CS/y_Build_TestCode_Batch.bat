@@ -36,7 +36,7 @@ cd %CURRENTDIR%
 @echo Test the SimpleBatchCore(30).
 @echo --------------------------------------------------
 set CURRENTDIR=%cd%
-cd "Frameworks\Tests\TestBatch\SimpleBatchCore\bin\Debug\netcoreapp3.0"
+cd "Frameworks\Tests\TestBatch\SimpleBatchCore\bin\Debug\net8.0"
 dotnet "SimpleBatchCore.dll" -- /Dap SQL /Mode1 individual /Mode2 static /EXROLLBACK - > ..\..\..\..\ResultSimpleBatchCore30.txt
 cd %CURRENTDIR%
 

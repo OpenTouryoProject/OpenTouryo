@@ -9,12 +9,12 @@
 
   <!-- アペンダを選択することによって、ログの出力先を変更できる。 -->
   <targets>
-    <!-- ローリング・ログファイル出力用アペンダ -->
+    <!-- ログファイル出力用アペンダ -->
     <target xsi:type="File" name="（★アペンダ名１）"
             fileName="（★ファイルパス）" encoding="utf-8" keepFileOpen="true"
             layout="[${date:format=yyyy/MM/dd HH\:mm\:ss,fff}],[${level:uppercase=true}],[${threadid}],${message}"/>
 
-    <!-- ローリング・ログファイル出力用アペンダ -->
+    <!-- ログファイル出力用アペンダ -->
     <target xsi:type="File" name="（★アペンダ名２）"
             fileName="（★ファイルパス）" encoding="utf-8" keepFileOpen="true"
             layout="[${date:format=yyyy/MM/dd HH\:mm\:ss,fff}],[${level:uppercase=true}],[${threadid}],${message}"/>
