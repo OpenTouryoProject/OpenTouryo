@@ -35,15 +35,16 @@ using System;
 using System.IO;
 using System.Configuration;
 using System.Configuration.Provider;
-using System.Data;
-using System.Data.SqlClient;
 using System.Collections.Specialized;
-using System.Timers;
+using System.Data;
 using System.Diagnostics;
+using System.Timers;
 
 using System.Web;
 using System.Web.SessionState;
 using System.Web.Configuration;
+
+using Microsoft.Data.SqlClient;
 
 #region ORGコメント
 

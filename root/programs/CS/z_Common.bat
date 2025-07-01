@@ -3,6 +3,11 @@
 @rem --------------------------------------------------
 
 @rem --------------------------------------------------
+@rem 文字化け対策
+@rem --------------------------------------------------
+chcp 65001
+
+@rem --------------------------------------------------
 @rem Specifying Build tool.
 @rem --------------------------------------------------
 set BUILDFILEPATH2.0="C:\Windows\Microsoft.NET\Framework\v2.0.50727\MSBuild.exe"
@@ -36,7 +41,15 @@ if exist "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Curre
   set BUILDFILEPATH17="C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe"
 )
 
+echo BUILDFILEPATH2.0 %BUILDFILEPATH2.0%
+echo BUILDFILEPATH3.5 %BUILDFILEPATH3.5%
+echo BUILDFILEPATH4.0 %BUILDFILEPATH4.0%
+echo BUILDFILEPATH15 %BUILDFILEPATH15%
+echo BUILDFILEPATH16 %BUILDFILEPATH16%
+echo BUILDFILEPATH17 %BUILDFILEPATH17%
+
 set BUILDFILEPATH=%BUILDFILEPATH17%
+echo BUILDFILEPATH %BUILDFILEPATH%
 
 @echo --------------------------------------------------
 @echo The choice of build configuration (Debug / Release).

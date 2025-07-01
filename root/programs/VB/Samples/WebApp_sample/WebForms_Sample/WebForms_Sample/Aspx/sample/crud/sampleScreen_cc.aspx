@@ -14,17 +14,14 @@
         <asp:ListItem Value="OLE">Multi-DB / OLEDB.NET</asp:ListItem>
         <asp:ListItem Value="ODB">Multi-DB / ODCB.NET</asp:ListItem>
         <asp:ListItem Value="ODP">Oracle / ODP.NET</asp:ListItem>
-        <asp:ListItem Value="DB2">DB2 / DB2.NET</asp:ListItem>
-        <asp:ListItem Value="HIR">HiRDB / HiRDB-DP</asp:ListItem>
         <asp:ListItem Value="MCN">MySQL / Cnn/NET</asp:ListItem>
-        <asp:ListItem Value="NPS">PostgreSQL / Npgsql</asp:ListItem>
     </cc1:WebCustomDropDownList><br />
     <br />
-    個別、共通、自動生成のＤａｏ種別を選択<br />
+    個別、共通、自動生成のDao種別を選択<br />
     <cc1:WebCustomDropDownList ID="ddlMode1" runat="server">
-        <asp:ListItem Value="individual">個別Ｄａｏ</asp:ListItem>
-        <asp:ListItem Value="common">共通Ｄａｏ</asp:ListItem>
-        <asp:ListItem Value="generate">自動生成Ｄａｏ（更新のみ）</asp:ListItem>
+        <asp:ListItem Value="individual">個別Dao</asp:ListItem>
+        <asp:ListItem Value="common">共通Dao</asp:ListItem>
+        <asp:ListItem Value="generate">自動生成Dao（更新のみ）</asp:ListItem>
     </cc1:WebCustomDropDownList><br />
     <br />
     静的、動的のクエリ モードを選択<br />
@@ -45,11 +42,9 @@
     <br />
     通信制御<br />
     <cc1:WebCustomDropDownList ID="ddlCmctCtrl" runat="server">
-        <asp:ListItem Value="testWebService">ASP.NET Webサービス呼出</asp:ListItem>
-        <asp:ListItem Value="testWebService2">WCF Webサービス呼出</asp:ListItem>
-        <asp:ListItem Value="testWebService3">WCF TCPサービス呼出</asp:ListItem>
-        <asp:ListItem Value="testWebService4">ASP.NET WebAPI呼出</asp:ListItem>
         <asp:ListItem Value="testInProcess">インプロセス呼出</asp:ListItem>
+        <asp:ListItem Value="testWebService4">ASP.NET WebAPI呼出</asp:ListItem>
+        <asp:ListItem Value="testWebService3">WCF TCPサービス呼出</asp:ListItem>
     </cc1:WebCustomDropDownList><br />
     <hr />
     <table>

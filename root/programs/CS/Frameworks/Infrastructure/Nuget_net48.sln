@@ -1,19 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29209.62
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197 d17.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Public", "Public\Public_net48.csproj", "{81CC573A-0DF9-49E5-AF10-A50F9B194DA5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Public_net48", "Public\Public_net48.csproj", "{81CC573A-0DF9-49E5-AF10-A50F9B194DA5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework", "Framework\Framework_net48.csproj", "{33133F7E-FCF4-4438-8241-FE5CDF6E52FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Framework_net48", "Framework\Framework_net48.csproj", "{33133F7E-FCF4-4438-8241-FE5CDF6E52FD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamMySQL", "Public\Db\DamMySQL\DamMySQL_net48.csproj", "{18345E81-5ECB-4B2F-8304-0E94F8763216}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamMySQL_net48", "Public\Db\DamMySQL\DamMySQL_net48.csproj", "{18345E81-5ECB-4B2F-8304-0E94F8763216}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamPstGrS", "Public\Db\DamPstGrS\DamPstGrS_net48.csproj", "{1A3B3376-716C-4AB2-9FB5-427227D8037F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamManagedOdp_net48", "Public\Db\DamManagedOdp\DamManagedOdp_net48.csproj", "{FE4533B3-53F0-4BE2-8390-9486FFF380A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DamManagedOdp", "Public\Db\DamManagedOdp\DamManagedOdp_net48.csproj", "{FE4533B3-53F0-4BE2-8390-9486FFF380A3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Public.Security", "Public\Security\Public.Security_net48.csproj", "{F18BD7A1-2E57-4C6B-AFEA-5DFF6B6D3290}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Public.Security_net48", "Public\Security\Public.Security_net48.csproj", "{30F697BC-4AF8-40B4-9419-37E82B57ABDB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,18 +31,14 @@ Global
 		{18345E81-5ECB-4B2F-8304-0E94F8763216}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{18345E81-5ECB-4B2F-8304-0E94F8763216}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18345E81-5ECB-4B2F-8304-0E94F8763216}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1A3B3376-716C-4AB2-9FB5-427227D8037F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1A3B3376-716C-4AB2-9FB5-427227D8037F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1A3B3376-716C-4AB2-9FB5-427227D8037F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1A3B3376-716C-4AB2-9FB5-427227D8037F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FE4533B3-53F0-4BE2-8390-9486FFF380A3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F18BD7A1-2E57-4C6B-AFEA-5DFF6B6D3290}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F18BD7A1-2E57-4C6B-AFEA-5DFF6B6D3290}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F18BD7A1-2E57-4C6B-AFEA-5DFF6B6D3290}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F18BD7A1-2E57-4C6B-AFEA-5DFF6B6D3290}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30F697BC-4AF8-40B4-9419-37E82B57ABDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30F697BC-4AF8-40B4-9419-37E82B57ABDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30F697BC-4AF8-40B4-9419-37E82B57ABDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30F697BC-4AF8-40B4-9419-37E82B57ABDB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

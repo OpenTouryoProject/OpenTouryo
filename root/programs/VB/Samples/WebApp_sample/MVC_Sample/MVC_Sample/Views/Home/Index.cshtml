@@ -19,11 +19,8 @@
     //**********************************************************************************
 *@
 
-@using MVC_Sample.Models.ViewModels
-@model LoginViewModel
 @{
     ViewBag.Title = "Menu";
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @* スクリプト・セクション（RenderSection("HeaderScriptsSection", required: true)に出力されます） *@
@@ -31,7 +28,7 @@
     <!-- Head 部の section -->
 }
 
-<h2>Menu</h2>
+<h2>@ViewBag.Title</h2>
 
 <ul>
     <li>

@@ -36,6 +36,7 @@
 //*  2017/01/31  西野 大介         System.Web.HttpUtility ---> System.Net.WebUtility
 //**********************************************************************************
 
+
 using System;
 using System.Text;
 using System.Net;
@@ -1075,7 +1076,13 @@ namespace Touryo.Infrastructure.Public.Str
         /// </remarks>
         public static string UrlEncode2(string input)
         {
+#if (NETCOREAPP)
+            // .NET Core 2.1以降では、EscapeDataStringが推奨されている
+            // warning SYSLIB0013: 'Uri.EscapeUriString(string)' は旧形式
+            return Uri.EscapeDataString(input);
+#else
             return Uri.EscapeUriString(input);
+#endif
         }
 
         /// <summary>Urlデコードする。</summary>

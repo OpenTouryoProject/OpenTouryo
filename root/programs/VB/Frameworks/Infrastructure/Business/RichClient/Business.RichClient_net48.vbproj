@@ -68,9 +68,6 @@
     <Reference Include="OpenTouryo.DamMySQL">
       <HintPath>..\..\Build_net48\OpenTouryo.DamMySQL.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTouryo.DamPstGrS">
-      <HintPath>..\..\Build_net48\OpenTouryo.DamPstGrS.dll</HintPath>
-    </Reference>
     <Reference Include="OpenTouryo.Framework">
       <HintPath>..\..\Build_net48\OpenTouryo.Framework.dll</HintPath>
     </Reference>

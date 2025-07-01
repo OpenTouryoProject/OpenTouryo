@@ -15,11 +15,7 @@ set CURRENT_DIR="%~dp0"
 @rem --------------------------------------------------
 call %CURRENT_DIR%z_Common.bat
 
-rem --------------------------------------------------
-rem Batch build of Simple_CLI.
-rem --------------------------------------------------
-..\nuget.exe restore "Samples\CLI_sample\Simple_CLI\Simple_CLI.sln"
-%BUILDFILEPATH% %COMMANDLINE% "Samples\CLI_sample\Simple_CLI\Simple_CLI.sln"
+echo .NET Fx系のSystem.CommandLine と Sharprompt 問題で一時的？ドロップ
 
 pause
 

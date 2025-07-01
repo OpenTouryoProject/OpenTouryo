@@ -40,12 +40,6 @@ dotnet restore "Samples4NetCore\Legacy\2CS_sample\2CSClientWPF_sample\2CSClientW
 dotnet msbuild %COMMANDLINE% "Samples4NetCore\Legacy\2CS_sample\2CSClientWPF_sample\2CSClientWPF_sample.sln"
 
 rem --------------------------------------------------
-rem Batch build of AsyncEvent_sample.
-rem --------------------------------------------------
-dotnet restore "Samples4NetCore\Legacy\2CS_sample\AsyncEvent_sample\AsyncEvent_sample.sln"
-dotnet msbuild %COMMANDLINE% "Samples4NetCore\Legacy\2CS_sample\AsyncEvent_sample\AsyncEvent_sample.sln"
-
-rem --------------------------------------------------
 rem Batch build of CustCtrl_sample.
 rem --------------------------------------------------
 dotnet restore "Samples4NetCore\Legacy\2CS_sample\CustCtrl_sample\CustCtrl_sample.sln"

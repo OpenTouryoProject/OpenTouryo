@@ -2,7 +2,7 @@
 ' <自動生成>
 '     このコードはツールによって生成されました。
 '
-'     このファイルへの変更は、以下の状況下で不正な動作の原因になったり、
+'     このファイルへの変更は、正しくない動作の原因になる可能性があり、
 '     コードが再生成されるときに損失したりします。 
 ' </自動生成>
 '------------------------------------------------------------------------------
@@ -11,9 +11,9 @@ Option Strict On
 Option Explicit On
 
 Namespace Aspx.Common.Master
-    
+
     Partial Public Class testBlankScreen
-        
+
         '''<summary>
         '''Head1 コントロール。
         '''</summary>
@@ -22,7 +22,7 @@ Namespace Aspx.Common.Master
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents Head1 As Global.System.Web.UI.HtmlControls.HtmlHead
-        
+
         '''<summary>
         '''cphHeaderScripts コントロール。
         '''</summary>
@@ -31,7 +31,7 @@ Namespace Aspx.Common.Master
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents cphHeaderScripts As Global.System.Web.UI.WebControls.ContentPlaceHolder
-        
+
         '''<summary>
         '''form1 コントロール。
         '''</summary>
@@ -40,7 +40,7 @@ Namespace Aspx.Common.Master
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents form1 As Global.System.Web.UI.HtmlControls.HtmlForm
-        
+
         '''<summary>
         '''ContentPlaceHolder_A コントロール。
         '''</summary>
@@ -49,7 +49,7 @@ Namespace Aspx.Common.Master
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents ContentPlaceHolder_A As Global.System.Web.UI.WebControls.ContentPlaceHolder
-        
+
         '''<summary>
         '''ChildScreenType コントロール。
         '''</summary>
@@ -58,7 +58,7 @@ Namespace Aspx.Common.Master
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents ChildScreenType As Global.System.Web.UI.WebControls.HiddenField
-        
+
         '''<summary>
         '''ChildScreenUrl コントロール。
         '''</summary>
@@ -67,7 +67,7 @@ Namespace Aspx.Common.Master
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents ChildScreenUrl As Global.System.Web.UI.WebControls.HiddenField
-        
+
         '''<summary>
         '''CloseFlag コントロール。
         '''</summary>
@@ -76,7 +76,7 @@ Namespace Aspx.Common.Master
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents CloseFlag As Global.System.Web.UI.WebControls.HiddenField
-        
+
         '''<summary>
         '''SubmitFlag コントロール。
         '''</summary>
@@ -85,7 +85,7 @@ Namespace Aspx.Common.Master
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents SubmitFlag As Global.System.Web.UI.WebControls.HiddenField
-        
+
         '''<summary>
         '''ScreenGuid コントロール。
         '''</summary>
@@ -94,7 +94,7 @@ Namespace Aspx.Common.Master
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents ScreenGuid As Global.System.Web.UI.WebControls.HiddenField
-        
+
         '''<summary>
         '''FxDialogStyle コントロール。
         '''</summary>
@@ -103,7 +103,7 @@ Namespace Aspx.Common.Master
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents FxDialogStyle As Global.System.Web.UI.WebControls.HiddenField
-        
+
         '''<summary>
         '''BusinessDialogStyle コントロール。
         '''</summary>
@@ -112,7 +112,7 @@ Namespace Aspx.Common.Master
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents BusinessDialogStyle As Global.System.Web.UI.WebControls.HiddenField
-        
+
         '''<summary>
         '''NormalScreenStyle コントロール。
         '''</summary>
@@ -121,7 +121,7 @@ Namespace Aspx.Common.Master
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents NormalScreenStyle As Global.System.Web.UI.WebControls.HiddenField
-        
+
         '''<summary>
         '''NormalScreenTarget コントロール。
         '''</summary>
@@ -130,7 +130,7 @@ Namespace Aspx.Common.Master
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents NormalScreenTarget As Global.System.Web.UI.WebControls.HiddenField
-        
+
         '''<summary>
         '''DialogFrameUrl コントロール。
         '''</summary>
@@ -139,7 +139,7 @@ Namespace Aspx.Common.Master
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents DialogFrameUrl As Global.System.Web.UI.WebControls.HiddenField
-        
+
         '''<summary>
         '''WindowGuid コントロール。
         '''</summary>
@@ -148,7 +148,7 @@ Namespace Aspx.Common.Master
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents WindowGuid As Global.System.Web.UI.WebControls.HiddenField
-        
+
         '''<summary>
         '''RequestTicketGuid コントロール。
         '''</summary>
@@ -157,7 +157,7 @@ Namespace Aspx.Common.Master
         '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         '''</remarks>
         Protected WithEvents RequestTicketGuid As Global.System.Web.UI.WebControls.HiddenField
-        
+
         '''<summary>
         '''cphFooterScripts コントロール。
         '''</summary>

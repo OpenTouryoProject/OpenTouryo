@@ -26,6 +26,7 @@ pause
 rem --------------------------------------------------
 rem Batch build of WSClientWPF_sample.
 rem --------------------------------------------------
+..\nuget.exe restore "Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln"
 %BUILDFILEPATH% %COMMANDLINE% "Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln"
 
 pause

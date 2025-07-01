@@ -5,10 +5,6 @@ VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "WSClientWPF_sample", "WSClientWPF_sample.vbproj", "{5B5899DA-98C9-47B7-8832-A21768D788B0}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "ASPNETWebService", "..\..\..\..\Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\ASPNETWebService\ASPNETWebService.vbproj", "{CD8E53D2-B177-494B-AE08-1CEEF98E43D7}"
-EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "WCFService", "..\..\..\..\Frameworks\Infrastructure\ServiceInterface\WCFService\WCFService.vbproj", "{48114116-045D-4BB9-93FD-61306697F589}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,30 +25,6 @@ Global
 		{5B5899DA-98C9-47B7-8832-A21768D788B0}.Release|Mixed Platforms.Build.0 = Release|x86
 		{5B5899DA-98C9-47B7-8832-A21768D788B0}.Release|x86.ActiveCfg = Release|x86
 		{5B5899DA-98C9-47B7-8832-A21768D788B0}.Release|x86.Build.0 = Release|x86
-		{CD8E53D2-B177-494B-AE08-1CEEF98E43D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CD8E53D2-B177-494B-AE08-1CEEF98E43D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CD8E53D2-B177-494B-AE08-1CEEF98E43D7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{CD8E53D2-B177-494B-AE08-1CEEF98E43D7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{CD8E53D2-B177-494B-AE08-1CEEF98E43D7}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{CD8E53D2-B177-494B-AE08-1CEEF98E43D7}.Debug|x86.Build.0 = Debug|Any CPU
-		{CD8E53D2-B177-494B-AE08-1CEEF98E43D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CD8E53D2-B177-494B-AE08-1CEEF98E43D7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CD8E53D2-B177-494B-AE08-1CEEF98E43D7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{CD8E53D2-B177-494B-AE08-1CEEF98E43D7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{CD8E53D2-B177-494B-AE08-1CEEF98E43D7}.Release|x86.ActiveCfg = Release|Any CPU
-		{CD8E53D2-B177-494B-AE08-1CEEF98E43D7}.Release|x86.Build.0 = Release|Any CPU
-		{48114116-045D-4BB9-93FD-61306697F589}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{48114116-045D-4BB9-93FD-61306697F589}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{48114116-045D-4BB9-93FD-61306697F589}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{48114116-045D-4BB9-93FD-61306697F589}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{48114116-045D-4BB9-93FD-61306697F589}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{48114116-045D-4BB9-93FD-61306697F589}.Debug|x86.Build.0 = Debug|Any CPU
-		{48114116-045D-4BB9-93FD-61306697F589}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{48114116-045D-4BB9-93FD-61306697F589}.Release|Any CPU.Build.0 = Release|Any CPU
-		{48114116-045D-4BB9-93FD-61306697F589}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{48114116-045D-4BB9-93FD-61306697F589}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{48114116-045D-4BB9-93FD-61306697F589}.Release|x86.ActiveCfg = Release|Any CPU
-		{48114116-045D-4BB9-93FD-61306697F589}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

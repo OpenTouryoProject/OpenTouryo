@@ -2,12 +2,13 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net6.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows7.0</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon />
     <StartupObject />
     <RootNamespace>WSClientWin2_sample</RootNamespace>
     <AssemblyName>WSClientWin2_sample</AssemblyName>
+    <UseWPF>True</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,28 +22,29 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="3.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="3.0.0" />
-    <PackageReference Include="log4net" Version="2.0.8" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.5" />
+    <PackageReference Include="log4net" Version="3.1.0" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.5" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <Reference Include="OpenTouryo.Business">
-      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0-windows\OpenTouryo.Business.dll</HintPath>
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore80\net8.0-windows7.0\OpenTouryo.Business.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Business.RichClient">
-      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0-windows\OpenTouryo.Business.RichClient.dll</HintPath>
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore80\net8.0-windows7.0\OpenTouryo.Business.RichClient.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Framework">
-      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0-windows\OpenTouryo.Framework.dll</HintPath>
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore80\net8.0-windows7.0\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Framework.RichClient">
-      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0-windows\OpenTouryo.Framework.RichClient.dll</HintPath>
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore80\net8.0-windows7.0\OpenTouryo.Framework.RichClient.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public">
-      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0-windows\OpenTouryo.Public.dll</HintPath>
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore80\net8.0-windows7.0\OpenTouryo.Public.dll</HintPath>
     </Reference>
   </ItemGroup>
   

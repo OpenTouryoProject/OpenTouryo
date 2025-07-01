@@ -69,7 +69,7 @@ log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.Level
 log4net: Created Appender [OPERATION2]
 log4net: Adding appender named [OPERATION2] to logger [OPERATION].
 log4net: Hierarchy Threshold []
-[2020/07/31 23:54:10,882],[INFO ],[1],,,,----->>,D:\git\Dev\OpenTouryoProject\OpenTouryo\root\programs\CS\Frameworks\Tests\TestBatch\SimpleBatch\bin\Debug\SimpleBatch.exe,-,SelectCount,SQL%individual%static%-
+[2025/07/01 18:47:05,935],[INFO ],[1],,,,----->>,C:\OpenTouryo\root\programs\CS\Frameworks\Tests\TestBatch\SimpleBatch\bin\Debug\SimpleBatch.exe,-,SelectCount,SQL%individual%static%-
 log4net: configuring repository [log4net-default-repository] using stream
 log4net: loading XML configuration
 log4net: Configuring Repository [log4net-default-repository]
@@ -144,7 +144,6 @@ log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.Level
 log4net: Created Appender [OPERATION2]
 log4net: Adding appender named [OPERATION2] to logger [OPERATION].
 log4net: Hierarchy Threshold []
-[2020/07/31 23:54:10,914],[INFO ],[1],14,0,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
-[2020/07/31 23:54:10,915],[INFO ],[1],,,,<<-----,D:\git\Dev\OpenTouryoProject\OpenTouryo\root\programs\CS\Frameworks\Tests\TestBatch\SimpleBatch\bin\Debug\SimpleBatch.exe,-,SelectCount,SQL%individual%static%-,25,0
-3Œ‚Ìƒf[ƒ^‚ª‚ ‚è‚Ü‚·
-log4net: Shutdown called on Hierarchy [log4net-default-repository]
+[2025/07/01 18:47:06,130],[INFO ],[1],140,125,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2025/07/01 18:47:06,132],[INFO ],[1],,,,<<-----,C:\OpenTouryo\root\programs\CS\Frameworks\Tests\TestBatch\SimpleBatch\bin\Debug\SimpleBatch.exe,-,SelectCount,SQL%individual%static%-,174,156
+3ä»¶ã®ãƒ‡ãƒ¼ã‚¿ãŒã‚ã‚Šã¾ã™

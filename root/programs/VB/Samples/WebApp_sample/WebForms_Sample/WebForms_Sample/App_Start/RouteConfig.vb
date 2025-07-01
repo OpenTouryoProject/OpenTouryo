@@ -18,14 +18,15 @@
 '**********************************************************************************
 
 Imports System.Web.Routing
-'using Microsoft.AspNet.FriendlyUrls;
+'Imports Microsoft.AspNet.FriendlyUrls
 
-Public NotInheritable Class RouteConfig
-    Private Sub New()
+Public Module RouteConfig
+    Sub New()
     End Sub
-    Public Shared Sub RegisterRoutes(routes As RouteCollection)
-        'var settings = new FriendlyUrlSettings();
-        'settings.AutoRedirectMode = RedirectMode.Permanent;
-        'routes.EnableFriendlyUrls(settings);
+    Sub RegisterRoutes(ByVal routes As RouteCollection)
+        'Dim settings As FriendlyUrlSettings = New FriendlyUrlSettings() With {
+        '    .AutoRedirectMode = RedirectMode.Permanent
+        '}
+        'routes.EnableFriendlyUrls(settings)
     End Sub
-End Class
+End Module

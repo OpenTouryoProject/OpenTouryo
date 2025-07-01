@@ -25,9 +25,6 @@
 @{
     // ページタイトル
     ViewBag.Title = "CRUDサンプル（Ajax.BeginForm）";
-
-    // マスターページ
-    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @* スクリプト・セクション（RenderSection("HeaderScriptsSection", required: true)に出力されます） *@
@@ -38,7 +35,7 @@
 @* 本文レイアウト（RenderBodyに出力されます） *@
 @* Html.BeginFormは従来の全体方式、Ajax.BeginFormは部分更新方式（UpdateTargetIdの範囲を部分更新） *@
 @using (Ajax.BeginForm(null, null,
-                new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "messageResult" }, new { id = "form1" }))
+    new AjaxOptions() { HttpMethod = "POST", UpdateTargetId = "messageResult" }, new { id = "form1" }))
 {
     @Html.AntiForgeryToken()
 

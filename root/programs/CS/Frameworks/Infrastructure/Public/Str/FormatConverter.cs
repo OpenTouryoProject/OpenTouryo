@@ -284,7 +284,7 @@ namespace Touryo.Infrastructure.Public.Str
                         // 0未満
 
                         // 数値の整数部分を返す。
-#if NETSTD
+#if (NETSTD || NETCOREAPP)
                         dcm = Math.Truncate(dcm);
 #else
                         dcm = Microsoft.VisualBasic.Conversion.Int(dcm);

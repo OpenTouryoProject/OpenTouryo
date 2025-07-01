@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- NLog構成設定のセクション -->
+
+<nlog xmlns="http://www.nlog-project.org/schemas/NLog.xsd"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      autoReload="true"
+      internalLogLevel="Debug"
+      internalLogFile="C:\root\files\resource\Log\NLogInternalLog.log">
+
+  <!-- アペンダを選択することによって、ログの出力先を変更できる。 -->
+  <targets>
+    <!-- ローリング・ログファイル出力用アペンダ -->
+    <target xsi:type="File" name="ACCESS"
+            fileName="..\..\ACCESS_N.${date:format=yyyy-MM-dd}.log" encoding="utf-8" keepFileOpen="true"
+            layout="[${date:format=yyyy/MM/dd HH\:mm\:ss,fff}],[${level:uppercase=true}],[${threadid}],${message}"/>
+
+    <!-- ローリング・ログファイル出力用アペンダ -->
+    <target xsi:type="File" name="SQLTRACE"
+            fileName="..\..\SQLTRACE_N.${date:format=yyyy-MM-dd}.log" encoding="utf-8" keepFileOpen="true"
+            layout="[${date:format=yyyy/MM/dd HH\:mm\:ss,fff}],[${level:uppercase=true}],[${threadid}],${message}"/>
+
+    <!-- ローリング・ログファイル出力用アペンダ -->
+    <target xsi:type="File" name="OPERATION"
+            fileName="..\..\OPERATION_N.${date:format=yyyy-MM-dd}.log" encoding="utf-8" keepFileOpen="true"
+            layout="[${date:format=yyyy/MM/dd HH\:mm\:ss,fff}],[${level:uppercase=true}],[${threadid}],${message}"/>
+  </targets>
+
+  <rules>
+    <!-- Rootロガー相当 -->
+    <logger name="*" minlevel="Debug" writeTo="ACCESS, SQLTRACE, OPERATION" />
+
+    <!-- 個別ロガー名 -->
+    <logger name="ACCESS" minlevel="Debug" writeTo="ACCESS" />
+    <logger name="SQLTRACE" minlevel="Debug" writeTo="SQLTRACE" />
+    <logger name="OPERATION" minlevel="Debug" writeTo="OPERATION" />
+  </rules>
+</nlog>

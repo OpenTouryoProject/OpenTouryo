@@ -174,7 +174,8 @@ namespace Touryo.Infrastructure.Framework.Util
             /// インプロセス呼び出し
             /// </summary>
             InProcess = 1,
-
+#if (NETSTD || NETCOREAPP)
+#else
             /// <summary>
             /// Webサービス（WS-I Basic Profile v1.1、IIS ＋ ASP.NET）
             /// </summary>
@@ -194,6 +195,7 @@ namespace Touryo.Infrastructure.Framework.Util
             /// ASP.NET WebAPI (JSON-RPC)
             /// </summary>
             AspNetWebAPI
+#endif
         }
 
         /// <summary>エラー型情報を表す列挙型</summary>

@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -8,7 +7,7 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{74CCC7E1-12DB-4BEB-8003-6261A6C2C7FA}</ProjectGuid>
+    <ProjectGuid>{A0BAF1C3-0D90-471F-B949-7EB00C1C8991}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -17,16 +16,13 @@
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
-    <IISExpressSSLPort>44333</IISExpressSSLPort>
+    <IISExpressSSLPort>44371</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <TypeScriptToolsVersion>3.0</TypeScriptToolsVersion>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,33 +43,78 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
-      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+    <Reference Include="AspNet.ScriptManager.jQuery, Version=3.7.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\AspNet.ScriptManager.jQuery.3.7.1\lib\net45\AspNet.ScriptManager.jQuery.dll</HintPath>
     </Reference>
-    <Reference Include="AspNet.ScriptManager.jQuery, Version=3.4.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AspNet.ScriptManager.jQuery.3.4.1\lib\net45\AspNet.ScriptManager.jQuery.dll</HintPath>
+    <Reference Include="Azure.Core, Version=1.46.2.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
+      <HintPath>..\packages\Azure.Core.1.46.2\lib\net472\Azure.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Azure.Identity, Version=1.14.0.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
+      <HintPath>..\packages\Azure.Identity.1.14.0\lib\netstandard2.0\Azure.Identity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=9.0.0.6, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.9.0.6\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.Cryptography, Version=9.0.0.6, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.Cryptography.9.0.6\lib\net462\Microsoft.Bcl.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.TimeProvider, Version=9.0.0.6, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.TimeProvider.9.0.6\lib\net462\Microsoft.Bcl.TimeProvider.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="AspNet.ScriptManager.bootstrap, Version=4.3.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\AspNet.ScriptManager.bootstrap.4.3.1\lib\net45\AspNet.ScriptManager.bootstrap.dll</HintPath>
+    <Reference Include="Microsoft.Data.SqlClient, Version=6.0.0.0, Culture=neutral, PublicKeyToken=23ec7fc2d6eaa4a5, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Data.SqlClient.6.0.2\lib\net462\Microsoft.Data.SqlClient.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.4.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.Caching.Abstractions, Version=9.0.0.6, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Caching.Abstractions.9.0.6\lib\net462\Microsoft.Extensions.Caching.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.0.1\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.Caching.Memory, Version=9.0.0.6, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Caching.Memory.9.0.6\lib\net462\Microsoft.Extensions.Caching.Memory.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin.Security, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Owin.Security.4.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=9.0.0.6, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.9.0.6\lib\net462\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=9.0.0.6, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.9.0.6\lib\net462\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options, Version=9.0.0.6, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Options.9.0.6\lib\net462\Microsoft.Extensions.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives, Version=9.0.0.6, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Primitives.9.0.6\lib\net462\Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Identity.Client, Version=4.72.1.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Identity.Client.4.72.1\lib\net472\Microsoft.Identity.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Identity.Client.Extensions.Msal, Version=4.72.1.0, Culture=neutral, PublicKeyToken=0a613f4dd989e8ae, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Identity.Client.Extensions.Msal.4.72.1\lib\netstandard2.0\Microsoft.Identity.Client.Extensions.Msal.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Abstractions, Version=8.12.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Abstractions.8.12.0\lib\net472\Microsoft.IdentityModel.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.JsonWebTokens, Version=8.12.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.JsonWebTokens.8.12.0\lib\net472\Microsoft.IdentityModel.JsonWebTokens.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Logging, Version=8.12.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Logging.8.12.0\lib\net472\Microsoft.IdentityModel.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Protocols, Version=8.12.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Protocols.8.12.0\lib\net472\Microsoft.IdentityModel.Protocols.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Protocols.OpenIdConnect, Version=8.12.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Protocols.OpenIdConnect.8.12.0\lib\net472\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Tokens, Version=8.12.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IdentityModel.Tokens.8.12.0\lib\net472\Microsoft.IdentityModel.Tokens.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.2.2\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.4.2.2\lib\net45\Microsoft.Owin.Security.dll</HintPath>
     </Reference>
     <Reference Include="MySql.Data">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\MySql.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Npgsql">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Npgsql.dll</HintPath>
+      <HintPath>..\..\..\WS_sample\Build\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Business">
       <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Business.dll</HintPath>
@@ -87,141 +128,202 @@
     <Reference Include="OpenTouryo.DamMySQL">
       <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.DamMySQL.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTouryo.DamPstGrS">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.DamPstGrS.dll</HintPath>
-    </Reference>
     <Reference Include="OpenTouryo.Framework">
       <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTouryo.Public.Security">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Public.Security.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public">
       <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Public.dll</HintPath>
     </Reference>
-    <Reference Include="Oracle.ManagedDataAccess, Version=4.122.18.3, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\Oracle.ManagedDataAccess.dll</HintPath>
+    <Reference Include="OpenTouryo.Public.Security">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build\OpenTouryo.Public.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Oracle.ManagedDataAccess">
+      <HintPath>..\..\..\WS_sample\Build\Oracle.ManagedDataAccess.dll</HintPath>
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.AspNet.FriendlyUrls">
-      <HintPath>..\packages\Microsoft.AspNet.FriendlyUrls.Core.1.0.2\lib\net45\Microsoft.AspNet.FriendlyUrls.dll</HintPath>
+    <Reference Include="System.Buffers, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.6.1\lib\net462\System.Buffers.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AspNet.Web.Optimization.WebForms, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.WebForms.1.1.3\lib\net45\Microsoft.AspNet.Web.Optimization.WebForms.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.ScriptManager.MSAjax, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.ScriptManager.MSAjax.5.0.0\lib\net45\Microsoft.ScriptManager.MSAjax.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.ScriptManager.WebForms, Version=5.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.ScriptManager.WebForms.5.0.0\lib\net45\Microsoft.ScriptManager.WebForms.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Web.DynamicData" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+    <Reference Include="System.ClientModel, Version=1.4.2.0, Culture=neutral, PublicKeyToken=92742159e12e44c8, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ClientModel.1.4.2\lib\netstandard2.0\System.ClientModel.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Web.ApplicationServices" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Abstractions" />
-    <Reference Include="System.Web.Routing" />
-    <Reference Include="System.Web.Entity" />
-    <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=9.0.0.6, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.9.0.6\lib\net462\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
-    <Reference Include="System.Net" />
+    <Reference Include="System.Formats.Asn1, Version=9.0.0.6, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Formats.Asn1.9.0.6\lib\net462\System.Formats.Asn1.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.IdentityModel.Tokens.Jwt, Version=8.12.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.8.12.0\lib\net472\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.FileSystem.AccessControl, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.FileSystem.AccessControl.5.0.0\lib\net461\System.IO.FileSystem.AccessControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System.IO.Pipelines, Version=9.0.0.6, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.IO.Pipelines.9.0.6\lib\net462\System.IO.Pipelines.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.6.3\lib\net462\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory.Data, Version=9.0.0.6, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.Data.9.0.6\lib\net462\System.Memory.Data.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net.Http" />
-    <Reference Include="System.ServiceModel" />
-    <Reference Include="System.ServiceModel.Web" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.6.1\lib\net462\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.3.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.1.2\lib\net462\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security" />
+    <Reference Include="System.Security.AccessControl, Version=6.0.0.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.AccessControl.6.0.1\lib\net461\System.Security.AccessControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.Pkcs, Version=9.0.0.6, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.Pkcs.9.0.6\lib\net462\System.Security.Cryptography.Pkcs.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Cryptography.ProtectedData, Version=9.0.0.6, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Cryptography.ProtectedData.9.0.6\lib\net462\System.Security.Cryptography.ProtectedData.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Principal.Windows, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Principal.Windows.5.0.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encodings.Web, Version=9.0.0.6, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encodings.Web.9.0.6\lib\net462\System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Json, Version=9.0.0.6, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Json.9.0.6\lib\net462\System.Text.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.4.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.6.3\lib\net462\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
-      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.2.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ScriptManager.MSAjax">
+      <HintPath>..\packages\Microsoft.AspNet.ScriptManager.MSAjax.5.0.0\lib\net45\Microsoft.ScriptManager.MSAjax.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ScriptManager.WebForms">
+      <HintPath>..\packages\Microsoft.AspNet.ScriptManager.WebForms.5.0.0\lib\net45\Microsoft.ScriptManager.WebForms.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease">
+      <Private>True</Private>
+      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
     </Reference>
     <Reference Include="Antlr3.Runtime">
       <Private>True</Private>
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AspNet.Web.Optimization.WebForms">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.WebForms.1.1.3\lib\net45\Microsoft.AspNet.Web.Optimization.WebForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.FriendlyUrls">
+      <HintPath>..\packages\Microsoft.AspNet.FriendlyUrls.Core.1.0.2\lib\net45\Microsoft.AspNet.FriendlyUrls.dll</HintPath>
+    </Reference>
     <Reference Include="WSIFType_sample">
       <HintPath>..\..\..\WS_sample\Build\WSIFType_sample.dll</HintPath>
     </Reference>
+    <Reference Include="WSServer_sample">
+      <HintPath>..\..\..\WS_sample\Build\WSServer_sample.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Aspx\Common\Wuc\sampleChildControl.ascx" />
-    <Content Include="Aspx\OAuth2\OAuth2AuthorizationCodeGrantClient.aspx" />
     <Content Include="Aspx\Common\ErrorScreen.aspx" />
+    <Content Include="Aspx\Common\Wuc\sampleChildControl.ascx" />
     <Content Include="Aspx\Common\Wuc\sampleControl.ascx" />
     <Content Include="Aspx\Framework\DialogFrame.htm" />
     <Content Include="Aspx\Framework\DialogLoader.htm" />
     <Content Include="Aspx\Framework\myOKMessageDialog.aspx" />
     <Content Include="Aspx\Framework\myYesNoMessageDialog.aspx" />
     <Content Include="Aspx\Framework\Ping.aspx" />
-    <Content Include="Aspx\Sample\3Tier\ProductsConditionalSearch.aspx" />
-    <Content Include="Aspx\Sample\3Tier\ProductsDetail.aspx" />
-    <Content Include="Aspx\Sample\3Tier\ProductsSearchAndUpdate.aspx" />
-    <Content Include="Aspx\Sample\Crud\sampleScreen.aspx" />
-    <Content Include="Aspx\Sample\Crud\sampleScreen_cc.aspx" />
-    <Content Include="Aspx\Start\login.aspx" />
-    <Content Include="Aspx\Start\logout.aspx" />
-    <Content Include="Aspx\Start\menu.aspx" />
-    <Content Include="Aspx\TestFxLayerP\Nest\testNestMasterScreen.aspx" />
-    <Content Include="Aspx\TestFxLayerP\Nest\testScreen1nest.aspx" />
-    <Content Include="Aspx\TestFxLayerP\Nest\testScreen2nest.aspx" />
-    <Content Include="Aspx\TestFxLayerP\Normal\noBaseMasterScreen.aspx" />
-    <Content Include="Aspx\TestFxLayerP\Normal\noMasterScreen.aspx" />
-    <Content Include="Aspx\TestFxLayerP\Normal\testScreen0.aspx" />
-    <Content Include="Aspx\TestFxLayerP\Normal\testScreen1.aspx" />
-    <Content Include="Aspx\TestFxLayerP\Normal\testScreen2.aspx" />
-    <Content Include="Aspx\TestFxLayerP\Table\testGridView.aspx" />
-    <Content Include="Aspx\TestFxLayerP\Table\testJQGridJson.aspx" />
-    <Content Include="Aspx\TestFxLayerP\Table\testListView.aspx" />
-    <Content Include="Aspx\TestFxLayerP\Table\testRepeater.aspx" />
-    <Content Include="Aspx\TestFxLayerP\testDialogAtOnLoad.aspx" />
-    <Content Include="Aspx\TestFxLayerP\testDLFrame.aspx" />
-    <Content Include="Aspx\TestFxLayerP\testDLScreen.aspx" />
-    <Content Include="Aspx\TestFxLayerP\testTransitionAheadScreen.aspx" />
-    <Content Include="Aspx\TestFxLayerP\Wcc\testWCTextBox.aspx" />
-    <Content Include="Aspx\TestFxLayerP\WithAjax\testClientCallback.aspx" />
-    <Content Include="Aspx\TestFxLayerP\WithAjax\testExtension_Separate.aspx" />
-    <Content Include="Aspx\TestFxLayerP\WithAjax\testExtension_Single.aspx" />
-    <Content Include="Aspx\TestScreenCtrl\Google.PNG" />
-    <Content Include="Aspx\TestScreenCtrl\sc1.PNG" />
-    <Content Include="Aspx\TestScreenCtrl\sc2.PNG" />
-    <Content Include="Aspx\TestScreenCtrl\sc3.PNG" />
-    <Content Include="Aspx\TestScreenCtrl\sc4.PNG" />
-    <Content Include="Aspx\TestScreenCtrl\sc5.PNG" />
-    <Content Include="Aspx\TestScreenCtrl\WebForm0.aspx" />
-    <Content Include="Aspx\TestScreenCtrl\WebForm1.aspx" />
-    <Content Include="Aspx\TestScreenCtrl\WebForm2.aspx" />
-    <Content Include="Aspx\TestScreenCtrl\WebForm3.aspx" />
-    <Content Include="Aspx\TestScreenCtrl\WebForm4.aspx" />
-    <Content Include="Aspx\TestScreenCtrl\WebForm5.aspx" />
+    <Content Include="Aspx\OAuth2\OAuth2AuthorizationCodeGrantClient.aspx" />
+    <Content Include="Aspx\sample\3Tier\ProductsConditionalSearch.aspx" />
+    <Content Include="Aspx\sample\3Tier\ProductsDetail.aspx" />
+    <Content Include="Aspx\sample\3Tier\ProductsSearchAndUpdate.aspx" />
+    <Content Include="Aspx\sample\crud\sampleScreen.aspx" />
+    <Content Include="Aspx\sample\crud\sampleScreen_cc.aspx" />
+    <Content Include="Aspx\start\login.aspx" />
+    <Content Include="Aspx\start\logout.aspx" />
+    <Content Include="Aspx\start\menu.aspx" />
+    <Content Include="Aspx\testFxLayerP\nest\testNestMasterScreen.aspx" />
+    <Content Include="Aspx\testFxLayerP\nest\testScreen1nest.aspx" />
+    <Content Include="Aspx\testFxLayerP\nest\testScreen2nest.aspx" />
+    <Content Include="Aspx\testFxLayerP\normal\noBaseMasterScreen.aspx" />
+    <Content Include="Aspx\testFxLayerP\normal\noMasterScreen.aspx" />
+    <Content Include="Aspx\testFxLayerP\normal\testScreen0.aspx" />
+    <Content Include="Aspx\testFxLayerP\normal\testScreen1.aspx" />
+    <Content Include="Aspx\testFxLayerP\normal\testScreen2.aspx" />
+    <Content Include="Aspx\testFxLayerP\table\testGridView.aspx" />
+    <Content Include="Aspx\testFxLayerP\table\testListView.aspx" />
+    <Content Include="Aspx\testFxLayerP\table\testRepeater.aspx" />
+    <Content Include="Aspx\testFxLayerP\testDialogAtOnLoad.aspx" />
+    <Content Include="Aspx\testFxLayerP\testDLFrame.aspx" />
+    <Content Include="Aspx\testFxLayerP\testDLScreen.aspx" />
+    <Content Include="Aspx\testFxLayerP\testTransitionAheadScreen.aspx" />
+    <Content Include="Aspx\testFxLayerP\wcc\testWCTextBox.aspx" />
+    <Content Include="Aspx\testFxLayerP\withAjax\testClientCallback.aspx" />
+    <Content Include="Aspx\testFxLayerP\withAjax\testExtension_Separate.aspx" />
+    <Content Include="Aspx\testFxLayerP\withAjax\testExtension_Single.aspx" />
+    <Content Include="Aspx\testScreenCtrl\Google.PNG" />
+    <Content Include="Aspx\testScreenCtrl\sc1.PNG" />
+    <Content Include="Aspx\testScreenCtrl\sc2.PNG" />
+    <Content Include="Aspx\testScreenCtrl\sc3.PNG" />
+    <Content Include="Aspx\testScreenCtrl\sc4.PNG" />
+    <Content Include="Aspx\testScreenCtrl\sc5.PNG" />
+    <Content Include="Aspx\testScreenCtrl\WebForm0.aspx" />
+    <Content Include="Aspx\testScreenCtrl\WebForm1.aspx" />
+    <Content Include="Aspx\testScreenCtrl\WebForm2.aspx" />
+    <Content Include="Aspx\testScreenCtrl\WebForm3.aspx" />
+    <Content Include="Aspx\testScreenCtrl\WebForm4.aspx" />
+    <Content Include="Aspx\testScreenCtrl\WebForm5.aspx" />
     <Content Include="Content\app\Site.css" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
+    <Content Include="Content\bootstrap-grid.rtl.css" />
+    <Content Include="Content\bootstrap-grid.rtl.min.css" />
     <Content Include="Content\bootstrap-reboot.css" />
     <Content Include="Content\bootstrap-reboot.min.css" />
+    <Content Include="Content\bootstrap-reboot.rtl.css" />
+    <Content Include="Content\bootstrap-reboot.rtl.min.css" />
+    <Content Include="Content\bootstrap-utilities.css" />
+    <Content Include="Content\bootstrap-utilities.min.css" />
+    <Content Include="Content\bootstrap-utilities.rtl.css" />
+    <Content Include="Content\bootstrap-utilities.rtl.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\font-awesome.css" />
-    <Content Include="Content\font-awesome.min.css" />
-    <Content Include="fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\bootstrap.rtl.css" />
+    <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\touryo\Style.css" />
+    <Content Include="Global.asax" />
     <Content Include="images\touryo\error.ico" />
     <Content Include="images\touryo\image.jpg" />
     <Content Include="images\touryo\information.ico" />
@@ -231,56 +333,61 @@
     <Content Include="images\touryo\warning.ico" />
     <Content Include="Index.html" />
     <Content Include="Scripts\app\Site.js" />
-    <Content Include="Bundle.config" />
+    <Content Include="Aspx\Common\Master\sampleScreen.master" />
+    <Content Include="Aspx\Common\Master\testAspNetAjaxExtension_Separate.master" />
+    <Content Include="Aspx\Common\Master\testAspNetAjaxExtension_Single.master" />
+    <Content Include="Aspx\Common\Master\testBlankScreen.master" />
     <Content Include="Aspx\Common\Master\testBlankScreenNoJs.master" />
-    <Content Include="fonts\FontAwesome.otf" />
-    <Content Include="fonts\fontawesome-webfont.woff2" />
-    <Content Include="fonts\fontawesome-webfont.woff" />
-    <Content Include="fonts\fontawesome-webfont.ttf" />
-    <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="Aspx\Common\Master\testClientCallback.master" />
+    <Content Include="Aspx\Common\Master\testNest\branchMasterPage1.master" />
+    <Content Include="Aspx\Common\Master\testNest\branchMasterPage2.master" />
+    <Content Include="Aspx\Common\Master\testNest\noBaseMasterPage.master" />
+    <Content Include="Aspx\Common\Master\testNest\rootMasterPage.master" />
+    <Content Include="Aspx\Common\Master\testNest\testScreen1bmp1.master" />
+    <Content Include="Aspx\Common\Master\testNest\testScreen1bmp2.master" />
+    <Content Include="Aspx\Common\Master\testNest\testScreen2bmp1.master" />
+    <Content Include="Aspx\Common\Master\testNest\testScreen2bmp2.master" />
+    <Content Include="Aspx\Common\Master\testScreen1.master" />
+    <Content Include="Aspx\Common\Master\testScreen2.master" />
+    <Content Include="Aspx\Common\Master\testScreenCtrl.master" />
+    <Content Include="app.config" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
+    <Content Include="Scripts\bootstrap.esm.js" />
+    <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\bootstrap.min.js.map" />
     <Content Include="Scripts\bootstrap.js.map" />
+    <Content Include="Scripts\bootstrap.esm.min.js.map" />
+    <Content Include="Scripts\bootstrap.esm.js.map" />
     <Content Include="Scripts\bootstrap.bundle.min.js.map" />
     <Content Include="Scripts\bootstrap.bundle.js.map" />
+    <Content Include="Content\bootstrap.rtl.min.css.map" />
+    <Content Include="Content\bootstrap.rtl.css.map" />
     <Content Include="Content\bootstrap.min.css.map" />
     <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\bootstrap-utilities.rtl.min.css.map" />
+    <Content Include="Content\bootstrap-utilities.rtl.css.map" />
+    <Content Include="Content\bootstrap-utilities.min.css.map" />
+    <Content Include="Content\bootstrap-utilities.css.map" />
+    <Content Include="Content\bootstrap-reboot.rtl.min.css.map" />
+    <Content Include="Content\bootstrap-reboot.rtl.css.map" />
     <Content Include="Content\bootstrap-reboot.min.css.map" />
     <Content Include="Content\bootstrap-reboot.css.map" />
+    <Content Include="Content\bootstrap-grid.rtl.min.css.map" />
+    <Content Include="Content\bootstrap-grid.rtl.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
-    <Content Include="Scripts\esm\popper-utils.js" />
-    <Content Include="Scripts\esm\popper-utils.min.js" />
-    <Content Include="Scripts\esm\popper.js" />
-    <Content Include="Scripts\esm\popper.min.js" />
-    <Content Include="Scripts\esm\popper.min.js.map" />
-    <Content Include="Scripts\esm\popper.js.map" />
-    <Content Include="Scripts\esm\popper-utils.min.js.map" />
-    <Content Include="Scripts\esm\popper-utils.js.map" />
-    <None Include="Scripts\jquery-3.4.1.intellisense.js" />
-    <Content Include="Scripts\jquery-3.4.1.js" />
-    <Content Include="Scripts\jquery-3.4.1.min.js" />
-    <Content Include="Scripts\jquery-3.4.1.slim.js" />
-    <Content Include="Scripts\jquery-3.4.1.slim.min.js" />
+    <None Include="Scripts\jquery-3.7.1.intellisense.js" />
+    <Content Include="Scripts\jquery-3.7.1.js" />
+    <Content Include="Scripts\jquery-3.7.1.min.js" />
+    <Content Include="Scripts\jquery-3.7.1.slim.js" />
+    <Content Include="Scripts\jquery-3.7.1.slim.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Scripts\popper-utils.js" />
-    <Content Include="Scripts\popper-utils.min.js" />
-    <Content Include="Scripts\popper.js" />
-    <Content Include="Scripts\popper.min.js" />
     <Content Include="Scripts\touryo\common.js" />
     <Content Include="Scripts\touryo\else.js" />
     <Content Include="Scripts\touryo\ie_key_event.js" />
-    <Content Include="Scripts\respond.js" />
-    <Content Include="Scripts\respond.matchmedia.addListener.js" />
-    <Content Include="Scripts\respond.matchmedia.addListener.min.js" />
-    <Content Include="Scripts\respond.min.js" />
-    <Content Include="Scripts\umd\popper-utils.js" />
-    <Content Include="Scripts\umd\popper-utils.min.js" />
-    <Content Include="Scripts\umd\popper.js" />
-    <Content Include="Scripts\umd\popper.min.js" />
     <Content Include="Scripts\WebForms\DetailsView.js" />
     <Content Include="Scripts\WebForms\Focus.js" />
     <Content Include="Scripts\WebForms\GridView.js" />
@@ -302,60 +409,30 @@
     <Content Include="Scripts\WebForms\WebForms.js" />
     <Content Include="Scripts\WebForms\WebParts.js" />
     <Content Include="Scripts\WebForms\WebUIValidation.js" />
-    <Content Include="Content\touryo\Style.css" />
-    <Content Include="Global.asax" />
-    <Content Include="packages.config" />
     <Content Include="Web.config" />
-    <Content Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
-    <Content Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
-    </Content>
-    <Content Include="WebService\JSONService.svc" />
-    <Content Include="Scripts\umd\popper.min.js.map" />
-    <Content Include="Scripts\umd\popper.js.map" />
-    <Content Include="Scripts\umd\popper-utils.min.js.map" />
-    <Content Include="Scripts\umd\popper-utils.js.map" />
-    <Content Include="Scripts\README.md" />
-    <Content Include="Scripts\popper.min.js.map" />
-    <Content Include="Scripts\popper.js.map" />
-    <Content Include="Scripts\popper-utils.min.js.map" />
-    <Content Include="Scripts\popper-utils.js.map" />
+    <Content Include="Bundle.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppCode\sample\3TierTableAdapter\ProductsTableAdapter.cs" />
+    <Compile Include="AppCode\sample\Business\GetMasterData.cs" />
+    <Compile Include="AppCode\sample\Business\LayerB.cs" />
+    <Compile Include="AppCode\sample\Common\TestParameterValue.cs" />
+    <Compile Include="AppCode\sample\Common\TestReturnValue.cs" />
+    <Compile Include="AppCode\sample\Dao\DaoCategories.cs" />
+    <Compile Include="AppCode\sample\Dao\DaoShippers.cs" />
+    <Compile Include="AppCode\sample\Dao\DaoSuppliers.cs" />
+    <Compile Include="AppCode\sample\Dao\LayerD.cs" />
     <Compile Include="AppCode\testPublic\Business\TestMTC.cs" />
     <Compile Include="AppCode\testPublic\Business\TestMTC_mcn.cs" />
     <Compile Include="AppCode\testPublic\Business\TestMTC_txg.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Aspx\Common\Wuc\sampleChildControl.ascx.cs">
-      <DependentUpon>sampleChildControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Aspx\Common\Wuc\sampleChildControl.ascx.designer.cs">
-      <DependentUpon>sampleChildControl.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Aspx\OAuth2\OAuth2AuthorizationCodeGrantClient.aspx.cs">
-      <DependentUpon>OAuth2AuthorizationCodeGrantClient.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Aspx\OAuth2\OAuth2AuthorizationCodeGrantClient.aspx.designer.cs">
-      <DependentUpon>OAuth2AuthorizationCodeGrantClient.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Aspx\Common\ErrorScreen.aspx.cs">
       <DependentUpon>ErrorScreen.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\ErrorScreen.aspx.designer.cs">
       <DependentUpon>ErrorScreen.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Aspx\Common\Wuc\sampleControl.ascx.cs">
-      <DependentUpon>sampleControl.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Aspx\Common\Wuc\sampleControl.ascx.designer.cs">
-      <DependentUpon>sampleControl.ascx</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\Master\sampleScreen.master.cs">
       <DependentUpon>sampleScreen.master</DependentUpon>
@@ -378,19 +455,19 @@
     <Compile Include="Aspx\Common\Master\testAspNetAjaxExtension_Single.master.designer.cs">
       <DependentUpon>testAspNetAjaxExtension_Single.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\Master\testBlankScreenNoJs.master.cs">
-      <DependentUpon>testBlankScreenNoJs.master</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Aspx\Common\Master\testBlankScreenNoJs.master.designer.cs">
-      <DependentUpon>testBlankScreenNoJs.master</DependentUpon>
-    </Compile>
     <Compile Include="Aspx\Common\Master\testBlankScreen.master.cs">
       <DependentUpon>testBlankScreen.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Aspx\Common\Master\testBlankScreen.master.designer.cs">
       <DependentUpon>testBlankScreen.master</DependentUpon>
+    </Compile>
+    <Compile Include="Aspx\Common\Master\testBlankScreenNoJs.master.cs">
+      <DependentUpon>testBlankScreenNoJs.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Aspx\Common\Master\testBlankScreenNoJs.master.designer.cs">
+      <DependentUpon>testBlankScreenNoJs.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\Master\testClientCallback.master.cs">
       <DependentUpon>testClientCallback.master</DependentUpon>
@@ -399,60 +476,60 @@
     <Compile Include="Aspx\Common\Master\testClientCallback.master.designer.cs">
       <DependentUpon>testClientCallback.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\Master\TestNest\branchMasterPage1.master.cs">
+    <Compile Include="Aspx\Common\Master\testNest\branchMasterPage1.master.cs">
       <DependentUpon>branchMasterPage1.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\Master\TestNest\branchMasterPage1.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\testNest\branchMasterPage1.master.designer.cs">
       <DependentUpon>branchMasterPage1.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\Master\TestNest\branchMasterPage2.master.cs">
+    <Compile Include="Aspx\Common\Master\testNest\branchMasterPage2.master.cs">
       <DependentUpon>branchMasterPage2.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\Master\TestNest\branchMasterPage2.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\testNest\branchMasterPage2.master.designer.cs">
       <DependentUpon>branchMasterPage2.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\Master\TestNest\noBaseMasterPage.master.cs">
+    <Compile Include="Aspx\Common\Master\testNest\noBaseMasterPage.master.cs">
       <DependentUpon>noBaseMasterPage.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\Master\TestNest\noBaseMasterPage.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\testNest\noBaseMasterPage.master.designer.cs">
       <DependentUpon>noBaseMasterPage.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\Master\TestNest\rootMasterPage.master.cs">
+    <Compile Include="Aspx\Common\Master\testNest\rootMasterPage.master.cs">
       <DependentUpon>rootMasterPage.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\Master\TestNest\rootMasterPage.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\testNest\rootMasterPage.master.designer.cs">
       <DependentUpon>rootMasterPage.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\Master\TestNest\testScreen1bmp1.master.cs">
+    <Compile Include="Aspx\Common\Master\testNest\testScreen1bmp1.master.cs">
       <DependentUpon>testScreen1bmp1.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\Master\TestNest\testScreen1bmp1.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\testNest\testScreen1bmp1.master.designer.cs">
       <DependentUpon>testScreen1bmp1.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\Master\TestNest\testScreen1bmp2.master.cs">
+    <Compile Include="Aspx\Common\Master\testNest\testScreen1bmp2.master.cs">
       <DependentUpon>testScreen1bmp2.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\Master\TestNest\testScreen1bmp2.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\testNest\testScreen1bmp2.master.designer.cs">
       <DependentUpon>testScreen1bmp2.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\Master\TestNest\testScreen2bmp1.master.cs">
+    <Compile Include="Aspx\Common\Master\testNest\testScreen2bmp1.master.cs">
       <DependentUpon>testScreen2bmp1.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\Master\TestNest\testScreen2bmp1.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\testNest\testScreen2bmp1.master.designer.cs">
       <DependentUpon>testScreen2bmp1.master</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Common\Master\TestNest\testScreen2bmp2.master.cs">
+    <Compile Include="Aspx\Common\Master\testNest\testScreen2bmp2.master.cs">
       <DependentUpon>testScreen2bmp2.master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Common\Master\TestNest\testScreen2bmp2.master.designer.cs">
+    <Compile Include="Aspx\Common\Master\testNest\testScreen2bmp2.master.designer.cs">
       <DependentUpon>testScreen2bmp2.master</DependentUpon>
     </Compile>
     <Compile Include="Aspx\Common\Master\testScreen1.master.cs">
@@ -476,6 +553,20 @@
     <Compile Include="Aspx\Common\Master\testScreenCtrl.master.designer.cs">
       <DependentUpon>testScreenCtrl.master</DependentUpon>
     </Compile>
+    <Compile Include="Aspx\Common\Wuc\sampleChildControl.ascx.cs">
+      <DependentUpon>sampleChildControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Aspx\Common\Wuc\sampleChildControl.ascx.designer.cs">
+      <DependentUpon>sampleChildControl.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Aspx\Common\Wuc\sampleControl.ascx.cs">
+      <DependentUpon>sampleControl.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Aspx\Common\Wuc\sampleControl.ascx.designer.cs">
+      <DependentUpon>sampleControl.ascx</DependentUpon>
+    </Compile>
     <Compile Include="Aspx\Framework\myOKMessageDialog.aspx.cs">
       <DependentUpon>myOKMessageDialog.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -497,305 +588,268 @@
     <Compile Include="Aspx\Framework\Ping.aspx.designer.cs">
       <DependentUpon>Ping.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Sample\3Tier\ProductsConditionalSearch.aspx.cs">
+    <Compile Include="Aspx\OAuth2\OAuth2AuthorizationCodeGrantClient.aspx.cs">
+      <DependentUpon>OAuth2AuthorizationCodeGrantClient.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Aspx\OAuth2\OAuth2AuthorizationCodeGrantClient.aspx.designer.cs">
+      <DependentUpon>OAuth2AuthorizationCodeGrantClient.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Aspx\sample\3Tier\ProductsConditionalSearch.aspx.cs">
       <DependentUpon>ProductsConditionalSearch.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Sample\3Tier\ProductsConditionalSearch.aspx.designer.cs">
+    <Compile Include="Aspx\sample\3Tier\ProductsConditionalSearch.aspx.designer.cs">
       <DependentUpon>ProductsConditionalSearch.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Sample\3Tier\ProductsDetail.aspx.cs">
+    <Compile Include="Aspx\sample\3Tier\ProductsDetail.aspx.cs">
       <DependentUpon>ProductsDetail.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Sample\3Tier\ProductsDetail.aspx.designer.cs">
+    <Compile Include="Aspx\sample\3Tier\ProductsDetail.aspx.designer.cs">
       <DependentUpon>ProductsDetail.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Sample\3Tier\ProductsSearchAndUpdate.aspx.cs">
+    <Compile Include="Aspx\sample\3Tier\ProductsSearchAndUpdate.aspx.cs">
       <DependentUpon>ProductsSearchAndUpdate.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Sample\3Tier\ProductsSearchAndUpdate.aspx.designer.cs">
+    <Compile Include="Aspx\sample\3Tier\ProductsSearchAndUpdate.aspx.designer.cs">
       <DependentUpon>ProductsSearchAndUpdate.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Sample\Crud\sampleScreen.aspx.cs">
+    <Compile Include="Aspx\sample\crud\sampleScreen.aspx.cs">
       <DependentUpon>sampleScreen.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Sample\Crud\sampleScreen.aspx.designer.cs">
+    <Compile Include="Aspx\sample\crud\sampleScreen.aspx.designer.cs">
       <DependentUpon>sampleScreen.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Sample\Crud\sampleScreen_cc.aspx.cs">
+    <Compile Include="Aspx\sample\crud\sampleScreen_cc.aspx.cs">
       <DependentUpon>sampleScreen_cc.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Sample\Crud\sampleScreen_cc.aspx.designer.cs">
+    <Compile Include="Aspx\sample\crud\sampleScreen_cc.aspx.designer.cs">
       <DependentUpon>sampleScreen_cc.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Start\login.aspx.cs">
+    <Compile Include="Aspx\start\login.aspx.cs">
       <DependentUpon>login.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Start\login.aspx.designer.cs">
+    <Compile Include="Aspx\start\login.aspx.designer.cs">
       <DependentUpon>login.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Start\logout.aspx.cs">
+    <Compile Include="Aspx\start\logout.aspx.cs">
       <DependentUpon>logout.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Start\logout.aspx.designer.cs">
+    <Compile Include="Aspx\start\logout.aspx.designer.cs">
       <DependentUpon>logout.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\Start\menu.aspx.cs">
+    <Compile Include="Aspx\start\menu.aspx.cs">
       <DependentUpon>menu.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\Start\menu.aspx.designer.cs">
+    <Compile Include="Aspx\start\menu.aspx.designer.cs">
       <DependentUpon>menu.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Nest\testNestMasterScreen.aspx.cs">
+    <Compile Include="Aspx\testFxLayerP\nest\testNestMasterScreen.aspx.cs">
       <DependentUpon>testNestMasterScreen.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Nest\testNestMasterScreen.aspx.designer.cs">
+    <Compile Include="Aspx\testFxLayerP\nest\testNestMasterScreen.aspx.designer.cs">
       <DependentUpon>testNestMasterScreen.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Nest\testScreen1nest.aspx.cs">
+    <Compile Include="Aspx\testFxLayerP\nest\testScreen1nest.aspx.cs">
       <DependentUpon>testScreen1nest.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Nest\testScreen1nest.aspx.designer.cs">
+    <Compile Include="Aspx\testFxLayerP\nest\testScreen1nest.aspx.designer.cs">
       <DependentUpon>testScreen1nest.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Nest\testScreen2nest.aspx.cs">
+    <Compile Include="Aspx\testFxLayerP\nest\testScreen2nest.aspx.cs">
       <DependentUpon>testScreen2nest.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Nest\testScreen2nest.aspx.designer.cs">
+    <Compile Include="Aspx\testFxLayerP\nest\testScreen2nest.aspx.designer.cs">
       <DependentUpon>testScreen2nest.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Normal\noBaseMasterScreen.aspx.cs">
+    <Compile Include="Aspx\testFxLayerP\normal\noBaseMasterScreen.aspx.cs">
       <DependentUpon>noBaseMasterScreen.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Normal\noBaseMasterScreen.aspx.designer.cs">
+    <Compile Include="Aspx\testFxLayerP\normal\noBaseMasterScreen.aspx.designer.cs">
       <DependentUpon>noBaseMasterScreen.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Normal\noMasterScreen.aspx.cs">
+    <Compile Include="Aspx\testFxLayerP\normal\noMasterScreen.aspx.cs">
       <DependentUpon>noMasterScreen.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Normal\noMasterScreen.aspx.designer.cs">
+    <Compile Include="Aspx\testFxLayerP\normal\noMasterScreen.aspx.designer.cs">
       <DependentUpon>noMasterScreen.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Normal\testScreen0.aspx.cs">
+    <Compile Include="Aspx\testFxLayerP\normal\testScreen0.aspx.cs">
       <DependentUpon>testScreen0.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Normal\testScreen0.aspx.designer.cs">
+    <Compile Include="Aspx\testFxLayerP\normal\testScreen0.aspx.designer.cs">
       <DependentUpon>testScreen0.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Normal\testScreen1.aspx.cs">
+    <Compile Include="Aspx\testFxLayerP\normal\testScreen1.aspx.cs">
       <DependentUpon>testScreen1.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Normal\testScreen1.aspx.designer.cs">
+    <Compile Include="Aspx\testFxLayerP\normal\testScreen1.aspx.designer.cs">
       <DependentUpon>testScreen1.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Normal\testScreen2.aspx.cs">
+    <Compile Include="Aspx\testFxLayerP\normal\testScreen2.aspx.cs">
       <DependentUpon>testScreen2.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Normal\testScreen2.aspx.designer.cs">
+    <Compile Include="Aspx\testFxLayerP\normal\testScreen2.aspx.designer.cs">
       <DependentUpon>testScreen2.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Table\testGridView.aspx.cs">
+    <Compile Include="Aspx\testFxLayerP\table\testGridView.aspx.cs">
       <DependentUpon>testGridView.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Table\testGridView.aspx.designer.cs">
+    <Compile Include="Aspx\testFxLayerP\table\testGridView.aspx.designer.cs">
       <DependentUpon>testGridView.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Table\testJQGridJson.aspx.cs">
-      <DependentUpon>testJQGridJson.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Table\testJQGridJson.aspx.designer.cs">
-      <DependentUpon>testJQGridJson.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Table\testListView.aspx.cs">
+    <Compile Include="Aspx\testFxLayerP\table\testListView.aspx.cs">
       <DependentUpon>testListView.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Table\testListView.aspx.designer.cs">
+    <Compile Include="Aspx\testFxLayerP\table\testListView.aspx.designer.cs">
       <DependentUpon>testListView.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Table\testRepeater.aspx.cs">
+    <Compile Include="Aspx\testFxLayerP\table\testRepeater.aspx.cs">
       <DependentUpon>testRepeater.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Table\testRepeater.aspx.designer.cs">
+    <Compile Include="Aspx\testFxLayerP\table\testRepeater.aspx.designer.cs">
       <DependentUpon>testRepeater.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\testDialogAtOnLoad.aspx.cs">
+    <Compile Include="Aspx\testFxLayerP\testDialogAtOnLoad.aspx.cs">
       <DependentUpon>testDialogAtOnLoad.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\testDialogAtOnLoad.aspx.designer.cs">
+    <Compile Include="Aspx\testFxLayerP\testDialogAtOnLoad.aspx.designer.cs">
       <DependentUpon>testDialogAtOnLoad.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\testDLFrame.aspx.cs">
+    <Compile Include="Aspx\testFxLayerP\testDLFrame.aspx.cs">
       <DependentUpon>testDLFrame.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\testDLFrame.aspx.designer.cs">
+    <Compile Include="Aspx\testFxLayerP\testDLFrame.aspx.designer.cs">
       <DependentUpon>testDLFrame.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\testDLScreen.aspx.cs">
+    <Compile Include="Aspx\testFxLayerP\testDLScreen.aspx.cs">
       <DependentUpon>testDLScreen.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\testDLScreen.aspx.designer.cs">
+    <Compile Include="Aspx\testFxLayerP\testDLScreen.aspx.designer.cs">
       <DependentUpon>testDLScreen.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\testTransitionAheadScreen.aspx.cs">
+    <Compile Include="Aspx\testFxLayerP\testTransitionAheadScreen.aspx.cs">
       <DependentUpon>testTransitionAheadScreen.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\testTransitionAheadScreen.aspx.designer.cs">
+    <Compile Include="Aspx\testFxLayerP\testTransitionAheadScreen.aspx.designer.cs">
       <DependentUpon>testTransitionAheadScreen.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Wcc\testWCTextBox.aspx.cs">
+    <Compile Include="Aspx\testFxLayerP\wcc\testWCTextBox.aspx.cs">
       <DependentUpon>testWCTextBox.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\Wcc\testWCTextBox.aspx.designer.cs">
+    <Compile Include="Aspx\testFxLayerP\wcc\testWCTextBox.aspx.designer.cs">
       <DependentUpon>testWCTextBox.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\WithAjax\testClientCallback.aspx.cs">
+    <Compile Include="Aspx\testFxLayerP\withAjax\testClientCallback.aspx.cs">
       <DependentUpon>testClientCallback.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\WithAjax\testClientCallback.aspx.designer.cs">
+    <Compile Include="Aspx\testFxLayerP\withAjax\testClientCallback.aspx.designer.cs">
       <DependentUpon>testClientCallback.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\WithAjax\testExtension_Separate.aspx.cs">
+    <Compile Include="Aspx\testFxLayerP\withAjax\testExtension_Separate.aspx.cs">
       <DependentUpon>testExtension_Separate.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\WithAjax\testExtension_Separate.aspx.designer.cs">
+    <Compile Include="Aspx\testFxLayerP\withAjax\testExtension_Separate.aspx.designer.cs">
       <DependentUpon>testExtension_Separate.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\WithAjax\testExtension_Single.aspx.cs">
+    <Compile Include="Aspx\testFxLayerP\withAjax\testExtension_Single.aspx.cs">
       <DependentUpon>testExtension_Single.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestFxLayerP\WithAjax\testExtension_Single.aspx.designer.cs">
+    <Compile Include="Aspx\testFxLayerP\withAjax\testExtension_Single.aspx.designer.cs">
       <DependentUpon>testExtension_Single.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestScreenCtrl\WebForm0.aspx.cs">
+    <Compile Include="Aspx\testScreenCtrl\WebForm0.aspx.cs">
       <DependentUpon>WebForm0.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestScreenCtrl\WebForm0.aspx.designer.cs">
+    <Compile Include="Aspx\testScreenCtrl\WebForm0.aspx.designer.cs">
       <DependentUpon>WebForm0.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestScreenCtrl\WebForm1.aspx.cs">
+    <Compile Include="Aspx\testScreenCtrl\WebForm1.aspx.cs">
       <DependentUpon>WebForm1.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestScreenCtrl\WebForm1.aspx.designer.cs">
+    <Compile Include="Aspx\testScreenCtrl\WebForm1.aspx.designer.cs">
       <DependentUpon>WebForm1.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestScreenCtrl\WebForm2.aspx.cs">
+    <Compile Include="Aspx\testScreenCtrl\WebForm2.aspx.cs">
       <DependentUpon>WebForm2.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestScreenCtrl\WebForm2.aspx.designer.cs">
+    <Compile Include="Aspx\testScreenCtrl\WebForm2.aspx.designer.cs">
       <DependentUpon>WebForm2.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestScreenCtrl\WebForm3.aspx.cs">
+    <Compile Include="Aspx\testScreenCtrl\WebForm3.aspx.cs">
       <DependentUpon>WebForm3.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestScreenCtrl\WebForm3.aspx.designer.cs">
+    <Compile Include="Aspx\testScreenCtrl\WebForm3.aspx.designer.cs">
       <DependentUpon>WebForm3.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestScreenCtrl\WebForm4.aspx.cs">
+    <Compile Include="Aspx\testScreenCtrl\WebForm4.aspx.cs">
       <DependentUpon>WebForm4.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestScreenCtrl\WebForm4.aspx.designer.cs">
+    <Compile Include="Aspx\testScreenCtrl\WebForm4.aspx.designer.cs">
       <DependentUpon>WebForm4.aspx</DependentUpon>
     </Compile>
-    <Compile Include="Aspx\TestScreenCtrl\WebForm5.aspx.cs">
+    <Compile Include="Aspx\testScreenCtrl\WebForm5.aspx.cs">
       <DependentUpon>WebForm5.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Aspx\TestScreenCtrl\WebForm5.aspx.designer.cs">
+    <Compile Include="Aspx\testScreenCtrl\WebForm5.aspx.designer.cs">
       <DependentUpon>WebForm5.aspx</DependentUpon>
     </Compile>
-    <Compile Include="AppCode\Sample\3TierTableAdapter\ProductsTableAdapter.cs" />
-    <Compile Include="AppCode\Sample\Business\GetMasterData.cs" />
-    <Compile Include="AppCode\Sample\Business\LayerB.cs" />
-    <Compile Include="AppCode\Sample\Common\TestParameterValue.cs" />
-    <Compile Include="AppCode\Sample\Common\TestReturnValue.cs" />
-    <Compile Include="AppCode\Sample\Dao\DaoCategories.cs" />
-    <Compile Include="AppCode\Sample\Dao\DaoShippers.cs" />
-    <Compile Include="AppCode\Sample\Dao\DaoSuppliers.cs" />
-    <Compile Include="AppCode\Sample\Dao\LayerD.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Startup.cs" />
-    <Compile Include="WebService\IJSONService.cs" />
-    <Compile Include="WebService\JSONService.svc.cs">
-      <DependentUpon>JSONService.svc</DependentUpon>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="app.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Aspx\Common\Master\sampleScreen.master" />
-    <Content Include="Aspx\Common\Master\testAspNetAjaxExtension_Separate.master" />
-    <Content Include="Aspx\Common\Master\testAspNetAjaxExtension_Single.master" />
-    <Content Include="Aspx\Common\Master\testBlankScreen.master" />
-    <Content Include="Aspx\Common\Master\testClientCallback.master" />
-    <Content Include="Aspx\Common\Master\TestNest\branchMasterPage1.master" />
-    <Content Include="Aspx\Common\Master\TestNest\branchMasterPage2.master" />
-    <Content Include="Aspx\Common\Master\TestNest\noBaseMasterPage.master" />
-    <Content Include="Aspx\Common\Master\TestNest\rootMasterPage.master" />
-    <Content Include="Aspx\Common\Master\TestNest\testScreen1bmp1.master" />
-    <Content Include="Aspx\Common\Master\TestNest\testScreen1bmp2.master" />
-    <Content Include="Aspx\Common\Master\TestNest\testScreen2bmp1.master" />
-    <Content Include="Aspx\Common\Master\TestNest\testScreen2bmp2.master" />
-    <Content Include="Aspx\Common\Master\testScreen1.master" />
-    <Content Include="Aspx\Common\Master\testScreen2.master" />
-    <Content Include="Aspx\Common\Master\testScreenCtrl.master" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
   </ItemGroup>
   <ItemGroup>
-    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Scripts\jquery-3.4.1.min.map" />
-  </ItemGroup>
-  <ItemGroup>
-    <TypeScriptCompile Include="Scripts\index.d.ts" />
+    <None Include="packages.config" />
+    <Content Include="Scripts\jquery-3.7.1.slim.min.map" />
+    <Content Include="Scripts\jquery-3.7.1.min.map" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <ProjectExtensions>
@@ -803,10 +857,10 @@
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
-          <AutoAssignPort>False</AutoAssignPort>
-          <DevelopmentServerPort>58495</DevelopmentServerPort>
-          <DevelopmentServerVPath>/WebForms_Sample</DevelopmentServerVPath>
-          <IISUrl>https://localhost:44333/WebForms_Sample</IISUrl>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>56773</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>https://localhost:44371/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
@@ -816,6 +870,15 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <Import Project="..\packages\Microsoft.Data.SqlClient.SNI.6.0.2\build\net462\Microsoft.Data.SqlClient.SNI.targets" Condition="Exists('..\packages\Microsoft.Data.SqlClient.SNI.6.0.2\build\net462\Microsoft.Data.SqlClient.SNI.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>このプロジェクトは、このコンピューター上にない NuGet パッケージを参照しています。それらのパッケージをダウンロードするには、[NuGet パッケージの復元] を使用します。詳細については、http://go.microsoft.com/fwlink/?LinkID=322105 を参照してください。見つからないファイルは {0} です。</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Data.SqlClient.SNI.6.0.2\build\net462\Microsoft.Data.SqlClient.SNI.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Data.SqlClient.SNI.6.0.2\build\net462\Microsoft.Data.SqlClient.SNI.targets'))" />
+    <Error Condition="!Exists('..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets'))" />
+  </Target>
+  <Import Project="..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets" Condition="Exists('..\packages\System.ValueTuple.4.6.1\build\net471\System.ValueTuple.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

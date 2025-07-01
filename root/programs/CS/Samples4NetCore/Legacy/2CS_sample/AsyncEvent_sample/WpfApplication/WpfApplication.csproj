@@ -6,14 +6,19 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>WpfApplication</RootNamespace>
     <AssemblyName>WpfApplication</AssemblyName>
+    <UseWindowsForms>True</UseWindowsForms>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.5" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="OpenTouryo.Framework.RichClient">
-      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0-windows\OpenTouryo.Framework.RichClient.dll</HintPath>
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore80\net8.0-windows7.0\OpenTouryo.Framework.RichClient.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public">
-      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore60\net6.0-windows\OpenTouryo.Public.dll</HintPath>
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore80\net8.0-windows7.0\OpenTouryo.Public.dll</HintPath>
     </Reference>
   </ItemGroup>
 
