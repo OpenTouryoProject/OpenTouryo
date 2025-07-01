@@ -33,11 +33,11 @@ SimpleBatch.exe /Dap SQL /Mode1 individual /Mode2 static /EXROLLBACK - > ..\..\.
 cd %CURRENTDIR%
 
 @echo --------------------------------------------------
-@echo Test the SimpleBatchCore(30).
+@echo Test the SimpleBatchCore(80).
 @echo --------------------------------------------------
 set CURRENTDIR=%cd%
 cd "Frameworks\Tests\TestBatch\SimpleBatchCore\bin\Debug\net8.0"
-dotnet "SimpleBatchCore.dll" -- /Dap SQL /Mode1 individual /Mode2 static /EXROLLBACK - > ..\..\..\..\ResultSimpleBatchCore30.txt
+dotnet "SimpleBatchCore.dll" -- /Dap SQL /Mode1 individual /Mode2 static /EXROLLBACK - > ..\..\..\..\ResultSimpleBatchCore80.txt
 cd %CURRENTDIR%
 
 pause
