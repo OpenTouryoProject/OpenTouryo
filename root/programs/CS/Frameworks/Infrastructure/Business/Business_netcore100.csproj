@@ -1,0 +1,91 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <RootNamespace>Touryo.Infrastructure.Business</RootNamespace>
+    <AssemblyName>OpenTouryo.Business</AssemblyName>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;NETCOREAPP</DefineConstants>
+    <OutputPath>..\Build_netcore80\</OutputPath>
+    <DocumentationFile>..\Build_netcore80\net8.0\OpenTouryo.Business.xml</DocumentationFile>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <NoWarn>1701;1702;NU1701</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
+    <OutputPath>..\Build_netcore80\</OutputPath>
+    <DocumentationFile>..\Build_netcore80\net8.0\OpenTouryo.Business.xml</DocumentationFile>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <NoWarn>1701;1702;NU1701</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Csp\**" />
+    <Compile Remove="RichClient\**" />
+    <EmbeddedResource Remove="Csp\**" />
+    <EmbeddedResource Remove="RichClient\**" />
+    <None Remove="Csp\**" />
+    <None Remove="RichClient\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Business\MyBaseLogic.cs" />
+    <Compile Remove="Business\_3TierEngine.cs" />
+    <Compile Remove="Common\_3TierParameterValue.cs" />
+    <Compile Remove="Common\_3TierReturnValue.cs" />
+    <Compile Remove="Presentation\AuthenticationFailureResult.cs" />
+    <Compile Remove="Presentation\CmnTableAdapter.cs" />
+    <Compile Remove="Presentation\MyBaseAsyncApiController.cs" />
+    <Compile Remove="Presentation\MyBaseController.cs" />
+    <Compile Remove="Presentation\MyBaseMVController.cs" />
+    <Compile Remove="Presentation\ResultWithChallenge.cs" />
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="app.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="OpenTouryo.DamManagedOdp">
+      <HintPath>..\Build_netcore80\net8.0\OpenTouryo.DamManagedOdp.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.DamMySQL">
+      <HintPath>..\Build_netcore80\net8.0\OpenTouryo.DamMySQL.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.DamPstGrS">
+      <HintPath>..\Build_netcore80\net8.0\OpenTouryo.DamPstGrS.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\Build_netcore80\net8.0\OpenTouryo.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\Build_netcore80\net8.0\OpenTouryo.Public.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public.Security">
+      <HintPath>..\Build_netcore80\net8.0\OpenTouryo.Public.Security.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
