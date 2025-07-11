@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <TargetFramework>net10.0-windows7.0</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <ApplicationIcon />
@@ -13,16 +13,16 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <OutputPath>..\..\Build_netcore80\</OutputPath>
-    <DocumentationFile>..\..\Build_netcore80\net8.0-windows7.0\OpenTouryo.Framework.RichClient.xml</DocumentationFile>
+    <OutputPath>..\..\Build_netcore100\</OutputPath>
+    <DocumentationFile>..\..\Build_netcore100\net10.0-windows7.0\OpenTouryo.Framework.RichClient.xml</DocumentationFile>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <OutputPath>..\..\Build_netcore80\</OutputPath>
-    <DocumentationFile>..\..\Build_netcore80\net8.0-windows7.0\OpenTouryo.Framework.RichClient.xml</DocumentationFile>
+    <OutputPath>..\..\Build_netcore100\</OutputPath>
+    <DocumentationFile>..\..\Build_netcore100\net10.0-windows7.0\OpenTouryo.Framework.RichClient.xml</DocumentationFile>
     <DebugType>portable</DebugType>
     <DebugSymbols>true</DebugSymbols>
     <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
@@ -37,8 +37,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Public\Public_netcore80.csproj" />
-    <ProjectReference Include="..\Framework_netcore80.csproj" />
+    <ProjectReference Include="..\..\Public\Public_netcore100.csproj" />
+    <ProjectReference Include="..\Framework_netcore100.csproj" />
   </ItemGroup>
 
 </Project>
