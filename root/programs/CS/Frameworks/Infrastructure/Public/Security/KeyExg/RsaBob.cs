@@ -65,10 +65,10 @@ namespace Touryo.Infrastructure.Public.Security.KeyExg
         protected RsaBob(string rsaPfxFilePath, string password, X509KeyStorageFlags flag)
         {
             X509Certificate2 x509Certificate = new X509Certificate2(rsaPfxFilePath, password, flag);
-            
+
             // RSA
             // *.pfxの場合、ExportParameters(true)して生成し直している。
-            AsymmetricAlgorithm aa = x509Certificate.PrivateKey;
+            AsymmetricAlgorithm aa = AsymmetricAlgorithmCmnFunc.GetPrivateKey(x509Certificate);
             RSA rsa = (RSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(aa);
             rsa.ImportParameters(((RSA)(aa)).ExportParameters(true));
 

@@ -116,7 +116,7 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             // PublicKey を取り出すため Exportableは不要
             // ASP.NET（サーバ）からの実行を想定しないため、MachineKeySetは不要
             DigitalSignECDsaX509 dsX509 = new DigitalSignECDsaX509(
-                certificateFilePath, "", this._hashAlgorithmName, flg);
+                certificateFilePath, "", this.HashAlgorithmName, flg);
 
             AsymmetricAlgorithm aa = dsX509.PublicKey;
             if (aa is ECDsa)

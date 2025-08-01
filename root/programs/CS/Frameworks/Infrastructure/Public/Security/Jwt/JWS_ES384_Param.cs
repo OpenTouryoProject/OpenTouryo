@@ -108,7 +108,7 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             {
 #if NETSTD
                 this.DigitalSignECDsaOpenSsl = new DigitalSignECDsaOpenSsl(
-                    JWS_ES384.DigitalSignAlgorithm, SHA384CryptoServiceProvider.Create());
+                    JWS_ES384.DigitalSignAlgorithm, SHA384.Create());
                 //HashAlgorithmCmnFunc.CreateHashAlgorithmSP(EnumHashAlgorithm.SHA384_M));
 #else
                 throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
@@ -129,9 +129,7 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             else
             {
 #if NETSTD
-                this.DigitalSignECDsaOpenSsl = new DigitalSignECDsaOpenSsl(
-                    param, SHA384CryptoServiceProvider.Create());
-                //HashAlgorithmCmnFunc.CreateHashAlgorithmSP(EnumHashAlgorithm.SHA384_M));
+                this.DigitalSignECDsaOpenSsl = new DigitalSignECDsaOpenSsl(param, SHA384.Create());
 #else
                 throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
 #endif

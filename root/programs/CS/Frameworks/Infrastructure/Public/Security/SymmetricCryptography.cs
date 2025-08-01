@@ -78,7 +78,7 @@ namespace Touryo.Infrastructure.Public.Security
 
         /// <summary>Constructor</summary>
         public SymmetricCryptography() :
-            this(EnumSymmetricAlgorithm.AES_M) {　}
+            this(EnumSymmetricAlgorithm.AES) { }
 
         /// <summary>Constructor</summary>
         /// <param name="algorithm">対称アルゴリズム</param>
@@ -199,10 +199,26 @@ namespace Touryo.Infrastructure.Public.Security
         private void GenerateKeyFromPassword(string password,
             int keySize, out byte[] key, int blockSize, out byte[] iv, byte[] salt, int stretching)
         {
+            // overloadへ
+            this.GenerateKeyFromPassword(password, keySize, out key, blockSize, out iv, salt, stretching);   
+        }
+
+        /// <summary>パスワードから共有キーと初期化ベクタを生成する</summary>
+        /// <param name="password">基になるパスワード</param>
+        /// <param name="keySize">共有キーのサイズ（ビット）</param>
+        /// <param name="key">作成された共有キー</param>
+        /// <param name="blockSize">初期化ベクタのサイズ（ビット）</param>
+        /// <param name="iv">作成された初期化ベクタ</param>
+        /// <param name="salt">ソルト</param>
+        /// <param name="stretching">ストレッチング</param>
+        /// <param name="hashAlgorithmName">Hashアルゴリズム名</param>
+        private void GenerateKeyFromPassword(string password,
+            int keySize, out byte[] key, int blockSize, out byte[] iv, byte[] salt, int stretching, HashAlgorithmName hashAlgorithmName)
+        {
             //パスワードから共有キーと初期化ベクタを作成する
 
             //Rfc2898DeriveBytesオブジェクトを作成する
-            Rfc2898DeriveBytes deriveBytes = new Rfc2898DeriveBytes(password, salt, stretching);
+            Rfc2898DeriveBytes deriveBytes = new Rfc2898DeriveBytes(password, salt, stretching, hashAlgorithmName);
 
             //.NET Framework 1.1以下の時は、PasswordDeriveBytesを使用する
             //PasswordDeriveBytes deriveBytes = new PasswordDeriveBytes(password, salt);
@@ -292,61 +308,68 @@ namespace Touryo.Infrastructure.Public.Security
             SymmetricAlgorithm sa = null;
 
             #region Aes
-            if (esa.HasFlag(EnumSymmetricAlgorithm.AES_CSP))
+            if (esa.HasFlag(EnumSymmetricAlgorithm.AES))
             {
-                // AesCryptoServiceProviderサービスプロバイダ
+                // Aes
+                sa = Aes.Create(); // devps(1703)
+            }
+            /*  PF依存排除
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.AES_CSP))
+            {
+                // AesCryptoServiceProvider
                 sa = AesCryptoServiceProvider.Create(); // devps(1703)
             }
             else if (esa.HasFlag(EnumSymmetricAlgorithm.AES_M))
             {
-                // AesManagedサービスプロバイダ
+                // AesManaged
                 sa = AesManaged.Create(); // devps(1703)
-            }
+            }*/
 #if NET45 || NET46
 #else
             else if (esa.HasFlag(EnumSymmetricAlgorithm.AES_CNG))
             {
-                // AesCngサービスプロバイダ
+                // AesCng
                 sa = AesCng.Create(); // devps(1703)
             }
 #endif
             #endregion
 
             #region TripleDES
-            else if (esa.HasFlag(EnumSymmetricAlgorithm.TDES_CSP))
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.TDES))//_CSP))
             {
-                // TripleDESCryptoServiceProviderサービスプロバイダ
-                sa = TripleDESCryptoServiceProvider.Create(); // devps(1703)
+                // TripleDES PF依存排除
+                sa = TripleDES.Create();//TripleDESCryptoServiceProvider.Create(); // devps(1703)
             }
 
 #if NET45 || NET46
 #else
             else if (esa.HasFlag(EnumSymmetricAlgorithm.TDES_CNG))
             {
-                // TripleDESCngサービスプロバイダ
+                // TripleDESCng
                 sa = TripleDESCng.Create(); // devps(1703)
             }
 #endif
             #endregion
 
             #region Others
-            else if (esa.HasFlag(EnumSymmetricAlgorithm.DES_CSP))
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.DES))//_CSP))
             {
-                // DESCryptoServiceProviderサービスプロバイダ
-                sa = DESCryptoServiceProvider.Create(); // devps(1703)
+                // DES PF依存排除
+                sa = DES.Create();//DESCryptoServiceProvider.Create(); // devps(1703)
             }
 
-            else if (esa.HasFlag(EnumSymmetricAlgorithm.RC2_CSP))
+            else if (esa.HasFlag(EnumSymmetricAlgorithm.RC2))//_CSP))
             {
-                // RC2CryptoServiceProviderサービスプロバイダ
-                sa = RC2CryptoServiceProvider.Create(); // devps(1703)
+                // RC2 PF依存排除
+                sa = RC2.Create();//RC2CryptoServiceProvider.Create(); // devps(1703)
             }
-
+            /* PF依存 & 旧規格
             else if (esa.HasFlag(EnumSymmetricAlgorithm.Rijndael_M))
             {
                 // RijndaelManagedサービスプロバイダ
                 sa = RijndaelManaged.Create(); // devps(1703)
             }
+            */
             #endregion
 
             else

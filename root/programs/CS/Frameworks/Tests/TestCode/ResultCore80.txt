@@ -70,11 +70,11 @@ log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.Level
 log4net: Created Appender [OPERATION2]
 log4net: Adding appender named [OPERATION2] to logger [OPERATION].
 log4net: Hierarchy Threshold []
-[2025/07/01 18:45:57,746],[DEBUG],[1],LogIF.DebugLog("ACCESS");
-[2025/07/01 18:45:57,785],[INFO ],[1],LogIF.InfoLog("ACCESS");
-[2025/07/01 18:45:57,786],[WARN ],[1],LogIF.WarnLog("ACCESS");
-[2025/07/01 18:45:57,786],[ERROR],[1],LogIF.ErrorLog("ACCESS");
-[2025/07/01 18:45:57,787],[FATAL],[1],LogIF.FatalLog("ACCESS");
+[2025/08/01 12:38:11,608],[DEBUG],[1],LogIF.DebugLog("ACCESS");
+[2025/08/01 12:38:11,628],[INFO ],[1],LogIF.InfoLog("ACCESS");
+[2025/08/01 12:38:11,628],[WARN ],[1],LogIF.WarnLog("ACCESS");
+[2025/08/01 12:38:11,629],[ERROR],[1],LogIF.ErrorLog("ACCESS");
+[2025/08/01 12:38:11,629],[FATAL],[1],LogIF.FatalLog("ACCESS");
 ----------------------------------------------------------------------------------------------------
 GetMessage: ～メッセージID:I0001に対応する記述（正常系）～
 GetMessage: ～メッセージID:E0001に対応する記述（異常系）～

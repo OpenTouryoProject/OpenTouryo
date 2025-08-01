@@ -38,6 +38,22 @@ namespace Touryo.Infrastructure.Public.Security
     /// <remarks>コンストラクタで使用している。</remarks>
     public enum EnumDigitalSignAlgorithm
     {
+        /// <summary>RSA:MD5</summary>
+        Rsa_MD5,
+
+        /// <summary>RSA:SHA1</summary>
+        Rsa_SHA1,
+
+        /// <summary>RSA:SHA256</summary>
+        Rsa_SHA256,
+
+        /// <summary>RSA:SHA384</summary>
+        Rsa_SHA384,
+
+        /// <summary>RSA:SHA512</summary>
+        Rsa_SHA512,
+
+        /*
         /// <summary>RSACryptoServiceProvider:MD5</summary>
         RsaCSP_MD5,
 
@@ -52,10 +68,11 @@ namespace Touryo.Infrastructure.Public.Security
 
         /// <summary>RSACryptoServiceProvider:SHA512</summary>
         RsaCSP_SHA512,
+        */
 
         /// <summary>DSACryptoServiceProvider:SHA1</summary>
         DsaCSP_SHA1,
-
+        
         /// <summary>ECDsaCng:P256</summary>
         ECDsaCng_P256,
 
@@ -66,6 +83,7 @@ namespace Touryo.Infrastructure.Public.Security
         ECDsaCng_P521,
 
 #if NETSTD
+        /*
         /// <summary>RSAOpenSsl:MD5</summary>
         RsaOpenSsl_MD5,
 
@@ -80,6 +98,7 @@ namespace Touryo.Infrastructure.Public.Security
 
         /// <summary>RSAOpenSsl:SHA512</summary>
         RsaOpenSsl_SHA512,
+        */
 
         /// <summary>DSAOpenSsl:SHA1</summary>
         DsaOpenSsl_SHA1,
@@ -93,6 +112,5 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>ECDsaOpenSsl:P521</summary>
         ECDsaOpenSsl_P521
 #endif
-
     };
 }

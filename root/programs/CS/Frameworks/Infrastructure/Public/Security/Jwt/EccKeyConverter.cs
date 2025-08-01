@@ -50,9 +50,9 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         /// <summary>アルゴリズム</summary>
         protected string JwtConstESnnn = JwtConst.ES256;
         /// <summary>アルゴリズム</summary>
-        protected HashAlgorithmName _hashAlgorithmName = HashAlgorithmName.SHA256;
+        protected HashAlgorithmName HashAlgorithmName = HashAlgorithmName.SHA256;
         /// <summary>アルゴリズム</summary>
-        protected EnumHashAlgorithm HashAlgorithm = EnumHashAlgorithm.SHA256_M;
+        protected EnumHashAlgorithm HashAlgorithm = EnumHashAlgorithm.SHA256;
 
         /// <summary>ECCurveDic</summary>
         protected Dictionary<string, ECCurve> ECCurveDic = new Dictionary<string, ECCurve>()
@@ -74,20 +74,20 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             {
                 case JWS_ECDSA.ES._256:
                     this.JwtConstESnnn = JwtConst.ES256;
-                    this._hashAlgorithmName = HashAlgorithmName.SHA256;
-                    this.HashAlgorithm = EnumHashAlgorithm.SHA256_M;
+                    this.HashAlgorithmName = HashAlgorithmName.SHA256;
+                    this.HashAlgorithm = EnumHashAlgorithm.SHA256;
                     break;
 
                 case JWS_ECDSA.ES._384:
                     this.JwtConstESnnn = JwtConst.ES384;
-                    this._hashAlgorithmName = HashAlgorithmName.SHA384;
-                    this.HashAlgorithm = EnumHashAlgorithm.SHA384_M;
+                    this.HashAlgorithmName = HashAlgorithmName.SHA384;
+                    this.HashAlgorithm = EnumHashAlgorithm.SHA384;
                     break;
 
                 case JWS_ECDSA.ES._512:
                     this.JwtConstESnnn = JwtConst.ES512;
-                    this._hashAlgorithmName = HashAlgorithmName.SHA512;
-                    this.HashAlgorithm = EnumHashAlgorithm.SHA512_M;
+                    this.HashAlgorithmName = HashAlgorithmName.SHA512;
+                    this.HashAlgorithm = EnumHashAlgorithm.SHA512;
                     break;
             }
         }

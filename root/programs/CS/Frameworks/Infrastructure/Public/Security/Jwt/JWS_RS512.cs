@@ -53,7 +53,9 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         {
             get
             {
+                return EnumDigitalSignAlgorithm.Rsa_SHA512;
 #if NETSTD
+                /*
                 if (Environment.OSVersion.Platform == PlatformID.Win32NT)
                 {
                     return EnumDigitalSignAlgorithm.RsaCSP_SHA512;
@@ -62,8 +64,9 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
                 {
                     return EnumDigitalSignAlgorithm.RsaOpenSsl_SHA512;
                 }
+                */
 #else
-                return EnumDigitalSignAlgorithm.RsaCSP_SHA512;
+                //return EnumDigitalSignAlgorithm.RsaCSP_SHA512;
 #endif
             }
         }

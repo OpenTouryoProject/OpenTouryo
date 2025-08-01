@@ -64,7 +64,11 @@ namespace Touryo.Infrastructure.Public.Security.Pwd
         public static byte[] RandomByte(int byteSize)
         {
             byte[] data = new byte[byteSize];
+#if NETSTD
+            RandomNumberGenerator.Fill(data);
+#else
             RNGCryptoServiceProvider.Create().GetBytes(data);
+#endif
             return data;
         }
 
@@ -77,8 +81,6 @@ namespace Touryo.Infrastructure.Public.Security.Pwd
             // 以下を参考に実装したが、元のコードにバグがあったので修正も含めている。
             // ASP.NETを使ってランダムなパスワードを生成する － インターネットコム
             // https://internetcom.jp/developer/20060131/26.html
-
-            RNGCryptoServiceProvider rng = null;
 
             if ((length < 1) || (length > 128))
             {
@@ -101,9 +103,13 @@ namespace Touryo.Infrastructure.Public.Security.Pwd
             char[] chPunctuations = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~".ToCharArray(); //"!@@$%^^*()_-+=[{]};:>|./?".ToCharArray();
 
             // Get a cryptographically strong series of bytes
+#if NETSTD
+            RandomNumberGenerator.Fill(bufferPwd);
+#else
+            RNGCryptoServiceProvider rng = null;
             rng = new RNGCryptoServiceProvider();
             rng.GetBytes(bufferPwd);
-
+#endif
             // C# ASCII Table - Dot Net Perls
             // https://www.dotnetperls.com/ascii-table
 
@@ -136,11 +142,21 @@ namespace Touryo.Infrastructure.Public.Security.Pwd
             // 0-lengthの位置に、適当なNAC文字を入れる。
 
             // Get a cryptographically strong series of bytes
-            rng = new RNGCryptoServiceProvider();
-            rng.GetBytes(bufferSelectIdx); // index選択用
-            rng = new RNGCryptoServiceProvider();
-            rng.GetBytes(bufferSelectChar); // char選択用
 
+            // index選択用
+#if NETSTD
+            RandomNumberGenerator.Fill(bufferSelectIdx);
+#else
+            rng = new RNGCryptoServiceProvider();
+            rng.GetBytes(bufferSelectIdx);
+#endif
+            // char選択用
+#if NETSTD
+            RandomNumberGenerator.Fill(bufferSelectChar);
+#else
+            rng = new RNGCryptoServiceProvider();
+            rng.GetBytes(bufferSelectChar);
+#endif
             List<char> list = new List<char>();
             list.AddRange(chPunctuations); // .Contains() を使いたい。
 

@@ -20,7 +20,7 @@
 
 //**********************************************************************************
 //* クラス名        ：GetPasswordHashV2
-//* クラス日本語名  ：Passwordハッシュを取得するクラス（v2
+//* クラス日本語名  ：Password Hashを取得するクラス（v2
 //*
 //* 作成者          ：生技 西野
 //* 更新履歴        ：
@@ -35,7 +35,7 @@ using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Security.Pwd
 {
-    /// <summary>Passwordハッシュを取得するクラス（v2</summary>
+    /// <summary>Password Hashを取得するクラス（v2</summary>
     public class GetPasswordHashV2 : GetKeyedHash
     {
         #region Hash
@@ -45,8 +45,8 @@ namespace Touryo.Infrastructure.Public.Security.Pwd
         /// Salted and hashed passwordとして保存する必要がある。
         /// </summary>
         /// <param name="rawPassword">>Password entered by the user.</param>
-        /// <param name="eha">ハッシュ・アルゴリズム列挙型</param>
-        /// <param name="saltLength">ソルトの文字列長</param>
+        /// <param name="eha">Hashアルゴリズム列挙型</param>
+        /// <param name="saltLength">saltの文字列長</param>
         /// <returns>Salted and hashed password.</returns>
         /// <see ref="http://www.atmarkit.co.jp/ait/articles/1110/06/news154_2.html"/>
         public static string GetSaltedPassword(string rawPassword, EnumHashAlgorithm eha, int saltLength)
@@ -60,13 +60,13 @@ namespace Touryo.Infrastructure.Public.Security.Pwd
         /// Salted and hashed passwordとして保存する必要がある。
         /// </summary>
         /// <param name="rawPassword">>Password entered by the user.</param>
-        /// <param name="eha">ハッシュ・アルゴリズム列挙型</param>
-        /// <param name="saltLength">ソルトの文字列長</param>
-        /// <param name="stretchCount">ストレッチ回数</param>
+        /// <param name="eha">Hashアルゴリズム列挙型</param>
+        /// <param name="saltLength">saltの文字列長</param>
+        /// <param name="stretchCount">Stretch回数</param>
         /// <returns>Salted and hashed password.</returns>
         public static string GetSaltedPassword(string rawPassword, EnumHashAlgorithm eha, int saltLength, int stretchCount)
         {
-            // ランダム・ソルト文字列を生成（区切り記号は含まなくても良い）
+            // ランダムsalt文字列を生成（区切り記号は含まなくても良い）
             string salt = GetPassword.Generate(saltLength, 0); //Membership.GeneratePassword(saltLength, 0);
 
             // Salted and hashed password（文字列）を生成して返す。
@@ -79,14 +79,14 @@ namespace Touryo.Infrastructure.Public.Security.Pwd
         /// <summary>パスワードを比較して認証する。</summary>
         /// <param name="rawPassword">Password entered by the user.</param>
         /// <param name="saltedPassword">Salted and hashed password.</param>
-        /// <param name="eha">ハッシュ・アルゴリズム列挙型</param>
+        /// <param name="eha">Hashアルゴリズム列挙型</param>
         /// <returns>
         /// true：パスワードは一致した。
         /// false：パスワードは一致しない。
         /// </returns>
         public static bool EqualSaltedPassword(string rawPassword, string saltedPassword, EnumHashAlgorithm eha)
         {
-            // ソルト部分を取得
+            // salt部分を取得
             string[] temp = saltedPassword.Split('.');
             string salt = CustomEncode.ByteToString(CustomEncode.FromBase64String(temp[0]), CustomEncode.UTF_8);
             int stretchCount = int.Parse(CustomEncode.ByteToString(CustomEncode.FromBase64String(temp[1]), CustomEncode.UTF_8));
@@ -108,26 +108,45 @@ namespace Touryo.Infrastructure.Public.Security.Pwd
         #endregion
 
         #region KeyedHash
-        
+
         /// <summary>
         /// Password entered by the userをDB保存する際、
         /// Salted and hashed passwordとして保存する必要がある。
         /// </summary>
         /// <param name="rawPassword">Password entered by the user.</param>
-        /// <param name="ekha">ハッシュ・アルゴリズム列挙型</param>
+        /// <param name="ekha">Hashアルゴリズム列挙型</param>
         /// <param name="key">キー</param>
-        /// <param name="saltLength">ソルトの文字列長</param>
-        /// <param name="stretchCount">ストレッチ回数</param>
+        /// <param name="saltLength">saltの文字列長</param>
+        /// <param name="stretchCount">Stretch回数</param>
         /// <returns>Salted and hashed password.</returns>
         public static string GetSaltedPassword(string rawPassword,
             EnumKeyedHashAlgorithm ekha, string key, int saltLength, int stretchCount)
         {
-            // ランダム・ソルト文字列を生成（区切り記号は含まなくても良い）
+            // overloadへ
+            return GetPasswordHashV2.GetSaltedPassword(
+                rawPassword, ekha, key, saltLength, stretchCount, HashAlgorithmName.SHA256);
+        }
+
+        /// <summary>
+        /// Password entered by the userをDB保存する際、
+        /// Salted and hashed passwordとして保存する必要がある。
+        /// </summary>
+        /// <param name="rawPassword">Password entered by the user.</param>
+        /// <param name="ekha">Hashアルゴリズム列挙型</param>
+        /// <param name="key">キー</param>
+        /// <param name="saltLength">saltの文字列長</param>
+        /// <param name="stretchCount">Stretch回数</param>
+        /// <param name="hashAlgorithmName">Hashアルゴリズム名</param>
+        /// <returns>Salted and hashed password.</returns>
+        public static string GetSaltedPassword(string rawPassword,
+            EnumKeyedHashAlgorithm ekha, string key, int saltLength, int stretchCount, HashAlgorithmName hashAlgorithmName)
+        {
+            // ランダムsalt文字列を生成（区切り記号は含まなくても良い）
             string salt = GetPassword.Generate(saltLength, 0); //Membership.GeneratePassword(saltLength, 0);
             byte[] saltByte = CustomEncode.StringToByte(salt, CustomEncode.UTF_8);
 
             // KeyedHashのキーを生成する。
-            Rfc2898DeriveBytes passwordKey = new Rfc2898DeriveBytes(key, saltByte, stretchCount);
+            Rfc2898DeriveBytes passwordKey = new Rfc2898DeriveBytes(key, saltByte, stretchCount, hashAlgorithmName);
 
             // Salted and hashed password（文字列）を生成して返す。
             return
@@ -151,14 +170,30 @@ namespace Touryo.Infrastructure.Public.Security.Pwd
         /// <summary>パスワードを比較して認証する。</summary>
         /// <param name="rawPassword">Password entered by the user.</param>
         /// <param name="saltedPassword">Salted and hashed password.</param>
-        /// <param name="ekha">ハッシュ・アルゴリズム列挙型</param>
+        /// <param name="ekha">Hashアルゴリズム列挙型</param>
         /// <returns>
         /// true：パスワードは一致した。
         /// false：パスワードは一致しない。
         /// </returns>
         public static bool EqualSaltedPassword(string rawPassword, string saltedPassword, EnumKeyedHashAlgorithm ekha)
         {
-            // ソルト部分を取得
+            // overloadへ
+            return EqualSaltedPassword(rawPassword, saltedPassword, ekha, HashAlgorithmName.SHA256);
+        }
+
+        /// <summary>パスワードを比較して認証する。</summary>
+        /// <param name="rawPassword">Password entered by the user.</param>
+        /// <param name="saltedPassword">Salted and hashed password.</param>
+        /// <param name="ekha">Hashアルゴリズム列挙型</param>
+        /// <param name="hashAlgorithmName">Hashアルゴリズム名</param>
+        /// <returns>
+        /// true：パスワードは一致した。
+        /// false：パスワードは一致しない。
+        /// </returns>
+        public static bool EqualSaltedPassword(
+            string rawPassword, string saltedPassword, EnumKeyedHashAlgorithm ekha, HashAlgorithmName hashAlgorithmName)
+        {
+            // salt部分を取得
             string[] temp = saltedPassword.Split('.');
 
             // key
@@ -177,7 +212,7 @@ namespace Touryo.Infrastructure.Public.Security.Pwd
             string hashedPassword = temp[3];
 
             // KeyedHashのキーを生成する。
-            Rfc2898DeriveBytes passwordKey = new Rfc2898DeriveBytes(key, saltByte, stretchCount);
+            Rfc2898DeriveBytes passwordKey = new Rfc2898DeriveBytes(key, saltByte, stretchCount, hashAlgorithmName);
 
             // 引数のsaltedPasswordと、rawPasswordから自作したsaltedPasswordを比較
             string compare = CustomEncode.ToBase64String(

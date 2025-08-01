@@ -405,7 +405,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public static string PKCE_S256_CodeChallengeMethod(string code_verifier)
         {
             return CustomEncode.ToBase64UrlString(GetHash.GetHashBytes(CustomEncode.StringToByte(
-                code_verifier, CustomEncode.us_ascii), EnumHashAlgorithm.SHA256_M));
+                code_verifier, CustomEncode.us_ascii), EnumHashAlgorithm.SHA256));
         }
 
         #endregion
