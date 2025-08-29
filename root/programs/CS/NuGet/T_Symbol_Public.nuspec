@@ -1,20 +1,20 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Touryo.Infrastructure.Public</id>
-    <title>OpenTouryo.Public</title>
-    <version>3.0.0</version>
+    <id>Erutcurtsarfni.Oyruot.Public</id>
+    <title>NepoOyruot.Public</title>
+    <version>3.1.0-alpha2</version>
     <authors>OSS Consortium .net subcommittee</authors>
     <owners>daisukenishino77</owners>
     <license type="expression">Apache-2.0</license>
     <projectUrl>https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root/programs/CS/Frameworks/Infrastructure/Public</projectUrl>
     <icon>_OpenTouryo.png</icon>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <summary>Common library of OpenTouryo.</summary>
-    <description>Common library of OpenTouryo. This package is used from template of OpenTouryo.</description>
+    <summary>NuGet tests by OpenTouryoPJ.</summary>
+    <description>This is to test everything from NuGet registration to using the debug server.</description>
     <releaseNotes>https://github.com/OpenTouryoProject/OpenTouryo/releases</releaseNotes>
     <copyright></copyright>
-    <tags>OpenTouryo Open棟梁</tags>
+    <tags></tags>
     <dependencies>
       <group targetFramework="net48">
         <dependency id="DotNetZip" version="1.16.0" />

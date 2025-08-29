@@ -49,6 +49,6 @@
     <file src="in\net8.0\OpenTouryo.Framework.xml" target="lib\net8.0" />
     <file src="in\net8.0\ja-JP\OpenTouryo.Framework.resources.dll" target="lib\net8.0\ja-JP" />
 
-    <file src="..\Frameworks\Infrastructure\Framework\**\*.cs" target="src" />
+    <file src="..\Frameworks\Infrastructure\Framework\**\*.cs" target="content\cs" />
   </files>
 </package>

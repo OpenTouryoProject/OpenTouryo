@@ -37,6 +37,6 @@
     <file src="in\net8.0-windows\OpenTouryo.Framework.RichClient.pdb" target="lib\net8.0" />
     <file src="in\net8.0-windows\OpenTouryo.Framework.RichClient.xml" target="lib\net8.0" />
 
-    <file src="..\Frameworks\Infrastructure\Framework\RichClient\**\*.cs" target="src" />
+    <file src="..\Frameworks\Infrastructure\Framework\RichClient\**\*.cs" target="content\cs" />
   </files>
 </package>
