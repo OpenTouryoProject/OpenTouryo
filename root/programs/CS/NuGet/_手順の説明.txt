@@ -1,5 +1,9 @@
 ＜テスト手順＞
-本番手順のうち、T_ファイルを使用する。
+・本番手順のうち、T_プレフィックスのあるファイルを使用する。
+・対象は、Touryo.Infrastructure.Public（OpenTouryo.Public）のみ。
+・Erutcurtsarfni.Oyruot.Public... と言う偽名を使用したα版として登録。
+・コレを使用して、NuGet.org のシンボル サーバーが機能するかどうかを確認する。
+・コレには、VSでシンボル・ソースに https://symbols.nuget.org/download/symbols を追加する。
 
 ＜本番手順＞
 （１）以下の手順を実施する
@@ -19,7 +23,7 @@
 （４）最後にNuGetパッケージをNuGetにプッシュする。
 　　APIキーをNuGetサイトから取得して以下のbat内に設定してから実行する。
 　　...\OpenTouryo\root\programs\CS\NuGet\out\sp\_NuGetPush.bat
-　　※ 最新では「sp」の方だけで良い。「pp」の方はシンボルを登録しないケースで利用できる。
+　　※ 最新では「sp」の方だけで良い。「pp」の方はシンボルを登録しないケースで利用可。
 
 （５）後始末としてrevertする。
 　　・z_Common.bat：DEBUG_TYPE

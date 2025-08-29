@@ -58,7 +58,7 @@ echo BUILDFILEPATH %BUILDFILEPATH%
 @echo https://learn.microsoft.com/ja-jp/dotnet/csharp/language-reference/compiler-options/code-generation#debugtype
 @echo --------------------------------------------------
 set BUILD_CONFIG=Debug
-set DEBUG_TYPE=full
+set DEBUG_TYPE=portable
 set VisualStudioVersion=17.0
 
 @echo --------------------------------------------------
