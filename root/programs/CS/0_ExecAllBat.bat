@@ -3,13 +3,6 @@ timeout 5
 
 echo | call 1_DeleteDir.bat
 echo | call 1_DeleteFile.bat
-echo | call 2_Build_NuGet_netstd20.bat
-
-@echo on
-timeout 5
-
-echo | call 1_DeleteDir.bat
-echo | call 1_DeleteFile.bat
 echo | call 2_Build_NuGet_net48.bat
 echo | call 3_Build_Business_net48.bat
 echo | call 3_Build_BusinessRichClient_net48.bat

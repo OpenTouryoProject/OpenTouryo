@@ -1,13 +1,17 @@
-（１）先ず、以下の手順を実施する。
+＜テスト手順＞
+本番手順のうち、T_ファイルを使用する。
+
+＜本番手順＞
+（１）以下の手順を実施する
 　　リリース・エンジニアリング - Open 棟梁 Wiki
 　　https://opentouryo.osscons.jp/index.php?%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E3%83%BB%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0
-
-（２）次に、bat使用してビルドを行う。
-　　以下の設定ファイルのBUILD_CONFIG=DebugをReleaseに変更する。
-　　...\OpenTouryo\root\programs\CS\z_Common.bat
+　　※ コレは全体像の説明で、先ずは、個々の修正を行う。
 　　
-　　以下のビルドbatを実行する。
-　　"...\OpenTouryo\root\programs\CS\0_Release4Nuget.bat"
+（２）次に、bat使用してビルドを行う。
+　　・以下の設定ファイルのDEBUG_TYPE=fullをportableに変更する。
+　　　...\OpenTouryo\root\programs\CS\z_Common.bat
+　　・以下のビルドbatを実行する。
+　　　...\OpenTouryo\root\programs\CS\0_Release4Nuget.bat
 
 （３）次に、NuGetパッケージにパッケージングを行う。
 　　_NuGetPack.bat
@@ -15,8 +19,13 @@
 （４）最後にNuGetパッケージをNuGetにプッシュする。
 　　APIキーをNuGetサイトから取得して以下のbat内に設定してから実行する。
 　　...\OpenTouryo\root\programs\CS\NuGet\out\sp\_NuGetPush.bat
-　　※ 「sp」の方だけで良い。「pp」の方はシンボルを登録しないケースで利用できる。
+　　※ 最新では「sp」の方だけで良い。「pp」の方はシンボルを登録しないケースで利用できる。
 
-（５）後始末。
-　　BUILD_CONFIG=Releaseをrevertする。
-　　APIキーをrevertする。
+（５）後始末としてrevertする。
+　　・z_Common.bat：DEBUG_TYPE
+　　・_NuGetPush.bat：ApiKey
+
+（６）以下の手順を実施する
+　　リリース・エンジニアリング - Open 棟梁 Wiki
+　　https://opentouryo.osscons.jp/index.php?%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E3%83%BB%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0
+　　※ NuGet利用リポジトリのNuGet参照の貼り直し。

@@ -53,14 +53,19 @@ echo BUILDFILEPATH %BUILDFILEPATH%
 
 @echo --------------------------------------------------
 @echo The choice of build configuration (Debug / Release).
+@echo BUILD_CONFIG は 特定の構成（Debug や Release）を指定
+@echo DEBUG_TYPE は full, pdbonly, portable, embedded, none
+@echo https://learn.microsoft.com/ja-jp/dotnet/csharp/language-reference/compiler-options/code-generation#debugtype
 @echo --------------------------------------------------
 set BUILD_CONFIG=Debug
+set DEBUG_TYPE=full
 set VisualStudioVersion=17.0
 
 @echo --------------------------------------------------
 @echo Creating a build command.
 @echo --------------------------------------------------
-set COMMANDLINE=/p:Configuration=%BUILD_CONFIG% -v:d
+@set COMMANDLINE=/p:Configuration=%BUILD_CONFIG% -v:d
+set COMMANDLINE=/p:Configuration=%BUILD_CONFIG% /p:DebugType=%DEBUG_TYPE% -v:d
 
 @echo --------------------------------------------------
 @echo Set the proxy settings of Nuget.

@@ -83,13 +83,7 @@ namespace Touryo.Infrastructure.Public.Util
         {
             byte[] bs = new byte[sizeof(uint)];
 
-#if NETSTD
             RandomNumberGenerator.Fill(bs);
-#else
-            RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-            rng.GetBytes(bs);
-            rng.Dispose();
-#endif
 
             return BitConverter.ToUInt32(bs, 0);
         }

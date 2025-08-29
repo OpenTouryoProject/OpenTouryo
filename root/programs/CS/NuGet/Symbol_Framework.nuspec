@@ -16,62 +16,20 @@
     <copyright></copyright>
     <tags>OpenTouryo Open棟梁</tags>
     <dependencies>
-      <group targetFramework=".NETFramework4.5.2">
+      <group targetFramework="net48">
         <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-        <dependency id="Microsoft.AspNet.Mvc" version="5.2.6" />
-        <dependency id="Microsoft.AspNet.Razor" version="3.2.6" />
-        <dependency id="Microsoft.AspNet.WebPages" version="3.2.6" />
-        <dependency id="Microsoft.Owin" version="4.0.0" />
-        <dependency id="Microsoft.Web.Infrastructure" version="1.0.0.0" />
-        <dependency id="Newtonsoft.Json" version="11.0.2" />
-        <dependency id="Owin" version="1.0" />
+        <dependency id="Touryo.Infrastructure.Public.Security" version="3.0.0" />
+        <dependency id="Microsoft.AspNet.Mvc" version="5.3.0" />
+        <dependency id="Microsoft.Owin" version="4.2.2" />
+        <dependency id="Newtonsoft.Json" version="13.0.3" />
       </group>
-      <group targetFramework=".NETFramework4.6">
+      <group targetFramework="net8.0">
         <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-        <dependency id="Microsoft.AspNet.Mvc" version="5.2.6" />
-        <dependency id="Microsoft.AspNet.Razor" version="3.2.6" />
-        <dependency id="Microsoft.AspNet.WebPages" version="3.2.6" />
-        <dependency id="Microsoft.Owin" version="4.0.0" />
-        <dependency id="Microsoft.Web.Infrastructure" version="1.0.0.0" />
-        <dependency id="Newtonsoft.Json" version="11.0.2" />
-        <dependency id="Owin" version="1.0" />
-      </group>
-      <group targetFramework=".NETFramework4.7">
-        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-        <dependency id="Microsoft.AspNet.Mvc" version="5.2.6" />
-        <dependency id="Microsoft.AspNet.Razor" version="3.2.6" />
-        <dependency id="Microsoft.AspNet.WebPages" version="3.2.6" />
-        <dependency id="Microsoft.Owin" version="4.0.0" />
-        <dependency id="Microsoft.Web.Infrastructure" version="1.0.0.0" />
-        <dependency id="Newtonsoft.Json" version="11.0.2" />
-        <dependency id="Owin" version="1.0" />
-      </group>
-      <group targetFramework=".NETFramework4.8">
-        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-        <dependency id="Microsoft.AspNet.Mvc" version="5.2.6" />
-        <dependency id="Microsoft.AspNet.Razor" version="3.2.6" />
-        <dependency id="Microsoft.AspNet.WebPages" version="3.2.6" />
-        <dependency id="Microsoft.Owin" version="4.0.0" />
-        <dependency id="Microsoft.Web.Infrastructure" version="1.0.0.0" />
-        <dependency id="Newtonsoft.Json" version="11.0.2" />
-        <dependency id="Owin" version="1.0" />
-      </group>
-      <group targetFramework=".NETStandard2.0">
-        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-        <dependency id="Microsoft.AspNetCore.Http" version="2.0.2" />
-        <dependency id="Microsoft.AspNetCore.Http.Extensions" version="2.0.2" />
-        <dependency id="Microsoft.AspNetCore.Mvc" version="2.0.3" />
-        <dependency id="Microsoft.AspNetCore.Session" version="2.0.2" />
-        <dependency id="Microsoft.Extensions.PlatformAbstractions" version="1.1.0" />
-        <dependency id="System.Net.Http" version="4.3.4" />
-        <dependency id="System.Security.Cryptography.X509Certificates" version="4.3.2" />
-      </group>
-      <group targetFramework=".NETStandard2.1">
-        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-        <dependency id="Microsoft.AspNetCore.Http" version="2.0.2" />
-        <dependency id="Microsoft.AspNetCore.Http.Extensions" version="2.0.2" />
-        <dependency id="Microsoft.AspNetCore.Mvc" version="2.0.3" />
-        <dependency id="Microsoft.AspNetCore.Session" version="2.0.2" />
+        <dependency id="Touryo.Infrastructure.Public.Security" version="3.0.0" />
+        <dependency id="Microsoft.AspNetCore.Http" version="2.3.0" />
+        <dependency id="Microsoft.AspNetCore.Http.Extensions" version="2.3.0" />
+        <dependency id="Microsoft.AspNetCore.Mvc" version="2.3.0" />
+        <dependency id="Microsoft.AspNetCore.Session" version="2.3.0" />
         <dependency id="Microsoft.Extensions.PlatformAbstractions" version="1.1.0" />
         <dependency id="System.Net.Http" version="4.3.4" />
         <dependency id="System.Security.Cryptography.X509Certificates" version="4.3.2" />
@@ -81,35 +39,15 @@
   <files>
     <file src="_OpenTouryo.png" target="" />
 
-    <file src="in\net452\OpenTouryo.Framework.dll" target="lib\net452" />
-    <file src="in\net452\OpenTouryo.Framework.pdb" target="lib\net452" />
-    <file src="in\net452\OpenTouryo.Framework.xml" target="lib\net452" />
-    <file src="in\net452\ja-JP\OpenTouryo.Framework.resources.dll" target="lib\net452\ja-JP" />
-
-    <file src="in\net46\OpenTouryo.Framework.dll" target="lib\net46" />
-    <file src="in\net46\OpenTouryo.Framework.pdb" target="lib\net46" />
-    <file src="in\net46\OpenTouryo.Framework.xml" target="lib\net46" />
-    <file src="in\net46\ja-JP\OpenTouryo.Framework.resources.dll" target="lib\net46\ja-JP" />
-
-    <file src="in\net47\OpenTouryo.Framework.dll" target="lib\net47" />
-    <file src="in\net47\OpenTouryo.Framework.pdb" target="lib\net47" />
-    <file src="in\net47\OpenTouryo.Framework.xml" target="lib\net47" />
-    <file src="in\net47\ja-JP\OpenTouryo.Framework.resources.dll" target="lib\net47\ja-JP" />
-
     <file src="in\net48\OpenTouryo.Framework.dll" target="lib\net48" />
     <file src="in\net48\OpenTouryo.Framework.pdb" target="lib\net48" />
     <file src="in\net48\OpenTouryo.Framework.xml" target="lib\net48" />
     <file src="in\net48\ja-JP\OpenTouryo.Framework.resources.dll" target="lib\net48\ja-JP" />
 
-    <file src="in\netstandard2.0\OpenTouryo.Framework.dll" target="lib\netstandard2.0" />
-    <file src="in\netstandard2.0\OpenTouryo.Framework.pdb" target="lib\netstandard2.0" />
-    <file src="in\netstandard2.0\OpenTouryo.Framework.xml" target="lib\netstandard2.0" />
-    <file src="in\netstandard2.0\ja-JP\OpenTouryo.Framework.resources.dll" target="lib\netstandard2.0\ja-JP" />
-
-    <file src="in\netstandard2.1\OpenTouryo.Framework.dll" target="lib\netstandard2.1" />
-    <file src="in\netstandard2.1\OpenTouryo.Framework.pdb" target="lib\netstandard2.1" />
-    <file src="in\netstandard2.1\OpenTouryo.Framework.xml" target="lib\netstandard2.1" />
-    <file src="in\netstandard2.1\ja-JP\OpenTouryo.Framework.resources.dll" target="lib\netstandard2.1\ja-JP" />
+    <file src="in\net8.0\OpenTouryo.Framework.dll" target="lib\net8.0" />
+    <file src="in\net8.0\OpenTouryo.Framework.pdb" target="lib\net8.0" />
+    <file src="in\net8.0\OpenTouryo.Framework.xml" target="lib\net8.0" />
+    <file src="in\net8.0\ja-JP\OpenTouryo.Framework.resources.dll" target="lib\net8.0\ja-JP" />
 
     <file src="..\Frameworks\Infrastructure\Framework\**\*.cs" target="src" />
   </files>
