@@ -28,6 +28,5 @@
     <file src="in\net48\OpenTouryo.xxxx.pdb" target="lib\net48" />
     <file src="in\net48\OpenTouryo.xxxx.xml" target="lib\net48" />
 
-    <file src="..\Frameworks\Infrastructure\xxxx\**\*.cs" target="content\cs" />
   </files>
 </package>

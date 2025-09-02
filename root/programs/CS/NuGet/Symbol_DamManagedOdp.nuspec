@@ -36,7 +36,6 @@
     <file src="in\net8.0\OpenTouryo.DamManagedOdp.dll" target="lib\net8.0" />
     <file src="in\net8.0\OpenTouryo.DamManagedOdp.pdb" target="lib\net8.0" />
     <file src="in\net8.0\OpenTouryo.DamManagedOdp.xml" target="lib\net8.0" />
-    
-    <file src="..\Frameworks\Infrastructure\Public\Db\DamManagedOdp\**\*.cs" target="content\cs" />
+
   </files>
 </package>

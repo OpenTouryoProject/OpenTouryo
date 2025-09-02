@@ -44,6 +44,5 @@
     <file src="in\net8.0\OpenTouryo.Public.Security.pdb" target="lib\net8.0" />
     <file src="in\net8.0\OpenTouryo.Public.Security.xml" target="lib\net8.0" />
 
-    <file src="..\Frameworks\Infrastructure\Public\Security\**\*.cs" target="content\cs" />
   </files>
 </package>

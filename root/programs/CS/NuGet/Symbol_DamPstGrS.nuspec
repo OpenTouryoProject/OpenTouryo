@@ -29,6 +29,5 @@
     <file src="in\net8.0\OpenTouryo.DamPstGrS.pdb" target="lib\net8.0" />
     <file src="in\net8.0\OpenTouryo.DamPstGrS.xml" target="lib\net8.0" />
 
-    <file src="..\Frameworks\Infrastructure\Public\Db\DamPstGrS\**\*.cs" target="content\cs" />
   </files>
 </package>
