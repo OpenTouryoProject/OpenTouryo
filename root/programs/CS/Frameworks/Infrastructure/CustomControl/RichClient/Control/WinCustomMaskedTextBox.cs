@@ -48,8 +48,7 @@ using Touryo.Infrastructure.Public.Str;
 namespace Touryo.Infrastructure.CustomControl.RichClient
 {
     /// <summary>System.Windows.Forms.MaskedTextBoxのカスタム・コントロール</summary>
-    [DefaultProperty("Text")]
-    [Designer(typeof(WinCustomMaskedTextBoxDesigner))]
+    [DefaultProperty("Text"), Designer(typeof(WinCustomMaskedTextBoxDesigner))]
     public class WinCustomMaskedTextBox : MaskedTextBox, ICheck, IGetValue, INotifyPropertyChanged
     {
         ///<summary>デザイナ上の表示をカスタマイズするインナークラス</summary>
@@ -167,8 +166,7 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
         /// TextMaskFormatは初期値、IncludeLiteralsのままReadonlyに変更。
         /// このため、Textプロパティでは必ずマスク適用時の値を取得する。
         /// </summary>
-        [Category("動作"),
-        Description("TextMaskFormatは初期値、IncludeLiteralsのままReadonlyに。")]
+        [Category("動作"), Description("TextMaskFormatは初期値、IncludeLiteralsのままReadonlyに。")]
         public new MaskFormat TextMaskFormat
         {
             get
@@ -179,8 +177,11 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
 
         /// <summary>Text2プロパティではマスクを除いた値を取得する。</summary>
         /// <remarks>Bindingsで使用可能なようにset_Text2を用意した。</remarks>
-        [Category("表示"),
-        Description("Text2プロパティではマスクを除いた値を設定・取得する。")]
+        [Category("表示"), Description("Text2プロパティではマスクを除いた値を設定・取得する。")
+#if NETCOREAPP
+            , DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
+#endif
+            ]
         public string Text2
         {
             get
@@ -207,8 +208,7 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
         }
 
         /// <summary>Text3プロパティでは表示時マスク適用時の値を取得する。</summary>
-        [Category("表示"),
-        Description("Text3プロパティでは表示時マスク適用時の値を取得する。")]
+        [Category("表示"), Description("Text3プロパティでは表示時マスク適用時の値を取得する。")]
         public string Text3
         {
             get
@@ -439,20 +439,19 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
         internal string OriginalMask { get; private set; }
 
         /// <summary>入力中のマスク</summary>
-        [Category("Edit"),
-        Description("入力中のマスク")]
+        [Category("Edit"), Description("入力中のマスク")
+#if NETCOREAPP
+            , DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
+#endif
+        ]
         public string Mask_Editing { get; set; }
 
         /// <summary>半角編集</summary>
-        [DefaultValue(false),
-        Category("Edit"),
-        Description("半角指定（マスクで指定できないため）")]
+        [DefaultValue(false), Category("Edit"), Description("半角指定（マスクで指定できないため）")]
         public bool EditToHankaku { get; set; }
 
         /// <summary>日付編集</summary>
-        [DefaultValue(false),
-        Category("Edit"),
-        Description("YYYYMMDDのM、Dが１桁の時に補正処理を行う。")]
+        [DefaultValue(false), Category("Edit"), Description("YYYYMMDDのM、Dが１桁の時に補正処理を行う。")]
         public bool EditToYYYYMMDD { get; set; }
         
         #endregion

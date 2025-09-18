@@ -31,6 +31,7 @@
 //**********************************************************************************
 
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace Touryo.Infrastructure.CustomControl.RichClient
@@ -116,6 +117,9 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
         }
 
         /// <summary>編集コントロールで変更されたセルの値</summary>
+#if NETCOREAPP
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+#endif
         public object EditingControlFormattedValue
         {
             set
@@ -174,12 +178,21 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
         }
 
         /// <summary>編集しているセルがあるDataGridView</summary>
+#if NETCOREAPP
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+#endif
         public DataGridView EditingControlDataGridView { set; get; }
 
         /// <summary>編集しているセルの行があるインデックス</summary>
+#if NETCOREAPP
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+#endif
         public int EditingControlRowIndex { set; get; }
 
         /// <summary>編集されたか（編集コントロールとセルの値が違うか）</summary>
+#if NETCOREAPP
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+#endif
         public bool EditingControlValueChanged { set; get; }
 
         /// <summary>

@@ -51,8 +51,7 @@ using static System.Net.Mime.MediaTypeNames;
 namespace Touryo.Infrastructure.CustomControl.RichClient
 {
     /// <summary>System.Windows.Forms.TextBoxのカスタム・コントロール</summary>
-    [DefaultProperty("Text")]
-    [Designer(typeof(WinCustomTextBoxDesigner))]
+    [DefaultProperty("Text"), Designer(typeof(WinCustomTextBoxDesigner))]
     public class WinCustomTextBox : TextBox, ICheck, IEdit, IGetValue, INotifyPropertyChanged
     {
         ///<summary>デザイナ上の表示をカスタマイズするインナークラス</summary>
@@ -193,8 +192,11 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
         }
 
         /// <summary>Text2プロパティ</summary>
-        [Category("表示"),
-        Description("ユーザ入力のTextプロパティ")]
+        [Category("表示"), Description("ユーザ入力のTextプロパティ")
+#if NETCOREAPP
+        ,DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
+#endif
+        ]
         public string Text2
         {
             get
@@ -251,8 +253,11 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
         }
 
         /// <summary>Text3プロパティ</summary>
-        [Category("表示"),
-        Description("編集処理込のTextプロパティ")]
+        [Category("表示"), Description("編集処理込のTextプロパティ")
+#if NETCOREAPP
+        , DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
+#endif
+        ]
         public string Text3
         {
             get
@@ -319,8 +324,11 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
 
         /// <summary>単位変換に対応したValueプロパティ</summary>
         /// <remarks>内部からは触らない値</remarks>
-        [Category("表示"),
-        Description("単位変換に対応したValueプロパティ")]
+        [Category("表示"), Description("単位変換に対応したValueプロパティ")
+#if NETCOREAPP
+        , DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
+#endif
+        ]
         public object Value
         {
             get
