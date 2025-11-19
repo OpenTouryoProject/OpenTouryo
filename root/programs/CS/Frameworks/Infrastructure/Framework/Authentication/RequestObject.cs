@@ -236,8 +236,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
-#if NET45 || NET46
-#else
         #region FAPI CIBA
 
         // - OpenID Connect Client Initiated Backchannel Authentication Flow - Core 1.0 draft-01
@@ -419,6 +417,5 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #endregion
 
         #endregion
-#endif
     }
 }

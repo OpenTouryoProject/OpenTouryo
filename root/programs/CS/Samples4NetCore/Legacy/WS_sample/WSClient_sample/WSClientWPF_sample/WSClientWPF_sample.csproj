@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <TargetFramework>net10.0-windows7.0</TargetFramework>
     <UseWPF>true</UseWPF>
     <RootNamespace>WSClientWPF_sample</RootNamespace>
     <AssemblyName>WSClientWPF_sample</AssemblyName>
@@ -52,7 +52,6 @@
     <PackageReference Include="Npgsql" Version="9.0.3" />
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.8.0" />
     <PackageReference Include="System.Data.Odbc" Version="9.0.6" />
-    <PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.6" />
   </ItemGroup>
   
   <ItemGroup>
@@ -63,19 +62,19 @@
   
   <ItemGroup>
     <Reference Include="OpenTouryo.Business">
-      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore80\net8.0-windows7.0\OpenTouryo.Business.dll</HintPath>
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0-windows7.0\OpenTouryo.Business.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Business.RichClient">
-      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore80\net8.0-windows7.0\OpenTouryo.Business.RichClient.dll</HintPath>
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0-windows7.0\OpenTouryo.Business.RichClient.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Framework">
-      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore80\net8.0-windows7.0\OpenTouryo.Framework.dll</HintPath>
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0-windows7.0\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Framework.RichClient">
-      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore80\net8.0-windows7.0\OpenTouryo.Framework.RichClient.dll</HintPath>
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0-windows7.0\OpenTouryo.Framework.RichClient.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public">
-      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore80\net8.0-windows7.0\OpenTouryo.Public.dll</HintPath>
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0-windows7.0\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="WSIFType_sample">
       <HintPath>..\..\Build\net8.0\WSIFType_sample.dll</HintPath>

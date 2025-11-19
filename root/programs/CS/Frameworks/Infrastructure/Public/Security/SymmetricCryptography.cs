@@ -44,6 +44,7 @@
 //**********************************************************************************
 
 using System;
+using System.Text;
 using System.Security.Cryptography;
 
 using Touryo.Infrastructure.Public.Str;
@@ -217,15 +218,33 @@ namespace Touryo.Infrastructure.Public.Security
         {
             //パスワードから共有キーと初期化ベクタを作成する
 
+            ////.NET Framework 1.1以下の時は、PasswordDeriveBytesを使用する
+            ////PasswordDeriveBytes deriveBytes = new PasswordDeriveBytes(password, salt);
+
+#if NETSTD
+            // 共有キーを生成
+            key = Rfc2898DeriveBytes.Pbkdf2(
+                password: Encoding.UTF8.GetBytes(password),
+                salt: salt,
+                iterations: stretching,
+                hashAlgorithm: hashAlgorithmName,
+                outputLength: keySize / 8);
+
+            // 初期化ベクタを生成
+            iv = Rfc2898DeriveBytes.Pbkdf2(
+                password: Encoding.UTF8.GetBytes(password),
+                salt: salt,
+                iterations: stretching,
+                hashAlgorithm: hashAlgorithmName,
+                outputLength: blockSize / 8);
+#else
             //Rfc2898DeriveBytesオブジェクトを作成する
             Rfc2898DeriveBytes deriveBytes = new Rfc2898DeriveBytes(password, salt, stretching, hashAlgorithmName);
 
-            //.NET Framework 1.1以下の時は、PasswordDeriveBytesを使用する
-            //PasswordDeriveBytes deriveBytes = new PasswordDeriveBytes(password, salt);
-            
             //共有キーと初期化ベクタを生成する
             key = deriveBytes.GetBytes(keySize / 8);
             iv = deriveBytes.GetBytes(blockSize / 8);
+#endif      
         }
 
         /// <summary>
@@ -324,14 +343,11 @@ namespace Touryo.Infrastructure.Public.Security
                 // AesManaged
                 sa = AesManaged.Create(); // devps(1703)
             }*/
-#if NET45 || NET46
-#else
             else if (esa.HasFlag(EnumSymmetricAlgorithm.AES_CNG))
             {
                 // AesCng
                 sa = AesCng.Create(); // devps(1703)
             }
-#endif
             #endregion
 
             #region TripleDES
@@ -341,14 +357,12 @@ namespace Touryo.Infrastructure.Public.Security
                 sa = TripleDES.Create();//TripleDESCryptoServiceProvider.Create(); // devps(1703)
             }
 
-#if NET45 || NET46
-#else
             else if (esa.HasFlag(EnumSymmetricAlgorithm.TDES_CNG))
             {
                 // TripleDESCng
                 sa = TripleDESCng.Create(); // devps(1703)
             }
-#endif
+
             #endregion
 
             #region Others

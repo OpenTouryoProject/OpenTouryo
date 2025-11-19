@@ -103,13 +103,24 @@ namespace Touryo.Infrastructure.Public.Security
             X509KeyStorageFlags flag = X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet)
         {
             flag = flag | X509KeyStorageFlags.Exportable; // PrepareでExportParametersする可能性があるので足す。
+
+#if NETSTD
+            if (string.IsNullOrEmpty(password))
+            {
+                this.X509Certificate = X509CertificateLoader.LoadCertificateFromFile(certificateFilePath);
+            }
+            else
+            {
+                this.X509Certificate = X509CertificateLoader.LoadPkcs12FromFile(certificateFilePath, password, flag);
+            }   
+#else
             this.X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
+#endif
+
             this.HashAlgorithm = HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(hashAlgorithmName);
             this.Prepare();
         }
 
-#if NET45
-#else
         /// <summary>
         /// Constructor
         /// X.509証明書(*.pfx, *.cer)からキーを設定する。
@@ -125,11 +136,23 @@ namespace Touryo.Infrastructure.Public.Security
             X509KeyStorageFlags flag = X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet)
         {
             flag = flag | X509KeyStorageFlags.Exportable; // PrepareでExportParametersする可能性があるので足す。
+
+#if NETSTD
+            if (string.IsNullOrEmpty(password))
+            {
+                this.X509Certificate = X509CertificateLoader.LoadCertificateFromFile(certificateFilePath);
+            }
+            else
+            {
+                this.X509Certificate = X509CertificateLoader.LoadPkcs12FromFile(certificateFilePath, password, flag);
+            }
+#else
             this.X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
+#endif
+
             this.HashAlgorithm = HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(hashAlgorithmName.Name);
             this.Prepare();
         }
-#endif
 
         #endregion
 

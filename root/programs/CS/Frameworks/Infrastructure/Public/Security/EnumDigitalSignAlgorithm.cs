@@ -100,8 +100,13 @@ namespace Touryo.Infrastructure.Public.Security
         RsaOpenSsl_SHA512,
         */
 
-        /// <summary>DSAOpenSsl:SHA1</summary>
-        DsaOpenSsl_SHA1,
+        ///// <summary>DSAOpenSsl:SHA1</summary>
+        //DsaOpenSsl_SHA1,
+
+        // 古いのでリネームしたが、使用箇所でSHA1を明示している訳ではなかった...
+
+        /// <summary>DSAOpenSsl:SHA256</summary>
+        DsaOpenSsl_SHA256,
 
         /// <summary>ECDsaOpenSsl:P256</summary>
         ECDsaOpenSsl_P256,

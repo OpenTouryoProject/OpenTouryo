@@ -64,6 +64,9 @@
     <Compile Remove="Db\DamOLEDB.cs" />
     <Compile Remove="Db\DamOraClient.cs" />
     <Compile Remove="IO\BinarySerialize.cs" />
+    <Compile Remove="IO\UnZipper.cs" />
+    <Compile Remove="IO\ZipBase.cs" />
+    <Compile Remove="IO\Zipper.cs" />
     <Compile Remove="Log\CustomEventLog.cs" />
     <Compile Remove="Log\SecurityEventLog.cs" />
     <Compile Remove="Properties\AssemblyInfo.cs" />
@@ -86,7 +89,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="DotNetZip" Version="1.16.0" />
     <PackageReference Include="log4net" Version="3.0.4" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.4" />
@@ -96,8 +98,6 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NLog" Version="5.5.0" />
     <PackageReference Include="System.Data.Odbc" Version="9.0.4" />
-    <PackageReference Include="System.Reflection.Emit.ILGeneration" Version="4.7.0" />
-    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
     <PackageReference Include="Zipangu" Version="1.1.8" />
   </ItemGroup>
 

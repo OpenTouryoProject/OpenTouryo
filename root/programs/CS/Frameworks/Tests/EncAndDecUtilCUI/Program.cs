@@ -170,10 +170,12 @@ namespace EncAndDecUtilCUI
             hashedPassword = "$1$.JU5JJFZXQVIqWQ==.Rkg3YW5WVWt4YQ==.MTAwMA==.ODU0MXJPRWJmVzA9";
             key = "%NI$VWAR*Y";
 
+#pragma warning disable 618 // 下位互換の確認
             ret = GetPasswordHashV1.EqualSaltedPassword(
                 providedPassword,
                 hashedPassword.Substring(4),
                 EnumKeyedHashAlgorithm.MACTripleDES, HashAlgorithmName.SHA1);
+#pragma warning restore 618
 
             TIPD.MyDebug.OutputDebugAndConsole("GetPasswordHashV1.EqualSaltedPassword (old)", ret.ToString());
 
@@ -274,8 +276,14 @@ namespace EncAndDecUtilCUI
             #region Test of the X.509 Certificates
 
             #region RSA
+#if NETCOREAPP
+            privateX509Key = X509CertificateLoader.LoadPkcs12FromFile(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
+            publicX509Key = X509CertificateLoader.LoadCertificateFromFile(Program.PublicRsaX509Path);
+#else
             privateX509Key = new X509Certificate2(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
             publicX509Key = new X509Certificate2(Program.PublicRsaX509Path, "", x509KSF);
+#endif
+
 
             Touryo.Infrastructure.Public.Security.
             MyDebug.InspectPrivateX509Key("RSA", privateX509Key);
@@ -283,12 +291,15 @@ namespace EncAndDecUtilCUI
             MyDebug.InspectPublicX509Key("RSA", publicX509Key);
             #endregion
 
-#if NETCOREAPP || NET47
             #region DSA
             // https://github.com/dotnet/corefx/issues/18733#issuecomment-296723615
-
+#if NETCOREAPP
+            privateX509Key = X509CertificateLoader.LoadPkcs12FromFile(Program.PrivateDsaX509Path, Program.PfxPassword);
+            publicX509Key = X509CertificateLoader.LoadCertificateFromFile(Program.PublicDsaX509Path);
+#else
             privateX509Key = new X509Certificate2(Program.PrivateDsaX509Path, Program.PfxPassword);
             publicX509Key = new X509Certificate2(Program.PublicDsaX509Path, "");
+#endif
 
             Touryo.Infrastructure.Public.Security.
             MyDebug.InspectPrivateX509Key("DSA", privateX509Key);
@@ -302,8 +313,13 @@ namespace EncAndDecUtilCUI
 
             #region ECDsa
             // https://github.com/dotnet/corefx/issues/18733#issuecomment-296723615
+#if NETCOREAPP
+            privateX509Key = X509CertificateLoader.LoadPkcs12FromFile(Program.PrivateECDsaX509_256Path, Program.PfxPassword);
+            publicX509Key = X509CertificateLoader.LoadCertificateFromFile(Program.PublicECDsaX509_256Path);
+#else
             privateX509Key = new X509Certificate2(Program.PrivateECDsaX509_256Path, Program.PfxPassword);
             publicX509Key = new X509Certificate2(Program.PublicECDsaX509_256Path, "");
+#endif
 
             Touryo.Infrastructure.Public.Security.
             MyDebug.InspectPrivateX509Key("ECDsa", privateX509Key);
@@ -316,7 +332,6 @@ namespace EncAndDecUtilCUI
             TIPD.MyDebug.OutputDebugAndConsole("publicECDsa", (publicECDsa == null ? "is null" : "is not null"));
 
             #endregion
-#endif
 
             #endregion
 
@@ -344,10 +359,8 @@ namespace EncAndDecUtilCUI
             DigitalSignXML dsXML = null;
 
             // ECDsa
-#if NETCOREAPP || NET47
             DigitalSignECDsaX509 dsECDsaX509 = null;
             DigitalSignECDsaCng dsECDsaCng = null;
-#endif
 #if NETCOREAPP
             DigitalSignECDsaOpenSsl dsECDsaOpenSsl = null;
 #endif
@@ -409,8 +422,8 @@ namespace EncAndDecUtilCUI
                 #endregion
 
                 #region ECDsa
+
                 #region 256
-#if NETCOREAPP || NET47
                 // X509
                 dsECDsaX509 = new DigitalSignECDsaX509(Program.PrivateECDsaX509_256Path, Program.PfxPassword, HashAlgorithmName.SHA256);
                 sign = dsECDsaX509.Sign(data);
@@ -419,19 +432,15 @@ namespace EncAndDecUtilCUI
 
                 TIPD.MyDebug.OutputDebugAndConsole("DigitalSignECDsaX509.Verify(ECDSA-SHA256)", dsECDsaX509.Verify(data, sign).ToString());
 
-#if NET47 || NETCOREAPP3_0
                 // Param
                 dsECDsaCng = new DigitalSignECDsaCng(EnumDigitalSignAlgorithm.ECDsaCng_P256);
                 sign = dsECDsaCng.Sign(data);
 
                 dsECDsaCng = new DigitalSignECDsaCng(dsECDsaCng.PublicKey);
                 MyDebug.OutputDebugAndConsole("DigitalSignParam.Verify(ECDSA-P256)", dsECDsaCng.Verify(data, sign).ToString());
-#endif
-#endif
                 #endregion
 
                 #region 512
-#if NETCOREAPP || NET47
                 // X509
                 dsECDsaX509 = new DigitalSignECDsaX509(Program.PrivateECDsaX509_256Path, Program.PfxPassword, HashAlgorithmName.SHA512);
                 sign = dsECDsaX509.Sign(data);
@@ -440,16 +449,14 @@ namespace EncAndDecUtilCUI
 
                 TIPD.MyDebug.OutputDebugAndConsole("DigitalSignECDsaX509.Verify(ECDSA-SHA512)", dsECDsaX509.Verify(data, sign).ToString());
 
-#if NET47 || NETCOREAPP3_0
                 // Param
                 dsECDsaCng = new DigitalSignECDsaCng(EnumDigitalSignAlgorithm.ECDsaCng_P521);
                 sign = dsECDsaCng.Sign(data);
 
                 dsECDsaCng = new DigitalSignECDsaCng(dsECDsaCng.PublicKey);
                 MyDebug.OutputDebugAndConsole("DigitalSignParam.Verify(ECDSA-P521)", dsECDsaCng.Verify(data, sign).ToString());
-#endif
-#endif
                 #endregion
+
                 #endregion
             }
             else //if (os.Platform == PlatformID.Unix)
@@ -490,20 +497,20 @@ namespace EncAndDecUtilCUI
                 TIPD.MyDebug.OutputDebugAndConsole("DigitalSignX509.Verify(DSA-SHA256)", dsX509.Verify(data, sign).ToString());
 
                 // Param
-                dsParam = new DigitalSignParam(EnumDigitalSignAlgorithm.DsaOpenSsl_SHA1);
+                dsParam = new DigitalSignParam(EnumDigitalSignAlgorithm.DsaOpenSsl_SHA256);
                 sign = dsParam.Sign(data);
 
-                dsParam = new DigitalSignParam((DSAParameters)dsParam.PublicKey, EnumDigitalSignAlgorithm.DsaOpenSsl_SHA1);
+                dsParam = new DigitalSignParam((DSAParameters)dsParam.PublicKey, EnumDigitalSignAlgorithm.DsaOpenSsl_SHA256);
 
-                TIPD.MyDebug.OutputDebugAndConsole("DigitalSignParam.Verify(DSA-SHA1)", dsParam.Verify(data, sign).ToString());
+                TIPD.MyDebug.OutputDebugAndConsole("DigitalSignParam.Verify(DSA-SHA256)", dsParam.Verify(data, sign).ToString());
 
                 // XML
-                dsXML = new DigitalSignXML(EnumDigitalSignAlgorithm.DsaOpenSsl_SHA1);
+                dsXML = new DigitalSignXML(EnumDigitalSignAlgorithm.DsaOpenSsl_SHA256);
                 sign = dsXML.Sign(data);
 
-                //dsXML = new DigitalSignXML(dsXML.PublicKey, EnumDigitalSignAlgorithm.DsaOpenSsl_SHA1); // 動かない
+                //dsXML = new DigitalSignXML(dsXML.PublicKey, EnumDigitalSignAlgorithm.DsaOpenSsl_SHA256); // 動かない
 
-                TIPD.MyDebug.OutputDebugAndConsole("DigitalSignXML.Verify(DSA-SHA1)", dsXML.Verify(data, sign).ToString());
+                TIPD.MyDebug.OutputDebugAndConsole("DigitalSignXML.Verify(DSA-SHA256)", dsXML.Verify(data, sign).ToString());
                 #endregion
 
                 #region ECDsa (.NET Core on Linux)
@@ -516,12 +523,10 @@ namespace EncAndDecUtilCUI
                 TIPD.MyDebug.OutputDebugAndConsole("DigitalSignECDsaX509.Verify(ECDSA)", dsECDsaX509.Verify(data, sign).ToString());
 
                 // Param
-                dsECDsaOpenSsl = new DigitalSignECDsaOpenSsl(
-                    EnumDigitalSignAlgorithm.ECDsaOpenSsl_P256, SHA256.Create());
+                dsECDsaOpenSsl = new DigitalSignECDsaOpenSsl(EnumDigitalSignAlgorithm.ECDsaOpenSsl_P256, SHA256.Create());
                 sign = dsECDsaOpenSsl.Sign(data);
 
-                dsECDsaOpenSsl = new DigitalSignECDsaOpenSsl(
-                    dsECDsaOpenSsl.PublicKey.Value, SHA256.Create());
+                dsECDsaOpenSsl = new DigitalSignECDsaOpenSsl(dsECDsaOpenSsl.PublicKey.Value, SHA256.Create());
 
                 TIPD.MyDebug.OutputDebugAndConsole("DigitalSignParam.Verify(ECDSA-P256)", dsParam.Verify(data, sign).ToString());
                 #endregion
@@ -580,9 +585,8 @@ namespace EncAndDecUtilCUI
             byte[] key = null;
             string jwk = "";
             RsaPublicKeyConverter rpkc = null;
-#if NETCOREAPP || NET47
             EccPublicKeyConverter epkc = null;
-#endif
+
             #endregion
 
             #region Jws
@@ -598,7 +602,6 @@ namespace EncAndDecUtilCUI
             JWS_RS512_X509 jWS_RS512_X509 = null;
             JWS_RS512_Param jWS_RS512_Param = null;
 
-#if NETCOREAPP || NET47
             // ES256
             JWS_ES256_X509 jWS_ES256_X509 = null;
             JWS_ES256_Param jWS_ES256_Param = null;
@@ -610,7 +613,7 @@ namespace EncAndDecUtilCUI
             // ES512
             JWS_ES512_X509 jWS_ES512_X509 = null;
             JWS_ES512_Param jWS_ES512_Param = null;
-#endif
+
             #endregion
 
             #region Jwe
@@ -683,8 +686,7 @@ namespace EncAndDecUtilCUI
 
                 TIPD.MyDebug.OutputDebugAndConsole("JWS_RS256_Param.Verify", jWS_RS256_Param.Verify(token).ToString());
                 #endregion
-#if NETCOREAPP
-#else
+
                 #region 384
                 // 署名（XML）
                 jWS_RS384_XML = new JWS_RS384_XML();
@@ -732,12 +734,11 @@ namespace EncAndDecUtilCUI
 
                 TIPD.MyDebug.OutputDebugAndConsole("JWS_RS512_Param.Verify", jWS_RS512_Param.Verify(token).ToString());
                 #endregion
-#endif
+
                 #endregion
 
                 // DSA
 
-#if NETCOREAPP || NET47
                 #region ECDsa(ES)
 
                 #region 256
@@ -760,21 +761,17 @@ namespace EncAndDecUtilCUI
 
                 TIPD.MyDebug.OutputDebugAndConsole("JWS_ES256_X509.Verify", jWS_ES256_X509.Verify(token).ToString());
 
-#if NET47 || NETCOREAPP3_0
                 // 検証（Param）
                 //// Core2.0-2.2 on WinでVerifyがエラーになる。
                 //// DigitalSignECDsaOpenSslを試してみるが生成できない、
                 //// Core on Win に OpenSSLベースのプロバイダは無いため）
                 jWS_ES256_Param = new JWS_ES256_Param(epkc.JwkToParam(jwk), false);
                 MyDebug.OutputDebugAndConsole("JWS_ES256_Param.Verify", jWS_ES256_Param.Verify(token).ToString());
-#elif NETCOREAPP2_0
-                // Core2.0-2.2 on Winで ECDsaCngは動作しない。
-#endif
+
                 // ★ xLibTest
                 Program.VerifyResultJwt("JwsAlgorithm.xLibTest", token, jWS_ES256_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES256);
                 #endregion
-#if NETCOREAPP
-#else
+
                 #region 384
                 // 署名（X509）
                 jWS_ES384_X509 = new JWS_ES384_X509(Program.PrivateECDsaX509_384Path, Program.PfxPassword);
@@ -796,16 +793,13 @@ namespace EncAndDecUtilCUI
                 jWS_ES384_X509 = new JWS_ES384_X509(Program.PublicECDsaX509_384Path, "");
                 MyDebug.OutputDebugAndConsole("JWS_ES384_X509.Verify", jWS_ES384_X509.Verify(token).ToString());
 
-#if NET47 || NETCOREAPP3_0
                 // 検証（Param）
                 //// Core2.0-2.2 on WinでVerifyがエラーになる。
                 //// DigitalSignECDsaOpenSslを試してみるが生成できない、
                 //// Core on Win に OpenSSLベースのプロバイダは無いため）
                 jWS_ES384_Param = new JWS_ES384_Param(epkc.JwkToParam(jwk), false);
                 MyDebug.OutputDebugAndConsole("JWS_ES384_Param.Verify", jWS_ES384_Param.Verify(token).ToString());
-#elif NETCOREAPP2_0
-                // Core2.0-2.2 on Winで ECDsaCngは動作しない。
-#endif
+
                 // ★ xLibTest
                 Program.VerifyResultJwt("JwsAlgorithm.xLibTest", token, jWS_ES384_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES384);
                 #endregion
@@ -831,26 +825,21 @@ namespace EncAndDecUtilCUI
                 jWS_ES512_X509 = new JWS_ES512_X509(Program.PublicECDsaX509_512Path, "");
                 MyDebug.OutputDebugAndConsole("JWS_ES512_X509.Verify", jWS_ES512_X509.Verify(token).ToString());
 
-#if NET47 || NETCOREAPP3_0
                 // 検証（Param）
                 //// Core2.0-2.2 on WinでVerifyがエラーになる。
                 //// DigitalSignECDsaOpenSslを試してみるが生成できない、
                 //// Core on Win に OpenSSLベースのプロバイダは無いため）
                 jWS_ES512_Param = new JWS_ES512_Param(epkc.JwkToParam(jwk), false);
                 MyDebug.OutputDebugAndConsole("JWS_ES512_Param.Verify", jWS_ES512_Param.Verify(token).ToString());
-#elif NETCOREAPP2_0
-                // Core2.0-2.2 on Winで ECDsaCngは動作しない。
-#endif
+
                 // ★ xLibTest
                 Program.VerifyResultJwt("JwsAlgorithm.xLibTest", token, jWS_ES512_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES512);
                 #endregion
-#endif
+
                 #endregion
-#endif
             }
             else //if (os.Platform == PlatformID.Unix)
             {
-#if NETCOREAPP
                 #region RSA(RS256)
                 // 署名（X509）
                 jWS_RS256_X509 = new JWS_RS256_X509(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
@@ -905,7 +894,6 @@ namespace EncAndDecUtilCUI
                 // ★ xLibTest
                 Program.VerifyResultJwt("JwsAlgorithm.xLibTest", token, jWS_ES256_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES256);
                 #endregion
-#endif
             }
             #endregion
 
@@ -1002,9 +990,8 @@ namespace EncAndDecUtilCUI
             CngKey privateKeyOfCng = null;
 
             RsaPublicKeyConverter rpkc = null;
-#if NETCOREAPP || NET47
             EccPublicKeyConverter epkc = null;
-#endif
+
             #endregion
 
             #endregion
@@ -1036,8 +1023,13 @@ namespace EncAndDecUtilCUI
             // RS256, RS384, RS512 and PS256, PS384, PS512
             // https://github.com/dvsekhvalnov/jose-jwt#rs--and-ps--family
             // X509Certificate2 x509Certificate2 = new X509Certificate2();
+#if NETCOREAPP
+            privateX509Key = X509CertificateLoader.LoadPkcs12FromFile(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
+            publicX509Key = X509CertificateLoader.LoadCertificateFromFile(Program.PublicRsaX509Path);
+#else
             privateX509Key = new X509Certificate2(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
             publicX509Key = new X509Certificate2(Program.PublicRsaX509Path, "", x509KSF);
+#endif
 
             token = "";
 
@@ -1061,7 +1053,11 @@ namespace EncAndDecUtilCUI
             y = new byte[] { 131, 116, 8, 14, 22, 150, 18, 75, 24, 181, 159, 78, 90, 51, 71, 159, 214, 186, 250, 47, 207, 246, 142, 127, 54, 183, 72, 72, 253, 21, 88, 53 };
             d = new byte[] { 42, 148, 231, 48, 225, 196, 166, 201, 23, 190, 229, 199, 20, 39, 226, 70, 209, 148, 29, 70, 125, 14, 174, 66, 9, 198, 80, 251, 95, 107, 98, 206 };
 
+#if NETCOREAPP
+            if (OperatingSystem.IsWindows())
+#else
             if (os.Platform == PlatformID.Win32NT)
+#endif
             {
                 // https://github.com/dvsekhvalnov/jose-jwt/blob/master/jose-jwt/Security/Cryptography/EccKey.cs
                 privateKeyOfCng = EccKey.New(x, y, d);
@@ -1071,9 +1067,9 @@ namespace EncAndDecUtilCUI
                 token = JWT.Encode(payload, privateKeyOfCng, JwsAlgorithm.ES256);
                 Program.VerifyResultJwt("JwsAlgorithm.ES256", token, publicKeyOfCng);
             }
-            else //if (os.Platform == PlatformID.Unix)
-            {
 #if NETCOREAPP
+            else if (OperatingSystem.IsLinux())
+            {
                 ECParameters eCParameters = new ECParameters();
 
                 epkc = new EccPublicKeyConverter(JWS_ECDSA.ES._256);
@@ -1093,26 +1089,32 @@ namespace EncAndDecUtilCUI
                 token = "";
                 token = JWT.Encode(payload, eCDsaOpenSsl, JwsAlgorithm.ES256);
                 Program.VerifyResultJwt("JwsAlgorithm.ES256", token, eCDsaOpenSsl);
+            }
 #endif
+            else
+            {
+                // その他のプラットフォーム
             }
 
-#if NETCOREAPP || NET47
+#if NETCOREAPP
+            privateX509Key = X509CertificateLoader.LoadPkcs12FromFile(Program.PrivateECDsaX509_256Path, Program.PfxPassword);
+            publicX509Key = X509CertificateLoader.LoadCertificateFromFile(Program.PublicECDsaX509_256Path);
+#else
             privateX509Key = new X509Certificate2(Program.PrivateECDsaX509_256Path, Program.PfxPassword);
             publicX509Key = new X509Certificate2(Program.PublicECDsaX509_256Path, "");
+#endif
 
             try
             {
 #if NETCOREAPP
-                if (os.Platform == PlatformID.Win32NT)
-                {
-                }
-                else //if (os.Platform == PlatformID.Unix)
+                if (OperatingSystem.IsLinux())
                 {
                     // ECCurveを分析してみる。
                     ECCurve eCCurve = ((ECDsaOpenSsl)privateX509Key.GetECDsaPrivateKey()).ExportExplicitParameters(true).Curve;
                     TIPD.MyDebug.OutputDebugAndConsole("Inspect ECCurve", TIPD.ObjectInspector.Inspect(eCCurve));
                 }
 #endif
+
                 token = "";
                 token = JWT.Encode(payload, privateX509Key.GetECDsaPrivateKey(), JwsAlgorithm.ES256);
                 Program.VerifyResultJwt("JwsAlgorithm.ES256", token, publicX509Key.GetECDsaPublicKey());
@@ -1121,7 +1123,6 @@ namespace EncAndDecUtilCUI
             {
                 TIPD.MyDebug.OutputDebugAndConsole("JwsAlgorithm.ES256", ex.GetType().ToString() + ", " + ex.Message);
             }
-#endif
 
             #endregion
 
@@ -1133,8 +1134,13 @@ namespace EncAndDecUtilCUI
             #region RSA-* key management family of algorithms
             // RSA-OAEP-256, RSA-OAEP and RSA1_5 key
             // https://github.com/dvsekhvalnov/jose-jwt#rsa--key-management-family-of-algorithms
+#if NETCOREAPP
+            privateX509Key = X509CertificateLoader.LoadPkcs12FromFile(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
+            publicX509Key = X509CertificateLoader.LoadCertificateFromFile(Program.PublicRsaX509Path);
+#else
             privateX509Key = new X509Certificate2(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
             publicX509Key = new X509Certificate2(Program.PublicRsaX509Path, "", x509KSF);
+#endif
 
             // RSAES-PKCS1-v1_5 and AES_128_CBC_HMAC_SHA_256
             token = "";
@@ -1236,8 +1242,14 @@ namespace EncAndDecUtilCUI
                     { "keyid", "111-222-333"}
                 };
 
+#if NETCOREAPP
+            privateX509Key = X509CertificateLoader.LoadPkcs12FromFile(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
+            publicX509Key = X509CertificateLoader.LoadCertificateFromFile(Program.PublicRsaX509Path);
+#else
             privateX509Key = new X509Certificate2(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
             publicX509Key = new X509Certificate2(Program.PublicRsaX509Path, "", x509KSF);
+#endif
+
 
 #if NETCOREAPP
             rsa = (RSA)privateX509Key.GetRSAPrivateKey();

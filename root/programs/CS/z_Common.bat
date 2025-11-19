@@ -41,8 +41,8 @@ if exist "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Curre
   set BUILDFILEPATH17="C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe"
 )
 
-if exist "C:\Program Files\Microsoft Visual Studio\18\Insiders\MSBuild\Current\Bin\MSBuild.exe" (
-  set BUILDFILEPATH18="C:\Program Files\Microsoft Visual Studio\18\Insiders\MSBuild\Current\Bin\MSBuild.exe"
+if exist "C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe" (
+  set BUILDFILEPATH18="C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe"
 )
 
 echo BUILDFILEPATH2.0 %BUILDFILEPATH2.0%

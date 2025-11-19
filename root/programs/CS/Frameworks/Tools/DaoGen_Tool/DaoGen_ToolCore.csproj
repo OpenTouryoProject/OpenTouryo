@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <TargetFramework>net10.0-windows7.0</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon />
     <StartupObject />
@@ -41,16 +41,16 @@
 
   <ItemGroup>
     <Reference Include="OpenTouryo.DamManagedOdp">
-      <HintPath>..\..\Infrastructure\Build_netcore80\net8.0\OpenTouryo.DamManagedOdp.dll</HintPath>
+      <HintPath>..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.DamManagedOdp.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.DamMySQL">
-      <HintPath>..\..\Infrastructure\Build_netcore80\net8.0\OpenTouryo.DamMySQL.dll</HintPath>
+      <HintPath>..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.DamMySQL.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.DamPstGrS">
-      <HintPath>..\..\Infrastructure\Build_netcore80\net8.0\OpenTouryo.DamPstGrS.dll</HintPath>
+      <HintPath>..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.DamPstGrS.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public">
-      <HintPath>..\..\Infrastructure\Build_netcore80\net8.0\OpenTouryo.Public.dll</HintPath>
+      <HintPath>..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.dll</HintPath>
     </Reference>
   </ItemGroup>
 

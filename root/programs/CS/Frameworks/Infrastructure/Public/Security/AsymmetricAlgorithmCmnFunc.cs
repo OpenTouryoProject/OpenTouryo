@@ -159,7 +159,20 @@ namespace Touryo.Infrastructure.Public.Security
             if (easa == EnumASymmetricAlgorithm.X509)
             {
                 // X.509対応
+#if NETSTD
+                X509Certificate2 x509Key = null;
+
+                if (string.IsNullOrEmpty(password))
+                {
+                    x509Key = X509CertificateLoader.LoadCertificateFromFile(certificateFilePath);
+                }
+                else
+                {
+                    x509Key = X509CertificateLoader.LoadPkcs12FromFile(certificateFilePath, password, flag);
+                }
+#else
                 X509Certificate2 x509Key = new X509Certificate2(certificateFilePath, password, flag);
+#endif
 
                 if (string.IsNullOrEmpty(password))
                 {
@@ -179,14 +192,11 @@ namespace Touryo.Infrastructure.Public.Security
                     // RSACryptoServiceProviderサービスプロバイダ
                     asa = RSACryptoServiceProvider.Create(); // devps(1703)
                 }
-
-#if !NET45
                 else if (easa == EnumASymmetricAlgorithm.RsaCng)
                 {
                     // RSACngサービスプロバイダ
                     asa = RSACng.Create(); // devps(1703)
                 }
-#endif
 #if NETSTD
                 else if (easa == EnumASymmetricAlgorithm.RsaOpenSsl)
                 {
@@ -214,6 +224,7 @@ namespace Touryo.Infrastructure.Public.Security
         public static void CreateDigitalSignSP(
             EnumDigitalSignAlgorithm eaa, out AsymmetricAlgorithm aa, out HashAlgorithm ha)
         {
+#pragma warning disable CA1416 // アルゴリズム名で暗喩的に振り分けるため。
             aa = null;
             ha = null;
 
@@ -286,10 +297,11 @@ namespace Touryo.Infrastructure.Public.Security
             }
             
 #if NETSTD
-            else if (eaa == EnumDigitalSignAlgorithm.DsaOpenSsl_SHA1)
+            else if (eaa == EnumDigitalSignAlgorithm.DsaOpenSsl_SHA256)//DsaOpenSsl_SHA1)
             {
                 // DSAOpenSslサービスプロバイダ
                 aa = new DSAOpenSsl();
+
                 ha = SHA1.Create();
             }
 #endif
@@ -342,7 +354,7 @@ namespace Touryo.Infrastructure.Public.Security
                 }
 
                 // https://qiita.com/yoship1639/items/6dd0cc8623d7f3969d78
-                if (Environment.OSVersion.Platform == PlatformID.Unix)
+                if (OperatingSystem.IsLinux()) //(Environment.OSVersion.Platform == PlatformID.Unix)
                 {
                     eCDsa = ECDsa.Create(); // ECDsaOpenSslと思われる。
                     eCDsa.GenerateKey(eCCurve);
@@ -361,6 +373,7 @@ namespace Touryo.Infrastructure.Public.Security
                     PublicExceptionMessage.ARGUMENT_INCORRECT,
                     "EnumDigitalSignAlgorithm parameter is incorrect.");
             }
+#pragma warning restore CA1416
         }
         #endregion
     }

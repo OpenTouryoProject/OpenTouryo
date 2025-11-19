@@ -121,17 +121,29 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         public JWS_ES256_Param(ECParameters param, bool isPrivate)
         {
             // Cng or OpenSsl
+#if NETSTD
+            if (OperatingSystem.IsWindows())
+#else
             if (os.Platform == PlatformID.Win32NT)
+#endif
             {
                 this.DigitalSignECDsaCng = new DigitalSignECDsaCng(param, isPrivate);
             }
-            else
+#if NETSTD
+            else if (OperatingSystem.IsLinux())
+#else
+            else if (os.Platform == PlatformID.Unix)
+#endif
             {
 #if NETSTD
                 this.DigitalSignECDsaOpenSsl = new DigitalSignECDsaOpenSsl(param, SHA256.Create());
 #else
                 throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
 #endif
+            }
+            else
+            {
+                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
             }
         }
 
@@ -144,7 +156,11 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         /// <returns>byte[]</returns>
         protected override byte[] Create2(byte[] data)
         {
+#if NETSTD
+            if (OperatingSystem.IsWindows())
+#else
             if (os.Platform == PlatformID.Win32NT)
+#endif
             {
                 return this.DigitalSignECDsaCng.Sign(data);
             }
@@ -165,7 +181,11 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         protected override bool Verify2(byte[] data, byte[] sign)
         {
             // Cng or OpenSsl
+#if NETSTD
+            if (OperatingSystem.IsWindows())
+#else
             if (os.Platform == PlatformID.Win32NT)
+#endif
             {
                 return this.DigitalSignECDsaCng.Verify(data, sign);
             }

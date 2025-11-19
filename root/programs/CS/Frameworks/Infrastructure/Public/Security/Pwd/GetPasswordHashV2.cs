@@ -31,6 +31,7 @@
 //**********************************************************************************
 
 using System.Security.Cryptography;
+using System.Text;
 using Touryo.Infrastructure.Public.Str;
 
 namespace Touryo.Infrastructure.Public.Security.Pwd
@@ -146,7 +147,16 @@ namespace Touryo.Infrastructure.Public.Security.Pwd
             byte[] saltByte = CustomEncode.StringToByte(salt, CustomEncode.UTF_8);
 
             // KeyedHashのキーを生成する。
+#if NETSTD
+            var passwordKey = Rfc2898DeriveBytes.Pbkdf2(
+                password: Encoding.UTF8.GetBytes(key),
+                salt: saltByte,
+                iterations: stretchCount,
+                hashAlgorithm: hashAlgorithmName,
+                outputLength: 24);
+#else
             Rfc2898DeriveBytes passwordKey = new Rfc2898DeriveBytes(key, saltByte, stretchCount, hashAlgorithmName);
+#endif
 
             // Salted and hashed password（文字列）を生成して返す。
             return
@@ -160,11 +170,20 @@ namespace Touryo.Infrastructure.Public.Security.Pwd
                 // stretchCount
                 + "." + CustomEncode.ToBase64String(CustomEncode.StringToByte(stretchCount.ToString(), CustomEncode.UTF_8))
 
+#if NETSTD
+                // Salted and hashed password
+                + "." + CustomEncode.ToBase64String(
+                    GetPasswordHashV2.GetKeyedHashBytes(
+                        CustomEncode.StringToByte(salt + rawPassword, CustomEncode.UTF_8),
+                        ekha, passwordKey));
+#else
                 // Salted and hashed password
                 + "." + CustomEncode.ToBase64String(
                     GetPasswordHashV2.GetKeyedHashBytes(
                         CustomEncode.StringToByte(salt + rawPassword, CustomEncode.UTF_8),
                         ekha, passwordKey.GetBytes(24)));
+#endif
+
         }
 
         /// <summary>パスワードを比較して認証する。</summary>
@@ -212,6 +231,20 @@ namespace Touryo.Infrastructure.Public.Security.Pwd
             string hashedPassword = temp[3];
 
             // KeyedHashのキーを生成する。
+#if NETSTD
+            var passwordKey = Rfc2898DeriveBytes.Pbkdf2(
+                password: Encoding.UTF8.GetBytes(key),
+                salt: saltByte,
+                iterations: stretchCount,
+                hashAlgorithm: hashAlgorithmName,
+                outputLength: 24);
+
+            // 引数のsaltedPasswordと、rawPasswordから自作したsaltedPasswordを比較
+            string compare = CustomEncode.ToBase64String(
+                GetPasswordHashV2.GetKeyedHashBytes(
+                    CustomEncode.StringToByte(salt + rawPassword, CustomEncode.UTF_8),
+                    ekha, passwordKey));
+#else
             Rfc2898DeriveBytes passwordKey = new Rfc2898DeriveBytes(key, saltByte, stretchCount, hashAlgorithmName);
 
             // 引数のsaltedPasswordと、rawPasswordから自作したsaltedPasswordを比較
@@ -219,6 +252,7 @@ namespace Touryo.Infrastructure.Public.Security.Pwd
                 GetPasswordHashV2.GetKeyedHashBytes(
                     CustomEncode.StringToByte(salt + rawPassword, CustomEncode.UTF_8),
                     ekha, passwordKey.GetBytes(24)));
+#endif
 
             if (hashedPassword == compare)
             {
