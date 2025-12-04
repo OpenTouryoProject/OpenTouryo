@@ -79,10 +79,10 @@
       <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0-windows7.0\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="WSIFType_sample">
-      <HintPath>..\..\Build\net8.0\WSIFType_sample.dll</HintPath>
+      <HintPath>..\..\Build\net10.0\WSIFType_sample.dll</HintPath>
     </Reference>
     <Reference Include="WSServer_sample">
-      <HintPath>..\..\Build\net8.0\WSServer_sample.dll</HintPath>
+      <HintPath>..\..\Build\net10.0\WSServer_sample.dll</HintPath>
     </Reference>
   </ItemGroup>
 </Project>
