@@ -623,220 +623,221 @@ namespace EncAndDecUtilCUI
             #endregion
 
             #region Jws
-            if (os.Platform == PlatformID.Win32NT)
-            {
-                #region HMACSHA(HS)
-                key = CustomEncode.StringToByte("てすとてすとてすとてすと", CustomEncode.UTF_8);
+            //if (os.Platform == PlatformID.Win32NT)
+            //{
+            #region HMACSHA(HS)
+            key = CustomEncode.StringToByte("てすとてすとてすとてすと", CustomEncode.UTF_8);
 
-                // HS256 署名・検証
-                JWS_HS256 jWS_HS256 = new JWS_HS256(key);
-                token = jWS_HS256.Create(payloadString);
+            // HS256 署名・検証
+            JWS_HS256 jWS_HS256 = new JWS_HS256(key);
+            token = jWS_HS256.Create(payloadString);
 
-                Touryo.Infrastructure.Public.Security.
-                MyDebug.InspectJwt("JWS_HS256.Create", token);
-                TIPD.MyDebug.OutputDebugAndConsole("JWS_HS256.Verify", jWS_HS256.Verify(token).ToString());
+            Touryo.Infrastructure.Public.Security.
+            MyDebug.InspectJwt("JWS_HS256.Create", token);
+            TIPD.MyDebug.OutputDebugAndConsole("JWS_HS256.Verify", jWS_HS256.Verify(token).ToString());
 
-                // HS384 署名・検証
-                JWS_HS384 jWS_HS384 = new JWS_HS384(key);
-                token = jWS_HS384.Create(payloadString);
+            // HS384 署名・検証
+            JWS_HS384 jWS_HS384 = new JWS_HS384(key);
+            token = jWS_HS384.Create(payloadString);
 
-                Touryo.Infrastructure.Public.Security.
-                MyDebug.InspectJwt("JWS_HS384.Create", token);
-                TIPD.MyDebug.OutputDebugAndConsole("JWS_HS384.Verify", jWS_HS384.Verify(token).ToString());
+            Touryo.Infrastructure.Public.Security.
+            MyDebug.InspectJwt("JWS_HS384.Create", token);
+            TIPD.MyDebug.OutputDebugAndConsole("JWS_HS384.Verify", jWS_HS384.Verify(token).ToString());
 
-                // HS512 署名・検証
-                JWS_HS512 jWS_HS512 = new JWS_HS512(key);
-                token = jWS_HS512.Create(payloadString);
+            // HS512 署名・検証
+            JWS_HS512 jWS_HS512 = new JWS_HS512(key);
+            token = jWS_HS512.Create(payloadString);
 
-                Touryo.Infrastructure.Public.Security.MyDebug.InspectJwt("JWS_HS512.Create", token);
-                TIPD.MyDebug.OutputDebugAndConsole("JWS_HS512.Verify", jWS_HS512.Verify(token).ToString());
+            Touryo.Infrastructure.Public.Security.MyDebug.InspectJwt("JWS_HS512.Create", token);
+            TIPD.MyDebug.OutputDebugAndConsole("JWS_HS512.Verify", jWS_HS512.Verify(token).ToString());
 
-                // JWKを使用
-                jWS_HS512 = new JWS_HS512(jWS_HS512.JWK);
-                token = jWS_HS512.Create(payloadString);
+            // JWKを使用
+            jWS_HS512 = new JWS_HS512(jWS_HS512.JWK);
+            token = jWS_HS512.Create(payloadString);
 
-                Touryo.Infrastructure.Public.Security.
-                MyDebug.InspectJwt("JWS_HS512.Create with JWK", token);
-                TIPD.MyDebug.OutputDebugAndConsole("JWS_HS512.Verify with JWK", jWS_HS512.Verify(token).ToString());
-                #endregion
+            Touryo.Infrastructure.Public.Security.
+            MyDebug.InspectJwt("JWS_HS512.Create with JWK", token);
+            TIPD.MyDebug.OutputDebugAndConsole("JWS_HS512.Verify with JWK", jWS_HS512.Verify(token).ToString());
+            #endregion
 
-                #region RSA(RS)
+            #region RSA(RS)
 
-                #region 256
-                // 署名（X509）
-                jWS_RS256_X509 = new JWS_RS256_X509(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
-                token = jWS_RS256_X509.Create(payloadString);
+            #region 256
+            // 署名（X509）
+            jWS_RS256_X509 = new JWS_RS256_X509(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
+            token = jWS_RS256_X509.Create(payloadString);
 
-                Touryo.Infrastructure.Public.Security.
-                MyDebug.InspectJwt("JWS_RS256_X509.Create", token);
+            Touryo.Infrastructure.Public.Security.
+            MyDebug.InspectJwt("JWS_RS256_X509.Create", token);
 
-                // 鍵の相互変換
-                rpkc = new RsaPublicKeyConverter(JWS_RSA.RS._256);
-                jwk = rpkc.ParamToJwk(((RSA)jWS_RS256_X509.DigitalSignX509.AsymmetricAlgorithm).ExportParameters(false));
+            // 鍵の相互変換
+            rpkc = new RsaPublicKeyConverter(JWS_RSA.RS._256);
+            jwk = rpkc.ParamToJwk(((RSA)jWS_RS256_X509.DigitalSignX509.AsymmetricAlgorithm).ExportParameters(false));
 
-                TIPD.MyDebug.OutputDebugAndConsole("RSA JWK", jwk);
+            TIPD.MyDebug.OutputDebugAndConsole("RSA JWK", jwk);
 
-                // 検証（X509）
-                jWS_RS256_X509 = new JWS_RS256_X509(Program.PublicRsaX509Path, "", x509KSF);
+            // 検証（X509）
+            jWS_RS256_X509 = new JWS_RS256_X509(Program.PublicRsaX509Path, "", x509KSF);
 
-                TIPD.MyDebug.OutputDebugAndConsole("JWS_RS256_X509.Verify", jWS_RS256_X509.Verify(token).ToString());
+            TIPD.MyDebug.OutputDebugAndConsole("JWS_RS256_X509.Verify", jWS_RS256_X509.Verify(token).ToString());
 
-                // 検証（Param）
-                jWS_RS256_Param = new JWS_RS256_Param(rpkc.JwkToParam(jwk));
+            // 検証（Param）
+            jWS_RS256_Param = new JWS_RS256_Param(rpkc.JwkToParam(jwk));
 
-                TIPD.MyDebug.OutputDebugAndConsole("JWS_RS256_Param.Verify", jWS_RS256_Param.Verify(token).ToString());
-                #endregion
+            TIPD.MyDebug.OutputDebugAndConsole("JWS_RS256_Param.Verify", jWS_RS256_Param.Verify(token).ToString());
+            #endregion
 
-                #region 384
-                // 署名（XML）
-                jWS_RS384_XML = new JWS_RS384_XML();
-                token = jWS_RS384_XML.Create(payloadString);
+            #region 384
+            // 署名（XML）
+            jWS_RS384_XML = new JWS_RS384_XML();
+            token = jWS_RS384_XML.Create(payloadString);
 
-                Touryo.Infrastructure.Public.Security.
-                MyDebug.InspectJwt("jWS_RS384_XML.Create", token);
+            Touryo.Infrastructure.Public.Security.
+            MyDebug.InspectJwt("jWS_RS384_XML.Create", token);
 
-                // 鍵の相互変換
-                rpkc = new RsaPublicKeyConverter(JWS_RSA.RS._384);
-                jwk = rpkc.XmlToJwk(jWS_RS384_XML.XMLPrivateKey);
+            // 鍵の相互変換
+            rpkc = new RsaPublicKeyConverter(JWS_RSA.RS._384);
+            jwk = rpkc.XmlToJwk(jWS_RS384_XML.XMLPrivateKey);
 
-                TIPD.MyDebug.OutputDebugAndConsole("RSA JWK", jwk);
+            TIPD.MyDebug.OutputDebugAndConsole("RSA JWK", jwk);
 
-                // 検証（XML）
-                //jWS_RS384_XML = new JWS_RS384_XML(jWS_RS384_XML.XMLPrivateKey);
-                TIPD.MyDebug.OutputDebugAndConsole("JWS_RS384_XML.Verify", jWS_RS384_XML.Verify(token).ToString());
+            // 検証（XML）
+            //jWS_RS384_XML = new JWS_RS384_XML(jWS_RS384_XML.XMLPrivateKey);
+            TIPD.MyDebug.OutputDebugAndConsole("JWS_RS384_XML.Verify", jWS_RS384_XML.Verify(token).ToString());
 
-                // 検証（Param）
-                jWS_RS384_Param = new JWS_RS384_Param(rpkc.JwkToParam(jwk));
-                TIPD.MyDebug.OutputDebugAndConsole("JWS_RS384_Param.Verify", jWS_RS384_Param.Verify(token).ToString());
-                #endregion
+            // 検証（Param）
+            jWS_RS384_Param = new JWS_RS384_Param(rpkc.JwkToParam(jwk));
+            TIPD.MyDebug.OutputDebugAndConsole("JWS_RS384_Param.Verify", jWS_RS384_Param.Verify(token).ToString());
+            #endregion
 
-                #region 512
-                // 署名（X509）
-                jWS_RS512_X509 = new JWS_RS512_X509(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
-                token = jWS_RS512_X509.Create(payloadString);
+            #region 512
+            // 署名（X509）
+            jWS_RS512_X509 = new JWS_RS512_X509(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
+            token = jWS_RS512_X509.Create(payloadString);
 
-                Touryo.Infrastructure.Public.Security.
-                MyDebug.InspectJwt("JWS_RS512_X509.Create", token);
+            Touryo.Infrastructure.Public.Security.
+            MyDebug.InspectJwt("JWS_RS512_X509.Create", token);
 
-                // 鍵の相互変換
-                rpkc = new RsaPublicKeyConverter(JWS_RSA.RS._512);
-                jwk = rpkc.ParamToJwk(((RSA)jWS_RS512_X509.DigitalSignX509.AsymmetricAlgorithm).ExportParameters(false));
+            // 鍵の相互変換
+            rpkc = new RsaPublicKeyConverter(JWS_RSA.RS._512);
+            jwk = rpkc.ParamToJwk(((RSA)jWS_RS512_X509.DigitalSignX509.AsymmetricAlgorithm).ExportParameters(false));
 
-                TIPD.MyDebug.OutputDebugAndConsole("RSA JWK", jwk);
+            TIPD.MyDebug.OutputDebugAndConsole("RSA JWK", jwk);
 
-                // 検証（X509）
-                jWS_RS512_X509 = new JWS_RS512_X509(Program.PublicRsaX509Path, "", x509KSF);
+            // 検証（X509）
+            jWS_RS512_X509 = new JWS_RS512_X509(Program.PublicRsaX509Path, "", x509KSF);
 
-                TIPD.MyDebug.OutputDebugAndConsole("JWS_RS512_X509.Verify", jWS_RS512_X509.Verify(token).ToString());
+            TIPD.MyDebug.OutputDebugAndConsole("JWS_RS512_X509.Verify", jWS_RS512_X509.Verify(token).ToString());
 
-                // 検証（Param）
-                jWS_RS512_Param = new JWS_RS512_Param(rpkc.JwkToParam(jwk));
+            // 検証（Param）
+            jWS_RS512_Param = new JWS_RS512_Param(rpkc.JwkToParam(jwk));
 
-                TIPD.MyDebug.OutputDebugAndConsole("JWS_RS512_Param.Verify", jWS_RS512_Param.Verify(token).ToString());
-                #endregion
+            TIPD.MyDebug.OutputDebugAndConsole("JWS_RS512_Param.Verify", jWS_RS512_Param.Verify(token).ToString());
+            #endregion
 
-                #endregion
+            #endregion
 
-                // DSA
+            // DSA
 
-                #region ECDsa(ES)
+            #region ECDsa(ES)
 
-                #region 256
-                // 署名（X509）
-                jWS_ES256_X509 = new JWS_ES256_X509(Program.PrivateECDsaX509_256Path, Program.PfxPassword);
-                token = jWS_ES256_X509.Create(payloadString);
+            #region 256
+            // 署名（X509）
+            jWS_ES256_X509 = new JWS_ES256_X509(Program.PrivateECDsaX509_256Path, Program.PfxPassword);
+            token = jWS_ES256_X509.Create(payloadString);
 
-                Touryo.Infrastructure.Public.Security.
-                MyDebug.InspectJwt("JWS_ES256_X509.Create", token);
+            Touryo.Infrastructure.Public.Security.
+            MyDebug.InspectJwt("JWS_ES256_X509.Create", token);
 
-                // 鍵の相互変換
-                epkc = new EccPublicKeyConverter(JWS_ECDSA.ES._256);
-                jwk = epkc.ParamToJwk(
-                    ((ECDsa)jWS_ES256_X509.DigitalSignECDsaX509.AsymmetricAlgorithm).ExportParameters(false));
+            // 鍵の相互変換
+            epkc = new EccPublicKeyConverter(JWS_ECDSA.ES._256);
+            jwk = epkc.ParamToJwk(
+                ((ECDsa)jWS_ES256_X509.DigitalSignECDsaX509.AsymmetricAlgorithm).ExportParameters(false));
 
-                TIPD.MyDebug.OutputDebugAndConsole("ECDSA JWK", jwk);
+            TIPD.MyDebug.OutputDebugAndConsole("ECDSA JWK", jwk);
 
-                // 検証（X509）
-                jWS_ES256_X509 = new JWS_ES256_X509(Program.PublicECDsaX509_256Path, "");
+            // 検証（X509）
+            jWS_ES256_X509 = new JWS_ES256_X509(Program.PublicECDsaX509_256Path, "");
 
-                TIPD.MyDebug.OutputDebugAndConsole("JWS_ES256_X509.Verify", jWS_ES256_X509.Verify(token).ToString());
+            TIPD.MyDebug.OutputDebugAndConsole("JWS_ES256_X509.Verify", jWS_ES256_X509.Verify(token).ToString());
 
-                // 検証（Param）
-                //// Core2.0-2.2 on WinでVerifyがエラーになる。
-                //// DigitalSignECDsaOpenSslを試してみるが生成できない、
-                //// Core on Win に OpenSSLベースのプロバイダは無いため）
-                jWS_ES256_Param = new JWS_ES256_Param(epkc.JwkToParam(jwk), false);
-                MyDebug.OutputDebugAndConsole("JWS_ES256_Param.Verify", jWS_ES256_Param.Verify(token).ToString());
+            // 検証（Param）
+            //// Core2.0-2.2 on WinでVerifyがエラーになる。
+            //// DigitalSignECDsaOpenSslを試してみるが生成できない、
+            //// Core on Win に OpenSSLベースのプロバイダは無いため）
+            jWS_ES256_Param = new JWS_ES256_Param(epkc.JwkToParam(jwk), false);
+            MyDebug.OutputDebugAndConsole("JWS_ES256_Param.Verify", jWS_ES256_Param.Verify(token).ToString());
 
-                // ★ xLibTest
-                Program.VerifyResultJwt("JwsAlgorithm.xLibTest", token, jWS_ES256_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES256);
-                #endregion
+            // ★ xLibTest
+            Program.VerifyResultJwt("JwsAlgorithm.xLibTest", token, jWS_ES256_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES256);
+            #endregion
 
-                #region 384
-                // 署名（X509）
-                jWS_ES384_X509 = new JWS_ES384_X509(Program.PrivateECDsaX509_384Path, Program.PfxPassword);
-                token = jWS_ES384_X509.Create(payloadString);
-                MyDebug.InspectJwt("JWS_ES384_X509.Create", token);
+            #region 384
+            // 署名（X509）
+            jWS_ES384_X509 = new JWS_ES384_X509(Program.PrivateECDsaX509_384Path, Program.PfxPassword);
+            token = jWS_ES384_X509.Create(payloadString);
+            MyDebug.InspectJwt("JWS_ES384_X509.Create", token);
 
-                // 検証（X509）
-                jWS_ES384_X509 = new JWS_ES384_X509(Program.PublicECDsaX509_384Path, "");
-                MyDebug.OutputDebugAndConsole("JWS_ES384_X509.Verify", jWS_ES384_X509.Verify(token).ToString());
+            // 検証（X509）
+            jWS_ES384_X509 = new JWS_ES384_X509(Program.PublicECDsaX509_384Path, "");
+            MyDebug.OutputDebugAndConsole("JWS_ES384_X509.Verify", jWS_ES384_X509.Verify(token).ToString());
 
-                // 鍵の相互変換
-                epkc = new EccPublicKeyConverter(JWS_ECDSA.ES._384);
-                jwk = epkc.ParamToJwk(
-                    ((ECDsa)jWS_ES384_X509.DigitalSignECDsaX509.AsymmetricAlgorithm).ExportParameters(false));
+            // 鍵の相互変換
+            epkc = new EccPublicKeyConverter(JWS_ECDSA.ES._384);
+            jwk = epkc.ParamToJwk(
+                ((ECDsa)jWS_ES384_X509.DigitalSignECDsaX509.AsymmetricAlgorithm).ExportParameters(false));
 
-                MyDebug.OutputDebugAndConsole("ECDSA JWK", jwk);
+            MyDebug.OutputDebugAndConsole("ECDSA JWK", jwk);
 
-                // 検証（X509）
-                jWS_ES384_X509 = new JWS_ES384_X509(Program.PublicECDsaX509_384Path, "");
-                MyDebug.OutputDebugAndConsole("JWS_ES384_X509.Verify", jWS_ES384_X509.Verify(token).ToString());
+            // 検証（X509）
+            jWS_ES384_X509 = new JWS_ES384_X509(Program.PublicECDsaX509_384Path, "");
+            MyDebug.OutputDebugAndConsole("JWS_ES384_X509.Verify", jWS_ES384_X509.Verify(token).ToString());
 
-                // 検証（Param）
-                //// Core2.0-2.2 on WinでVerifyがエラーになる。
-                //// DigitalSignECDsaOpenSslを試してみるが生成できない、
-                //// Core on Win に OpenSSLベースのプロバイダは無いため）
-                jWS_ES384_Param = new JWS_ES384_Param(epkc.JwkToParam(jwk), false);
-                MyDebug.OutputDebugAndConsole("JWS_ES384_Param.Verify", jWS_ES384_Param.Verify(token).ToString());
+            // 検証（Param）
+            //// Core2.0-2.2 on WinでVerifyがエラーになる。
+            //// DigitalSignECDsaOpenSslを試してみるが生成できない、
+            //// Core on Win に OpenSSLベースのプロバイダは無いため）
+            jWS_ES384_Param = new JWS_ES384_Param(epkc.JwkToParam(jwk), false);
+            MyDebug.OutputDebugAndConsole("JWS_ES384_Param.Verify", jWS_ES384_Param.Verify(token).ToString());
 
-                // ★ xLibTest
-                Program.VerifyResultJwt("JwsAlgorithm.xLibTest", token, jWS_ES384_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES384);
-                #endregion
+            // ★ xLibTest
+            Program.VerifyResultJwt("JwsAlgorithm.xLibTest", token, jWS_ES384_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES384);
+            #endregion
 
-                #region 512
-                // 署名（X509）
-                jWS_ES512_X509 = new JWS_ES512_X509(Program.PrivateECDsaX509_512Path, Program.PfxPassword);
-                token = jWS_ES512_X509.Create(payloadString);
-                MyDebug.InspectJwt("JWS_ES512_X509.Create", token);
+            #region 512
+            // 署名（X509）
+            jWS_ES512_X509 = new JWS_ES512_X509(Program.PrivateECDsaX509_512Path, Program.PfxPassword);
+            token = jWS_ES512_X509.Create(payloadString);
+            MyDebug.InspectJwt("JWS_ES512_X509.Create", token);
 
-                // 検証（X509）
-                jWS_ES512_X509 = new JWS_ES512_X509(Program.PublicECDsaX509_512Path, "");
-                MyDebug.OutputDebugAndConsole("JWS_ES512_X509.Verify", jWS_ES512_X509.Verify(token).ToString());
+            // 検証（X509）
+            jWS_ES512_X509 = new JWS_ES512_X509(Program.PublicECDsaX509_512Path, "");
+            MyDebug.OutputDebugAndConsole("JWS_ES512_X509.Verify", jWS_ES512_X509.Verify(token).ToString());
 
-                // 鍵の相互変換
-                epkc = new EccPublicKeyConverter(JWS_ECDSA.ES._512);
-                jwk = epkc.ParamToJwk(
-                    ((ECDsa)jWS_ES512_X509.DigitalSignECDsaX509.AsymmetricAlgorithm).ExportParameters(false));
+            // 鍵の相互変換
+            epkc = new EccPublicKeyConverter(JWS_ECDSA.ES._512);
+            jwk = epkc.ParamToJwk(
+                ((ECDsa)jWS_ES512_X509.DigitalSignECDsaX509.AsymmetricAlgorithm).ExportParameters(false));
 
-                MyDebug.OutputDebugAndConsole("ECDSA JWK", jwk);
+            MyDebug.OutputDebugAndConsole("ECDSA JWK", jwk);
 
-                // 検証（X509）
-                jWS_ES512_X509 = new JWS_ES512_X509(Program.PublicECDsaX509_512Path, "");
-                MyDebug.OutputDebugAndConsole("JWS_ES512_X509.Verify", jWS_ES512_X509.Verify(token).ToString());
+            // 検証（X509）
+            jWS_ES512_X509 = new JWS_ES512_X509(Program.PublicECDsaX509_512Path, "");
+            MyDebug.OutputDebugAndConsole("JWS_ES512_X509.Verify", jWS_ES512_X509.Verify(token).ToString());
 
-                // 検証（Param）
-                //// Core2.0-2.2 on WinでVerifyがエラーになる。
-                //// DigitalSignECDsaOpenSslを試してみるが生成できない、
-                //// Core on Win に OpenSSLベースのプロバイダは無いため）
-                jWS_ES512_Param = new JWS_ES512_Param(epkc.JwkToParam(jwk), false);
-                MyDebug.OutputDebugAndConsole("JWS_ES512_Param.Verify", jWS_ES512_Param.Verify(token).ToString());
+            // 検証（Param）
+            //// Core2.0-2.2 on WinでVerifyがエラーになる。
+            //// DigitalSignECDsaOpenSslを試してみるが生成できない、
+            //// Core on Win に OpenSSLベースのプロバイダは無いため）
+            jWS_ES512_Param = new JWS_ES512_Param(epkc.JwkToParam(jwk), false);
+            MyDebug.OutputDebugAndConsole("JWS_ES512_Param.Verify", jWS_ES512_Param.Verify(token).ToString());
 
-                // ★ xLibTest
-                Program.VerifyResultJwt("JwsAlgorithm.xLibTest", token, jWS_ES512_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES512);
-                #endregion
+            // ★ xLibTest
+            Program.VerifyResultJwt("JwsAlgorithm.xLibTest", token, jWS_ES512_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES512);
+            #endregion
 
-                #endregion
+            #endregion
+            /*
             }
             else //if (os.Platform == PlatformID.Unix)
             {
@@ -895,6 +896,7 @@ namespace EncAndDecUtilCUI
                 Program.VerifyResultJwt("JwsAlgorithm.xLibTest", token, jWS_ES256_X509.DigitalSignECDsaX509.AsymmetricAlgorithm, JwsAlgorithm.ES256);
                 #endregion
             }
+            */
             #endregion
 
             #region Jwe

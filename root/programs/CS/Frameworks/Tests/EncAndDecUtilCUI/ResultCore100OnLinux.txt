@@ -1,0 +1,211 @@
+HashAlgorithm.Default > XptEn4IjdI/wfcYTje0ySPKxxLrf91ljtBvpJUiPH2I=
+HashAlgorithm.MD5 > FQ2+bMMhF8fDG0fkIOd9fA==
+HashAlgorithm.RIPEMD160_M > +2KFDwtYWpBfxsGkJU4SR/6NA8E=
+HashAlgorithm.SHA1 > wFTHz2IcQbeEekZ1o41FXOoYqHs=
+HashAlgorithm.SHA256 > XptEn4IjdI/wfcYTje0ySPKxxLrf91ljtBvpJUiPH2I=
+HashAlgorithm.SHA384 > KPANYikTelxukuuiMCaekdQoh5xIm6+Zx4sWY6u/OgAt/cQcWJ1KH89BnggsBm7V
+HashAlgorithm.SHA512 > s4KE0QPxsjBiUmkgWFeU3A5w4dF5mvncmWqzYSDvB7CejMOiHBMLaw2220Rmz4NYAf/ReBlafi4jY9UeEkWyZA==
+KeyedHashAlgorithm.Default > DArKUX/IUh3hLfSP6dRQtpDjO4A=
+KeyedHashAlgorithm.HMACMD5 > WTofHEUdHAHKlRuNv8hM5Q==
+KeyedHashAlgorithm.HMACRIPEMD160 > fw9Meric/I6VKV1kw4V3wm8rEUQ=
+KeyedHashAlgorithm.HMACSHA1 > DArKUX/IUh3hLfSP6dRQtpDjO4A=
+KeyedHashAlgorithm.HMACSHA256 > jVnqM8tz+EWQt+S7bminuPgaJgzQLiQ93RNAzoOb2p4=
+KeyedHashAlgorithm.HMACSHA384 > H1vjmH2lEK0M3UiCaz/WSL/erNMW7HORXAMLZNwwWK7xjINYQpYYP+9tMYQrb3ms
+KeyedHashAlgorithm.HMACSHA512 > VDs+QpNqiBwTS3Zl3HsU2iBWcD+r+voy7BcgF2qCEb5Fn2WolqhNUbz+dJuV8syNT/rC/E/hi9p9Kgz8EbynDg==
+KeyedHashAlgorithm.MACTripleDES > yzgJeEuu4fs=
+GetPasswordHashV1.EqualSaltedPassword (old) > True
+GetPasswordHashV2.EqualSaltedPassword (old) > False
+GetPasswordHashV2.EqualSaltedPassword (new) > True
+GetPasswordHashV2.EqualSaltedPassword (new) > True
+----------------------------------------------------------------------------------------------------
+RSA > X509Certificate2.PrivateKey: is not null
+RSA > SignatureAlgorithm.FriendlyName: sha256RSA
+RSA > PrivateKey.ToString(): is System.Security.Cryptography.RSAOpenSsl
+RSA > publicX509Key: is not null
+RSA > SignatureAlgorithm.FriendlyName: sha256RSA
+RSA > PublicKey.ToString(): is System.Security.Cryptography.X509Certificates.PublicKey
+RSA > PublicKey.Key.ToString(): is System.Security.Cryptography.RSAOpenSsl
+DSA > X509Certificate2.PrivateKey: is not null
+DSA > SignatureAlgorithm.FriendlyName: dsa_with_SHA256
+DSA > PrivateKey.ToString(): is System.Security.Cryptography.DSAOpenSsl
+DSA > publicX509Key: is not null
+DSA > SignatureAlgorithm.FriendlyName: dsa_with_SHA256
+DSA > PublicKey.ToString(): is System.Security.Cryptography.X509Certificates.PublicKey
+DSA > PublicKey.Key.ToString(): is System.Security.Cryptography.DSAOpenSsl
+privateDSA > is not null
+ECDsa > X509Certificate2.PrivateKey: is not null
+ECDsa > SignatureAlgorithm.FriendlyName: sha256ECDSA
+ECDsa > PrivateKey.ToString(): is System.Security.Cryptography.ECDsaOpenSsl
+ECDsa > publicX509Key: is not null
+ECDsa > SignatureAlgorithm.FriendlyName: sha256ECDSA
+ECDsa > PublicKey.ToString(): is System.Security.Cryptography.X509Certificates.PublicKey
+ECDsa > PublicKey.Key.ToString(): is System.Security.Cryptography.ECDsaOpenSsl
+privateECDsa > is not null
+publicECDsa > is not null
+ASymCrypt(X509).Enc&Dec > True
+DigitalSignX509.Verify(RS256) > True
+DigitalSignParam.Verify(RS256) > True
+DigitalSignXML.Verify(RS256) > True
+DigitalSignX509.Verify(DSA-SHA256) > True
+DigitalSignParam.Verify(DSA-SHA256) > True
+DigitalSignXML.Verify(DSA-SHA256) > True
+DigitalSignECDsaX509.Verify(ECDSA) > True
+DigitalSignParam.Verify(ECDSA-P256) > False
+----------------------------------------------------------------------------------------------------
+JWS_HS256.Create > JWS Header: {"alg":"HS256","typ":"JWT"}
+JWS_HS256.Create > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
+JWS_HS256.Create > JWS Signature: heeT4028uyTceiOoYHgLfdzvDgsqlwYPGhJQF2GIMbQ
+JWS_HS256.Verify > True
+JWS_HS384.Create > JWS Header: {"alg":"HS384","typ":"JWT"}
+JWS_HS384.Create > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
+JWS_HS384.Create > JWS Signature: Low8PkHQfPEyrgT5v4NSaMpcASi-Q-Qvww3raRG8K3D8G-k1pIJA6IsqlQqCdXvb
+JWS_HS384.Verify > True
+JWS_HS512.Create > JWS Header: {"alg":"HS512","typ":"JWT"}
+JWS_HS512.Create > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
+JWS_HS512.Create > JWS Signature: h-v_jWkauB28oBdPa8NYcGx3g6zzlKLN6fDF7pWJWlZzjkwTAgfs6waQ8mgiFmrSoqDtdmUz4bZTD4hMY6rvTw
+JWS_HS512.Verify > True
+JWS_HS512.Create with JWK > JWS Header: {"alg":"HS512","typ":"JWT"}
+JWS_HS512.Create with JWK > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
+JWS_HS512.Create with JWK > JWS Signature: h-v_jWkauB28oBdPa8NYcGx3g6zzlKLN6fDF7pWJWlZzjkwTAgfs6waQ8mgiFmrSoqDtdmUz4bZTD4hMY6rvTw
+JWS_HS512.Verify with JWK > True
+JWS_RS256_X509.Create > JWS Header: {"alg":"RS256","typ":"JWT"}
+JWS_RS256_X509.Create > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
+JWS_RS256_X509.Create > JWS Signature: jMJbrOaZ_p0xouAFfetm_orlTuwPbJK65-rEto5lIGgCR_oCG_ApQWeCXc5xikto_IcN2nNsHWMOMJMII6WlhVmn9pFTuuj-fZH_aB-aasDSguyXd59BA43a4glZbPCITOwZFfeNMpXGrKG_YNvexP5mtiJYYCDXMgq2zBHS9lQYcGXy4YyGPD_jNu6ziLRNDdKCkRqTppTE2SexZAwaSJRGGuY-fHA3jVPBV90Cty7yBC3ybKmiE4imVQs8CUw7ic61HSytgItIlreol4PMMP8fXB6O1e_K8QJFfRIf9oC07y9Mo5OWl4CCOxvKAo9nos0GTWUUNUH-sugJhUV14A
+RSA JWK > {"kty":"RSA","alg":"RS256","n":"nOSgXEBwV-maKTcGlGAFL6KPyTQB7Z0G0Z4ewZi5rhFhEDsZRLV5p3_AqWQQlZFVrIJ_6wdrBY5sCAle6av654jqnI8AqxVV-OL-COmrhVMhrikRXxhxATAzo0Gf_hjW0yux8Ns2HT72PVscjBk9SKeedcorMjWWJPfr1zwsByLaSz8pQApBccRk_bUc-oBHRpDanPFz23v4ts3RXso05G8UZmcaqDqjMsVZfI3Cd3jqaWdb6NeeUw0DZDtMJObOJExJN43LO7rvtWmYXlEgLp-rCTI6CQ0Cmo4WuLU8Rv03fXQXGX0jDNeqfck8EEj7NwJWCvtf_AYaZ6hGcw2PMw","e":"AQAB","kid":"0YKHkdPGFmrVsYp3P52TO1FNiWcKMcgk8s1ddNFD8Ew"}
+JWS_RS256_X509.Verify > True
+JWS_RS256_Param.Verify > True
+jWS_RS384_XML.Create > JWS Header: {"alg":"RS384","typ":"JWT"}
+jWS_RS384_XML.Create > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
+jWS_RS384_XML.Create > JWS Signature: VMmHW1WonwebWPx5hL89oaWRzAsw6JHi-Jwtlc_kfBbkih9BFrUCUaeLHKKgD0M0GMMN_a_j3_HZAjAFW1hnxoD_RgkPhvzguSf5cFaJvjokZQc4hTMreikDbvG7GpVPnc5OT3o-sD2yHxpLYY6J2vQ5NFqWP_QJ-MwotZf9HkM
+RSA JWK > {"kty":"RSA","alg":"RS384","n":"yIHAjPjCl86yogszrockaF6-93z6PLJmuPzmwkeqclAqNSglou1r5pQoW22NMkPDCiV-0P-Cc3DIn3deM__w0TbMeDWr13CdYU_cbNbWqwUG12MSDcBVh5BDsJG967_IoTtSpo_wOaZBa1STzFbcC1_qpMrDbwlypvhSYzUXBp8","e":"AQAB","kid":"BbT7hjkVaxAJnQ8D3dUHLkgOsxHTsDqtof6z-QrdFP4xwQvNKUEMUvllHlJpWN3G"}
+JWS_RS384_XML.Verify > True
+JWS_RS384_Param.Verify > True
+JWS_RS512_X509.Create > JWS Header: {"alg":"RS512","typ":"JWT"}
+JWS_RS512_X509.Create > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
+JWS_RS512_X509.Create > JWS Signature: Hu7kkEBidhzIDOT-GDElTyZutarV9q5K29say3_dNNTTkK1QV13r_0wfEg-g52mOXgBHtM0ITiUMz3KkB71RYk6_Ga7GXCxQQGJ-v_aI-49N4pnCZ9CLEehiaZ-76XDSS3VrOlhYEGxGznACMyAF6maxvkJF2kANTTKYk7Z-EZ6T90lD-6C5lOy3h_CEx_WzUoLD2u_4oa2apNFEtMtbRYI50gq4gUSFjFmh2lnm-_xvgLYbruM5Q7VJK5c_8uCu39SetNanCnAps816Ve2JqCRd6XfMQgfsl1Uc4iC26B51dUmR-SXCpOMmlJ3vKC5gFFmX7aY5iaqEKaiR2JAgLA
+RSA JWK > {"kty":"RSA","alg":"RS512","n":"nOSgXEBwV-maKTcGlGAFL6KPyTQB7Z0G0Z4ewZi5rhFhEDsZRLV5p3_AqWQQlZFVrIJ_6wdrBY5sCAle6av654jqnI8AqxVV-OL-COmrhVMhrikRXxhxATAzo0Gf_hjW0yux8Ns2HT72PVscjBk9SKeedcorMjWWJPfr1zwsByLaSz8pQApBccRk_bUc-oBHRpDanPFz23v4ts3RXso05G8UZmcaqDqjMsVZfI3Cd3jqaWdb6NeeUw0DZDtMJObOJExJN43LO7rvtWmYXlEgLp-rCTI6CQ0Cmo4WuLU8Rv03fXQXGX0jDNeqfck8EEj7NwJWCvtf_AYaZ6hGcw2PMw","e":"AQAB","kid":"w8oMM75dlmuzJhKJmh8lS3VtmPxuWPxFk6SlZ0BGOdcE67qkeIDNhHwc1ZDO8_sfqNxBxBXSS6MU96wFO6J_Iw"}
+JWS_RS512_X509.Verify > True
+JWS_RS512_Param.Verify > True
+JWS_ES256_X509.Create > JWS Header: {"alg":"ES256","typ":"JWT"}
+JWS_ES256_X509.Create > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
+JWS_ES256_X509.Create > JWS Signature: ia9_JlH2lqr3xE4Bws4X83AhVPhO9kfSdZKwp-k2dYCL5EznpyVmSBmP6Nmambrxv0tmjpFWnxRETs_p4ZsIeg
+ECDSA JWK > {"kty":"EC","alg":"ES256","crv":"P-256","x":"qdS3bsts3UXi5p0G71GofUB9ls1fJz_z0dRQw9RZ99A","y":"hX6HISTIiDLt90VDEqGmsMj2kSlGLOcXgXSqz75EhV4","kid":"asm1SGqVczG7zj0saZPKiggv2xwRlb6c23CDCNBqBNA"}
+JWS_ES256_X509.Verify > True
+JWS_ES256_Param.Verify > True
+JwsAlgorithm.xLibTest > Original:eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtci54QGNvbnRvc28uY29tIiwiZXhwIjoxMzAwODE5MzgwfQ.ia9_JlH2lqr3xE4Bws4X83AhVPhO9kfSdZKwp-k2dYCL5EznpyVmSBmP6Nmambrxv0tmjpFWnxRETs_p4ZsIeg
+JwsAlgorithm.xLibTest > JWS Header: {"alg":"ES256","typ":"JWT"}
+JwsAlgorithm.xLibTest > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
+JwsAlgorithm.xLibTest > JWS Signature: ia9_JlH2lqr3xE4Bws4X83AhVPhO9kfSdZKwp-k2dYCL5EznpyVmSBmP6Nmambrxv0tmjpFWnxRETs_p4ZsIeg
+JwsAlgorithm.xLibTest > Decoded:{"sub":"mr.x@contoso.com","exp":1300819380}
+JWS_ES384_X509.Create > JWS Header: {"alg":"ES384","typ":"JWT"}
+JWS_ES384_X509.Create > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
+JWS_ES384_X509.Create > JWS Signature: TSRZ8vPrSQwVxA4MRBAb-staeftxqw6wNHT4wylHYps0dRcpp7c62sgJd4XnAT2Ty7ym9-MfDuGCvan-5LNXPyWR7xPwWGwT0raziaFaFjpA6Z0cc7GhjMy92w6ESHxj
+JWS_ES384_X509.Verify > True
+ECDSA JWK > {"kty":"EC","alg":"ES384","crv":"P-384","x":"qeyd2iMw8DZT7Yy3KO0mOuok1JBBdMwEuJTa81Upg06fbVbotK8yuhDSVkzSFsw3","y":"thH6faasSDmEO4zeVNdc5LbZJprQmL7JN3NZzYUJmF1GhQEl6QaZh-6f1QhDH0St","kid":"e_kI1ZJ_x9ttzEU_DICgGhJeNK8ghcW3bSl7KFM6eVefpKJHA5ecCowzJw69r9Vr"}
+JWS_ES384_X509.Verify > True
+JWS_ES384_Param.Verify > True
+JwsAlgorithm.xLibTest > Original:eyJhbGciOiJFUzM4NCIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtci54QGNvbnRvc28uY29tIiwiZXhwIjoxMzAwODE5MzgwfQ.TSRZ8vPrSQwVxA4MRBAb-staeftxqw6wNHT4wylHYps0dRcpp7c62sgJd4XnAT2Ty7ym9-MfDuGCvan-5LNXPyWR7xPwWGwT0raziaFaFjpA6Z0cc7GhjMy92w6ESHxj
+JwsAlgorithm.xLibTest > JWS Header: {"alg":"ES384","typ":"JWT"}
+JwsAlgorithm.xLibTest > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
+JwsAlgorithm.xLibTest > JWS Signature: TSRZ8vPrSQwVxA4MRBAb-staeftxqw6wNHT4wylHYps0dRcpp7c62sgJd4XnAT2Ty7ym9-MfDuGCvan-5LNXPyWR7xPwWGwT0raziaFaFjpA6Z0cc7GhjMy92w6ESHxj
+JwsAlgorithm.xLibTest > Decoded:{"sub":"mr.x@contoso.com","exp":1300819380}
+JWS_ES512_X509.Create > JWS Header: {"alg":"ES512","typ":"JWT"}
+JWS_ES512_X509.Create > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
+JWS_ES512_X509.Create > JWS Signature: Aezxr767ySFRRBJoKorHxQYLX9xorq_byHPz5dFMPE2GhmDF3RJGgfM499r4TczCD2kBepYqTnueY4OFOpolVGaUAV_fAGeCJEYUoa9NwQpRSM7PNj1UmsVRHAQ58RuTFj3Lzeqis4wzKtqJH5qrsCXszXMyWT95GzP-4JsmoqJwEjSY
+JWS_ES512_X509.Verify > True
+ECDSA JWK > {"kty":"EC","alg":"ES512","crv":"P-521","x":"AQoRdSDzXLfin6CFhLxDOL0_Cfn-QcwgdbMkMGgwTeA4gDIygCOEy4m0eyTmEnjYdBOMN5JtYUiprdZZriAGzrHC","y":"ATj5JBej9ztfsArJLUMCs4edyCgPuItefh7KFGfeefI7YjB-pakcKxzhHZ1h2UhR183bnQ4rrXc71N5WAl3d5BqZ","kid":"OaO51pUD4-aJ8skED2eag0nvd1kfqIwo9BhB86PEZ34PBLE4TiHv6v9LCK20r0c6x06bULLSi84PcldSN2n6DQ"}
+JWS_ES512_X509.Verify > True
+JWS_ES512_Param.Verify > True
+JwsAlgorithm.xLibTest > Original:eyJhbGciOiJFUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtci54QGNvbnRvc28uY29tIiwiZXhwIjoxMzAwODE5MzgwfQ.Aezxr767ySFRRBJoKorHxQYLX9xorq_byHPz5dFMPE2GhmDF3RJGgfM499r4TczCD2kBepYqTnueY4OFOpolVGaUAV_fAGeCJEYUoa9NwQpRSM7PNj1UmsVRHAQ58RuTFj3Lzeqis4wzKtqJH5qrsCXszXMyWT95GzP-4JsmoqJwEjSY
+JwsAlgorithm.xLibTest > JWS Header: {"alg":"ES512","typ":"JWT"}
+JwsAlgorithm.xLibTest > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
+JwsAlgorithm.xLibTest > JWS Signature: Aezxr767ySFRRBJoKorHxQYLX9xorq_byHPz5dFMPE2GhmDF3RJGgfM499r4TczCD2kBepYqTnueY4OFOpolVGaUAV_fAGeCJEYUoa9NwQpRSM7PNj1UmsVRHAQ58RuTFj3Lzeqis4wzKtqJH5qrsCXszXMyWT95GzP-4JsmoqJwEjSY
+JwsAlgorithm.xLibTest > Decoded:{"sub":"mr.x@contoso.com","exp":1300819380}
+JWE_RsaOaepAesGcm_X509.Decrypt > True : {"sub":"mr.x@contoso.com","exp":1300819380}
+JweAlgorithm.xLibTest > Original:eyJhbGciOiJSU0EtT0FFUCIsImVuYyI6IkEyNTZHQ00iLCJ0eXAiOiJKV1QifQ.B1hqbavrwoZJ3FFS9RK8xgJhw4C61iOr-YhCsEHysoxIT7jh11OWQVyUnxMqpIPkmi4nFNAEhuQWIhv9oJx_ifmvvdyc3KBtFkjlWWfLBWIasDX7SXIFyZ5CJ1h0DrBmYowZCIYuCNVOADdf9eC7hWCGP4e-mdAYaiLpZ6eBbGVsO283TeluxdgNfySblHmh5p2LMlQHUTA02GdLwJX2Id8XmYXYV518gkh-X4RQWt04NmapHF_TPW0dYE7s6HGB7xch2JZUSWLGtbg4g1_Ey5RITcJqg7NhkWnohObHoT0OoM-Y433z7mdEmts54TCkbYTm0fM8xJw1rU4cdXIPjg.BTbfz3w4nuez51-c.sUGGybynCg7W61GlMyo_PUiZk7_BHWUH8OhD_-Y_osrB65f1W9PYI3KDcg.3bGmE8__LVOSQo4pyEMcxQ
+JweAlgorithm.xLibTest > JWE Header: {"alg":"RSA-OAEP","enc":"A256GCM","typ":"JWT"}
+JweAlgorithm.xLibTest > JWE Encrypted Key: B1hqbavrwoZJ3FFS9RK8xgJhw4C61iOr-YhCsEHysoxIT7jh11OWQVyUnxMqpIPkmi4nFNAEhuQWIhv9oJx_ifmvvdyc3KBtFkjlWWfLBWIasDX7SXIFyZ5CJ1h0DrBmYowZCIYuCNVOADdf9eC7hWCGP4e-mdAYaiLpZ6eBbGVsO283TeluxdgNfySblHmh5p2LMlQHUTA02GdLwJX2Id8XmYXYV518gkh-X4RQWt04NmapHF_TPW0dYE7s6HGB7xch2JZUSWLGtbg4g1_Ey5RITcJqg7NhkWnohObHoT0OoM-Y433z7mdEmts54TCkbYTm0fM8xJw1rU4cdXIPjg
+JweAlgorithm.xLibTest > JWE Initialization Vector: BTbfz3w4nuez51-c
+JweAlgorithm.xLibTest > JWE Ciphertext: sUGGybynCg7W61GlMyo_PUiZk7_BHWUH8OhD_-Y_osrB65f1W9PYI3KDcg
+JweAlgorithm.xLibTest > JWE Authentication Tag: 3bGmE8__LVOSQo4pyEMcxQ
+JweAlgorithm.xLibTest > Decoded:{"sub":"mr.x@contoso.com","exp":1300819380}
+JWE_Rsa15A128CbcHS256_X509.Decrypt > True : {"sub":"mr.x@contoso.com","exp":1300819380}
+JweAlgorithm.xLibTest > Original:eyJhbGciOiJSU0ExXzUiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2IiwidHlwIjoiSldUIn0.a0TWSvWJ9-ZEW86nKMo-cnLoWE2SILy9lR6SpPEaUoY02B1e7QcsJ6rz0p8Eu9d8behl9HXwi4Rkns2H-_0fcu7aHZrxMQVnEl575jSeWIIMLR9JZI4hGXMfOiOpkAhDFxynfvoKZqXRuNs8dC5Ly-ERhCKYAOmTqXS2Ru_y8S8_CrcK0GVP2e9-RTuyXQqFgeLdPf1BLWFEUdSNNmTgP6pKG8p_eU6NxegCKbC5pg8IaO-n9ccZiQTuWB4oacziR2AmjHoxnFC7yVLjLsOEYatsh9NEHoid4OpJTGk5owVsLWmVmrleuKt5Ti2skOD85bVU8pBG_3GqSKXHVD0XMQ.SGVg6TF_VnDJKucHfgjVmQ.0zwshMvTmdYwy446Ow8LTz7y4Qs54hnhNgrs2nleUA4Q4LFa71qM8pz98ZmDoWiR.J3YoCzOW2NydWT_-NAZCBA
+JweAlgorithm.xLibTest > JWE Header: {"alg":"RSA1_5","enc":"A128CBC-HS256","typ":"JWT"}
+JweAlgorithm.xLibTest > JWE Encrypted Key: a0TWSvWJ9-ZEW86nKMo-cnLoWE2SILy9lR6SpPEaUoY02B1e7QcsJ6rz0p8Eu9d8behl9HXwi4Rkns2H-_0fcu7aHZrxMQVnEl575jSeWIIMLR9JZI4hGXMfOiOpkAhDFxynfvoKZqXRuNs8dC5Ly-ERhCKYAOmTqXS2Ru_y8S8_CrcK0GVP2e9-RTuyXQqFgeLdPf1BLWFEUdSNNmTgP6pKG8p_eU6NxegCKbC5pg8IaO-n9ccZiQTuWB4oacziR2AmjHoxnFC7yVLjLsOEYatsh9NEHoid4OpJTGk5owVsLWmVmrleuKt5Ti2skOD85bVU8pBG_3GqSKXHVD0XMQ
+JweAlgorithm.xLibTest > JWE Initialization Vector: SGVg6TF_VnDJKucHfgjVmQ
+JweAlgorithm.xLibTest > JWE Ciphertext: 0zwshMvTmdYwy446Ow8LTz7y4Qs54hnhNgrs2nleUA4Q4LFa71qM8pz98ZmDoWiR
+JweAlgorithm.xLibTest > JWE Authentication Tag: J3YoCzOW2NydWT_-NAZCBA
+JweAlgorithm.xLibTest > Decoded:{"sub":"mr.x@contoso.com","exp":1300819380}
+JwsAlgorithm.none > eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJzdWIiOiJtci54QGNvbnRvc28uY29tIiwiZXhwIjoxMzAwODE5MzgwfQ.
+JwsAlgorithm.HS256 > Original:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtci54QGNvbnRvc28uY29tIiwiZXhwIjoxMzAwODE5MzgwfQ.dvd5Ak6zcBy0OB7gxVtehT3Ab5NO7XEggon6r_CTSfE
+JwsAlgorithm.HS256 > JWS Header: {"alg":"HS256","typ":"JWT"}
+JwsAlgorithm.HS256 > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
+JwsAlgorithm.HS256 > JWS Signature: dvd5Ak6zcBy0OB7gxVtehT3Ab5NO7XEggon6r_CTSfE
+JwsAlgorithm.HS256 > Decoded:{"sub":"mr.x@contoso.com","exp":1300819380}
+JwsAlgorithm.RS256 > Original:eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtci54QGNvbnRvc28uY29tIiwiZXhwIjoxMzAwODE5MzgwfQ.jMJbrOaZ_p0xouAFfetm_orlTuwPbJK65-rEto5lIGgCR_oCG_ApQWeCXc5xikto_IcN2nNsHWMOMJMII6WlhVmn9pFTuuj-fZH_aB-aasDSguyXd59BA43a4glZbPCITOwZFfeNMpXGrKG_YNvexP5mtiJYYCDXMgq2zBHS9lQYcGXy4YyGPD_jNu6ziLRNDdKCkRqTppTE2SexZAwaSJRGGuY-fHA3jVPBV90Cty7yBC3ybKmiE4imVQs8CUw7ic61HSytgItIlreol4PMMP8fXB6O1e_K8QJFfRIf9oC07y9Mo5OWl4CCOxvKAo9nos0GTWUUNUH-sugJhUV14A
+JwsAlgorithm.RS256 > JWS Header: {"alg":"RS256","typ":"JWT"}
+JwsAlgorithm.RS256 > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
+JwsAlgorithm.RS256 > JWS Signature: jMJbrOaZ_p0xouAFfetm_orlTuwPbJK65-rEto5lIGgCR_oCG_ApQWeCXc5xikto_IcN2nNsHWMOMJMII6WlhVmn9pFTuuj-fZH_aB-aasDSguyXd59BA43a4glZbPCITOwZFfeNMpXGrKG_YNvexP5mtiJYYCDXMgq2zBHS9lQYcGXy4YyGPD_jNu6ziLRNDdKCkRqTppTE2SexZAwaSJRGGuY-fHA3jVPBV90Cty7yBC3ybKmiE4imVQs8CUw7ic61HSytgItIlreol4PMMP8fXB6O1e_K8QJFfRIf9oC07y9Mo5OWl4CCOxvKAo9nos0GTWUUNUH-sugJhUV14A
+JwsAlgorithm.RS256 > Decoded:{"sub":"mr.x@contoso.com","exp":1300819380}
+JwsAlgorithm.ES256 > Original:eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtci54QGNvbnRvc28uY29tIiwiZXhwIjoxMzAwODE5MzgwfQ.K2Ry0FKS0QeUW7vvzKO3skWIKYGhhu1kGMrpYNevCkLvET99x8GC-b05GMdttWjsIglwGKRyF6IDVcdXVniiag
+JwsAlgorithm.ES256 > JWS Header: {"alg":"ES256","typ":"JWT"}
+JwsAlgorithm.ES256 > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
+JwsAlgorithm.ES256 > JWS Signature: K2Ry0FKS0QeUW7vvzKO3skWIKYGhhu1kGMrpYNevCkLvET99x8GC-b05GMdttWjsIglwGKRyF6IDVcdXVniiag
+JwsAlgorithm.ES256 > Decoded:{"sub":"mr.x@contoso.com","exp":1300819380}
+Inspect ECCurve > [Oid = null, IsPrime = True, IsCharacteristic2 = False, IsExplicit = True, IsNamed = False, A = [255, 255, 255, 255, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 252], B = [90, 198, 53, 216, 170, 58, 147, 231, 179, 235, 189, 85, 118, 152, 134, 188, 101, 29, 6, 176, 204, 83, 176, 246, 59, 206, 60, 62, 39, 210, 96, 75], G = [X = [107, 23, 209, 242, 225, 44, 66, 71, 248, 188, 230, 229, 99, 164, 64, 242, 119, 3, 125, 129, 45, 235, 51, 160, 244, 161, 57, 69, 216, 152, 194, 150], Y = [79, 227, 66, 226, 254, 26, 127, 155, 142, 231, 235, 74, 124, 15, 158, 22, 43, 206, 51, 87, 107, 49, 94, 206, 203, 182, 64, 104, 55, 191, 81, 245]], Order = [255, 255, 255, 255, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 188, 230, 250, 173, 167, 23, 158, 132, 243, 185, 202, 194, 252, 99, 37, 81], Cofactor = [1], Seed = [196, 157, 54, 8, 134, 231, 4, 147, 106, 102, 120, 225, 19, 157, 38, 183, 129, 159, 126, 144], CurveType = PrimeShortWeierstrass, Hash = null, Polynomial = null, Prime = [255, 255, 255, 255, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255]]
+JwsAlgorithm.ES256 > Original:eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtci54QGNvbnRvc28uY29tIiwiZXhwIjoxMzAwODE5MzgwfQ.Tt9oSZ80toFUpnktoX_SgnAJiImixBciFYJYScHRp2tmDyBy2P1fkLC8xL8mDRkz70-rwG1ZGXcQ6tyAuSgDLA
+JwsAlgorithm.ES256 > JWS Header: {"alg":"ES256","typ":"JWT"}
+JwsAlgorithm.ES256 > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
+JwsAlgorithm.ES256 > JWS Signature: Tt9oSZ80toFUpnktoX_SgnAJiImixBciFYJYScHRp2tmDyBy2P1fkLC8xL8mDRkz70-rwG1ZGXcQ6tyAuSgDLA
+JwsAlgorithm.ES256 > Decoded:{"sub":"mr.x@contoso.com","exp":1300819380}
+JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256 > Original:eyJhbGciOiJSU0ExXzUiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0.ReMEdL0O4EaQ4g4OhMjC5vpRYJYk6ElpMCQrDJqtMZy-3hAnFIF3p-v_fntZZIRLXvP2162EUz2Ixk-XUjYbfHuO_lxh7tAtDvO-2L3pQlT6NgppYvI3yYXFXypVS6-J2GrLHLRl2sq6NVR6MVMwwLpS50IgMrZ5j0jt2NXiWPqoRX1TqKpLXdcYO65k1GS9lFkpZ81E3W_nB1nnbeie7gBIOXc6VxIWye4Fhate3gxy-CfX4P_lPMtf4DtNrY_RAWTeZK8PyHlto5l4ESJJzFyGV_WoX41GwymHf3ilZV5zni0JXlnXYit7GmBOdKdhuVuaRs8EQXsv0ZP3UVxJMw.VeRL6wqM1C4ndEe6tcTlpw.p_39KidK5wGU-zh0GKY8nPJq0vkts0K3MrE7qOrSrgG37u40qUcfQ7sMXFquxk2q.js234VPMSJtfEYVC3zm6-g
+JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256 > JWE Header: {"alg":"RSA1_5","enc":"A128CBC-HS256"}
+JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256 > JWE Encrypted Key: ReMEdL0O4EaQ4g4OhMjC5vpRYJYk6ElpMCQrDJqtMZy-3hAnFIF3p-v_fntZZIRLXvP2162EUz2Ixk-XUjYbfHuO_lxh7tAtDvO-2L3pQlT6NgppYvI3yYXFXypVS6-J2GrLHLRl2sq6NVR6MVMwwLpS50IgMrZ5j0jt2NXiWPqoRX1TqKpLXdcYO65k1GS9lFkpZ81E3W_nB1nnbeie7gBIOXc6VxIWye4Fhate3gxy-CfX4P_lPMtf4DtNrY_RAWTeZK8PyHlto5l4ESJJzFyGV_WoX41GwymHf3ilZV5zni0JXlnXYit7GmBOdKdhuVuaRs8EQXsv0ZP3UVxJMw
+JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256 > JWE Initialization Vector: VeRL6wqM1C4ndEe6tcTlpw
+JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256 > JWE Ciphertext: p_39KidK5wGU-zh0GKY8nPJq0vkts0K3MrE7qOrSrgG37u40qUcfQ7sMXFquxk2q
+JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256 > JWE Authentication Tag: js234VPMSJtfEYVC3zm6-g
+JweAlgorithm.RSA1_5, JweEncryption.A128CBC_HS256 > Decoded:{"sub":"mr.x@contoso.com","exp":1300819380}
+JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM > Original:eyJhbGciOiJSU0EtT0FFUCIsImVuYyI6IkEyNTZHQ00ifQ.WCkWcaRHOm9ME3Ni7BTsj-SCjZnkqFDo9iFYIPiWWxuYHTbPxA2e0oXnJlULmZKXmy2waMUmfmaTGNokISN2ea1JvYQ96pofDCZ5CNZh5SgGvS04ck-5tsXPXwGNkw1Wy65o-zetWdl_1M2Q0TURhPZo_u5MOp_-BrTghoERJifRqJzo95bNSzDjjbo02US40sOg6uHW9Ba-pYkXUayGt9dNxXcJvALRdIy0ky0hzLZ6W0xrU9zCK5hVl9OBE68xQUzHCnjoks2voXx18VIzi9M_Q5dcGdzik7ISLPHVDad079rdD16GsXpt5yVbjSobhw5udvulFBRrKR54ziFEVg.uTPeO8IiV17MgKxi.PNqqq3qcJttAZNk02qAbgWEnh8fQRmt7xnJJEglx4EEOV1YvUSz84vbuzA.e3Llfgb2DzzLJ1qGaxZLZQ
+JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM > JWE Header: {"alg":"RSA-OAEP","enc":"A256GCM"}
+JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM > JWE Encrypted Key: WCkWcaRHOm9ME3Ni7BTsj-SCjZnkqFDo9iFYIPiWWxuYHTbPxA2e0oXnJlULmZKXmy2waMUmfmaTGNokISN2ea1JvYQ96pofDCZ5CNZh5SgGvS04ck-5tsXPXwGNkw1Wy65o-zetWdl_1M2Q0TURhPZo_u5MOp_-BrTghoERJifRqJzo95bNSzDjjbo02US40sOg6uHW9Ba-pYkXUayGt9dNxXcJvALRdIy0ky0hzLZ6W0xrU9zCK5hVl9OBE68xQUzHCnjoks2voXx18VIzi9M_Q5dcGdzik7ISLPHVDad079rdD16GsXpt5yVbjSobhw5udvulFBRrKR54ziFEVg
+JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM > JWE Initialization Vector: uTPeO8IiV17MgKxi
+JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM > JWE Ciphertext: PNqqq3qcJttAZNk02qAbgWEnh8fQRmt7xnJJEglx4EEOV1YvUSz84vbuzA
+JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM > JWE Authentication Tag: e3Llfgb2DzzLJ1qGaxZLZQ
+JweAlgorithm.RSA_OAEP, JweEncryption.A256GCM > Decoded:{"sub":"mr.x@contoso.com","exp":1300819380}
+JweAlgorithm.DIR, JweEncryption.A128CBC_HS256 > Original:eyJhbGciOiJkaXIiLCJlbmMiOiJBMTI4Q0JDLUhTMjU2In0..h8YCBvh6pXC_h24j8PDeqQ.tLkp3PVzKThLsz3fx95Q872aGTyLR3V8oRqTuJGOJCFb7g0qGmJGWiFZhz5mcvBa.x0Nlnysj48WEqyo9xQ5GVw
+JweAlgorithm.DIR, JweEncryption.A128CBC_HS256 > JWE Header: {"alg":"dir","enc":"A128CBC-HS256"}
+JweAlgorithm.DIR, JweEncryption.A128CBC_HS256 > JWE Encrypted Key: 
+JweAlgorithm.DIR, JweEncryption.A128CBC_HS256 > JWE Initialization Vector: h8YCBvh6pXC_h24j8PDeqQ
+JweAlgorithm.DIR, JweEncryption.A128CBC_HS256 > JWE Ciphertext: tLkp3PVzKThLsz3fx95Q872aGTyLR3V8oRqTuJGOJCFb7g0qGmJGWiFZhz5mcvBa
+JweAlgorithm.DIR, JweEncryption.A128CBC_HS256 > JWE Authentication Tag: x0Nlnysj48WEqyo9xQ5GVw
+JweAlgorithm.DIR, JweEncryption.A128CBC_HS256 > Decoded:{"sub":"mr.x@contoso.com","exp":1300819380}
+JweAlgorithm.A256KW, JweEncryption.A256CBC_HS512 > Original:eyJhbGciOiJBMjU2S1ciLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIn0.CVb9-EN-z-r9ZEvoQcsvblg2ZnCQfzR265MLPYR-Ndt2dwZyYArqtX_AXdqwCMxvcHfvbCGoQsftfZqU-dm-Hanx3Ao9CubU.tTTDrKQ2RG7IDo5MHZNwpw.--IPaBp3BfvSkACRAEK_srv6liKvZt_I8JWjgaONl3Gir8QW7rfkrpspou9RnxLt.rfpU0NQvnGuNrKc2kG1YtB1FjW4Y3n7-R2VCd0oc9mA
+JweAlgorithm.A256KW, JweEncryption.A256CBC_HS512 > JWE Header: {"alg":"A256KW","enc":"A256CBC-HS512"}
+JweAlgorithm.A256KW, JweEncryption.A256CBC_HS512 > JWE Encrypted Key: CVb9-EN-z-r9ZEvoQcsvblg2ZnCQfzR265MLPYR-Ndt2dwZyYArqtX_AXdqwCMxvcHfvbCGoQsftfZqU-dm-Hanx3Ao9CubU
+JweAlgorithm.A256KW, JweEncryption.A256CBC_HS512 > JWE Initialization Vector: tTTDrKQ2RG7IDo5MHZNwpw
+JweAlgorithm.A256KW, JweEncryption.A256CBC_HS512 > JWE Ciphertext: --IPaBp3BfvSkACRAEK_srv6liKvZt_I8JWjgaONl3Gir8QW7rfkrpspou9RnxLt
+JweAlgorithm.A256KW, JweEncryption.A256CBC_HS512 > JWE Authentication Tag: rfpU0NQvnGuNrKc2kG1YtB1FjW4Y3n7-R2VCd0oc9mA
+JweAlgorithm.A256KW, JweEncryption.A256CBC_HS512 > Decoded:{"sub":"mr.x@contoso.com","exp":1300819380}
+JweAlgorithm.A256GCMKW, JweEncryption.A256CBC_HS512 > Original:eyJhbGciOiJBMjU2R0NNS1ciLCJpdiI6IkppUmtPYXJIUUJDclFabDEiLCJ0YWciOiJROFFiUW9CcGowOTYwbG9kclhoRkJ3IiwiZW5jIjoiQTI1NkNCQy1IUzUxMiJ9.Dcf5ax9UCHgrfoqW2LIp5GplVZ7-KEXI8HOYHxd1AAjAp0aFKExByc94LhPNfWAklL1RqkkwpkJsqUYUXoHrcw.Aiot4j1FTX2S1IOpHLMirg.-PTdtL18t3wuaP_36Hy5NstG3Uhnwn8BvLGIIgbkKCeALRycwPlmSGo50aklfZkg.AgsSCsUXqoAVzWUCrg8orxVtVo8VsRGk7Dr06GA_H-o
+JweAlgorithm.A256GCMKW, JweEncryption.A256CBC_HS512 > JWE Header: {"alg":"A256GCMKW","iv":"JiRkOarHQBCrQZl1","tag":"Q8QbQoBpj0960lodrXhFBw","enc":"A256CBC-HS512"}
+JweAlgorithm.A256GCMKW, JweEncryption.A256CBC_HS512 > JWE Encrypted Key: Dcf5ax9UCHgrfoqW2LIp5GplVZ7-KEXI8HOYHxd1AAjAp0aFKExByc94LhPNfWAklL1RqkkwpkJsqUYUXoHrcw
+JweAlgorithm.A256GCMKW, JweEncryption.A256CBC_HS512 > JWE Initialization Vector: Aiot4j1FTX2S1IOpHLMirg
+JweAlgorithm.A256GCMKW, JweEncryption.A256CBC_HS512 > JWE Ciphertext: -PTdtL18t3wuaP_36Hy5NstG3Uhnwn8BvLGIIgbkKCeALRycwPlmSGo50aklfZkg
+JweAlgorithm.A256GCMKW, JweEncryption.A256CBC_HS512 > JWE Authentication Tag: AgsSCsUXqoAVzWUCrg8orxVtVo8VsRGk7Dr06GA_H-o
+JweAlgorithm.A256GCMKW, JweEncryption.A256CBC_HS512 > Decoded:{"sub":"mr.x@contoso.com","exp":1300819380}
+JweAlgorithm.ECDH_ES, JweEncryption.A256GCM > System.PlatformNotSupportedException, Windows Cryptography Next Generation (CNG) is not supported on this platform.
+JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512 > Original:eyJhbGciOiJQQkVTMi1IUzI1NitBMTI4S1ciLCJwMmMiOjgxOTIsInAycyI6IlpjaWVFV0ppdXpvZ2hqaF8iLCJlbmMiOiJBMjU2Q0JDLUhTNTEyIn0.UWswEW43hiIxNqhONdYQjusIAk7Rk1DIhMvHr-OmqmzX7q4CEbALWBdaCtMuzDEOpvLExDltVYCI7KsVH5k421SUczj3HdPp.LD8Yrh8vY71qy5zmpVEUVA.IevTKSlgch3o6uhgpZ8Iu-6v06qq-uLOOf87yv2KWHwB3bHq4LIjIgxcZav-N7he.A3JlF4jRIUbRWLGukeuwDVBnpBSxKXRFppHJRA5ToiY
+JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512 > JWE Header: {"alg":"PBES2-HS256+A128KW","p2c":8192,"p2s":"ZcieEWJiuzoghjh_","enc":"A256CBC-HS512"}
+JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512 > JWE Encrypted Key: UWswEW43hiIxNqhONdYQjusIAk7Rk1DIhMvHr-OmqmzX7q4CEbALWBdaCtMuzDEOpvLExDltVYCI7KsVH5k421SUczj3HdPp
+JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512 > JWE Initialization Vector: LD8Yrh8vY71qy5zmpVEUVA
+JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512 > JWE Ciphertext: IevTKSlgch3o6uhgpZ8Iu-6v06qq-uLOOf87yv2KWHwB3bHq4LIjIgxcZav-N7he
+JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512 > JWE Authentication Tag: A3JlF4jRIUbRWLGukeuwDVBnpBSxKXRFppHJRA5ToiY
+JweAlgorithm.PBES2_HS256_A128KW, JweEncryption.A256CBC_HS512 > Decoded:{"sub":"mr.x@contoso.com","exp":1300819380}
+Adding extra headers to RS256 > Original:eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImN0eSI6IkpXVCIsImtleWlkIjoiMTExLTIyMi0zMzMifQ.eyJzdWIiOiJtci54QGNvbnRvc28uY29tIiwiZXhwIjoxMzAwODE5MzgwfQ.KwtpHrjNKBnyHo6QRaULxcWZDF9mDKHiQG1QBSmnrwHi7vJSiLH_3fFIcTkQvdu7FstmPOuuVD-T3EPKfv61aHz5o-0dRTylooln5tS_2_uZ4lPV4A2C_Pr_cYzRawUIuTwhCi3n0i-fQapYvKT41qjh0vKalEuDmd6-WDnpGcKdI3dv-kSB_42FfIdbEKDEtYvgyzwj5An9YJim29OsiM-GW6tyqei3nzHrQ0yPhgfKOd89M_azGynAVTTNKvPyZujnILu-XnVu54So-5W2fwg-WkKIpvP2ZZFAWRs-DEapBJWrNm10GGZdid-98SmGoifkaDNpCeIcQe3uetDB6w
+Adding extra headers to RS256 > JWS Header: {"alg":"RS256","typ":"JWT","cty":"JWT","keyid":"111-222-333"}
+Adding extra headers to RS256 > JWS Payload: {"sub":"mr.x@contoso.com","exp":1300819380}
+Adding extra headers to RS256 > JWS Signature: KwtpHrjNKBnyHo6QRaULxcWZDF9mDKHiQG1QBSmnrwHi7vJSiLH_3fFIcTkQvdu7FstmPOuuVD-T3EPKfv61aHz5o-0dRTylooln5tS_2_uZ4lPV4A2C_Pr_cYzRawUIuTwhCi3n0i-fQapYvKT41qjh0vKalEuDmd6-WDnpGcKdI3dv-kSB_42FfIdbEKDEtYvgyzwj5An9YJim29OsiM-GW6tyqei3nzHrQ0yPhgfKOd89M_azGynAVTTNKvPyZujnILu-XnVu54So-5W2fwg-WkKIpvP2ZZFAWRs-DEapBJWrNm10GGZdid-98SmGoifkaDNpCeIcQe3uetDB6w
+Adding extra headers to RS256 > Decoded:{"sub":"mr.x@contoso.com","exp":1300819380}
+Strict validation(RS256) > {"sub":"mr.x@contoso.com","exp":1300819380}
+Verify nested signedXml > True : <?xml version="1.0" encoding="utf-8"?><xml><a ID="a"><b ID="b"><c /><Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /><SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" /><Reference URI="#b"><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /><DigestValue>+sg4j+LFYSzu6ZSzp2Jrh7CxLATJlNH/KTEQlXcfmtM=</DigestValue></Reference></SignedInfo><SignatureValue>O9w3gyb4wBR2J6S8FrxipfTJ9EW20HcOxhlX5WLfb8Bc06P3C0zrsh8dBZ6O50deHwjoy7/sKRKHW7l2nzwIOAOWmpq0i23QcgR2D21TdiUtFuym/7bBj0jAWW0hqE6tQEABdjHJ9P+pdeo8HXOK2fcLgzXuiATDlNjg96L6RfE=</SignatureValue></Signature></b><Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315" /><SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256" /><Reference URI="#a"><Transforms><Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature" /><Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#" /></Transforms><DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256" /><DigestValue>/Uu/NSxil0ve80n0TGfCJozGkhjeOBkCIdS9ppiTP/g=</DigestValue></Reference></SignedInfo><SignatureValue>YtpKhJF2zNXilPLuHEIC15migcidRD4jFMlrIbzeIuK0zkpJiabwhMEDvb1+UT032vHg/Ja5OBAe37fDu8fMBJACQSYXRSx/+x+tB/wCuNMyG6GKzWWiWuiTPj1c7zAl7Wkf04Gy2W1T19JR2G3RbWuqb5ldaVuNeUkIN2WF/eE=</SignatureValue></Signature></a></xml>
