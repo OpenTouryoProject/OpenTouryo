@@ -36,6 +36,7 @@
 //   CngKeyBlobFormat.EccPublicBlobでインポート・エクスポートする。
 
 using System;
+using System.Runtime.Versioning;
 using System.Security.Cryptography;
 
 using Touryo.Infrastructure.Public.Util;
@@ -50,7 +51,10 @@ namespace Touryo.Infrastructure.Public.Security
         #region mem & prop & constructor
 
         #region mem & prop
-        
+
+        /// <summary>OperatingSystem</summary>
+        private OperatingSystem os = Environment.OSVersion;
+
         /// <summary>_privateKey</summary>
         private CngKey _privateKey = null;
         /// <summary>PrivateKey</summary>
@@ -126,18 +130,30 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>Constructor</summary>
         /// <param name="ecp">任意鍵</param>
         /// <param name="isPrivate">秘密鍵か否か</param>
+        //[SupportedOSPlatform("windows")] // #if できない。
         public DigitalSignECDsaCng(ECParameters ecp, bool isPrivate)
         {
-            ECDsaCng ecDsaCng = new ECDsaCng();
-            ecDsaCng.ImportParameters(ecp);
-            CngKey cngKey = ecDsaCng.Key;
-
-            this._publicKey = cngKey.Export(CngKeyBlobFormat.GenericPublicBlob);
-
-            if (isPrivate)
+#if NETSTD
+            if (OperatingSystem.IsWindows())
+#else
+            if (os.Platform == PlatformID.Win32NT)
+#endif
             {
-                this._privateKey = cngKey;
+                ECDsaCng ecDsaCng = new ECDsaCng();
+                ecDsaCng.ImportParameters(ecp);
+                CngKey cngKey = ecDsaCng.Key;
+
+                this._publicKey = cngKey.Export(CngKeyBlobFormat.GenericPublicBlob);
+
+                if (isPrivate)
+                {
+                    this._privateKey = cngKey;
+                }
             }
+            else
+            {
+                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+            }            
         }
 
         #endregion
@@ -149,22 +165,44 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>デジタル署名を作成する</summary>
         /// <param name="data">デジタル署名を行なう対象データ</param>
         /// <returns>対象データに対してデジタル署名したデジタル署名部分のデータ</returns>
+        //[SupportedOSPlatform("windows")] // #if できない。
         public override byte[] Sign(byte[] data)
         {
-            ECDsaCng aa = new ECDsaCng(this._privateKey);
-            return aa.SignData(data);
+#if NETSTD
+            if (OperatingSystem.IsWindows())
+#else
+            if (os.Platform == PlatformID.Win32NT)
+#endif
+            {
+                ECDsaCng aa = new ECDsaCng(this._privateKey);
+                return aa.SignData(data);
+            }
+            else
+            {
+                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+            }
         }
 
         /// <summary>デジタル署名を検証する</summary>
         /// <param name="data">デジタル署名を行なった対象データ</param>
         /// <param name="sign">対象データに対してデジタル署名したデジタル署名部分のデータ</param>
         /// <returns>検証結果( true:検証成功, false:検証失敗 )</returns>
+        //[SupportedOSPlatform("windows")] // #if できない。
         public override bool Verify(byte[] data, byte[] sign)
         {
-            ECDsaCng aa = new ECDsaCng(CngKey.Import(
-                this._publicKey, CngKeyBlobFormat.EccPublicBlob));
-
-            return aa.VerifyData(data, sign);
+#if NETSTD
+            if (OperatingSystem.IsWindows())
+#else
+            if (os.Platform == PlatformID.Win32NT)
+#endif
+            {
+                ECDsaCng aa = new ECDsaCng(CngKey.Import(this._publicKey, CngKeyBlobFormat.EccPublicBlob));
+                return aa.VerifyData(data, sign);
+            }
+            else
+            {
+                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+            }
         }
 
         /// <summary>デジタル署名を作成する</summary>

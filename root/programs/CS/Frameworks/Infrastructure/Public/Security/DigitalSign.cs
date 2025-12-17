@@ -62,11 +62,8 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>AsymmetricAlgorithm</summary>
         public AsymmetricAlgorithm AsymmetricAlgorithm { get; protected set; }
 
-#if NET45
-#else
         /// <summary>RSASignaturePadding</summary>
         public RSASignaturePadding Padding = RSASignaturePadding.Pkcs1;
-#endif
 
         #region Hash
 
@@ -92,8 +89,6 @@ namespace Touryo.Infrastructure.Public.Security
             }
         }
 
-#if NET45
-#else
         /// <summary>HashAlgorithmName</summary>
         public HashAlgorithmName HashAlgorithmName
         {
@@ -106,7 +101,7 @@ namespace Touryo.Infrastructure.Public.Security
                 this.HashAlgorithm = HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(value.Name);
             }
         }
-#endif
+
         #endregion
 
         #endregion
@@ -131,15 +126,7 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 // RSA
                 RSA rsa = (RSA)aa;
-#if NET45
-                if (rsa is RSACryptoServiceProvider)
-                {
-                    signedByte = ((RSACryptoServiceProvider)rsa).SignData(data, this.HashAlgorithmString);
-                }
-                // NET45にRSACng、RSAOpenSsl等は無し。
-#else
                 signedByte = rsa.SignData(data, this.HashAlgorithmName, this.Padding);
-#endif
             }
             else if (aa is DSA)
             {
@@ -169,15 +156,7 @@ namespace Touryo.Infrastructure.Public.Security
             if (aa is RSA)
             {
                 // RSA
-#if NET45
-                if (aa is RSACryptoServiceProvider)
-                {
-                    return ((RSACryptoServiceProvider)aa).VerifyData(data, this.HashAlgorithmString, sign);
-                }
-                // NET45にRSACng、RSAOpenSsl等は無し。
-#else
                 return ((RSA)aa).VerifyData(data, sign, this.HashAlgorithmName, this.Padding);
-#endif
             }
             else if (aa is DSA)
             {

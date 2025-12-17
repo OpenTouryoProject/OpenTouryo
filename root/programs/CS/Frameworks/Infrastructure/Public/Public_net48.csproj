@@ -97,9 +97,6 @@
     <Compile Include="FastReflection\InstanceCreator.cs" />
     <Compile Include="IO\ExponentialBackoff.cs" />
     <Compile Include="IO\DeflateCompression.cs" />
-    <Compile Include="IO\UnZipper.cs" />
-    <Compile Include="IO\ZipBase.cs" />
-    <Compile Include="IO\Zipper.cs" />
     <Compile Include="Log\CustomEventLog.cs" />
     <Compile Include="Log\BaseLog.cs" />
     <Compile Include="Log\LogManager_log4net.cs" />
@@ -171,9 +168,6 @@
     <EmbeddedResource Include="Xml\TestXsd.xsd" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DotNetZip">
-      <Version>1.16.0</Version>
-    </PackageReference>
     <PackageReference Include="log4net">
       <Version>3.1.0</Version>
     </PackageReference>

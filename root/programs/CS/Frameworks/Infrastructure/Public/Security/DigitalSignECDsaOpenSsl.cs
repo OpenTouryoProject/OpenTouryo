@@ -35,6 +35,7 @@
 //   ExportParameters(bool includePrivateParameters)でインポート・エクスポートする。
 
 using System;
+using System.Runtime.Versioning;
 using System.Security.Cryptography;
 
 using Touryo.Infrastructure.Public.Util;
@@ -105,6 +106,7 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>Constructor</summary>
         /// <param name="eCParameters">ECParameters（任意）</param>
         /// <param name="hashAlgorithm">HashAlgorithm</param>
+        [SupportedOSPlatform("linux")]
         public DigitalSignECDsaOpenSsl(ECParameters eCParameters, HashAlgorithm hashAlgorithm)
         {
             ECDsaOpenSsl ecdsa = new ECDsaOpenSsl(eCParameters.Curve);

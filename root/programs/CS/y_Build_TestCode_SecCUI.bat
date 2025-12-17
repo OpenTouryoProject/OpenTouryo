@@ -26,8 +26,8 @@ cd %CURRENTDIR%
 ..\nuget.exe restore "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUIFx48.sln"
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUIFx48.sln"
 
-dotnet restore "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUICore80.sln"
-dotnet msbuild %COMMANDLINE% "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUICore80.sln"
+dotnet restore "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUICore100.sln"
+dotnet msbuild %COMMANDLINE% "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUICore100.sln"
 
 @echo --------------------------------------------------
 @echo Test the EncAndDecUtilCUIFx(48).
@@ -38,11 +38,11 @@ cd "Frameworks\Tests\EncAndDecUtilCUI\net48\bin\Debug"
 cd %CURRENTDIR%
 
 @echo --------------------------------------------------
-@echo Test the EncAndDecUtilCUICore(80).
+@echo Test the EncAndDecUtilCUICore(100).
 @echo --------------------------------------------------
 set CURRENTDIR=%cd%
-cd "Frameworks\Tests\EncAndDecUtilCUI\core80\bin\Debug\net8.0"
-dotnet "EncAndDecUtilCUICore.dll" > ..\..\..\..\ResultCore80.txt
+cd "Frameworks\Tests\EncAndDecUtilCUI\core100\bin\Debug\net10.0"
+dotnet "EncAndDecUtilCUICore.dll" > ..\..\..\..\ResultCore100.txt
 cd %CURRENTDIR%
 
 pause

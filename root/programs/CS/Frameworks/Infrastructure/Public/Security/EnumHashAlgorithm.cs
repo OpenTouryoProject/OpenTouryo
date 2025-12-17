@@ -41,8 +41,24 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>Default</summary>
         Default,
 
+        /// <summary>MD5</summary>
+        MD5,
+
+        /// <summary>SHA1</summary>
+        SHA1,
+
+        /// <summary>SHA256</summary>
+        SHA256,
+
+        /// <summary>SHA384</summary>
+        SHA384,
+
+        /// <summary>SHA512</summary>
+        SHA512,
+
         #region CSP (CryptoServiceProvider)
 
+        /*
         /// <summary>MD5CryptoServiceProvider</summary>
         MD5_CSP,
 
@@ -57,6 +73,7 @@ namespace Touryo.Infrastructure.Public.Security
 
         /// <summary>SHA512CryptoServiceProvider</summary>
         SHA512_CSP,
+        */
 
         #endregion
 
@@ -86,7 +103,7 @@ namespace Touryo.Infrastructure.Public.Security
 
         /// <summary>RIPEMD160Managed</summary>
         RIPEMD160_M,
-
+        /*
         /// <summary>SHA1Managed</summary>
         SHA1_M,
 
@@ -98,6 +115,7 @@ namespace Touryo.Infrastructure.Public.Security
 
         /// <summary>SHA512Managed</summary>
         SHA512_M,
+        */
 
         #endregion
     };

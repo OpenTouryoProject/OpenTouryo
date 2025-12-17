@@ -1,14 +1,14 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>[名前空間（Touryo.Infrastructure.XXXX）]</id>★
-    <title>OpenTouryo.[略号（OpenTouryo.XXXX）]</title>
+    <id>[名前空間（Touryo.Infrastructure.xxxx）]</id>★
+    <title>OpenTouryo.[略号（OpenTouryo.xxxx）]</title>
     <version>[バージョン番号]</version>★
     <authors>OSS Consortium .net subcommittee</authors>★
     <owners>daisukenishino77</owners>
     <license type="expression">Apache-2.0</license>
-    <projectUrl>https://github.com/OpenTouryoProject/OpenTouryo/tree/master/・・・</projectUrl>
-    <icon>images\[*.png, *.iconなどの64*64の画像]</icon>
+    <projectUrl>https://github.com/OpenTouryoProject/OpenTouryo/tree/master/...</projectUrl>
+    <icon>_OpenTouryo.png[, *.iconなどの64*64の画像]</icon>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <summary>[概要説明を記入する]</summary>
     <description>[詳細説明を記入する]</description>★
@@ -16,16 +16,17 @@
     <copyright></copyright>
     <tags>OpenTouryo Open棟梁</tags>
     <dependencies>
-      <dependency id="必要に応じて記入" version="必要に応じて記入" />
+      <group targetFramework="net48">
+        <dependency id="記入" version="記入" />
+      </group>
     </dependencies>
   </metadata>
   <files>
-    <file src="_OpenTouryo.png" target="images\" />
+    <file src="_OpenTouryo.png" target="" />
 
-    <file src="in\net46\OpenTouryo.xxxx.dll" target="lib\net46" />
-    <file src="in\net46\OpenTouryo.xxxx.pdb" target="lib\net46" />
-    <file src="in\net46\OpenTouryo.xxxx.xml" target="lib\net46" />
+    <file src="in\net48\OpenTouryo.xxxx.dll" target="lib\net48" />
+    <file src="in\net48\OpenTouryo.xxxx.pdb" target="lib\net48" />
+    <file src="in\net48\OpenTouryo.xxxx.xml" target="lib\net48" />
 
-    <file src="..\Frameworks\Infrastructure\...\**\*.cs" target="src" />
   </files>
 </package>

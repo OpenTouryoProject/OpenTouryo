@@ -153,13 +153,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
                 #endregion
 
-                long unixTimeSeconds = 0;
-
-#if NET45
-                unixTimeSeconds = PubCmnFunction.ToUnixTime(DateTimeOffset.Now);
-#else
-                unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
-#endif
+                long unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
 
                 if (iss == CmnClientParams.Isser &&
                     long.Parse(exp) >= unixTimeSeconds)
@@ -222,7 +216,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // input(access_token や code) のASCII オクテット列からハッシュ値を求め、
             byte[] bytes = GetHash.GetHashBytes(
                 CustomEncode.StringToByte(input, CustomEncode.us_ascii),
-                EnumHashAlgorithm.SHA256_M);
+                EnumHashAlgorithm.SHA256);
 
             // 左半分を base64url エンコードした値。
             return CustomEncode.ToBase64UrlString(

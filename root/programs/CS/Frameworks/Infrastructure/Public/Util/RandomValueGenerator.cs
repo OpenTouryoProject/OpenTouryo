@@ -82,9 +82,15 @@ namespace Touryo.Infrastructure.Public.Util
         public static uint GenerateRandomUint()
         {
             byte[] bs = new byte[sizeof(uint)];
+
+#if NETCOREAPP
+            RandomNumberGenerator.Fill(bs);
+#else
             RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
             rng.GetBytes(bs);
             rng.Dispose();
+#endif
+
             return BitConverter.ToUInt32(bs, 0);
         }
     }

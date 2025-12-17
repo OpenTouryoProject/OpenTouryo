@@ -33,11 +33,11 @@ cd "Frameworks\Tests\TestCode\net48\bin\Debug"
 cd %CURRENTDIR%
 
 @echo --------------------------------------------------
-@echo Test the TestCodeCore(80).
+@echo Test the TestCodeCore(100).
 @echo --------------------------------------------------
 set CURRENTDIR=%cd%
-cd "Frameworks\Tests\TestCode\core80\bin\Debug\net8.0"
-dotnet "TestCodeCore.dll" > ..\..\..\..\ResultCore80.txt
+cd "Frameworks\Tests\TestCode\core100\bin\Debug\net10.0"
+dotnet "TestCodeCore.dll" > ..\..\..\..\ResultCore100.txt
 cd %CURRENTDIR%
 
 pause

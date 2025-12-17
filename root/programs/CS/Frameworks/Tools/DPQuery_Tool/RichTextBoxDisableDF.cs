@@ -31,6 +31,7 @@
 //**********************************************************************************
 
 using System;
+using System.ComponentModel;
 using System.Runtime.InteropServices;
 
 namespace DPQuery_Tool
@@ -57,6 +58,7 @@ namespace DPQuery_Tool
         /// ・trueにすると、従来どおり、全角と半角で別のフォントを使用 (勝手に変更される)
         /// ・falseにすると、全角と半角で同じフォントを使用 (勝手に変更されない)
         /// </summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public bool DualFont
         {
             get
@@ -90,6 +92,7 @@ namespace DPQuery_Tool
         }
 
         /// <summary>WordWrap時にフォント設定がクリアされるのを防ぐ</summary>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public new bool WordWrap
         {
             get

@@ -59,8 +59,7 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         #endregion
 
         #region method
-#if NET45 || NET46
-#else
+
         #region ParamToJwk
         /// <summary>ParamToJwk</summary>
         /// <param name="ecParams">ECParameters</param>
@@ -124,7 +123,7 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             return ecParams;
         }
         #endregion
-#endif
+        
         #endregion
     }
 }

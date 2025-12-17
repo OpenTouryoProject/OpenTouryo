@@ -61,7 +61,7 @@ namespace Touryo.Infrastructure.Public.Security.KeyExg
         /// <param name="iv">初期化ベクター</param>
         public void GeneratePrivateKey(byte[] exchangeKeyOfAlice, byte[] iv)
         {
-            this._aes = new AesCryptoServiceProvider();
+            this._aes = Aes.Create();
             RSAOAEPKeyExchangeDeformatter keyExchangeDeformatter = new RSAOAEPKeyExchangeDeformatter(this._asa);
 
             this._aes.Key = keyExchangeDeformatter.DecryptKeyExchange(exchangeKeyOfAlice);

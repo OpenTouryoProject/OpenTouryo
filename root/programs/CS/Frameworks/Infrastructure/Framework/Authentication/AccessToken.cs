@@ -106,12 +106,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     scopes = JsonConvert.DeserializeObject<List<string>>(jobj[OAuth2AndOIDCConst.scopes].ToString());
                 }
 
-                long unixTimeSeconds = 0;
-#if NET45
-                unixTimeSeconds = PubCmnFunction.ToUnixTime(DateTimeOffset.Now);
-#else
-                unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
-#endif
+                long unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
 
                 if (iss == CmnClientParams.Isser &&
                     long.Parse(exp) >= unixTimeSeconds)

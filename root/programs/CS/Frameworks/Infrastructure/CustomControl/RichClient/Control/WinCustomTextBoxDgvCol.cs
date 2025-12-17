@@ -47,27 +47,37 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
             : base(new WinCustomTextBoxDgvCell()) { }
 
         /// <summary>MaxLengthプロパティの設定用</summary>
+#if NETCOREAPP
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
+#endif
         public int MaxLength { get; set; }
 
         /// <summary>入力制限専用プロパティに適用する値</summary>
-        [DefaultValue(false),
-        Category("Edit"),
-        Description("入力制限専用")]
+        [DefaultValue(false), Category("Edit"), Description("入力制限専用")]
         public bool IsNumeric { get; set; }
 
         /// <summary>初期値編集プロパティに適用する値</summary>
-        [Category("Edit"),
-        Description("初期値編集")]
+        [Category("Edit"), Description("初期値編集")
+#if NETCOREAPP
+        , DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
+#endif
+        ]
         public EditInitialValue EditInitialValue { get; set; }
 
         /// <summary>文字埋め編集プロパティに適用する値</summary>
-        [Category("Edit"),
-        Description("文字埋め編集")]
+        [Category("Edit"), Description("文字埋め編集")
+#if NETCOREAPP
+        , DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
+#endif
+        ]
         public EditPadding EditPadding { get; set; }
 
         /// <summary>小数点以下編集（入力中）プロパティに適用する値</summary>
-        [Category("Edit"),
-        Description("小数点以下ｘ桁編集（入力中）")]
+        [Category("Edit"), Description("小数点以下ｘ桁編集（入力中）")
+#if NETCOREAPP
+        , DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
+#endif
+        ]
         public EditDigitsAfterDP EditDigitsAfterDP_Editing { get; set; }
 
         /// <summary>クローンの作製</summary>

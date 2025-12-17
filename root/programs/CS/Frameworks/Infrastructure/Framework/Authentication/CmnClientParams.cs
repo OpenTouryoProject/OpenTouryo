@@ -141,8 +141,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
         }
 
-#if NET45 || NET46
-#else
         /// <summary>EcdsaPfxPassword</summary>
         public static string EcdsaPfxPassword
         {
@@ -160,7 +158,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 return GetConfigParameter.GetConfigValue("SpRp_EcdsaPfxFilePath");
             }
         }
-#endif
+
         #endregion
 
         #region クライアント証明書

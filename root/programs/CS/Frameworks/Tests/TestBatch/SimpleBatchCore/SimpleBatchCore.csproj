@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>SimpleBatchCore</AssemblyName>
     <RootNamespace>SimpleBatchCore</RootNamespace>
   </PropertyGroup>
@@ -25,28 +25,27 @@
     <PackageReference Include="MySql.Data" Version="9.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Npgsql" Version="9.0.3" />
-    <PackageReference Include="System.Formats.Asn1" Version="9.0.6" />
     <PackageReference Include="System.Security.Permissions" Version="9.0.6" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="OpenTouryo.Business">
-      <HintPath>..\..\..\Infrastructure\Build_netcore80\net8.0\OpenTouryo.Business.dll</HintPath>
+      <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Business.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.DamManagedOdp">
-      <HintPath>..\..\..\Infrastructure\Build_netcore80\net8.0\OpenTouryo.DamManagedOdp.dll</HintPath>
+      <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.DamManagedOdp.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.DamMySQL">
-      <HintPath>..\..\..\Infrastructure\Build_netcore80\net8.0\OpenTouryo.DamMySQL.dll</HintPath>
+      <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.DamMySQL.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.DamPstGrS">
-      <HintPath>..\..\..\Infrastructure\Build_netcore80\net8.0\OpenTouryo.DamPstGrS.dll</HintPath>
+      <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.DamPstGrS.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Framework">
-      <HintPath>..\..\..\Infrastructure\Build_netcore80\net8.0\OpenTouryo.Framework.dll</HintPath>
+      <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public">
-      <HintPath>..\..\..\Infrastructure\Build_netcore80\net8.0\OpenTouryo.Public.dll</HintPath>
+      <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.dll</HintPath>
     </Reference>
   </ItemGroup>
 

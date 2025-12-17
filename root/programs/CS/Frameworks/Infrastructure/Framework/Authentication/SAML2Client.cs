@@ -61,14 +61,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string iss, string assertionConsumerService, string relayState, out string id)
         {   
             // DigitalSignX509
-            DigitalSignX509 dsX509 = new DigitalSignX509(
-                CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword,
-#if NET45
-                HashNameConst.SHA1
-#else
-                HashAlgorithmName.SHA1
-#endif
-                );
+            DigitalSignX509 dsX509 = new DigitalSignX509(CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword, HashAlgorithmName.SHA1);
 
             // SamlRequestの生成
             
@@ -95,8 +88,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string iss, string assertionConsumerService, string relayState, out string id)
         {
             // RSA
-            X509Certificate2 x509 = new X509Certificate2(
-                CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword);
+#if NETSTD
+            X509Certificate2 x509 = X509CertificateLoader.LoadPkcs12FromFile(CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword);
+#else
+            X509Certificate2 x509 = new X509Certificate2(CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword);
+#endif
 
             // SamlRequestの生成
             string samlRequest = SAML2Bindings.CreateRequest(
@@ -104,12 +100,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 assertionConsumerService, out id).OuterXml;
 
             // SamlRequestのエンコと署名
-            return SAML2Bindings.EncodeAndSignPost(samlRequest, id,
-#if NET45
-                (RSA)x509.PrivateKey);
-#else
-                x509.GetRSAPrivateKey());
-# endif
+            return SAML2Bindings.EncodeAndSignPost(samlRequest, id, x509.GetRSAPrivateKey());
         }
         #endregion
 
@@ -186,14 +177,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
 #region 検証
             // Metadata利用を検討
-            DigitalSignX509 dsX509 = new DigitalSignX509(
-                CmnClientParams.RsaCerFilePath, "",
-#if NET45
-                HashNameConst.SHA1
-#else
-                HashAlgorithmName.SHA1
-#endif
-                );
+            DigitalSignX509 dsX509 = new DigitalSignX509(CmnClientParams.RsaCerFilePath, "", HashAlgorithmName.SHA1);
 
             if (!string.IsNullOrEmpty(queryString))
             {
@@ -209,12 +193,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             {
                 // VerifyPost
                 string id = SAML2Bindings.GetIdInResponse(samlResponse2, samlNsMgr);
-                if (SAML2Bindings.VerifyPost(decodeSaml, id,
-#if NET45
-                (RSA)dsX509.PublicKey))
-#else
-                dsX509.X509Certificate.GetRSAPublicKey()))
-#endif
+                if (SAML2Bindings.VerifyPost(decodeSaml, id, dsX509.X509Certificate.GetRSAPublicKey()))
                 {
                     // XPathによる検証
                     verified = SAML2Bindings.VerifyByXPath(

@@ -41,26 +41,36 @@ if exist "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Curre
   set BUILDFILEPATH17="C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\MSBuild.exe"
 )
 
+if exist "C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe" (
+  set BUILDFILEPATH18="C:\Program Files\Microsoft Visual Studio\18\Community\MSBuild\Current\Bin\MSBuild.exe"
+)
+
 echo BUILDFILEPATH2.0 %BUILDFILEPATH2.0%
 echo BUILDFILEPATH3.5 %BUILDFILEPATH3.5%
 echo BUILDFILEPATH4.0 %BUILDFILEPATH4.0%
 echo BUILDFILEPATH15 %BUILDFILEPATH15%
 echo BUILDFILEPATH16 %BUILDFILEPATH16%
 echo BUILDFILEPATH17 %BUILDFILEPATH17%
+echo BUILDFILEPATH17 %BUILDFILEPATH18%
 
-set BUILDFILEPATH=%BUILDFILEPATH17%
+set BUILDFILEPATH=%BUILDFILEPATH18%
 echo BUILDFILEPATH %BUILDFILEPATH%
 
 @echo --------------------------------------------------
 @echo The choice of build configuration (Debug / Release).
+@echo BUILD_CONFIG は 特定の構成（Debug や Release）を指定
+@echo DEBUG_TYPE は full, pdbonly, portable, embedded, none
+@echo https://learn.microsoft.com/ja-jp/dotnet/csharp/language-reference/compiler-options/code-generation#debugtype
 @echo --------------------------------------------------
 set BUILD_CONFIG=Debug
-set VisualStudioVersion=17.0
+set DEBUG_TYPE=full
+set VisualStudioVersion=18.0
 
 @echo --------------------------------------------------
 @echo Creating a build command.
 @echo --------------------------------------------------
-set COMMANDLINE=/p:Configuration=%BUILD_CONFIG% -v:d
+@set COMMANDLINE=/p:Configuration=%BUILD_CONFIG% -v:d
+set COMMANDLINE=/p:Configuration=%BUILD_CONFIG% /p:DebugType=%DEBUG_TYPE% -v:d
 
 @echo --------------------------------------------------
 @echo Set the proxy settings of Nuget.

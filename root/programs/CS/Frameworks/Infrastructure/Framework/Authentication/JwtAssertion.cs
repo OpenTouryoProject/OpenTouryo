@@ -75,15 +75,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     return JwtAssertion.CreateByRsa(iss, aud, forExp, scopes,
                         rpkc.JwkToParam(jwkPrivateKey));
                 }
-#if NET45 || NET46
-#else
                 else if (((string)temp["kty"]).ToUpper() == "EC")
                 {
                     EccPrivateKeyConverter epkc = new EccPrivateKeyConverter(JWS_ECDSA.ES._256);
                     return JwtAssertion.CreateByECDsa(iss, aud, forExp, scopes,
                         epkc.JwkToParam(jwkPrivateKey));
                 }
-#endif
             }
 
             return "";
@@ -127,8 +124,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
             #endregion
         }
 
-#if NET45 || NET46
-#else
         /// <summary>CreateByECDsa</summary>
         /// <param name="iss">client_id</param>
         /// <param name="aud">Token2 EndPointのuri</param>
@@ -208,7 +203,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             #endregion
         }
-#endif
         #endregion
 
         #region Verify
@@ -238,8 +232,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
                         out iss, out aud, out scopes, out jobj,
                         rpkc.JwkToParam(jwkPublicKey));
                 }
-#if NET45 || NET46
-#else
                 else if (((string)temp["kty"]).ToUpper() == "EC")
                 {
                     EccPublicKeyConverter epkc = new EccPublicKeyConverter();
@@ -247,7 +239,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
                         out iss, out aud, out scopes, out jobj,
                         epkc.JwkToParam(jwkPublicKey));
                 }
-#endif
             }
 
             return false;
@@ -283,12 +274,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 //string iat = (string)jobj[OAuth2AndOIDCConst.iat];
                 scopes = (string)jobj[OAuth2AndOIDCConst.scope];
 
-                long unixTimeSeconds = 0;
-#if NET45
-                unixTimeSeconds = PubCmnFunction.ToUnixTime(DateTimeOffset.Now);
-#else
-                unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
-#endif
+                long unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
+
                 string exp = (string)jobj[OAuth2AndOIDCConst.exp];
                 if (long.Parse(exp) >= unixTimeSeconds)
                 {
@@ -308,8 +295,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
             return false;
         }
 
-#if NET45 || NET46
-#else
         /// <summary>VerifyByECDsa</summary>
         /// <param name="jwtAssertion">string</param>
         /// <param name="iss">client_id</param>
@@ -340,12 +325,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 //string iat = (string)jobj[OAuth2AndOIDCConst.iat];
                 scopes = (string)jobj[OAuth2AndOIDCConst.scope];
 
-                long unixTimeSeconds = 0;
-#if NET45
-                unixTimeSeconds = PubCmnFunction.ToUnixTime(DateTimeOffset.Now);
-#else
-                unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
-#endif
+                long unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
                 string exp = (string)jobj[OAuth2AndOIDCConst.exp];
                 if (long.Parse(exp) >= unixTimeSeconds)
                 {
@@ -364,7 +344,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // 認証に失敗
             return false;
         }
-#endif
         #endregion
     }
 }

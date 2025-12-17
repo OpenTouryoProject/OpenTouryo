@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows7.0</TargetFramework>
+    <TargetFramework>net10.0-windows7.0</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <ApplicationIcon />
     <StartupObject />
@@ -16,13 +16,12 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.5" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.5" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.5" />
-    <PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.5" />
     <PackageReference Include="Zipangu" Version="1.1.8" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="OpenTouryo.CustomControl.RichClient">
-      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore80\net8.0-windows7.0\OpenTouryo.CustomControl.RichClient.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0-windows7.0\OpenTouryo.CustomControl.RichClient.dll</HintPath>
     </Reference>
   </ItemGroup>
 

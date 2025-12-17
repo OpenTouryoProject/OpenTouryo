@@ -68,8 +68,6 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         #region X.509 鍵 → ECDsaProvider(Cngkey, ECParameters) → Jwk
 
         // X.509 は、NET47以降
-#if NET45 || NET46
-#else
         #region *.cer
 
         #region Jwk
@@ -116,7 +114,7 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             // PublicKey を取り出すため Exportableは不要
             // ASP.NET（サーバ）からの実行を想定しないため、MachineKeySetは不要
             DigitalSignECDsaX509 dsX509 = new DigitalSignECDsaX509(
-                certificateFilePath, "", this._hashAlgorithmName, flg);
+                certificateFilePath, "", this.HashAlgorithmName, flg);
 
             AsymmetricAlgorithm aa = dsX509.PublicKey;
             if (aa is ECDsa)
@@ -188,7 +186,6 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         #endregion
 
         #endregion
-#endif
 
         #endregion
 
@@ -269,8 +266,7 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         #endregion
 
         #region ECParameters
-#if NET45 || NET46
-#else
+
         // ECCurve and ECParameters to Jwt
         // https://github.com/psteniusubi/jose-jwt/blob/master/jose-jwt/jwk/JwkEc.cs
 
@@ -333,7 +329,7 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             return ecParams;
         }
         #endregion
-#endif
+
         #endregion
 
         #endregion

@@ -2,7 +2,7 @@
 #$ cd /mnt/c/OpenTouryo/root/programs/CS
 #$ ./y_Build_TestCode_SecCUI.sh
 
-cd /mnt/c/OpenTouryo/root/programs/CS/Frameworks/Tests/EncAndDecUtilCUI/core80
-dotnet publish -c Debug -r ubuntu.16.04-x64 --self-contained
-cd bin/Release/net8.0/ubuntu.16.04-x64
-dotnet EncAndDecUtilCUICore.dll > ../../../../../ResultCore80OnLinux.txt
+cd /mnt/c/OpenTouryo/root/programs/CS/Frameworks/Tests/EncAndDecUtilCUI/core100
+dotnet publish -c Debug -r linux-x64 --self-contained
+cd bin/Debug/net10.0/linux-x64
+dotnet EncAndDecUtilCUICore.dll > ../../../../../ResultCore100OnLinux.txt

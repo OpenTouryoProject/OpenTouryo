@@ -1248,7 +1248,11 @@ namespace Touryo.Infrastructure.Framework.Transmission
                         // XML定義：キーが無い
 
                         // クライアント証明書のファイルパス
-                        x509 = new X509Certificate2(props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE]);
+#if NETSTD
+                        x509 = X509CertificateLoader.LoadCertificateFromFile(props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE]);
+#else
+                        x509 = new X509Certificate2(props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE]); 
+#endif
                     }
                     else
                     {
@@ -1257,16 +1261,26 @@ namespace Touryo.Infrastructure.Framework.Transmission
                             // XML定義：null or 空文字列
 
                             // クライアント証明書のファイルパス
+#if NETSTD
+                            x509 = X509CertificateLoader.LoadCertificateFromFile(props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE]);
+#else
                             x509 = new X509Certificate2(props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE]);
+#endif
                         }
                         else
                         {
                             // XML定義：あり
 
                             // クライアント証明書のファイルパス ＋ クライアント証明書ＤＢのパスワード
+#if NETSTD
+                            x509 = X509CertificateLoader.LoadPkcs12FromFile(
+                                props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE],
+                                props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD]);
+#else
                             x509 = new X509Certificate2(
                                 props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_FILE],
                                 props[FxLiteral.TRANSMISSION_HTTP_PROP_X509CERTIFICATE_PASSWORD]);
+#endif
                         }
                     }
                 }
