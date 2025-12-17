@@ -31,6 +31,7 @@
 //*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //**********************************************************************************
 
+using System;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
@@ -64,11 +65,24 @@ namespace Touryo.Infrastructure.Public.Security.KeyExg
         /// <param name="flag">X509KeyStorageFlags</param>
         protected RsaBob(string rsaPfxFilePath, string password, X509KeyStorageFlags flag)
         {
+#if NETSTD
+            X509Certificate2 x509Certificate = null;
+
+            //if (string.IsNullOrEmpty(password))
+            //{
+            //    x509Certificate = X509CertificateLoader.LoadCertificateFromFile(rsaPfxFilePath);
+            //}
+            //else
+            //{
+            x509Certificate = X509CertificateLoader.LoadPkcs12FromFile(rsaPfxFilePath, password, flag);
+            //}
+#else
             X509Certificate2 x509Certificate = new X509Certificate2(rsaPfxFilePath, password, flag);
-            
+#endif
+
             // RSA
             // *.pfxの場合、ExportParameters(true)して生成し直している。
-            AsymmetricAlgorithm aa = x509Certificate.PrivateKey;
+            AsymmetricAlgorithm aa = AsymmetricAlgorithmCmnFunc.GetPrivateKey(x509Certificate);
             RSA rsa = (RSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(aa);
             rsa.ImportParameters(((RSA)(aa)).ExportParameters(true));
 

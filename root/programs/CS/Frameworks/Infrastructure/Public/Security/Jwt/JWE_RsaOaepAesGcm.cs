@@ -66,25 +66,6 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
 
         #region CEK 暗号化・復号化
 
-#if NET45
-        /// <summary>CEK 暗号化</summary>
-        /// <param name="data">byte[]</param>
-        /// <returns>byte[]</returns>
-        protected override byte[] CreateKey(byte[] data)
-        {
-            // RSA-OAEP = RSAES OAEP using default parameters は、
-            // SHA-1ハッシュ関数とSHA-1マスク生成機能付きMGF1
-            return this.ASymmetricCryptography.EncryptBytes(data, fOAEP: true);
-        }
-
-        /// <summary>CEK 復号化</summary>
-        /// <param name="data">byte[]</param>
-        /// <returns>byte[] </returns>
-        protected override byte[] DecryptKey(byte[] data)
-        {
-            return this.ASymmetricCryptography.DecryptBytes(data, fOAEP: true);
-        }
-#else
         /// <summary>CEK 暗号化</summary>
         /// <param name="data">byte[]</param>
         /// <returns>byte[]</returns>
@@ -104,7 +85,7 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             return this.ASymmetricCryptography.DecryptBytes(
                 data, padding: RSAEncryptionPadding.OaepSHA1);
         }
-#endif
+
         #endregion
 
         #region 本文 暗号化・復号化

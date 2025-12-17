@@ -66,7 +66,8 @@ namespace Touryo.Infrastructure.Public.Security
         {
             get
             {
-                return this.X509Certificate.PrivateKey;
+                //return this.X509Certificate.PrivateKey;
+                return this.GetPrivateKey();
             }
         }
 
@@ -75,7 +76,8 @@ namespace Touryo.Infrastructure.Public.Security
         {
             get
             {
-                return this.X509Certificate.PublicKey.Key;
+                //return this.X509Certificate.PublicKey.Key;
+                return this.GetPublicKey();
             }
         }
 
@@ -101,13 +103,24 @@ namespace Touryo.Infrastructure.Public.Security
             X509KeyStorageFlags flag = X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet)
         {
             flag = flag | X509KeyStorageFlags.Exportable; // PrepareでExportParametersする可能性があるので足す。
+
+#if NETSTD
+            if (string.IsNullOrEmpty(password))
+            {
+                this.X509Certificate = X509CertificateLoader.LoadCertificateFromFile(certificateFilePath);
+            }
+            else
+            {
+                this.X509Certificate = X509CertificateLoader.LoadPkcs12FromFile(certificateFilePath, password, flag);
+            }   
+#else
             this.X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
+#endif
+
             this.HashAlgorithm = HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(hashAlgorithmName);
             this.Prepare();
         }
 
-#if NET45
-#else
         /// <summary>
         /// Constructor
         /// X.509証明書(*.pfx, *.cer)からキーを設定する。
@@ -123,11 +136,23 @@ namespace Touryo.Infrastructure.Public.Security
             X509KeyStorageFlags flag = X509KeyStorageFlags.Exportable | X509KeyStorageFlags.MachineKeySet)
         {
             flag = flag | X509KeyStorageFlags.Exportable; // PrepareでExportParametersする可能性があるので足す。
+
+#if NETSTD
+            if (string.IsNullOrEmpty(password))
+            {
+                this.X509Certificate = X509CertificateLoader.LoadCertificateFromFile(certificateFilePath);
+            }
+            else
+            {
+                this.X509Certificate = X509CertificateLoader.LoadPkcs12FromFile(certificateFilePath, password, flag);
+            }
+#else
             this.X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
+#endif
+
             this.HashAlgorithm = HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(hashAlgorithmName.Name);
             this.Prepare();
         }
-#endif
 
         #endregion
 
@@ -178,7 +203,7 @@ namespace Touryo.Infrastructure.Public.Security
         {
             AsymmetricAlgorithm aa = null;
             
-            if (this.X509Certificate.PrivateKey == null)
+            if (this.X509Certificate.HasPrivateKey == false)//.PrivateKey == null)
             {
                 // *.cer
                 aa = this.GetPublicKey();
@@ -219,46 +244,14 @@ namespace Touryo.Infrastructure.Public.Security
         /// <returns>AsymmetricAlgorithm</returns>
         private AsymmetricAlgorithm GetPrivateKey()
         {
-            AsymmetricAlgorithm aa = null;
-
-#if NET45 || NET46 || NETSTD
-            aa = this.X509Certificate.PrivateKey;
-#else
-            if (this.X509Certificate.PublicKey.Oid.FriendlyName.ToUpper() == "DSA")
-            {
-                // DSA
-                aa = this.X509Certificate.GetDSAPrivateKey();
-            }
-            else
-            {
-                // RSA
-                aa = this.X509Certificate.PrivateKey;
-            }
-#endif
-            return aa;
+            return AsymmetricAlgorithmCmnFunc.GetPrivateKey(this.X509Certificate);
         }
 
         /// <summary>GetPublicKey</summary>
         /// <returns>AsymmetricAlgorithm</returns>
         private AsymmetricAlgorithm GetPublicKey()
         {
-            AsymmetricAlgorithm aa = null;
-
-#if NET45 || NET46 || NETSTD
-            aa = this.X509Certificate.PublicKey.Key;
-#else
-            if (this.X509Certificate.PublicKey.Oid.FriendlyName.ToUpper() == "DSA")
-            {
-                // DSA
-                aa = this.X509Certificate.GetDSAPublicKey();
-            }
-            else
-            {
-                // RSA
-                aa = this.X509Certificate.PublicKey.Key;
-            }
-#endif
-            return aa;
+            return AsymmetricAlgorithmCmnFunc.GetPublicKey(this.X509Certificate);
         }
 
         #endregion

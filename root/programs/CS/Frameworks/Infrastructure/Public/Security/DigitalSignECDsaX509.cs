@@ -90,7 +90,18 @@ namespace Touryo.Infrastructure.Public.Security
             // X509KeyStorageFlags
             // - MachineKeySet : ECDsaは、インストールできない模様。
             // - Exportable : PrepareでGetECDsaPrivateKeyするので。
+#if NETSTD
+            if (string.IsNullOrEmpty(password))
+            {
+                this.X509Certificate = X509CertificateLoader.LoadCertificateFromFile(certificateFilePath);
+            }
+            else
+            {
+                this.X509Certificate = X509CertificateLoader.LoadPkcs12FromFile(certificateFilePath, password, flag);
+            }
+#else
             this.X509Certificate = new X509Certificate2(certificateFilePath, password, flag);
+#endif
 
             if (this.X509Certificate.HasPrivateKey)
             {

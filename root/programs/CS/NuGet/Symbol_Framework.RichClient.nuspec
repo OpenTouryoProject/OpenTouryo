@@ -16,31 +16,11 @@
     <copyright></copyright>
     <tags>OpenTouryo Open棟梁</tags>
     <dependencies>
-      <group targetFramework=".NETFramework4.5.2">
+      <group targetFramework="net48">
         <dependency id="Touryo.Infrastructure.Framework" version="3.0.0" />
         <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
       </group>
-      <group targetFramework=".NETFramework4.6">
-        <dependency id="Touryo.Infrastructure.Framework" version="3.0.0" />
-        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-      </group>
-      <group targetFramework=".NETFramework4.7">
-        <dependency id="Touryo.Infrastructure.Framework" version="3.0.0" />
-        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-      </group>
-      <group targetFramework=".NETFramework4.8">
-        <dependency id="Touryo.Infrastructure.Framework" version="3.0.0" />
-        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-      </group>
-      <group targetFramework=".NETCoreApp3.0">
-        <dependency id="Touryo.Infrastructure.Framework" version="3.0.0" />
-        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-      </group>
-      <group targetFramework=".NET5.0">
-        <dependency id="Touryo.Infrastructure.Framework" version="3.0.0" />
-        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-      </group>
-      <group targetFramework=".NET6.0">
+      <group targetFramework="net8.0">
         <dependency id="Touryo.Infrastructure.Framework" version="3.0.0" />
         <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
       </group>
@@ -49,34 +29,13 @@
   <files>
     <file src="_OpenTouryo.png" target="" />
 
-    <file src="in\net452\OpenTouryo.Framework.RichClient.dll" target="lib\net452" />
-    <file src="in\net452\OpenTouryo.Framework.RichClient.pdb" target="lib\net452" />
-    <file src="in\net452\OpenTouryo.Framework.RichClient.xml" target="lib\net452" />
-
-    <file src="in\net46\OpenTouryo.Framework.RichClient.dll" target="lib\net46" />
-    <file src="in\net46\OpenTouryo.Framework.RichClient.pdb" target="lib\net46" />
-    <file src="in\net46\OpenTouryo.Framework.RichClient.xml" target="lib\net46" />
-
-    <file src="in\net47\OpenTouryo.Framework.RichClient.dll" target="lib\net47" />
-    <file src="in\net47\OpenTouryo.Framework.RichClient.pdb" target="lib\net47" />
-    <file src="in\net47\OpenTouryo.Framework.RichClient.xml" target="lib\net47" />
-
     <file src="in\net48\OpenTouryo.Framework.RichClient.dll" target="lib\net48" />
     <file src="in\net48\OpenTouryo.Framework.RichClient.pdb" target="lib\net48" />
     <file src="in\net48\OpenTouryo.Framework.RichClient.xml" target="lib\net48" />
 
-    <file src="in\netcoreapp3.0\OpenTouryo.Framework.RichClient.dll" target="lib\netcoreapp3.0" />
-    <file src="in\netcoreapp3.0\OpenTouryo.Framework.RichClient.pdb" target="lib\netcoreapp3.0" />
-    <file src="in\netcoreapp3.0\OpenTouryo.Framework.RichClient.xml" target="lib\netcoreapp3.0" />
+    <file src="in\net8.0-windows\OpenTouryo.Framework.RichClient.dll" target="lib\net8.0" />
+    <file src="in\net8.0-windows\OpenTouryo.Framework.RichClient.pdb" target="lib\net8.0" />
+    <file src="in\net8.0-windows\OpenTouryo.Framework.RichClient.xml" target="lib\net8.0" />
 
-    <file src="in\net5.0-windows\OpenTouryo.Framework.RichClient.dll" target="lib\net5.0" />
-    <file src="in\net5.0-windows\OpenTouryo.Framework.RichClient.pdb" target="lib\net5.0" />
-    <file src="in\net5.0-windows\OpenTouryo.Framework.RichClient.xml" target="lib\net5.0" />
-    
-    <file src="in\net6.0-windows\OpenTouryo.Framework.RichClient.dll" target="lib\net6.0" />
-    <file src="in\net6.0-windows\OpenTouryo.Framework.RichClient.pdb" target="lib\net6.0" />
-    <file src="in\net6.0-windows\OpenTouryo.Framework.RichClient.xml" target="lib\net6.0" />
-
-    <file src="..\Frameworks\Infrastructure\Framework\RichClient\**\*.cs" target="src" />
   </files>
 </package>

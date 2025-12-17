@@ -69,24 +69,6 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
 
         #region CEK 暗号化・復号化
 
-#if NET45
-        /// <summary>CEK 暗号化</summary>
-        /// <param name="data">byte[]</param>
-        /// <returns>byte[]</returns>
-        protected override byte[] CreateKey(byte[] data)
-        {
-            // RSAES-PKCS1-v1_5 は、fOAEP: false
-            return this.ASymmetricCryptography.EncryptBytes(data, fOAEP: false);
-        }
-
-        /// <summary>CEK 復号化</summary>
-        /// <param name="data">byte[]</param>
-        /// <returns>byte[] </returns>
-        protected override byte[] DecryptKey(byte[] data)
-        {
-            return this.ASymmetricCryptography.DecryptBytes(data, fOAEP: false);
-        }
-#else
         /// <summary>CEK 暗号化</summary>
         /// <param name="data">byte[]</param>
         /// <returns>byte[]</returns>
@@ -105,7 +87,7 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             return this.ASymmetricCryptography.DecryptBytes(
                 data, padding: RSAEncryptionPadding.Pkcs1);
         }
-#endif
+
         #endregion
 
         #region 本文 暗号化・復号化

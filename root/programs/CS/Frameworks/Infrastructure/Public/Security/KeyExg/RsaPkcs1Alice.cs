@@ -53,7 +53,7 @@ namespace Touryo.Infrastructure.Public.Security.KeyExg
         protected override void CreateKeys()
         {
             RSA rsa = (RSA)this._asa;
-            this._aes = new AesCryptoServiceProvider(); // 秘密鍵
+            this._aes = Aes.Create(); // 秘密鍵
             RSAPKCS1KeyExchangeFormatter keyExchangeFormatter = new RSAPKCS1KeyExchangeFormatter(rsa);
             this._exchangeKey = keyExchangeFormatter.CreateKeyExchange(this._aes.Key, typeof(Aes)); // 交換鍵
         }

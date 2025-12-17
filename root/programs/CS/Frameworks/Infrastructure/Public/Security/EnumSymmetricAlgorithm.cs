@@ -40,8 +40,17 @@ namespace Touryo.Infrastructure.Public.Security
     [Flags]
     public enum EnumSymmetricAlgorithm
     {
-        #region CSP (CryptoServiceProvider)
+        /// <summary>AES</summary>
+        AES = 1,
+        /// <summary>DES</summary>
+        DES = 1 << 1,
+        /// <summary>RC2</summary>
+        RC2 = 1 << 2,
+        /// <summary>TripleDES</summary>
+        TDES = 1 << 3,
 
+        #region CSP (CryptoServiceProvider)
+        /*
         /// <summary>AesCryptoServiceProvider</summary>
         AES_CSP = 1,
         /// <summary>DESCryptoServiceProvider</summary>
@@ -50,7 +59,7 @@ namespace Touryo.Infrastructure.Public.Security
         RC2_CSP = 1 << 2,
         /// <summary>TripleDESCryptoServiceProvider</summary>
         TDES_CSP = 1 << 3,
-
+        */
         #endregion
 
         #region CNG (CryptographyNextGeneration)
@@ -63,12 +72,12 @@ namespace Touryo.Infrastructure.Public.Security
         #endregion
 
         #region Managed
-
+        /*
         /// <summary>AesManaged</summary>
         AES_M = 1 << 6,
         /// <summary>RijndaelManaged</summary>
         Rijndael_M = 1 << 7,
-
+        */
         #endregion
 
         #region CipherMode, PaddingMode指定

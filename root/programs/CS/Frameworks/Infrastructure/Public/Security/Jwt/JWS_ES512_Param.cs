@@ -35,6 +35,7 @@ using System.Security.Cryptography;
 
 using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Security;
+using System.Diagnostics.Eventing.Reader;
 
 namespace Touryo.Infrastructure.Public.Security.Jwt
 {
@@ -107,9 +108,7 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             else
             {
 #if NETSTD
-                this.DigitalSignECDsaOpenSsl = new DigitalSignECDsaOpenSsl(
-                    JWS_ES512.DigitalSignAlgorithm, SHA512CryptoServiceProvider.Create());
-                //HashAlgorithmCmnFunc.CreateHashAlgorithmSP(EnumHashAlgorithm.SHA512_M));
+                this.DigitalSignECDsaOpenSsl = new DigitalSignECDsaOpenSsl(JWS_ES512.DigitalSignAlgorithm, SHA512.Create());
 #else
                 throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
 #endif
@@ -122,19 +121,30 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         public JWS_ES512_Param(ECParameters param, bool isPrivate)
         {
             // Cng or OpenSsl
+#if NETSTD
+            if (OperatingSystem.IsWindows())
+#else
             if (os.Platform == PlatformID.Win32NT)
+#endif
             {
                 this.DigitalSignECDsaCng = new DigitalSignECDsaCng(param, isPrivate);
             }
-            else
+#if NETSTD
+            else if(OperatingSystem.IsLinux())
+#else
+            else if (os.Platform == PlatformID.Unix)
+#endif
             {
 #if NETSTD
-                this.DigitalSignECDsaOpenSsl = new DigitalSignECDsaOpenSsl(
-                    param, SHA512CryptoServiceProvider.Create());
+                this.DigitalSignECDsaOpenSsl = new DigitalSignECDsaOpenSsl(param, SHA512.Create());
                 //HashAlgorithmCmnFunc.CreateHashAlgorithmSP(EnumHashAlgorithm.SHA512_M));
 #else
                 throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
 #endif
+            }
+            else
+            {
+                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
             }
         }
 
@@ -147,17 +157,29 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         /// <returns>byte[]</returns>
         protected override byte[] Create2(byte[] data)
         {
+#if NETSTD
+            if (OperatingSystem.IsWindows())
+#else
             if (os.Platform == PlatformID.Win32NT)
+#endif
             {
                 return this.DigitalSignECDsaCng.Sign(data);
             }
-            else
+#if NETSTD
+            else if(OperatingSystem.IsLinux())
+#else
+            else if (os.Platform == PlatformID.Unix)
+#endif
             {
 #if NETSTD
                 return this.DigitalSignECDsaOpenSsl.Sign(data);
 #else
                 throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
 #endif
+            }
+            else
+            {
+                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
             }
         }
 
@@ -168,17 +190,29 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         protected override bool Verify2(byte[] data, byte[] sign)
         {
             // Cng or OpenSsl
+#if NETSTD
+            if (OperatingSystem.IsWindows())
+#else
             if (os.Platform == PlatformID.Win32NT)
+#endif
             {
                 return this.DigitalSignECDsaCng.Verify(data, sign);
             }
-            else
+#if NETSTD
+            else if(OperatingSystem.IsLinux())
+#else
+            else if (os.Platform == PlatformID.Unix)
+#endif
             {
 #if NETSTD
                 return this.DigitalSignECDsaOpenSsl.Verify(data, sign);
 #else
                 throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
 #endif
+            }
+            else
+            {
+                throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
             }
         }
 

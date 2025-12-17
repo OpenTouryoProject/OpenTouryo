@@ -1,0 +1,65 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>Touryo.Infrastructure.Framework</RootNamespace>
+    <AssemblyName>OpenTouryo.Framework</AssemblyName>
+    <Version>3.0.0.0</Version>
+    <Company>Hitachi Solutions</Company>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\Build_netcore100\</OutputPath>
+    <DocumentationFile>..\Build_netcore100\net10.0\OpenTouryo.Framework.xml</DocumentationFile>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>$(DefineConstants);NETSTD</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <OutputPath>..\Build_netcore100\</OutputPath>
+    <DocumentationFile>..\Build_netcore100\net10.0\OpenTouryo.Framework.xml</DocumentationFile>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <DefineConstants>$(DefineConstants);NETSTD</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="RichClient\**" />
+    <EmbeddedResource Remove="RichClient\**" />
+    <None Remove="RichClient\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Presentation\BaseController.cs" />
+    <Compile Remove="Presentation\BaseMasterController.cs" />
+    <Compile Remove="Presentation\BaseMVController.cs" />
+    <Compile Remove="Presentation\FxEventArgs.cs" />
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+    <Compile Remove="Transmission\IWCFTCPSvcForFx.cs" />
+    <Compile Remove="Util\FxHttpQueryStringIndex.cs" />
+    <Compile Remove="Util\FxSessionUtil.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="app.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.3.0" />
+    <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Public\Public_netcore100.csproj" />
+    <ProjectReference Include="..\Public\Security\Public.Security_netcore100.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -16,59 +16,26 @@
     <copyright></copyright>
     <tags>OpenTouryo Open棟梁</tags>
     <dependencies>
-      <group targetFramework=".NETFramework4.5.2">
+      <group targetFramework="net48">
         <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
         <dependency id="Oracle.ManagedDataAccess" version="18.3.0" />
       </group>
-      <group targetFramework=".NETFramework4.6">
+      <group targetFramework="net8.0">
         <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-        <dependency id="Oracle.ManagedDataAccess" version="18.3.0" />
-      </group>
-      <group targetFramework=".NETFramework4.7">
-        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-        <dependency id="Oracle.ManagedDataAccess" version="18.3.0" />
-      </group>
-      <group targetFramework=".NETFramework4.8">
-        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-        <dependency id="Oracle.ManagedDataAccess" version="18.3.0" />
-      </group>
-      <group targetFramework=".NETStandard2.0">
-        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-        <dependency id="Oracle.ManagedDataAccess.Core" version="2.18.3" />
-      </group>
-      <group targetFramework=".NETStandard2.1">
-        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-        <dependency id="Oracle.ManagedDataAccess.Core" version="2.18.3" />
+        <dependency id="Oracle.ManagedDataAccess.Core" version="23.8.0" />
       </group>
     </dependencies>
   </metadata>
   <files>
     <file src="_OpenTouryo.png" target="" />
 
-    <file src="in\net452\OpenTouryo.DamManagedOdp.dll" target="lib\net452" />
-    <file src="in\net452\OpenTouryo.DamManagedOdp.pdb" target="lib\net452" />
-    <file src="in\net452\OpenTouryo.DamManagedOdp.xml" target="lib\net452" />
-
-    <file src="in\net46\OpenTouryo.DamManagedOdp.dll" target="lib\net46" />
-    <file src="in\net46\OpenTouryo.DamManagedOdp.pdb" target="lib\net46" />
-    <file src="in\net46\OpenTouryo.DamManagedOdp.xml" target="lib\net46" />
-
-    <file src="in\net47\OpenTouryo.DamManagedOdp.dll" target="lib\net47" />
-    <file src="in\net47\OpenTouryo.DamManagedOdp.pdb" target="lib\net47" />
-    <file src="in\net47\OpenTouryo.DamManagedOdp.xml" target="lib\net47" />
-
     <file src="in\net48\OpenTouryo.DamManagedOdp.dll" target="lib\net48" />
     <file src="in\net48\OpenTouryo.DamManagedOdp.pdb" target="lib\net48" />
     <file src="in\net48\OpenTouryo.DamManagedOdp.xml" target="lib\net48" />
 
-    <file src="in\netstandard2.0\OpenTouryo.DamManagedOdp.dll" target="lib\netstandard2.0" />
-    <file src="in\netstandard2.0\OpenTouryo.DamManagedOdp.pdb" target="lib\netstandard2.0" />
-    <file src="in\netstandard2.0\OpenTouryo.DamManagedOdp.xml" target="lib\netstandard2.0" />
+    <file src="in\net8.0\OpenTouryo.DamManagedOdp.dll" target="lib\net8.0" />
+    <file src="in\net8.0\OpenTouryo.DamManagedOdp.pdb" target="lib\net8.0" />
+    <file src="in\net8.0\OpenTouryo.DamManagedOdp.xml" target="lib\net8.0" />
 
-    <file src="in\netstandard2.1\OpenTouryo.DamManagedOdp.dll" target="lib\netstandard2.1" />
-    <file src="in\netstandard2.1\OpenTouryo.DamManagedOdp.pdb" target="lib\netstandard2.1" />
-    <file src="in\netstandard2.1\OpenTouryo.DamManagedOdp.xml" target="lib\netstandard2.1" />
-    
-    <file src="..\Frameworks\Infrastructure\Public\Db\DamManagedOdp\**\*.cs" target="src" />
   </files>
 </package>

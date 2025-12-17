@@ -16,77 +16,33 @@
     <copyright></copyright>
     <tags>OpenTouryo Open棟梁</tags>
     <dependencies>
-      <group targetFramework=".NETFramework4.5.2">
+      <group targetFramework="net48">
         <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-        <dependency id="BouncyCastle.NetCore" version="1.8.3" />
-        <dependency id="jose-jwt" version="2.4.0" />
-        <dependency id="Newtonsoft.Json" version="11.0.2" />
+        <dependency id="BouncyCastle.NetCore" version="2.2.1" />
+        <dependency id="jose-jwt" version="5.1.1" />
+        <dependency id="Newtonsoft.Json" version="13.0.3" />
       </group>
-      <group targetFramework=".NETFramework4.6">
+      <group targetFramework="net8.0">
         <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-        <dependency id="BouncyCastle.NetCore" version="1.8.3" />
-        <dependency id="jose-jwt" version="2.4.0" />
-        <dependency id="Newtonsoft.Json" version="11.0.2" />
-      </group>
-      <group targetFramework=".NETFramework4.7">
-        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-        <dependency id="BouncyCastle.NetCore" version="1.8.3" />
-        <dependency id="jose-jwt" version="2.4.0" />
-        <dependency id="Newtonsoft.Json" version="11.0.2" />
-      </group>
-      <group targetFramework=".NETFramework4.8">
-        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-        <dependency id="BouncyCastle.NetCore" version="1.8.3" />
-        <dependency id="jose-jwt" version="2.4.0" />
-        <dependency id="Newtonsoft.Json" version="11.0.2" />
-      </group>
-      <group targetFramework=".NETStandard2.0">
-        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-        <dependency id="BouncyCastle.NetCore" version="1.8.3" />
-        <dependency id="jose-jwt" version="2.4.0" />
-        <dependency id="Newtonsoft.Json" version="11.0.2" />
-        <dependency id="System.Security.Cryptography.Cng" version="4.5.0" />
-        <dependency id="System.Security.Cryptography.OpenSsl" version="4.5.0" />
-        <dependency id="System.Security.Cryptography.Xml" version="4.5.0" />
-      </group>
-      <group targetFramework=".NETStandard2.1">
-        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-        <dependency id="BouncyCastle.NetCore" version="1.8.3" />
-        <dependency id="jose-jwt" version="2.4.0" />
-        <dependency id="Newtonsoft.Json" version="11.0.2" />
-        <dependency id="System.Security.Cryptography.Cng" version="4.5.0" />
-        <dependency id="System.Security.Cryptography.OpenSsl" version="4.5.0" />
-        <dependency id="System.Security.Cryptography.Xml" version="4.5.0" />
+        <dependency id="BouncyCastle.NetCore" version="2.2.1" />
+        <dependency id="jose-jwt" version="5.1.1" />
+        <dependency id="Newtonsoft.Json" version="13.0.3" />
+        <dependency id="System.Security.Cryptography.Cng" version="5.0.0" />
+        <dependency id="System.Security.Cryptography.OpenSsl" version="5.0.0" />
+        <dependency id="System.Security.Cryptography.Xml" version="9.0.4" />
       </group>
     </dependencies>
   </metadata>
   <files>
     <file src="_OpenTouryo.png" target="" />
 
-    <file src="in\net452\OpenTouryo.Public.Security.dll" target="lib\net452" />
-    <file src="in\net452\OpenTouryo.Public.Security.pdb" target="lib\net452" />
-    <file src="in\net452\OpenTouryo.Public.Security.xml" target="lib\net452" />
-
-    <file src="in\net46\OpenTouryo.Public.Security.dll" target="lib\net46" />
-    <file src="in\net46\OpenTouryo.Public.Security.pdb" target="lib\net46" />
-    <file src="in\net46\OpenTouryo.Public.Security.xml" target="lib\net46" />
-
-    <file src="in\net47\OpenTouryo.Public.Security.dll" target="lib\net47" />
-    <file src="in\net47\OpenTouryo.Public.Security.pdb" target="lib\net47" />
-    <file src="in\net47\OpenTouryo.Public.Security.xml" target="lib\net47" />
-
     <file src="in\net48\OpenTouryo.Public.Security.dll" target="lib\net48" />
     <file src="in\net48\OpenTouryo.Public.Security.pdb" target="lib\net48" />
     <file src="in\net48\OpenTouryo.Public.Security.xml" target="lib\net48" />
 
-    <file src="in\netstandard2.0\OpenTouryo.Public.Security.dll" target="lib\netstandard2.0" />
-    <file src="in\netstandard2.0\OpenTouryo.Public.Security.pdb" target="lib\netstandard2.0" />
-    <file src="in\netstandard2.0\OpenTouryo.Public.Security.xml" target="lib\netstandard2.0" />
+    <file src="in\net8.0\OpenTouryo.Public.Security.dll" target="lib\net8.0" />
+    <file src="in\net8.0\OpenTouryo.Public.Security.pdb" target="lib\net8.0" />
+    <file src="in\net8.0\OpenTouryo.Public.Security.xml" target="lib\net8.0" />
 
-    <file src="in\netstandard2.1\OpenTouryo.Public.Security.dll" target="lib\netstandard2.1" />
-    <file src="in\netstandard2.1\OpenTouryo.Public.Security.pdb" target="lib\netstandard2.1" />
-    <file src="in\netstandard2.1\OpenTouryo.Public.Security.xml" target="lib\netstandard2.1" />
-
-    <file src="..\Frameworks\Infrastructure\Public\Security\**\*.cs" target="src" />
   </files>
 </package>

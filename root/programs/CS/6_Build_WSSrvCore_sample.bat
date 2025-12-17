@@ -27,8 +27,8 @@ rem --------------------------------------------------
 dotnet restore "Samples4NetCore\Legacy\WS_sample\WSServer_sample\WSServer_sample.sln"
 dotnet msbuild %COMMANDLINE% "Samples4NetCore\Legacy\WS_sample\WSServer_sample\WSServer_sample.sln"
 
-xcopy /E /Y "Samples4NetCore\Legacy\WS_sample\WSServer_sample\bin\%BUILD_CONFIG%\net8.0" "Samples4NetCore\Legacy\WS_sample\Temp\%BUILD_CONFIG%\net8.0\"
-xcopy /E /Y "Samples4NetCore\Legacy\WS_sample\Temp\%BUILD_CONFIG%\net8.0" "Samples4NetCore\Legacy\WS_sample\Build\net8.0\"
+xcopy /E /Y "Samples4NetCore\Legacy\WS_sample\WSServer_sample\bin\%BUILD_CONFIG%\net10.0" "Samples4NetCore\Legacy\WS_sample\Temp\%BUILD_CONFIG%\net10.0\"
+xcopy /E /Y "Samples4NetCore\Legacy\WS_sample\Temp\%BUILD_CONFIG%\net10.0" "Samples4NetCore\Legacy\WS_sample\Build\net10.0\"
 
 pause
 

@@ -82,12 +82,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     //string iat = (string)jobj[OAuth2AndOIDCConst.iat];
                     string exp = (string)jobj[OAuth2AndOIDCConst.exp];
 
-                    long unixTimeSeconds = 0;
-#if NET45
-                    unixTimeSeconds = PubCmnFunction.ToUnixTime(DateTimeOffset.Now);
-#else
-                    unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
-#endif
+                    long unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
 
                     if (iss == CmnClientParams.Isser &&
                         long.Parse(exp) >= unixTimeSeconds)

@@ -47,30 +47,35 @@ namespace Touryo.Infrastructure.CustomControl.RichClient
             : base(new WinCustomMaskedTextBoxDgvCell()) { }
 
         /// <summary>初期値編集プロパティに適用する値</summary>
-        [Category("Edit"),
-        Description("初期値編集")]
+        [Category("Edit"), Description("初期値編集")
+#if NETCOREAPP
+            , DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
+#endif
+        ]
         public EditInitialValue EditInitialValue { get; set; }
 
         /// <summary>Maskプロパティに適用する値</summary>
-        [Category("Edit"),
-        Description("入力後のマスク")]
+        [Category("Edit"), Description("入力後のマスク")
+#if NETCOREAPP
+            , DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
+#endif
+        ]
         public string Mask { set; get; }
         
         /// <summary>Mask_Editingプロパティに適用する値</summary>
-        [Category("Edit"),
-        Description("入力中のマスク")]
+        [Category("Edit"), Description("入力中のマスク")
+#if NETCOREAPP
+            , DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)
+#endif
+        ]
         public string Mask_Editing { set; get; }
 
         /// <summary>半角指定（マスクで指定できないため）</summary>
-        [DefaultValue(false),
-        Category("Edit"),
-        Description("半角指定（マスクで指定できないため）")]
+        [DefaultValue(false), Category("Edit"), Description("半角指定（マスクで指定できないため）")]
         public bool EditToHankaku { get; set; }
 
         /// <summary>YYYYMMDDのM、Dが１桁の時に補正処理を行う。</summary>
-        [DefaultValue(false),
-        Category("Edit"),
-        Description("YYYYMMDDのM、Dが１桁の時に補正処理を行う。")]
+        [DefaultValue(false), Category("Edit"), Description("YYYYMMDDのM、Dが１桁の時に補正処理を行う。")]
         public bool EditToYYYYMMDD { get; set; }        
 
         /// <summary>クローンの作製</summary>

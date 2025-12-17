@@ -574,11 +574,11 @@ namespace EncAndDecUtil
 
             EnumDigitalSignAlgorithm edsa = (EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue;
 
-            if (edsa == EnumDigitalSignAlgorithm.RsaCSP_MD5
-                || edsa == EnumDigitalSignAlgorithm.RsaCSP_SHA1
-                || edsa == EnumDigitalSignAlgorithm.RsaCSP_SHA256
-                || edsa == EnumDigitalSignAlgorithm.RsaCSP_SHA384
-                || edsa == EnumDigitalSignAlgorithm.RsaCSP_SHA512
+            if (edsa == EnumDigitalSignAlgorithm.Rsa_MD5
+                || edsa == EnumDigitalSignAlgorithm.Rsa_SHA1
+                || edsa == EnumDigitalSignAlgorithm.Rsa_SHA256
+                || edsa == EnumDigitalSignAlgorithm.Rsa_SHA384
+                || edsa == EnumDigitalSignAlgorithm.Rsa_SHA512
                 || edsa == EnumDigitalSignAlgorithm.DsaCSP_SHA1)
             {
                 if (rbnDSXML.Checked)
@@ -671,11 +671,11 @@ namespace EncAndDecUtil
 
             EnumDigitalSignAlgorithm edsa = (EnumDigitalSignAlgorithm)this.cbxDSPV.SelectedValue;
 
-            if (edsa == EnumDigitalSignAlgorithm.RsaCSP_MD5
-                || edsa == EnumDigitalSignAlgorithm.RsaCSP_SHA1
-                || edsa == EnumDigitalSignAlgorithm.RsaCSP_SHA256
-                || edsa == EnumDigitalSignAlgorithm.RsaCSP_SHA384
-                || edsa == EnumDigitalSignAlgorithm.RsaCSP_SHA512
+            if (edsa == EnumDigitalSignAlgorithm.Rsa_MD5
+                || edsa == EnumDigitalSignAlgorithm.Rsa_SHA1
+                || edsa == EnumDigitalSignAlgorithm.Rsa_SHA256
+                || edsa == EnumDigitalSignAlgorithm.Rsa_SHA384
+                || edsa == EnumDigitalSignAlgorithm.Rsa_SHA512
                 || edsa == EnumDigitalSignAlgorithm.DsaCSP_SHA1)
             {
                 if (rbnDSXML.Checked)

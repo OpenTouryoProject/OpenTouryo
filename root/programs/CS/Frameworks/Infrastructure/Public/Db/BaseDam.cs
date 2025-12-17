@@ -2739,8 +2739,10 @@ namespace Touryo.Infrastructure.Public.Db
                         //Int32と同じサイズのバイト配列にランダムな値を設定する
                         //byte[] bs = new byte[sizeof(int)];
                         byte[] bs = new byte[4];
-                        RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-                        rng.GetBytes(bs);
+
+                        //RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+                        //rng.GetBytes(bs);
+                        RandomNumberGenerator.Create().GetBytes(bs);
 
                         //Int32に変換する
                         if (BitConverter.ToInt32(bs, 0) % 2 == 0)

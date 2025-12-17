@@ -50,6 +50,69 @@ namespace Touryo.Infrastructure.Public.Security
     /// </summary>
     public class AsymmetricAlgorithmCmnFunc
     {
+        #region GetKey
+
+        /// <summary>GetPublicKey</summary>
+        /// <param name="x509Key">X509Certificate2</param>
+        /// <returns>PublicKey</returns>
+        /// <exception cref="NotSupportedException"></exception>
+        public static AsymmetricAlgorithm GetPublicKey(X509Certificate2 x509Key)
+        {
+            switch (x509Key.PublicKey.Oid.FriendlyName.ToUpper())
+            {
+                case "RSA":
+                    return x509Key.GetRSAPublicKey();
+
+                case "DSA":
+                    return x509Key.GetDSAPublicKey();
+
+                case "ECC":
+                case "ECDSA":
+                    return x509Key.GetECDsaPublicKey();
+#if NETSTD
+                case "ECDH":
+                    return x509Key.GetECDiffieHellmanPublicKey();
+#endif
+                default:
+                    return null;
+            }
+        }
+
+        /// <summary>GetPrivateKey</summary>
+        /// <param name="x509Key">X509Certificate2</param>
+        /// <returns>PrivateKey</returns>
+        /// <exception cref="NotSupportedException"></exception>
+        public static AsymmetricAlgorithm GetPrivateKey(X509Certificate2 x509Key)
+        {
+            if (x509Key.HasPrivateKey)
+            {
+                switch (x509Key.PublicKey.Oid.FriendlyName.ToUpper())
+                {
+                    case "RSA":
+                        return x509Key.GetRSAPrivateKey();
+
+                    case "DSA":
+                        return x509Key.GetDSAPrivateKey();
+
+                    case "ECC":
+                    case "ECDSA":
+                        return x509Key.GetECDsaPrivateKey();
+#if NETSTD
+                    case "ECDH":
+                        return x509Key.GetECDiffieHellmanPrivateKey();
+#endif
+                    default:
+                        return null;
+                }
+            }
+            else
+            {
+                return null;
+            }   
+        }
+
+#endregion
+
         #region Simple factories
         /// <summary>RsaFactory</summary>
         /// <returns>RSA</returns>
@@ -96,16 +159,31 @@ namespace Touryo.Infrastructure.Public.Security
             if (easa == EnumASymmetricAlgorithm.X509)
             {
                 // X.509対応
-                X509Certificate2 x509Key = new X509Certificate2(certificateFilePath, password, flag);
+#if NETSTD
+                X509Certificate2 x509Key = null;
 
                 if (string.IsNullOrEmpty(password))
                 {
-                    asa = x509Key.PublicKey.Key;
+                    x509Key = X509CertificateLoader.LoadCertificateFromFile(certificateFilePath);
                 }
                 else
                 {
-                    asa = x509Key.PrivateKey; 
-                }                
+                    x509Key = X509CertificateLoader.LoadPkcs12FromFile(certificateFilePath, password, flag);
+                }
+#else
+                X509Certificate2 x509Key = new X509Certificate2(certificateFilePath, password, flag);
+#endif
+
+                if (string.IsNullOrEmpty(password))
+                {
+                    //asa = x509Key.PublicKey.Key;
+                    asa = AsymmetricAlgorithmCmnFunc.GetPublicKey(x509Key);
+                }
+                else
+                {
+                    //asa = x509Key.PrivateKey; 
+                    asa = AsymmetricAlgorithmCmnFunc.GetPrivateKey(x509Key);
+                }
             }
             else
             {
@@ -114,14 +192,11 @@ namespace Touryo.Infrastructure.Public.Security
                     // RSACryptoServiceProviderサービスプロバイダ
                     asa = RSACryptoServiceProvider.Create(); // devps(1703)
                 }
-
-#if !NET45
                 else if (easa == EnumASymmetricAlgorithm.RsaCng)
                 {
                     // RSACngサービスプロバイダ
                     asa = RSACng.Create(); // devps(1703)
                 }
-#endif
 #if NETSTD
                 else if (easa == EnumASymmetricAlgorithm.RsaOpenSsl)
                 {
@@ -149,39 +224,41 @@ namespace Touryo.Infrastructure.Public.Security
         public static void CreateDigitalSignSP(
             EnumDigitalSignAlgorithm eaa, out AsymmetricAlgorithm aa, out HashAlgorithm ha)
         {
+#pragma warning disable CA1416 // アルゴリズム名で暗喩的に振り分けるため。
             aa = null;
             ha = null;
 
             // 公開鍵・暗号化サービスプロバイダ
-            if (eaa == EnumDigitalSignAlgorithm.RsaCSP_MD5
-                || eaa == EnumDigitalSignAlgorithm.RsaCSP_SHA1
-                || eaa == EnumDigitalSignAlgorithm.RsaCSP_SHA256
-                || eaa == EnumDigitalSignAlgorithm.RsaCSP_SHA384
-                || eaa == EnumDigitalSignAlgorithm.RsaCSP_SHA512)
+            if (eaa == EnumDigitalSignAlgorithm.Rsa_MD5
+                || eaa == EnumDigitalSignAlgorithm.Rsa_SHA1
+                || eaa == EnumDigitalSignAlgorithm.Rsa_SHA256
+                || eaa == EnumDigitalSignAlgorithm.Rsa_SHA384
+                || eaa == EnumDigitalSignAlgorithm.Rsa_SHA512)
             {
                 // RSACryptoServiceProviderサービスプロバイダ
                 aa = new RSACryptoServiceProvider();
 
                 switch (eaa)
                 {
-                    case EnumDigitalSignAlgorithm.RsaCSP_MD5:
+                    case EnumDigitalSignAlgorithm.Rsa_MD5:
                         ha = MD5.Create();
                         break;
-                    case EnumDigitalSignAlgorithm.RsaCSP_SHA1:
+                    case EnumDigitalSignAlgorithm.Rsa_SHA1:
                         ha = SHA1.Create();
                         break;
-                    case EnumDigitalSignAlgorithm.RsaCSP_SHA256:
+                    case EnumDigitalSignAlgorithm.Rsa_SHA256:
                         ha = SHA256.Create();
                         break;
-                    case EnumDigitalSignAlgorithm.RsaCSP_SHA384:
+                    case EnumDigitalSignAlgorithm.Rsa_SHA384:
                         ha = SHA384.Create();
                         break;
-                    case EnumDigitalSignAlgorithm.RsaCSP_SHA512:
+                    case EnumDigitalSignAlgorithm.Rsa_SHA512:
                         ha = SHA512.Create();
                         break;
                 }
             }
 #if NETSTD
+            /*
             else if (eaa == EnumDigitalSignAlgorithm.RsaOpenSsl_MD5
                 || eaa == EnumDigitalSignAlgorithm.RsaOpenSsl_SHA1
                 || eaa == EnumDigitalSignAlgorithm.RsaOpenSsl_SHA256
@@ -210,6 +287,7 @@ namespace Touryo.Infrastructure.Public.Security
                         break;
                 }
             }
+            */
 #endif
             else if (eaa == EnumDigitalSignAlgorithm.DsaCSP_SHA1)
             {
@@ -217,11 +295,13 @@ namespace Touryo.Infrastructure.Public.Security
                 aa = new DSACryptoServiceProvider();
                 ha = SHA1.Create();
             }
+            
 #if NETSTD
-            else if (eaa == EnumDigitalSignAlgorithm.DsaOpenSsl_SHA1)
+            else if (eaa == EnumDigitalSignAlgorithm.DsaOpenSsl_SHA256)//DsaOpenSsl_SHA1)
             {
                 // DSAOpenSslサービスプロバイダ
                 aa = new DSAOpenSsl();
+
                 ha = SHA1.Create();
             }
 #endif
@@ -274,7 +354,7 @@ namespace Touryo.Infrastructure.Public.Security
                 }
 
                 // https://qiita.com/yoship1639/items/6dd0cc8623d7f3969d78
-                if (Environment.OSVersion.Platform == PlatformID.Unix)
+                if (OperatingSystem.IsLinux()) //(Environment.OSVersion.Platform == PlatformID.Unix)
                 {
                     eCDsa = ECDsa.Create(); // ECDsaOpenSslと思われる。
                     eCDsa.GenerateKey(eCCurve);
@@ -293,6 +373,7 @@ namespace Touryo.Infrastructure.Public.Security
                     PublicExceptionMessage.ARGUMENT_INCORRECT,
                     "EnumDigitalSignAlgorithm parameter is incorrect.");
             }
+#pragma warning restore CA1416
         }
         #endregion
     }

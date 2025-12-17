@@ -244,9 +244,15 @@ namespace Touryo.Infrastructure.Public.Security
         {
             string pemString = File.ReadAllText(pemFilePath);
 
+#if NETSTD
+            return X509CertificateLoader.LoadCertificate(
+                PrivacyEnhancedMail.GetBytesFromPemString(
+                    pemString, PrivacyEnhancedMail.EnumToString(label)));
+#else
             return new X509Certificate2(
                 PrivacyEnhancedMail.GetBytesFromPemString(
                     pemString, PrivacyEnhancedMail.EnumToString(label)));
+#endif
         }
 
         /// <summary>GetBase64StringFromPemFilePath</summary>

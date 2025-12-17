@@ -16,52 +16,26 @@
     <copyright></copyright>
     <tags>OpenTouryo Open棟梁</tags>
     <dependencies>
-      <group targetFramework=".NETFramework4.5.2">
-        <dependency id="DotNetZip" version="1.12.0" />
-        <dependency id="log4net" version="2.0.8" />
-        <dependency id="Newtonsoft.Json" version="11.0.2" />
+      <group targetFramework="net48">
+        <dependency id="DotNetZip" version="1.16.0" />
+        <dependency id="log4net" version="3.1.0" />
+        <dependency id="Microsoft.Data.SqlClient" version="6.0.2" />
+        <dependency id="Newtonsoft.Json" version="13.0.3" />
+        <dependency id="NLog" version="5.5.0" />
       </group>
-      <group targetFramework=".NETFramework4.6">
-        <dependency id="DotNetZip" version="1.12.0" />
-        <dependency id="log4net" version="2.0.8" />
-        <dependency id="Newtonsoft.Json" version="11.0.2" />
-      </group>
-      <group targetFramework=".NETFramework4.7">
-        <dependency id="DotNetZip" version="1.12.0" />
-        <dependency id="log4net" version="2.0.8" />
-        <dependency id="Newtonsoft.Json" version="11.0.2" />
-      </group>
-      <group targetFramework=".NETFramework4.8">
-        <dependency id="DotNetZip" version="1.12.0" />
-        <dependency id="log4net" version="2.0.8" />
-        <dependency id="Newtonsoft.Json" version="11.0.2" />
-      </group>
-      <group targetFramework=".NETStandard2.0">
-        <dependency id="DotNetZip" version="1.13.8" />
-        <dependency id="log4net" version="2.0.8" />
-        <dependency id="Microsoft.Extensions.Configuration" version="2.2.0" />
-        <dependency id="Microsoft.Extensions.Configuration.Binder" version="2.2.0" />
-        <dependency id="Microsoft.Extensions.Configuration.FileExtensions" version="2.2.0" />
-        <dependency id="Microsoft.Extensions.Configuration.Json" version="2.2.0" />
-        <dependency id="Newtonsoft.Json" version="11.0.2" />
-        <dependency id="System.Data.Odbc" version="4.5.0" />
-        <dependency id="System.Data.SqlClient" version="4.5.1" />
-        <dependency id="System.Reflection.Emit.ILGeneration" version="4.3.0" />
-        <dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" />
-        <dependency id="Zipangu" version="1.1.8" />
-      </group>
-      <group targetFramework=".NETStandard2.1">
-        <dependency id="DotNetZip" version="1.13.8" />
-        <dependency id="log4net" version="2.0.8" />
-        <dependency id="Microsoft.Extensions.Configuration" version="2.2.0" />
-        <dependency id="Microsoft.Extensions.Configuration.Binder" version="2.2.0" />
-        <dependency id="Microsoft.Extensions.Configuration.FileExtensions" version="2.2.0" />
-        <dependency id="Microsoft.Extensions.Configuration.Json" version="2.2.0" />
-        <dependency id="Newtonsoft.Json" version="11.0.2" />
-        <dependency id="System.Data.Odbc" version="4.5.0" />
-        <dependency id="System.Data.SqlClient" version="4.5.1" />
-        <dependency id="System.Reflection.Emit.ILGeneration" version="4.3.0" />
-        <dependency id="System.Reflection.Emit.Lightweight" version="4.3.0" />
+      <group targetFramework="net8.0">
+        <dependency id="DotNetZip" version="1.16.0" />
+        <dependency id="log4net" version="3.0.4" />
+        <dependency id="Microsoft.Data.SqlClient" version="6.0.1" />
+        <dependency id="Microsoft.Extensions.Configuration" version="9.0.4" />
+        <dependency id="Microsoft.Extensions.Configuration.Binder" version="9.0.4" />
+        <dependency id="Microsoft.Extensions.Configuration.FileExtensions" version="9.0.4" />
+        <dependency id="Microsoft.Extensions.Configuration.Json" version="9.0.4" />
+        <dependency id="Newtonsoft.Json" version="13.0.3" />
+        <dependency id="NLog" version="5.5.0" />
+        <dependency id="System.Data.Odbc" version="9.0.4" />
+        <dependency id="System.Reflection.Emit.ILGeneration" version="4.7.0" />
+        <dependency id="System.Reflection.Emit.Lightweight" version="4.7.0" />
         <dependency id="Zipangu" version="1.1.8" />
       </group>
     </dependencies>
@@ -69,36 +43,15 @@
   <files>
     <file src="_OpenTouryo.png" target="" />
 
-    <file src="in\net452\OpenTouryo.Public.dll" target="lib\net452" />
-    <file src="in\net452\OpenTouryo.Public.pdb" target="lib\net452" />
-    <file src="in\net452\OpenTouryo.Public.xml" target="lib\net452" />
-    <file src="in\net452\ja-JP\OpenTouryo.Public.resources.dll" target="lib\net452\ja-JP" />
-
-    <file src="in\net46\OpenTouryo.Public.dll" target="lib\net46" />
-    <file src="in\net46\OpenTouryo.Public.pdb" target="lib\net46" />
-    <file src="in\net46\OpenTouryo.Public.xml" target="lib\net46" />
-    <file src="in\net46\ja-JP\OpenTouryo.Public.resources.dll" target="lib\net46\ja-JP" />
-
-    <file src="in\net47\OpenTouryo.Public.dll" target="lib\net47" />
-    <file src="in\net47\OpenTouryo.Public.pdb" target="lib\net47" />
-    <file src="in\net47\OpenTouryo.Public.xml" target="lib\net47" />
-    <file src="in\net47\ja-JP\OpenTouryo.Public.resources.dll" target="lib\net47\ja-JP" />
-
     <file src="in\net48\OpenTouryo.Public.dll" target="lib\net48" />
     <file src="in\net48\OpenTouryo.Public.pdb" target="lib\net48" />
     <file src="in\net48\OpenTouryo.Public.xml" target="lib\net48" />
     <file src="in\net48\ja-JP\OpenTouryo.Public.resources.dll" target="lib\net48\ja-JP" />
 
-    <file src="in\netstandard2.0\OpenTouryo.Public.dll" target="lib\netstandard2.0" />
-    <file src="in\netstandard2.0\OpenTouryo.Public.pdb" target="lib\netstandard2.0" />
-    <file src="in\netstandard2.0\OpenTouryo.Public.xml" target="lib\netstandard2.0" />
-    <file src="in\netstandard2.0\ja-JP\OpenTouryo.Public.resources.dll" target="lib\netstandard2.0\ja-JP" />
+    <file src="in\net8.0\OpenTouryo.Public.dll" target="lib\net8.0" />
+    <file src="in\net8.0\OpenTouryo.Public.pdb" target="lib\net8.0" />
+    <file src="in\net8.0\OpenTouryo.Public.xml" target="lib\net8.0" />
+    <file src="in\net8.0\ja-JP\OpenTouryo.Public.resources.dll" target="lib\net8.0\ja-JP" />
 
-    <file src="in\netstandard2.1\OpenTouryo.Public.dll" target="lib\netstandard2.1" />
-    <file src="in\netstandard2.1\OpenTouryo.Public.pdb" target="lib\netstandard2.1" />
-    <file src="in\netstandard2.1\OpenTouryo.Public.xml" target="lib\netstandard2.1" />
-    <file src="in\netstandard2.1\ja-JP\OpenTouryo.Public.resources.dll" target="lib\netstandard2.1\ja-JP" />
-
-    <file src="..\Frameworks\Infrastructure\Public\**\*.cs" target="src" />
   </files>
 </package>

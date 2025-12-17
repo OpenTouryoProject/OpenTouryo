@@ -116,52 +116,7 @@ namespace Touryo.Infrastructure.Public.Security
         #endregion
 
         #region Encrypt(publicXmlKey)
-#if NET45
-        /// <summary>文字列を暗号化する</summary>
-        /// <param name="sourceString">暗号化する文字列</param>
-        /// <param name="publicXmlKey">暗号化に使用する公開鍵</param>
-        /// <param name="fOAEP">
-        /// ・true  : OAEPパディング（XP以降）
-        /// ・false : PKCS#1 v1.5パディング
-        /// </param>
-        /// <returns>非対称アルゴリズムで暗号化された文字列</returns>
-        public string EncryptString(string sourceString, string publicXmlKey = "", bool fOAEP = false)
-        {
-            // 元文字列をbyte型配列に変換する（UTF-8 Enc）
-            byte[] source = CustomEncode.StringToByte(sourceString, CustomEncode.UTF_8);
 
-            // 暗号化（Base64）
-            return CustomEncode.ToBase64String(
-                this.EncryptBytes(source, publicXmlKey, fOAEP));
-        }
-
-        /// <summary>バイト配列を暗号化する</summary>
-        /// <param name="source">暗号化するバイト配列</param>
-        /// <param name="publicXmlKey">暗号化に使用する公開鍵</param>
-        /// <param name="fOAEP">
-        /// ・true  : OAEPパディング（XP以降）
-        /// ・false : PKCS#1 v1.5パディング
-        /// </param>
-        /// <returns>非対称アルゴリズムで暗号化されたバイト配列</returns>
-        public byte[] EncryptBytes(byte[] source, string publicXmlKey = "", bool fOAEP = false)
-        {
-            // NET45はCSPのみ。
-            RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)this._asa;
-
-            // 公開鍵
-            if (string.IsNullOrEmpty(publicXmlKey))
-            {
-                //rsa.FromXmlString(this.PublicXmlKey);
-            }
-            else
-            {
-                rsa.FromXmlString(publicXmlKey);
-            }
-
-            // 暗号化
-            return rsa.Encrypt(source, fOAEP);
-        }
-#else
         /// <summary>文字列を暗号化する</summary>
         /// <param name="sourceString">暗号化する文字列</param>
         /// <param name="publicXmlKey">暗号化に使用する公開鍵</param>
@@ -204,58 +159,11 @@ namespace Touryo.Infrastructure.Public.Security
             
             return rsa.Encrypt(source, padding);
         }
-#endif
 
         #endregion
 
         #region Decrypt(privateXmlKey)
 
-#if NET45
-        /// <summary>暗号化された文字列を復号化する</summary>
-        /// <param name="sourceString">暗号化された文字列</param>
-        /// <param name="privateXmlKey">復号化に使用する秘密鍵</param>
-        /// <param name="fOAEP">
-        /// ・true  : OAEPパディング（XP以降）
-        /// ・false : PKCS#1 v1.5パディング
-        /// </param>
-        /// <returns>非対称アルゴリズムで復号化された文字列</returns>
-        public string DecryptString(string sourceString, string privateXmlKey = "", bool fOAEP = false)
-        {
-            // 暗号化文字列をbyte型配列に変換する（Base64）
-            byte[] source = CustomEncode.FromBase64String(sourceString);
-
-            // 復号化（UTF-8 Enc）
-            return CustomEncode.ByteToString(
-                this.DecryptBytes(source, privateXmlKey, fOAEP), CustomEncode.UTF_8);
-        }
-
-        /// <summary>暗号化されたバイト配列を復号化する</summary>
-        /// <param name="source">暗号化されたバイト配列</param>
-        /// <param name="privateXmlKey">復号化に使用する秘密鍵</param>
-        /// <param name="fOAEP">
-        /// ・true  : OAEPパディング（XP以降）
-        /// ・false : PKCS#1 v1.5パディング
-        /// </param>
-        /// <returns>非対称アルゴリズムで復号化されたバイト配列</returns>
-        public byte[] DecryptBytes(byte[] source, string privateXmlKey = "", bool fOAEP = false)
-        {
-            // NET45はCSPのみ。
-            RSACryptoServiceProvider rsa = (RSACryptoServiceProvider)this._asa;
-
-            // 秘密鍵
-            if (string.IsNullOrEmpty(privateXmlKey))
-            {
-                //rsa.FromXmlString(this.PrivateXmlKey);
-            }
-            else
-            {
-                rsa.FromXmlString(privateXmlKey);
-            }
-
-            // 復号化
-            return rsa.Decrypt(source, fOAEP);
-        }
-#else
         /// <summary>暗号化された文字列を復号化する</summary>
         /// <param name="sourceString">暗号化された文字列</param>
         /// <param name="privateXmlKey">復号化に使用する秘密鍵</param>
@@ -298,7 +206,6 @@ namespace Touryo.Infrastructure.Public.Security
 
             return rsa.Decrypt(source, padding);
         }
-#endif
 
         #endregion
     }

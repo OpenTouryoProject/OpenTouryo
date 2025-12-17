@@ -43,7 +43,7 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         /// <summary>アルゴリズム</summary>
         protected string HashName = HashNameConst.SHA256;
         /// <summary>アルゴリズム</summary>
-        protected EnumHashAlgorithm HashAlgorithm = EnumHashAlgorithm.SHA256_M;
+        protected EnumHashAlgorithm HashAlgorithm = EnumHashAlgorithm.SHA256;
         #endregion
 
         #region constructor
@@ -58,19 +58,19 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
                 case JWS_RSA.RS._256:
                     this.JwtConstRSnnn = JwtConst.RS256;
                     this.HashName = HashNameConst.SHA256;
-                    this.HashAlgorithm = EnumHashAlgorithm.SHA256_M;
+                    this.HashAlgorithm = EnumHashAlgorithm.SHA256;
                     break;
 
                 case JWS_RSA.RS._384:
                     this.JwtConstRSnnn = JwtConst.RS384;
                     this.HashName = HashNameConst.SHA384;
-                    this.HashAlgorithm = EnumHashAlgorithm.SHA384_M;
+                    this.HashAlgorithm = EnumHashAlgorithm.SHA384;
                     break;
 
                 case JWS_RSA.RS._512:
                     this.JwtConstRSnnn = JwtConst.RS512;
                     this.HashName = HashNameConst.SHA512;
-                    this.HashAlgorithm = EnumHashAlgorithm.SHA512_M;
+                    this.HashAlgorithm = EnumHashAlgorithm.SHA512;
                     break;
             }
         }

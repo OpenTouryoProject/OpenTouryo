@@ -44,14 +44,22 @@ namespace MVC_Sample
 
         /// <summary>BuildWebHost</summary>
         /// <param name="args">コマンドライン引数</param>
-        /// <returns>IWebHost</returns>
-        public static IWebHost BuildWebHost(string[] args)
+        /// <returns>IHost</returns>
+        public static IHost BuildWebHost(string[] args)
         {
             // WebHost経由で、IWebHost, IWebHostBuilderにアクセスする。
+            // Host経由で、IHost, IHostBuilderにアクセスする。
 
-            return WebHost.CreateDefaultBuilder(args) //  IWebHostBuilderを取得する。
-                .UseStartup<Startup>() // IWebHostBuilder.UseStartup<TStartup> メソッドにStartupクラスを指定。
-                .Build(); // IWebHostBuilder.Build メソッドでIWebHostクラスインスタンスを返す。
+            //return WebHost.CreateDefaultBuilder(args) //  IWebHostBuilderを取得する。
+            //    .UseStartup<Startup>() // IWebHostBuilder.UseStartup<TStartup> メソッドにStartupクラスを指定。
+            //    .Build(); // IWebHostBuilder.Build メソッドでIWebHostクラスインスタンスを返す。
+
+            return Host.CreateDefaultBuilder(args) // IHostBuilderを取得する。
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>(); // Startupクラスを指定
+                })
+                .Build(); // IHostを返す
         }
     }
 }

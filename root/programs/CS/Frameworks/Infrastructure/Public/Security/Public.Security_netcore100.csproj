@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>OpenTouryo.Public.Security</AssemblyName>
+    <RootNamespace>Touryo.Infrastructure.Public.Security</RootNamespace>
+    <Version>3.0.0.0</Version>
+    <Company>Hitachi Solutions</Company>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG;NETSTD</DefineConstants>
+    <OutputPath>..\..\Build_netcore100\</OutputPath>
+    <DocumentationFile>..\..\Build_netcore100\net10.0\OpenTouryo.Public.Security.xml</DocumentationFile>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;NETSTD</DefineConstants>
+    <OutputPath>..\..\Build_netcore100\</OutputPath>
+    <DocumentationFile>..\..\Build_netcore100\net10.0\OpenTouryo.Public.Security.xml</DocumentationFile>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="IdentityImpersonation.cs" />
+    <Compile Remove="KeyExg\EcdhCngAlice.cs" />
+    <Compile Remove="KeyExg\EcdhCngBob.cs" />
+    <Compile Remove="KeyExg\EcdhKeyExchange.cs" />
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="app.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BouncyCastle.NetCore" Version="2.2.1" />
+    <PackageReference Include="jose-jwt" Version="5.1.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Public_netcore100.csproj" />
+  </ItemGroup>
+
+</Project>

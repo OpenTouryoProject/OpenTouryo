@@ -115,11 +115,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 // 旧バージョン（証明書を使用
                 if (isJWE_FAPI2)
                 {
-#if NET45 || NET46
-                    throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
-#else
                     jws = new JWS_ES256_X509(CmnClientParams.EcdsaCerFilePath, "");
-#endif
                 }
                 else
                 {
@@ -151,11 +147,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                         // 証明書を使用
                         if (isJWE_FAPI2)
                         {
-#if NET45 || NET46
-                            throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
-#else
                             jws = new JWS_ES256_X509(CmnClientParams.EcdsaCerFilePath, "");
-#endif
                         }
                         else
                         {
@@ -167,12 +159,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
                         // Jwkを使用
                         if (isJWE_FAPI2)
                         {
-#if NET45 || NET46
-                            throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
-#else
                             EccPublicKeyConverter epkc = new EccPublicKeyConverter();
                             jws = new JWS_ES256_Param(epkc.JwkToParam(jwkObject), false);
-#endif
                         }
                         else
                         {
@@ -198,11 +186,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                         // 証明書を使用
                         if (isJWE_FAPI2)
                         {
-#if NET45 || NET46
-                            throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
-#else
                             jws = new JWS_ES256_X509(CmnClientParams.EcdsaCerFilePath, "");
-#endif
                         }
                         else
                         {
@@ -214,12 +198,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
                         // Jwkを使用
                         if (isJWE_FAPI2)
                         {
-#if NET45 || NET46
-                            throw new NotSupportedException("FAPI2 is not supported in this dotnet version.");
-#else
                             EccPublicKeyConverter epkc = new EccPublicKeyConverter();
                             jws = new JWS_ES256_Param(epkc.JwkToParam(jwkObject), false);
-#endif
                         }
                         else
                         {
@@ -260,11 +240,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// </returns>
         public static string CreateIatClaim()
         {
-#if NET45
-            return PubCmnFunction.ToUnixTime(DateTimeOffset.Now).ToString();
-#else
             return DateTimeOffset.Now.ToUnixTimeSeconds().ToString();
-#endif
         }
 
         /// <summary>
@@ -276,11 +252,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// </returns>
         public static string CreateExpClaim(TimeSpan forExp)
         {
-#if NET45
-            return PubCmnFunction.ToUnixTime(DateTimeOffset.Now.Add(forExp)).ToString();
-#else
             return DateTimeOffset.Now.Add(forExp).ToUnixTimeSeconds().ToString();
-#endif
         }
 
         /// <summary>CheckClaims</summary>
@@ -325,11 +297,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <returns>bool</returns>
         public static bool VerifyExp(string exp)
         {
-#if NET45
-            return (long.Parse(exp) >= PubCmnFunction.ToUnixTime(DateTimeOffset.Now));
-#else
             return (long.Parse(exp) >= DateTimeOffset.Now.ToUnixTimeSeconds());
-#endif
         }
 
         /// <summary>VerifyNbf</summary>
@@ -337,11 +305,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <returns>bool</returns>
         public static bool VerifyNbf(string nbf)
         {
-#if NET45
-            return (long.Parse(nbf) <=  PubCmnFunction.ToUnixTime(DateTimeOffset.Now));
-#else
             return (long.Parse(nbf) <= DateTimeOffset.Now.ToUnixTimeSeconds());
-#endif
         }
         #endregion
     }

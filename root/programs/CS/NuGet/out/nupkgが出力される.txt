@@ -1,0 +1,6 @@
+以前は、
+・ppフォルダに、primaryのnupkgが出力されていた
+・spフォルダに、symbolのnupkgが出力されていた
+
+今は、spフォルダに、primaryのnupkgとsymbolのnupkgが出力される。
+なので、spフォルダで、_NuGetPush.batを１回だけ、実行すれば良い。
