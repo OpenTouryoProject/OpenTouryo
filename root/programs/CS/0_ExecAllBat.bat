@@ -12,7 +12,7 @@ timeout 5
 
 echo | call 1_DeleteDir.bat
 echo | call 1_DeleteFile.bat
-echo | call 2_Build_NuGet_nettcore100.bat
+echo | call 2_Build_NuGet_netcore100.bat
 echo | call 3_Build_Business_netcore100.bat
 echo | call 3_Build_BusinessRichClient_netcore100.bat
 
