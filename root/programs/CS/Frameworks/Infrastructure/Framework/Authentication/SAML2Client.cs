@@ -53,18 +53,22 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="assertionConsumerService">string</param>
         /// <param name="relayState">string</param>
         /// <param name="id">out string</param>
+        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
         /// <returns>queryString</returns>
         public static string CreateRedirectRequest(
             SAML2Enum.RequestOrResponse createRoR,
             SAML2Enum.ProtocolBinding protocolBinding,
             SAML2Enum.NameIDFormat nameIDFormat,
-            string iss, string assertionConsumerService, string relayState, out string id)
-        {   
+            string iss, string assertionConsumerService, string relayState, out string id,
+            HashAlgorithmName? hashAlgorithmName = null) // 既定値の変更 SHA1 → SHA256
+        {
             // DigitalSignX509
-            DigitalSignX509 dsX509 = new DigitalSignX509(CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword, HashAlgorithmName.SHA1);
+            HashAlgorithmName han = hashAlgorithmName ?? HashAlgorithmName.SHA256;
+            DigitalSignX509 dsX509 = new DigitalSignX509(
+                CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword, han);
 
             // SamlRequestの生成
-            
+
             string samlRequest = SAML2Bindings.CreateRequest(
                 iss, protocolBinding, nameIDFormat,
                 assertionConsumerService, out id).OuterXml;
@@ -119,6 +123,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
         /// <param name="authnContextClassRef">SAML2Enum.AuthnContextClassRef</param>
         /// <param name="samlResponse2">XmlDocument</param>
+        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
         /// <returns>bool</returns>
         public static bool VerifyResponse(
             string queryString, string samlResponse,
@@ -127,7 +132,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             out SAML2Enum.StatusCode? statusCode,
             out SAML2Enum.NameIDFormat? nameIDFormat, 
             out SAML2Enum.AuthnContextClassRef? authnContextClassRef,
-            out XmlDocument samlResponse2)
+            out XmlDocument samlResponse2,
+            HashAlgorithmName? hashAlgorithmName = null) // 既定値の変更 SHA1 → SHA256
         {
             bool verified = false;
 
@@ -177,7 +183,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
 #region 検証
             // Metadata利用を検討
-            DigitalSignX509 dsX509 = new DigitalSignX509(CmnClientParams.RsaCerFilePath, "", HashAlgorithmName.SHA1);
+            HashAlgorithmName han = hashAlgorithmName ?? HashAlgorithmName.SHA256;
+            DigitalSignX509 dsX509 = new DigitalSignX509(CmnClientParams.RsaCerFilePath, "", han);
 
             if (!string.IsNullOrEmpty(queryString))
             {
