@@ -44,6 +44,9 @@
 //*  2019/03/04  西野 大介         二重送信防止のブラウザ判定処理を修正
 //*  2019/03/04  西野 大介         WebForms版とMVC版のDiffを取り易く修正。
 //*  2020/03/19  西野 大介         モダン・ブラウザ・サポート（2017/04/20）の制限事項解除
+//*  2026/08/01  玄人 幸道         業務モーダル画面を閉じた際に親画面がPost Backされない問題に対応
+//*                                （unloadイベントがブラウザ側で無効化されたため、
+//*                                　window.closedのポーリングによる終了検知を併用する）
 //**********************************************************************************
 
 // ---------------------------------------------------------------
@@ -938,11 +941,24 @@ function Fx_CallbackOfBusinessModalScreen() {
 // ---------------------------------------------------------------
 function Fx_CallbackOfBusinessModalScreen2() {
 
+    // ↓↓↓【追加】↓↓↓
+    // unloadイベントとポーリングの両方から呼ばれる可能性があるため、二重実行を防ぐ。
+    if (Fx_BusinessPseudoModelDialog === null
+        || Fx_BusinessPseudoModelDialog === undefined) {
+        return;
+    }
+    // ↑↑↑【追加】↑↑↑
+
     // イベントを外す
     if (Fx_BusinessPseudoModelDialog.closed) {
         // 閉じている。
         $(Fx_BusinessPseudoModelDialog).off("unload"); //, Fx_CallbackOfBusinessModalScreen);
         Fx_BusinessPseudoModelDialog = null;
+
+        // ↓↓↓【追加】↓↓↓
+        // 終了検知のポーリングも解除する。
+        Fx_ClearWatcherOfBusinessModalScreen();
+        // ↑↑↑【追加】↑↑↑
     } else {
         // 閉じていない。
         // unloadのCallbackを"再度"仕掛ける。
@@ -1129,7 +1145,60 @@ function Fx_SetCallbackOfBusinessModalScreen() {
 // ---------------------------------------------------------------
 function Fx_SetCallbackOfBusinessModalScreen2() {
     $(Fx_BusinessPseudoModelDialog).on("unload", Fx_CallbackOfBusinessModalScreen);
+
+    // ↓↓↓【追加】↓↓↓
+    // unloadイベントは、モダン・ブラウザ側で無効化が進んでおり発火しないことがある
+    // （Chromeでは document.featurePolicy.allowsFeature("unload") が false になる）。
+    // このため、window.closed のポーリングでも子画面の終了を検知する。
+    Fx_SetWatcherOfBusinessModalScreen();
+    // ↑↑↑【追加】↑↑↑
 }
+
+// ↓↓↓【追加】↓↓↓
+
+// Business疑似Model（実体はModeless）Screenの終了監視タイマ
+var Fx_WatcherOfBusinessPseudoModelDialog = null;
+
+// ---------------------------------------------------------------
+// モダンブラウザ版（window.closedのポーリングによる終了検知を仕掛ける）
+// ---------------------------------------------------------------
+// 引数    －
+// 戻り値  －
+// ---------------------------------------------------------------
+function Fx_SetWatcherOfBusinessModalScreen() {
+
+    // 多重に仕掛けない。
+    Fx_ClearWatcherOfBusinessModalScreen();
+
+    Fx_WatcherOfBusinessPseudoModelDialog = setInterval(
+        function () {
+            if (Fx_BusinessPseudoModelDialog === null
+                || Fx_BusinessPseudoModelDialog === undefined
+                || Fx_BusinessPseudoModelDialog.closed) {
+
+                // 閉じられたので、監視を終了して後処理を実行する。
+                Fx_ClearWatcherOfBusinessModalScreen();
+                Fx_CallbackOfBusinessModalScreen();
+            }
+        },
+        TimeLag4BusinessPseudoModelDialog);
+}
+
+// ---------------------------------------------------------------
+// モダンブラウザ版（終了検知のポーリングを解除する）
+// ---------------------------------------------------------------
+// 引数    －
+// 戻り値  －
+// ---------------------------------------------------------------
+function Fx_ClearWatcherOfBusinessModalScreen() {
+
+    if (Fx_WatcherOfBusinessPseudoModelDialog !== null) {
+        clearInterval(Fx_WatcherOfBusinessPseudoModelDialog);
+        Fx_WatcherOfBusinessPseudoModelDialog = null;
+    }
+}
+
+// ↑↑↑【追加】↑↑↑
 
 //**********************************************************************************
 //  フレームワーク機能（Ajax Extension）
