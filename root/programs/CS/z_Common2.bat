@@ -1,17 +1,16 @@
-@rem --------------------------------------------------
+﻿@rem --------------------------------------------------
 @rem Execution of the common processing.
 @rem --------------------------------------------------
 
 @rem **************************************************
-@rem [NOTE] This batch file is NOT used by anything and does NOT work.
-@rem   - No other batch file calls z_Common2.bat in this repository.
-@rem   - "set BUILDFILEPATH10.0 =..." has a space before "=",
-@rem     so the variable name ends up containing a trailing space.
-@rem   - "set BUILDFILEPATH=BUILDFILEPATH10.0" is missing the "%" signs,
-@rem     so it assigns the literal string, not the path.
-@rem   Use z_Common.bat instead. Review this file fully before using it.
-@rem   (ASCII only on purpose: this file has no BOM and no "chcp 65001",
-@rem    so non-ASCII comments would be mis-parsed by cmd.)
+@rem [注意] このバッチは未使用であり、かつ動作しません。
+@rem   ・リポジトリ内に z_Common2.bat を呼び出すバッチは存在しません。
+@rem   ・"set BUILDFILEPATH10.0 =..." は "=" の前に空白があるため、
+@rem     変数名に末尾の空白が含まれてしまいます。
+@rem   ・"set BUILDFILEPATH=BUILDFILEPATH10.0" は "%" が抜けているため、
+@rem     パスではなく文字列そのものを代入しています。
+@rem   代わりに z_Common.bat を使用してください。
+@rem   使用する場合は全面的な見直しが必要です。
 @rem **************************************************
 
 @rem --------------------------------------------------

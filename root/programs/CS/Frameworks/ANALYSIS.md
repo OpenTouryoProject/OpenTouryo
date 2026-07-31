@@ -229,17 +229,58 @@ private void UOC_SelectCount(TestParameterValue p)   // private でよい
 
 ### 6.2 プリプロセッサ シンボル
 
-| シンボル | 定義箇所 | 意味 |
+| シンボル | 定義のされ方 | 意味 |
 |---|---|---|
-| `NETCOREAPP` | `Public_netcore100` / `TestCode` の `DefineConstants` | .NET (Core) ビルド |
-| `NETSTD` | `Framework_netcore100` / `Public.Security_netcore100` | .NET Standard 移行時の名残。実質「非 net48」 |
+| `NETCOREAPP` | **.NET SDK が net10.0 に暗黙定義**（csproj の記述に依存しない） | 「.NET (Core) ビルド」＝実質「非 net48」 |
+| `NETSTD` | `Framework` / `Public.Security` / `Dam*` の `DefineConstants` に**明示** | 歴史的経緯（下記） |
 | `NET48` | net48 側 | .NET Framework 固有 |
 | `NETCOREAPP2_0` | 旧コード内に残存 | 実質デッド分岐 |
 | `PERFORMANCE_LOG_SWITCH` | 任意 | 性能ログ |
 
-**`#if (NETSTD || NETCOREAPP)` が 59 箇所、`#if NETSTD` が 91 箇所ある。**
-`Framework` は `NETSTD` を、`Public` は `NETCOREAPP` を定義するため、
-**同じ条件式でもプロジェクトによって成立が変わる。コード追加時は両方のシンボルを確認すること。**
+#### なぜ 2 つあるのか（歴史的経緯）
+
+かつては **.NET Standard でビルドされるライブラリ**と **.NET Core でビルドされるライブラリ**が
+併存しており、その区別が `NETSTD` / `NETCOREAPP` だった。
+**現在は .NET Standard 版が全て .NET Core（net10.0）に統一された**ため、この区別は意味を失っている。
+
+#### 現在の実際の成立状況（実測）
+
+**`NETCOREAPP` は .NET SDK が net10.0 ターゲットに自動的に定義する暗黙シンボル**であり、
+`<DefineConstants>` に書かれていなくても **全 netcore100 プロジェクトで真**になる
+（同条件の最小プロジェクトを作って `#warning` で確認済み）。
+
+| プロジェクト | `NETCOREAPP` | `NETSTD` |
+|---|---|---|
+| `Public` / `Business` / `Business.RichClient` / `CustomControl.RichClient` / `Framework.RichClient` | ✓（暗黙） | **✗** |
+| `Framework` / `Public.Security` / `Dam*` | ✓（暗黙） | ✓（明示） |
+| net48 の全プロジェクト | ✗ | ✗ |
+
+したがって現状は次が成り立つ。
+
+- `#if NETCOREAPP` … netcore100 ビルドで**常に真**。
+- `#if (NETSTD || NETCOREAPP)` … `#if NETCOREAPP` と**完全に等価**。
+- `#if NETSTD` … `NETSTD` を明示定義した 3 系統でのみ真。**それ以外では偽になる。**
+
+#### 注意点
+
+**`NETSTD` を明示していないプロジェクト（`Public` / `Business` / `*.RichClient`）の中で
+素の `#if NETSTD` を書くと、黙って net48 側の分岐に落ちる。**
+実測では該当箇所は 0 件（下表のとおり、書き分けは現状すべて正しい）だが、コード追加時の落とし穴になる。
+
+| プロジェクト | `(NETSTD \|\| NETCOREAPP)` | `NETSTD` 単独 | `NETCOREAPP` 単独 |
+|---|---:|---:|---:|
+| `Public` | 36 | 0 | 2 |
+| `Public.Security` | 0 | 83 | 0 |
+| `Framework` | 21 | 8 | 1 |
+| `Framework.RichClient` | 0 | 0 | 1 |
+| `Business` | 0 | 0 | 6 |
+| `Business.RichClient` | 0 | 0 | 4 |
+| `CustomControl.RichClient` | 0 | 0 | 27 |
+
+> **整理の余地**: 上記のとおり 3 つの書き方はすべて `NETCOREAPP`（＝非 net48）と等価に帰着する。
+> `<DefineConstants>` から `NETSTD` を削除し、`#if NETSTD` / `#if (NETSTD || NETCOREAPP)` を
+> `#if NETCOREAPP` に統一すれば、このシンボル体系は 1 本化できる（対象 約 150 箇所）。
+> 機械的だが影響範囲が広いため、実施は別途判断。
 
 ### 6.3 csproj の `Compile Remove` によるファイル除外
 
@@ -298,15 +339,11 @@ NuGet パッケージ化は `root/programs/CS/NuGet/`（`*.nuspec` + `_NuGetPack
 
 ## 8. コーディング規約（既存コードに合わせること）
 
-### 8.1 ファイル ヘッダ（**全 .cs ファイルに存在。新規追加時は必須**）
+### 8.1 ファイル ヘッダ（**新規追加時も必須**。ただし新規と既存で書式が異なる）
+
+#### 新規ファイルに付けるヘッダ（これが現行の書式）
 
 ```csharp
-//**********************************************************************************
-//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
-//**********************************************************************************
-
-※ Copyright は、新規追加時は不要（開発が企業からコミュニティに移ったため）。
-
 #region Apache License
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -318,17 +355,30 @@ NuGet パッケージ化は `root/programs/CS/NuGet/`（`*.nuspec` + `_NuGetPack
 //* クラス名        ：CallController
 //* クラス日本語名  ：クライアント ライブラリ
 //*
-//* 作成者          ：生技 西野
+//* 作成者          ：xxx
 //* 更新履歴        ：
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2009/04/02  自動生成          新規作成
-//*  2017/02/14  西野 大介         Invokeの非同期バージョン（InvokeAsync）を追加
+//*  2026/07/31  xxx               新規作成
 //**********************************************************************************
 ```
 
-**既存ファイルを変更した場合、更新履歴に 1 行追記するのがこのリポジトリの慣習。**
+> **`Copyright (C) ... Hitachi Solutions,Ltd.` のブロックは、新規ファイルには付けない。**
+> 開発元が企業からコミュニティに移ったため。
+> Apache License の region と、クラス名・日本語名・更新履歴のブロックは従来どおり必要。
+
+#### 既存ファイルの場合
+
+既存ファイルの先頭には次の Copyright ブロックが付いている。**これは削除せず、そのまま残す。**
+
+```csharp
+//**********************************************************************************
+//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
+//**********************************************************************************
+```
+
+**既存ファイルを変更した場合は、更新履歴に 1 行追記するのがこのリポジトリの慣習。**
 
 ### 8.2 その他の規約
 
@@ -457,8 +507,10 @@ net10.0 のフレームワーク参照（`Microsoft.AspNetCore.App`）ではな�
 
 - [ ] `AGENTS.md` のポリシー遵守（**git 操作をしない**）
 - [ ] 変更対象が net48 / netcore100 / 両方のどれか判定（`Compile Remove` を確認）
-- [ ] `#if NETSTD` / `#if NETCOREAPP` の使い分けをプロジェクト単位で確認
-- [ ] 新規 .cs にはヘッダ コメント（Copyright / Apache License / クラス名・日本語名・更新履歴）を付与
+- [ ] 条件コンパイルは **`#if NETCOREAPP`（＝非 net48）を使う**。
+      `#if NETSTD` は `Framework` / `Public.Security` / `Dam*` でしか真にならないので新規には使わない（6.2 節）
+- [ ] 新規 .cs にはヘッダ コメント（Apache License / クラス名・日本語名・更新履歴）を付与。
+      **Copyright ブロックは新規には付けない**（8.1 節）
 - [ ] 既存 .cs 変更時は更新履歴に 1 行追記
 - [ ] public/protected メンバに日本語 `<summary>` を付与（DocumentationFile 出力のため）
 - [ ] 文字列リテラルは `FxLiteral` / `MyLiteral` / `PubLiteral` に定数として追加
@@ -492,16 +544,40 @@ net10.0 のフレームワーク参照（`Microsoft.AspNetCore.App`）ではな�
 - `dotnet build Nuget_netcore100.sln` … 0 エラー（警告は既知の NU1902/NU1903 のみ）。
 - bat 内の `.sln` / `.bat` 参照 … 実在しない参照は解消（残るのは注意書きを入れた `99_*` のみ）。
 
-### bat ファイルに日本語コメントを書く際の注意（実測）
+### bat ファイルの日本語 → **UTF-8 BOM 付きで統一**（2026-07-31 適用）
 
-UTF-8 の日本語コメントは、**BOM が無く `chcp 65001` も無い bat では CP932 として誤解釈され、
-コメントの一部がコマンドとして実行される**（実測で確認）。ファイルごとに条件が異なる。
+**ルール: 非 ASCII 文字を含む `.bat` は UTF-8 **BOM 付き**にする。** これだけでよい。
 
-| ファイル | BOM | `chcp 65001` | 日本語コメント |
-|---|---|---|---|
-| `z_Common.bat` | なし | **あり**（冒頭） | 可（chcp より後に書くこと） |
-| `99_BuildLibsAtOtherRepos*.bat` | **あり** | なし | 可 |
-| `z_Common2.bat` | なし | なし | **不可**（ASCII で書くこと） |
+BOM が無いと、cmd.exe がバッチをバイト オフセットで読み進める際に文字境界がずれ、
+**`@rem` コメントの途中から先がコマンドとして実行される**ことがある
+（`'xxx' は、内部コマンドまたは外部コマンド…として認識されていません` が出る）。
+
+#### 実測結果
+
+同一内容のファイルで、BOM の有無 × 起動時コンソール コードページを試験した。
+
+| BOM | 起動 CP=932 | 起動 CP=65001 |
+|---|---|---|
+| なし | エラーなし | **エラーあり（間欠。6 回中 1 回）** |
+| **あり** | **エラーなし** | **エラーなし** |
+
+- **BOM 付きは両コードページで一度もエラーが出なかった**（`z_Common.bat` を `call` 経由で
+  CP932 4 回 / CP65001 4 回、他ファイルでも計 20 回以上試行し 0 件）。
+- **実害は「紛らわしいエラー表示」に留まる。** 誤実行が起きても
+  **後続の実コマンドは飛ばない**ことを、コメント直後に `set` を置いて検証済み
+  （全ケースで変数は正しく設定された）。
+- `chcp 65001` は**画面出力の文字化け対策**であって、この解析ずれの対策ではない。
+  必要な場合（日本語を `echo` する等）に併用する。
+
+#### 適用状況
+
+`root/programs/CS/` 配下で非 ASCII を含む bat **10 本すべてに BOM を付与済み**
+（`1_DeleteDir` `5_Build_CLI_sample` `7_Build_Framework_WSCore` `10_Build_WebAppCore_sample`
+`y_Build_TestCode` `z_Common` `z_Common2` `99_BuildLibsAtOtherRepos*` `NuGet/_NuGetPack`）。
+BOM 付与は**先頭 3 バイトの追加のみ**で、本文は一切変更していない。
+
+> 純粋に ASCII のみの bat に BOM は不要（差分ノイズになるだけ）。
+> 日本語を書き足すときに BOM の有無を確認すること。
 
 ### 未対応（別作業として要判断）
 

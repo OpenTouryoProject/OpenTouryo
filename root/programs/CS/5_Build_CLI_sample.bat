@@ -1,4 +1,4 @@
-setlocal
+﻿setlocal
 
 @rem --------------------------------------------------
 @rem Turn off the echo function.

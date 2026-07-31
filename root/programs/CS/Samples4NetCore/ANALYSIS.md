@@ -350,6 +350,7 @@ bat を経由せず **`dotnet build <sln>` を直接叩いてよい**（Core 側
 - [ ] Web アプリを新規に起こすなら `InitConfiguration` / `_UseHttpContextAccessor` / `UseSession` を忘れない
 - [ ] 定義 XML を追加したら `Legacy/*` の csproj に `CopyToOutputDirectory` を追記
 - [ ] パッケージ バージョンを変えるならフレームワーク本体との整合を確認（7 節）
-- [ ] 新規 .cs にはヘッダ コメント（クラス名・日本語名・更新履歴）を付与、既存変更時は履歴に 1 行追記
+- [ ] 新規 .cs にはヘッダ コメント（Apache License / クラス名・日本語名・更新履歴）を付与、既存変更時は履歴に 1 行追記。
+      **Copyright ブロックは新規には付けない**（`../Frameworks/ANALYSIS.md` 8.1 節）
 - [ ] `UOC_` メソッドの冒頭で `this.ReturnValue = ...` を設定
 - [ ] 実行確認をするなら `C:\root\files` と Northwind DB の準備状況を先に確認

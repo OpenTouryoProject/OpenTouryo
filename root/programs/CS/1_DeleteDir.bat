@@ -1,4 +1,4 @@
-@echo off
+﻿@echo off
 
 set DIRECTORIES=packages, obj, bin, bld, Temp, PrecompiledWeb, MigrationBackup, .vs
 @echo --------------------------------------------------
