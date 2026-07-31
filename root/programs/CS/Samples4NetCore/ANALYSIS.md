@@ -1,7 +1,7 @@
 # ANALYSIS.md — Open棟梁 サンプル アプリ（CS/Samples4NetCore）コード分析
 
-対象: `root/programs/CS/Samples4NetCore`（**.NET 10.0**）
-作成日: 2026-07-31 / 分析時ブランチ: `develop`
+対象: `root/programs/CS/Samples4NetCore`（**.NET 10.0**） / ブランチ: `develop`
+最終更新: 2026-07-31
 
 本書は **コーディング・エージェントが本ディレクトリで作業する際の Context** を目的とする。
 フレームワーク本体は `../Frameworks/ANALYSIS.md`、net48 版サンプルは `../Samples/ANALYSIS.md` を参照。
@@ -151,9 +151,9 @@ public async Task<IActionResult> SelectCount(CrudViweModel model)
 
 ### 3-4. npm / grunt は使わない
 
-コミット `2a08482f` で `package.json` / `gruntfile.js` / `RestoreLib1.bat` / `RestoreLib2.bat` を廃止し、
-**`wwwroot/lib/` 配下（bootstrap 等）をリポジトリに直接格納する方式**へ移行済み。
-`10_Build_WebAppCore_sample.bat` 側の呼び出し残骸も除去済み（2026-07-31）。
+**`wwwroot/lib/` 配下（bootstrap 等）はリポジトリに直接格納**されており、
+`package.json` / `gruntfile.js` / `RestoreLib1.bat` / `RestoreLib2.bat` は存在しない
+（コミット `2a08482f` で npm/grunt を廃止した）。`10_Build_WebAppCore_sample.bat` も npm 手順を持たない。
 
 ### 3-5. 起動
 

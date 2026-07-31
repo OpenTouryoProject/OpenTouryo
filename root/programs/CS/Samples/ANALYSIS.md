@@ -1,7 +1,7 @@
 # ANALYSIS.md — Open棟梁 サンプル アプリ（CS/Samples）コード分析
 
-対象: `root/programs/CS/Samples`（**.NET Framework 4.8 専用**）
-作成日: 2026-07-31 / 分析時ブランチ: `develop`
+対象: `root/programs/CS/Samples`（**.NET Framework 4.8 専用**） / ブランチ: `develop`
+最終更新: 2026-07-31
 
 本書は **コーディング・エージェントが本ディレクトリで作業する際の Context** を目的とする。
 フレームワーク本体の分析は `../Frameworks/ANALYSIS.md` を、

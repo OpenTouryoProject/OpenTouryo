@@ -1,7 +1,7 @@
 # ANALYSIS.md — Open棟梁 フレームワーク本体（CS/Frameworks）コード分析
 
-対象: `root/programs/CS/Frameworks`
-作成日: 2026-07-31 / 分析時ブランチ: `develop`（直近コミット `c905153a fixed #504`）
+対象: `root/programs/CS/Frameworks` / ブランチ: `develop`
+最終更新: 2026-07-31
 
 本書は **コーディング・エージェントが本リポジトリで作業する際の Context** を目的とした分析結果である。
 「どこに何があるか」「どの規約に従うべきか」「何を壊しやすいか」を記す。
@@ -322,18 +322,84 @@ SDK 形式 csproj はワイルドカード込みなので、**プラットフォ
 | `5〜8_*` | サンプル各種 |
 | `y_Build_TestCode*.bat` | テスト |
 | `0_ExecAllBat.bat` | 全実行 |
-| `z_Common.bat` / `z_Common2.bat` | MSBuild / devenv のパス解決（VS2005〜VS2026 を総当り） |
+| `z_Common.bat` / `z_Common2.bat` | ビルド ツールのパス解決（各 bat が冒頭で `call` する） |
 
 .NET (Core) 側は `dotnet restore` → `dotnet msbuild` を呼ぶだけなので、
 **エージェントは bat を経由せず直接 `dotnet build "Frameworks\Infrastructure\Nuget_netcore100.sln"` してよい。**
 net48 側は MSBuild / devenv が必要（Windows + VS 前提）。
 
-本書作成時に実際に検証済み: `dotnet build Nuget_netcore100.sln` → **0 エラー / 44 警告（約30秒）**。
-警告はすべて NuGet 脆弱性警告（12 節 13 項）で、コンパイル警告ではない。
+`dotnet build Nuget_netcore100.sln` は **0 エラー / 20 警告**。
+警告はすべて NuGet 脆弱性警告（12 節）で、コンパイル警告ではない。
 
-ビルド順の依存: `Public` → `Public.Security` → `Framework` → `Business` → `Tools`/`Tests`/`Samples`。
+#### `z_Common.bat` と `z_Common2.bat`（MSBuild 版 / devenv 版）
 
-NuGet パッケージ化は `root/programs/CS/NuGet/`（`*.nuspec` + `_NuGetPack.bat`、`in/` に DLL を置く）。
+両者は **`%BUILDFILEPATH%`（ビルド ツールのパス）と `%COMMANDLINE%`（ビルド引数）という
+同じインターフェイスを提供する差し替え可能な対**であり、呼び出し側の bat は
+`call` するファイルを変えるだけでビルド ツールを切り替えられる設計になっている。
+
+| | ビルド ツール | `%COMMANDLINE%` |
+|---|---|---|
+| `z_Common.bat` | MSBuild.exe | `/p:Configuration=<構成> /p:DebugType=<型> -v:d` |
+| `z_Common2.bat` | devenv.com / devenv.exe | `/build <構成>`（devenv 構文） |
+
+`z_Common2.bat` は、**MSBuild.exe ではエラーになるが devenv.com では通る、というケースが
+散在していた時期に、ビルド ツールを devenv へ差し替えるために用意されたもの**。
+現在はどの bat からも呼ばれておらず、変数定義にも不具合が残っているため、そのままでは動作しない
+（詳細はファイル冒頭のコメント参照）。**通常は `z_Common.bat` を使う。**
+
+`z_Common.bat` は `vswhere` で MSBuild を解決し、見つからなければ明示エラーで停止する
+（固定パス群はフォールバックとして存置）。エディションに依存しない。
+
+### 7.1 ビルド順（厳守）
+
+```
+Public → Public.Security → Framework → Business → Tools / Tests / Samples
+```
+
+**`4_Build_CopyAssemblies.bat`（`Build_net48` → `Build\` の xcopy）を飛ばすと、
+net48 のサンプルとツールが一切ビルドできない。**
+`Frameworks\Infrastructure\Build\` を `HintPath` 参照するプロジェクトが CS/VB 合わせて **42 件**あるため
+（`Samples/*` の全 net48 サンプル、`Tools/DaoGen_Tool`・`DPQuery_Tool`、`Tests/TestLog*`）。
+`0_ExecAllBat.bat` が `2_`/`3_` → `4_CopyAssemblies` → `5_`〜`10_`（サンプル）の順で呼ぶのはこのため。
+
+`Build\` に入るのは **net48 の成果物のみ**で、.NET (Core) 側に相当物は無い
+（`Samples4NetCore` は `Build_netcore100\net10.0\` を直接参照する）。この非対称は設計どおり。
+
+### 7.2 バージョン番号の一元管理
+
+**`Infrastructure/Directory.Build.props` の `OpenTouryoVersion` が唯一の定義箇所。**
+
+```xml
+<PropertyGroup>
+  <OpenTouryoVersion>3.0.0</OpenTouryoVersion>
+  <Company>Hitachi Solutions</Company>
+</PropertyGroup>
+```
+
+| 反映先 | 仕組み |
+|---|---|
+| SDK 形式アセンブリ（7 個） | 各 csproj の `<Version>$(OpenTouryoVersion)</Version>` |
+| NuGet パッケージ | nuspec は `<version>$version$</version>` と `<dependency id="Touryo.Infrastructure.*" version="$version$" />`。`_NuGetPack.bat` が props から値を読み `nuget pack -Properties version=...` で渡す |
+
+- **旧形式 csproj（`*_net48.csproj`）には効かない。** `Microsoft.Common.props` をインポートしないため。
+  net48 のバージョンは各プロジェクトの `Properties\AssemblyInfo.cs` が持つ。
+- **`Business` 系は 1.0.0 で別系統。** `Business/Properties/AssemblyInfo.cs` が `AssemblyVersion("1.0.0.0")` であり、
+  Public / Framework / Public.Security の 3.0.0.0 とは意図的に分けている。
+  そのため `Directory.Build.props` では `<Version>` を全体に設定せず、
+  `OpenTouryoVersion` という独自プロパティをパッケージ対象の 7 プロジェクトだけが参照する形にしている。
+
+> **注意**: `Directory.Build.props` の XML コメント内にハイフン 2 個の連続（`--`）を書くと
+> XML として不正になり、MSBuild がプロジェクトの読み込みに失敗する。区切り線に使わないこと。
+
+### 7.3 NuGet パッケージ化
+
+`root/programs/CS/NuGet/`（`*.nuspec` + `_NuGetPack.bat`、`in/` に DLL を staging）。
+手順は `NuGet/_手順の説明.txt` を参照。
+
+- **nuspec の `<dependencies>` は csproj の `PackageReference` と一致している**（余分・不足・版ズレなし）。
+  依存を増減したら nuspec 側も合わせること。
+- パッケージ自身と `Touryo.Infrastructure.*` の相互依存のバージョンは `$version$` トークンで自動追随する（7.2 節）。
+- `Symbol_Framework.RichClient.nuspec` のみ、`net10.0-windows7.0` ビルドを `lib\net10.0` に配置している（12 節）。
 
 ---
 
@@ -395,6 +461,27 @@ NuGet パッケージ化は `root/programs/CS/NuGet/`（`*.nuspec` + `_NuGetPack
   アプリ側は `LayerB` / `LayerD` / `TestParameterValue` / `TestReturnValue` を実装（`Samples/` 参照）。
 - 変数はプライベート フィールド `_xxx` ＋ 明示的プロパティ（自動プロパティは新しい箇所のみ）。
 
+### 8.3 bat ファイルの文字コード
+
+**非 ASCII 文字（日本語）を含む `.bat` は UTF-8 BOM 付きにする。**
+
+BOM が無いと、cmd.exe がバッチをバイト オフセットで読み進める際に文字境界がずれ、
+**`@rem` コメントの途中から先がコマンドとして実行される**ことがある
+（`'xxx' は、内部コマンドまたは外部コマンド…として認識されていません` が出る）。
+
+| BOM | 起動 CP=932 | 起動 CP=65001 |
+|---|---|---|
+| なし | エラーなし | **エラーあり（間欠）** |
+| **あり** | **エラーなし** | **エラーなし** |
+
+- 実害は「紛らわしいエラー表示」に留まり、**後続の実コマンドは飛ばない**。
+- `chcp 65001` は**画面出力の文字化け対策**であって、この解析ずれの対策ではない。
+  日本語を `echo` する場合に併用する。
+- 純粋に ASCII のみの bat に BOM は不要（差分ノイズになるだけ）。
+  **日本語を書き足すときに BOM の有無を確認すること。**
+
+`root/programs/CS/` 配下で非 ASCII を含む bat は、すべて BOM 付きになっている。
+
 ---
 
 ## 9. Public 層の主なユーティリティ（再実装しないこと）
@@ -435,51 +522,47 @@ NuGet パッケージ化は `root/programs/CS/NuGet/`（`*.nuspec` + `_NuGetPack
 
 | プロジェクト | パッケージ |
 |---|---|
-| Public | `log4net` 3.0.4, `NLog` 5.5.0, `Microsoft.Data.SqlClient` 6.0.1, `System.Data.Odbc` 9.0.4, `Newtonsoft.Json` 13.0.3, `Microsoft.Extensions.Configuration*` 9.0.4, `Zipangu` 1.1.8 |
-| Public.Security | `jose-jwt` 5.1.1, `BouncyCastle.NetCore` 2.2.1, `System.Security.Cryptography.Xml` 9.0.4, `Newtonsoft.Json` 13.0.3 |
+| Public | `log4net` 3.3.0, `NLog` 5.5.0, `Microsoft.Data.SqlClient` 6.0.1, `System.Data.Odbc` 9.0.4, `Newtonsoft.Json` 13.0.3, `Microsoft.Extensions.Configuration*` 9.0.4, `Zipangu` 1.1.8 |
+| Public.Security | `jose-jwt` 5.1.1, `BouncyCastle.NetCore` 2.2.1, `System.Security.Cryptography.Xml` 9.0.15, `Newtonsoft.Json` 13.0.3 |
 | Framework | `Microsoft.AspNetCore.{Http,Http.Extensions,Mvc,Session}` 2.3.0, `Microsoft.Extensions.PlatformAbstractions` 1.1.0 |
-| Business | `Microsoft.AspNetCore.Authentication{,.Cookies}` 2.3.0, `Microsoft.AspNetCore.{Http,Mvc}` 2.3.0 ほか |
+| Business | `Microsoft.AspNetCore.Authentication{,.Cookies}` 2.3.0, `Microsoft.AspNetCore.{Http,Mvc}` 2.3.0, `System.Security.Cryptography.Xml` 9.0.4, `Newtonsoft.Json` 13.0.3 ほか |
 
-**注意:** `Microsoft.AspNetCore.*` は **2.3.0（互換シム パッケージ）** を使い続けている。
+**注意 1:** `Microsoft.AspNetCore.*` は **2.3.0（互換シム パッケージ）** を使い続けている。
 net10.0 のフレームワーク参照（`Microsoft.AspNetCore.App`）ではない。安易に上げると壊れる可能性が高い。
+
+**注意 2:** `System.Security.Cryptography.Xml` は **`Public.Security` が 9.0.15、`Business` が 9.0.4** と
+版がずれている（Dependabot が `Public.Security` のみ更新したため）。どちらも NU1903 が出る（12 節）。
+
+依存は Dependabot で随時更新される。**上表は目安であり、正確な値は csproj を直接見ること。**
 
 ---
 
 ## 12. 落とし穴 / 既知の不整合（作業前に把握しておく）
 
-1. **`README.md` / `Readme.ja.md` が陳腐化**。「Visual Studio 2022 / .NET 8.0」と書かれているが、
-   実際の csproj は **net10.0**、bat は VS2026(`Visual Studio\18`) を探す。
-2. ~~**`NuGet/*.nuspec` が `net8.0` を前提**~~ → **修正済み（2026-07-31）**。
-   nuspec 8 本を `net10.0` に、`_NuGetPack.bat` / `T_NuGetPack.bat` の staging 元を
-   `Build_netcore100\net10.0`（RichClient は `net10.0-windows7.0`）に更新済み。
-   `nuget pack` が 7 パッケージすべて成功することを確認済み。詳細は 15 節。
-3. **バージョン番号が不統一**: csproj `<Version>3.0.0.0`、nuspec `3.0.0`。一括管理の仕組みはない。
-4. **`Compile Remove` を忘れると .NET (Core) ビルドが壊れる**（6.3 節）。
-5. **`CmnDao` は `new` による隠蔽**であって override ではない。`BaseDao` 型変数経由で呼ぶと親の実装が走る。
-6. **`ReturnValue` を設定し忘れると戻り値が null** になる（3.2 節）。例外時も同様。
-7. **`_dams` ディクショナリと `_dam` の二重管理**。Commit/Rollback/Close は両方に対して行われる。
+1. **`4_Build_CopyAssemblies.bat` を飛ばすと net48 のサンプル・ツールが全滅する**（7.1 節）。
+2. **`Compile Remove` を忘れると .NET (Core) ビルドが壊れる**（6.3 節）。
+3. **`CmnDao` は `new` による隠蔽**であって override ではない。`BaseDao` 型変数経由で呼ぶと親の実装が走る。
+4. **`ReturnValue` を設定し忘れると戻り値が null** になる（3.2 節）。例外時も同様。
+5. **`_dams` ディクショナリと `_dam` の二重管理**。Commit/Rollback/Close は両方に対して行われる。
    複数 DB を使う場合は `SetDam(key, dam)` を使い、`GetDam(key)` で取り出す。
-8. **`BaseController.cs`（4836 行）と `BaseDam.cs`（3198 行）は巨大**。
+6. **`BaseController.cs`（4836 行）と `BaseDam.cs`（3198 行）は巨大**。
    変更時は該当 `#region` に閉じた修正に留め、全体リファクタは避ける（互換性維持が最優先の設計）。
-9. **VB 版ミラーが存在**: `root/programs/VB/Frameworks/Infrastructure/` に
+7. **VB 版ミラーが存在**: `root/programs/VB/Frameworks/Infrastructure/` に
    `Business` / `CustomControl` / `ServiceInterface` の VB.NET 版がある（`Public` / `Framework` は C# 版を共有）。
    Business 層テンプレートの仕様を変えると **VB 側も追随が必要**。
-10. **作業ツリーに未追跡の生成物が多数**（`Build*/`, `dll/`, `*.cer`, `SAML2Client.cs.bak`）。
-    これらはコミット対象ではない。`.bak` は残骸。
-    → `Build*/` と `ServiceInterface/*/dll/` は **`.gitignore` に追加済み（2026-07-31）**。
-    残る未追跡は `*.cer`（テスト生成物）と `SAML2Client.cs.bak` のみ。
-11. `Public/Security/MyDebug.cs` は `Public/Diagnostics/MyDebug.cs` の**派生クラス**（重複ではない。
-    アセンブリ分割の都合）。
-12. `TMProtocolDefinition2.xml` など「2」付きの定義ファイルが並存する。用途は用例違い。
-13. **既知脆弱性を含む NuGet パッケージを参照中**（ビルド時に NU1902/NU1903 が計 44 件）。
-    - `log4net` 3.0.4 → GHSA-4f7c-pmjv-c25w（中）
-      ※ **バージョンを上げても解消しない。** サンプル側で使われている 3.1.0 / 3.2.0 でも
-        同じ NU1902 が出ることを実測で確認済み（2026-07-31）。対処するなら NLog への切替
-        （`LogLib` 設定で可能）か、`NoWarn` での明示的な抑止を検討する。
-    - `System.Security.Cryptography.Xml` 9.0.4 → GHSA-23rf-6693-g89p 他 8 件（高）
-
-    バージョンを上げる作業をする場合は `Public` / `Public.Security` / `Framework` / `Business` /
-    `Dam*` の csproj（net48 / netcore100 の両方）と `NuGet/*.nuspec` の `<dependencies>` を同時に更新する。
+8. **作業ツリーに未追跡の生成物が残る**。`Build*/` と `ServiceInterface/*/dll/` は `.gitignore` 済み。
+   残るのは `*.cer`（テスト生成物）と `SAML2Client.cs.bak`（残骸）で、いずれもコミット対象ではない。
+9. `Public/Security/MyDebug.cs` は `Public/Diagnostics/MyDebug.cs` の**派生クラス**（重複ではない。
+   アセンブリ分割の都合）。
+10. `TMProtocolDefinition2.xml` など「2」付きの定義ファイルが並存する。用途は用例違い。
+11. **`System.Security.Cryptography.Xml` に既知脆弱性（NU1903 / 高）**。
+    - `Public.Security` = 9.0.15 → `Nuget_netcore100.sln` のビルドで **20 警告**
+    - `Business` = 9.0.4 → `Business_netcore100.sln` のビルドで **18 警告**
+    - 修正版の有無を確認したうえで更新するか、`NoWarn` での抑止を検討する。
+      版を上げる場合は net48 / netcore100 の両 csproj と `NuGet/*.nuspec` の `<dependencies>` を同時に直す。
+12. **`Symbol_Framework.RichClient.nuspec` の lib TFM が不正確**。
+    `net10.0-windows7.0` ビルドを `lib\net10.0` に配置している。本来は `lib\net10.0-windows` が正しく、
+    現状は Linux 上の net10.0 消費者も解決してしまう。直すとパッケージ解決セマンティクスが変わるため据え置き。
 
 ---
 
@@ -518,173 +601,3 @@ net10.0 のフレームワーク参照（`Microsoft.AspNetCore.App`）ではな�
       （net48 は MSBuild 必須）
 - [ ] テスト実行前に **フレームワークを先にビルド**（`Build_netcore100/net10.0/*.dll` を HintPath 参照するため）
 - [ ] Business 層テンプレートを変えたら VB 版ミラーの追随要否を報告
-
----
-
-## 15. ビルドプロセスの修正履歴（2026-07-31）
-
-`netcore80 (net8.0)` → `netcore100 (net10.0)` 移行時に、**ソース以外のビルド周辺スクリプトへの
-追随漏れ**が残っていた。以下を修正済み。C# ソースおよび csproj は無変更。
-
-| 対象 | 内容 |
-|---|---|
-| `0_Release4Nuget.bat` | `2_Build_NuGet_nettcore80.bat`（不在・タイポ）→ `2_Build_NuGet_netcore100.bat` |
-| `NuGet/_NuGetPack.bat` / `T_NuGetPack.bat` | staging 元を `Build_netcore80\net8.0`(不在) → `Build_netcore100\net10.0`、`net8.0-windows` → `net10.0-windows7.0` |
-| `NuGet/Symbol_*.nuspec` 7 本 ＋ `T_Symbol_Public.nuspec` | `targetFramework` / `src` / `target` を `net8.0` → `net10.0` |
-| `NuGet/in/` | プレースホルダを `net8.0`, `net8.0-windows` → `net10.0`, `net10.0-windows` にリネーム |
-| `y_Build_TestCode_Public.bat` | `TestCodeCore80.sln`（不在）→ `TestCodeCore100.sln` |
-| `10_Build_WebAppCore_sample.bat` | 削除済みの npm 手順（`node_modules` 削除・`RestoreLib1/2.bat`）を除去。コミット `2a08482f` で npm/grunt 廃止済み |
-| `z_Common.bat` | MSBuild 検出を `vswhere` 方式に変更（従来は VS18 **Community** 決め打ち）。固定パスはフォールバックとして存置し、未検出時は明示エラーで停止 |
-| `99_BuildLibsAtOtherRepos*.bat`, `z_Common2.bat` | 動作しない旨の注意書きを追記（削除はしていない） |
-| `.gitignore` | ビルド出力 12 ディレクトリを追加 |
-
-### 検証結果
-
-- `nuget pack` … Symbol_* 7 本すべて成功。`lib/net48` と `lib/net10.0` が正しく構成されることを確認。
-- `dotnet build Nuget_netcore100.sln` … 0 エラー（警告は既知の NU1902/NU1903 のみ）。
-- bat 内の `.sln` / `.bat` 参照 … 実在しない参照は解消（残るのは注意書きを入れた `99_*` のみ）。
-
-### bat ファイルの日本語 → **UTF-8 BOM 付きで統一**（2026-07-31 適用）
-
-**ルール: 非 ASCII 文字を含む `.bat` は UTF-8 **BOM 付き**にする。** これだけでよい。
-
-BOM が無いと、cmd.exe がバッチをバイト オフセットで読み進める際に文字境界がずれ、
-**`@rem` コメントの途中から先がコマンドとして実行される**ことがある
-（`'xxx' は、内部コマンドまたは外部コマンド…として認識されていません` が出る）。
-
-#### 実測結果
-
-同一内容のファイルで、BOM の有無 × 起動時コンソール コードページを試験した。
-
-| BOM | 起動 CP=932 | 起動 CP=65001 |
-|---|---|---|
-| なし | エラーなし | **エラーあり（間欠。6 回中 1 回）** |
-| **あり** | **エラーなし** | **エラーなし** |
-
-- **BOM 付きは両コードページで一度もエラーが出なかった**（`z_Common.bat` を `call` 経由で
-  CP932 4 回 / CP65001 4 回、他ファイルでも計 20 回以上試行し 0 件）。
-- **実害は「紛らわしいエラー表示」に留まる。** 誤実行が起きても
-  **後続の実コマンドは飛ばない**ことを、コメント直後に `set` を置いて検証済み
-  （全ケースで変数は正しく設定された）。
-- `chcp 65001` は**画面出力の文字化け対策**であって、この解析ずれの対策ではない。
-  必要な場合（日本語を `echo` する等）に併用する。
-
-#### 適用状況
-
-`root/programs/CS/` 配下で非 ASCII を含む bat **10 本すべてに BOM を付与済み**
-（`1_DeleteDir` `5_Build_CLI_sample` `7_Build_Framework_WSCore` `10_Build_WebAppCore_sample`
-`y_Build_TestCode` `z_Common` `z_Common2` `99_BuildLibsAtOtherRepos*` `NuGet/_NuGetPack`）。
-BOM 付与は**先頭 3 バイトの追加のみ**で、本文は一切変更していない。
-
-> 純粋に ASCII のみの bat に BOM は不要（差分ノイズになるだけ）。
-> 日本語を書き足すときに BOM の有無を確認すること。
-
-### 未対応（別作業として要判断）
-
-1. **NuGet 脆弱性警告** … `System.Security.Cryptography.Xml`（NU1903）が残る。
-   - `log4net` は **Dependabot PR #506 で 3.3.0 に上がり NU1902 は解消済み**（実測確認）。
-     ※ 本書の以前の版に「3.1.0 / 3.2.0 に上げても解消しない」と書いたが、**3.3.0 で解消する**。訂正する。
-   - `System.Security.Cryptography.Xml` は **PR #507 で 9.0.15 に上がったが NU1903 は依然出る**（実測）。
-     警告 20 件のうち全てがこれ。修正版の有無を確認したうえで対応するか、`NoWarn` を検討する。
-2. ~~**nuspec の依存宣言の誤り**~~ → **修正済み（2026-07-31）**。15 節参照。
-3. **RichClient の lib TFM** … `net10.0-windows7.0` ビルドを `lib\net10.0` に配置している。
-   本来は `lib\net10.0-windows` が正しいが、パッケージ解決セマンティクスが変わるため据え置き。
-4. ~~**`README.md` / `Readme.ja.md` の陳腐化**~~ → **修正済み（2026-07-31）**。15 節参照。
-5. ~~**バージョン一元管理の不在**~~ → **対応済み（2026-07-31）**。
-   `Infrastructure/Directory.Build.props` の `OpenTouryoVersion` が唯一の定義箇所。15 節参照。
-6. ~~**`4_Build_CopyAssemblies.bat` が `Build_net48` のみを `Build\` へコピー**…参照するプロジェクトは 0 件~~
-   → **【訂正 2026-07-31】これは誤りだった。** 当初の調査で使った PowerShell の検索が
-   ヒットを取りこぼしていた。`grep -F` で再確認したところ、
-   **`Frameworks\Infrastructure\Build\` を `HintPath` 参照するプロジェクトは CS/VB 合わせて 42 件ある**
-   （`Samples/*` の全 net48 サンプル、`Tools/DaoGen_Tool`・`DPQuery_Tool`、`Tests/TestLog*`）。
-
-   つまり `4_Build_CopyAssemblies.bat` は不要な残骸ではなく、
-   **net48 のサンプル・ツールをビルド可能にするための必須ステップ**である。
-   `0_ExecAllBat.bat` が `2_`/`3_` → `4_CopyAssemblies` → `5_`〜`10_`（サンプル）の順で
-   呼んでいるのはこのため。**この bat を削除・変更してはならない。**
-
-   なお `Build\` に入るのは net48 の成果物のみで、.NET (Core) 側に相当物は無い
-   （`Samples4NetCore` は `Build_netcore100\net10.0\` を直接参照する）。この非対称は設計どおり。
-
----
-
-## 16. nuspec の依存宣言・バージョン一元管理の修正（2026-07-31）
-
-### 16-1. nuspec の依存宣言を csproj と一致させた
-
-nuspec の `<dependencies>` を全 7 パッケージ分、対応する csproj の `PackageReference` と
-機械的に突き合わせたところ、**netstandard 時代の残骸**と**版ズレ**が見つかった。
-
-| nuspec | 削除した依存 | 理由 |
-|---|---|---|
-| `Symbol_Public.nuspec`<br>`T_Symbol_Public.nuspec` | `DotNetZip 1.16.0`（net48 / net10.0 の両グループ） | `IO/Zip*.cs`（`using Ionic.Zip`）は **net48 の `Compile Include` にも無く、netcore100 では `Compile Remove`** されており、どちらでも未コンパイル。非推奨かつ脆弱性のあるパッケージを利用者に強制していた |
-| 同上 | `System.Reflection.Emit.ILGeneration/Lightweight 4.7.0`（net10.0） | `FastReflection/EnumToStringByEmitExtensions.cs` は使うが、net10.0 では BCL 同梱。csproj も参照していない |
-| `Symbol_Public.Security.nuspec` | `System.Security.Cryptography.Cng 5.0.0`<br>`System.Security.Cryptography.OpenSsl 5.0.0`（net10.0） | `DigitalSignECDsaCng.cs` / `DigitalSignECDsaOpenSsl.cs` はコンパイルされるが、net10.0 では BCL 同梱。csproj も参照していない |
-| `Symbol_Framework.nuspec` | `System.Net.Http 4.3.4`<br>`System.Security.Cryptography.X509Certificates 4.3.2`（net10.0） | netstandard 時代のシム。csproj は参照しておらず、特に `System.Net.Http 4.3.x` は binding 問題を起こしやすい |
-
-版ズレも csproj 側に合わせた。
-
-| パッケージ | 修正前（nuspec） | 修正後 |
-|---|---|---|
-| `log4net` | net48=3.1.0 / net10.0=3.0.4 | **3.3.0**（両方） |
-| `System.Security.Cryptography.Xml` | 9.0.4 | **9.0.15** |
-
-**検証**: nuspec の全依存を csproj と再突合し「余分・不足・版ズレ ゼロ」を確認。
-さらに `nuget pack` を実行して生成された `.nupkg` 内の `.nuspec` を展開し、
-削除対象 6 パッケージが 1 件も残っていないことを確認済み。
-
-### 16-2. バージョン番号を一元管理にした
-
-**`Infrastructure/Directory.Build.props` を新規作成**し、`OpenTouryoVersion` を唯一の定義箇所とした。
-
-```xml
-<PropertyGroup>
-  <OpenTouryoVersion>3.0.0</OpenTouryoVersion>
-  <Company>Hitachi Solutions</Company>
-</PropertyGroup>
-```
-
-| 反映先 | 仕組み |
-|---|---|
-| SDK 形式アセンブリ（7 個） | 各 csproj の `<Version>$(OpenTouryoVersion)</Version>`。個別の `<Company>` は削除して継承 |
-| NuGet パッケージ | nuspec は `<version>$version$</version>` と `<dependency id="Touryo.Infrastructure.*" version="$version$" />`。`_NuGetPack.bat` が props から値を読み `nuget pack -Properties version=...` で渡す |
-
-**適用範囲が SDK 形式に限定されるのは意図どおり。**
-旧形式 csproj（`*_net48.csproj`, ToolsVersion=12.0）は `Microsoft.Common.props` を
-インポートしないため `Directory.Build.props` の影響を受けない。net48 のバージョンは
-従来どおり各プロジェクトの `Properties\AssemblyInfo.cs` が持つ。
-
-**`Business` 系は 1.0.0 のまま維持している。**
-`Business/Properties/AssemblyInfo.cs` が `AssemblyVersion("1.0.0.0")` であり、
-Public / Framework / Public.Security の 3.0.0.0 とは意図的に別系統。
-そのため `Directory.Build.props` では `<Version>` を全体には設定せず、
-`OpenTouryoVersion` という**独自プロパティ**を定義して、
-パッケージ対象の 7 プロジェクトだけが明示的に参照する方式にした。
-
-**検証（実測）**
-
-| 確認項目 | 結果 |
-|---|---|
-| `Nuget_netcore100.sln` ビルド | 0 エラー |
-| `OpenTouryo.{Public, Public.Security, Framework, Framework.RichClient, Dam*}` | AssemblyVersion = **3.0.0.0**（変更前と同一） |
-| `OpenTouryo.{Business, Business.RichClient, CustomControl.RichClient}` | AssemblyVersion = **1.0.0.0**（巻き込まれていない） |
-| `Company` | 全て `Hitachi Solutions` |
-| `nuget pack` | 7 パッケージ成功。`version=3.0.0`、`Touryo.Infrastructure.*` の相互依存も 3.0.0 に解決 |
-| 一元管理の疎通 | `OpenTouryoVersion` を一時的に `9.9.9` にすると DLL が `9.9.9.0`、bat の読み取り値も `9.9.9` になることを確認（その後 3.0.0 に復元） |
-
-> **注意**: `Directory.Build.props` の**XML コメント内にハイフン 2 個の連続（`--`）を書くと
-> XML として不正**になり、MSBuild がプロジェクトの読み込みに失敗する。
-> 区切り線に `----------` を使わないこと（本作業中に実際に踏んだ）。
-
-### 16-3. README の陳腐化を修正
-
-`README.md` / `Readme.ja.md` の「開発 / 動作環境」を実態に合わせた。
-
-| | 修正前 | 修正後 |
-|---|---|---|
-| IDE | Visual Studio 2022 | **Visual Studio 2026** |
-| targetFramework | .NET Framework 4.8 / **.NET 8.0 (net8.0)** | .NET Framework 4.8 / **.NET 10.0 (net10.0)** |
-| 命名規約の説明 | `{identifier}_net48.{ext}` の例のみ | `.NET 10.0` は **`{identifier}_netcore100.{ext}`** である旨を追記 |
-
-命名規約の追記は、TFM が `net10.0` なのにプロジェクト名は `netcore100` という
-一致しない命名（`_net10.0` ではない）が読み手の混乱を招くため。
