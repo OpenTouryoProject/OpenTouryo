@@ -3,7 +3,7 @@
   <metadata>
     <id>Touryo.Infrastructure.Public.Db.DamManagedOdp</id>
     <title>OpenTouryo.DamManagedOdp</title>
-    <version>3.0.0</version>
+    <version>$version$</version>
     <authors>OSS Consortium .net subcommittee</authors>
     <owners>daisukenishino77</owners>
     <license type="expression">Apache-2.0</license>
@@ -17,11 +17,11 @@
     <tags>OpenTouryo Open棟梁</tags>
     <dependencies>
       <group targetFramework="net48">
-        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
+        <dependency id="Touryo.Infrastructure.Public" version="$version$" />
         <dependency id="Oracle.ManagedDataAccess" version="18.3.0" />
       </group>
       <group targetFramework="net10.0">
-        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
+        <dependency id="Touryo.Infrastructure.Public" version="$version$" />
         <dependency id="Oracle.ManagedDataAccess.Core" version="23.8.0" />
       </group>
     </dependencies>

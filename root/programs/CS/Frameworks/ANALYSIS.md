@@ -423,6 +423,9 @@ net10.0 のフレームワーク参照（`Microsoft.AspNetCore.App`）ではな�
 12. `TMProtocolDefinition2.xml` など「2」付きの定義ファイルが並存する。用途は用例違い。
 13. **既知脆弱性を含む NuGet パッケージを参照中**（ビルド時に NU1902/NU1903 が計 44 件）。
     - `log4net` 3.0.4 → GHSA-4f7c-pmjv-c25w（中）
+      ※ **バージョンを上げても解消しない。** サンプル側で使われている 3.1.0 / 3.2.0 でも
+        同じ NU1902 が出ることを実測で確認済み（2026-07-31）。対処するなら NLog への切替
+        （`LogLib` 設定で可能）か、`NoWarn` での明示的な抑止を検討する。
     - `System.Security.Cryptography.Xml` 9.0.4 → GHSA-23rf-6693-g89p 他 8 件（高）
 
     バージョンを上げる作業をする場合は `Public` / `Public.Security` / `Framework` / `Business` /
@@ -431,6 +434,10 @@ net10.0 のフレームワーク参照（`Microsoft.AspNetCore.App`）ではな�
 ---
 
 ## 13. サンプル（フレームワークの正しい使い方の参照先）
+
+> **詳細な分析は各ディレクトリの ANALYSIS.md を参照:**
+> - `../Samples/ANALYSIS.md`（net48 版サンプル）
+> - `../Samples4NetCore/ANALYSIS.md`（.NET 10 版サンプル）
 
 | パス | 内容 |
 |---|---|
@@ -498,15 +505,110 @@ UTF-8 の日本語コメントは、**BOM が無く `chcp 65001` も無い bat �
 
 ### 未対応（別作業として要判断）
 
-1. **NuGet 脆弱性警告** … `log4net 3.0.4`（NU1902。net48 側は既に 3.1.0）、
-   `System.Security.Cryptography.Xml 9.0.4`（NU1903 × 8 件）。実行時挙動に影響するため未着手。
-2. **nuspec の依存宣言の誤り** … `Symbol_Public.nuspec` が両グループで `DotNetZip 1.16.0` を宣言するが、
-   `IO/Zip*.cs` は net48 / netcore100 のどちらの csproj でもコンパイル対象外で実際には未使用。
-   非推奨かつ脆弱性のあるパッケージを利用者に強制するため削除が望ましい。
-   `System.Reflection.Emit.ILGeneration/Lightweight 4.7.0` も同様に csproj に存在しない。
+1. **NuGet 脆弱性警告** … `System.Security.Cryptography.Xml`（NU1903）が残る。
+   - `log4net` は **Dependabot PR #506 で 3.3.0 に上がり NU1902 は解消済み**（実測確認）。
+     ※ 本書の以前の版に「3.1.0 / 3.2.0 に上げても解消しない」と書いたが、**3.3.0 で解消する**。訂正する。
+   - `System.Security.Cryptography.Xml` は **PR #507 で 9.0.15 に上がったが NU1903 は依然出る**（実測）。
+     警告 20 件のうち全てがこれ。修正版の有無を確認したうえで対応するか、`NoWarn` を検討する。
+2. ~~**nuspec の依存宣言の誤り**~~ → **修正済み（2026-07-31）**。15 節参照。
 3. **RichClient の lib TFM** … `net10.0-windows7.0` ビルドを `lib\net10.0` に配置している。
    本来は `lib\net10.0-windows` が正しいが、パッケージ解決セマンティクスが変わるため据え置き。
-4. **`README.md` / `Readme.ja.md` の陳腐化** … 「VS2022 / .NET 8.0」表記（12 節 1 項）。
-5. **バージョン一元管理の不在** … `Directory.Build.props` 導入が有効だが影響範囲が広い。
-6. **`4_Build_CopyAssemblies.bat` が `Build_net48` のみを `Build\` へコピー** …
-   `Build\` を参照するプロジェクトはリポジトリ内に 0 件。外部リポジトリ向けと思われ、前提不明のため据え置き。
+4. ~~**`README.md` / `Readme.ja.md` の陳腐化**~~ → **修正済み（2026-07-31）**。15 節参照。
+5. ~~**バージョン一元管理の不在**~~ → **対応済み（2026-07-31）**。
+   `Infrastructure/Directory.Build.props` の `OpenTouryoVersion` が唯一の定義箇所。15 節参照。
+6. ~~**`4_Build_CopyAssemblies.bat` が `Build_net48` のみを `Build\` へコピー**…参照するプロジェクトは 0 件~~
+   → **【訂正 2026-07-31】これは誤りだった。** 当初の調査で使った PowerShell の検索が
+   ヒットを取りこぼしていた。`grep -F` で再確認したところ、
+   **`Frameworks\Infrastructure\Build\` を `HintPath` 参照するプロジェクトは CS/VB 合わせて 42 件ある**
+   （`Samples/*` の全 net48 サンプル、`Tools/DaoGen_Tool`・`DPQuery_Tool`、`Tests/TestLog*`）。
+
+   つまり `4_Build_CopyAssemblies.bat` は不要な残骸ではなく、
+   **net48 のサンプル・ツールをビルド可能にするための必須ステップ**である。
+   `0_ExecAllBat.bat` が `2_`/`3_` → `4_CopyAssemblies` → `5_`〜`10_`（サンプル）の順で
+   呼んでいるのはこのため。**この bat を削除・変更してはならない。**
+
+   なお `Build\` に入るのは net48 の成果物のみで、.NET (Core) 側に相当物は無い
+   （`Samples4NetCore` は `Build_netcore100\net10.0\` を直接参照する）。この非対称は設計どおり。
+
+---
+
+## 16. nuspec の依存宣言・バージョン一元管理の修正（2026-07-31）
+
+### 16-1. nuspec の依存宣言を csproj と一致させた
+
+nuspec の `<dependencies>` を全 7 パッケージ分、対応する csproj の `PackageReference` と
+機械的に突き合わせたところ、**netstandard 時代の残骸**と**版ズレ**が見つかった。
+
+| nuspec | 削除した依存 | 理由 |
+|---|---|---|
+| `Symbol_Public.nuspec`<br>`T_Symbol_Public.nuspec` | `DotNetZip 1.16.0`（net48 / net10.0 の両グループ） | `IO/Zip*.cs`（`using Ionic.Zip`）は **net48 の `Compile Include` にも無く、netcore100 では `Compile Remove`** されており、どちらでも未コンパイル。非推奨かつ脆弱性のあるパッケージを利用者に強制していた |
+| 同上 | `System.Reflection.Emit.ILGeneration/Lightweight 4.7.0`（net10.0） | `FastReflection/EnumToStringByEmitExtensions.cs` は使うが、net10.0 では BCL 同梱。csproj も参照していない |
+| `Symbol_Public.Security.nuspec` | `System.Security.Cryptography.Cng 5.0.0`<br>`System.Security.Cryptography.OpenSsl 5.0.0`（net10.0） | `DigitalSignECDsaCng.cs` / `DigitalSignECDsaOpenSsl.cs` はコンパイルされるが、net10.0 では BCL 同梱。csproj も参照していない |
+| `Symbol_Framework.nuspec` | `System.Net.Http 4.3.4`<br>`System.Security.Cryptography.X509Certificates 4.3.2`（net10.0） | netstandard 時代のシム。csproj は参照しておらず、特に `System.Net.Http 4.3.x` は binding 問題を起こしやすい |
+
+版ズレも csproj 側に合わせた。
+
+| パッケージ | 修正前（nuspec） | 修正後 |
+|---|---|---|
+| `log4net` | net48=3.1.0 / net10.0=3.0.4 | **3.3.0**（両方） |
+| `System.Security.Cryptography.Xml` | 9.0.4 | **9.0.15** |
+
+**検証**: nuspec の全依存を csproj と再突合し「余分・不足・版ズレ ゼロ」を確認。
+さらに `nuget pack` を実行して生成された `.nupkg` 内の `.nuspec` を展開し、
+削除対象 6 パッケージが 1 件も残っていないことを確認済み。
+
+### 16-2. バージョン番号を一元管理にした
+
+**`Infrastructure/Directory.Build.props` を新規作成**し、`OpenTouryoVersion` を唯一の定義箇所とした。
+
+```xml
+<PropertyGroup>
+  <OpenTouryoVersion>3.0.0</OpenTouryoVersion>
+  <Company>Hitachi Solutions</Company>
+</PropertyGroup>
+```
+
+| 反映先 | 仕組み |
+|---|---|
+| SDK 形式アセンブリ（7 個） | 各 csproj の `<Version>$(OpenTouryoVersion)</Version>`。個別の `<Company>` は削除して継承 |
+| NuGet パッケージ | nuspec は `<version>$version$</version>` と `<dependency id="Touryo.Infrastructure.*" version="$version$" />`。`_NuGetPack.bat` が props から値を読み `nuget pack -Properties version=...` で渡す |
+
+**適用範囲が SDK 形式に限定されるのは意図どおり。**
+旧形式 csproj（`*_net48.csproj`, ToolsVersion=12.0）は `Microsoft.Common.props` を
+インポートしないため `Directory.Build.props` の影響を受けない。net48 のバージョンは
+従来どおり各プロジェクトの `Properties\AssemblyInfo.cs` が持つ。
+
+**`Business` 系は 1.0.0 のまま維持している。**
+`Business/Properties/AssemblyInfo.cs` が `AssemblyVersion("1.0.0.0")` であり、
+Public / Framework / Public.Security の 3.0.0.0 とは意図的に別系統。
+そのため `Directory.Build.props` では `<Version>` を全体には設定せず、
+`OpenTouryoVersion` という**独自プロパティ**を定義して、
+パッケージ対象の 7 プロジェクトだけが明示的に参照する方式にした。
+
+**検証（実測）**
+
+| 確認項目 | 結果 |
+|---|---|
+| `Nuget_netcore100.sln` ビルド | 0 エラー |
+| `OpenTouryo.{Public, Public.Security, Framework, Framework.RichClient, Dam*}` | AssemblyVersion = **3.0.0.0**（変更前と同一） |
+| `OpenTouryo.{Business, Business.RichClient, CustomControl.RichClient}` | AssemblyVersion = **1.0.0.0**（巻き込まれていない） |
+| `Company` | 全て `Hitachi Solutions` |
+| `nuget pack` | 7 パッケージ成功。`version=3.0.0`、`Touryo.Infrastructure.*` の相互依存も 3.0.0 に解決 |
+| 一元管理の疎通 | `OpenTouryoVersion` を一時的に `9.9.9` にすると DLL が `9.9.9.0`、bat の読み取り値も `9.9.9` になることを確認（その後 3.0.0 に復元） |
+
+> **注意**: `Directory.Build.props` の**XML コメント内にハイフン 2 個の連続（`--`）を書くと
+> XML として不正**になり、MSBuild がプロジェクトの読み込みに失敗する。
+> 区切り線に `----------` を使わないこと（本作業中に実際に踏んだ）。
+
+### 16-3. README の陳腐化を修正
+
+`README.md` / `Readme.ja.md` の「開発 / 動作環境」を実態に合わせた。
+
+| | 修正前 | 修正後 |
+|---|---|---|
+| IDE | Visual Studio 2022 | **Visual Studio 2026** |
+| targetFramework | .NET Framework 4.8 / **.NET 8.0 (net8.0)** | .NET Framework 4.8 / **.NET 10.0 (net10.0)** |
+| 命名規約の説明 | `{identifier}_net48.{ext}` の例のみ | `.NET 10.0` は **`{identifier}_netcore100.{ext}`** である旨を追記 |
+
+命名規約の追記は、TFM が `net10.0` なのにプロジェクト名は `netcore100` という
+一致しない命名（`_net10.0` ではない）が読み手の混乱を招くため。

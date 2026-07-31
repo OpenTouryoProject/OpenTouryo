@@ -3,7 +3,7 @@
   <metadata>
     <id>Touryo.Infrastructure.Framework</id>
     <title>OpenTouryo.Framework</title>
-    <version>3.0.0</version>
+    <version>$version$</version>
     <authors>OSS Consortium .net subcommittee</authors>
     <owners>daisukenishino77</owners>
     <license type="expression">Apache-2.0</license>
@@ -17,22 +17,20 @@
     <tags>OpenTouryo Open棟梁</tags>
     <dependencies>
       <group targetFramework="net48">
-        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-        <dependency id="Touryo.Infrastructure.Public.Security" version="3.0.0" />
+        <dependency id="Touryo.Infrastructure.Public" version="$version$" />
+        <dependency id="Touryo.Infrastructure.Public.Security" version="$version$" />
         <dependency id="Microsoft.AspNet.Mvc" version="5.3.0" />
         <dependency id="Microsoft.Owin" version="4.2.2" />
         <dependency id="Newtonsoft.Json" version="13.0.3" />
       </group>
       <group targetFramework="net10.0">
-        <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
-        <dependency id="Touryo.Infrastructure.Public.Security" version="3.0.0" />
+        <dependency id="Touryo.Infrastructure.Public" version="$version$" />
+        <dependency id="Touryo.Infrastructure.Public.Security" version="$version$" />
         <dependency id="Microsoft.AspNetCore.Http" version="2.3.0" />
         <dependency id="Microsoft.AspNetCore.Http.Extensions" version="2.3.0" />
         <dependency id="Microsoft.AspNetCore.Mvc" version="2.3.0" />
         <dependency id="Microsoft.AspNetCore.Session" version="2.3.0" />
         <dependency id="Microsoft.Extensions.PlatformAbstractions" version="1.1.0" />
-        <dependency id="System.Net.Http" version="4.3.4" />
-        <dependency id="System.Security.Cryptography.X509Certificates" version="4.3.2" />
       </group>
     </dependencies>
   </metadata>

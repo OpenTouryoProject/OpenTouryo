@@ -7,13 +7,14 @@ Click [here](Readme.ja.md) for Japanese version of this file.
 The programs in this repository are developed in the following IDE/targetFramework:
 
 - IDE (Integrated Development Environment)  
-  Visual Studio 2022
+  Visual Studio 2026
 - targetFramework (Run-time environment)
   - .NET Framework 4.8 (net48)
-  - .NET 8.0 (net8.0)
+  - .NET 10.0 (net10.0)
 
-The name of projects and solutions include the targetFramework.
-For example, the projects and solutions for net48(.NET Framework 4.8) are named {identifier}_net48.{ext}.
+The name of projects and solutions include an identifier of the targetFramework.
+For example, the projects and solutions for .NET Framework 4.8 are named {identifier}_net48.{ext},
+and the ones for .NET 10.0 are named {identifier}_netcore100.{ext}.
 
 ## Summary
 Please refer to the following files.

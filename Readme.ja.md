@@ -7,13 +7,14 @@
 このリポジトリのプログラムは、以下のIDE/targetFramework を前提に開発しています。
 
 - IDE（統合開発環境）  
-  Visual Studio 2022
+  Visual Studio 2026
 - targetFramework（実行環境）
   - .NET Framework 4.8 (net48)
-  - .NET 8.0 (net8.0)
+  - .NET 10.0 (net10.0)
 
-プロジェクトやソリューションの名前には、targetFrameworkが含まれます。
-たとえば、net48(.NET Framework 4.8) を対象としたプロジェクト・ソリューションは、"{identifier}_net48.{ext}" と命名しています。
+プロジェクトやソリューションの名前には、targetFramework の識別子が含まれます。
+たとえば、.NET Framework 4.8 を対象としたプロジェクト・ソリューションは "{identifier}_net48.{ext}"、
+.NET 10.0 を対象としたものは "{identifier}_netcore100.{ext}" と命名しています。
 
 ## 概要
 以下のファイルを参照してください。
