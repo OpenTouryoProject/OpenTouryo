@@ -31,11 +31,14 @@
 //*  2018/07/19  西野 大介         復元後のユーザー情報をSessionに設定するコードを追加
 //*  2018/08/08  西野 大介         MyMVCCoreFilterAttributeをFilterAttributeとして設定
 //*  2021/05/23  西野 大介         キャッシュ制御ヘッダの二重追加エラーの対応
+//*  2026/07/31  玄人 幸道         net48版から移植漏れのアクセスログ出力点を追加
+//*                                （View、OnResultExecuting、OnResultExecuted）
 //**********************************************************************************
 
 using System;
 using System.Threading.Tasks;
 
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -74,14 +77,44 @@ namespace Touryo.Infrastructure.Business.Presentation
 {
     /// <summary>画面コード親クラス２</summary>
     /// <remarks>（オーバーライドして）自由に利用できる。</remarks>
+    /// <remarks>
+    /// IResultFilter を実装しているのは、ASP.NET Core の Controller が
+    /// IActionFilter / IAsyncActionFilter しか実装しておらず、
+    /// OnResultExecuting / OnResultExecuted を override できないため。
+    /// コントローラが IResultFilter を実装していると、MVC が ControllerResultFilter を
+    /// 自動的にフィルタ パイプラインへ追加し、本クラスの実装を呼び出す。
+    /// （フィルタ属性ではなくコントローラ側に実装するのは、属性インスタンスが
+    /// 　リクエスト間で共有され、性能測定用の状態を持たせられないため。）
+    /// </remarks>
     [MyMVCCoreFilter()]
-    public class MyBaseMVControllerCore : BaseMVControllerCore
+    public class MyBaseMVControllerCore : BaseMVControllerCore, IResultFilter
     {
-        /// <summary>性能測定</summary>
+        /// <summary>性能測定（アクション実行区間）</summary>
         private PerformanceRecorder perfRec;
+
+        /// <summary>性能測定（結果実行＝レンダリング区間）</summary>
+        /// <remarks>
+        /// アクション実行区間の perfRec とは別インスタンスにする。
+        /// .NET (Core) 版の PerformanceRecorder は Stopwatch ベースで、
+        /// EndsPerformanceRecord の後に再度 Ends を呼んでも値が変わらないため、
+        /// perfRec を使い回すとレンダリング区間が測定できないため。
+        /// </remarks>
+        private PerformanceRecorder perfRecOfResult;
 
         /// <summary>UserInfo</summary>
         protected MyUserInfo UserInfo;
+
+        /// <summary>ログのユーザ名・IPアドレス部を生成する</summary>
+        /// <returns>",ユーザ名,IPアドレス"</returns>
+        /// <remarks>
+        /// Session が OFF の場合は UserInfo が null のままになり得るため、
+        /// ログ出力が原因で例外を出さないよう null を考慮する。
+        /// </remarks>
+        private string GetLogUserPart()
+        {
+            return "," + (this.UserInfo != null ? this.UserInfo.UserName : "")
+                 + "," + (this.UserInfo != null ? this.UserInfo.IPAddress : "");
+        }
 
         #region OnAction
 
@@ -200,6 +233,129 @@ namespace Touryo.Infrastructure.Business.Presentation
             LogIF.InfoLog("ACCESS", strLogMessage);
 
             #endregion
+        }
+
+        #endregion
+
+        #region View
+
+        /// <summary>
+        /// 応答にビューを表示する ViewResult オブジェクトを作成します。
+        /// Controller.View メソッド (Microsoft.AspNetCore.Mvc)
+        /// https://docs.microsoft.com/ja-jp/dotnet/api/microsoft.aspnetcore.mvc.controller.view
+        /// </summary>
+        /// <param name="viewName">ビュー名</param>
+        /// <param name="model">モデル</param>
+        /// <returns>ViewResult オブジェクト</returns>
+        /// <remarks>
+        /// net48 版はマスタ ページを取る View(IView, object) / View(string, string, object) を
+        /// オーバーライドしているが、ASP.NET Core にマスタ ページの概念は無い。
+        /// Core では他の View オーバーロードが最終的に本メソッドへ集約されるため、ここだけで足りる。
+        /// </remarks>
+        [NonAction]
+        public override ViewResult View(string viewName, object model)
+        {
+            ViewResult vr = base.View(viewName, model);
+
+            // View() / View(model) で呼ばれた場合、ViewName は null になる
+            // （実行時にアクション名で解決されるため）。その場合はアクション名を使う。
+            string vn = string.IsNullOrEmpty(vr.ViewName) ? this.ActionName : vr.ViewName;
+            string[] temp = vn.Split('.');
+
+            // ------------
+            // メッセージ部
+            // ------------
+            // ユーザ名, IPアドレス,
+            // レイヤ, 画面名, コントロール名, 処理名
+            // 処理時間（実行時間）, 処理時間（CPU時間）
+            // エラーメッセージID, エラーメッセージ等
+            // ------------
+            string strLogMessage =
+                this.GetLogUserPart() +
+                "," + "----->>" +
+                "," + this.ControllerName +
+                "," + this.ActionName + " -> " + temp[temp.Length - 1];
+
+            LogIF.InfoLog("ACCESS", strLogMessage);
+
+            return vr;
+        }
+
+        #endregion
+
+        #region OnResult
+
+        /// <summary>
+        /// アクション メソッドによって返されたアクション結果が実行される前に呼び出されます。
+        /// Controller.OnResultExecuting メソッド (Microsoft.AspNetCore.Mvc)
+        /// https://docs.microsoft.com/ja-jp/dotnet/api/microsoft.aspnetcore.mvc.controller.onresultexecuting
+        /// </summary>
+        /// <param name="context">
+        /// 型: Microsoft.AspNetCore.Mvc.Filters.ResultExecutingContext
+        /// 現在の要求およびアクション結果に関する情報。
+        /// </param>
+        public void OnResultExecuting(ResultExecutingContext context)
+        {
+            // 結果実行（レンダリング）区間の性能測定を開始する。
+            this.perfRecOfResult = new PerformanceRecorder();
+            this.perfRecOfResult.StartsPerformanceRecord();
+
+            // ------------
+            // メッセージ部
+            // ------------
+            // ユーザ名, IPアドレス,
+            // レイヤ, 画面名, コントロール名, 処理名
+            // 処理時間（実行時間）, 処理時間（CPU時間）
+            // エラーメッセージID, エラーメッセージ等
+            // ------------
+            string strLogMessage =
+                this.GetLogUserPart() +
+                "," + "----->" +
+                "," + this.ControllerName +
+                "," + this.ActionName + "(OnResultExecuting)";
+
+            LogIF.DebugLog("ACCESS", strLogMessage);
+        }
+
+        /// <summary>
+        /// アクション メソッドによって返されたアクション結果が実行された後に呼び出されます。
+        /// Controller.OnResultExecuted メソッド (Microsoft.AspNetCore.Mvc)
+        /// https://docs.microsoft.com/ja-jp/dotnet/api/microsoft.aspnetcore.mvc.controller.onresultexecuted
+        /// </summary>
+        /// <param name="context">
+        /// 型: Microsoft.AspNetCore.Mvc.Filters.ResultExecutedContext
+        /// 現在の要求およびアクション結果に関する情報。
+        /// </param>
+        public void OnResultExecuted(ResultExecutedContext context)
+        {
+            // OnResultExecuting より前にエラーが発生した場合は、
+            // perfRecOfResult が null の場合があるので、null 対策コードを挿入する。
+            if (this.perfRecOfResult == null)
+            {
+                // null の場合、新しいインスタンスを生成し、性能測定開始。
+                this.perfRecOfResult = new PerformanceRecorder();
+                this.perfRecOfResult.StartsPerformanceRecord();
+            }
+
+            this.perfRecOfResult.EndsPerformanceRecord();
+
+            // ------------
+            // メッセージ部
+            // ------------
+            // ユーザ名, IPアドレス,
+            // レイヤ, 画面名, コントロール名, 処理名
+            // 処理時間（実行時間）, 処理時間（CPU時間）
+            // エラーメッセージID, エラーメッセージ等
+            // ------------
+            string strLogMessage =
+                this.GetLogUserPart() +
+                "," + "<-----" +
+                "," + this.ControllerName +
+                "," + this.ActionName + "(OnResultExecuted)" +
+                "," + this.perfRecOfResult.ExecTime +
+                "," + this.perfRecOfResult.CpuTime;
+
+            LogIF.DebugLog("ACCESS", strLogMessage);
         }
 
         #endregion

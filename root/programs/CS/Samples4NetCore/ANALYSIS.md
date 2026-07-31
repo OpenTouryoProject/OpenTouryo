@@ -285,20 +285,24 @@ bat を経由せず **`dotnet build <sln>` を直接叩いてよい**（Core 側
 
 ## 7. 依存パッケージのバージョン ドリフト（実測）
 
-同じパッケージで**プロジェクトごとにバージョンが違う**。
+サンプルはフレームワークを `HintPath` で直接参照するため **NuGet の推移的解決が効かない**。
+.NET には binding redirect も無いので、**サンプル側のパッケージ版がフレームワーク側より古いと
+起動直後に `FileNotFoundException`（`Could not load file or assembly ...`）で落ちる。**
+
+`log4net` は全プロジェクトで **3.3.0**（フレームワーク本体と一致）に統一済み。
+
+一方、以下は依然としてプロジェクトごとに版が違う。
 
 | パッケージ | 混在しているバージョン |
 |---|---|
-| `log4net` | **3.1.0**（Legacy） / **3.2.0**（Backend/MVC_Sample） |
-| `Microsoft.Data.SqlClient` | **6.0.2**（Legacy） / **6.1.3**（Backend/MVC_Sample） |
-| `Newtonsoft.Json` | **13.0.3**（Legacy） / **13.0.4**（Backend/MVC_Sample） |
-| `Microsoft.Extensions.Configuration*` | 9.0.5 / 9.0.6 |
+| `Microsoft.Data.SqlClient` | **6.0.2**（Legacy） / **6.1.3**（Backend/MVC_Sample） / 6.0.1（フレームワーク） |
+| `Newtonsoft.Json` | **13.0.3**（Legacy／フレームワーク） / **13.0.4**（Backend/MVC_Sample） |
+| `Microsoft.Extensions.Configuration*` | 9.0.5 / 9.0.6 / 9.0.4（フレームワーク） |
 | `System.Data.Odbc` | 9.0.5 / 9.0.6 |
 
-さらに **フレームワーク本体**（`Public_netcore100.csproj`）は `log4net 3.0.4` /
-`Microsoft.Data.SqlClient 6.0.1` と、サンプルより**古い**。
-`HintPath` 直参照のため NuGet の推移的解決が効かず、**実行時にアセンブリ バージョン不一致が起きうる**。
-バージョンを触るときはフレームワーク側と揃えるかどうかを必ず判断すること。
+サンプル側が**新しい**分には動作するが、**フレームワーク側が上がったとき（Dependabot 等）に
+サンプルが取り残されると即座に起動不能になる**。フレームワークの依存を上げたら、
+サンプル側（`Backend` / `Legacy` の全 csproj）も同時に上げること。
 
 ---
 
