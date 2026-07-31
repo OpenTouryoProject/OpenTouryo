@@ -169,7 +169,11 @@ namespace DaoGen_Tool
             Console.WriteLine("    /OUTPUT   <path>  出力先ファイル（*.csv）");
             Console.WriteLine("");
             Console.WriteLine("  任意");
-            Console.WriteLine("    /DAP <SQL|OLE|ODB|ODP|DB2|MCN|NPS>  データ プロバイダ（既定:SQL）");
+#if NETCOREAPP
+            Console.WriteLine("    /DAP <SQL|ODB|ODP|MCN|NPS>          データ プロバイダ（既定:SQL）");
+#else
+            Console.WriteLine("    /DAP <SQL|OLE|ODB|ODP|MCN>          データ プロバイダ（既定:SQL）");
+#endif
             Console.WriteLine("    /CONNSTR <string>                   接続文字列");
             Console.WriteLine("                                        （既定:設定ファイルの ConnectionString_*）");
             Console.WriteLine("    /TABLES <name,name,...>             生成対象（既定:全テーブル・ビュー）");
@@ -303,6 +307,14 @@ namespace DaoGen_Tool
             // データ プロバイダ
             opt.Dap = Program.GetArg(argsDic, "/DAP", "SQL").ToUpper();
 
+            if (!Program.IsSupportedDap(opt.Dap))
+            {
+                Console.WriteLine("引数エラー：データ プロバイダ["
+                    + opt.Dap + "]は、このビルドではサポートされていません。");
+                Console.WriteLine("使用方法は /HELP で確認してください。");
+                return 1;
+            }
+
             // 接続文字列（省略時は設定ファイルの値を使用する）
             opt.ConnectionString = Program.GetArg(argsDic, "/CONNSTR", "");
 
@@ -372,6 +384,36 @@ namespace DaoGen_Tool
             {
                 Console.WriteLine("生成に失敗しました。");
                 return 2;
+            }
+        }
+
+        /// <summary>ＤＢに接続できるデータ プロバイダか（このビルドでサポートされるか）を判定する</summary>
+        /// <param name="dap">データ プロバイダ</param>
+        /// <returns>サポートされる場合 true</returns>
+        /// <remarks>
+        /// DB2・HiRDBは、両ビルドともコードがコメントアウトされているためサポートされない。
+        /// ※ /MODE DAOSQLGEN はＤＢに接続しない（テンプレートの選択にのみ使用する）ため、この判定は行わない。
+        /// </remarks>
+        private static bool IsSupportedDap(string dap)
+        {
+            switch (dap)
+            {
+                case "SQL":
+                case "ODB":
+                case "ODP":
+                case "MCN":
+                    return true;
+#if NETCOREAPP
+                // PostgreSQLは、NETCOREAPPでのみサポートされる。
+                case "NPS":
+                    return true;
+#else
+                // OLEDBは、NETCOREAPPではサポートされない。
+                case "OLE":
+                    return true;
+#endif
+                default:
+                    return false;
             }
         }
 

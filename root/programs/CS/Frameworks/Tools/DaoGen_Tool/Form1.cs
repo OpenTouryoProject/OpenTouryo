@@ -51,6 +51,8 @@
 //*  2017/09/06  西野 大介         Oracle.ManagedDataAccess.Clientで主キーが取れなくなった対応
 //*  2018/10/29  西野 大介         NETCOREAPP対応で、サポートされないDBを「#if」した。
 //*  2026/07/31  ＸＸ ＸＸ         GUIのCUI化（イベント ハンドラのロジックを関数化）
+//*  2026/08/01  ＸＸ ＸＸ         SQL Serverの主キー取得を、非公開のストアド プロシージャ
+//*                                （sp_helpconstraint／sp_MShelpindex）からカタログ ビューに変更
 //**********************************************************************************
 
 // --------------------
@@ -229,12 +231,21 @@ namespace DaoGen_Tool
 
             this.btnDaoDefinitionGen.Enabled = false;
 
+            // ↓↓↓【変更】↓↓↓
+            // このビルドでサポートされないデータ プロバイダは、選択できないようにする。
+            // ※ DB2・HiRDBは、両ビルドともコードがコメントアウトされているためサポートされない。
 #if NETCOREAPP
+            // OLEDBは、NETCOREAPPではサポートされない。
             this.rbnOLE.Enabled = false;
             this.rbnDB2.Enabled = false;
             this.rbnHiRDB.Enabled = false;
 #else
+            // PostgreSQLは、NETCOREAPPでのみサポートされる。
+            this.rbnPstgrs.Enabled = false;
+            this.rbnDB2.Enabled = false;
+            this.rbnHiRDB.Enabled = false;
 #endif
+            // ↑↑↑【変更】↑↑↑
         }
 
         #endregion
@@ -350,7 +361,13 @@ namespace DaoGen_Tool
 #endif
             else
             {
-                // データプロバイダ指定無し（ありえない）
+                // ↓↓↓【変更】↓↓↓
+                // データプロバイダ指定無し、または、このビルドでサポートされないデータ プロバイダ。
+                // 以前は何もしなかったため、コネクションがnullのまま後続処理へ進み、
+                // NullReferenceExceptionになっていた。呼び出し元のcatchで処理できるよう、例外を送出する。
+                throw new NotSupportedException(string.Format(
+                    "データ プロバイダ[{0}]は、このビルドではサポートされていません。", this.Dap));
+                // ↑↑↑【変更】↑↑↑
             }
         }
 
@@ -1770,109 +1787,63 @@ namespace DaoGen_Tool
 
                     #region 主キーの情報を取得
 
-                    // テーブルを取得
-                    foreach (CTable table in this.HtSchemaCustom.Values)
+                    // ↓↓↓【変更】↓↓↓
+                    // 以前は、sp_helpconstraint で主キー インデックス名を取得し、
+                    // sp_MShelpindex で主キー列名（indCol1～indCol16）を取得していたが、下記の理由でカタログ ビューに変更した。
+                    // ・sp_MShelpindex は非公開のストアド プロシージャであり、内部で一時テーブル（tempdbの照合順序）と
+                    //   sysindexes.name（DBの照合順序）を文字列比較するため、両者が異なる環境では照合順序の競合で失敗する。
+                    // ・主キーが16列までという制限があった。
+                    // ・テーブルごとに2回、DBへ問い合わせていた。
+                    // カタログ ビューの結合キーは全てID（整数）であるため、照合順序の影響を受けない。
+
+                    // 主キー情報を取得
+                    SqlCommand cmdPrimaryKeys = new SqlCommand(
+                        "SELECT t.name AS TABLE_NAME, c.name AS COLUMN_NAME, ic.key_ordinal AS KEY_ORDINAL"
+                        + " FROM sys.indexes AS i"
+                        + " INNER JOIN sys.index_columns AS ic"
+                        + " ON i.object_id = ic.object_id AND i.index_id = ic.index_id"
+                        + " INNER JOIN sys.columns AS c"
+                        + " ON ic.object_id = c.object_id AND ic.column_id = c.column_id"
+                        + " INNER JOIN sys.tables AS t ON i.object_id = t.object_id"
+                        + " WHERE i.is_primary_key = 1"
+                        + " ORDER BY t.name, ic.key_ordinal", this.SqlCn);
+
+                    dtSchmaPrimaryKeys = new DataTable();
+
+                    SqlDataReader drd = cmdPrimaryKeys.ExecuteReader();
+                    dtSchmaPrimaryKeys.Load(drd);
+                    drd.Close();
+
+                    // 主キーの設定
+                    foreach (System.Data.DataRow row in dtSchmaPrimaryKeys.Rows)
                     {
-                        // 存在チェック
-                        if (!((CTable)this.HtSchemaCustom[table.Name]).Effective)
+                        // テーブルを取得
+                        CTable table = (CTable)this.HtSchemaCustom[(string)row["TABLE_NAME"]];
+
+                        // 有効なテーブルにのみ設定する。
+                        if (table == null)
                         {
-                            continue; // 存在しない場合スキップする処理を追加
+                            // 不明なテーブル
                         }
-
-                        // ワーク
-                        SqlDataReader drd = null;
-                        DataTable dtSchmaConstraint = new DataTable();
-                        DataTable dtSchmaIndex = new DataTable();
-
-                        // 主キー名
-                        string pkName = "";
-                        // 主キーレコード
-                        System.Data.DataRow pkRow = null;
-
-                        // sp_helpconstraintストアドプロシージャで、主キー インデックス名を取得
-                        SqlCommand cmd_sp_help = new SqlCommand("sp_helpconstraint", this.SqlCn);
-                        cmd_sp_help.CommandType = CommandType.StoredProcedure;
-                        cmd_sp_help.Parameters.Add(new SqlParameter("@objname", table.Name));
-
-                        // sp_helpconstraintストアドプロシージャの結果セット（制約に関する結果セット）
-                        drd = cmd_sp_help.ExecuteReader();
-                        drd.NextResult(); // １つスキップする。
-                        dtSchmaConstraint.Load(drd);
-                        drd.Close();
-
-                        // 制約レコードを取得する。
-                        foreach (System.Data.DataRow row in dtSchmaConstraint.Rows)
-                        {
-                            //　制約レコードが主キーか？
-                            if (row["constraint_type"].ToString().IndexOf(
-                                "PRIMARY KEY", StringComparison.CurrentCultureIgnoreCase) == -1)
-                            {
-                                // 主キーでない。
-                            }
-                            else
-                            {
-                                // 主キーである。
-                                pkName = row["constraint_name"].ToString();
-                                break;
-                            }
-                        }
-
-                        // 主キー インデックス名なしの場合
-                        if (pkName == "") { }
                         else
                         {
-
-                            // sp_MShelpindexストアドプロシージャで、主キー列名を取得
-                            SqlCommand sp_MShelpindex = new SqlCommand("sp_MShelpindex", this.SqlCn);
-                            sp_MShelpindex.CommandType = CommandType.StoredProcedure;
-                            sp_MShelpindex.Parameters.Add(new SqlParameter("@tablename", table.Name));
-
-                            // sp_helpconstraintストアドプロシージャの結果セット（制約に関する結果セット）
-                            drd = sp_MShelpindex.ExecuteReader();
-                            dtSchmaIndex.Load(drd);
-                            drd.Close();
-
-                            // 主キー レコードを取得する。
-                            foreach (System.Data.DataRow row in dtSchmaIndex.Rows)
+                            // 有効なテーブル
+                            if (table.Effective)
                             {
-                                //　主キー インデックスか？
-                                if (row["name"].ToString() == pkName)
-                                {
-                                    // 主キー インデックスである。
-                                    pkRow = row;
-                                    break;
-                                }
+                                // 主キー列
+                                CColumn column = (CColumn)table.HtColumns_Name[(string)row["COLUMN_NAME"]];
+
+                                // nullの時があるようなので、この場合は処理しない。
+                                if (column == null) { }
                                 else
                                 {
-                                    // 主キー インデックスでない。
-
-                                }
-                            }
-
-                            // 主キー レコードなしの場合
-                            if (pkRow == null) { }
-                            else
-                            {
-                                // 列のIsKeyフラグを立てる。
-                                for (int i = 1; i <= 16; i++)
-                                {
-                                    // 主キー列
-                                    CColumn column = (CColumn)table.HtColumns_Name[pkRow["indCol" + i.ToString()].ToString()];
-
-                                    // nullの時があるようなので、この場合は処理しない。
-                                    if (column == null)
-                                    {
-                                        // 無い場合は抜ける。
-                                        break;
-                                    }
-                                    else
-                                    {
-                                        column.IsKey = true;
-                                    }
+                                    // 列のIsKeyフラグを立てる。
+                                    column.IsKey = true;
                                 }
                             }
                         }
                     }
+                    // ↑↑↑【変更】↑↑↑
 
                     #endregion
 
