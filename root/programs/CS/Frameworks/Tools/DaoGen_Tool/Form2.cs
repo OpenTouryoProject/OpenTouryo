@@ -52,6 +52,7 @@
 //*                                added constant to get the TimeStamp placeholder from the app.config file and 
 //*                                did code modification to replace the required TimeStamp code in the template, if TimeStamp selected in the tool.
 //*  2015/06/18  Sai-san           Added <Else></Else> tag in create string method and ReplaceSQL method to fix the bug 'DynInsParameter of dynamic insert'.
+//*  2026/07/31  玄人 幸道         GUIのCUI化（イベント ハンドラのロジックを関数化）
 //**********************************************************************************
 
 using System;
