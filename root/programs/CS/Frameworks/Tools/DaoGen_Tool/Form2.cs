@@ -822,10 +822,10 @@ namespace DaoGen_Tool
             Encoding enc = null;
 
             // DDE：D層定義情報のEncoding
-            enc = Encoding.GetEncoding((int)this.cmbDDEncoding.SelectedValue);
+            enc = Encoding.GetEncoding(this.genDaoDefCodePage);
 
             // 読込ファイル ストリームを生成する。
-            ddi = new StreamReader(this.txtSetDaoDefinition.Text, enc);
+            ddi = new StreamReader(this.genDaoDefinitionFilePath, enc);
 
             // ↓↓↓【追加】↓↓↓
             // ＋エンティテイ生成＋型付きデータセット生成
@@ -866,12 +866,12 @@ namespace DaoGen_Tool
         private StreamWriter OpenSwClassFile(string fileName, string extension)
         {
             // ファイルパス情報の作成
-            string tempPath = this.CreateFilePath(this.txtSetOutput.Text, fileName, extension);
+            string tempPath = this.CreateFilePath(this.genOutputPath, fileName, extension);
 
             // 書込ファイル ストリームを生成する。
 
             // DFE：DaoClassファイルのEncoding
-            return new StreamWriter(tempPath, false, Encoding.GetEncoding((int)this.cmbDFEncoding.SelectedValue));
+            return new StreamWriter(tempPath, false, Encoding.GetEncoding(this.genClassFileCodePage));
         }
 
         /// <summary>SQLファイルを開く（書込）</summary>
@@ -880,12 +880,12 @@ namespace DaoGen_Tool
         private StreamWriter OpenSwSQLFile(string fileName, string extension)
         {
             // ファイルパス情報の作成
-            string tempPath = this.CreateFilePath(this.txtSetOutput.Text, fileName, extension);
+            string tempPath = this.CreateFilePath(this.genOutputPath, fileName, extension);
 
             // 書込ファイル ストリームを生成する。
 
             // SFE：SQLファイルのEncoding
-            return new StreamWriter(tempPath, false, Encoding.GetEncoding((int)this.cmbSFEncoding.SelectedValue));
+            return new StreamWriter(tempPath, false, Encoding.GetEncoding(this.genSqlFileCodePage));
         }
 
         #endregion
@@ -1032,6 +1032,17 @@ namespace DaoGen_Tool
 
             #endregion
 
+            // 設定ファイルからの読み込み
+            // （UIコントロールに依存しないため、CUIからも呼び出せるよう関数化している）
+            this.LoadSettingsFromConfig();
+        }
+
+        /// <summary>
+        /// 設定ファイルからテンプレート ファイル名・クラス名・メソッド名などを読み込む（GUI／CUI 共通）。
+        /// </summary>
+        /// <remarks>UIコントロールを参照しないため、フォームを表示せずに呼び出せる。</remarks>
+        public void LoadSettingsFromConfig()
+        {
             #region ファイル名、クラス名、メソッド名（＋空文字チェック）
 
             #region 読み
@@ -1920,9 +1931,116 @@ namespace DaoGen_Tool
         // メイン ロジック
         #region 生成処理
 
+
+        /// <summary>生成処理が使用するＤ層定義情報ファイルのパス</summary>
+        /// <remarks>DaoAndSqlGen の冒頭で DaoGenOptions から設定する（ファイルI/Oヘルパーが参照）。</remarks>
+        private string genDaoDefinitionFilePath = "";
+
+        /// <summary>生成処理が使用する出力先フォルダ</summary>
+        private string genOutputPath = "";
+
+        /// <summary>Ｄ層定義情報ファイルの読み込みコード ページ</summary>
+        private int genDaoDefCodePage = 65001;
+
+        /// <summary>クラス ファイルの出力コード ページ</summary>
+        private int genClassFileCodePage = 65001;
+
+        /// <summary>SQL ファイルの出力コード ページ</summary>
+        private int genSqlFileCodePage = 65001;
+
+        /// <summary>SQL テンプレートの読み込みコード ページ</summary>
+        private int genSqlTemplateCodePage = 65001;
+
+        /// <summary>LIKE 文</summary>
+        private string genLikeStatement = "LIKE";
+
+        /// <summary>エスケープ文字</summary>
+        private string genEscapeChar = "";
+
+        /// <summary>CUI（非対話）で起動しているか</summary>
+        /// <remarks>true の場合、MessageBox の代わりに標準出力へメッセージを出す。</remarks>
+        public bool IsCui = false;
+
+        /// <summary>メッセージを表示する（GUI:MessageBox／CUI:標準出力）</summary>
+        /// <param name="message">メッセージ</param>
+        private void ShowMessage(string message)
+        {
+            if (this.IsCui)
+            {
+                Console.WriteLine(message);
+            }
+            else
+            {
+                MessageBox.Show(message);
+            }
+        }
+
+        /// <summary>UIコントロールから生成オプションを組み立てる</summary>
+        /// <returns>生成オプション</returns>
+        /// <remarks>UIコントロールへの参照は、このメソッドとイベント ハンドラにのみ置く。</remarks>
+        private DaoGenOptions CreateOptionsFromUI()
+        {
+            DaoGenOptions opt = new DaoGenOptions();
+
+            // 入出力パス
+            opt.DaoDefinitionFilePath = this.txtSetDaoDefinition.Text;
+            opt.TemplateRootPath      = this.txtSetSourceTemplate.Text;
+            opt.OutputPath            = this.txtSetOutput.Text;
+
+            // データ プロバイダ・言語
+            opt.Dap       = this.strDAP;
+            opt.IsCSharp  = this.rbnDTL_CS.Checked;
+
+            // 生成対象
+            opt.CreateEntity           = this.cbxEntity.Checked;
+            opt.CreateTypedDataSet     = this.cbxTypedDataSet.Checked;
+            opt.CreateTableMaintenance = this.cbxTableMaintenance.Checked;
+            opt.OnlyDTO                = this.cbxOnlyDTO.Checked;
+            opt.OnlyTableMaintenance   = this.cbxOnlyTableMaintenance.Checked;
+
+            // 生成オプション
+            opt.DaoDefinitionHeader = this.cbxDaoDefinitionHeader.Checked;
+            opt.EscapeChar          = this.txtEscapeChar.Text;
+            opt.TimeStampColName    = this.txtTimeStampColName.Text;
+            opt.TimeStampUpdMethod  = this.txtTimeStampUpdMethod.Text;
+            opt.FamilyName          = this.txtFamilyName.Text;
+            opt.PersonalName        = this.txtPersonalName.Text;
+
+            // エンコーディング
+            opt.XmlEncoding       = this.cmbSFEncoding.Text;
+            opt.ClassFileCodePage       = (int)this.cmbDTEncoding.SelectedValue;
+            opt.DaoDefinitionCodePage   = (int)this.cmbDDEncoding.SelectedValue;
+            opt.ClassFileOutputCodePage = (int)this.cmbDFEncoding.SelectedValue;
+            opt.SqlFileCodePage         = (int)this.cmbSFEncoding.SelectedValue;
+            opt.SqlTemplateCodePage     = (int)this.cmbSTEncoding.SelectedValue;
+            opt.LikeStatement           = this.cmbLikeStatement.Text;
+
+            return opt;
+        }
+
         /// <summary>D層、Daoクラスファイル、SQLファイルを生成する。</summary>
         private void btnDaoAndSqlGen_Click(object sender, EventArgs e)
         {
+            // UIコントロールから情報を取得し、生成処理を呼び出す。
+            this.DaoAndSqlGen(this.CreateOptionsFromUI());
+        }
+
+        /// <summary>D層、Daoクラスファイル、SQLファイルを生成する（GUI／CUI 共通）。</summary>
+        /// <param name="opt">生成オプション（UIコントロールに依存しない）</param>
+        /// <returns>成功した場合 true</returns>
+        public bool DaoAndSqlGen(DaoGenOptions opt)
+        {
+            // ファイルI/Oヘルパー（OpenSrDefInfo／OpenSwClassFile／OpenSwSQLFile）が
+            // 参照するフィールドを設定する。
+            this.genDaoDefinitionFilePath = opt.DaoDefinitionFilePath;
+            this.genOutputPath            = opt.OutputPath;
+            this.genDaoDefCodePage        = opt.DaoDefinitionCodePage;
+            this.genClassFileCodePage     = opt.ClassFileOutputCodePage;
+            this.genSqlFileCodePage       = opt.SqlFileCodePage;
+            this.genSqlTemplateCodePage   = opt.SqlTemplateCodePage;
+            this.genLikeStatement         = opt.LikeStatement;
+            this.genEscapeChar            = opt.EscapeChar;
+
             // D層定義情報ファイル
             StreamReader srDaoDef = null;
 
@@ -1931,10 +2049,10 @@ namespace DaoGen_Tool
             StreamReader srTypeDef = null;
 
             // DTO生成フラグの初期化
-            this.CreateDTO = (this.cbxEntity.Checked || this.cbxTypedDataSet.Checked);
+            this.CreateDTO = (opt.CreateEntity || opt.CreateTypedDataSet);
 
             // メンテナンス画面生成フラグの初期化
-            this.CreateMaintenanceScreen = (this.cbxOnlyTableMaintenance.Checked || this.cbxTableMaintenance.Checked);
+            this.CreateMaintenanceScreen = (opt.OnlyTableMaintenance || opt.CreateTableMaintenance);
 
             // ↑↑↑【追加】↑↑↑
 
@@ -1943,7 +2061,7 @@ namespace DaoGen_Tool
             StreamReader srDbTypeDef = null;
 
             // DB型定義情報ファイル読み込みフラグ設定
-            this.ReadDbTypeInfo = (this.ReadDbTypeInfo || rbnODP.Checked);
+            this.ReadDbTypeInfo = (this.ReadDbTypeInfo || (opt.Dap == "ODP"));
             // ↑↑↑【追加】↑↑↑
 
             try
@@ -1953,7 +2071,7 @@ namespace DaoGen_Tool
 
                 #region 拡張子の設定
 
-                if (this.rbnDTL_CS.Checked)
+                if (opt.IsCSharp)
                 {
                     // Visual C#
                     this.ClassTemplateFileExtension = "cs";
@@ -1978,13 +2096,13 @@ namespace DaoGen_Tool
                 #region D層定義情報ファイル
 
                 // 標準生成
-                fileInfo = new FileInfo(this.txtSetDaoDefinition.Text);
+                fileInfo = new FileInfo(opt.DaoDefinitionFilePath);
                 if (fileInfo.Exists) { }
                 else
                 {
-                    //MessageBox.Show(string.Format("チェックエラーです：D層定義情報ファイル[{0}]が存在しません。", fileInfo.Name));
-                    MessageBox.Show(string.Format(this.RM_GetString("FilenotExistDlayerInfo"), fileInfo.Name));
-                    return;
+                    //this.ShowMessage(string.Format("チェックエラーです：D層定義情報ファイル[{0}]が存在しません。", fileInfo.Name));
+                    this.ShowMessage(string.Format(this.RM_GetString("FilenotExistDlayerInfo"), fileInfo.Name));
+                    return false;
                 }
 
                 // ↓↓↓【追加】↓↓↓
@@ -1992,19 +2110,19 @@ namespace DaoGen_Tool
                 if (this.CreateDTO)
                 {
                     // *.CSVである前提の仕様だがOKか？（一応ファイル名を出力する）
-                    int temp = this.txtSetDaoDefinition.Text.Length - 4;
+                    int temp = opt.DaoDefinitionFilePath.Length - 4;
 
                     this.DotNetTypeInfoFilePath =
-                        this.txtSetDaoDefinition.Text.Substring(0, temp)
-                        + "_DotNetTypeInfo" + this.txtSetDaoDefinition.Text.Substring(temp);
+                        opt.DaoDefinitionFilePath.Substring(0, temp)
+                        + "_DotNetTypeInfo" + opt.DaoDefinitionFilePath.Substring(temp);
 
                     fileInfo = new FileInfo(this.DotNetTypeInfoFilePath);
                     if (fileInfo.Exists) { }
                     else
                     {
-                        //MessageBox.Show(string.Format("チェックエラーです：.NET型情報ファイル[{0}]が存在しません。", fileInfo.Name));
-                        MessageBox.Show(string.Format(this.RM_GetString("FilenotExistNETtypeInfo"), fileInfo.Name));
-                        return;
+                        //this.ShowMessage(string.Format("チェックエラーです：.NET型情報ファイル[{0}]が存在しません。", fileInfo.Name));
+                        this.ShowMessage(string.Format(this.RM_GetString("FilenotExistNETtypeInfo"), fileInfo.Name));
+                        return false;
                     }
                 }
                 // ↑↑↑【追加】↑↑↑
@@ -2014,18 +2132,18 @@ namespace DaoGen_Tool
                 if (this.ReadDbTypeInfo)
                 {
                     // *.CSVである前提の仕様だがOKか？（一応ファイル名を出力する）
-                    int temp = this.txtSetDaoDefinition.Text.Length - 4;
+                    int temp = opt.DaoDefinitionFilePath.Length - 4;
 
-                    this.DbTypeInfoFilePath = this.txtSetDaoDefinition.Text.Substring(0, temp)
-                        + "_DBTypeInfo" + this.txtSetDaoDefinition.Text.Substring(temp);
+                    this.DbTypeInfoFilePath = opt.DaoDefinitionFilePath.Substring(0, temp)
+                        + "_DBTypeInfo" + opt.DaoDefinitionFilePath.Substring(temp);
 
                     fileInfo = new FileInfo(this.DbTypeInfoFilePath);
                     if (fileInfo.Exists) { }
                     else
                     {
-                        //MessageBox.Show(string.Format("チェックエラーです：DB型情報ファイル[{0}]が存在しません。", fileInfo.Name));
-                        MessageBox.Show(string.Format(this.RM_GetString("FilenotExistDBtypeInfo"), fileInfo.Name));
-                        return;
+                        //this.ShowMessage(string.Format("チェックエラーです：DB型情報ファイル[{0}]が存在しません。", fileInfo.Name));
+                        this.ShowMessage(string.Format(this.RM_GetString("FilenotExistDBtypeInfo"), fileInfo.Name));
+                        return false;
                     }
                 }
                 // ↑↑↑【追加】↑↑↑
@@ -2034,26 +2152,26 @@ namespace DaoGen_Tool
 
                 #region 入力ファイル
 
-                dirInfo = new DirectoryInfo(this.txtSetSourceTemplate.Text);
+                dirInfo = new DirectoryInfo(opt.TemplateRootPath);
                 if (dirInfo.Exists)
                 {
                 }
                 else
                 {
-                    //MessageBox.Show("入力ファイル（テンプレート ファイル）のルート フォルダが存在しません。");
-                    MessageBox.Show(this.RM_GetString("InputFileRootFolderNotExist"));
-                    return;
+                    //this.ShowMessage("入力ファイル（テンプレート ファイル）のルート フォルダが存在しません。");
+                    this.ShowMessage(this.RM_GetString("InputFileRootFolderNotExist"));
+                    return false;
                 }
 
                 #region Dao、Entity、DataSetテンプレート ファイル
 
                 // Daoテンプレート ファイル
-                if (!this.cbxOnlyDTO.Checked
-                    && !this.cbxOnlyTableMaintenance.Checked)
+                if (!opt.OnlyDTO
+                    && !opt.OnlyTableMaintenance)
                 {
                     this.DaoTemplateFilePath
                         = this.CheckTemplateFile(
-                            this.txtSetSourceTemplate.Text,
+                            opt.TemplateRootPath,
                             this.DaoTemplateFileName,
                             this.ClassTemplateFileExtension);
                 }
@@ -2064,14 +2182,14 @@ namespace DaoGen_Tool
                     // Entityテンプレート ファイル
                     this.EntityTemplateFilePath
                         = this.CheckTemplateFile(
-                            this.txtSetSourceTemplate.Text,
+                            opt.TemplateRootPath,
                             this.EntityTemplateFileName,
                             this.ClassTemplateFileExtension);
 
                     // DataSetテンプレート ファイル
                     this.DataSetTemplateFilePath
                         = this.CheckTemplateFile(
-                            this.txtSetSourceTemplate.Text,
+                            opt.TemplateRootPath,
                             this.DataSetTemplateFileName, "");
                 }
 
@@ -2080,55 +2198,55 @@ namespace DaoGen_Tool
                     // TableAdapterテンプレート ファイル
                     this.TableAdapterTemplateFilePath
                         = this.CheckTemplateFile(
-                            this.txtSetSourceTemplate.Text,
+                            opt.TemplateRootPath,
                             this.TableAdapterTemplateFileName,
                             this.ClassTemplateFileExtension);
 
                     // ConditionalSearchテンプレート ファイル
                     this.ConditionalSearchTemplateFilePath
                         = this.CheckTemplateFile(
-                            this.txtSetSourceTemplate.Text,
+                            opt.TemplateRootPath,
                             this.ConditionalSearchTemplateFileName, "");
 
                     // SearchAndUpdateテンプレート ファイル
                     this.SearchAndUpdateTemplateFilePath
                         = this.CheckTemplateFile(
-                            this.txtSetSourceTemplate.Text,
+                            opt.TemplateRootPath,
                             this.SearchAndUpdateTemplateFileName, "");
 
                     // Detailテンプレート ファイル
                     this.DetailTemplateFilePath
                         = this.CheckTemplateFile(
-                            this.txtSetSourceTemplate.Text,
+                            opt.TemplateRootPath,
                             this.DetailTemplateFileName, "");
                 }
                 // ↑↑↑【追加】↑↑↑
 
                 #endregion
 
-                if (!this.cbxOnlyDTO.Checked
-                    && !this.cbxOnlyTableMaintenance.Checked)
+                if (!opt.OnlyDTO
+                    && !opt.OnlyTableMaintenance)
                 {
                     #region SQLテンプレート ファイル（静的）
 
                     this.InsertTemplateFilePath
                         = this.CheckTemplateFile(
-                            this.txtSetSourceTemplate.Text,
+                            opt.TemplateRootPath,
                             this.InsertTemplateFileName, "");
 
                     this.SelectTemplateFilePath
                         = this.CheckTemplateFile(
-                            this.txtSetSourceTemplate.Text,
+                            opt.TemplateRootPath,
                             this.SelectTemplateFileName, "");
 
                     this.UpdateTemplateFilePath
                         = this.CheckTemplateFile(
-                            this.txtSetSourceTemplate.Text,
+                            opt.TemplateRootPath,
                             this.UpdateTemplateFileName, "");
 
                     this.DeleteTemplateFilePath
                         = this.CheckTemplateFile(
-                            this.txtSetSourceTemplate.Text,
+                            opt.TemplateRootPath,
                             this.DeleteTemplateFileName, "");
 
                     #endregion
@@ -2137,28 +2255,28 @@ namespace DaoGen_Tool
 
                     this.DynInsTemplateFilePath
                         = this.CheckTemplateFile(
-                            this.txtSetSourceTemplate.Text,
+                            opt.TemplateRootPath,
                             this.DynInsTemplateFileName, "");
 
                     this.DynSelTemplateFilePath
                         = this.CheckTemplateFile(
-                            this.txtSetSourceTemplate.Text,
+                            opt.TemplateRootPath,
                             this.DynSelTemplateFileName, "");
 
                     this.DynUpdTemplateFilePath
                         = this.CheckTemplateFile(
-                            this.txtSetSourceTemplate.Text,
+                            opt.TemplateRootPath,
                             this.DynUpdTemplateFileName, "");
 
                     this.DynDelTemplateFilePath
                         = this.CheckTemplateFile(
-                            this.txtSetSourceTemplate.Text,
+                            opt.TemplateRootPath,
                             this.DynDelTemplateFileName, "");
 
                     // ↓↓↓【追加】↓↓↓
                     this.DynSelCntTemplateFilePath
                         = this.CheckTemplateFile(
-                            this.txtSetSourceTemplate.Text,
+                            opt.TemplateRootPath,
                             this.DynSelCntTemplateFileName, "");
                     // ↑↑↑【追加】↑↑↑
 
@@ -2169,13 +2287,13 @@ namespace DaoGen_Tool
 
                 #region 出力ファイル
 
-                dirInfo = new DirectoryInfo(this.txtSetOutput.Text);
+                dirInfo = new DirectoryInfo(opt.OutputPath);
                 if (dirInfo.Exists) { }
                 else
                 {
-                    //MessageBox.Show("出力ファイル（Daoクラス ファイル、SQLファイル.etc）のルート フォルダが存在しません。");
-                    MessageBox.Show(this.RM_GetString("OutputFileRootFolderNotExist"));
-                    return;
+                    //this.ShowMessage("出力ファイル（Daoクラス ファイル、SQLファイル.etc）のルート フォルダが存在しません。");
+                    this.ShowMessage(this.RM_GetString("OutputFileRootFolderNotExist"));
+                    return false;
                 }
 
                 #endregion
@@ -2185,12 +2303,12 @@ namespace DaoGen_Tool
                 // ↓↓↓【追加】↓↓↓
 
                 //エスケープ文字のチェック
-                if (rbnODP.Checked == true && txtEscapeChar.Text.Length != 1)
+                if ((opt.Dap == "ODP") == true && opt.EscapeChar.Length != 1)
                 {
                     //Oracle ODP.NET かつ エスケープ文字が入力されていない(1文字でない)場合
-                    //MessageBox.Show("エスケープ文字が設定されていません。");
-                    MessageBox.Show(this.RM_GetString("EscCharacterNotSet"));
-                    return;
+                    //this.ShowMessage("エスケープ文字が設定されていません。");
+                    this.ShowMessage(this.RM_GetString("EscCharacterNotSet"));
+                    return false;
                 }
 
                 // ↑↑↑【追加】↑↑↑
@@ -2200,10 +2318,10 @@ namespace DaoGen_Tool
                 #region タイムスタンプ列
 
                 // タイムスタンプ列名を取得
-                this.TimeStampColName = this.txtTimeStampColName.Text.Trim();
+                this.TimeStampColName = opt.TimeStampColName.Trim();
 
                 // タイムスタンプ更新方法を取得
-                this.TimeStampUpdMethod = this.txtTimeStampUpdMethod.Text.Trim();
+                this.TimeStampUpdMethod = opt.TimeStampUpdMethod.Trim();
 
                 // タイムスタンプの設定ステータスのチェック＆設定
                 if (this.TimeStampColName == "" & this.TimeStampUpdMethod == "")
@@ -2224,10 +2342,10 @@ namespace DaoGen_Tool
                 else
                 {
                     // 更新方法だけある。
-                    //MessageBox.Show("タイムスタンプ列名がありません。");
-                    MessageBox.Show(this.RM_GetString("NoTimestampColName"));
+                    //this.ShowMessage("タイムスタンプ列名がありません。");
+                    this.ShowMessage(this.RM_GetString("NoTimestampColName"));
 
-                    return;
+                    return false;
                 }
 
                 #endregion
@@ -2242,41 +2360,41 @@ namespace DaoGen_Tool
                 this.TimeStamp = DateTime.Now.Year + "/" + DateTime.Now.Month + "/" + DateTime.Now.Day;
 
                 // ユーザ名
-                this.UserName = this.txtFamilyName.Text + " " + this.txtPersonalName.Text;
+                this.UserName = opt.FamilyName + " " + opt.PersonalName;
 
                 //// エンコーディング（XML用）
-                this.XMLEncoding = this.cmbSFEncoding.Text;
+                this.XMLEncoding = opt.XmlEncoding;
 
                 // SQLの制御文字
-                if (rbnSQL.Checked || rbnOLE.Checked || rbnODB.Checked)
+                if ((opt.Dap == "SQL") || (opt.Dap == "OLE") || (opt.Dap == "ODB"))
                 {
                     this.ParamSign = '@';
 
                     this.EnclosureCharS = '[';
                     this.EnclosureCharE = ']';
                 }
-                else if (rbnODP.Checked)
+                else if ((opt.Dap == "ODP"))
                 {
                     this.ParamSign = ':';
 
                     this.EnclosureCharS = '"';
                     this.EnclosureCharE = '"';
                 }
-                else if (rbnDB2.Checked)
+                else if ((opt.Dap == "DB2"))
                 {
                     this.ParamSign = '@';
 
                     this.EnclosureCharS = '"';
                     this.EnclosureCharE = '"';
                 }
-                else if (rbnMySQL.Checked)
+                else if ((opt.Dap == "MCN"))
                 {
                     this.ParamSign = '@';
 
                     this.EnclosureCharS = '`';
                     this.EnclosureCharE = '`';
                 }
-                else if (rbnPstgrs.Checked)
+                else if ((opt.Dap == "NPS"))
                 {
                     // Npgsqlでは、「@」・「:」の双方をサポートするが、
                     // 本Fxでは、「:」を選択（動作がOracleに近いため）。
@@ -2318,7 +2436,7 @@ namespace DaoGen_Tool
 
                 #region D層定義情報ファイル ヘッダー制御
 
-                if (this.cbxDaoDefinitionHeader.Checked)
+                if (opt.DaoDefinitionHeader)
                 {
                     // ヘッダーは、無視
                     if (!srDaoDef.EndOfStream)
@@ -2770,7 +2888,7 @@ namespace DaoGen_Tool
                         this.DaoClassName = this.DaoClassNameHeader + this.TableName.Replace(' ', '_') + this.DaoClassNameFooter;
 
                         // DTO、メンテナンス画面のみの場合はDao、SQLは生成しない。
-                        if (!(this.cbxOnlyDTO.Checked || this.cbxOnlyTableMaintenance.Checked))
+                        if (!(opt.OnlyDTO || opt.OnlyTableMaintenance))
                         {
                             #region SQLファイルを生成
 
@@ -2952,18 +3070,18 @@ namespace DaoGen_Tool
                             // DTE：DaoClassテンプレートのEncoding
                             this.GenerateClassFile(
                                 this.DaoTemplateFilePath,
-                                (int)this.cmbDTEncoding.SelectedValue, this.FileName);
+                                opt.ClassFileCodePage, this.FileName);
 
                             #endregion
                         }
 
                         // ↓↓↓【追加】↓↓↓
                         if (this.CreateDTO
-                            && !this.cbxOnlyTableMaintenance.Checked)
+                            && !opt.OnlyTableMaintenance)
                         {
                             #region Entityファイルを生成
 
-                            if (this.cbxEntity.Checked)
+                            if (opt.CreateEntity)
                             {
                                 // カレント・ファイル出力用とReplace用途
                                 // Entityクラス名
@@ -2977,14 +3095,14 @@ namespace DaoGen_Tool
                                 // DTE：DaoClassテンプレートのEncoding
                                 this.GenerateClassFile(
                                     this.EntityTemplateFilePath,
-                                    (int)this.cmbDTEncoding.SelectedValue, this.FileName);
+                                    opt.ClassFileCodePage, this.FileName);
                             }
 
                             #endregion
 
                             #region DataSetファイルを生成
 
-                            if (this.cbxTypedDataSet.Checked)
+                            if (opt.CreateTypedDataSet)
                             {
                                 // カレント・ファイル出力用とReplace用途
                                 // DataSetクラス名
@@ -3002,14 +3120,14 @@ namespace DaoGen_Tool
                                 // DTE：DaoClassテンプレートのEncoding
                                 this.GenerateClassFile(
                                     this.DataSetTemplateFilePath,
-                                    (int)this.cmbDTEncoding.SelectedValue, this.FileName);
+                                    opt.ClassFileCodePage, this.FileName);
                             }
 
                             #endregion
                         }
 
                         if (this.CreateMaintenanceScreen
-                            && !this.cbxOnlyDTO.Checked)
+                            && !opt.OnlyDTO)
                         {
                             // カレント・ファイル出力用とReplace用途
 
@@ -3017,7 +3135,7 @@ namespace DaoGen_Tool
                             this.FileName = this.TableName.Replace(' ', '_') + this.TableAdapterTemplateFileName;
                             this.GenerateClassFile(
                                 this.TableAdapterTemplateFilePath,
-                                (int)this.cmbDTEncoding.SelectedValue, this.FileName);
+                                opt.ClassFileCodePage, this.FileName);
 
                             #region ASPXファイル、Codebehindファイル
 
@@ -3025,29 +3143,29 @@ namespace DaoGen_Tool
                             this.FileName = this.TableName + this.ConditionalSearchTemplateFileName;
                             this.GenerateClassFile(
                                 this.ConditionalSearchTemplateFilePath,
-                                (int)this.cmbDTEncoding.SelectedValue, this.FileName);
+                                opt.ClassFileCodePage, this.FileName);
                             this.GenerateClassFile(
                                 this.ConditionalSearchTemplateFilePath + "." + this.ClassTemplateFileExtension,
-                                (int)this.cmbDTEncoding.SelectedValue, this.FileName + "." + this.ClassTemplateFileExtension);
+                                opt.ClassFileCodePage, this.FileName + "." + this.ClassTemplateFileExtension);
 
                             // ASPXファイル、Codebehindファイル(SearchAndUpdate)を生成
                             this.FileName = this.TableName + this.SearchAndUpdateTemplateFileName;
                             this.GenerateClassFile(
                                 this.SearchAndUpdateTemplateFilePath,
-                                (int)this.cmbDTEncoding.SelectedValue, this.FileName);
+                                opt.ClassFileCodePage, this.FileName);
                             this.GenerateClassFile(
                                 this.SearchAndUpdateTemplateFilePath + "." + this.ClassTemplateFileExtension,
-                                (int)this.cmbDTEncoding.SelectedValue, this.FileName + "." + this.ClassTemplateFileExtension);
+                                opt.ClassFileCodePage, this.FileName + "." + this.ClassTemplateFileExtension);
 
 
                             // ASPXファイル、Codebehindファイル(Detail)を生成
                             this.FileName = this.TableName + this.DetailTemplateFileName;
                             this.GenerateClassFile(
                                 this.DetailTemplateFilePath,
-                                (int)this.cmbDTEncoding.SelectedValue, this.FileName);
+                                opt.ClassFileCodePage, this.FileName);
                             this.GenerateClassFile(
                                 this.DetailTemplateFilePath + "." + this.ClassTemplateFileExtension,
-                                (int)this.cmbDTEncoding.SelectedValue, this.FileName + "." + this.ClassTemplateFileExtension);
+                                opt.ClassFileCodePage, this.FileName + "." + this.ClassTemplateFileExtension);
 
                             #endregion
                         }
@@ -3073,19 +3191,22 @@ namespace DaoGen_Tool
                 System.Windows.Forms.Cursor.Current = Cursors.Default;
 
                 // メッセージ
-                //MessageBox.Show("自動生成完了！");
-                MessageBox.Show(this.RM_GetString("FileGenComplete"));
+                //this.ShowMessage("自動生成完了！");
+                this.ShowMessage(this.RM_GetString("FileGenComplete"));
             }
             catch (CheckException cex)
             {
-                //MessageBox.Show("チェックエラーです：" + cex.Message);
-                MessageBox.Show(this.RM_GetString("CheckExceptionError") + cex.Message);
-
+                //this.ShowMessage("チェックエラーです：" + cex.Message);
+                this.ShowMessage(this.RM_GetString("CheckExceptionError") + cex.Message);
+                return false;
             }
             catch (Exception ex)
             {
-                //MessageBox.Show("ランタイムエラーです：" + ex.Message);
-                MessageBox.Show(this.RM_GetString("RuntimeError") + ex.Message);
+                //this.ShowMessage("ランタイムエラーです：" + ex.Message);
+                // CUI時は原因調査のためスタック トレースまで出力する。
+                this.ShowMessage(this.RM_GetString("RuntimeError")
+                    + (this.IsCui ? ex.ToString() : ex.Message));
+                return false;
             }
             finally
             {
@@ -3106,6 +3227,8 @@ namespace DaoGen_Tool
                 // カーソルを元に戻す
                 System.Windows.Forms.Cursor.Current = Cursors.Default;
             }
+
+            return true;
         }
 
         #endregion
@@ -3138,7 +3261,7 @@ namespace DaoGen_Tool
 
                 // 入力テンプレート
                 // STE：SQLテンプレートのEncoding
-                srSQLTpl = this.OpenSrTemplate(sqlTemplate, (int)cmbSTEncoding.SelectedValue);
+                srSQLTpl = this.OpenSrTemplate(sqlTemplate, this.genSqlTemplateCodePage);
 
                 // 出力ファイル
                 swSQLFile = this.OpenSwSQLFile(this.FileName, extension);
@@ -3784,17 +3907,17 @@ namespace DaoGen_Tool
                         + " IS NULL</ELSE>" + "</IF>" + "," +
 
                         "<IF>AND "
-                        + this.EnclosureCharS + col + this.EnclosureCharE + " " + cmbLikeStatement.Text + " "
+                        + this.EnclosureCharS + col + this.EnclosureCharE + " " + this.genLikeStatement + " "
                         + this.ParamSign.ToString() + this.LikeParamHeader + col.Replace(' ', '_') + this.LikeParamFooter;
                     if (chkEscapeToNChar.Checked == true)
                     {
                         //TO_NCHARする場合
-                        this.DynColsCondition_Like += " ESCAPE TO_NCHAR('" + txtEscapeChar.Text + "')";
+                        this.DynColsCondition_Like += " ESCAPE TO_NCHAR('" + this.genEscapeChar + "')";
                     }
                     else
                     {
                         //TO_NCHARしない場合
-                        this.DynColsCondition_Like += " ESCAPE '" + txtEscapeChar.Text + "'";
+                        this.DynColsCondition_Like += " ESCAPE '" + this.genEscapeChar + "'";
                     }
 
                     this.DynColsCondition_Like += "</IF>" + ",";
@@ -3810,7 +3933,7 @@ namespace DaoGen_Tool
 
                         "<IF>AND " + this.EnclosureCharS + col + this.EnclosureCharE
                           + " LIKE " + this.ParamSign.ToString() + this.LikeParamHeader + col.Replace(' ', '_') + this.LikeParamFooter
-                          + " ESCAPE '" + txtEscapeChar.Text + "' " + "</IF>" + ",";
+                          + " ESCAPE '" + this.genEscapeChar + "' " + "</IF>" + ",";
                 }
             }
             else
