@@ -50,9 +50,12 @@
 //*  2014/08/19  西野 大介         カラム取得時のスキーマ考慮が無かったため追加（奥井さんからの提供）
 //*  2017/09/06  西野 大介         Oracle.ManagedDataAccess.Clientで主キーが取れなくなった対応
 //*  2018/10/29  西野 大介         NETCOREAPP対応で、サポートされないDBを「#if」した。
-//*  2026/07/31  ＸＸ ＸＸ         GUIのCUI化（イベント ハンドラのロジックを関数化）
-//*  2026/08/01  ＸＸ ＸＸ         SQL Serverの主キー取得を、非公開のストアド プロシージャ
+//*  2026/07/31  玄人 幸道         GUIのCUI化（イベント ハンドラのロジックを関数化）
+//*  2026/08/01  玄人 幸道         SQL Serverの主キー取得を、非公開のストアド プロシージャ
 //*                                （sp_helpconstraint／sp_MShelpindex）からカタログ ビューに変更
+//*  2026/08/01  玄人 幸道         サポートされないデータ プロバイダの選択・指定を抑止
+//*  2026/08/01  玄人 幸道         PostgreSQLの.NET型情報を取得するように変更
+//*                                （NpgsqlがDataTypesをサポートするようになったため）
 //**********************************************************************************
 
 // --------------------
@@ -1709,12 +1712,16 @@ namespace DaoGen_Tool
                     // DataTypes
                     CmnMethods.DataTypes = this.MySqlCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
                 }
+#if NETCOREAPP
+                // ↓↓↓【変更】↓↓↓
+                // 以前のNpgsqlはDataTypesをサポートしていなかったため、型情報を取得していなかったが、
+                // 現在はサポートされているため、他のデータ プロバイダと同様に取得する。
                 else if (this.Dap == "NPS")
                 {
-                    //// DataTypes（NpgsqlではDataTypesがサポートされていない）
-                    //CmnMethods.DataTypes = this.NpgsqlCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
+                    // DataTypes
+                    CmnMethods.DataTypes = this.NpgsqlCn.GetSchema(System.Data.Common.DbMetaDataCollectionNames.DataTypes);
                 }
-#if NETCOREAPP
+                // ↑↑↑【変更】↑↑↑
 #else
                 else if (this.Dap == "OLE")
                 {
@@ -2068,10 +2075,14 @@ namespace DaoGen_Tool
                             // 有効なテーブル
                             if (table.Effective)
                             {
+                                // ↓↓↓【変更】↓↓↓
+                                // 以前はNpgsqlがDataTypesをサポートしていなかったため
+                                // ".NET型情報"を"System.Object"固定にしていたが、
+                                // 現在はサポートされているため、他のデータ プロバイダと同様に変換する。
                                 CColumn column = new CColumn(
-                                    (string)row["COLUMN_NAME"], (string)row["DATA_TYPE"], "System.Object");
-                                //CmnMethods.ConvertToDotNetTypeInfo((string)row["DATA_TYPE"]));
-                                //（NpgsqlではDataTypesがサポートされていないため）
+                                    (string)row["COLUMN_NAME"], (string)row["DATA_TYPE"],
+                                    CmnMethods.ConvertToDotNetTypeInfo((string)row["DATA_TYPE"]));
+                                // ↑↑↑【変更】↑↑↑
 
                                 // ポジションをキーにしてカラムを追加
                                 table.HtColumns_Position[row["ORDINAL_POSITION"].ToString()] = column;

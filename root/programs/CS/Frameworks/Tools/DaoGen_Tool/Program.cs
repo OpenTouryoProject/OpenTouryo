@@ -33,7 +33,7 @@
 //*                                and replaced to this method wherever hard coded values.
 //*                                Also Added code to get the Culture information from app.config file.
 //*  2018/10/29  西野 大介         NETCOREAPP対応で、configの初期化
-//*  2026/07/31  ＸＸ ＸＸ         CUI起動（/CUI）とヘルプ（/HELP）を追加
+//*  2026/07/31  玄人 幸道         CUI起動（/CUI）とヘルプ（/HELP）を追加
 //**********************************************************************************
 
 using System;
@@ -201,7 +201,9 @@ namespace DaoGen_Tool
             Console.WriteLine("    /TSCOLNAME <name>                   タイム スタンプ列名");
             Console.WriteLine("    /TSUPDMETHOD <method>               タイム スタンプの更新方法");
             Console.WriteLine("    /FAMILYNAME <name>                  作成者（姓）");
+            Console.WriteLine("                                        （既定:設定ファイルの FamilyName）");
             Console.WriteLine("    /PERSONALNAME <name>                作成者（名）");
+            Console.WriteLine("                                        （既定:設定ファイルの PersonalName）");
             Console.WriteLine("    /XMLENCODING <name>                 SQL(XML)のエンコーディング（既定:utf-8）");
             Console.WriteLine("    /CODEPAGE <n>                       クラス ファイルのコード ページ（既定:65001）");
             Console.WriteLine("");
@@ -472,8 +474,11 @@ namespace DaoGen_Tool
             opt.EscapeChar          = Program.GetArg(argsDic, "/ESCAPECHAR", "");
             opt.TimeStampColName    = Program.GetArg(argsDic, "/TSCOLNAME", "");
             opt.TimeStampUpdMethod  = Program.GetArg(argsDic, "/TSUPDMETHOD", "");
-            opt.FamilyName          = Program.GetArg(argsDic, "/FAMILYNAME", "");
-            opt.PersonalName        = Program.GetArg(argsDic, "/PERSONALNAME", "");
+            // 作成者（省略時は設定ファイルの値を使用する。GUIのForm2_Loadと同じ挙動。）
+            opt.FamilyName          = Program.GetArg(argsDic, "/FAMILYNAME",
+                GetConfigParameter.GetConfigValue("FamilyName") ?? "");
+            opt.PersonalName        = Program.GetArg(argsDic, "/PERSONALNAME",
+                GetConfigParameter.GetConfigValue("PersonalName") ?? "");
 
             // エンコーディング
             opt.XmlEncoding = Program.GetArg(argsDic, "/XMLENCODING", "utf-8");
