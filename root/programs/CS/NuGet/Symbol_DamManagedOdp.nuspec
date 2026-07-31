@@ -20,7 +20,7 @@
         <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
         <dependency id="Oracle.ManagedDataAccess" version="18.3.0" />
       </group>
-      <group targetFramework="net8.0">
+      <group targetFramework="net10.0">
         <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
         <dependency id="Oracle.ManagedDataAccess.Core" version="23.8.0" />
       </group>
@@ -33,9 +33,9 @@
     <file src="in\net48\OpenTouryo.DamManagedOdp.pdb" target="lib\net48" />
     <file src="in\net48\OpenTouryo.DamManagedOdp.xml" target="lib\net48" />
 
-    <file src="in\net8.0\OpenTouryo.DamManagedOdp.dll" target="lib\net8.0" />
-    <file src="in\net8.0\OpenTouryo.DamManagedOdp.pdb" target="lib\net8.0" />
-    <file src="in\net8.0\OpenTouryo.DamManagedOdp.xml" target="lib\net8.0" />
+    <file src="in\net10.0\OpenTouryo.DamManagedOdp.dll" target="lib\net10.0" />
+    <file src="in\net10.0\OpenTouryo.DamManagedOdp.pdb" target="lib\net10.0" />
+    <file src="in\net10.0\OpenTouryo.DamManagedOdp.xml" target="lib\net10.0" />
 
   </files>
 </package>

@@ -2,6 +2,18 @@
 @rem Execution of the common processing.
 @rem --------------------------------------------------
 
+@rem **************************************************
+@rem [NOTE] This batch file is NOT used by anything and does NOT work.
+@rem   - No other batch file calls z_Common2.bat in this repository.
+@rem   - "set BUILDFILEPATH10.0 =..." has a space before "=",
+@rem     so the variable name ends up containing a trailing space.
+@rem   - "set BUILDFILEPATH=BUILDFILEPATH10.0" is missing the "%" signs,
+@rem     so it assigns the literal string, not the path.
+@rem   Use z_Common.bat instead. Review this file fully before using it.
+@rem   (ASCII only on purpose: this file has no BOM and no "chcp 65001",
+@rem    so non-ASCII comments would be mis-parsed by cmd.)
+@rem **************************************************
+
 @rem --------------------------------------------------
 @rem Set Program Files path
 @rem --------------------------------------------------

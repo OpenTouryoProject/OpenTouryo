@@ -16,7 +16,7 @@
     <copyright></copyright>
     <tags>OpenTouryo Open棟梁</tags>
     <dependencies>
-      <group targetFramework="net8.0">
+      <group targetFramework="net10.0">
         <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
         <dependency id="Npgsql" version="9.0.3" />
       </group>
@@ -25,9 +25,9 @@
   <files>
     <file src="_OpenTouryo.png" target="" />
 
-    <file src="in\net8.0\OpenTouryo.DamPstGrS.dll" target="lib\net8.0" />
-    <file src="in\net8.0\OpenTouryo.DamPstGrS.pdb" target="lib\net8.0" />
-    <file src="in\net8.0\OpenTouryo.DamPstGrS.xml" target="lib\net8.0" />
+    <file src="in\net10.0\OpenTouryo.DamPstGrS.dll" target="lib\net10.0" />
+    <file src="in\net10.0\OpenTouryo.DamPstGrS.pdb" target="lib\net10.0" />
+    <file src="in\net10.0\OpenTouryo.DamPstGrS.xml" target="lib\net10.0" />
 
   </files>
 </package>

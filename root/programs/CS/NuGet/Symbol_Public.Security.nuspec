@@ -22,7 +22,7 @@
         <dependency id="jose-jwt" version="5.1.1" />
         <dependency id="Newtonsoft.Json" version="13.0.3" />
       </group>
-      <group targetFramework="net8.0">
+      <group targetFramework="net10.0">
         <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
         <dependency id="BouncyCastle.NetCore" version="2.2.1" />
         <dependency id="jose-jwt" version="5.1.1" />
@@ -40,9 +40,9 @@
     <file src="in\net48\OpenTouryo.Public.Security.pdb" target="lib\net48" />
     <file src="in\net48\OpenTouryo.Public.Security.xml" target="lib\net48" />
 
-    <file src="in\net8.0\OpenTouryo.Public.Security.dll" target="lib\net8.0" />
-    <file src="in\net8.0\OpenTouryo.Public.Security.pdb" target="lib\net8.0" />
-    <file src="in\net8.0\OpenTouryo.Public.Security.xml" target="lib\net8.0" />
+    <file src="in\net10.0\OpenTouryo.Public.Security.dll" target="lib\net10.0" />
+    <file src="in\net10.0\OpenTouryo.Public.Security.pdb" target="lib\net10.0" />
+    <file src="in\net10.0\OpenTouryo.Public.Security.xml" target="lib\net10.0" />
 
   </files>
 </package>

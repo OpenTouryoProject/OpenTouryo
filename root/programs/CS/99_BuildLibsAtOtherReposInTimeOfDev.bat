@@ -1,5 +1,14 @@
 ﻿@echo off
 
+@rem **************************************************
+@rem [注意] このバッチは現在動作しません（未保守）。
+@rem   呼び出している net45 / net46 / net47 / netstd20 /
+@rem   netcore20 / netcore30 用のバッチは既に存在しません。
+@rem   xcopy 元の Build_net45 ... Build_netcore30 も生成されません。
+@rem   現行の targetFramework は net48 / netcore100 です。
+@rem   使用する場合は全面的な見直しが必要です。
+@rem **************************************************
+
 @rem 本バッチファイルの作成にあたり、以下のサイトを参考にしました。
 @rem 【Bat】【vim】香り屋Vimをダウンロードしてインストールまでするbatファイル - Qiita
 @rem https://qiita.com/koryuohproject/items/beed1a28ad6a1f60256d

@@ -23,7 +23,7 @@
         <dependency id="Microsoft.Owin" version="4.2.2" />
         <dependency id="Newtonsoft.Json" version="13.0.3" />
       </group>
-      <group targetFramework="net8.0">
+      <group targetFramework="net10.0">
         <dependency id="Touryo.Infrastructure.Public" version="3.0.0" />
         <dependency id="Touryo.Infrastructure.Public.Security" version="3.0.0" />
         <dependency id="Microsoft.AspNetCore.Http" version="2.3.0" />
@@ -44,10 +44,10 @@
     <file src="in\net48\OpenTouryo.Framework.xml" target="lib\net48" />
     <file src="in\net48\ja-JP\OpenTouryo.Framework.resources.dll" target="lib\net48\ja-JP" />
 
-    <file src="in\net8.0\OpenTouryo.Framework.dll" target="lib\net8.0" />
-    <file src="in\net8.0\OpenTouryo.Framework.pdb" target="lib\net8.0" />
-    <file src="in\net8.0\OpenTouryo.Framework.xml" target="lib\net8.0" />
-    <file src="in\net8.0\ja-JP\OpenTouryo.Framework.resources.dll" target="lib\net8.0\ja-JP" />
+    <file src="in\net10.0\OpenTouryo.Framework.dll" target="lib\net10.0" />
+    <file src="in\net10.0\OpenTouryo.Framework.pdb" target="lib\net10.0" />
+    <file src="in\net10.0\OpenTouryo.Framework.xml" target="lib\net10.0" />
+    <file src="in\net10.0\ja-JP\OpenTouryo.Framework.resources.dll" target="lib\net10.0\ja-JP" />
 
   </files>
 </package>

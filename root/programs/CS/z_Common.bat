@@ -51,10 +51,41 @@ echo BUILDFILEPATH4.0 %BUILDFILEPATH4.0%
 echo BUILDFILEPATH15 %BUILDFILEPATH15%
 echo BUILDFILEPATH16 %BUILDFILEPATH16%
 echo BUILDFILEPATH17 %BUILDFILEPATH17%
-echo BUILDFILEPATH17 %BUILDFILEPATH18%
+echo BUILDFILEPATH18 %BUILDFILEPATH18%
 
-set BUILDFILEPATH=%BUILDFILEPATH18%
+@rem --------------------------------------------------
+@rem vswhere による MSBuild の解決（エディション非依存）
+@rem 上記の固定パスは Community しか探さないため、
+@rem Professional / Enterprise / BuildTools でも解決できるようにする。
+@rem --------------------------------------------------
+set VSWHERE="%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
+set BUILDFILEPATH=
+
+if exist %VSWHERE% (
+  for /f "usebackq tokens=*" %%i in (
+    `%VSWHERE% -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe`
+  ) do set BUILDFILEPATH="%%i"
+)
+
+@rem --------------------------------------------------
+@rem フォールバック（vswhere が無い / 解決できない場合）
+@rem --------------------------------------------------
+if not defined BUILDFILEPATH set BUILDFILEPATH=%BUILDFILEPATH18%
+if not defined BUILDFILEPATH set BUILDFILEPATH=%BUILDFILEPATH17%
+if not defined BUILDFILEPATH set BUILDFILEPATH=%BUILDFILEPATH16%
+
 echo BUILDFILEPATH %BUILDFILEPATH%
+
+@rem --------------------------------------------------
+@rem 未検出チェック
+@rem （空のまま進むと "/p:Configuration=..." が先頭コマンドとして
+@rem 　実行され、原因が分かりにくいエラーになるため、ここで止める。）
+@rem --------------------------------------------------
+if not defined BUILDFILEPATH (
+  echo [ERROR] MSBuild.exe が見つかりません。
+  echo         Visual Studio または Build Tools のインストール状況を確認してください。
+  exit /b 1
+)
 
 @echo --------------------------------------------------
 @echo The choice of build configuration (Debug / Release).
