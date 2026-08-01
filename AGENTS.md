@@ -82,3 +82,30 @@ gh auth switch --user OsscJpDevInfra  # 異なる場合は切り替え
 規約の実体はこのファイル（AGENTS.md）には書かない。領域ごとに基準が分かれるため、
 二重管理になり、どちらが正なのか分からなくなる。
 
+### ビルド・テスト・リリースの検証は、専用の文書に従う
+
+変更を加えたあとの**検証**は、次の文書が一次情報である。
+
+| 目的 | 読む文書 |
+|---|---|
+| リリース時の作業全体 | [`RELEASE.md`](root/programs/CS/RELEASE.md) |
+| 全ビルドの実行と判定 | [`BUILDING.md`](root/programs/CS/BUILDING.md) |
+| 単体テストの実行と判定 | [`TESTING.md`](root/programs/CS/Frameworks/Tests/TESTING.md) |
+| サンプルの疎通確認 | [`SMOKETEST.md`](root/programs/CS/SMOKETEST.md) |
+
+検証は次の 3 本で、いずれも終了コードで合否が分かる。**この順で実行すること。**
+
+```powershell
+cd root\programs\CS
+.\BuildAll.ps1                 # 全ビルド
+cd Frameworks\Tests
+.\RunAllTests.ps1              # 単体テスト
+cd ..\..
+.\SmokeTest.ps1                # サンプルの疎通
+```
+
+`RunAllTests.ps1` はワーキング ツリーの `Result*.txt` を書き換える（従来のバッチ運用と同じ）。
+**コミットの要否は人が判断する**ため、エージェントは差分を報告するに留める。
+
+前提となるサービスや DB の状態が足りない場合は、**勝手に変えず、対処方法とともに報告する。**
+

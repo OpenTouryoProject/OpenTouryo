@@ -41,6 +41,7 @@ cd root\programs\CS
 疎通テストは期待結果ファイルを持たず、判定条件を `SmokeTest.ps1` の対象定義に書く。
 
 **実行順は `BuildAll.ps1` → `RunAllTests.ps1` → `SmokeTest.ps1`。**
+リリース時の作業全体は [`RELEASE.md`](RELEASE.md) を参照。
 
 ---
 
