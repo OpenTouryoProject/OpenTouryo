@@ -45,7 +45,7 @@ cd root\programs\CS
 
 ---
 
-## 3. 対象（12 件）
+## 3. 対象（18 件）
 
 ### バッチ（8 件）
 
@@ -72,6 +72,53 @@ INSERT の方法（1 件ずつ／SQL 連結／INSERT 文組み立て）で、い
 net48 版は `System.CommandLine` / `Sharprompt` の .NET Framework サポート終了により
 ドロップされている（`5_Build_CLI_sample.bat` 参照）。
 `interactive` サブコマンドは対話プロンプトを使うため対象外。
+
+### DaoGen_Tool（墨壺）の CUI モード（6 件）
+
+#508 で追加された CUI。net48 / net10.0 それぞれ 3 件。
+
+| 対象 | 判定 |
+|---|---|
+| `/HELP` | ヘルプの見出しが出力される |
+| `/CUI /MODE DAODEFGEN` | DB のスキーマから定義 CSV が生成され、対象テーブルが含まれる |
+| `/CUI /MODE DAOSQLGEN` | 定義 CSV から Dao(`.cs`)・動的 SQL(`.xml`)・静的 SQL(`.sql`) が生成される |
+
+**2 モードは連続して実行する。** `DAODEFGEN` が出力した定義 CSV を
+`DAOSQLGEN` の入力に使うため、ツール単体ではなく
+「DB → 定義 → 生成」の一連の流れを確認できる。
+
+対象テーブルは `Shippers,Orders` の 2 つに絞っている。
+全テーブルを回しても時間がかかるだけで、疎通としては同じことを見ているため。
+
+生成先は `%TEMP%\OpenTouryoSmokeTest\daogen_*`。
+実行前に前回の生成物を消す。残っていると「生成された」の判定が甘くなる。
+
+> **GUI 側の確認は手作業に残る。** 引数なしで起動すると `Application.Run(new Form1())` になる。
+
+#### パス区切りの注意
+
+コマンドライン解析（`StringVariableOperator.GetCommandArgs`）は
+**`\` をエスケープ文字として扱う**ため、パスの区切りは `/` にする。
+
+```
+OK : /OUTPUT "C:/temp/out"
+OK : /OUTPUT "C:\\temp\\out"
+NG : /OUTPUT "C:\temp\out"    ← \ が消える
+```
+
+ツール自身の `/HELP` にも記載されている。
+
+#### 標準出力の捕捉
+
+`DaoGen_Tool` は `WinExe` で、CUI 時は `AttachConsole(-1)` でコンソールに接続する。
+このため**リダイレクトの方法によって出力が取れない**。
+
+| 方法 | 結果 |
+|---|---|
+| PowerShell の `& $exe ... *>&1 \| Out-File` | **取れる**（68 行） |
+| `cmd /c "... > file"` | 取れない（0 行） |
+
+`SmokeTest.ps1` は前者で実行している。
 
 ### Web アプリ（3 件）
 
@@ -218,6 +265,12 @@ RerunnableBatch_sample (net10.0)  OK
 RerunnableBatch_sample2 (net10.0) OK
 RerunnableBatch_sample3 (net10.0) OK
 Simple_CLI (net10.0)              OK   Sub command cmd1: 123
+DaoGen_Tool /HELP (net48)         OK   DaoGen_Tool（D層自動生成ツール／墨壺）
+DaoGen_Tool DAODEFGEN (net48)     OK   生成が完了しました。
+DaoGen_Tool DAOSQLGEN (net48)     OK   生成が完了しました。
+DaoGen_Tool /HELP (net10.0)       OK   DaoGen_Tool（D層自動生成ツール／墨壺）
+DaoGen_Tool DAODEFGEN (net10.0)   OK   生成が完了しました。
+DaoGen_Tool DAOSQLGEN (net10.0)   OK   生成が完了しました。
 MVC_Sample (net48)                OK   ログイン後 /Crud1/Index = 200
 WebForms_Sample (net48)           OK   login.aspx = 200（__VIEWSTATE あり）
 MVC_Sample (net10.0)              OK   GET / = 200 (3694 bytes)
@@ -225,7 +278,7 @@ MVC_Sample (net10.0)              OK   GET / = 200 (3694 bytes)
   全対象 OK
 ```
 
-全 12 件（ビルド 5 バッチ ＋ 疎通 12 件）で **約 1.4 分**。
+全 18 件（ビルド 7 バッチ ＋ 疎通 18 件）で **約 2.4 分**。
 
 ### リダイレクトの扱い
 

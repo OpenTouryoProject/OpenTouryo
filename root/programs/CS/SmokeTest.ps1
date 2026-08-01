@@ -129,6 +129,88 @@ $verifyOrders2 = {
 }
 
 # ------------------------------------------------------------------
+# DaoGen_Tool（墨壺）の CUI モード
+# ------------------------------------------------------------------
+# #508 で追加された CUI。2 モードを DAODEFGEN → DAOSQLGEN の順に実行し、
+# 前段が出力した定義 CSV を後段の入力に使う。
+#
+# ＜パス区切りの注意＞
+#   コマンドライン解析（StringVariableOperator.GetCommandArgs）は
+#   「\」をエスケープ文字として扱うため、パスの区切りは「/」にする。
+#   「C:\temp\out」と書くと「\」が消えて別のパスになる（ツールの /HELP にも記載）。
+#
+# ＜テンプレート＞
+#   root/files/tools/DGenTemplates（DaoTemplate*.cs / *Template.xml などの平置き）。
+
+$daoGenTemplate = ((Join-Path $csRoot "..\..\files\tools\DGenTemplates" | Resolve-Path).Path) -replace '\\', '/'
+
+# 対象を 2 テーブルに絞る。全テーブルを回すと時間がかかるだけで、
+# 疎通の確認としては同じことを見ている。
+$daoGenTables = "Shippers,Orders"
+
+# 作業フォルダを作る（net48 / Core で分ける）
+function New-DaoGenWork([string]$tag)
+{
+    $work = Join-Path $OutputDir "daogen_$tag"
+    New-Item -ItemType Directory -Force (Join-Path $work "gen") | Out-Null
+    # 前回の生成物を残さない（残っていると「生成された」の判定が甘くなる）
+    Get-ChildItem $work -Recurse -File -EA SilentlyContinue | Remove-Item -Force -EA SilentlyContinue
+    return $work
+}
+
+function New-DaoGenArgs([string]$tag, [string]$mode)
+{
+    $work = Join-Path $OutputDir "daogen_$tag"
+    $csv  = ($work + "/DaoDef.csv").Replace("\", "/")
+    $gen  = ($work + "/gen").Replace("\", "/")
+
+    if ($mode -eq "DAODEFGEN")
+    {
+        return @("/CUI", "/MODE", "DAODEFGEN", "/OUTPUT", $csv, "/DAP", "SQL", "/TABLES", $daoGenTables)
+    }
+    return @("/CUI", "/MODE", "DAOSQLGEN", "/DAODEF", $csv,
+             "/TEMPLATE", $daoGenTemplate, "/OUTPUT", $gen,
+             "/DAP", "SQL", "/LANG", "CS", "/ENTITY")
+}
+
+# 定義 CSV に対象テーブルが並んでいること
+function Test-DaoDef([string]$tag)
+{
+    $csv = Join-Path (Join-Path $OutputDir "daogen_$tag") "DaoDef.csv"
+    if (-not (Test-Path $csv)) { Write-Host "     定義 CSV が生成されていない"; return $false }
+
+    $text = Get-Content $csv -Raw
+    $ok = ($text -match 'Shippers') -and ($text -match 'Orders')
+    Write-Host ("     定義 CSV : {0} 行" -f (Get-Content $csv).Count)
+    return $ok
+}
+
+# Dao・DTO・SQL が生成されていること
+function Test-DaoGen([string]$tag)
+{
+    $gen = Join-Path (Join-Path $OutputDir "daogen_$tag") "gen"
+    $files = @(Get-ChildItem $gen -Recurse -File -EA SilentlyContinue)
+    Write-Host ("     生成ファイル : {0} 件" -f $files.Count)
+
+    # Dao クラス（.cs）と 動的 SQL（.xml）と 静的 SQL（.sql）が揃っていること
+    $hasCs  = @($files | Where-Object { $_.Name -eq "DaoShippers.cs" }).Count -gt 0
+    $hasXml = @($files | Where-Object { $_.Extension -eq ".xml" }).Count -gt 0
+    $hasSql = @($files | Where-Object { $_.Extension -eq ".sql" }).Count -gt 0
+    return ($hasCs -and $hasXml -and $hasSql)
+}
+
+$prepareDaoGen48   = { [void](New-DaoGenWork "net48") }
+$prepareDaoGenCore = { [void](New-DaoGenWork "core") }
+$daoDefArgs48      = New-DaoGenArgs "net48" "DAODEFGEN"
+$daoSqlArgs48      = New-DaoGenArgs "net48" "DAOSQLGEN"
+$daoDefArgsCore    = New-DaoGenArgs "core"  "DAODEFGEN"
+$daoSqlArgsCore    = New-DaoGenArgs "core"  "DAOSQLGEN"
+$verifyDaoDef48    = { Test-DaoDef "net48" }
+$verifyDaoGen48    = { Test-DaoGen "net48" }
+$verifyDaoDefCore  = { Test-DaoDef "core" }
+$verifyDaoGenCore  = { Test-DaoGen "core" }
+
+# ------------------------------------------------------------------
 # HTTP 要求
 # ------------------------------------------------------------------
 # リダイレクトを追わずに状態コードを見たいが、Invoke-WebRequest は
@@ -279,6 +361,44 @@ $targets = @(
         Name = "Simple_CLI (net10.0)";              Bat = "5_Build_CLICore_sample.bat"
         Exe  = "Samples4NetCore\Legacy\CLI_sample\Simple_CLI\Simple_CLI\bin\Debug\net10.0\Simple_CLI.dll"
         Args = @("cmd1", "--an-int", "123");  Expect = 'Sub command cmd1: 123'
+    }
+
+    # --- DaoGen_Tool（墨壺）の CUI モード ---
+    # #508 で追加された /HELP と /CUI。GUI 側の確認は手作業に残る。
+    # DAODEFGEN → DAOSQLGEN の順に実行し、前段の出力を後段の入力に使う。
+    @{
+        Name = "DaoGen_Tool /HELP (net48)";        Bat = "4_Build_Framework_Tool.bat"
+        Exe  = "Frameworks\Tools\DaoGen_Tool\bin\Debug\OpenTouryo.DaoGen_Tool.exe"
+        Args = @("/HELP");  Expect = 'DaoGen_Tool（D層自動生成ツール／墨壺）'
+    }
+    @{
+        Name = "DaoGen_Tool DAODEFGEN (net48)";    Bat = "4_Build_Framework_Tool.bat"
+        Exe  = "Frameworks\Tools\DaoGen_Tool\bin\Debug\OpenTouryo.DaoGen_Tool.exe"
+        Args = $daoDefArgs48;  Expect = '生成が完了しました。'
+        Pre = $prepareDaoGen48;  Verify = $verifyDaoDef48
+    }
+    @{
+        Name = "DaoGen_Tool DAOSQLGEN (net48)";    Bat = "4_Build_Framework_Tool.bat"
+        Exe  = "Frameworks\Tools\DaoGen_Tool\bin\Debug\OpenTouryo.DaoGen_Tool.exe"
+        Args = $daoSqlArgs48;  Expect = '生成が完了しました。'
+        Verify = $verifyDaoGen48
+    }
+    @{
+        Name = "DaoGen_Tool /HELP (net10.0)";      Bat = "4_Build_Framework_ToolCore.bat"
+        Exe  = "Frameworks\Tools\DaoGen_Tool\bin\Debug\net10.0-windows7.0\OpenTouryo.DaoGen_Tool.exe"
+        Args = @("/HELP");  Expect = 'DaoGen_Tool（D層自動生成ツール／墨壺）'
+    }
+    @{
+        Name = "DaoGen_Tool DAODEFGEN (net10.0)";  Bat = "4_Build_Framework_ToolCore.bat"
+        Exe  = "Frameworks\Tools\DaoGen_Tool\bin\Debug\net10.0-windows7.0\OpenTouryo.DaoGen_Tool.exe"
+        Args = $daoDefArgsCore;  Expect = '生成が完了しました。'
+        Pre = $prepareDaoGenCore;  Verify = $verifyDaoDefCore
+    }
+    @{
+        Name = "DaoGen_Tool DAOSQLGEN (net10.0)";  Bat = "4_Build_Framework_ToolCore.bat"
+        Exe  = "Frameworks\Tools\DaoGen_Tool\bin\Debug\net10.0-windows7.0\OpenTouryo.DaoGen_Tool.exe"
+        Args = $daoSqlArgsCore;  Expect = '生成が完了しました。'
+        Verify = $verifyDaoGenCore
     }
 
     # --- Web アプリ ---
