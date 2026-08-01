@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <package >
   <metadata>
     <id>Touryo.Infrastructure.Public.Security</id>
@@ -19,13 +19,11 @@
       <group targetFramework="net48">
         <dependency id="Touryo.Infrastructure.Public" version="$version$" />
         <dependency id="BouncyCastle.NetCore" version="2.2.1" />
-        <dependency id="jose-jwt" version="5.1.1" />
         <dependency id="Newtonsoft.Json" version="13.0.3" />
       </group>
       <group targetFramework="net10.0">
         <dependency id="Touryo.Infrastructure.Public" version="$version$" />
         <dependency id="BouncyCastle.NetCore" version="2.2.1" />
-        <dependency id="jose-jwt" version="5.1.1" />
         <dependency id="Newtonsoft.Json" version="13.0.3" />
         <dependency id="System.Security.Cryptography.Xml" version="9.0.15" />
       </group>

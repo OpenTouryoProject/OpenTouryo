@@ -184,9 +184,6 @@
     <PackageReference Include="BouncyCastle.NetCore">
       <Version>2.2.1</Version>
     </PackageReference>
-    <PackageReference Include="jose-jwt">
-      <Version>5.1.1</Version>
-    </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
     </PackageReference>

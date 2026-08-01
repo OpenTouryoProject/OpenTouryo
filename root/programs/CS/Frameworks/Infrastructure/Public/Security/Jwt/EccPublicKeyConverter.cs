@@ -32,6 +32,8 @@
 //*                                下位がExportableである必要性があった、
 //*                                また、ASP.NET上で実行する可能性もある。
 //*  2019/06/25  西野 大介         インスタンス・メソッド化（ES256, 384, 512対応）
+//*  2026/08/01  玄人 幸道         jose-jwtへの依存を解消（JwkToCngをBCLのみで実装）
+//*                                ※ 楕円曲線の決定にcrvを使用するため、jose-jwt非互換。
 //**********************************************************************************
 
 using System;
@@ -44,7 +46,6 @@ using Newtonsoft.Json.Linq;
 
 //using Jose;
 //using Security.Cryptography;
-using Jose.keys;
 
 using Touryo.Infrastructure.Public.Str;
 
@@ -252,14 +253,34 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         /// <summary>JwkToCng</summary>
         /// <param name="jwk">JObject</param>
         /// <returns>CngKey（公開鍵）</returns>
+        /// <remarks>
+        /// 【jose-jwt 非互換】
+        /// 以前は jose-jwt の EccKey.New(x, y) を使用していたが、
+        /// jose-jwt への依存を解消するため、BCL のみの実装に変更した。
+        /// これに伴い、楕円曲線の決定方法が変わっている。
+        /// ・旧：x 座標のバイト長から推測（32→P-256、48→P-384、66→P-521）
+        /// ・新：JWK の crv メンバを参照する
+        /// 長さによる推測は secp256k1 や Brainpool と区別が付かず、
+        /// 誤った曲線の鍵を生成し得るため、crv を必須とした。
+        /// なお crv は RFC 7517／RFC 7518 において EC 鍵の必須メンバであり、
+        /// 姉妹メソッドの JwkToParam も従来から crv を必須としている。
+        /// </remarks>
         public CngKey JwkToCng(Dictionary<string, string> jwk)
         {
+            ECParameters ecParams = new ECParameters();
+
             // 楕円曲線
-            // 不要
+            ecParams.Curve = this.GetECCurveFromCrvString((string)jwk[JwtConst.crv]);
+
             // 公開鍵の部分
-            return EccKey.New(
-                CustomEncode.FromBase64UrlString((string)jwk[JwtConst.x]),
-                CustomEncode.FromBase64UrlString((string)jwk[JwtConst.y]));
+            ecParams.Q.X = CustomEncode.FromBase64UrlString((string)jwk[JwtConst.x]);
+            ecParams.Q.Y = CustomEncode.FromBase64UrlString((string)jwk[JwtConst.y]);
+
+            // ECParameters → CngKey
+            ECDsaCng ecDsaCng = new ECDsaCng();
+            ecDsaCng.ImportParameters(ecParams);
+
+            return ecDsaCng.Key;
         }
         #endregion
 
