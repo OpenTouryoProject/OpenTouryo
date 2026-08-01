@@ -1,4 +1,4 @@
-//**********************************************************************************
+﻿//**********************************************************************************
 //* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
@@ -32,6 +32,8 @@
 //*  2010/09/24  西野 大介         ジェネリック対応（XMLのDictionary化）
 //*                                nullチェック方法、Contains → ContainsKeyなどに注意
 //*  2011/01/19  西野 大介         環境変数の組み込み処理に対応
+//*  2026/08/01  玄人 幸道         定義ファイルの探索を ResourceLoader.ResolveFilePath に統一した。
+//*                                ※ 存在チェックと読み込みで同じ実パスを使うようにした。
 //**********************************************************************************
 
 using System;
@@ -125,13 +127,17 @@ namespace Touryo.Infrastructure.Framework.Util
 
                     #region リソース ローダでチェック（ここで落とすとハンドルされないので落とさない。）
 
-                    if (ResourceLoader.Exists(
-                        GetConfigParameter.GetConfigValue(FxLiteral.XML_SP_DEFINITION), false))
+                    // ↓↓↓【変更】↓↓↓
+                    // リソース ローダで実パスを解決する。
+                    // ※ 以前は Exists で存在チェックした後、生のパスで開いていたため、
+                    //    ResolveFilePath の探索結果（EXEの配置フォルダ基準）を活かせなかった。
+                    string xmlSPFilePath = ResourceLoader.ResolveFilePath(
+                        GetConfigParameter.GetConfigValue(FxLiteral.XML_SP_DEFINITION));
+
+                    if (xmlSPFilePath != null)
                     {
                         // 共有情報定義（XmlDocument）を[リソース]で初期化
-                        xMLSP.Load(
-                            StringVariableOperator.BuiltStringIntoEnvironmentVariable(
-                                GetConfigParameter.GetConfigValue(FxLiteral.XML_SP_DEFINITION)));
+                        xMLSP.Load(xmlSPFilePath);
 
                         //// 戻す
                         //return;
@@ -140,6 +146,7 @@ namespace Touryo.Infrastructure.Framework.Util
                     {
                         // 何もしない。
                     }
+                    // ↑↑↑【変更】↑↑↑
 
                     #endregion
                 }

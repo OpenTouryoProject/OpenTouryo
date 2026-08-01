@@ -40,6 +40,8 @@
 //*  2014/02/07  Rituparna Biswas  Changes Made In GetMessageDescription for Internationalization
 //*  2014/02/19  西野 大介         取り込み（細かな修正）
 //*  2017/08/11  西野 大介         2014年のInternationalizationのrefactoringを実施
+//*  2026/08/01  玄人 幸道         定義ファイルの探索を ResourceLoader.ResolveFilePath に統一した。
+//*                                ※ 存在チェックと読み込みで同じ実パスを使うようにした。
 //**********************************************************************************
 
 
@@ -257,20 +259,30 @@ namespace Touryo.Infrastructure.Framework.Util
 
                 return true;
             }
-            else if (ResourceLoader.Exists(filePath, false))
-            {
-                XmlDocument xMLMSG = new XmlDocument();
-                
-                // Load
-                xMLMSG.Load(StringVariableOperator.BuiltStringIntoEnvironmentVariable(filePath));
-                // Save
-                GetMessage.DicMSG[filePath] = GetMessage.FillDictionary(xMLMSG);
-
-                return true;
-            }
             else
             {
-                return false;
+                // ↓↓↓【変更】↓↓↓
+                // リソース ローダで実パスを解決する。
+                // ※ 以前は Exists で存在チェックした後、生のパスで開いていたため、
+                //    ResolveFilePath の探索結果（EXEの配置フォルダ基準）を活かせなかった。
+                string msgFilePath = ResourceLoader.ResolveFilePath(filePath);
+
+                if (msgFilePath != null)
+                {
+                    XmlDocument xMLMSG = new XmlDocument();
+
+                    // Load
+                    xMLMSG.Load(msgFilePath);
+                    // Save（キーは解決前のパス＝設定値のまま）
+                    GetMessage.DicMSG[filePath] = GetMessage.FillDictionary(xMLMSG);
+
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+                // ↑↑↑【変更】↑↑↑
             }
         }
 

@@ -1,4 +1,4 @@
-//**********************************************************************************
+﻿//**********************************************************************************
 //* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
@@ -38,6 +38,8 @@
 //*  2011/01/19  西野 大介         環境変数の組み込み処理に対応
 //*  2011/10/09  西野 大介         国際化対応
 //*  2018/03/28  西野 大介         .NET Standard対応で、I/F変更あり。
+//*  2026/08/01  玄人 幸道         定義ファイルの探索を ResourceLoader.ResolveFilePath に統一した。
+//*                                ※ 存在チェックと読み込みで同じ実パスを使うようにした。
 //**********************************************************************************
 
 using System;
@@ -154,13 +156,23 @@ namespace Touryo.Infrastructure.Public.Log
                         }
                         else
                         {
-                            // リソース ローダで存在チェック（存在しなければエラー）
-                            ResourceLoader.Exists(log4netConfFile, true);
+                            // ↓↓↓【変更】↓↓↓
+                            // リソース ローダで実パスを解決する。
+                            // ※ 以前は Exists で存在チェックした後、生のパスで開いていたため、
+                            //    ResolveFilePath の探索結果（EXEの配置フォルダ基準）を活かせなかった。
+                            string log4netConfFilePath = ResourceLoader.ResolveFilePath(log4netConfFile);
+
+                            if (log4netConfFilePath == null)
+                            {
+                                // 存在しない場合はエラー（例外の送出は Exists に委ねる）
+                                ResourceLoader.Exists(log4netConfFile, true);
+                            }
 
                             // ログ定義 [リソース ファイル] → ストリームを開く
                             FileStream s = new FileStream(
-                                StringVariableOperator.BuiltStringIntoEnvironmentVariable(log4netConfFile),
+                                log4netConfFilePath,
                                 FileMode.Open, FileAccess.Read, FileShare.Read);
+                            // ↑↑↑【変更】↑↑↑
 
                             // log4netのXML形式の設定ファイルを読み込む。
 #if (NETSTD || NETCOREAPP)

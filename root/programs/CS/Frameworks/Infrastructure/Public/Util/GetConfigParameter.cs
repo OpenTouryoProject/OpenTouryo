@@ -36,6 +36,11 @@
 //*                                ※ JSONキーの「:」を「__」で処理する。
 //*                                GetAnyConfigSectionメソッドでコンテナ・モードに対応しない。
 //*                                ※ コンテナ・モードでは、セクションを返せない。
+//*  2026/08/01  玄人 幸道         appsettings.jsonの読込基点を、currentディレクトリから
+//*                                AppContext.BaseDirectory（EXEの配置フォルダ）に変更した。
+//*                                ※ app.configと同じ挙動に揃え、CLIのカレント依存を解消する。
+//*  2026/08/01  玄人 幸道         埋め込まれたリソースから初期化するオーバーロードを追加した。
+//*                                ※ PublishSingleFile（単一ファイル発行）への対応。
 //**********************************************************************************
 
 #if (NETSTD || NETCOREAPP)
@@ -86,27 +91,60 @@ namespace Touryo.Infrastructure.Public.Util
 
         /// <summary>IConfigurationの初期化</summary>
         /// <param name="jsonFileName">string</param>
+        /// <remarks>
+        /// jsonFileNameに絶対パスを指定した場合は、そのパスが優先される。
+        /// </remarks>
         public static void InitConfiguration(string jsonFileName)
         {
             IConfigurationBuilder builder = new ConfigurationBuilder();
 
-            // currentディレクトリのappsettings.jsonを読み込む。
+            // ↓↓↓【変更】↓↓↓
+            // EXEの配置フォルダのappsettings.jsonを読み込む。
+            // 以前はcurrentディレクトリを基点にしていたが、CLIは任意のカレント
+            // ディレクトリから起動されるため、読み込みに失敗することがあった。
+            // ※ app.config（<exe名>.exe.config）と同じ、EXEの隣を見る挙動に揃えている。
+            // ※ AppContext.BaseDirectoryは、PublishSingleFile（単一ファイル発行）でも
+            //    正しい値を返す（Assembly.Locationは空文字になるため使用しない）。
             builder = builder
-                .SetBasePath(Directory.GetCurrentDirectory())
+                .SetBasePath(AppContext.BaseDirectory)
                 .AddJsonFile(jsonFileName);
+            // ↑↑↑【変更】↑↑↑
 
             GetConfigParameter._configuration = builder.Build();
         }
+
+        // ↓↓↓【追加】↓↓↓
+
+        /// <summary>IConfigurationの初期化（埋め込まれたリソース）</summary>
+        /// <param name="jsonStream">Stream</param>
+        /// <remarks>
+        /// PublishSingleFile（単一ファイル発行）などで、appsettings.jsonを
+        /// EXEの隣に配置できない場合に使用する。
+        /// EmbeddedResourceLoader.LoadAsStreamの戻り値を渡す。
+        /// </remarks>
+        public static void InitConfiguration(Stream jsonStream)
+        {
+            IConfigurationBuilder builder = new ConfigurationBuilder();
+
+            // 埋め込まれたリソースのappsettings.jsonを読み込む。
+            builder = builder.AddJsonStream(jsonStream);
+
+            GetConfigParameter._configuration = builder.Build();
+        }
+
+        // ↑↑↑【追加】↑↑↑
 
         /// <summary>IConfigurationの初期化</summary>
         public static void InitConfiguration()
         {
             IConfigurationBuilder builder = new ConfigurationBuilder();
 
-            // currentディレクトリのappsettings.jsonを読み込む。
+            // ↓↓↓【変更】↓↓↓
+            // EXEの配置フォルダのappsettings.jsonを読み込む（理由は上記と同じ）。
             builder = builder
-                .SetBasePath(Directory.GetCurrentDirectory())
+                .SetBasePath(AppContext.BaseDirectory)
                 .AddJsonFile("appsettings.json");
+            // ↑↑↑【変更】↑↑↑
 
             #region 参考：メモリ内プロバイダによる POCO クラスとのバインディング
 
