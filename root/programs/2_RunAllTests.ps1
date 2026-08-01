@@ -42,10 +42,10 @@
     バッチの実行を省略し、ワーキング ツリーにある既存の Result*.txt を比較する。
 
 .EXAMPLE
-    .\RunAllTests.ps1
+    .\2_RunAllTests.ps1
 
 .EXAMPLE
-    .\RunAllTests.ps1 -SkipBuild
+    .\2_RunAllTests.ps1 -SkipBuild
 
 .NOTES
     作成者          ：玄人 幸道

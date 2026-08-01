@@ -6,7 +6,7 @@
 **機械判定に置き換える**ための手順と判定基準を記述する（#513 段階 1）。
 
 リリース時の作業全体は [`RELEASE.md`](RELEASE.md) を参照。
-実行順は `BuildAll.ps1` → `RunAllTests.ps1` → `SmokeTest.ps1`。
+実行順は `1_BuildAll.ps1` → `2_RunAllTests.ps1` → `3_SmokeTest.ps1`。
 
 ---
 
@@ -16,10 +16,10 @@
 cd root\programs
 
 # ビルド バッチを実行し、再生成された結果を HEAD 版と比較して一覧表示する
-.\RunAllTests.ps1
+.\2_RunAllTests.ps1
 
 # バッチを実行せず、いま手元にある結果ファイルだけを比較する
-.\RunAllTests.ps1 -SkipBuild
+.\2_RunAllTests.ps1 -SkipBuild
 
 # 個別に比較する
 .\CompareResult.ps1 -Expected <HEAD 版> -Actual TestCode\Result48.txt
@@ -41,7 +41,7 @@ cd root\programs
 1. バッチを実行して `Result*.txt` を再生成する
 2. `git diff` で「前回のリリース時の結果」との差分を目視する
 
-`RunAllTests.ps1` はこの構造を変えず、2 を機械比較に置き換える。
+`2_RunAllTests.ps1` はこの構造を変えず、2 を機械比較に置き換える。
 
 | | 実体 | 取得方法 |
 |---|---|---|
@@ -74,7 +74,7 @@ cd root\programs
 | EncAndDecUtilCUI (net10.0) | `EncAndDecUtilCUI/ResultCore100.txt` | 同上 | 同上 |
 
 `EncAndDecUtilCUI/ResultCore100OnLinux.txt` は Linux 実行時の期待結果のため、
-Windows からの `RunAllTests.ps1` の対象外。
+Windows からの `2_RunAllTests.ps1` の対象外。
 
 ### ビルドをバッチに委ねている理由
 
@@ -107,7 +107,7 @@ SimpleBatch.exe /Dap SQL ... > ..\..\..\ResultSimpleBatch48.txt
 'SimpleBatch.exe' is not recognized as an internal or external command,
 ```
 
-`RunAllTests.ps1` は、バッチを直接実行した場合と同じ条件にするため、この変数を解除している。
+`2_RunAllTests.ps1` は、バッチを直接実行した場合と同じ条件にするため、この変数を解除している。
 
 ---
 
@@ -127,7 +127,7 @@ SimpleBatch.exe /Dap SQL ... > ..\..\..\ResultSimpleBatch48.txt
 
 `y_Build_TestCode_SecCUI.bat` は先頭で `copy_cert.bat` を呼ぶが、こちらは `C:\root\files\...`
 を参照するため、リポジトリだけを clone した環境では配置できない。
-`RunAllTests.ps1` はリポジトリ内の正本から不足を**自動で配置**するため、手動操作は不要。
+`2_RunAllTests.ps1` はリポジトリ内の正本から不足を**自動で配置**するため、手動操作は不要。
 個別にビルドする場合のみ、次のいずれかを実行する。
 
 ```powershell

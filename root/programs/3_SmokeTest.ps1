@@ -6,7 +6,7 @@
     リリース時の「サンプルを幾つか見繕って手動で疎通を行う」を機械化したもの（#513 段階 3）。
 
     ＜段階 1・2 との違い＞
-      段階 1（RunAllTests.ps1）は「出力が前回と同じか」を見る回帰テスト。
+      段階 1（2_RunAllTests.ps1）は「出力が前回と同じか」を見る回帰テスト。
       本スクリプトは「起動して、想定どおり動き、例外なく終わるか」を見る疎通テスト。
       期待結果ファイルは持たず、判定条件を定義側に書く。
 
@@ -16,11 +16,11 @@
       リリース チェックリストの手作業項目として残す。
 
     ＜ビルド＞
-      リポジトリ既定のビルド バッチを呼ぶ。理由は RunAllTests.ps1 と同じで、
+      リポジトリ既定のビルド バッチを呼ぶ。理由は 2_RunAllTests.ps1 と同じで、
       csproj を直接ビルドすると nuget.exe restore が行うネイティブ DLL の配置が漏れる。
 
       なお 0_ExecAllBat.bat は途中で 1_DeleteDir.bat を繰り返し実行し、
-      配下の bin / obj を再帰的に削除する。このため BuildAll.ps1 の完走後に
+      配下の bin / obj を再帰的に削除する。このため 1_BuildAll.ps1 の完走後に
       残るのは最後にビルドされた Core サンプルだけで、net48 サンプルは残らない。
       本スクリプトが自分でビルドするのはこのため。
 
@@ -39,10 +39,10 @@
     ログの保存先。既定は %TEMP%\OpenTouryoSmokeTest。
 
 .EXAMPLE
-    .\SmokeTest.ps1
+    .\3_SmokeTest.ps1
 
 .EXAMPLE
-    .\SmokeTest.ps1 -Only "net48" -SkipBuild
+    .\3_SmokeTest.ps1 -Only "net48" -SkipBuild
 
 .NOTES
     作成者          ：玄人 幸道
@@ -289,10 +289,24 @@ function Invoke-Http
 # Web アプリの疎通手順
 # ------------------------------------------------------------------
 # 引数でベース URL を受け取り、@{ Ok = $bool; Detail = $string } を返す。
-# 単なる 200 応答ではなく、ログインを通して認証が要る画面まで到達させることで、
-# ホスティング・構成・ルーティング・認証・セッションまでを一度に確認する。
+#
+# ＜確認の深さを揃える＞
+# 3 つとも「ログインを通して、認証が要る画面に到達できること」まで見る。
+# 入口ページが 200 を返すだけでは、ホスティングと構成しか確認できない。
+# 認証が要る画面まで通せば、ルーティング・認証・セッションまでを一度に確認できる。
+#
+#   | 対象                 | 認証の実装          | 到達を確認する画面   |
+#   |----------------------|---------------------|----------------------|
+#   | MVC_Sample (net48)   | FormsAuthentication | /Crud1/Index         |
+#   | MVC_Sample (net10.0) | Cookie 認証         | /Crud1/Index         |
+#   | WebForms_Sample      | FormsAuthentication | Aspx/start/menu.aspx |
+#
+# いずれのサンプルも「ユーザー名が空でなければ認証する」実装のため、資格情報は不要。
 
-# MVC_Sample (net48) : FormsAuthentication。ユーザー名が空でなければ認証される。
+# MVC_Sample : net48 は FormsAuthentication、net10.0 は Cookie 認証と実装は異なるが、
+# 画面構成と URL は同じなので同じ手順で確認できる。
+# 認証後の応答は net48 が 302（RedirectFromLoginPage）、net10.0 が 200（View を返す）
+# と分かれるため、ここでは 4xx/5xx でないことだけを見る。
 $mvcLoginFlow = {
     param($base)
 
@@ -305,7 +319,6 @@ $mvcLoginFlow = {
     $tok = ([regex]::Match($r1.Content, 'name="__RequestVerificationToken"[^>]*value="([^"]+)"')).Groups[1].Value
     if (-not $tok) { return @{ Ok = $false; Detail = "__RequestVerificationToken が取得できない" } }
 
-    # 認証に成功すると FormsAuthentication がリダイレクトするため 302 になる。
     # 500 はセッション状態サービスの停止など、環境側の問題であることが多い。
     $body = @{ UserName = "smoke"; Password = "smoke"; normal = "ログイン"; __RequestVerificationToken = $tok }
     $r2 = Invoke-Http "$base/Home/Login" -Method POST -Body $body -Session $ses
@@ -318,28 +331,40 @@ $mvcLoginFlow = {
     return @{ Ok = $true; Detail = "ログイン後 /Crud1/Index = 200" }
 }
 
-# WebForms_Sample (net48) : 入口はログイン画面。
+# WebForms_Sample (net48) : Web.config で <deny users="?" /> のため全画面が要認証。
+# ログイン後は defaultUrl の menu.aspx へ遷移する。
 $webFormsFlow = {
     param($base)
 
     $ses = New-WebSession
-    $r = Invoke-Http "$base/Aspx/start/login.aspx" -Session $ses
-    if ($r.Status -ne 200) { return @{ Ok = $false; Detail = "GET login.aspx = $($r.Status)" } }
-    # WebForms なので __VIEWSTATE があること＝ページのライフサイクルが動いていること。
-    if ($r.Content -notmatch '__VIEWSTATE') { return @{ Ok = $false; Detail = "__VIEWSTATE が無い" } }
 
-    return @{ Ok = $true; Detail = "login.aspx = 200（__VIEWSTATE あり）" }
-}
+    $r1 = Invoke-Http "$base/Aspx/start/login.aspx" -Session $ses
+    if ($r1.Status -ne 200) { return @{ Ok = $false; Detail = "GET login.aspx = $($r1.Status)" } }
 
-# MVC_Sample (net10.0) : 既定ルートは Home/Index。
-$mvcCoreFlow = {
-    param($base)
+    # WebForms のポストバックには、画面が発行した状態フィールドをそのまま返す必要がある。
+    # __VIEWSTATE が取れること自体、ページのライフサイクルが動いている証拠でもある。
+    $fields = @{}
+    foreach ($n in @("__VIEWSTATE", "__VIEWSTATEGENERATOR", "__EVENTVALIDATION"))
+    {
+        $m = [regex]::Match($r1.Content, ('name="' + $n + '"[^>]*value="([^"]*)"'))
+        if (-not $m.Success) { return @{ Ok = $false; Detail = "$n が取得できない" } }
+        $fields[$n] = $m.Groups[1].Value
+    }
 
-    $ses = New-WebSession
-    $r = Invoke-Http "$base/" -Session $ses
-    if ($r.Status -ne 200) { return @{ Ok = $false; Detail = "GET / = $($r.Status)" } }
+    # マスタ ページ配下のため、コントロール名は ctl00$ContentPlaceHolder_A$ が付く。
+    # btnButton1 がログイン ボタン（btnButton2 はキャンセル）。
+    $fields["ctl00`$ContentPlaceHolder_A`$txtUserID"]   = "smoke"
+    $fields["ctl00`$ContentPlaceHolder_A`$txtPassword"] = "smoke"
+    $fields["ctl00`$ContentPlaceHolder_A`$btnButton1"]  = "ログイン"
 
-    return @{ Ok = $true; Detail = "GET / = 200 ($($r.Length) bytes)" }
+    $r2 = Invoke-Http "$base/Aspx/start/login.aspx" -Method POST -Body $fields -Session $ses
+    if ($r2.Status -ge 400) { return @{ Ok = $false; Detail = "POST login.aspx = $($r2.Status)" } }
+
+    # 認証が要る画面。未認証なら login.aspx へ 302 されるため、200 なら認証が通っている。
+    $r3 = Invoke-Http "$base/Aspx/start/menu.aspx" -Session $ses
+    if ($r3.Status -ne 200) { return @{ Ok = $false; Detail = "GET menu.aspx = $($r3.Status)（認証が通っていない）" } }
+
+    return @{ Ok = $true; Detail = "ログイン後 menu.aspx = 200" }
 }
 
 $targets = @(
@@ -454,7 +479,7 @@ $targets = @(
         Name = "MVC_Sample (net10.0)";    Bat = "10_Build_WebAppCore_sample.bat"
         Kind = "Web";  WebHost = "Kestrel";  Port = 51083
         Exe  = "Samples4NetCore\Backend\MVC_Sample\MVC_Sample\bin\Debug\net10.0\MVC_Sample.dll"
-        Flow = $mvcCoreFlow
+        Flow = $mvcLoginFlow
     }
 )
 

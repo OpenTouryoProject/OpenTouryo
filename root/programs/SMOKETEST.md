@@ -13,11 +13,11 @@
 cd root\programs
 
 # 全対象の疎通を確認する
-.\SmokeTest.ps1
+.\3_SmokeTest.ps1
 
 # 一部だけ（動作確認用）
-.\SmokeTest.ps1 -Only "net48"
-.\SmokeTest.ps1 -Only "Rerunnable" -SkipBuild
+.\3_SmokeTest.ps1 -Only "net48"
+.\3_SmokeTest.ps1 -Only "Rerunnable" -SkipBuild
 ```
 
 終了コードは `0` = 全対象 OK、`1` = NG あり。
@@ -34,14 +34,14 @@ cd root\programs
 
 | | 見るもの | 期待値 |
 |---|---|---|
-| `BuildAll.ps1`（段階 2） | ビルドが通るか | エラー 0 件 |
-| `RunAllTests.ps1`（段階 1） | 出力が前回と同じか | HEAD の `Result*.txt` |
-| **`SmokeTest.ps1`（段階 3）** | **起動して想定どおり動くか** | **定義側に書いた判定条件** |
+| `1_BuildAll.ps1`（段階 2） | ビルドが通るか | エラー 0 件 |
+| `2_RunAllTests.ps1`（段階 1） | 出力が前回と同じか | HEAD の `Result*.txt` |
+| **`3_SmokeTest.ps1`（段階 3）** | **起動して想定どおり動くか** | **定義側に書いた判定条件** |
 
 段階 1 は回帰テスト、段階 3 は疎通テストで、目的が違う。
-疎通テストは期待結果ファイルを持たず、判定条件を `SmokeTest.ps1` の対象定義に書く。
+疎通テストは期待結果ファイルを持たず、判定条件を `3_SmokeTest.ps1` の対象定義に書く。
 
-**実行順は `BuildAll.ps1` → `RunAllTests.ps1` → `SmokeTest.ps1`。**
+**実行順は `1_BuildAll.ps1` → `2_RunAllTests.ps1` → `3_SmokeTest.ps1`。**
 リリース時の作業全体は [`RELEASE.md`](RELEASE.md) を参照。
 
 ---
@@ -119,24 +119,40 @@ NG : /OUTPUT "C:\temp\out"    ← \ が消える
 | PowerShell の `& $exe ... *>&1 \| Out-File` | **取れる**（68 行） |
 | `cmd /c "... > file"` | 取れない（0 行） |
 
-`SmokeTest.ps1` は前者で実行している。
+`3_SmokeTest.ps1` は前者で実行している。
 
 ### Web アプリ（3 件）
 
-| 対象 | ホスト | 判定 |
-|---|---|---|
-| `MVC_Sample` (net48) | IIS Express | ログイン後 `/Crud1/Index` が 200 |
-| `WebForms_Sample` (net48) | IIS Express | `login.aspx` が 200・`__VIEWSTATE` あり |
-| `MVC_Sample` (net10.0) | Kestrel | `/` が 200 |
+| 対象 | ホスト | 認証の実装 | 判定 |
+|---|---|---|---|
+| `MVC_Sample` (net48) | IIS Express | FormsAuthentication | ログイン後 `/Crud1/Index` が 200 |
+| `WebForms_Sample` (net48) | IIS Express | FormsAuthentication | ログイン後 `menu.aspx` が 200 |
+| `MVC_Sample` (net10.0) | Kestrel | Cookie 認証 | ログイン後 `/Crud1/Index` が 200 |
 
-`MVC_Sample` (net48) は単なる 200 応答では終わらせず、**ログインを通している**。
+**3 つとも確認の深さを揃えている。** 入口ページが 200 を返すだけでは
+ホスティングと構成しか確認できないため、いずれも**ログインを通し、
+認証が要る画面に到達できること**まで見る。
 
-1. `GET /Home/Login` … 画面が出ること。`__RequestVerificationToken` を取り出す
-2. `POST /Home/Login` … `ValidateAntiForgeryToken` を通ること
-3. `GET /Crud1/Index` … `[Authorize]` の画面。未認証なら 302 になるので、**200 なら認証が通っている**
+1. ログイン画面を GET … 画面が出ること。ページが発行した状態を取り出す
+   （MVC は `__RequestVerificationToken`、WebForms は `__VIEWSTATE` 等）
+2. ログインを POST … 偽造防止の検証を通ること
+3. 認証が要る画面を GET … **未認証なら 302 になるので、200 なら認証が通っている**
 
-これで、ホスティング・構成・ルーティング・認証・セッションまでを一度に確認できる。
-サンプルの `FormsAuthentication` はユーザー名が空でなければ認証されるため、資格情報は不要。
+これでホスティング・構成・ルーティング・認証・セッションまでを一度に確認できる。
+いずれのサンプルも「ユーザー名が空でなければ認証する」実装のため、資格情報は不要。
+
+> **未認証時に 302 が返ることは実測で確認済み。** 200 が偶然でないことの裏付けになる。
+>
+> ```
+> MVC_Sample (net48)  未認証で /Crud1/Index          → 302
+> WebForms_Sample     未認証で /Aspx/start/menu.aspx → 302
+> ```
+
+`WebForms_Sample` は `Web.config` の `<deny users="?" />` で全画面が要認証になっており、
+ログイン後は `<forms defaultUrl="Aspx/Start/menu.aspx">` の画面へ遷移する。
+ポストバックには画面が発行した `__VIEWSTATE` / `__VIEWSTATEGENERATOR` / `__EVENTVALIDATION` を
+そのまま返す必要があり、コントロール名はマスタ ページ配下のため
+`ctl00$ContentPlaceHolder_A$` が付く。
 
 ### 対象外
 
@@ -181,7 +197,7 @@ WinForms / WPF 系は、リリース チェックリスト（段階 4）の**手
 System.Web.HttpException: セッション状態要求をセッション状態サーバーに対して作成できませんでした。
 ```
 
-`SmokeTest.ps1` は実行前に確認し、止まっていれば「前提未達」として対処方法を示す。
+`3_SmokeTest.ps1` は実行前に確認し、止まっていれば「前提未達」として対処方法を示す。
 
 ```powershell
 Start-Service aspnet_state      # 管理者権限が必要
@@ -212,11 +228,11 @@ Start-Service aspnet_state      # 管理者権限が必要
 
 ## 6. ビルドについて
 
-**リポジトリ既定のビルド バッチを呼ぶ。** 理由は `RunAllTests.ps1` と同じで、
+**リポジトリ既定のビルド バッチを呼ぶ。** 理由は `2_RunAllTests.ps1` と同じで、
 `csproj` を直接 MSBuild すると `nuget.exe restore` が行うネイティブ DLL の配置が漏れ、
 **ビルドは成功するのに実行時に落ちる**（`TESTING.md` の「ビルドをバッチに委ねている理由」）。
 
-### `BuildAll.ps1` の後にバイナリが残らない理由
+### `1_BuildAll.ps1` の後にバイナリが残らない理由
 
 `0_ExecAllBat.bat` は途中で `1_DeleteDir.bat` を繰り返し実行し、
 配下の `bin` / `obj` / `packages` 等を**再帰的に**削除する。
@@ -227,8 +243,8 @@ Clean (core サンプル)   ← ここで net48 サンプルの bin も消える
 … Core サンプルをビルド …
 ```
 
-このため `BuildAll.ps1` の完走後に残るのは最後にビルドされた Core サンプルだけで、
-net48 サンプルのバイナリは残らない。`SmokeTest.ps1` が自分でビルドするのはこのため。
+このため `1_BuildAll.ps1` の完走後に残るのは最後にビルドされた Core サンプルだけで、
+net48 サンプルのバイナリは残らない。`3_SmokeTest.ps1` が自分でビルドするのはこのため。
 
 ---
 
@@ -273,8 +289,8 @@ DaoGen_Tool /HELP (net10.0)       OK   DaoGen_Tool（D層自動生成ツール�
 DaoGen_Tool DAODEFGEN (net10.0)   OK   生成が完了しました。
 DaoGen_Tool DAOSQLGEN (net10.0)   OK   生成が完了しました。
 MVC_Sample (net48)                OK   ログイン後 /Crud1/Index = 200
-WebForms_Sample (net48)           OK   login.aspx = 200（__VIEWSTATE あり）
-MVC_Sample (net10.0)              OK   GET / = 200 (3694 bytes)
+WebForms_Sample (net48)           OK   ログイン後 menu.aspx = 200
+MVC_Sample (net10.0)              OK   ログイン後 /Crud1/Index = 200
 
   全対象 OK
 ```
@@ -288,14 +304,14 @@ MVC_Sample (net10.0)              OK   GET / = 200 (3694 bytes)
 「The maximum redirection count has been exceeded」で終了エラーになる。
 
 ログイン成功時は `FormsAuthentication` が 302 を返すため、これに該当する。
-`SmokeTest.ps1` は `Invoke-Http` で捕まえ、3xx を正常な結果として扱う。
+`3_SmokeTest.ps1` は `Invoke-Http` で捕まえ、3xx を正常な結果として扱う。
 素の `Invoke-WebRequest` を使うと、**判定は通るのにエラーが表示される**状態になる。
 
 ---
 
 ## 9. 対象を追加するとき
 
-`SmokeTest.ps1` の `$targets` に定義を足す。
+`3_SmokeTest.ps1` の `$targets` に定義を足す。
 
 | 項目 | 内容 |
 |---|---|
@@ -318,7 +334,7 @@ MVC_Sample (net10.0)              OK   GET / = 200 (3694 bytes)
 
 `/DAP` のように `/` で始まる引数は `--` で区切って渡す必要がある。
 一方 `System.CommandLine` を使う CLI では `--` 以降が未解析トークン扱いになり、
-**サブコマンドが認識されなくなる**。`SmokeTest.ps1` は引数を見て自動で切り替える。
+**サブコマンドが認識されなくなる**。`3_SmokeTest.ps1` は引数を見て自動で切り替える。
 
 ### PowerShell 5.1 と 7 の両対応
 

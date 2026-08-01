@@ -26,10 +26,10 @@
     各ステップの出力ログの保存先。既定は %TEMP%\OpenTouryoBuildLogs。
 
 .EXAMPLE
-    .\BuildAll.ps1
+    .\1_BuildAll.ps1
 
 .EXAMPLE
-    .\BuildAll.ps1 -Only "Framework_Tool" -SkipClean
+    .\1_BuildAll.ps1 -Only "Framework_Tool" -SkipClean
 
 .NOTES
     作成者          ：玄人 幸道

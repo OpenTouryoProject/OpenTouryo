@@ -97,12 +97,12 @@ gh auth switch --user OsscJpDevInfra  # 異なる場合は切り替え
 
 ```powershell
 cd root\programs
-.\BuildAll.ps1                 # 全ビルド
-.\RunAllTests.ps1              # 単体テスト
-.\SmokeTest.ps1                # サンプルの疎通
+.\1_BuildAll.ps1                 # 全ビルド
+.\2_RunAllTests.ps1              # 単体テスト
+.\3_SmokeTest.ps1                # サンプルの疎通
 ```
 
-`RunAllTests.ps1` はワーキング ツリーの `Result*.txt` を書き換える（従来のバッチ運用と同じ）。
+`2_RunAllTests.ps1` はワーキング ツリーの `Result*.txt` を書き換える（従来のバッチ運用と同じ）。
 **コミットの要否は人が判断する**ため、エージェントは差分を報告するに留める。
 
 **`.ps1` は Windows PowerShell 5.1 と PowerShell 7 の両方で動くこと。**
@@ -116,7 +116,7 @@ cd root\programs
 - **変更したら 5.1 でも実行して確かめる**
 
 ```powershell
-powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\SmokeTest.ps1"
+powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.ps1"
 ```
 
 前提となるサービスや DB の状態が足りない場合は、**勝手に変えず、対処方法とともに報告する。**

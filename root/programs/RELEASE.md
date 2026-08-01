@@ -21,7 +21,7 @@
 | # | フェーズ | 手段 | 実施者 |
 |---|---|---|---|
 | 0 | 準備 | 手作業 | 人（エージェントは充足状況の確認・報告まで） |
-| 1 | 検証（ビルド・単体テスト・疎通） | `BuildAll.ps1` / `RunAllTests.ps1` / `SmokeTest.ps1` | **エージェント可** |
+| 1 | 検証（ビルド・単体テスト・疎通） | `1_BuildAll.ps1` / `2_RunAllTests.ps1` / `3_SmokeTest.ps1` | **エージェント可** |
 | 2 | 検証（UI 系・ツール） | 手作業（GUI 操作） | 人（自動化は見送り。7 節） |
 | 3 | パッケージ化 | `CS\0_Release4Nuget.bat` → `_NuGetPack.bat` | エージェント可（**指示があれば**） |
 | 4 | 公開 | `_NuGetPush.bat` ＋ Wiki 手順 | **人のみ** |
@@ -49,20 +49,20 @@
 
 ```powershell
 cd root\programs
-.\BuildAll.ps1                 # 全ビルド
+.\1_BuildAll.ps1                 # 全ビルド
 ```
 
 ```powershell
-.\RunAllTests.ps1              # 単体テスト
+.\2_RunAllTests.ps1              # 単体テスト
 ```
 
 ```powershell
-.\SmokeTest.ps1                # サンプルの疎通
+.\3_SmokeTest.ps1                # サンプルの疎通
 ```
 
 クリーン ビルドから通しで **約 9.5 分**。
-`RunAllTests.ps1` と `SmokeTest.ps1` は終了コードだけで合否が分かるが、
-`BuildAll.ps1` は既知の署名エラーで 1 になるため、内容の確認が要る（3 節）。
+`2_RunAllTests.ps1` と `3_SmokeTest.ps1` は終了コードだけで合否が分かるが、
+`1_BuildAll.ps1` は既知の署名エラーで 1 になるため、内容の確認が要る（3 節）。
 
 ---
 
@@ -102,16 +102,16 @@ cd root\programs
 
 | スクリプト | 見るもの | 期待値 | 文書 |
 |---|---|---|---|
-| `BuildAll.ps1` | ビルドが通るか | エラー 0 件 | [`BUILDING.md`](BUILDING.md) |
-| `RunAllTests.ps1` | 出力が前回と同じか | HEAD の `Result*.txt` | [`TESTING.md`](TESTING.md) |
-| `SmokeTest.ps1` | 起動して想定どおり動くか | 定義側の判定条件 | [`SMOKETEST.md`](SMOKETEST.md) |
+| `1_BuildAll.ps1` | ビルドが通るか | エラー 0 件 | [`BUILDING.md`](BUILDING.md) |
+| `2_RunAllTests.ps1` | 出力が前回と同じか | HEAD の `Result*.txt` | [`TESTING.md`](TESTING.md) |
+| `3_SmokeTest.ps1` | 起動して想定どおり動くか | 定義側の判定条件 | [`SMOKETEST.md`](SMOKETEST.md) |
 
-- [ ] **`BuildAll.ps1` のエラーが「既知の 1 件」だけである**
+- [ ] **`1_BuildAll.ps1` のエラーが「既知の 1 件」だけである**
       … `-SkipClean` は**使わない**。前回の成果物が残っていると通ったように見える
-- [ ] **`RunAllTests.ps1` が終了コード 0**（6 ケース）
-- [ ] **`SmokeTest.ps1` が終了コード 0**（18 件）
+- [ ] **`2_RunAllTests.ps1` が終了コード 0**（6 ケース）
+- [ ] **`3_SmokeTest.ps1` が終了コード 0**（18 件）
 
-> **`BuildAll.ps1` は現状ここで終了コード 1 になる。**
+> **`1_BuildAll.ps1` は現状ここで終了コード 1 になる。**
 > `WSClnt_sample (net48)` の ClickOnce 署名エラー（`MSB3482`）が残るため。
 > **終了コードだけで判断せず、エラー一覧が下記 1 件だけであることを確認すること**（4 節）。
 >
@@ -127,14 +127,14 @@ cd root\programs
 
 | スクリプト | 所要 |
 |---|---|
-| `BuildAll.ps1`（31 ステップ） | 5.8 分 |
-| `RunAllTests.ps1`（6 ケース） | 1.3 分 |
-| `SmokeTest.ps1`（18 件） | 2.4 分 |
+| `1_BuildAll.ps1`（31 ステップ） | 5.8 分 |
+| `2_RunAllTests.ps1`（6 ケース） | 1.3 分 |
+| `3_SmokeTest.ps1`（18 件） | 2.4 分 |
 
 ### 順序を守る
 
-**`BuildAll.ps1` → `RunAllTests.ps1` → `SmokeTest.ps1` の順で行う。**
-`BuildAll.ps1` はクリーンを行い、`4_Build_CopyAssemblies.bat` がテストとサンプルの
+**`1_BuildAll.ps1` → `2_RunAllTests.ps1` → `3_SmokeTest.ps1` の順で行う。**
+`1_BuildAll.ps1` はクリーンを行い、`4_Build_CopyAssemblies.bat` がテストとサンプルの
 参照先（`Build_net48` / `Build_netcore100`）を更新するため、
 逆順では古いアセンブリを見ることになる。
 
@@ -142,16 +142,16 @@ cd root\programs
 
 | スクリプト | NG の意味 |
 |---|---|
-| `BuildAll.ps1` | コンパイル エラー、または restore の失敗 |
-| `RunAllTests.ps1` | 退行／期待結果の陳腐化／**テスト データの汚染**のいずれか |
-| `SmokeTest.ps1` | 起動時の失敗（構成・ネイティブ DLL・前提サービス）が多い |
+| `1_BuildAll.ps1` | コンパイル エラー、または restore の失敗 |
+| `2_RunAllTests.ps1` | 退行／期待結果の陳腐化／**テスト データの汚染**のいずれか |
+| `3_SmokeTest.ps1` | 起動時の失敗（構成・ネイティブ DLL・前提サービス）が多い |
 
-`RunAllTests.ps1` の「実測のみ／期待のみ」に**件数の差**が出た場合は、
+`2_RunAllTests.ps1` の「実測のみ／期待のみ」に**件数の差**が出た場合は、
 まずテスト データの汚染を疑う（`TESTING.md` 5 節）。
 
 ### `Result*.txt` の扱い
 
-`RunAllTests.ps1` はワーキング ツリーの `Result*.txt` を書き換える（従来のバッチ運用と同じ）。
+`2_RunAllTests.ps1` はワーキング ツリーの `Result*.txt` を書き換える（従来のバッチ運用と同じ）。
 
 **この生 diff を目視してはいけない。** 実行日時が全行に入るため、
 内容が同じでも**ほぼ全行が差分になる**。実測では 6 ファイルで約 2,458 行。
@@ -161,7 +161,7 @@ cd root\programs
 +[2026/08/01 22:40:19,772],[INFO ],[1],,,,----->>,...
 ```
 
-**判定は `RunAllTests.ps1` の「正規化後の差分」で行う。** それが 0 なら内容は同じ。
+**判定は `2_RunAllTests.ps1` の「正規化後の差分」で行う。** それが 0 なら内容は同じ。
 生 diff を読むのは、正規化後に差分が出たときだけでよい。
 
 - [ ] 正規化後の差分が 0 であることを確認した
@@ -194,9 +194,9 @@ cd root\programs
 
 | ツール | 確認内容 |
 |---|---|
-| `DaoGen_Tool`（墨壺） | **GUI 起動のみ**。CUI（`/HELP` `/CUI /MODE ...`）は `SmokeTest.ps1` が網羅済み |
+| `DaoGen_Tool`（墨壺） | **GUI 起動のみ**。CUI（`/HELP` `/CUI /MODE ...`）は `3_SmokeTest.ps1` が網羅済み |
 | `DPQuery_Tool` | GUI 起動 |
-| `EncAndDecUtil` | GUI 起動（CUI 版は `RunAllTests.ps1` が網羅済み） |
+| `EncAndDecUtil` | GUI 起動（CUI 版は `2_RunAllTests.ps1` が網羅済み） |
 
 - [ ] `DaoGen_Tool` が GUI で起動し、D 層定義・SQL が生成できる
       … 生成ロジック自体は CUI 側で自動確認済み。ここで見るのは **GUI が動くこと**
@@ -235,7 +235,7 @@ cd root\programs
 - [ ] `CS\NuGet\out\sp\_NuGetPush.bat` を**プレースホルダに戻した**
       … コミットされている状態は `nuget.exe SetApiKey [ApiKey]`。実キーを残さない
 - [ ] `git status` に意図しない変更が残っていない
-      … 特に `Result*.txt`（`RunAllTests.ps1` が再生成する）と
+      … 特に `Result*.txt`（`2_RunAllTests.ps1` が再生成する）と
       `CS\Frameworks\Tests\EncAndDecUtilCUI\*.cer` / `*.pfx`（Git 管理外の作業用コピー）
 
 ---
@@ -263,13 +263,13 @@ GUI 側で見るのは画面が動くことだけになった。
 
 - [ ] `AGENTS.md` のポリシー遵守（**git 操作をしない**）
       … 検証で `Result*.txt` が書き換わるが、コミットの要否とタイミングは人が判断する
-- [ ] 検証は **`BuildAll.ps1` → `RunAllTests.ps1` → `SmokeTest.ps1` の順**（3 節）
-- [ ] `BuildAll.ps1` に `-SkipClean` を付けない（リリース判定では前回成果物を残さない）
+- [ ] 検証は **`1_BuildAll.ps1` → `2_RunAllTests.ps1` → `3_SmokeTest.ps1` の順**（3 節）
+- [ ] `1_BuildAll.ps1` に `-SkipClean` を付けない（リリース判定では前回成果物を残さない）
 - [ ] **NG を「既知」で片付けない。** 既知として扱ってよいのは
       `WSClientWinCone_sample` の署名エラーと NuGet 脆弱性警告のみ（4 節・[`BUILDING.md`](BUILDING.md) 3 節）
-- [ ] `RunAllTests.ps1` の NG は、退行／期待結果の陳腐化／テスト データの汚染を切り分けてから報告
+- [ ] `2_RunAllTests.ps1` の NG は、退行／期待結果の陳腐化／テスト データの汚染を切り分けてから報告
 - [ ] **前提サービス・DB の状態を勝手に変えない。** 不足は対処方法とともに報告する
-      （`SmokeTest.ps1` が `aspnet_state` を自動起動しないのと同じ理由）
+      （`3_SmokeTest.ps1` が `aspnet_state` を自動起動しないのと同じ理由）
 - [ ] **フェーズ 1（検証）は自分で実行してよい。** フェーズ 0・2・4・5 は人が行う（1 節）
 - [ ] **公開（`_NuGetPush.bat`）は実行しない。** 外部公開で取り消しが困難、かつ API キーを扱う。
       パッケージ化（フェーズ 3）は**指示があったときだけ**

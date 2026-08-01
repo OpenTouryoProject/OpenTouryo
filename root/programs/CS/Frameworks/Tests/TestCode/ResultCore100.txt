@@ -70,11 +70,11 @@ log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.Level
 log4net: Created Appender [OPERATION2]
 log4net: Adding appender named [OPERATION2] to logger [OPERATION].
 log4net: Hierarchy Threshold []
-[2025/11/18 04:03:14,431],[DEBUG],[2],LogIF.DebugLog("ACCESS");
-[2025/11/18 04:03:14,445],[INFO ],[2],LogIF.InfoLog("ACCESS");
-[2025/11/18 04:03:14,445],[WARN ],[2],LogIF.WarnLog("ACCESS");
-[2025/11/18 04:03:14,446],[ERROR],[2],LogIF.ErrorLog("ACCESS");
-[2025/11/18 04:03:14,446],[FATAL],[2],LogIF.FatalLog("ACCESS");
+[2026/08/02 03:25:48,614],[DEBUG],[2],LogIF.DebugLog("ACCESS");
+[2026/08/02 03:25:48,626],[INFO ],[2],LogIF.InfoLog("ACCESS");
+[2026/08/02 03:25:48,626],[WARN ],[2],LogIF.WarnLog("ACCESS");
+[2026/08/02 03:25:48,626],[ERROR],[2],LogIF.ErrorLog("ACCESS");
+[2026/08/02 03:25:48,627],[FATAL],[2],LogIF.FatalLog("ACCESS");
 ----------------------------------------------------------------------------------------------------
 GetMessage: ～メッセージID:I0001に対応する記述（正常系）～
 GetMessage: ～メッセージID:E0001に対応する記述（異常系）～
@@ -2320,4 +2320,4 @@ DeflateCompression(FileStream)-2 > is working properly.
 --------------------------------------------------
 DeflateCompression(MemoryStream) > is working properly.
 ----------------------------------------------------------------------------------------------------
-log4net: Shutdown called on Hierarchy [log4net-default-repository]
+log4net: Shutdown called on Hierarchy [log4net-default-repository]

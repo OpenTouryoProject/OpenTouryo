@@ -18,13 +18,13 @@
 cd root\programs
 
 # 全ビルド（0_ExecAllBat.bat 相当）を実行し、合否を一覧表示する
-.\BuildAll.ps1
+.\1_BuildAll.ps1
 
 # 一部のステップだけ実行する（動作確認用）
-.\BuildAll.ps1 -Only "WebApp_sample" -SkipClean
+.\1_BuildAll.ps1 -Only "WebApp_sample" -SkipClean
 
 # ログの出力先を変える
-.\BuildAll.ps1 -OutputDir D:\logs
+.\1_BuildAll.ps1 -OutputDir D:\logs
 ```
 
 終了コードは `0` = 全ステップ OK、`1` = NG あり。
@@ -49,7 +49,7 @@ cd root\programs
 ## 2. なぜラッパーが必要か
 
 既存のビルド バッチをそのまま呼び出す構成にしてある。
-「何をビルドするか」の正はバッチ側に残り、`BuildAll.ps1` は実行と判定のみを担う。
+「何をビルドするか」の正はバッチ側に残り、`1_BuildAll.ps1` は実行と判定のみを担う。
 
 ラッパーが必要な理由は次の 3 点。
 
@@ -189,16 +189,16 @@ WSClnt_sample (net48)        NG        1    0 21.20
 手順は [`TESTING.md`](TESTING.md) を参照。
 
 ```powershell
-.\RunAllTests.ps1
+.\2_RunAllTests.ps1
 ```
 
-**必ず `BuildAll.ps1` → `RunAllTests.ps1` の順で行う。**
-`BuildAll.ps1` はクリーンを行い、`4_Build_CopyAssemblies.bat` が
+**必ず `1_BuildAll.ps1` → `2_RunAllTests.ps1` の順で行う。**
+`1_BuildAll.ps1` はクリーンを行い、`4_Build_CopyAssemblies.bat` が
 テストの参照先（`Build_net48` / `Build_netcore100`）を更新するため、
 逆順ではテストが古いアセンブリを見ることになる。
 
 なお `0_ExecAllBat.bat` は `y_Build_TestCode*.bat`（単体テスト）を含まない。
-テスト側のビルドは `RunAllTests.ps1` がバッチ経由で行うため、二重に実行する必要はない。
+テスト側のビルドは `2_RunAllTests.ps1` がバッチ経由で行うため、二重に実行する必要はない。
 
 ## 8. サンプルの疎通確認
 
@@ -206,18 +206,18 @@ WSClnt_sample (net48)        NG        1    0 21.20
 手順は [`SMOKETEST.md`](SMOKETEST.md) を参照。
 
 ```powershell
-.\SmokeTest.ps1
+.\3_SmokeTest.ps1
 ```
 
-**`BuildAll.ps1` はクリーンの繰り返しにより、完走後に net48 サンプルのバイナリを残さない。**
+**`1_BuildAll.ps1` はクリーンの繰り返しにより、完走後に net48 サンプルのバイナリを残さない。**
 `1_DeleteDir.bat` が配下の `bin` / `obj` を再帰的に削除するため、最後にビルドされた
-Core サンプルだけが残る。このため `SmokeTest.ps1` は対象を自分でビルドする。
+Core サンプルだけが残る。このため `3_SmokeTest.ps1` は対象を自分でビルドする。
 
 ### リリース時の実行順
 
 ```powershell
 cd root\programs
-.\BuildAll.ps1                 # 全ビルドの合否
-.\RunAllTests.ps1              # 単体テストの回帰
-.\SmokeTest.ps1                # サンプルの疎通
+.\1_BuildAll.ps1                 # 全ビルドの合否
+.\2_RunAllTests.ps1              # 単体テストの回帰
+.\3_SmokeTest.ps1                # サンプルの疎通
 ```
