@@ -199,3 +199,27 @@ cd Frameworks\Tests
 
 なお `0_ExecAllBat.bat` は `y_Build_TestCode*.bat`（単体テスト）を含まない。
 テスト側のビルドは `RunAllTests.ps1` がバッチ経由で行うため、二重に実行する必要はない。
+
+## 8. サンプルの疎通確認
+
+単体テストが通ったら、サンプル アプリの疎通を確認する。
+手順は [`SMOKETEST.md`](SMOKETEST.md) を参照。
+
+```powershell
+.\SmokeTest.ps1
+```
+
+**`BuildAll.ps1` はクリーンの繰り返しにより、完走後に net48 サンプルのバイナリを残さない。**
+`1_DeleteDir.bat` が配下の `bin` / `obj` を再帰的に削除するため、最後にビルドされた
+Core サンプルだけが残る。このため `SmokeTest.ps1` は対象を自分でビルドする。
+
+### リリース時の実行順
+
+```powershell
+cd root\programs\CS
+.\BuildAll.ps1                 # 段階 2 : 全ビルドの合否
+cd Frameworks\Tests
+.\RunAllTests.ps1              # 段階 1 : 単体テストの回帰
+cd ..\..
+.\SmokeTest.ps1                # 段階 3 : サンプルの疎通
+```
