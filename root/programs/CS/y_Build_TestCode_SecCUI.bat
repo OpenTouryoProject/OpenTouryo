@@ -1,4 +1,4 @@
-setlocal
+﻿setlocal
 
 @rem --------------------------------------------------
 @rem Turn off the echo function.
@@ -23,7 +23,7 @@ cd "Frameworks\Tests\EncAndDecUtilCUI"
 call copy_cert.bat
 cd %CURRENTDIR%
 
-..\nuget.exe restore "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUIFx48.sln"
+..\nuget.exe restore "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUIFx48.sln" %NUGET_MSBUILD%
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUIFx48.sln"
 
 dotnet restore "Frameworks\Tests\EncAndDecUtilCUI\EncAndDecUtilCUICore100.sln"

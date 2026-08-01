@@ -1,4 +1,4 @@
-setlocal
+﻿setlocal
 
 @rem --------------------------------------------------
 @rem Turn off the echo function.
@@ -18,7 +18,7 @@ call %CURRENT_DIR%z_Common.bat
 rem --------------------------------------------------
 rem Batch build of EncAndDecUtil.
 rem --------------------------------------------------
-..\nuget.exe restore "Frameworks\Tests\EncAndDecUtil\EncAndDecUtil48.sln"
+..\nuget.exe restore "Frameworks\Tests\EncAndDecUtil\EncAndDecUtil48.sln" %NUGET_MSBUILD%
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\EncAndDecUtil\EncAndDecUtil48.sln"
 
 pause

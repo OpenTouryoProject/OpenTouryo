@@ -11,34 +11,88 @@
 ```powershell
 cd root\programs\CS\Frameworks\Tests
 
-# 全テストをビルド・実行し、期待結果と比較して一覧表示する
+# ビルド バッチを実行し、再生成された結果を HEAD 版と比較して一覧表示する
 .\RunAllTests.ps1
 
-# ビルドを省略して実行だけ行う
+# バッチを実行せず、いま手元にある結果ファイルだけを比較する
 .\RunAllTests.ps1 -SkipBuild
 
 # 個別に比較する
-.\CompareResult.ps1 -Expected TestCode\Result48.txt -Actual <実行結果>
-.\CompareResult.ps1 -Expected TestBatch\ResultSimpleBatch48.txt -Actual <実行結果> -SkipLog4netTrace
+.\CompareResult.ps1 -Expected <HEAD 版> -Actual TestCode\Result48.txt
+.\CompareResult.ps1 -Expected <HEAD 版> -Actual TestBatch\ResultSimpleBatch48.txt -SkipLog4netTrace
 ```
 
 終了コードは `0` = 全 OK、`1` = NG あり、`2` = ファイル無し。
 
 ---
 
-## 2. 対象テスト（6 ケース）
+## 2. 何を何と比較しているか
 
-| テスト | 期待結果ファイル | 備考 |
+**従来の運用をそのまま機械化している。** 置き換えたのは最後の「目視」だけ。
+
+`y_Build_TestCode*.bat` は「ビルド → テスト実行 → **結果を `Result*.txt` へ出力**」まで行う。
+この `Result*.txt` は Git 管理下にあり、バッチを実行すると上書きされる。
+つまり従来の手順は次のとおりだった。
+
+1. バッチを実行して `Result*.txt` を再生成する
+2. `git diff` で「前回のリリース時の結果」との差分を目視する
+
+`RunAllTests.ps1` はこの構造を変えず、2 を機械比較に置き換える。
+
+| | 実体 | 取得方法 |
 |---|---|---|
-| TestCode (net48) | `TestCode/Result48.txt` | 部品層の総合テスト（約 2,300 行） |
-| TestCode (net10.0) | `TestCode/ResultCore100.txt` | 同上 |
-| SimpleBatch (net48) | `TestBatch/ResultSimpleBatch48.txt` | **DB 接続あり**（Northwind） |
-| SimpleBatch (net10.0) | `TestBatch/ResultSimpleBatchCore100.txt` | 同上 |
-| EncAndDecUtilCUI (net48) | `EncAndDecUtilCUI/Result48.txt` | 暗号・JWT・XML 署名 |
-| EncAndDecUtilCUI (net10.0) | `EncAndDecUtilCUI/ResultCore100.txt` | 同上 |
+| **期待値** | HEAD にコミットされている `Result*.txt` | `git show HEAD:<path>`（参照系のみ） |
+| **実測値** | バッチが再生成したワーキング ツリーの `Result*.txt` | バッチの実行 |
+
+> **副作用**: ワーキング ツリーの `Result*.txt` が書き換わる。これは従来のバッチ運用と同じで、
+> 内容の検収（コミットするか戻すか）は `git diff` を見て人が判断する。
+
+### 対象テスト（6 ケース）
+
+| テスト | 結果ファイル（＝期待値） | ビルド バッチ | 備考 |
+|---|---|---|---|
+| TestCode (net48) | `TestCode/Result48.txt` | `y_Build_TestCode_Public.bat` | 部品層の総合テスト（約 2,300 行） |
+| TestCode (net10.0) | `TestCode/ResultCore100.txt` | 同上 | 同上 |
+| SimpleBatch (net48) | `TestBatch/ResultSimpleBatch48.txt` | `y_Build_TestCode_Batch.bat` | **DB 接続あり**（Northwind） |
+| SimpleBatch (net10.0) | `TestBatch/ResultSimpleBatchCore100.txt` | 同上 | 同上 |
+| EncAndDecUtilCUI (net48) | `EncAndDecUtilCUI/Result48.txt` | `y_Build_TestCode_SecCUI.bat` | 暗号・JWT・XML 署名 |
+| EncAndDecUtilCUI (net10.0) | `EncAndDecUtilCUI/ResultCore100.txt` | 同上 | 同上 |
 
 `EncAndDecUtilCUI/ResultCore100OnLinux.txt` は Linux 実行時の期待結果のため、
 Windows からの `RunAllTests.ps1` の対象外。
+
+### ビルドをバッチに委ねている理由
+
+`csproj` / `sln` を直接 MSBuild してはならない。
+`nuget.exe restore` が行う**ネイティブ DLL の配置が漏れる**ためで、
+ビルドは成功するのに実行時に落ちる、という分かりにくい失敗になる。
+
+```
+System.DllNotFoundException
+   at Microsoft.Data.SqlClient.SNINativeManagedWrapperX64.SNIInitialize(IntPtr)
+```
+
+`Microsoft.Data.SqlClient` は SNI をネイティブ DLL で持ち、
+`bin\Debug\Microsoft.Data.SqlClient.SNI.x64.dll` 等が必要になる。
+「何をどうビルドするか」の正はバッチ側に置く。
+
+### PowerShell から `.bat` を呼ぶときの注意
+
+PowerShell は子プロセスに `NoDefaultCurrentDirectoryInExePath=1` を渡す。
+一方バッチは、出力フォルダへ `cd` したうえでパス区切りを含まない名前で実行している。
+
+```bat
+cd "Frameworks\Tests\TestBatch\SimpleBatch\bin\Debug"
+SimpleBatch.exe /Dap SQL ... > ..\..\..\ResultSimpleBatch48.txt
+```
+
+この変数が効いていると次のようになり、**結果ファイルが空のまま、バッチは成功したように進む**。
+
+```
+'SimpleBatch.exe' is not recognized as an internal or external command,
+```
+
+`RunAllTests.ps1` は、バッチを直接実行した場合と同じ条件にするため、この変数を解除している。
 
 ---
 
@@ -56,7 +110,9 @@ Windows からの `RunAllTests.ps1` の対象外。
 これらは **Git 管理外の作業用コピー**であり、**正本はリポジトリ内の
 `root/files/resource/X509/`**（10 件が Git 管理下）にある。
 
-`RunAllTests.ps1` は不足を検知して**自動で配置**するため、手動操作は不要。
+`y_Build_TestCode_SecCUI.bat` は先頭で `copy_cert.bat` を呼ぶが、こちらは `C:\root\files\...`
+を参照するため、リポジトリだけを clone した環境では配置できない。
+`RunAllTests.ps1` はリポジトリ内の正本から不足を**自動で配置**するため、手動操作は不要。
 個別にビルドする場合のみ、次のいずれかを実行する。
 
 ```powershell
@@ -116,7 +172,7 @@ cd EncAndDecUtilCUI
 2. **期待結果ファイルの陳腐化** … 仕様変更に追随していない。期待結果を更新する
 3. **テスト データの汚染** … DB のレコードが増減している。データを戻す
 
-`3` の実例（2026-08-01 時点で発生中）:
+`3` の実例（2026-08-01 に発生。復旧済み）:
 
 ```
 SimpleBatch (net48 / net10.0)
@@ -125,11 +181,15 @@ SimpleBatch (net48 / net10.0)
 ```
 
 Northwind の `Shippers` は標準で 3 件だが、`ShipperID=4` に `Speedy Express` の重複が
-存在する。CRUD サンプルの「追加」操作で挿入されたものと見られる。
+存在していた。CRUD サンプルの「追加」操作で挿入されたものと見られる。
+
+このように、**件数などテスト対象の出力そのものは正規化してはならない**。
+正規化すると、退行とデータ汚染のいずれも検出できなくなる。
+
 **テスト データを汚す操作を行った後は、DB を戻してから単体テストを実行すること。**
 
 ```sql
--- 確認
+-- 確認（標準は 3 件）
 SELECT ShipperID, CompanyName FROM Shippers ORDER BY ShipperID;
 ```
 

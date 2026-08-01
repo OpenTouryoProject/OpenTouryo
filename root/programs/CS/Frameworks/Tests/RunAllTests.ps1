@@ -1,28 +1,51 @@
 <#
 .SYNOPSIS
-    単体テストを実行し、同梱の期待結果ファイルと比較して合否を一覧する。
+    単体テストのビルド バッチを実行し、再生成された結果ファイルを HEAD と比較して合否を一覧する。
 
 .DESCRIPTION
-    リリース時の「単体テスト スクリプトの実行結果を diff で目視」を機械化したもの。
-    テストをビルド・実行し、CompareResult.ps1 で判定して結果を一覧表示する。
+    リリース時の「単体テスト スクリプトの実行結果を diff で目視」を機械化したもの（#513 段階 1）。
+
+    ＜既存の運用＞
+      y_Build_TestCode*.bat は「ビルド → テスト実行 → 結果を Result*.txt へ出力」まで行う。
+      この Result*.txt は Git 管理下にあり、バッチを実行すると上書きされる。
+      すなわち従来の手順は次のとおりだった。
+
+        1. バッチを実行して Result*.txt を再生成する
+        2. git diff で「前回のリリース時の結果」との差分を目視する
+
+    ＜本スクリプト＞
+      同じ構造のまま、2 の目視を機械比較に置き換える。
+
+        期待値 : HEAD にコミットされている Result*.txt（git show で取得）
+        実測値 : バッチが再生成したワーキング ツリーの Result*.txt
+
+      比較は CompareResult.ps1 が行い、実行ごとに変わる値（日時・処理時間・
+      スレッド ID・パス・署名値等）を正規化してから差分を取る。
+
+    ＜ビルドをバッチに委ねている理由＞
+      csproj / sln を直接 msbuild すると、nuget.exe restore が行うネイティブ DLL の
+      配置（Microsoft.Data.SqlClient.SNI 等）が漏れ、実行時に DllNotFoundException になる。
+      「何をどうビルドするか」の正はバッチ側に置く。
 
     ＜前提＞
       ・Frameworks をビルド済み（Build_net48 / Build_netcore100 が存在すること）
       ・SQL Server の Northwind に接続できること（TestBatch が使用）
 
-    ＜証明書＞
-      EncAndDecUtilCUI は *.cer / *.pfx が無いとビルドが MSB3030 で失敗する。
-      これらは Git 管理外の作業用コピーであり、正本はリポジトリ内の
-      root/files/resource/X509/ にある。本スクリプトが不足を検知して自動配置する。
+    ＜副作用＞
+      ワーキング ツリーの Result*.txt が書き換わる。これは従来のバッチ運用と同じで、
+      内容の検収（コミットするか戻すか）は人が git diff で判断する。
 
 .PARAMETER OutputDir
-    実行結果の出力先。既定は %TEMP%\OpenTouryoTestResults。
+    HEAD 版の期待値とビルド ログの出力先。既定は %TEMP%\OpenTouryoTestResults。
 
 .PARAMETER SkipBuild
-    ビルドを省略し、既存のバイナリで実行する。
+    バッチの実行を省略し、ワーキング ツリーにある既存の Result*.txt を比較する。
 
 .EXAMPLE
     .\RunAllTests.ps1
+
+.EXAMPLE
+    .\RunAllTests.ps1 -SkipBuild
 
 .NOTES
     作成者          ：玄人 幸道
@@ -38,27 +61,37 @@ param(
 )
 
 $ErrorActionPreference = "Continue"
-$testsRoot = $PSScriptRoot
-New-Item -ItemType Directory -Force $OutputDir | Out-Null
 
-# MSBuild（net48 のビルドに使用）
-$msbuild = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" `
-    -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe |
-    Select-Object -First 1
+# ------------------------------------------------------------------
+# カレント ディレクトリからの実行を許可する
+# ------------------------------------------------------------------
+# PowerShell は子プロセスに NoDefaultCurrentDirectoryInExePath=1 を渡す。
+# 一方 y_Build_TestCode*.bat は、出力フォルダへ cd したうえで
+#   SimpleBatch.exe /Dap SQL ...
+# のようにパス区切りを含まない名前で実行するため、この変数が効いていると
+#   'SimpleBatch.exe' is not recognized as an internal or external command
+# となり、結果ファイルが空になる（バッチ自体は成功扱いで進む）。
+# バッチを直接ダブル クリックした場合と同じ条件にするため、ここで解除する。
+Remove-Item Env:\NoDefaultCurrentDirectoryInExePath -EA SilentlyContinue
+
+$testsRoot = $PSScriptRoot
+# ビルド バッチ（y_Build_TestCode*.bat）が置かれている root\programs\CS
+$csRoot   = (Resolve-Path (Join-Path $testsRoot "..\..")).Path
+$repoRoot = (& git -C $testsRoot rev-parse --show-toplevel)
+New-Item -ItemType Directory -Force $OutputDir | Out-Null
 
 # ------------------------------------------------------------------
 # テスト証明書の配置
 # ------------------------------------------------------------------
 # EncAndDecUtilCUI の csproj は *.cer / *.pfx を CopyToOutputDirectory しているため、
 # これらが無いとビルドが MSB3030 で失敗する。
-# 実体は Git 管理外の作業用コピーで、正本はリポジトリ内の root/files/resource/X509/。
-# ※ copy_cert.bat は C:\root\files\... を参照するが、そちらは Samples の実行時要件であり
-#    単体テストのビルドには不要なため、リポジトリ内から直接コピーする。
+# y_Build_TestCode_SecCUI.bat も copy_cert.bat を呼ぶが、そちらは C:\root\files\... を
+# 参照するため、リポジトリだけを clone した環境では配置できない。
+# ここではリポジトリ内の正本（root/files/resource/X509/）から補う。
 function Copy-TestCertificates
 {
     $destDir = Join-Path $testsRoot "EncAndDecUtilCUI"
-    # Tests\ から見たリポジトリ内の正本
-    $srcDir = Join-Path $testsRoot "..\..\..\..\files\resource\X509"
+    $srcDir  = Join-Path $testsRoot "..\..\..\..\files\resource\X509"
 
     if (-not (Test-Path $srcDir))
     {
@@ -95,68 +128,111 @@ function Copy-TestCertificates
     }
 }
 
-Write-Host "=== 事前準備 ===" -ForegroundColor Cyan
-Copy-TestCertificates
-
 # ------------------------------------------------------------------
 # テストの定義
 # ------------------------------------------------------------------
-# Expected        : 期待結果ファイル（Tests からの相対パス）
-# Project         : ビルド対象
-# Exe             : 実行ファイル（ビルド出力からの検索名）
-# ExeDir          : 実行ファイルの探索起点
-# Args            : コマンドライン引数
-# SkipLog4net     : log4net の内部トレースを比較対象から外すか
+# Result      : バッチが再生成する結果ファイル（Tests からの相対パス）
+#               ＝ 期待値でもある（HEAD 版と比較する）
+# Bat         : ビルドとテスト実行を行うバッチ（root\programs\CS 配下）
+# SkipLog4net : log4net の内部トレースを比較対象から外すか
 $tests = @(
     @{
-        Name = "TestCode (net48)"
-        Expected = "TestCode\Result48.txt"
-        Project = "TestCode\TestCodeFx48.sln";  Net48 = $true
-        ExeDir = "TestCode\net48\bin\Debug";    Exe = "TestCodeFx.exe"
-        Args = @();  SkipLog4net = $false
+        Name = "TestCode (net48)";           Bat = "y_Build_TestCode_Public.bat"
+        Result = "TestCode\Result48.txt";            SkipLog4net = $false
     }
     @{
-        Name = "TestCode (net10.0)"
-        Expected = "TestCode\ResultCore100.txt"
-        Project = "TestCode\core100\TestCodeCore.csproj"; Net48 = $false
-        ExeDir = "TestCode\core100\bin\Debug";  Exe = "TestCodeCore.exe"
-        Args = @();  SkipLog4net = $false
+        Name = "TestCode (net10.0)";         Bat = "y_Build_TestCode_Public.bat"
+        Result = "TestCode\ResultCore100.txt";       SkipLog4net = $false
     }
     @{
-        Name = "SimpleBatch (net48)"
-        Expected = "TestBatch\ResultSimpleBatch48.txt"
-        Project = "TestBatch\SimpleBatch\SimpleBatch.csproj"; Net48 = $true
-        ExeDir = "TestBatch\SimpleBatch\bin\Debug"; Exe = "SimpleBatch.exe"
-        Args = @("/DAP","SQL","/MODE1","individual","/MODE2","static","/EXROLLBACK","-")
-        SkipLog4net = $true
+        Name = "SimpleBatch (net48)";        Bat = "y_Build_TestCode_Batch.bat"
+        Result = "TestBatch\ResultSimpleBatch48.txt";     SkipLog4net = $true
     }
     @{
-        Name = "SimpleBatch (net10.0)"
-        Expected = "TestBatch\ResultSimpleBatchCore100.txt"
-        Project = "TestBatch\SimpleBatchCore\SimpleBatchCore.csproj"; Net48 = $false
-        ExeDir = "TestBatch\SimpleBatchCore\bin\Debug"; Exe = "SimpleBatchCore.exe"
-        Args = @("/DAP","SQL","/MODE1","individual","/MODE2","static","/EXROLLBACK","-")
-        SkipLog4net = $true
+        Name = "SimpleBatch (net10.0)";      Bat = "y_Build_TestCode_Batch.bat"
+        Result = "TestBatch\ResultSimpleBatchCore100.txt"; SkipLog4net = $true
     }
     @{
-        Name = "EncAndDecUtilCUI (net48)"
-        Expected = "EncAndDecUtilCUI\Result48.txt"
-        Project = "EncAndDecUtilCUI\net48\EncAndDecUtilCUIFx.csproj"; Net48 = $true
-        ExeDir = "EncAndDecUtilCUI\net48\bin\Debug"; Exe = "EncAndDecUtilCUIFx.exe"
-        Args = @();  SkipLog4net = $false
+        Name = "EncAndDecUtilCUI (net48)";   Bat = "y_Build_TestCode_SecCUI.bat"
+        Result = "EncAndDecUtilCUI\Result48.txt";        SkipLog4net = $false
     }
     @{
-        Name = "EncAndDecUtilCUI (net10.0)"
-        Expected = "EncAndDecUtilCUI\ResultCore100.txt"
-        Project = "EncAndDecUtilCUI\core100\EncAndDecUtilCUICore.csproj"; Net48 = $false
-        ExeDir = "EncAndDecUtilCUI\core100\bin\Debug"; Exe = "EncAndDecUtilCUICore.exe"
-        Args = @();  SkipLog4net = $false
+        Name = "EncAndDecUtilCUI (net10.0)"; Bat = "y_Build_TestCode_SecCUI.bat"
+        Result = "EncAndDecUtilCUI\ResultCore100.txt";   SkipLog4net = $false
     }
 )
 
 # ------------------------------------------------------------------
-# 実行
+# 期待値（HEAD 版）の取り出し
 # ------------------------------------------------------------------
+# バッチがワーキング ツリーの Result*.txt を上書きするため、
+# 上書きされる前に HEAD の内容を退避しておく。
+# ※ git show は参照系のみ。ワーキング ツリーには一切触れない。
+Write-Host "=== 事前準備 ===" -ForegroundColor Cyan
+Copy-TestCertificates
+
+$expectedOf = @{}
+
+foreach ($t in $tests)
+{
+    $full = Join-Path $testsRoot $t.Result
+    # git が扱えるようリポジトリ相対・スラッシュ区切りにする
+    $rel  = ($full.Substring($repoRoot.Length).TrimStart('\','/') -replace '\\','/')
+    $safe = ($t.Name -replace '[^A-Za-z0-9]', '_')
+    $dst  = Join-Path $OutputDir "expected_$safe.txt"
+
+    # バイト列を保つため cmd のリダイレクトで受ける
+    # （PowerShell のパイプを経由すると再エンコードされる）
+    cmd /c "git -C `"$repoRoot`" show `"HEAD:$rel`" > `"$dst`" 2>nul"
+
+    if ((Test-Path $dst) -and (Get-Item $dst).Length -gt 0)
+    {
+        $expectedOf[$t.Name] = $dst
+    }
+    else
+    {
+        Write-Host ("  HEAD から取得できません : {0}" -f $rel) -ForegroundColor Yellow
+    }
+}
+
+Write-Host ("  期待値（HEAD 版）を {0} 件退避しました。" -f $expectedOf.Count)
+
+# ------------------------------------------------------------------
+# ビルドとテスト実行
+# ------------------------------------------------------------------
+# 1 本のバッチが net48 版と .NET (Core) 版の両方をビルド・実行するため、
+# 同一バッチは 1 回だけ実行する。
+if (-not $SkipBuild)
+{
+    foreach ($bat in ($tests | ForEach-Object { $_.Bat } | Select-Object -Unique))
+    {
+        Write-Host ""
+        Write-Host ("=== ビルドと実行 : {0} ===" -f $bat) -ForegroundColor Cyan
+
+        $path = Join-Path $csRoot $bat
+        if (-not (Test-Path $path))
+        {
+            Write-Host "  バッチが見つかりません" -ForegroundColor Red
+            continue
+        }
+
+        $log = Join-Path $OutputDir ("build_" + ($bat -replace '[^A-Za-z0-9]','_') + ".log")
+        $sw  = [Diagnostics.Stopwatch]::StartNew()
+
+        Push-Location $csRoot
+        # バッチ末尾の pause に対応するため stdin を与える。
+        cmd /c "echo. | call `"$path`"" *>&1 | Out-File $log -Encoding UTF8
+        Pop-Location
+
+        $sw.Stop()
+        Write-Host ("  完了 ({0:N1} 秒)  ログ : {1}" -f $sw.Elapsed.TotalSeconds, $log)
+    }
+}
+
+# ------------------------------------------------------------------
+# 比較
+# ------------------------------------------------------------------
+$cmp = Join-Path $testsRoot "CompareResult.ps1"
 $results = @()
 
 foreach ($t in $tests)
@@ -164,58 +240,30 @@ foreach ($t in $tests)
     Write-Host ""
     Write-Host ("=== {0} ===" -f $t.Name) -ForegroundColor Cyan
 
-    $safeName = ($t.Name -replace '[^A-Za-z0-9]', '_')
-    $actual = Join-Path $OutputDir "$safeName.txt"
+    $actual = Join-Path $testsRoot $t.Result
 
-    # ビルド
-    if (-not $SkipBuild)
+    if (-not $expectedOf.ContainsKey($t.Name))
     {
-        $proj = Join-Path $testsRoot $t.Project
-        Write-Host "  ビルド中 ..."
-        if ($t.Net48)
-        {
-            & $msbuild $proj /t:Restore,Build /p:Configuration=Debug /v:quiet /nologo | Out-Null
-        }
-        else
-        {
-            & dotnet build $proj -c Debug --nologo -v q | Out-Null
-        }
-
-        if ($LASTEXITCODE -ne 0)
-        {
-            Write-Host "  ビルド失敗" -ForegroundColor Red
-            $results += [pscustomobject]@{ テスト = $t.Name; 結果 = "ビルド失敗"; 差分 = "-" }
-            continue
-        }
+        Write-Host "  期待値（HEAD 版）が無いため比較できません" -ForegroundColor Red
+        $results += [pscustomobject]@{ テスト = $t.Name; 結果 = "期待値無し"; 差分 = "-" }
+        continue
     }
-
-    # 実行
-    $exe = Get-ChildItem (Join-Path $testsRoot $t.ExeDir) -Recurse -Filter $t.Exe -EA SilentlyContinue |
-           Select-Object -First 1
-    if (-not $exe)
+    if (-not (Test-Path $actual))
     {
-        Write-Host "  実行ファイルが見つかりません" -ForegroundColor Red
-        $results += [pscustomobject]@{ テスト = $t.Name; 結果 = "実行ファイル無し"; 差分 = "-" }
+        Write-Host "  結果ファイルが生成されていません" -ForegroundColor Red
+        $results += [pscustomobject]@{ テスト = $t.Name; 結果 = "結果無し"; 差分 = "-" }
         continue
     }
 
-    Write-Host "  実行中 ..."
-    Push-Location $exe.DirectoryName
-    & $exe.FullName @($t.Args) 2>&1 | Out-File $actual -Encoding UTF8
-    Pop-Location
-
-    # 比較
-    $cmp = Join-Path $testsRoot "CompareResult.ps1"
-    $expected = Join-Path $testsRoot $t.Expected
     # CompareResult.ps1 は画面表示に Write-Host を使うため、
     # 件数は -PassThru のオブジェクトで受け取る。
     if ($t.SkipLog4net)
     {
-        $cmpResult = & $cmp -Expected $expected -Actual $actual -SkipLog4netTrace -PassThru
+        $cmpResult = & $cmp -Expected $expectedOf[$t.Name] -Actual $actual -SkipLog4netTrace -PassThru
     }
     else
     {
-        $cmpResult = & $cmp -Expected $expected -Actual $actual -PassThru
+        $cmpResult = & $cmp -Expected $expectedOf[$t.Name] -Actual $actual -PassThru
     }
 
     $results += [pscustomobject]@{
@@ -231,7 +279,8 @@ foreach ($t in $tests)
 Write-Host ""
 Write-Host "================ サマリ ================"
 $results | Format-Table -AutoSize | Out-String | Write-Host
-Write-Host ("  出力先 : {0}" -f $OutputDir)
+Write-Host ("  期待値・ログ : {0}" -f $OutputDir)
+Write-Host  "  実測値       : ワーキング ツリーの Result*.txt（git diff で確認できます）"
 
 $ng = @($results | Where-Object { $_.結果 -ne "OK" })
 if ($ng.Count -eq 0)

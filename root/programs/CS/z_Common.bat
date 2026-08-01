@@ -87,6 +87,33 @@ if not defined BUILDFILEPATH (
   exit /b 1
 )
 
+@rem --------------------------------------------------
+@rem nuget.exe restore に渡す MSBuild の指定
+@rem
+@rem nuget.exe は MSBuild を自動検出するが、SQL Server Management Studio など
+@rem MSBuild を同梱する別製品が入っていると、そちらを選ぶことがある。
+@rem （例: "MSBuild 自動検出: 'C:\Program Files\Microsoft SQL Server Management
+@rem 　Studio 22\Release\MSBuild\Current\bin' から MSBuild バージョン ... を使用します。"）
+@rem
+@rem その MSBuild には Web アプリ用の Microsoft.WebApplication.targets が無く、
+@rem また生成される project.assets.json が実際のビルドと噛み合わないため、
+@rem 下記のようなエラーになる。
+@rem   error MSB4226: インポートされたプロジェクト "...WebApplications\
+@rem                  Microsoft.WebApplication.targets" が見つかりませんでした。
+@rem   error : Your project file doesn't list 'win' as a "RuntimeIdentifier".
+@rem
+@rem このため、上で解決した MSBuild のフォルダを明示的に渡す。
+@rem --------------------------------------------------
+for %%i in (%BUILDFILEPATH%) do set MSBUILDDIR=%%~dpi
+
+@rem 末尾の \ を除去する（-MSBuildPath "...\" は \" が
+@rem エスケープと解釈され、引数が壊れるため）。
+if defined MSBUILDDIR set MSBUILDDIR=%MSBUILDDIR:~0,-1%
+
+set NUGET_MSBUILD=-MSBuildPath "%MSBUILDDIR%"
+
+echo NUGET_MSBUILD %NUGET_MSBUILD%
+
 @echo --------------------------------------------------
 @echo The choice of build configuration (Debug / Release).
 @echo BUILD_CONFIG は 特定の構成（Debug や Release）を指定
