@@ -133,8 +133,14 @@ function Normalize([string[]]$lines)
 if (-not (Test-Path $Expected)) { Write-Error "期待結果ファイルが見つかりません : $Expected"; exit 2 }
 if (-not (Test-Path $Actual))   { Write-Error "実行結果ファイルが見つかりません : $Actual";   exit 2 }
 
-$expLines = Normalize (Get-Content $Expected)
-$actLines = Normalize (Get-Content $Actual)
+# 読み込みは UTF-8 を明示する。
+# 比較対象の *.txt は BOM 無しの UTF-8 だが、Get-Content の既定エンコードは
+# PowerShell のエディションで異なる。
+#   Windows PowerShell 5.1 … ANSI（日本語環境では Shift_JIS）
+#   PowerShell 7           … UTF-8
+# 指定しないと 5.1 だけ文字化けし、同じファイルなのに差分が出る。
+$expLines = Normalize (Get-Content $Expected -Encoding UTF8)
+$actLines = Normalize (Get-Content $Actual   -Encoding UTF8)
 
 $diff = @(Compare-Object $expLines $actLines -SyncWindow 20)
 

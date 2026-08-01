@@ -1,40 +1,62 @@
 # RELEASE.md — リリース チェックリスト
 
 対象: `root/programs/CS`
-本書は、リリース時に何を・どの順で確認し、**どこまでを機械が行い、どこからを人が行うか**を
-1 枚にまとめたもの（#513 段階 4）。
+本書は、リリース時に何を・どの順で確認し、**どこまでを機械が行い、どこからを人が行うか**を 1 枚にまとめたもの。
 
 > **一次情報は本書ではない。** 迷ったら次を見ること。
 >
 > | 内容 | 一次情報 |
 > |---|---|
-> | リリース エンジニアリングの全体像 | [Open 棟梁 Wiki - リリース・エンジニアリング](https://opentouryo.osscons.jp/index.php?%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E3%83%BB%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0) |
-> | NuGet パッケージ化・公開の手順 | [`NuGet/_手順の説明.txt`](NuGet/_手順の説明.txt) |
 > | ビルド構成・バージョン管理 | [`Frameworks/ANALYSIS.md`](Frameworks/ANALYSIS.md) 7 章 |
 > | 全ビルドの実行と判定 | [`BUILDING.md`](BUILDING.md) |
 > | 単体テストの実行と判定 | [`Frameworks/Tests/TESTING.md`](Frameworks/Tests/TESTING.md) |
 > | サンプルの疎通確認 | [`SMOKETEST.md`](SMOKETEST.md) |
+> | NuGet パッケージ化・公開の手順 | [`NuGet/_手順の説明.txt`](NuGet/_手順の説明.txt) |
 
 ---
 
 ## 1. 全体の流れ
 
-| # | フェーズ | 手段 | 自動化 |
+| # | フェーズ | 手段 | 実施者 |
 |---|---|---|---|
-| 0 | 準備 | 人 | — |
-| 1 | 検証（ビルド・単体テスト・疎通） | `BuildAll.ps1` / `RunAllTests.ps1` / `SmokeTest.ps1` | **済** |
-| 2 | 検証（UI 系・ツール） | 人 | 見送り（7 節） |
-| 3 | パッケージ化 | `0_Release4Nuget.bat` → `_NuGetPack.bat` | bat |
-| 4 | 公開 | `_NuGetPush.bat` ＋ Wiki 手順 | 人 |
-| 5 | 後始末 | 人 | — |
+| 0 | 準備 | 手作業 | 人（エージェントは充足状況の確認・報告まで） |
+| 1 | 検証（ビルド・単体テスト・疎通） | `BuildAll.ps1` / `RunAllTests.ps1` / `SmokeTest.ps1` | **エージェント可** |
+| 2 | 検証（UI 系・ツール） | 手作業（GUI 操作） | 人（自動化は見送り。7 節） |
+| 3 | パッケージ化 | `0_Release4Nuget.bat` → `_NuGetPack.bat` | エージェント可（**指示があれば**） |
+| 4 | 公開 | `_NuGetPush.bat` ＋ Wiki 手順 | **人のみ** |
+| 5 | 後始末 | 手作業 | 人（エージェントは差分の報告まで） |
+
+### エージェントが実行してよい範囲
+
+**取り消しにくい・外部に出る・システム設定を変えるものは人が行う。**
+
+この線引きは `AGENTS.md`（git 操作をしない／公開リポジトリへの投稿は承認を得てから）と同じ考え方。
+
+| 人が行うフェーズ | 人が行う理由 |
+|---|---|
+| 0 準備 | `Start-Service` `aspnet_state` は**システム設定の変更**。DB の初期化も同様。<br>エージェントは不足を検知して**対処方法とともに報告する**に留める |
+| 2 検証（UI 系） | GUI 操作のため |
+| 4 公開 | `_NuGetPush.bat` は**外部公開で取り消しが困難**。かつ API キーを扱う |
+| 5 後始末 | revert の確定はワーキング ツリーの検収と同じ扱い |
+
+フェーズ 1 をエージェントが実行してよいのは、**失敗しても被害が無く、結果がワーキング ツリーに残るだけ**だから。
+
+フェーズ 3 は成果物をローカルに作るだけだが、`z_Common.bat` の `DEBUG_TYPE` 変更を伴い、
+フェーズ 4 と地続きのため、**指示があったときだけ**実行する。
 
 **フェーズ 1 は 3 本を順に実行するだけで済む。**
 
 ```powershell
 cd root\programs\CS
 .\BuildAll.ps1                 # 全ビルド
+```
+
+```powershell
 cd Frameworks\Tests
 .\RunAllTests.ps1              # 単体テスト
+```
+
+```powershell
 cd ..\..
 .\SmokeTest.ps1                # サンプルの疎通
 ```
@@ -52,13 +74,13 @@ cd ..\..
 - [ ] **Visual Studio を閉じた**
       … `1_DeleteDir.bat` が `.vs` を削除するため
 - [ ] **SQL Server の Northwind に接続できる**
-- [ ] **Northwind が初期状態**（`Shippers` 3 件 / `Orders` 830 件）
+- [ ] **Northwind が初期状態**（`Shippers` 3 件 / `Orders` 830 件）  
       … 汚れている場合の戻し方は [`TESTING.md`](Frameworks/Tests/TESTING.md) 「テスト データの戻し方」
-- [ ] **`Orders2` テーブルが存在する**
-      … Northwind 標準ではない。無ければ
+- [ ] **`Orders2` テーブルが存在する** … Northwind 標準ではない。無ければ  
       `Samples\Bat_sample\RerunnableBatch_sample\CREATE ORDERS2.sql` を実行
-- [ ] **ASP.NET 状態サービスが開始されている**（`Start-Service aspnet_state`、要管理者権限）
-      … net48 の Web アプリが `mode="StateServer"` を使うため
+- [ ] **サービスが開始されている**（`Start-Service`、`aspnet_state`、要管理者権限）
+  - Start-Service … アプリが 使うデータストア（Dockerコンテナ）を起動、初期化する。
+  - aspnet_state … net48 の Web アプリが使うASP.NET 状態サービスを起動する。
 - [ ] **IIS Express がインストールされている**
 
 ### バージョン番号
@@ -249,5 +271,8 @@ GUI 側で見るのは画面が動くことだけになった。
 - [ ] `RunAllTests.ps1` の NG は、退行／期待結果の陳腐化／テスト データの汚染を切り分けてから報告
 - [ ] **前提サービス・DB の状態を勝手に変えない。** 不足は対処方法とともに報告する
       （`SmokeTest.ps1` が `aspnet_state` を自動起動しないのと同じ理由）
-- [ ] パッケージ化・公開（5 節）と Issue のクローズは**人が行う**。エージェントは提案に留める
+- [ ] **フェーズ 1（検証）は自分で実行してよい。** フェーズ 0・2・4・5 は人が行う（1 節）
+- [ ] **公開（`_NuGetPush.bat`）は実行しない。** 外部公開で取り消しが困難、かつ API キーを扱う。
+      パッケージ化（フェーズ 3）は**指示があったときだけ**
+- [ ] Issue のクローズ・ラベル変更は**人が行う**。エージェントは提案に留める
 - [ ] 後始末（6 節）の revert 漏れが無いか `git status` で確認して報告

@@ -107,5 +107,19 @@ cd ..\..
 `RunAllTests.ps1` はワーキング ツリーの `Result*.txt` を書き換える（従来のバッチ運用と同じ）。
 **コミットの要否は人が判断する**ため、エージェントは差分を報告するに留める。
 
+**`.ps1` は Windows PowerShell 5.1 と PowerShell 7 の両方で動くこと。**
+エージェントの実行環境は 7 だが、利用者は 5.1（`powershell.exe`）で実行する。
+7 だけで確認すると 5.1 で落ちる。要点は
+[`SMOKETEST.md`](root/programs/CS/SMOKETEST.md) 「PowerShell 5.1 と 7 の両対応」を参照。
+
+- `.ps1` は **UTF-8 BOM 付き**で保存する（5.1 は BOM 無しを Shift_JIS と誤認する）
+- `Get-Content` には **`-Encoding UTF8`** を明示する（既定が 5.1 と 7 で違う）
+- 7 専用の引数（`-SkipHttpErrorCheck` など）はバージョンを見て付け外しする
+- **変更したら 5.1 でも実行して確かめる**
+
+```powershell
+powershell.exe -NoProfile -Command "Set-Location 'root\programs\CS'; .\SmokeTest.ps1"
+```
+
 前提となるサービスや DB の状態が足りない場合は、**勝手に変えず、対処方法とともに報告する。**
 

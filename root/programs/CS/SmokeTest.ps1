@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
     サンプル アプリを起動して疎通を確認し、合否を一覧する。
 
@@ -71,6 +71,31 @@ Remove-Item Env:\NoDefaultCurrentDirectoryInExePath -EA SilentlyContinue
 
 $csRoot = $PSScriptRoot
 New-Item -ItemType Directory -Force $OutputDir | Out-Null
+
+# ------------------------------------------------------------------
+# コンソールのコード ページを先に UTF-8 にしておく
+# ------------------------------------------------------------------
+# ビルド バッチが呼ぶ z_Common.bat は先頭で chcp 65001 を実行する。
+# コード ページはコンソール全体の設定なので、子プロセスで変えても
+# 呼び出し元の画面に影響し、日本語環境の既定 932 からの切り替わりで
+# 画面が再描画されて**それまでの表示が消える**。
+# 何も表示していない今のうちに切り替えておけば、実行中は変化しない。
+# 戻さないのは、戻す操作でも再描画が起きてサマリが消えるため。
+if ((cmd /c chcp) -notmatch '65001')
+{
+    cmd /c chcp 65001 | Out-Null
+}
+
+# コンソールのコード ページとは別に、PowerShell 側の出力エンコードも合わせる。
+# Windows PowerShell 5.1 は起動時の値を保持しており、実行中にコード ページが
+# 変わっても追随しない。ここを合わせないと、バッチ（UTF-8 で出力）の内容を
+# 旧コード ページで解釈してしまい、ログとエラー一覧が文字化けする。
+# ※ 2 回目以降の実行ではコード ページが既に 65001 で上の分岐を通らないため、
+#    この処理は分岐の外に置く必要がある。
+if ([Console]::OutputEncoding.CodePage -ne 65001)
+{
+    [Console]::OutputEncoding = New-Object Text.UTF8Encoding $false
+}
 
 # ------------------------------------------------------------------
 # 接続文字列
@@ -234,8 +259,15 @@ function Invoke-Http
 
     $p = @{
         Uri = $Uri; Method = $Method; WebSession = $Session
-        SkipHttpErrorCheck = $true; MaximumRedirection = 0
+        MaximumRedirection = 0
+        # 5.1 は既定で Internet Explorer のエンジンを使い、未構成だと解析に失敗する。
+        # 7 では受け付けられて無視されるため、常に付けてよい。
+        UseBasicParsing = $true
     }
+    # -SkipHttpErrorCheck は PowerShell 7 以降にしかない。
+    # 5.1 に渡すとパラメータ束縛で失敗するので付けない。
+    # （5.1 では 4xx/5xx が例外になるが、下の catch で状態コードを取り出す）
+    if ($PSVersionTable.PSVersion.Major -ge 6) { $p.SkipHttpErrorCheck = $true }
     if ($Body) { $p.Body = $Body }
 
     try
