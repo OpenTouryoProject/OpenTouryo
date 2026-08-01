@@ -1,10 +1,11 @@
 # TESTING.md — 単体テストの実行と判定
 
-対象: `root/programs/CS/Frameworks/Tests`
+対象: `root/programs/CS/Frameworks/Tests`（C# 側）
+配置: `root/programs`
 本書は、リリース時に行っていた「単体テスト スクリプトの実行結果を diff で目視」を、
 **機械判定に置き換える**ための手順と判定基準を記述する（#513 段階 1）。
 
-リリース時の作業全体は [`RELEASE.md`](../../RELEASE.md) を参照。
+リリース時の作業全体は [`RELEASE.md`](RELEASE.md) を参照。
 実行順は `BuildAll.ps1` → `RunAllTests.ps1` → `SmokeTest.ps1`。
 
 ---
@@ -12,7 +13,7 @@
 ## 1. 使い方
 
 ```powershell
-cd root\programs\CS\Frameworks\Tests
+cd root\programs
 
 # ビルド バッチを実行し、再生成された結果を HEAD 版と比較して一覧表示する
 .\RunAllTests.ps1

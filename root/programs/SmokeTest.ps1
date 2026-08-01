@@ -69,7 +69,9 @@ $ErrorActionPreference = "Continue"
 # （TESTING.md の「PowerShell から .bat を呼ぶときの注意」と同じ）
 Remove-Item Env:\NoDefaultCurrentDirectoryInExePath -EA SilentlyContinue
 
-$csRoot = $PSScriptRoot
+# 本スクリプトは root\programs に置き、C# 側（root\programs\CS）を対象とする。
+# ビルド バッチもサンプルも CS 配下にあるため、そこを起点にする。
+$csRoot = Join-Path $PSScriptRoot "CS"
 New-Item -ItemType Directory -Force $OutputDir | Out-Null
 
 # ------------------------------------------------------------------

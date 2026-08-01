@@ -1,17 +1,18 @@
 # RELEASE.md — リリース チェックリスト
 
-対象: `root/programs/CS`
+対象: `root/programs/CS`（C# 側）
+配置: `root/programs`
 本書は、リリース時に何を・どの順で確認し、**どこまでを機械が行い、どこからを人が行うか**を 1 枚にまとめたもの。
 
 > **一次情報は本書ではない。** 迷ったら次を見ること。
 >
 > | 内容 | 一次情報 |
 > |---|---|
-> | ビルド構成・バージョン管理 | [`Frameworks/ANALYSIS.md`](Frameworks/ANALYSIS.md) 7 章 |
+> | ビルド構成・バージョン管理 | [`CS/Frameworks/ANALYSIS.md`](CS/Frameworks/ANALYSIS.md) 7 章 |
 > | 全ビルドの実行と判定 | [`BUILDING.md`](BUILDING.md) |
-> | 単体テストの実行と判定 | [`Frameworks/Tests/TESTING.md`](Frameworks/Tests/TESTING.md) |
+> | 単体テストの実行と判定 | [`TESTING.md`](TESTING.md) |
 > | サンプルの疎通確認 | [`SMOKETEST.md`](SMOKETEST.md) |
-> | NuGet パッケージ化・公開の手順 | [`NuGet/_手順の説明.txt`](NuGet/_手順の説明.txt) |
+> | NuGet パッケージ化・公開の手順 | [`CS/NuGet/_手順の説明.txt`](CS/NuGet/_手順の説明.txt) |
 
 ---
 
@@ -22,7 +23,7 @@
 | 0 | 準備 | 手作業 | 人（エージェントは充足状況の確認・報告まで） |
 | 1 | 検証（ビルド・単体テスト・疎通） | `BuildAll.ps1` / `RunAllTests.ps1` / `SmokeTest.ps1` | **エージェント可** |
 | 2 | 検証（UI 系・ツール） | 手作業（GUI 操作） | 人（自動化は見送り。7 節） |
-| 3 | パッケージ化 | `0_Release4Nuget.bat` → `_NuGetPack.bat` | エージェント可（**指示があれば**） |
+| 3 | パッケージ化 | `CS\0_Release4Nuget.bat` → `_NuGetPack.bat` | エージェント可（**指示があれば**） |
 | 4 | 公開 | `_NuGetPush.bat` ＋ Wiki 手順 | **人のみ** |
 | 5 | 後始末 | 手作業 | 人（エージェントは差分の報告まで） |
 
@@ -41,23 +42,21 @@
 
 フェーズ 1 をエージェントが実行してよいのは、**失敗しても被害が無く、結果がワーキング ツリーに残るだけ**だから。
 
-フェーズ 3 は成果物をローカルに作るだけだが、`z_Common.bat` の `DEBUG_TYPE` 変更を伴い、
+フェーズ 3 は成果物をローカルに作るだけだが、`CS\z_Common.bat` の `DEBUG_TYPE` 変更を伴い、
 フェーズ 4 と地続きのため、**指示があったときだけ**実行する。
 
 **フェーズ 1 は 3 本を順に実行するだけで済む。**
 
 ```powershell
-cd root\programs\CS
+cd root\programs
 .\BuildAll.ps1                 # 全ビルド
 ```
 
 ```powershell
-cd Frameworks\Tests
 .\RunAllTests.ps1              # 単体テスト
 ```
 
 ```powershell
-cd ..\..
 .\SmokeTest.ps1                # サンプルの疎通
 ```
 
@@ -75,9 +74,9 @@ cd ..\..
       … `1_DeleteDir.bat` が `.vs` を削除するため
 - [ ] **SQL Server の Northwind に接続できる**
 - [ ] **Northwind が初期状態**（`Shippers` 3 件 / `Orders` 830 件）  
-      … 汚れている場合の戻し方は [`TESTING.md`](Frameworks/Tests/TESTING.md) 「テスト データの戻し方」
+      … 汚れている場合の戻し方は [`TESTING.md`](TESTING.md) 「テスト データの戻し方」
 - [ ] **`Orders2` テーブルが存在する** … Northwind 標準ではない。無ければ  
-      `Samples\Bat_sample\RerunnableBatch_sample\CREATE ORDERS2.sql` を実行
+      `CS\Samples\Bat_sample\RerunnableBatch_sample\CREATE ORDERS2.sql` を実行
 - [ ] **サービスが開始されている**（`Start-Service`、`aspnet_state`、要管理者権限）
   - Start-Service … アプリが 使うデータストア（Dockerコンテナ）を起動、初期化する。
   - aspnet_state … net48 の Web アプリが使うASP.NET 状態サービスを起動する。
@@ -85,7 +84,7 @@ cd ..\..
 
 ### バージョン番号
 
-- [ ] **`Infrastructure/Directory.Build.props` の `OpenTouryoVersion` を更新した**
+- [ ] **`CS/Frameworks/Infrastructure/Directory.Build.props` の `OpenTouryoVersion` を更新した**
       … SDK 形式アセンブリ 7 個と NuGet パッケージの唯一の定義箇所
 - [ ] **net48（旧形式 csproj）の `Properties\AssemblyInfo.cs` を更新した**
       … `Directory.Build.props` が効かないため別管理
@@ -104,7 +103,7 @@ cd ..\..
 | スクリプト | 見るもの | 期待値 | 文書 |
 |---|---|---|---|
 | `BuildAll.ps1` | ビルドが通るか | エラー 0 件 | [`BUILDING.md`](BUILDING.md) |
-| `RunAllTests.ps1` | 出力が前回と同じか | HEAD の `Result*.txt` | [`TESTING.md`](Frameworks/Tests/TESTING.md) |
+| `RunAllTests.ps1` | 出力が前回と同じか | HEAD の `Result*.txt` | [`TESTING.md`](TESTING.md) |
 | `SmokeTest.ps1` | 起動して想定どおり動くか | 定義側の判定条件 | [`SMOKETEST.md`](SMOKETEST.md) |
 
 - [ ] **`BuildAll.ps1` のエラーが「既知の 1 件」だけである**
@@ -214,15 +213,15 @@ cd ..\..
 
 ## 5. フェーズ 3・4 : パッケージ化と公開
 
-手順の一次情報は [`NuGet/_手順の説明.txt`](NuGet/_手順の説明.txt)。
+手順の一次情報は [`CS/NuGet/_手順の説明.txt`](CS/NuGet/_手順の説明.txt)。
 **ここに書き写すと二重管理になるため、要点と抜けやすい点だけを挙げる。**
 
-- [ ] `z_Common.bat` の `DEBUG_TYPE` を `full` → **`portable`** に変更した
-- [ ] `0_Release4Nuget.bat` を実行した
+- [ ] `CS\z_Common.bat` の `DEBUG_TYPE` を `full` → **`portable`** に変更した
+- [ ] `CS\0_Release4Nuget.bat` を実行した
       … `1_DeleteDir` → `2_Build_NuGet_net48` → `1_DeleteDir` →
       `2_Build_NuGet_netcore100` → `4_Build_CopyAssemblies` のみ。サンプルはビルドしない
-- [ ] `NuGet\_NuGetPack.bat` でパッケージ化した
-- [ ] `NuGet\out\sp\_NuGetPush.bat` に API キーを設定し、push した
+- [ ] `CS\NuGet\_NuGetPack.bat` でパッケージ化した
+- [ ] `CS\NuGet\out\sp\_NuGetPush.bat` に API キーを設定し、push した
       … 最新は `sp`（シンボル付き）のみでよい
 - [ ] Wiki の手順（NuGet 利用リポジトリの参照貼り直し）を実施した
 
@@ -232,12 +231,12 @@ cd ..\..
 
 **revert を忘れやすい。** 特に API キーはリポジトリに残してはならない。
 
-- [ ] `z_Common.bat` の `DEBUG_TYPE` を `full` に戻した
-- [ ] `NuGet\out\sp\_NuGetPush.bat` を**プレースホルダに戻した**
+- [ ] `CS\z_Common.bat` の `DEBUG_TYPE` を `full` に戻した
+- [ ] `CS\NuGet\out\sp\_NuGetPush.bat` を**プレースホルダに戻した**
       … コミットされている状態は `nuget.exe SetApiKey [ApiKey]`。実キーを残さない
 - [ ] `git status` に意図しない変更が残っていない
       … 特に `Result*.txt`（`RunAllTests.ps1` が再生成する）と
-      `Frameworks\Tests\EncAndDecUtilCUI\*.cer` / `*.pfx`（Git 管理外の作業用コピー）
+      `CS\Frameworks\Tests\EncAndDecUtilCUI\*.cer` / `*.pfx`（Git 管理外の作業用コピー）
 
 ---
 

@@ -74,10 +74,13 @@ $ErrorActionPreference = "Continue"
 # バッチを直接ダブル クリックした場合と同じ条件にするため、ここで解除する。
 Remove-Item Env:\NoDefaultCurrentDirectoryInExePath -EA SilentlyContinue
 
-$testsRoot = $PSScriptRoot
+# 本スクリプトは root\programs に置き、C# 側（root\programs\CS）を対象とする。
+$progRoot  = $PSScriptRoot
 # ビルド バッチ（y_Build_TestCode*.bat）が置かれている root\programs\CS
-$csRoot   = (Resolve-Path (Join-Path $testsRoot "..\..")).Path
-$repoRoot = (& git -C $testsRoot rev-parse --show-toplevel)
+$csRoot    = Join-Path $progRoot "CS"
+# 単体テストのプロジェクトと結果ファイルが置かれている場所
+$testsRoot = Join-Path $csRoot "Frameworks\Tests"
+$repoRoot  = (& git -C $testsRoot rev-parse --show-toplevel)
 New-Item -ItemType Directory -Force $OutputDir | Out-Null
 
 # ------------------------------------------------------------------
@@ -257,7 +260,7 @@ if (-not $SkipBuild)
 # ------------------------------------------------------------------
 # 比較
 # ------------------------------------------------------------------
-$cmp = Join-Path $testsRoot "CompareResult.ps1"
+$cmp = Join-Path $progRoot "CompareResult.ps1"
 $results = @()
 
 foreach ($t in $tests)

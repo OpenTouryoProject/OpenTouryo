@@ -1,12 +1,13 @@
 # BUILDING.md — 全ビルドの実行と判定
 
-対象: `root/programs/CS`
+対象: `root/programs/CS`（C# 側）
+配置: `root/programs`
 本書は、リリース時に行っていた「build バッチで全ビルドが通ることを確認」を、
 **合否が出る形に機械化**するための手順と判定基準を記述する（#513 段階 2）。
 
 > **ビルド構成そのもの**（bat の一覧、ビルド順、`z_Common.bat` と `z_Common2.bat` の関係、
 > バージョン番号の一元管理、NuGet パッケージ化）は
-> [`Frameworks/ANALYSIS.md`](Frameworks/ANALYSIS.md) の **7 章「ビルド」** が一次情報。
+> [`CS/Frameworks/ANALYSIS.md`](CS/Frameworks/ANALYSIS.md) の **7 章「ビルド」** が一次情報。
 > 本書はその上で「どう実行し、どう合否を判定するか」だけを扱う。
 
 ---
@@ -14,7 +15,7 @@
 ## 1. 使い方
 
 ```powershell
-cd root\programs\CS
+cd root\programs
 
 # 全ビルド（0_ExecAllBat.bat 相当）を実行し、合否を一覧表示する
 .\BuildAll.ps1
@@ -185,10 +186,9 @@ WSClnt_sample (net48)        NG        1    0 21.20
 ## 7. 単体テストとの関係
 
 ビルドが通ったら、単体テストの実行と判定を行う。
-手順は [`Frameworks/Tests/TESTING.md`](Frameworks/Tests/TESTING.md) を参照。
+手順は [`TESTING.md`](TESTING.md) を参照。
 
 ```powershell
-cd Frameworks\Tests
 .\RunAllTests.ps1
 ```
 
@@ -216,10 +216,8 @@ Core サンプルだけが残る。このため `SmokeTest.ps1` は対象を自�
 ### リリース時の実行順
 
 ```powershell
-cd root\programs\CS
-.\BuildAll.ps1                 # 段階 2 : 全ビルドの合否
-cd Frameworks\Tests
-.\RunAllTests.ps1              # 段階 1 : 単体テストの回帰
-cd ..\..
-.\SmokeTest.ps1                # 段階 3 : サンプルの疎通
+cd root\programs
+.\BuildAll.ps1                 # 全ビルドの合否
+.\RunAllTests.ps1              # 単体テストの回帰
+.\SmokeTest.ps1                # サンプルの疎通
 ```

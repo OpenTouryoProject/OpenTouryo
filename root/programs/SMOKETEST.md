@@ -1,6 +1,7 @@
 # SMOKETEST.md — サンプルの疎通確認
 
-対象: `root/programs/CS`
+対象: `root/programs/CS`（C# 側）
+配置: `root/programs`
 本書は、リリース時に行っていた「サンプルを幾つか見繕って手動で疎通を行う」を、
 **合否が出る形に機械化**するための手順と判定基準を記述する（#513 段階 3）。
 
@@ -9,7 +10,7 @@
 ## 1. 使い方
 
 ```powershell
-cd root\programs\CS
+cd root\programs
 
 # 全対象の疎通を確認する
 .\SmokeTest.ps1
@@ -145,7 +146,7 @@ NG : /OUTPUT "C:\temp\out"    ← \ が消える
 | `WSClient_sample` 系（7 本） | 同上 |
 | Web サービス（`ASPNETWebService`） | **別リポジトリへ移設済み**。本リポジトリにホストが無い |
 
-`Samples/WS_sample/WSServer_sample` はクラス ライブラリ（B層・D層）で、
+`CS/Samples/WS_sample/WSServer_sample` はクラス ライブラリ（B層・D層）で、
 これを載せる Web サービスは
 [`OpenTouryoProject/ResourceServerTemplates`](https://github.com/OpenTouryoProject/ResourceServerTemplates)
 へ移設されている。このため本リポジトリだけでは HTTP 疎通ができない。
@@ -157,11 +158,11 @@ WinForms / WPF 系は、リリース チェックリスト（段階 4）の**手
 ## 4. 前提条件
 
 - **SQL Server の Northwind に接続できる**こと
-  - 接続文字列は `Samples\Bat_sample\SimpleBatch_sample\App.config` の
+  - 接続文字列は `CS\Samples\Bat_sample\SimpleBatch_sample\App.config` の
     `ConnectionString_SQL` を読む。ここで別途ハードコードすると追随できなくなるため
 - **`Orders2` テーブルが存在する**こと
   - Northwind 標準ではない。無い場合は
-    `Samples\Bat_sample\RerunnableBatch_sample\CREATE ORDERS2.sql` を実行する
+    `CS\Samples\Bat_sample\RerunnableBatch_sample\CREATE ORDERS2.sql` を実行する
 - **IIS Express** がインストールされていること（net48 の Web アプリ）
 - **ASP.NET 状態サービスが開始されている**こと（net48 の Web アプリ）
 

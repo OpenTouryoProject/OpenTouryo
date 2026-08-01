@@ -45,7 +45,9 @@ param(
     [string]$OutputDir = (Join-Path $env:TEMP "OpenTouryoBuildLogs")
 )
 
-$csRoot = $PSScriptRoot
+# 本スクリプトは root\programs に置き、C# 側（root\programs\CS）を対象とする。
+# ビルド バッチはすべて CS 直下にあるため、そこを起点にする。
+$csRoot = Join-Path $PSScriptRoot "CS"
 New-Item -ItemType Directory -Force $OutputDir | Out-Null
 
 # ------------------------------------------------------------------

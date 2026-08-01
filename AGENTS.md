@@ -88,19 +88,17 @@ gh auth switch --user OsscJpDevInfra  # 異なる場合は切り替え
 
 | 目的 | 読む文書 |
 |---|---|
-| リリース時の作業全体 | [`RELEASE.md`](root/programs/CS/RELEASE.md) |
-| 全ビルドの実行と判定 | [`BUILDING.md`](root/programs/CS/BUILDING.md) |
-| 単体テストの実行と判定 | [`TESTING.md`](root/programs/CS/Frameworks/Tests/TESTING.md) |
-| サンプルの疎通確認 | [`SMOKETEST.md`](root/programs/CS/SMOKETEST.md) |
+| リリース時の作業全体 | [`RELEASE.md`](root/programs/RELEASE.md) |
+| 全ビルドの実行と判定 | [`BUILDING.md`](root/programs/BUILDING.md) |
+| 単体テストの実行と判定 | [`TESTING.md`](root/programs/TESTING.md) |
+| サンプルの疎通確認 | [`SMOKETEST.md`](root/programs/SMOKETEST.md) |
 
 検証は次の 3 本で、いずれも終了コードで合否が分かる。**この順で実行すること。**
 
 ```powershell
-cd root\programs\CS
+cd root\programs
 .\BuildAll.ps1                 # 全ビルド
-cd Frameworks\Tests
 .\RunAllTests.ps1              # 単体テスト
-cd ..\..
 .\SmokeTest.ps1                # サンプルの疎通
 ```
 
@@ -110,7 +108,7 @@ cd ..\..
 **`.ps1` は Windows PowerShell 5.1 と PowerShell 7 の両方で動くこと。**
 エージェントの実行環境は 7 だが、利用者は 5.1（`powershell.exe`）で実行する。
 7 だけで確認すると 5.1 で落ちる。要点は
-[`SMOKETEST.md`](root/programs/CS/SMOKETEST.md) 「PowerShell 5.1 と 7 の両対応」を参照。
+[`SMOKETEST.md`](root/programs/SMOKETEST.md) 「PowerShell 5.1 と 7 の両対応」を参照。
 
 - `.ps1` は **UTF-8 BOM 付き**で保存する（5.1 は BOM 無しを Shift_JIS と誤認する）
 - `Get-Content` には **`-Encoding UTF8`** を明示する（既定が 5.1 と 7 で違う）
@@ -118,7 +116,7 @@ cd ..\..
 - **変更したら 5.1 でも実行して確かめる**
 
 ```powershell
-powershell.exe -NoProfile -Command "Set-Location 'root\programs\CS'; .\SmokeTest.ps1"
+powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\SmokeTest.ps1"
 ```
 
 前提となるサービスや DB の状態が足りない場合は、**勝手に変えず、対処方法とともに報告する。**
