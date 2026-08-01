@@ -5,7 +5,7 @@ https://github.com/OpenTouryoProject/OpenTouryo/
 
 と、ソレを使用したサンプル・アプリケーションの開発エージェント用。
 
-### Git 操作は行わない
+### Git 操作は行わない（状態を変える操作をしない）
 
 **成果物の検収は人が行う。** エージェントは作業結果をワーキング ツリーに残すところまでを担当し、
 Git 操作は人が手動で行う。
@@ -14,6 +14,10 @@ Git 操作は人が手動で行う。
 
 - `git add` / `commit` / `push`（検収前・未レビューの変更を確定・送信しない）
 - `git checkout` / `switch` / `branch` / `reset` / `restore` / `stash`（人の作業状態や未保存の作業を壊す）
+
+**参照系は制限しない。** 何を変更したかを正確に報告するために必要なため、次は自由に実行してよい。
+
+- `git status` / `diff`（`--cached` 含む）/ `log` / `show` / `ls-files` / `check-ignore` / `blame`
 
 作業が完了したら**何を変更したかを報告するに留める**。コミットの要否とタイミングは人が判断する。
 
@@ -25,6 +29,37 @@ Git 操作は人が手動で行う。
     - 各プロダクト: 同等の機構があればそれを使う
   必要になったら install.ps1 に設定の配布を追加することを検討する。
 -->
+
+### GitHub 操作は gh で行う
+
+Issue の調査・起票・コメントは、**`gh` コマンドで実行してよい**（ブラウザ操作を人に依頼しない）。
+上記の「Git 操作は行わない」はワーキング ツリーとコミット履歴に対する制約であり、
+GitHub 側のやり取りは対象外。
+
+```
+gh issue view <番号> --repo OpenTouryoProject/OpenTouryo
+gh issue list --repo OpenTouryoProject/OpenTouryo
+gh issue comment <番号> --repo OpenTouryoProject/OpenTouryo --body-file <path>
+gh issue create --repo OpenTouryoProject/OpenTouryo --title <title> --body-file <path>
+```
+
+ただし**公開リポジトリへの投稿は取り消しにくい**ため、次を守ること。
+
+- **投稿前に文面を提示し、承認を得てから実行する。** 承認なしに投稿しない
+- 本文は一時ファイルに書き、`--body-file` で渡す（改行・記号の欠落を避ける）
+- 投稿後は URL を報告する
+
+**このリポジトリでは `OsscJpDevInfra` アカウントを使用する。**
+`gh auth status` に複数のアカウントが登録されていることがあるため、
+投稿前にアクティブなアカウントを確認すること。異なる場合は `gh auth switch` で切り替える。
+
+```
+gh auth status                        # アクティブなアカウントの確認
+gh auth switch --user OsscJpDevInfra  # 異なる場合は切り替え
+```
+
+**Issue のクローズ・ラベル変更・アサイン、PR の作成やマージは人が行う。**
+これらは成果物の検収と同じ扱いとし、エージェントは提案に留める。
 
 ### コーディング規約は、領域ごとの ANALYSIS.md に従う
 
