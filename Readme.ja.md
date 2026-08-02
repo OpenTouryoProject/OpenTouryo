@@ -30,3 +30,9 @@ Open 棟梁のドキュメントは、[OpenTouryoDocuments リポジトリ](http
 
 ### [/root/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root)
 このディレクトリには、プログラム、設定ファイル、SQL ファイルなどが格納されています。
+
+セットアップとビルドの手順は [/root/Readme.ja.md](root/Readme.ja.md) を参照してください。
+
+### [AGENTS.md](AGENTS.md)
+コーディング エージェントで本リポジトリを扱う場合の**入口**です。
+守るべきポリシーと、参照すべき文書への導線をまとめています。

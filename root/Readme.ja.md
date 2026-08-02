@@ -8,6 +8,7 @@ Open 棟梁は、.NET Framework と .NET Core をベースとしたアプリケ�
 ## 本体開発用プログラムの実行手順
 - Open 棟梁の本体と同梱されるサンプルアプリの実行手順は以下のとおりです。
 - Open 棟梁を使用したアプリ開発を行う場合のセットアップは[コチラ](https://github.com/OpenTouryoProject/OpenTouryoCodingAgentAssets/)をご参照下さい。
+- コーディング エージェントで本体開発を行う場合は、先に [AGENTS.md](../AGENTS.md) をお読みください。
 
 ### 前提ツールのインストール
 - あらかじめ、Visual Studio （若しくは Visual Studio Code と .NET系の SDK と Extension）をインストールしておいてください。  

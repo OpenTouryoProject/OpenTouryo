@@ -8,6 +8,7 @@ Click [here](Readme.ja.md) for the Japanese version of this file.
 ## How to run the programs for developing Open Touryo itself
 - The following are the steps to run Open Touryo itself and the sample applications bundled with it.
 - For the setup to develop an application *using* Open Touryo, refer to [this repository](https://github.com/OpenTouryoProject/OpenTouryoCodingAgentAssets/).
+- When developing Open Touryo itself with a coding agent, read [AGENTS.md](../AGENTS.md) first.
 
 ### Install prerequisites
 - Install Visual Studio beforehand (or Visual Studio Code with the .NET SDK and extensions).  

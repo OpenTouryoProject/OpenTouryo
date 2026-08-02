@@ -30,3 +30,9 @@ License files are stored in this directory.
 
 ### [/root/](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/root)
 Programs, configuration files, sql files, and more are stored in this directory.
+
+For the setup and build steps, refer to [/root/README.md](root/README.md).
+
+### [AGENTS.md](AGENTS.md)
+This is the **entry point** when working on this repository with a coding agent.
+It summarizes the policies to follow and the links to the documents to refer to.
