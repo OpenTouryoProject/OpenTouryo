@@ -121,3 +121,19 @@ powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.
 
 前提となるサービスや DB の状態が足りない場合は、**勝手に変えず、対処方法とともに報告する。**
 
+### 付属ツールを CLI で使うときは、各ツールの README に従う
+
+エージェントから実行できる（非対話の）ツールには README を置く。
+
+| ツール | 読む文書 |
+|---|---|
+| `DaoGen_Tool`（Ｄ層自動生成ツール／墨壺） | [`README.md`](root/programs/CS/Frameworks/Tools/DaoGen_Tool/README.md) |
+
+**引数の一覧は README に書かない。** ツールの `/HELP` が一次情報であり、
+書き写すと二重管理になる。README には README にしか書けないこと
+（実行ファイルの場所、ヘルプの出し方、踏みやすい罠、前提）を置く。
+
+- **引数を組み立てる前に、まず `/HELP` を実行する**
+- 終了コードだけで判断せず、**生成物の存在も確認する**
+  （パス区切りを誤ると、成功（`0`）を返しつつ別の場所に出力される）
+

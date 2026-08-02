@@ -78,6 +78,10 @@ net48 版は `System.CommandLine` / `Sharprompt` の .NET Framework サポート
 
 #508 で追加された CUI。net48 / net10.0 それぞれ 3 件。
 
+> **ツール自体の使い方は
+> [`CS/Frameworks/Tools/DaoGen_Tool/README.md`](CS/Frameworks/Tools/DaoGen_Tool/README.md) が一次情報。**
+> 実行ファイルの場所、ヘルプの出し方、エージェントが踏みやすい罠を記載している。
+
 | 対象 | 判定 |
 |---|---|
 | `/HELP` | ヘルプの見出しが出力される |
