@@ -58,6 +58,10 @@ namespace TestCode
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
                 TestDeflateCompression.Root();
                 #endregion
+                #region Db
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestSQLUtility.Root();
+                #endregion
                 #endregion
 
                 #region Business
