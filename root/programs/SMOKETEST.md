@@ -343,68 +343,22 @@ MVC_Sample (net10.0)              OK   ログイン後 /Crud1/Index = 200
 ### PowerShell 5.1 と 7 の両対応
 
 **両方で動くこと。** 開発時に `pwsh`（7）だけで確認すると、
-利用者が `powershell.exe`（5.1）で実行したときに落ちる。既踏の 3 点。
+利用者が `powershell.exe`（5.1）で実行したときに落ちる。
 
-| 事象 | 原因 | 対処 |
-|---|---|---|
-| 構文エラー・文字化け（`繧ｹ繝・ャ繝・`） | 5.1 は BOM 無し `.ps1` を **ANSI（Shift_JIS）**として読む | `.ps1` を **UTF-8 BOM 付き**で保存する |
-| 同じファイルなのに差分が出る | `Get-Content` の既定エンコードが 5.1 は ANSI、7 は UTF-8 | `-Encoding UTF8` を明示する |
-| HTTP が常に失敗（状態コード `-1`） | `-SkipHttpErrorCheck` は **7 以降にしかない** | バージョンを見て付け外しする |
-| 実行中に画面が一度クリアされ、それまでの結果が消える | `z_Common.bat` の `chcp 65001` | スクリプト冒頭で先に切り替える |
+> **規約の実体は
+> [`CS/Frameworks/ANALYSIS.md`](CS/Frameworks/ANALYSIS.md) の 8.4 節**にある。
+> 落とし穴の一覧と対処方法は、そちらを参照すること。
 
-```powershell
-if ($PSVersionTable.PSVersion.Major -ge 6) { $p.SkipHttpErrorCheck = $true }
-```
+本スクリプト群は、次の 4 点を**実際に踏んだ**うえで対処してある。
+同種のスクリプトを追加・変更するときの実例として挙げる。
 
-5.1 では 4xx/5xx が例外になるため、`catch` で `$_.Exception.Response` から状態コードを取る。
-`-UseBasicParsing` は 5.1 で必要（未構成の IE エンジンを避ける）、7 では無視されるので常に付けてよい。
+| 事象 | 踏んだ箇所 |
+|---|---|
+| BOM 無しで構文エラー・文字化け | 5 本すべて（`0_RunAll.ps1` ほか） |
+| `Get-Content` の既定エンコード差で、同じファイルなのに差分が出る | `CompareResult.ps1` |
+| `-SkipHttpErrorCheck` が 5.1 に無く、HTTP が常に失敗 | `3_SmokeTest.ps1` の `Invoke-Http` |
+| `chcp` による画面クリアと、ログの文字化け | 3 本すべて（冒頭でコード ページを切り替え） |
 
-#### コード ページによる画面クリア
-
-`z_Common.bat` は先頭で `chcp 65001` を実行する。
-**コード ページはコンソール全体の設定**なので、子プロセスで変えても呼び出し元の画面に影響し、
-日本語環境の既定 `932` からの切り替わりで**画面が再描画されてそれまでの表示が消える**。
-
-`z_Common.bat` を最初に呼ぶのは 3 ステップ目（`2_Build_NuGet_net48.bat`）のため、
-そこまでの結果が消えて見える。各スクリプトは**冒頭で先に切り替えて**これを避けている。
-
-```powershell
-if ((cmd /c chcp) -notmatch '65001')
-{
-    cmd /c chcp 65001 | Out-Null
-}
-
-if ([Console]::OutputEncoding.CodePage -ne 65001)
-{
-    [Console]::OutputEncoding = New-Object Text.UTF8Encoding $false
-}
-```
-
-- **元に戻さない。** 戻す操作でも再描画が起きてサマリが消える。
-  各ビルド バッチも `65001` のまま終了するので、挙動は従来と同じ
-- **2 つの判定を分けること。** コンソールのコード ページと
-  `[Console]::OutputEncoding` は別物で、揃っているとは限らない
-
-#### なぜ判定を分けるのか
-
-Windows PowerShell 5.1 の `[Console]::OutputEncoding` は**起動時の値のまま**で、
-実行中にコンソールのコード ページが変わっても追随しない。
-このため次の状態が生まれる。
-
-| | コンソール CP | `OutputEncoding` |
-|---|---|---|
-| 5.1 を `932` で起動 | 932 | 932 |
-| ビルド バッチが `chcp 65001` | **65001** | 932 ← 取り残される |
-| **同じ画面で 2 回目を実行** | 65001 | 932 |
-
-2 回目は「コード ページは既に 65001」なので `chcp` の分岐を通らない。
-`OutputEncoding` の設定を同じ分岐に入れておくと**永久に 932 のまま**になり、
-UTF-8 で出力されるバッチの内容を CP932 で解釈して**ログとエラー一覧が文字化けする**。
-
-```
-error MSB3482: 鄂ｲ蜷堺ｸｭ縺ｫ繧ｨ繝ｩ繝ｼ縺檎匱逕溘＠縺ｾ縺励◆   ← 化けた状態
-error MSB3482: 署名中にエラーが発生しました              ← 正しい状態
-```
 
 ### PowerShell から `.bat` を呼ぶときの注意
 

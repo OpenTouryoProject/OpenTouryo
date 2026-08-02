@@ -8,6 +8,11 @@ https://github.com/OpenTouryoProject/OpenTouryo/
 環境のセットアップとビルド手順は [root/Readme.ja.md](root/Readme.ja.md) を参照。
 本書は、その上で**エージェントが守るべきこと**と、**どの文書を見るか**を示す。
 
+**プロジェクト共通の投稿規約は [Contributing.ja.md](Contributing.ja.md) に従う。**
+コメント量の目安、クロスコンパイルと下位互換の方針、ブランチ運用（git-flow）、
+"プルリクエスト" の粒度は、人もエージェントも同じ規約による。
+本書は、そこに書かれていない**エージェント固有の制約**を扱う。
+
 ### Git 操作は行わない（状態を変える操作をしない）
 
 **成果物の検収は人が行う。** エージェントは作業結果をワーキング ツリーに残すところまでを担当し、
@@ -109,18 +114,12 @@ cd root\programs
 **コミットの要否は人が判断する**ため、エージェントは差分を報告するに留める。
 
 **`.ps1` は Windows PowerShell 5.1 と PowerShell 7 の両方で動くこと。**
-エージェントの実行環境は 7 だが、利用者は 5.1（`powershell.exe`）で実行する。
-7 だけで確認すると 5.1 で落ちる。要点は
-[`SMOKETEST.md`](root/programs/SMOKETEST.md) 「PowerShell 5.1 と 7 の両対応」を参照。
+エージェントの実行環境は 7 だが、利用者は 5.1（`powershell.exe`）で実行するため、
+7 だけで確認すると 5.1 で落ちる。**変更したら 5.1 でも実行して確かめること。**
 
-- `.ps1` は **UTF-8 BOM 付き**で保存する（5.1 は BOM 無しを Shift_JIS と誤認する）
-- `Get-Content` には **`-Encoding UTF8`** を明示する（既定が 5.1 と 7 で違う）
-- 7 専用の引数（`-SkipHttpErrorCheck` など）はバージョンを見て付け外しする
-- **変更したら 5.1 でも実行して確かめる**
-
-```powershell
-powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.ps1"
-```
+規約の実体は
+[`Frameworks/ANALYSIS.md`](root/programs/CS/Frameworks/ANALYSIS.md) の
+**8.4 節「ps1 ファイルの文字コードと、PowerShell 5.1 / 7 の両対応」**にある。
 
 前提となるサービスや DB の状態が足りない場合は、**勝手に変えず、対処方法とともに報告する。**
 

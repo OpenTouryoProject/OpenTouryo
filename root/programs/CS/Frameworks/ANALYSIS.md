@@ -484,6 +484,45 @@ BOM が無いと、cmd.exe がバッチをバイト オフセットで読み進�
 
 `root/programs/CS/` 配下で非 ASCII を含む bat は、すべて BOM 付きになっている。
 
+### 8.4 ps1 ファイルの文字コードと、PowerShell 5.1 / 7 の両対応
+
+**`.ps1` は Windows PowerShell 5.1 と PowerShell 7 の両方で動くこと。**
+
+開発時は `pwsh`（7）で確認しがちだが、利用者は `powershell.exe`（5.1）で実行する。
+7 だけで確認すると 5.1 で落ちる。既踏の落とし穴は次の 4 点。
+
+| 事象 | 原因 | 対処 |
+|---|---|---|
+| 構文エラー・文字化け（`繧ｹ繝・ャ繝・`） | 5.1 は BOM 無しの `.ps1` を **ANSI（Shift_JIS）**として読む | **UTF-8 BOM 付き**で保存する |
+| 同じファイルなのに差分が出る | `Get-Content` の既定エンコードが 5.1 は ANSI、7 は UTF-8 | **`-Encoding UTF8`** を明示する |
+| HTTP が常に失敗（状態コード `-1`） | `-SkipHttpErrorCheck` は **7 以降にしかない** | バージョンを見て付け外しする |
+| 実行中に画面がクリアされ、それまでの結果が消える | 子プロセスの `chcp 65001` はコンソール全体に影響する | スクリプト冒頭で先に切り替える |
+
+```powershell
+# 7 専用の引数は、バージョンを見て付け外しする
+if ($PSVersionTable.PSVersion.Major -ge 6) { $p.SkipHttpErrorCheck = $true }
+
+# コンソールのコード ページと、PowerShell の出力エンコードは別物。判定を分けること
+if ((cmd /c chcp) -notmatch '65001') { cmd /c chcp 65001 | Out-Null }
+if ([Console]::OutputEncoding.CodePage -ne 65001)
+{
+    [Console]::OutputEncoding = New-Object Text.UTF8Encoding $false
+}
+```
+
+- **`.bat` は「非 ASCII を含むときだけ」BOM 付き**（8.3）だが、
+  **`.ps1` は非 ASCII を含むなら必ず BOM 付き**。5.1 が既定で ANSI として読むため。
+- 5.1 の `[Console]::OutputEncoding` は**起動時の値のまま**で、実行中にコード ページが
+  変わっても追随しない。同じ画面で 2 回目を実行したときに化ける原因になる。
+- **変更したら 5.1 でも実行して確かめること。**
+
+```powershell
+powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.ps1"
+```
+
+検証スクリプト側での具体的な適用例は
+[`SMOKETEST.md`](../../SMOKETEST.md) 「PowerShell 5.1 と 7 の両対応」を参照。
+
 ---
 
 ## 9. Public 層の主なユーティリティ（再実装しないこと）
