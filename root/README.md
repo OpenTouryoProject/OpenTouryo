@@ -1,78 +1,53 @@
 # Open Touryo
 
 ## Outline
-*Open Touryo* is an application framework based on .NET Framework and .NET Core.  
-The programs of Open Touryo are available in the following repositories:
-- OpenTouryoTemplates repository
-    - Summary  
-    The programs in this repository are the *development infrastructure (project template)* of the programs using Open Touryo.  
-    And the programs are partitioned into the folders for each version of Visual Studio.
-    - Intended User  
-    The *application developers* using Open Touryo.
-- OpenTouryo repository (*Current repository*)
-    - Summary  
-    The programs in this repository are the *matrix* of OpenTouryoTemplates repository.  
-    (First, the features of Open Touryo are implemented in this repository. And then, the features are introduced into OpenTouryoTemplates repository.)
-    - Intended User  
-    *Open source developers*.
+*Open Touryo* is an application framework based on .NET Framework and .NET Core.
 
-Therefore, the users who use Open Touryo in a system development project need to use [OpenTouryoTemplates repository](https://github.com/OpenTouryoProject/OpenTouryoTemplates).  
-The following contents are the usage of Open Touryo for *open source developers*.
+Click [here](Readme.ja.md) for the Japanese version of this file.
 
-Click [here](Readme.ja.md) for Japanese version of this file.
-
-## Running sample application tasks
-You can run the sample application bundled with Open Touryo according to the following steps.
-
-Notation *Optional*:  
-Open Touryo supports the following DBMSs and data providers. But the data providers, having the notation *optional*, are not included in the programs of Open Touryo. When using the DBMSs and data providers having the notation *optional*, download the data provider manually, and modify [the data access project of Open Touryo, that is DamXXX.csproj](https://github.com/OpenTouryoProject/OpenTouryo/tree/develop/root/programs/CS/Frameworks/Infrastructure/Public/Db), to refer the data provider.
+## How to run the programs for developing Open Touryo itself
+- The following are the steps to run Open Touryo itself and the sample applications bundled with it.
+- For the setup to develop an application *using* Open Touryo, refer to [this repository](https://github.com/OpenTouryoProject/OpenTouryoCodingAgentAssets/).
+- When developing Open Touryo itself with a coding agent, read [AGENTS.md](../AGENTS.md) first.
 
 ### Install prerequisites
-Install Visual Studio 2015 beforehand.  
-If you develop for .NET Standard or .NET Core, install Visual Studio 2017 beforehand.  
-see: https://docs.microsoft.com/ja-jp/dotnet/core/windows-prerequisites
+- Install Visual Studio beforehand (or Visual Studio Code with the .NET SDK and extensions).  
 
-Further, when implementing or testing the *data access class*, install the DBMS(s) to be used.  
-Open Touryo supports the following DBMSs:
-- SQL Server  
-(You can use an arbitrary version of SQL Server. And you can use different editions than Express Edition.)
-- Oracle Database (including Express Edition)
-- IBM DB2 ... optional
-- HiRDB ... optional
-- MySQL
-- PostgreSQL
+- Also, prepare the DBMS to be used out of the ones supported by Open Touryo. [LocalServicesOnDocker](https://github.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker) is useful for this.
+
+- The supported data providers can be checked in [Touryo.Infrastructure.Public.Db](https://github.com/OpenTouryoProject/OpenTouryo/tree/develop/root/programs/CS/Frameworks/Infrastructure/Public/Db).
+
+- The officially supported data providers are *SQL / OLE / ODBC / ODP / MCN / NPG*.
+
+- *DB2 / HiRDB / OracleClient* are currently excluded, but their templates remain, so you can support them yourself by making use of agents and so on.
+
+- The abbreviations and the namespaces of the ADO.NET data providers
+  - SQL: Microsoft.Data.SqlClient
+  - OLE: System.Data.Odbc
+  - ODBC: System.Data.OleDb
+  - ODP: Oracle.ManagedDataAccess.Client
+  - MCN: MySql.Data.MySqlClient
+  - NPG: Npgsql
+  - DB2: IBM.Data.DB2
+  - HiRDB: Hitachi.HiRDB
+  - OracleClient: System.Data.OracleClient
 
 ### Deploy Open Touryo
-Copy *root* folder to just under C drive. If not, the build may fail for the Windows maximum path length limitation.
+Copy the *root* folder to just under the C drive. If you copy it elsewhere, the build may fail because of the Windows maximum path length limitation.
 
-### Obtain and deploy data providers
-The correspondence between the DBMSs and the data providers is as follows.
+### Set up the sample database
 
-- Oracle
-  - Oracle.DataAccess.dll ... optional
-  - Oracle.ManagedDataAccess.dll
-- IBM DB2
-  - IBM.Data.DB2.dll ... optional
-- HiRDB
-  - x86: pddndp40.dll, pddndpcore40.dll ... optional
-  - x64: pddndp40x.dll, pddndpcore40x.dll ... optional
-- MySQL
-  - MySql.Data.dll
-- PostgreSQL
-  - Npgsql.dll
+#### Make use of [LocalServicesOnDocker](https://github.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker)
 
-### Set up sample database
 #### SQL Server  
-Sample application requires *Northwind* database.  
-So, download the setup script installer of *Northwind* database from the following Microsoft site and install.
+The sample applications require the *Northwind* database.
+Download the setup script of the *Northwind* database from the following Microsoft site and install it.  
 
-  - Download: NorthWind and pubs Sample Databases for SQL Server 2000 - Microsoft Download Center  
-    http://www.microsoft.com/download/en/details.aspx?displaylang=en&id=23654
+- Download: NorthWind and pubs Sample Databases for SQL Server 2000 - Microsoft Download Center  
+  http://www.microsoft.com/download/en/details.aspx?displaylang=en&id=23654
 
-When completing the installation, *SQL Server 2000 Sample Databases* folder is created in C drive.
-When using SQL Server 2012 or later, open *instnwnd.sql* file in an editor and comment out the following code.  
-**Note**:  
-Because *sp_option* system stored procedure does not exist in SQL Server 2012 or later, this step is required.
+When the installation succeeds, the *SQL Server 2000 Sample Databases* folder is created just under the C drive.  
+When using SQL Server 2012 or later, open the *instnwnd.sql* file in that folder with an editor and comment out the following code. (Because the *sp_dboption* system stored procedure does not exist in SQL Server 2012 or later)
 
 ```sql
 exec sp_dboption 'Northwind','trunc. log on chkpt.','true'
@@ -80,449 +55,104 @@ exec sp_dboption 'Northwind','select into/bulkcopy','true'
 ```
 
 Execute the following command at a command prompt.  
-**Note**:  
-In the following command, the path of the folder that contains *SQLCMD.EXE* changes according to the version of SQL Server. Execute command after confirming the path of folder in your environment. 
+(In the following command, the folder path of *SQLCMD.EXE* differs depending on the version of SQL Server. Confirm the folder path in your environment before executing the command)
 ```bat
 "C:\Program Files\Microsoft SQL Server\100\Tools\Binn\SQLCMD.EXE" -S localhost\SQLExpress -E -i "C:\SQL Server 2000 Sample Databases\instnwnd.sql"
 ```
 
-#### DBMSs except for SQL Server
-- Create an empty database in each DBMSs.
-- Create test table in the database by running C:\root\files\resource\Sql\\[DBMS Name]\TestTable.txt.
+#### DBMSs other than SQL Server
+- Create an empty database in each DBMS.
+- Create the tables for testing by running C:\root\files\resource\Sql\\[DBMS name]\TestTable.txt.
 
-### Build program
-When using Open Touryo, it is necessary to build programs **by running the batch files using MSBuild only at the first time**.  
-**Note**:  
-Open Touryo Template Base contains two parts:
-- Framework (Base class 1 and base class 2)
-- Sample application (Subclass)
+### Build the programs
+- To build the programs of Open Touryo, run the build batch files.  
 
-It is necessary to copy the *deliverables generated by building*, that is, *dll files* to the default folder of Open Touryo.  
-Therefore, it is necessary to run the batch files which execute a series of build processes.
+- The build batch files are stored in the following folders.
+  - C:\root\programs\
+  - C:\root\programs\CS  
+  - C:\root\programs\VB
 
-The batch files are stored in the following folder:
-- C:\root\programs\CS  
-- C:\root\programs\VB
+#### Structure of the build batch files
 
-By executing `0_ExecAllBat.bat`, you can execute necessary batch files together. Refer to the table below, check the necessary batch to be executed, customize `0_ExecAllBat.bat` as necessary, and execute it.
+**The number at the beginning of a file name indicates the build order.**
+The build proceeds from the smaller numbers, stacking up in the order of
+infrastructure, tools, and then sample applications.
 
-<table Border="1">
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;" colspan="1" rowspan="2">#</td>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;" colspan="1" rowspan="2">Batch&nbsp;file&nbsp;name&nbsp;</td>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;" colspan="1" rowspan="2">Description</td>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;" colspan="2" rowspan="1">Existence</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">C#</td>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">VB</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">1</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">0_ExecAllBat.bat</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Perform&nbsp;a&nbsp;batch&nbsp;build&nbsp;using&nbsp;the&nbsp;following&nbsp;files:&nbsp;Customize&nbsp;as&nbsp;needed.</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">2</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">1_DeleteDir.bat</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Delete&nbsp;(Clean&nbsp;up)&nbsp;the&nbsp;folders&nbsp;that&nbsp;are&nbsp;generated&nbsp;by&nbsp;building.</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">3</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">1_DeleteFile.bat</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Delete&nbsp;(Clean&nbsp;up)&nbsp;the&nbsp;temporary&nbsp;files.&nbsp;</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">4</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">2_Build_NuGet_net45.bat</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;framework&nbsp;(Base&nbsp;class&nbsp;1&nbsp;and&nbsp;library&nbsp;part)&nbsp;to&nbsp;make&nbsp;NuGet&nbsp;package&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;Framework&nbsp;4.5.2.&nbsp;</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*1</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">5</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">2_Build_NuGet_net46.bat</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;framework&nbsp;(Base&nbsp;class&nbsp;1&nbsp;and&nbsp;library&nbsp;part)&nbsp;to&nbsp;make&nbsp;NuGet&nbsp;package&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;Framework&nbsp;4.6.&nbsp;</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*1</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">6</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">2_Build_NuGet_net47.bat</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;framework&nbsp;(Base&nbsp;class&nbsp;1&nbsp;and&nbsp;library&nbsp;part)&nbsp;to&nbsp;make&nbsp;NuGet&nbsp;package&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;Framework&nbsp;4.7.&nbsp;</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*1</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">7</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">2_Build_NuGet_net48.bat</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;framework&nbsp;(Base&nbsp;class&nbsp;1&nbsp;and&nbsp;library&nbsp;part)&nbsp;to&nbsp;make&nbsp;NuGet&nbsp;package&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;Framework&nbsp;4.8.</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*1</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">8</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">2_Build_NuGet_netstd20.bat</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;framework&nbsp;(Base&nbsp;class&nbsp;1&nbsp;and&nbsp;library&nbsp;part)&nbsp;to&nbsp;make&nbsp;NuGet&nbsp;package&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;Standard&nbsp;2.0.&nbsp;</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*1,&nbsp;*3</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">9</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">2_Build_NuGet_netstd21.bat</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;framework&nbsp;(Base&nbsp;class&nbsp;1&nbsp;and&nbsp;library&nbsp;part)&nbsp;to&nbsp;make&nbsp;NuGet&nbsp;package&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;Standard&nbsp;2.1.</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*1,&nbsp;*3</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">10</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">2_Build_NuGet_nettcore30.bat</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;framework&nbsp;(Base&nbsp;class&nbsp;1&nbsp;and&nbsp;library&nbsp;part)&nbsp;to&nbsp;make&nbsp;NuGet&nbsp;package&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;Core&nbsp;3.0.</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*1,&nbsp;*3</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">10</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">2_Build_NuGet_nettcore50.bat</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;framework&nbsp;(Base&nbsp;class&nbsp;1&nbsp;and&nbsp;library&nbsp;part)&nbsp;to&nbsp;make&nbsp;NuGet&nbsp;package&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;5.</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*1,&nbsp;*3</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">10</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">2_Build_NuGet_nettcore60.bat</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;framework&nbsp;(Base&nbsp;class&nbsp;1&nbsp;and&nbsp;library&nbsp;part)&nbsp;to&nbsp;make&nbsp;NuGet&nbsp;package&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;6.</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*1,&nbsp;*3</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">11</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_Business_net45.bat</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;a&nbsp;framework&nbsp;(base&nbsp;class&nbsp;2,&nbsp;library&nbsp;part)&nbsp;of&nbsp;Business&nbsp;namespace&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;Framework&nbsp;4.5.2.</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;" colspan="2" rowspan="1">○</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">12</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_Business_net46.bat</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;a&nbsp;framework&nbsp;(base&nbsp;class&nbsp;2,&nbsp;library&nbsp;part)&nbsp;of&nbsp;Business&nbsp;namespace&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;Framework&nbsp;4.6.</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;" colspan="2" rowspan="1">○</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">13</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_Business_net47.bat</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;a&nbsp;framework&nbsp;(base&nbsp;class&nbsp;2,&nbsp;library&nbsp;part)&nbsp;of&nbsp;Business&nbsp;namespace&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;Framework&nbsp;4.7.</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;" colspan="2" rowspan="1">○</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">14</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_Business_net48.bat</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;a&nbsp;framework&nbsp;(base&nbsp;class&nbsp;2,&nbsp;library&nbsp;part)&nbsp;of&nbsp;Business&nbsp;namespace&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;Framework&nbsp;4.8.</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;" colspan="2" rowspan="1">○</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">15</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_BusinessRichClient_net45.bat</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;a&nbsp;framework&nbsp;for&nbsp;rich&nbsp;client&nbsp;application&nbsp;(base&nbsp;class&nbsp;2,&nbsp;library&nbsp;part)&nbsp;of&nbsp;Business&nbsp;namespace&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;Framework&nbsp;4.5.2.</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;" colspan="2" rowspan="1">○*2</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">16</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_BusinessRichClient_net46.bat</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;a&nbsp;framework&nbsp;for&nbsp;rich&nbsp;client&nbsp;application&nbsp;(base&nbsp;class&nbsp;2,&nbsp;library&nbsp;part)&nbsp;of&nbsp;Business&nbsp;namespace&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;Framework&nbsp;4.6.</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;" colspan="2" rowspan="1">○*2</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">17</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_BusinessRichClient_net47.bat</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;a&nbsp;framework&nbsp;for&nbsp;rich&nbsp;client&nbsp;application&nbsp;(base&nbsp;class&nbsp;2,&nbsp;library&nbsp;part)&nbsp;of&nbsp;Business&nbsp;namespace&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;Framework&nbsp;4.7.</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;" colspan="2" rowspan="1">○*2</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">18</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_BusinessRichClient_net48.bat</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;a&nbsp;framework&nbsp;for&nbsp;rich&nbsp;client&nbsp;application&nbsp;(base&nbsp;class&nbsp;2,&nbsp;library&nbsp;part)&nbsp;of&nbsp;Business&nbsp;namespace&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;Framework&nbsp;4.8.</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;" colspan="2" rowspan="1">○*2</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">19</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_Business_netcore20.bat</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;a&nbsp;framework&nbsp;(base&nbsp;class&nbsp;2,&nbsp;library&nbsp;part)&nbsp;of&nbsp;Business&nbsp;namespace&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;Core&nbsp;2.0.</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*3</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">20</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_Business_netcore30.bat</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;a&nbsp;framework&nbsp;(base&nbsp;class&nbsp;2,&nbsp;library&nbsp;part)&nbsp;of&nbsp;Business&nbsp;namespace&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;Core&nbsp;3.0.</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*3</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">20</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_Business_netcore50.bat</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;a&nbsp;framework&nbsp;(base&nbsp;class&nbsp;2,&nbsp;library&nbsp;part)&nbsp;of&nbsp;Business&nbsp;namespace&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;5.</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*3</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">20</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_Business_netcore60.bat</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;a&nbsp;framework&nbsp;(base&nbsp;class&nbsp;2,&nbsp;library&nbsp;part)&nbsp;of&nbsp;Business&nbsp;namespace&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;6.</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*3</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">21</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_BusinessRichClient_netcore30.bat</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;a&nbsp;framework&nbsp;for&nbsp;rich&nbsp;client&nbsp;application&nbsp;(base&nbsp;class&nbsp;2,&nbsp;library&nbsp;part)&nbsp;of&nbsp;Business&nbsp;namespace&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;Core&nbsp;3.0.</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*2,&nbsp;*3</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">21</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_BusinessRichClient_netcore50.bat</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;a&nbsp;framework&nbsp;for&nbsp;rich&nbsp;client&nbsp;application&nbsp;(base&nbsp;class&nbsp;2,&nbsp;library&nbsp;part)&nbsp;of&nbsp;Business&nbsp;namespace&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;5.</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*2,&nbsp;*3</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">21</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">3_Build_BusinessRichClient_netcore60.bat</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;a&nbsp;framework&nbsp;for&nbsp;rich&nbsp;client&nbsp;application&nbsp;(base&nbsp;class&nbsp;2,&nbsp;library&nbsp;part)&nbsp;of&nbsp;Business&nbsp;namespace&nbsp;that&nbsp;targets&nbsp;.NET&nbsp;6.</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*2,&nbsp;*3</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">22</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">4_Build_CopyAssemblies.bat</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Copy&nbsp;the&nbsp;primary&nbsp;output&nbsp;of&nbsp;the&nbsp;above&nbsp;build&nbsp;to&nbsp;the&nbsp;reference&nbsp;folder.</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;" colspan="2" rowspan="1">○</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">23</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">4_Build_Framework_Tool.bat</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;.NET&nbsp;Framework-based&nbsp;tools&nbsp;bundled&nbsp;with&nbsp;Open&nbsp;Touryo.</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">24</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">4_Build_Framework_ToolCore.bat</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;.NET&nbsp;Core-based&nbsp;tools&nbsp;bundled&nbsp;with&nbsp;Open&nbsp;Touryo.</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*3</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">25</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">5_Build_Bat_sample.bat</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;.NET&nbsp;Framework-based&nbsp;sample&nbsp;application.&nbsp;(Batch&nbsp;application)</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;" colspan="2" rowspan="1">○*4</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">26</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">5_Build_BatCore_sample.bat</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;.NET&nbsp;Core-based&nbsp;sample&nbsp;application.&nbsp;(Batch&nbsp;application)</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*3,&nbsp;*4</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">27</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">5_Build_2CS_sample.bat</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;.NET&nbsp;Framework-based&nbsp;sample&nbsp;application.&nbsp;(Two-tier&nbsp;client&nbsp;server&nbsp;application)</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;" colspan="2" rowspan="1">○*4</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">28</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">5_Build_2CSCore_sample.bat</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;.NET&nbsp;Core-based&nbsp;sample&nbsp;application.&nbsp;(Two-tier&nbsp;client&nbsp;server&nbsp;application)</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*3,&nbsp;*4</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">29</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">6_Build_WSSrv_sample.bat</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;.NET&nbsp;Framework-based&nbsp;sample&nbsp;application.&nbsp;(Web&nbsp;services&nbsp;(Server-side&nbsp;logic))</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;" colspan="2" rowspan="1">○*4</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">30</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">6_Build_WSSrvCore_sample.bat</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;.NET&nbsp;Core-based&nbsp;sample&nbsp;application.&nbsp;(Web&nbsp;services&nbsp;(Server-side&nbsp;logic))</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*3,&nbsp;*4</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">31</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">7_Build_Framework_WS.bat</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;.NET&nbsp;Framework-based&nbsp;framework.&nbsp;(Service&nbsp;interface)</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;" colspan="2" rowspan="1">○*4</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">32</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">7_Build_Framework_WSCore.bat</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;.NET&nbsp;Core-based&nbsp;framework.&nbsp;(Service&nbsp;interface)</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*3,&nbsp;*4</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">33</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">8_Build_WSClnt_sample.bat</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;.NET&nbsp;Framework-based&nbsp;sample&nbsp;application.&nbsp;(Web&nbsp;service&nbsp;client)&nbsp;</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;" colspan="2" rowspan="1">○*4</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">34</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">8_Build_WSClntCore_sample.bat</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;.NET&nbsp;Core-based&nbsp;sample&nbsp;application.&nbsp;(Web&nbsp;service&nbsp;client)&nbsp;</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*3,&nbsp;*4</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">35</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">10_Build_WebApp_sample.bat</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;sample&nbsp;web&nbsp;application.&nbsp;(ASP.NET)</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;" colspan="2" rowspan="1">○*4</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">36</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">10_Build_WebAppCore_sample.bat</td>
-<Td style="background-color:#F8CBAD;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;the&nbsp;sample&nbsp;web&nbsp;application.&nbsp;(ASP.NET&nbsp;Core)</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○*3,&nbsp;*4</td>
-<Td style="background-color:#F8CBAD;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">37</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">99_BuildLibsAtOtherRepos.bat</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Batch&nbsp;file&nbsp;for&nbsp;to&nbsp;use&nbsp;the&nbsp;Business&nbsp;namespace&nbsp;of&nbsp;the&nbsp;repository&nbsp;in&nbsp;other&nbsp;repositories.&nbsp;(using&nbsp;OpenTouryoTemplates-master&nbsp;branch)</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">38</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">99_BuildLibsAtOtherReposInTimeOfDev.bat</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Batch&nbsp;file&nbsp;for&nbsp;to&nbsp;use&nbsp;the&nbsp;Business&nbsp;namespace&nbsp;of&nbsp;the&nbsp;repository&nbsp;in&nbsp;other&nbsp;repositories.&nbsp;(using&nbsp;OpenTouryo-develop&nbsp;branch)</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">39</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">y_Build_TestCode.bat</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Perform&nbsp;batch&nbsp;build&nbsp;and&nbsp;execution&nbsp;of&nbsp;the&nbsp;following&nbsp;test&nbsp;code.</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">40</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">y_Build_TestCode_Public.bat</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;and&nbsp;execute&nbsp;the&nbsp;test&nbsp;code&nbsp;of&nbsp;the&nbsp;following&nbsp;Public&nbsp;namespace.</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">41</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">y_Build_TestCode_SecCUI.bat</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;and&nbsp;execute&nbsp;the&nbsp;CUI&nbsp;test&nbsp;code&nbsp;of&nbsp;the&nbsp;following&nbsp;Public.Security&nbsp;namespace.</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">42</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">y_Build_TestCode_SecCUI.sh</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;and&nbsp;execute&nbsp;the&nbsp;CUI&nbsp;test&nbsp;code&nbsp;of&nbsp;the&nbsp;following&nbsp;Public.Security&nbsp;namespace&nbsp;usin&nbsp;WSL.</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">43</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">y_Build_TestCode_SecGUI.bat</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Build&nbsp;and&nbsp;execute&nbsp;the&nbsp;GUI&nbsp;test&nbsp;code&nbsp;of&nbsp;the&nbsp;following&nbsp;Public.Security&nbsp;namespace.</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">44</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">z_ChangePackages_net45.bat</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Batch&nbsp;file&nbsp;to&nbsp;switch&nbsp;packages.config&nbsp;when&nbsp;creating&nbsp;NuGet&nbsp;package.&nbsp;(for&nbsp;.NET&nbsp;Framework&nbsp;4.5.2)</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">45</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">z_ChangePackages_net46.bat</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Batch&nbsp;file&nbsp;to&nbsp;switch&nbsp;packages.config&nbsp;when&nbsp;creating&nbsp;NuGet&nbsp;package.&nbsp;(for&nbsp;.NET&nbsp;Framework&nbsp;4.6)</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">46</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">z_ChangePackages_net47.bat</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Batch&nbsp;file&nbsp;to&nbsp;switch&nbsp;packages.config&nbsp;when&nbsp;creating&nbsp;NuGet&nbsp;package.&nbsp;(for&nbsp;.NET&nbsp;Framework&nbsp;4.7)</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">47</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">z_ChangePackages_net48.bat</td>
-<Td style="background-color:#C6E0B4;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Batch&nbsp;file&nbsp;to&nbsp;switch&nbsp;packages.config&nbsp;when&nbsp;creating&nbsp;NuGet&nbsp;package.&nbsp;(for&nbsp;.NET&nbsp;Framework&nbsp;4.8)</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
-<Td style="background-color:#C6E0B4;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">－</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">48</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">z_Common.bat</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Common&nbsp;settings&nbsp;(for&nbsp;MSBuild)</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
-</tr>
-<tr>
-<Td style="background-color:#9BC2E6;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;font-weight:bold;">49</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">z_Common2.bat</td>
-<Td style="background-color:#FFFFFF;text-align:left;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">Common&nbsp;settings&nbsp;(for&nbsp;Visual&nbsp;Studio)</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
-<Td style="background-color:#FFFFFF;text-align:center;color:#000000;font-family:'ＭＳ Ｐゴシック';font-size:11pt;">○</td>
-</tr>
-</table>
+| Number | Role |
+|---|---|
+| `0_` | Batch execution (`0_ExecAllBat.bat` calls the following in order) |
+| `1_` | Clean up (deleting `bin` / `obj` / `packages` and so on) |
+| `2_` | Framework itself (the assemblies to be packed into NuGet packages) |
+| `3_` | Business layer (the base classes and templates for business code) |
+| `4_` | Copying assemblies for reference, and the bundled tools |
+| `5_` `6_` `8_` `10_` | Sample applications |
+| `7_` | Service interface for web services (on the framework side) |
+| `9_` | (Not used on the C# side. Used for the WPF client on the VB side) |
+| `y_` | Test code |
+| `z_` | Common processing (called from the beginning of each batch file. Not run by itself) |
 
-<div style="font-size: small">
-  <span style="color: red;">*1</span>　Need to run when making NuGet package.<br />
-  <span style="color: red;">*2</span>　Need to run when developing rich client application.<br />
-  <span style="color: red;">*3</span>　Need to run when developing application that targets .NET Standard or .NET Core.<br />
-  <span style="color: red;">*4</span>　Select according to the actual architecture.
-</div>
+- **By executing `0_ExecAllBat.bat`, everything from the infrastructure to the
+  sample applications is built.** The individual batch files are for rebuilding only a part.
+- **`y_` (the test code) is not included in `0_ExecAllBat.bat`.** To run the unit tests,
+  use `2_RunAllTests.ps1` described below, or run the `y_` batch files individually.
+- The file names containing `Core`, or `netcore100`, target .NET 10.0.
+  The others (`net48`) target .NET Framework 4.8.
+- **The clean up of `1_` is executed repeatedly**, because the infrastructure and the
+  sample applications are rebuilt at different timings. Therefore, when the whole build
+  has finished, no intermediate files remain except for the ones built last.
 
-- If necessary, revise the environment variable *BUILDFILEPATH* in z_Common.bat according to the build environment.
+#### Common processing (z_Common.bat)
 
-- The libraries which are used by Open Touryo Template Base for Visual Studio 2015 are downloaded by NuGet. NuGet libraries might not be downloaded normally under proxy environment. So, when using proxy environment, create environment variable *http_proxy* as follows:
-    - Open *C:\root\programs\CS\z_Common.bat* and *C:\root\programs\VB\z_Common.bat* in an editor.
-    - By default, the code which creates environment variable *http_proxy* is commented.  
-    So, uncomment this code by removing '@rem'.
-    - Set your proxy information in environment variable *http_proxy*.
+- Each batch file calls `z_Common.bat` at its beginning, which provides the following:
+  - **Resolving the build tool** ... MSBuild is located by `vswhere` (independent of the edition)
+  - **Build configuration** ... `BUILD_CONFIG` (Debug / Release) and `DEBUG_TYPE`
+  - **NuGet settings** ... the proxy, and the MSBuild to be used on restore
 
-- When the following error occurred at build time, install *Windows SDK for Windows 8*. (Refer to [issue of Open Touryo](https://github.com/OpenTouryoProject/OpenTouryoTemplates/issues/48#issuecomment-241349223).)
+- `z_Common2.bat` is the **devenv version** of the same. It remains for the cases where  
+  a build does not pass with MSBuild but passes with devenv. Normally it is not used.
+
+- The libraries used by Open Touryo are downloaded via NuGet. Therefore, the NuGet libraries might not be downloaded normally under a proxy environment. When using a proxy environment, define the *http_proxy* environment variable as follows.
+    - Open C:\root\programs\CS\z_Common.bat and C:\root\programs\VB\z_Common.bat with a text editor.
+    - By default, the part that defines the *http_proxy* environment variable is commented out, so remove "@rem" to uncomment it.
+    - Set your proxy information in the *http_proxy* environment variable.
+
+#### Verification after the build
+
+Confirming that the build passes, running the unit tests, and checking that the sample
+applications work can be done with the scripts in `C:\root\programs\`.
+**All of them report the result by their exit code.**
+
+```powershell
+cd C:\root\programs
+.\0_RunAll.ps1          # Runs the following three together
 ```
-C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\Microsoft.Common.targets(2863,5): error MSB3086: Task could not find "AL.exe" using the SdkToolsPath "" or the registry key "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v8.0A\WinSDK-NetFx40Tools-x86". Make sure the SdkToolsPath is set and the tool exists in the correct processor specific location under the SdkToolsPath and that the Microsoft Windows SDK is installed
-```
-  
-### Start ASP.NET state service
-Open a command prompt as an administrator and execute the following commands.
+
+| Script | Description |
+|---|---|
+| `1_BuildAll.ps1` | Builds everything (equivalent to `0_ExecAllBat.bat`), aggregating errors and warnings |
+| `2_RunAllTests.ps1` | Runs the unit tests and compares the results with the previous ones |
+| `3_SmokeTest.ps1` | Starts the sample applications and checks that they work |
+
+For the procedures and the criteria, refer to
+[`BUILDING.md`](programs/BUILDING.md) / [`TESTING.md`](programs/TESTING.md) /
+[`SMOKETEST.md`](programs/SMOKETEST.md) in the same folder.
+The whole release procedure is summarized in [`RELEASE.md`](programs/RELEASE.md).
+
+### Start the ASP.NET state service
+Open a command prompt as an administrator and execute the following commands.  
 ```bat
    sc config aspnet_state start= auto
    net start aspnet_state
 ```
 
-### Run the sample application
-Open the following file.
-- Open web.config or app.config (for .NET Core, appsettings.json) and revise the values in *connectionStrings* section according to the actual database environment.
+### Run the sample applications
+- Open the following files.
+- Open web.config or app.config (appsettings.json in the case of .NET Core), and  
+modify the values of the connectionString section according to your actual database environment.
 - Run the sample application.  
-At the login screen, enter the arbitrary alphanumeric characters. (By default, the password authentication is not executed.)
+If a login screen appears, enter arbitrary alphanumeric characters. (Password authentication is not performed by default)  
    
-#### Web application:
+#### Web applications:
 - ASP.NET Web Forms  
   - C:\root\programs\CS\Samples\WebApp_sample\WebForms_Sample\WebForms_Sample.sln
   - C:\root\programs\VB\Samples\WebApp_sample\WebForms_Sample\WebForms_Sample.sln
@@ -530,7 +160,7 @@ At the login screen, enter the arbitrary alphanumeric characters. (By default, t
   - C:\root\programs\CS\Samples\WebApp_sample\MVC_Sample\MVC_Sample.sln
   - C:\root\programs\VB\Samples\WebApp_sample\MVC_Sample\MVC_Sample.sln
 
-#### Two-tier client server application:
+#### Two-tier client server applications:
 - Windows Forms  
   - C:\root\programs\CS\Samples\2CS_sample\2CSClientWin_sample\2CSClientWin_sample.sln
   - C:\root\programs\VB\Samples\2CS_sample\2CSClientWin_sample\2CSClientWin_sample.sln
@@ -538,9 +168,9 @@ At the login screen, enter the arbitrary alphanumeric characters. (By default, t
   - C:\root\programs\CS\Samples\2CS_sample\2CSClientWPF_sample\2CSClientWPF_sample.sln
   - C:\root\programs\VB\Samples\2CS_sample\2CSClientWPF_sample\2CSClientWPF_sample.sln
 
-#### Three-tier client server application:
+#### Three-tier client server applications:
 - Windows Forms  
-  - Windows forms application
+  - Ordinary Windows Forms application
     - C:\root\programs\CS\Samples\WS_sample\WSClient_sample\WSClientWin_sample\WSClientWin_sample.sln
     - C:\root\programs\VB\Samples\WS_sample\WSClient_sample\WSClientWin_sample\WSClientWin_sample.sln
   - ClickOnce application  
@@ -549,48 +179,39 @@ C:\root\programs\CS\Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSC
   - C:\root\programs\CS\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
   - C:\root\programs\VB\Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln
 
-### .NET Core application
+### .NET Core applications
+
+**There is currently no plan to provide a .NET Core version for VB.** All of the following are for C# only.
 
 #### Infrastructure:
-- C#
-  - C:\root\programs\CS\Frameworks\Infrastructure
-  - C:\root\programs\CS\Frameworks\Infrastructure\ServiceInterface\ASPNETWebServiceCore
-- VB  
-...
+- C:\root\programs\CS\Frameworks\Infrastructure
+- C:\root\programs\CS\Frameworks\Infrastructure\ServiceInterface\ASPNETWebServiceCore
 
 #### Tools:
-- C#
-  - C:\root\programs\CS\Frameworks\Tools
-- VB  
-...
+- C:\root\programs\CS\Frameworks\Tools
 
-#### Sample application:
-- C#
-  - C:\root\programs\CS\Samples4NetCore
-- VB  
-...
+#### Sample applications:
+- C:\root\programs\CS\Samples4NetCore
+
 
 ## Other items of note
 
 ### Copyright and license
-Refer to [License](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/license) directory.
+Refer to the [License](https://github.com/OpenTouryoProject/OpenTouryo/tree/master/license) directory.
 
 ### Bug fix
-If you find the bug while you are using Open Touryo, create an new [issue](https://github.com/OpenTouryoProject/OpenTouryo/issues).  
-Open Touryo community confirms the issue and takes appropriate actions.  
+If you find a bug while using Open Touryo, report it as an [issue](https://github.com/OpenTouryoProject/OpenTouryo/issues).  
+The community will check the content and deal with it appropriately.
 
-### How to create NuGet packages
-For the method of creating Open Touryo NuGet packages, see [this article](https://github.com/OpenTouryoProject/OpenTouryo/wiki/HowToCreateOpenTouryoNuGetPackages).
-
-### Obtaining libraries, exporting control prodedures, attaching to license
-- The libraries that can be obtained from package manager, that is NuGet or npm, are not bundled in Open Touryo. So, you don't have to export the libraries.
-- If necessary, you have to obtain and export the other libraries, that is the libraries that can not be obtained from package manager, on your own. In this case, you have to attach the license of the libraries to be used to the license of Open Touryo.
+### Obtaining libraries, export control procedures, and attaching to the license
+- The libraries that can be obtained from a package manager such as NuGet or npm are not bundled with Open Touryo, so they do not need export control.
+- The other libraries, that is, the ones that cannot be obtained from a package manager, need to be obtained, bundled, and exported by yourself as necessary. In that case, the licenses of the libraries you use need to be attached to the license of Open Touryo.
 
 ### Reference
-The documents in *OpenTouryoDocument repository* are useful when using Open Touryo.  
+The documents in the OpenTouryoDocuments repository are available for using Open Touryo.
 - [Introduction](https://github.com/OpenTouryoProject/OpenTouryoDocuments/tree/master/documents/0_Introduction)  
-You can see the introduction materials, such as PowerPoint slides.
+The overview documents of Open Touryo (PowerPoint slides and so on).
 - [User Guide](https://github.com/OpenTouryoProject/OpenTouryoDocuments/tree/master/documents/1_User_Guide)  
-You can confirm the structure of Open Touryo and the specification of each feature.
+The mechanism of Open Touryo and the specifications of each feature.
 - [Tutorial](https://github.com/OpenTouryoProject/OpenTouryoDocuments/tree/master/documents/2_Tutorial)  
-You can see the *first step guide* of Open Touryo.
+The first step guide of Open Touryo.

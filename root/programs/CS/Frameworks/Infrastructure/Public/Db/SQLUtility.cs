@@ -35,6 +35,7 @@
 //*  2014/01/30  Sai Krishna       added code for batch processing supporting MySQL
 //*  2014/01/30  Santoshkumar      added code for batch processing supporting DB2
 //*  2014/03/04  Santoshkumar      Modified code for converting char data type for batch processing supporting DB2 and Oracle
+//*  2026/08/02  玄人 幸道         GetUpdateSQLParts：複合主キーで誤ったUPDATE文を生成する問題を修正
 //**********************************************************************************
 
 using System;
@@ -373,50 +374,100 @@ namespace Touryo.Infrastructure.Public.Db
                 }
             }
 
-            // As per the PostGreSQL and MySQL syntax for batch update
-            // we have to use a "CASE ... WHEN ... THEN" while updating multiple records.
+            // 生成できないケースは、ここで打ち切る（DBMSによらず共通）。
+            //
+            // ・更新対象列が無い    … SET句が空のSQLは構文エラーになる。
+            // ・主キーが無い        … 行を特定できず、WHERE句が無いと全行更新になる。
+            //
+            // 打ち切らずに進むと、末尾の切り詰め処理が初期値のStringBuilderを削るため、
+            // "SE" や "WH" といった壊れた文字列を返してしまう。
+            if (colSet.Count == 0 || colWhere.Count == 0)
+            {
+                return list.ToArray();
+            }
+
+            // PostgreSQL・MySQLには、1文で複数行を別々の値に更新する構文が無いため、
+            // 「CASE ... WHEN ... THEN」で行ごとの値を切り替える。
+            // 他のDBMS（else側）は1行1文を行数分returnするが、こちらは1文にまとめる。
+            //
+            // ＜生成される UPDATE 文の全体像＞
+            //
+            // 本メソッドが返すのは "SET ... WHERE ..." の部分のみで、
+            // 呼び出し側が "UPDATE <テーブル名>" を前置して1文を組み立てる。
+            //
+            //   UPDATE "Orders"                                    ← 呼び出し側が付与
+            //   SET "Qty" = CASE
+            //         WHEN "OrderID" = 1 AND "ProductID" = 10 THEN 100
+            //         WHEN "OrderID" = 2 AND "ProductID" = 20 THEN 200
+            //         ELSE "Qty"                                   ← 対象外の行は現状維持
+            //       END,
+            //       "Note" = CASE
+            //         WHEN "OrderID" = 1 AND "ProductID" = 10 THEN 'a'
+            //         WHEN "OrderID" = 2 AND "ProductID" = 20 THEN 'b'
+            //         ELSE "Note"
+            //       END
+            //   WHERE ("OrderID" = 1 AND "ProductID" = 10)         ← 主キーの組み合わせで絞る
+            //      OR ("OrderID" = 2 AND "ProductID" = 20)
+            //
+            // ＜構造＞
+            //   ・更新対象列（主キー以外）ごとに CASE 式を1つ作る。
+            //   ・CASE の WHEN は入力DataTableの行数分並び、行を主キーで特定して値を与える。
+            //   ・WHERE は同じ主キーの組み合わせをORで並べ、更新対象の行だけに限定する。
+            //
+            // ＜複合主キーの扱い＞
+            //   主キーが複数列ある場合、WHEN も WHERE も「列ごとに独立」ではなく
+            //   「組み合わせ（AND）」で判定しなければならない。
+            //   列ごとに独立させると、WHERE が直積になって更新対象でない行に一致し、
+            //   さらに CASE も先に一致した枝が勝つため、誤った行に誤った値が入る。
+            //
+            // ＜ELSE を付ける理由＞
+            //   CASE はどの WHEN にも一致しないと NULL を返す。
+            //   WHERE で対象行に限定しているため通常は一致するが、
+            //   NULL 上書きという最悪の失敗を避けるため、保険として自身の列を指定する。
             if (this._dbms == DbEnum.DBMSType.PstGrS || this._dbms == DbEnum.DBMSType.MySQL)
             {
                 sbSet = new StringBuilder("SET ");
                 sbWhere = new StringBuilder("\r\nWHERE ");
-                int count = 0;
 
-                // 更新対象列
+                // 更新対象列（主キー以外）ごとに CASE 式を作る。
+                bool isFirstSet = true;
                 foreach (string set in colSet)
                 {
-                    sbSet.Append(set + " = CASE");
-
-                    foreach (string where in colWhere)
+                    if (!isFirstSet)
                     {
-                        if (count < colWhere.Count)
-                            sbWhere.Append(where + " IN (");
-                        foreach (DataRow dr in dt.Rows)
-                        {
-                            sbSet.Append(
-                                " WHEN " + where + " =" + this.ConvertParameterToSQL(dr[where])
-                                + " THEN " + this.ConvertParameterToSQL(dr[set]) + "\r\n");
-
-                            // パラメタをSQLに変換する。
-                            if (count < colWhere.Count)
-                                sbWhere.Append(this.ConvertParameterToSQL(dr[where]) + ", ");
-                        }
-                        // Sharpen last comma and AND
-                        if (count < colWhere.Count)
-                        {
-                            sbWhere.Remove((sbWhere.Length - 2), 2);
-                            sbWhere.Append(") AND ");
-                        }
-                        count++;
+                        sbSet.Append(",\r\n    ");
                     }
-                    // Adding END to the CASE
-                    sbSet.Append(" END,\r\n");
+                    isFirstSet = false;
+
+                    sbSet.Append(this.OpeningBracket + set + this.ClosingBracket + " = CASE");
+
+                    // 行ごとに「主キーの組み合わせ ＝ その行の値」を条件とする。
+                    foreach (DataRow dr in dt.Rows)
+                    {
+                        sbSet.Append("\r\n        WHEN " + this.GetPrimaryKeyCondition(dr, colWhere)
+                            + " THEN " + this.ConvertParameterToSQL(dr[set]));
+                    }
+
+                    // どのWHENにも一致しない行は、現在の値を保つ。
+                    sbSet.Append("\r\n        ELSE " + this.OpeningBracket + set + this.ClosingBracket);
+                    sbSet.Append("\r\n      END");
                 }
 
-                // Removing Last AND.
-                tempWhere = sbWhere.ToString().Substring(0, sbWhere.Length - 4);
+                // WHERE は主キーの組み合わせをORで並べ、更新対象の行だけに限定する。
+                bool isFirstWhere = true;
+                foreach (DataRow dr in dt.Rows)
+                {
+                    if (!isFirstWhere)
+                    {
+                        sbWhere.Append("\r\n   OR ");
+                    }
+                    isFirstWhere = false;
+
+                    sbWhere.Append("(" + this.GetPrimaryKeyCondition(dr, colWhere) + ")");
+                }
+
                 tempSet = sbSet.ToString();
-                // Removing Last END.
-                tempSet = tempSet.Substring(0, tempSet.Length - 3);
+                tempWhere = sbWhere.ToString();
 
                 // 結合して追加。
                 list.Add(tempSet + " " + tempWhere);
@@ -462,6 +513,34 @@ namespace Touryo.Infrastructure.Public.Db
 
             // 文字列配列化して戻す。
             return list.ToArray();
+        }
+
+        /// <summary>1行を特定する主キーの条件式を生成する。</summary>
+        /// <param name="dr">対象行</param>
+        /// <param name="primaryKeys">主キー列名のリスト</param>
+        /// <returns>条件式（例： "OrderID" = 1 AND "ProductID" = 10 ）</returns>
+        /// <remarks>
+        /// 複合主キーの場合は、列ごとに独立させず AND で結合する。
+        /// 独立させると行を一意に特定できず、意図しない行に一致する。
+        /// </remarks>
+        private string GetPrimaryKeyCondition(DataRow dr, List<string> primaryKeys)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            bool isFirst = true;
+            foreach (string pk in primaryKeys)
+            {
+                if (!isFirst)
+                {
+                    sb.Append(" AND ");
+                }
+                isFirst = false;
+
+                sb.Append(this.OpeningBracket + pk + this.ClosingBracket
+                    + " = " + this.ConvertParameterToSQL(dr[pk]));
+            }
+
+            return sb.ToString();
         }
 
         /// <summary>パラメタをSQLに変換する。</summary>

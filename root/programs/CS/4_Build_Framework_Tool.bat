@@ -1,4 +1,4 @@
-setlocal
+﻿setlocal
 
 @rem --------------------------------------------------
 @rem Turn off the echo function.
@@ -18,7 +18,7 @@ call %CURRENT_DIR%z_Common.bat
 rem --------------------------------------------------
 rem Batch build of DPQuery_Tool.
 rem --------------------------------------------------
-..\nuget.exe restore "Frameworks\Tools\DPQuery_Tool\DPQuery_Tool.sln"
+..\nuget.exe restore "Frameworks\Tools\DPQuery_Tool\DPQuery_Tool.sln" %NUGET_MSBUILD%
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\DPQuery_Tool\DPQuery_Tool.sln"
 
 pause
@@ -26,7 +26,7 @@ pause
 rem --------------------------------------------------
 rem Batch build of DaoGen_Tool.
 rem --------------------------------------------------
-..\nuget.exe restore "Frameworks\Tools\DaoGen_Tool\DaoGen_Tool.sln"
+..\nuget.exe restore "Frameworks\Tools\DaoGen_Tool\DaoGen_Tool.sln" %NUGET_MSBUILD%
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\DaoGen_Tool\DaoGen_Tool.sln"
 
 pause

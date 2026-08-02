@@ -1,4 +1,4 @@
-setlocal
+﻿setlocal
 
 @rem --------------------------------------------------
 @rem Turn off the echo function.
@@ -19,12 +19,8 @@ rem --------------------------------------------------
 rem Batch build of MVC_Sample.
 rem --------------------------------------------------
 
-set CURRENTDIR=%cd%
-cd "Samples4NetCore\Backend\MVC_Sample\MVC_Sample"
-if exist "node_modules" rd /s /q "node_modules"
-call RestoreLib1.bat
-call RestoreLib2.bat
-cd %CURRENTDIR%
+@rem npm / grunt によるクライアント ライブラリの復元は廃止した。
+@rem （wwwroot\lib 配下をリポジトリに直接格納する方式に移行済み）
 
 dotnet restore "Samples4NetCore\Backend\MVC_Sample\MVC_Sample.sln"
 dotnet msbuild %COMMANDLINE% "Samples4NetCore\Backend\MVC_Sample\MVC_Sample.sln"

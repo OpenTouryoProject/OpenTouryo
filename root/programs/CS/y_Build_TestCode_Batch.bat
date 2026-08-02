@@ -1,4 +1,4 @@
-setlocal
+﻿setlocal
 
 @rem --------------------------------------------------
 @rem Turn off the echo function.
@@ -18,7 +18,7 @@ call %CURRENT_DIR%z_Common.bat
 @rem --------------------------------------------------
 @rem Batch build of SimpleBatch.
 @rem --------------------------------------------------
-..\nuget.exe restore "Frameworks\Tests\TestBatch\SimpleBatch\SimpleBatch.sln"
+..\nuget.exe restore "Frameworks\Tests\TestBatch\SimpleBatch\SimpleBatch.sln" %NUGET_MSBUILD%
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\TestBatch\SimpleBatch\SimpleBatch.sln"
 
 dotnet restore "Frameworks\Tests\TestBatch\SimpleBatchCore\SimpleBatchCore.sln"

@@ -1,4 +1,4 @@
-setlocal
+﻿setlocal
 
 @rem --------------------------------------------------
 @rem Turn off the echo function.
@@ -19,7 +19,7 @@ rem --------------------------------------------------
 rem Build the Infrastructures
 rem --------------------------------------------------
 
-..\nuget.exe restore "Frameworks\Infrastructure\Business_net48.sln"
+..\nuget.exe restore "Frameworks\Infrastructure\Business_net48.sln" %NUGET_MSBUILD%
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\Business_net48.sln"
 
 pause

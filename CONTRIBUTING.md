@@ -1,86 +1,92 @@
 # How to contribute
 
-Click [here](Contributing.ja.md) for Japanese version of this file.
+Click [here](Contributing.ja.md) for the Japanese version of this file.
 
 ## Programming Rules and Conventions
 
 ### Comment
- - The amount of comments aim about 1/3(33%) of the amount of code.  
-   It has set a higher ratio comment in consideration of the maintenance.  
-   Redundant comment is unnecessary. Amount of redundant comment at the present time was about 43%.
+ - Aim at about 1/3 (33%) of the amount of code for the amount of comments.  
+   - A higher comment ratio is set in consideration of the maintenance.  
+   - Redundant comments are unnecessary. The amount of (redundant) comments at the present time was about 43%.  
 
- - Change history will continue only history of the header.  
-   Descriptions such as start and end point of the fixes are not required.
+ - Change history will continue only as the history of the header, even after the introduction of Git. Descriptions such as the start and end point of the fixes are not required.  
 
 ### Coding
- - Writing of duplicate code and information has been prohibited in this project.  
-   This is "Once and Only Once" or "Don't repeat yourself".
+ - Writing duplicate code and information is prohibited in this project.  
+   This is "Once and Only Once" or "Don't repeat yourself".  
 
- - Please keep in mind that it is limited to the statement  
-   that can be used in run-time which was specified in the project file.  
+ - This project is cross-compiled for C#, VB, .NET Framework (net48) and .NET Core (net10.0).  
+   However, the VB version is provided only for .NET Framework (net48).
 
-   For example, Contained the support of VS 2010 and .NET 3.5 previously  
-   (The current support is from VS 2015 and .NET 4.6 to latest version).  
-   e.g. , such as async/await keyword that can not be used in VS 2010 and .NET 3.5 has not been used in this project.
+ - Backward compatibility is highly maintained, and breaking changes are kept to a minimum.
+   - When supporting both a new and an old runtime, the implementation is aligned with the old one (e.g. async/await was not used while the support of VS 2010 and .NET 3.5 was included).
+   - Because .NET Framework (net48) and .NET Core (net10.0) are different lines, they are cross-compiled by using conditional compilation (preprocessor).
+   - Breaking changes are basically for the cases of discontinuation on the runtime side, and a sufficient "obsolete" period is provided before the change.
+
+### Coding agent
+The policy for making use of it is described in [AGENTS.md](AGENTS.md).
 
 ## C#, VB
- Provision of VB version is not required.  
- If necessary, we will converte to VB by using the Sharpdeveloper.
+ Provision of the VB version is not required. If necessary, we will convert it to VB by using tools (Sharpdeveloper, generative AI).  
 
 ## Flow
 
 ### GitHub Flow
- GitHubFlow is not adopted because there is no culture of the shipment  
- that test and push constantly and deploy the product every day.  
+ "Push the product every day, test it constantly and deploy it."  
+ GitHub Flow is not adopted because there is no such culture of shipment in this project.  
 
- - GitHub Flow - Scott Chacon（原文）  
-   http://scottchacon.com/2011/08/31/github-flow.html  
- - 上記記事の日本語訳  
-   https://gist.github.com/Gab-km/3705015
+ - GitHub Flow - Scott Chacon (original)  
+   https://scottchacon.com/2011/08/31/github-flow/  
+ - Japanese translation of the above article  
+   https://gist.github.com/Gab-km/3705015  
 
 ### git-flow
- This repository is based on the branch model of the the following URL.  
- - develop branch and master branch has been permanent.  
- - Create other branches as needed.
+ This repository is based on the git-flow branching model in "Reference" below.
+ 
+ - The master and develop branches are permanent.  
+ - Other branches are created as needed.  
 
 #### Reference
  - A successful Git branching model » nvie.com  
-   http://nvie.com/posts/a-successful-git-branching-model/  
+   https://nvie.com/posts/a-successful-git-branching-model/  
  - 見えないチカラ A successful Git branching model を翻訳しました  
-   http://keijinsonyaban.blogspot.jp/2010/10/successful-git-branching-model.html  
+   http://keijinsonyaban.blogspot.com/2010/10/a-successful-git-branching-model.html  
+
+ Note that a note by the author (Note of reflection, 2020/03/05) has been added to the original article above,  
+ which states that git-flow is not recommended for web applications with continuous delivery and so on.  
+ As described above, this project is not operated to ship every day, so git-flow is adopted.  
 
 ### About the "pull request"
 
 #### Size of the "pull request"
- - Reduce the size of "commit" and "pull request" for review of "pull request".
+ - Reduce the size of the "commit" and the "pull request" for the review of the "pull request".  
 
- - If multiple tasks of bug or enhance are present in the one "pull request", one delay affects the other.
+ - If multiple tasks of bugs or enhancements are present in one "pull request", one delay affects the others.
 
- - For this reason, you must create a feature branch for each task of bug or enhance.  
-   After that, ask the review to me by sending each time "pull request" from the feature branch.
+ - For this reason, you need to create a feature branch for each task of a bug or an enhancement.  
+   After that, ask me for a review by sending a "pull request" from the feature branch each time.  
 
- - Also, please do not commit unnecessary changes that indentation is changed by the IDE or editor.
+ - Also, please do not commit unnecessary changes such as indentation changed by the IDE or the editor.  
 
 #### Send a "pull request"
- - Fork to the repository by each user from OpenTouryo repository.  
-   After having done fork, create a feature branch from the develop branch.  
+ - Fork from the OpenTouryo repository to the repository of each user.  
+   After that, create a feature branch from the develop branch and work on it.  
 
- - Send "pull request" to the "develop branch of fork source" from your feature branch.
+ - Send the "pull request" from your feature branch to the develop branch of the fork source.  
 
- - If "develop branch of fork source" was changed,  
-   then you should do the "pull" or "fetch & merge" operation to the feature branch.
+ - If the develop branch of the fork source has been changed, do "pull" or "fetch & merge" to the feature branch.  
 
-#### Notes for "pull request"
- - You keep the develop / feature branch up to date as follows.  
+#### Notes for the "pull request"
+ - Keep the develop / feature branches up to date with the following steps.  
 
-   - "pull" or "fetch & merge" OpenTouryo develop branch from your develop / feature branch.  
-     and you recreate the feature branch from your develop branch and you reflect changes to the feature branch.  
-     After that, test and push, and finally send "pull request".
+   1. "pull" or "fetch & merge" the develop branch of OpenTouryo into your develop / feature branch.  
+   2. Recreate the feature branch from your develop branch.  
+   3. Reflect the changes to the feature branch.  
+   4. Test and push, and then send the "pull request".  
 
-   - There is also a way to fork again instead of pull or fetch & marge,  
-     but comments and changes that are not merged original fork source are lost.
+ - These steps serve the following two purposes.  
 
- - To prevent contaminating the commit log by rolling back program after the incorrect change, follow these steps.  
-   - You recreate the feature branch from your develop branch.  
-   - And you reflect changes again to the feature branch.  
-   - After that, test and push, and finally send "pull request".
+   - Keeping up with the changes of the develop branch of the fork source.  
+   - Preventing the commit log from being contaminated by rolling back the program after an incorrect change.  
+
+ - There is also a way to fork again instead of "pull" or "fetch & merge", but the comments and the changes that are not merged into the fork source are lost.  

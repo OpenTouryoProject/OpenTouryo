@@ -69,10 +69,10 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             @* 各メニューは、ユーザーが認証されている時だけ表示する *@
-                            <li onclick="window.location.href = '@Url.Content("~/")';">
+                            <li onclick="window.location.href = '@Url.Content("~/Crud1")';">
                                 <i class="fa fa-arrow-circle-right"></i> メニュー１
                             </li>
-                            <li onclick="window.location.href = '@Url.Content("~/")';">
+                            <li onclick="window.location.href = '@Url.Content("~/Crud2")';">
                                 <i class="fa fa-arrow-circle-right"></i> メニュー２
                             </li>
                         }

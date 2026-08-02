@@ -286,3 +286,18 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+
+# --------------------------------------------------
+# Open棟梁 build outputs
+#   ビルド bat / csproj の OutputPath が出力するディレクトリ。
+#   ※ 既存の "!**/packages/build/" と衝突しないよう、
+#      あえて汎用の "Build/" ではなくパスを固定している
+#      (core.ignoreCase=true の環境では Build/ が build/ にも一致するため)。
+# --------------------------------------------------
+/root/programs/*/Frameworks/Infrastructure/Build/
+/root/programs/*/Frameworks/Infrastructure/Build_net48/
+/root/programs/*/Frameworks/Infrastructure/Build_netcore100/
+/root/programs/*/Frameworks/Infrastructure/*/RichClient/Build_net48/
+/root/programs/*/Frameworks/Infrastructure/ServiceInterface/*/dll/
+/root/programs/*/Samples/WS_sample/Build/
+/root/programs/*/Samples4NetCore/Legacy/WS_sample/Build/

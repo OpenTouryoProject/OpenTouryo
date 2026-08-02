@@ -1,6 +1,27 @@
-@rem --------------------------------------------------
+﻿@rem --------------------------------------------------
 @rem Execution of the common processing.
 @rem --------------------------------------------------
+
+@rem **************************************************
+@rem [経緯] 本バッチは z_Common.bat の devenv 版である。
+@rem   MSBuild.exe ではエラーになるが devenv.com では通る、という
+@rem   ケースが散在していた時期に、ビルド ツールを devenv.com へ
+@rem   差し替えるために用意された。
+@rem   z_Common.bat と同じインターフェイス（%BUILDFILEPATH% と
+@rem   %COMMANDLINE%）を提供するため、呼び出し側の bat は
+@rem   call するファイルを差し替えるだけで切り替えられる。
+@rem   ※ そのため COMMANDLINE は devenv 構文の "/build <構成>" であり、
+@rem      MSBuild 構文の "/p:Configuration=<構成>" ではない。
+@rem
+@rem [注意] 現在は未使用であり、かつこのままでは動作しない。
+@rem   ・リポジトリ内に z_Common2.bat を呼び出すバッチは存在しない。
+@rem   ・"set BUILDFILEPATH10.0 =..." は "=" の前に空白があるため、
+@rem     変数名に末尾の空白が含まれてしまう。
+@rem   ・"set BUILDFILEPATH=BUILDFILEPATH10.0" は "%" が抜けているため、
+@rem     パスではなく文字列そのものを代入している。
+@rem   通常は z_Common.bat（MSBuild 版）を使用すること。
+@rem   再び devenv でのビルドが必要になった場合は、上記を修正したうえで使用する。
+@rem **************************************************
 
 @rem --------------------------------------------------
 @rem Set Program Files path

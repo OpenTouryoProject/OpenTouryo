@@ -1,4 +1,4 @@
-@rem --------------------------------------------------
+﻿@rem --------------------------------------------------
 @rem Execution of the common processing.
 @rem --------------------------------------------------
 
@@ -51,10 +51,68 @@ echo BUILDFILEPATH4.0 %BUILDFILEPATH4.0%
 echo BUILDFILEPATH15 %BUILDFILEPATH15%
 echo BUILDFILEPATH16 %BUILDFILEPATH16%
 echo BUILDFILEPATH17 %BUILDFILEPATH17%
-echo BUILDFILEPATH17 %BUILDFILEPATH18%
+echo BUILDFILEPATH18 %BUILDFILEPATH18%
 
-set BUILDFILEPATH=%BUILDFILEPATH18%
+@rem --------------------------------------------------
+@rem vswhere による MSBuild の解決（エディション非依存）
+@rem 上記の固定パスは Community しか探さないため、
+@rem Professional / Enterprise / BuildTools でも解決できるようにする。
+@rem --------------------------------------------------
+set VSWHERE="%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
+set BUILDFILEPATH=
+
+if exist %VSWHERE% (
+  for /f "usebackq tokens=*" %%i in (
+    `%VSWHERE% -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe`
+  ) do set BUILDFILEPATH="%%i"
+)
+
+@rem --------------------------------------------------
+@rem フォールバック（vswhere が無い / 解決できない場合）
+@rem --------------------------------------------------
+if not defined BUILDFILEPATH set BUILDFILEPATH=%BUILDFILEPATH18%
+if not defined BUILDFILEPATH set BUILDFILEPATH=%BUILDFILEPATH17%
+if not defined BUILDFILEPATH set BUILDFILEPATH=%BUILDFILEPATH16%
+
 echo BUILDFILEPATH %BUILDFILEPATH%
+
+@rem --------------------------------------------------
+@rem 未検出チェック
+@rem （空のまま進むと "/p:Configuration=..." が先頭コマンドとして
+@rem 　実行され、原因が分かりにくいエラーになるため、ここで止める。）
+@rem --------------------------------------------------
+if not defined BUILDFILEPATH (
+  echo [ERROR] MSBuild.exe が見つかりません。
+  echo         Visual Studio または Build Tools のインストール状況を確認してください。
+  exit /b 1
+)
+
+@rem --------------------------------------------------
+@rem nuget.exe restore に渡す MSBuild の指定
+@rem
+@rem nuget.exe は MSBuild を自動検出するが、SQL Server Management Studio など
+@rem MSBuild を同梱する別製品が入っていると、そちらを選ぶことがある。
+@rem （例: "MSBuild 自動検出: 'C:\Program Files\Microsoft SQL Server Management
+@rem 　Studio 22\Release\MSBuild\Current\bin' から MSBuild バージョン ... を使用します。"）
+@rem
+@rem その MSBuild には Web アプリ用の Microsoft.WebApplication.targets が無く、
+@rem また生成される project.assets.json が実際のビルドと噛み合わないため、
+@rem 下記のようなエラーになる。
+@rem   error MSB4226: インポートされたプロジェクト "...WebApplications\
+@rem                  Microsoft.WebApplication.targets" が見つかりませんでした。
+@rem   error : Your project file doesn't list 'win' as a "RuntimeIdentifier".
+@rem
+@rem このため、上で解決した MSBuild のフォルダを明示的に渡す。
+@rem --------------------------------------------------
+for %%i in (%BUILDFILEPATH%) do set MSBUILDDIR=%%~dpi
+
+@rem 末尾の \ を除去する（-MSBuildPath "...\" は \" が
+@rem エスケープと解釈され、引数が壊れるため）。
+if defined MSBUILDDIR set MSBUILDDIR=%MSBUILDDIR:~0,-1%
+
+set NUGET_MSBUILD=-MSBuildPath "%MSBUILDDIR%"
+
+echo NUGET_MSBUILD %NUGET_MSBUILD%
 
 @echo --------------------------------------------------
 @echo The choice of build configuration (Debug / Release).

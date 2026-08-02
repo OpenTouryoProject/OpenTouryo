@@ -1,4 +1,4 @@
-setlocal
+﻿setlocal
 
 @rem --------------------------------------------------
 @rem Turn off the echo function.
@@ -18,11 +18,11 @@ call %CURRENT_DIR%z_Common.bat
 @rem --------------------------------------------------
 @rem Batch build of TestCode.
 @rem --------------------------------------------------
-..\nuget.exe restore "Frameworks\Tests\TestCode\TestCodeFx48.sln"
+..\nuget.exe restore "Frameworks\Tests\TestCode\TestCodeFx48.sln" %NUGET_MSBUILD%
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\TestCode\TestCodeFx48.sln"
 
-dotnet restore "Frameworks\Tests\TestCode\TestCodeCore80.sln"
-dotnet msbuild %COMMANDLINE% "Frameworks\Tests\TestCode\TestCodeCore80.sln"
+dotnet restore "Frameworks\Tests\TestCode\TestCodeCore100.sln"
+dotnet msbuild %COMMANDLINE% "Frameworks\Tests\TestCode\TestCodeCore100.sln"
 
 @echo --------------------------------------------------
 @echo Test the TestCodeFx(48).

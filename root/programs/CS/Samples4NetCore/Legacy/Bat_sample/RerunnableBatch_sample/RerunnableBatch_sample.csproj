@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="log4net" Version="3.1.0" />
+    <PackageReference Include="log4net" Version="3.3.0" />
     <PackageReference Include="Microsoft.Bcl.Cryptography" Version="9.0.5" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.5" />

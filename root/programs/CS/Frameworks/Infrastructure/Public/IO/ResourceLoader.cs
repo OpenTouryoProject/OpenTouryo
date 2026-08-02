@@ -30,6 +30,10 @@
 //*  2007/xx/xx  西野 大介         新規作成
 //*  2009/03/13  西野 大介         存在チェック処理メソッドを追加
 //*  2011/01/14  西野 大介         環境変数の組み込み処理に対応
+//*  2026/08/01  玄人 幸道         ResolveFilePathメソッドを追加し、探索処理を集約した。
+//*                                相対パスがカレント ディレクトリ基準で見つからない場合、
+//*                                AppContext.BaseDirectory（EXEの配置フォルダ）基準で再探索する。
+//*                                ※ CLIが任意のカレント ディレクトリから起動される問題への対応。
 //**********************************************************************************
 
 using System;
@@ -46,6 +50,59 @@ namespace Touryo.Infrastructure.Public.IO
     /// <remarks>自由に利用できる。</remarks>
     public static class ResourceLoader
     {
+        // ↓↓↓【追加】↓↓↓
+
+        #region パス解決
+
+        /// <summary>[リソース ファイル]の実パスを解決する</summary>
+        /// <param name="loadfilepath">[リソース ファイル]へのパス</param>
+        /// <returns>見つかった実パス。見つからない場合は null。</returns>
+        /// <remarks>
+        /// 自由に利用できる。
+        /// 探索順は下記のとおり。
+        /// (1) 指定されたパス（絶対パス、または カレント ディレクトリ基準の相対パス）
+        /// (2) AppContext.BaseDirectory（EXEの配置フォルダ）基準の相対パス
+        /// (1) を優先するため、従来動作していた構成の挙動は変わらない。
+        /// (2) は、CLIが任意のカレント ディレクトリから起動される場合への対応。
+        /// ※ AppContext.BaseDirectoryは、PublishSingleFile（単一ファイル発行）でも
+        ///    正しい値を返す（Assembly.Locationは空文字になるため使用しない）。
+        /// </remarks>
+        public static string ResolveFilePath(string loadfilepath)
+        {
+            // 環境変数の組み込み処理に対応
+            loadfilepath = StringVariableOperator.BuiltStringIntoEnvironmentVariable(loadfilepath);
+
+            if (string.IsNullOrEmpty(loadfilepath))
+            {
+                // 指定なし
+                return null;
+            }
+
+            // (1) 指定されたパスで探す。
+            if (File.Exists(loadfilepath))
+            {
+                return loadfilepath;
+            }
+
+            // (2) 見つからない場合、EXEの配置フォルダ基準で探す（相対パスの場合のみ）。
+            if (!Path.IsPathRooted(loadfilepath))
+            {
+                string loadfilepath2 = Path.Combine(AppContext.BaseDirectory, loadfilepath);
+
+                if (File.Exists(loadfilepath2))
+                {
+                    return loadfilepath2;
+                }
+            }
+
+            // 見つからない。
+            return null;
+        }
+
+        #endregion
+
+        // ↑↑↑【追加】↑↑↑
+
         #region 存在チェック
 
         /// <summary>存在チェックのみのメソッド</summary>
@@ -55,11 +112,8 @@ namespace Touryo.Infrastructure.Public.IO
         /// <remarks>自由に利用できる。</remarks>
         public static bool Exists(string loadfilepath, bool throwException)
         {
-            // 環境変数の組み込み処理に対応
-            loadfilepath = StringVariableOperator.BuiltStringIntoEnvironmentVariable(loadfilepath);
-
-            // 存在チェック
-            if (File.Exists(loadfilepath))
+            // 存在チェック（【変更】探索処理を ResolveFilePath に集約した）
+            if (ResourceLoader.ResolveFilePath(loadfilepath) != null)
             {
                 // 存在する。
                 return true;
@@ -90,28 +144,8 @@ namespace Touryo.Infrastructure.Public.IO
             // パス文字結合
             string loadfilepath = Path.Combine(filePath, fileName);
 
-            // 環境変数の組み込み処理に対応
-            loadfilepath = StringVariableOperator.BuiltStringIntoEnvironmentVariable(loadfilepath);
-
-            // 存在チェック
-            if (File.Exists(loadfilepath))
-            {
-                // 存在する。
-                return true;
-            }
-            else
-            {
-                // 存在しない。
-                if (throwException)
-                {
-                    throw new ArgumentException(String.Format(
-                        PublicExceptionMessage.RESOURCE_FILE_NOT_FOUND, loadfilepath));
-                }
-                else
-                {
-                    return false;
-                }
-            }
+            // 存在チェック（【変更】探索処理を ResolveFilePath に集約した）
+            return ResourceLoader.Exists(loadfilepath, throwException);
         }
 
         #endregion
@@ -125,15 +159,15 @@ namespace Touryo.Infrastructure.Public.IO
         /// <remarks>自由に利用できる。</remarks>
         public static string LoadAsString(string loadfilepath, Encoding enc)
         {
-            // 環境変数の組み込み処理に対応
-            loadfilepath = StringVariableOperator.BuiltStringIntoEnvironmentVariable(loadfilepath);
+            // 存在チェック（【変更】探索処理を ResolveFilePath に集約した）
+            string resolvedPath = ResourceLoader.ResolveFilePath(loadfilepath);
 
             StreamReader sr = null;
 
             try
             {
                 // 存在チェック
-                if (File.Exists(loadfilepath))
+                if (resolvedPath != null)
                 {
                     // 存在する。
                 }
@@ -145,7 +179,7 @@ namespace Touryo.Infrastructure.Public.IO
                 }
 
                 // 開く
-                sr = new StreamReader(loadfilepath, enc);
+                sr = new StreamReader(resolvedPath, enc);
 
                 // 読む
                 return sr.ReadToEnd();
@@ -176,15 +210,15 @@ namespace Touryo.Infrastructure.Public.IO
             // パス文字結合
             string loadfilepath = Path.Combine(filePath, fileName);
 
-            // 環境変数の組み込み処理に対応
-            loadfilepath = StringVariableOperator.BuiltStringIntoEnvironmentVariable(loadfilepath);
+            // 存在チェック（【変更】探索処理を ResolveFilePath に集約した）
+            string resolvedPath = ResourceLoader.ResolveFilePath(loadfilepath);
 
             StreamReader sr  = null;
 
             try
             {
                 // 存在チェック
-                if (File.Exists(loadfilepath))
+                if (resolvedPath != null)
                 {
                     // 存在する。
                 }
@@ -196,7 +230,7 @@ namespace Touryo.Infrastructure.Public.IO
                 }
 
                 // 開く
-                sr = new StreamReader(loadfilepath, enc);
+                sr = new StreamReader(resolvedPath, enc);
 
                 // 読む
                 return sr.ReadToEnd();

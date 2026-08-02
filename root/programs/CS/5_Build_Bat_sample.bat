@@ -18,6 +18,7 @@ call %CURRENT_DIR%z_Common.bat
 rem --------------------------------------------------
 rem Batch build of SimpleBatch_sample.
 rem --------------------------------------------------
+..\nuget.exe restore "Samples\Bat_sample\SimpleBatch_sample\SimpleBatch_sample.sln" %NUGET_MSBUILD%
 %BUILDFILEPATH% %COMMANDLINE% "Samples\Bat_sample\SimpleBatch_sample\SimpleBatch_sample.sln"
 
 pause
@@ -25,6 +26,7 @@ pause
 rem --------------------------------------------------
 rem Batch build of RerunnableBatch_sample.
 rem --------------------------------------------------
+..\nuget.exe restore "Samples\Bat_sample\RerunnableBatch_sample\RerunnableBatch_sample.sln" %NUGET_MSBUILD%
 %BUILDFILEPATH% %COMMANDLINE% "Samples\Bat_sample\RerunnableBatch_sample\RerunnableBatch_sample.sln"
 
 pause
@@ -32,6 +34,7 @@ pause
 rem --------------------------------------------------
 rem Batch build of RerunnableBatch_sample2.
 rem --------------------------------------------------
+..\nuget.exe restore "Samples\Bat_sample\RerunnableBatch_sample2\RerunnableBatch_sample2.sln" %NUGET_MSBUILD%
 %BUILDFILEPATH% %COMMANDLINE% "Samples\Bat_sample\RerunnableBatch_sample2\RerunnableBatch_sample2.sln"
 
 pause
@@ -39,6 +42,7 @@ pause
 rem --------------------------------------------------
 rem Batch build of RerunnableBatch_sample3.
 rem --------------------------------------------------
+..\nuget.exe restore "Samples\Bat_sample\RerunnableBatch_sample3\RerunnableBatch_sample3.sln" %NUGET_MSBUILD%
 %BUILDFILEPATH% %COMMANDLINE% "Samples\Bat_sample\RerunnableBatch_sample3\RerunnableBatch_sample3.sln"
 
 pause

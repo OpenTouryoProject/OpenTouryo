@@ -1,4 +1,4 @@
-setlocal
+﻿setlocal
 
 @rem --------------------------------------------------
 @rem Turn off the echo function.
@@ -18,7 +18,7 @@ call %CURRENT_DIR%z_Common.bat
 rem --------------------------------------------------
 rem Batch build of WSClientWin_sample.
 rem --------------------------------------------------
-..\nuget.exe restore "Samples\WS_sample\WSClient_sample\WSClientWin_sample\WSClientWin_sample.sln"
+..\nuget.exe restore "Samples\WS_sample\WSClient_sample\WSClientWin_sample\WSClientWin_sample.sln" %NUGET_MSBUILD%
 %BUILDFILEPATH% %COMMANDLINE% "Samples\WS_sample\WSClient_sample\WSClientWin_sample\WSClientWin_sample.sln"
 
 pause
@@ -26,7 +26,7 @@ pause
 rem --------------------------------------------------
 rem Batch build of WSClientWPF_sample.
 rem --------------------------------------------------
-..\nuget.exe restore "Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln"
+..\nuget.exe restore "Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln" %NUGET_MSBUILD%
 %BUILDFILEPATH% %COMMANDLINE% "Samples\WS_sample\WSClient_sample\WSClientWPF_sample\WSClientWPF_sample.sln"
 
 pause
@@ -41,7 +41,7 @@ pause
 rem --------------------------------------------------
 rem Batch build of WSClientWinCone_sample.
 rem --------------------------------------------------
-..\nuget.exe restore "Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSClientWinCone_sample.sln"
+..\nuget.exe restore "Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSClientWinCone_sample.sln" %NUGET_MSBUILD%
 %BUILDFILEPATH% %COMMANDLINE% "Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSClientWinCone_sample.sln"
 
 pause

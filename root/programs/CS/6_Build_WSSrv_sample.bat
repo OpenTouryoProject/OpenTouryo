@@ -24,6 +24,7 @@ md "Samples\WS_sample\Build"
 rem --------------------------------------------------
 rem Batch build of WSServer_sample.
 rem --------------------------------------------------
+..\nuget.exe restore "Samples\WS_sample\WSServer_sample\WSServer_sample.sln" %NUGET_MSBUILD%
 %BUILDFILEPATH% %COMMANDLINE% "Samples\WS_sample\WSServer_sample\WSServer_sample.sln"
 
 xcopy /E /Y "Samples\WS_sample\WSServer_sample\bin\%BUILD_CONFIG%" "Samples\WS_sample\Temp\%BUILD_CONFIG%\"

@@ -89,6 +89,9 @@
     <Compile Include="..\TestStringChecker.cs">
       <Link>TestStringChecker.cs</Link>
     </Compile>
+    <Compile Include="..\TestSQLUtility.cs">
+      <Link>TestSQLUtility.cs</Link>
+    </Compile>
     <Compile Include="..\TestStringConverter.cs">
       <Link>TestStringConverter.cs</Link>
     </Compile>

@@ -1,0 +1,50 @@
+﻿<Project>
+
+  <!--
+  **********************************************************************************
+  * ファイル名      ：Directory.Build.props
+  * ファイル日本語名：Infrastructure 配下の共通ビルド プロパティ
+  *
+  * 作成者          ：玄人 幸道
+  * 更新履歴        ：
+  *
+  *  日時        更新者            内容
+  *  2026/07/31  玄人 幸道         新規作成（バージョン番号の一元管理）
+  **********************************************************************************
+
+  ■ 適用範囲
+    本ファイルは MSBuild が Microsoft.Common.props 経由で自動インポートするため、
+    Infrastructure 配下の「SDK 形式」csproj（*_netcore100.csproj）にのみ適用される。
+    旧形式 csproj（*_net48.csproj、ToolsVersion=12.0）は Microsoft.Common.props を
+    インポートしないため影響を受けない。net48 のバージョンは従来どおり
+    各プロジェクトの Properties\AssemblyInfo.cs が持つ。
+
+  ■ OpenTouryoVersion を変更したときに追随が必要な箇所
+    (1) 各 *_net48.csproj の Properties\AssemblyInfo.cs の AssemblyVersion
+        （Public / Framework / Public.Security は 3.0.0.0。
+          Business は意図的に 1.0.0.0 で別系統なので追随しない）
+    (2) NuGet パッケージ側は自動追随する。
+        ..\..\NuGet\_NuGetPack.bat が本ファイルから値を読み取り、
+        nuget pack に -Properties version=... として渡すため、
+        nuspec 側は $version$ トークンのままでよい。
+
+  ■ 注意
+    XML コメント内にハイフン 2 個の連続を書くと XML として不正になり、
+    MSBuild がプロジェクトの読み込みに失敗する。区切り線に使わないこと。
+  -->
+
+  <PropertyGroup>
+
+    <!-- ================================================================
+         Open棟梁のリリース バージョン（唯一の定義箇所）
+         ここを書き換えれば、SDK 形式アセンブリと NuGet パッケージの
+         双方に反映される。
+         ================================================================ -->
+    <OpenTouryoVersion>3.0.0</OpenTouryoVersion>
+
+    <!-- 全アセンブリ共通のメタデータ -->
+    <Company>Hitachi Solutions</Company>
+
+  </PropertyGroup>
+
+</Project>
