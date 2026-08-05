@@ -662,6 +662,18 @@ foreach ($t in $selected)
     }
 
     # 実行
+    #
+    # ＜先頭の "" | が要る理由＞
+    #   サンプルは終了前に Console.ReadKey() を呼ぶ（SimpleBatch_sample/Program.cs 等）。
+    #   stdin がコンソールのままだと**本当にキー入力を待って止まる**。
+    #   実測では SimpleBatch_sample (net48) が 386 秒かかり、その後もコンソールの
+    #   入力モードが乱れて、以降の表示が二重になった。
+    #
+    #   空文字を流し込んで stdin をリダイレクトすると、ReadKey は待たずに
+    #   InvalidOperationException になる。この例外は下の判定で除外している。
+    #
+    #   CI では stdin が元からリダイレクトされているため顕在化しない。
+    #   **実機のコンソールでだけ止まる**ので、気付きにくい。
     Write-Host "  実行中 ..."
     $sw = [Diagnostics.Stopwatch]::StartNew()
     Push-Location (Split-Path $exe)
@@ -672,12 +684,12 @@ foreach ($t in $selected)
         # 一方 System.CommandLine を使う CLI では「--」以降が未解析トークン扱いになり、
         # サブコマンドが認識されなくなるため、区切らずに渡す。
         $needSep = @($t.Args | Where-Object { $_ -like "/*" }).Count -gt 0
-        if ($needSep) { & dotnet $exe -- @($t.Args) *>&1 | Out-File $out -Encoding UTF8 }
-        else          { & dotnet $exe    @($t.Args) *>&1 | Out-File $out -Encoding UTF8 }
+        if ($needSep) { "" | & dotnet $exe -- @($t.Args) *>&1 | Out-File $out -Encoding UTF8 }
+        else          { "" | & dotnet $exe    @($t.Args) *>&1 | Out-File $out -Encoding UTF8 }
     }
     else
     {
-        & $exe @($t.Args) *>&1 | Out-File $out -Encoding UTF8
+        "" | & $exe @($t.Args) *>&1 | Out-File $out -Encoding UTF8
     }
     Pop-Location
     $sw.Stop()
@@ -686,11 +698,27 @@ foreach ($t in $selected)
     if ($null -eq $text) { $text = "" }
 
     # 判定
+    #
     # ※ 末尾の Console.ReadKey() 由来の例外はテスト内容と無関係なので除外する。
-    $readKeyNoise = 'Cannot read keys when either application does not have a console'
-    $fatal = ($text -split "`r?`n") | Where-Object {
-        $_ -match 'Unhandled exception|ハンドルされない例外|System\.\w+Exception' -and
-        $_ -notmatch $readKeyNoise
+    #
+    #   PowerShell は native コマンドの stderr を ErrorRecord にし、
+    #   **コンソール幅で折り返す**。折り返しで語が分断されると行単位の除外が効かない。
+    #   実際 dotnet 起動の 4 件だけが、除外できずに NG になった。
+    #     例外 : dotnet.exe : Unhandled exception. ... does not h
+    #                                                         ↑ ここで改行
+    #   このため、**空白を畳んで 1 行にしてから**除外・判定する。
+    #   コンソール幅に依存しなくなる。
+    $flat = ($text -replace '\s+', ' ')
+
+    # ReadKey 由来の一文を、例外の宣言ごと落とす。
+    # .NET Framework と .NET (Core) で文言が少し違うため、末尾は緩く受ける。
+    $flat = $flat -replace 'Unhandled exception\..{0,200}?Cannot read keys[^.]*\.( Try Console\.Read\.)?', ''
+
+    $fatal = @()
+    $m0 = [regex]::Match($flat, '(Unhandled exception|ハンドルされない例外|System\.\w+Exception).{0,160}')
+    if ($m0.Success)
+    {
+        $fatal = @($m0.Value.Trim())
     }
 
     $ok = $true
