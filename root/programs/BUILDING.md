@@ -283,23 +283,44 @@ Dependabot が PR を作成（base: develop）
       │ ① .github/workflows/dependabot-retarget.yml が base を deps へ書き換え
       ▼
  PR（base: deps）
+      │
+      │ ⓪ 人が deps を develop の先端に合わせる ← マージの前に必ず行う
       │ ② 人がマージ
       ▼
-   deps ─── ③ .github/workflows/build-windows.yml が windows-latest でビルド
+   deps ─── ③ .github/workflows/build-windows.yml が windows-latest で検証
       │ ④ 結果が OK なら、人が PR を作って develop へマージ
       ▼
   develop
 ```
 
-①③がワークフロー、②④が人の作業。`AGENTS.md` の線引き（マージは人が行う）に従う。
+①③がワークフロー、⓪②④が人の作業。`AGENTS.md` の線引き（マージは人が行う）に従う。
+
+### ⓪ を飛ばしてはいけない
+
+**`deps` が古いまま②を行うと、③が「`develop` に入る予定の状態」を検証しなくなる。**
+`deps` と `develop` の差（他の作業で進んだ分）が混ざるためで、④の PR もその差を巻き込む。
+
+```powershell
+git fetch origin
+git push origin origin/develop:deps    # 早送り。できないときは弾かれるので事故にならない
+```
+
+**早送りできるのは、`deps` に独自コミットが無い間だけ。**
+②の後の `deps` は独自コミットを持つため、この形は使えない。
+④で `develop` へ戻すと再び祖先になり、また早送りできる。**この周期を保つ。**
+
+> ④の直後に⓪を済ませておくと、次の PR が来たときには既に揃っている。
+> ただし、その後に `develop` が別の作業で進むこともあるため、
+> **判断の基準は「④の後」ではなく「②の前」。**
+
+> ⓪の push 自体が③を起こす（約 12 分）。`develop` の現状を検証する意味はある。
+> 公開リポジトリなので、GitHub ホステッド runner の費用はかからない。
 
 ### ワークフローの前提
 
 - **`deps` ブランチをあらかじめ作っておく。** `gh pr edit --base` は既存のブランチしか指せない
 - **`dependabot-retarget.yml` は `develop`（既定ブランチ）に無いと動かない。**
   `pull_request_target` はベース ブランチ側の定義で動くため
-- **④の後、`deps` を `develop` に合わせて進める。**
-  古いままだと次の PR の差分に無関係な変更が混ざる
 
 ### なぜ `dependabot.yml` の `target-branch` ではないのか
 
