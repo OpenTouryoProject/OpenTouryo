@@ -94,6 +94,10 @@ namespace TestDataAccess
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
                 MyDebug.OutputDebugAndConsole("更新系（専用の表を作って落とす）");
                 TestDataAccessUpdate.Root(daps);
+
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                MyDebug.OutputDebugAndConsole("動的パラメタライズドクエリ");
+                TestDataAccessDpq.Root(daps);
                 #endregion
 
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");

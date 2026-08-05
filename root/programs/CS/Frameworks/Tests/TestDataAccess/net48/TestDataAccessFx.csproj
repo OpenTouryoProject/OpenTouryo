@@ -71,6 +71,9 @@
     <Compile Include="..\Program.cs">
       <Link>Program.cs</Link>
     </Compile>
+    <Compile Include="..\TestDataAccessDpq.cs">
+      <Link>TestDataAccessDpq.cs</Link>
+    </Compile>
     <Compile Include="..\TestDataAccessPattern.cs">
       <Link>TestDataAccessPattern.cs</Link>
     </Compile>
@@ -79,6 +82,9 @@
     </Compile>
     <Compile Include="..\TestSQLUtility.cs">
       <Link>TestSQLUtility.cs</Link>
+    </Compile>
+    <Compile Include="..\TestTable.cs">
+      <Link>TestTable.cs</Link>
     </Compile>
   </ItemGroup>
   <ItemGroup>

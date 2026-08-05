@@ -15,9 +15,11 @@
   <ItemGroup>
     <Compile Include="..\DataProvider.cs" Link="DataProvider.cs" />
     <Compile Include="..\Program.cs" Link="Program.cs" />
+    <Compile Include="..\TestDataAccessDpq.cs" Link="TestDataAccessDpq.cs" />
     <Compile Include="..\TestDataAccessPattern.cs" Link="TestDataAccessPattern.cs" />
     <Compile Include="..\TestDataAccessUpdate.cs" Link="TestDataAccessUpdate.cs" />
     <Compile Include="..\TestSQLUtility.cs" Link="TestSQLUtility.cs" />
+    <Compile Include="..\TestTable.cs" Link="TestTable.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -50,14 +50,6 @@ namespace TestDataAccess
     /// </remarks>
     public class TestDataAccessUpdate
     {
-        #region 定数
-
-        /// <summary>テスト用の表名</summary>
-        /// <remarks>既存の表と衝突しない名前にすること。</remarks>
-        private const string TableName = "TestOrders";
-
-        #endregion
-
         #region public
 
         /// <summary>Root</summary>
@@ -96,8 +88,8 @@ namespace TestDataAccess
                 try
                 {
                     // DDL は Oracle では暗黙にコミットされるため、トランザクションの外で行う。
-                    TestDataAccessUpdate.DropTable(dam, dap);
-                    TestDataAccessUpdate.CreateTable(dam, dap);
+                    TestTable.Drop(dam, dap);
+                    TestTable.Create(dam, dap);
 
                     TestDataAccessUpdate.TestInsert(dam, dap);
                     TestDataAccessUpdate.TestUpdateBySQLUtility(dam, dap);
@@ -107,7 +99,7 @@ namespace TestDataAccess
                 finally
                 {
                     // 失敗しても表を残さない。
-                    TestDataAccessUpdate.DropTable(dam, dap);
+                    TestTable.Drop(dam, dap);
                     dam.ConnectionClose();
                 }
             }
@@ -136,7 +128,7 @@ namespace TestDataAccess
             for (int i = 1; i < parts.Length; i++)
             {
                 dam.SetSqlByCommand(
-                    "INSERT INTO " + TestDataAccessUpdate.Table(dap)
+                    "INSERT INTO " + TestTable.Quoted(dap)
                     + " " + parts[0] + " VALUES " + parts[i]);
                 total += dam.ExecInsUpDel_NonQuery();
             }
@@ -163,7 +155,7 @@ namespace TestDataAccess
             int total = 0;
             foreach (string part in parts)
             {
-                dam.SetSqlByCommand("UPDATE " + TestDataAccessUpdate.Table(dap) + " " + part);
+                dam.SetSqlByCommand("UPDATE " + TestTable.Quoted(dap) + " " + part);
                 total += dam.ExecInsUpDel_NonQuery();
             }
 
@@ -176,14 +168,14 @@ namespace TestDataAccess
         /// <param name="dap">データ プロバイダの識別子</param>
         private static void TestTransaction(BaseDam dam, string dap)
         {
-            string table = TestDataAccessUpdate.Table(dap);
+            string table = TestTable.Quoted(dap);
 
             // ロールバック : 全件消してから戻す。件数が元に戻ること。
             dam.BeginTransaction(DbEnum.IsolationLevelEnum.ReadCommitted);
             dam.SetSqlByCommand("DELETE FROM " + table);
             dam.ExecInsUpDel_NonQuery();
             dam.RollbackTransaction();
-            MyDebug.OutputDebugAndConsole("- ロールバック後の件数        : " + TestDataAccessUpdate.Count(dam, dap));
+            MyDebug.OutputDebugAndConsole("- ロールバック後の件数        : " + TestTable.Count(dam, dap));
 
             // コミット : 1 件消して確定する。件数が減ったままであること。
             dam.BeginTransaction(DbEnum.IsolationLevelEnum.ReadCommitted);
@@ -192,7 +184,7 @@ namespace TestDataAccess
                 + " WHERE " + DataProvider.Quote(dap, "OrderID") + " = 3");
             dam.ExecInsUpDel_NonQuery();
             dam.CommitTransaction();
-            MyDebug.OutputDebugAndConsole("- コミット後の件数            : " + TestDataAccessUpdate.Count(dam, dap));
+            MyDebug.OutputDebugAndConsole("- コミット後の件数            : " + TestTable.Count(dam, dap));
         }
 
         /// <summary>DELETE</summary>
@@ -200,105 +192,14 @@ namespace TestDataAccess
         /// <param name="dap">データ プロバイダの識別子</param>
         private static void TestDelete(BaseDam dam, string dap)
         {
-            dam.SetSqlByCommand("DELETE FROM " + TestDataAccessUpdate.Table(dap));
+            dam.SetSqlByCommand("DELETE FROM " + TestTable.Quoted(dap));
             MyDebug.OutputDebugAndConsole("- DELETE                      : " + dam.ExecInsUpDel_NonQuery() + " 件");
-            MyDebug.OutputDebugAndConsole("- 削除後の件数                : " + TestDataAccessUpdate.Count(dam, dap));
-        }
-
-        #endregion
-
-        #region 表の作成と破棄
-
-        /// <summary>テスト用の表を作る</summary>
-        /// <param name="dam">BaseDam</param>
-        /// <param name="dap">データ プロバイダの識別子</param>
-        /// <remarks>
-        /// **囲い文字は SQLUtility が生成するものと必ず一致させる。**
-        /// Oracle は囲わないと大文字、PostgreSQL は囲わないと小文字に畳まれるため、
-        /// 囲わずに作ると、生成された SQL の "Qty" などが「存在しない列」になる。
-        /// </remarks>
-        private static void CreateTable(BaseDam dam, string dap)
-        {
-            string intType;
-            string strType;
-
-            switch (dap)
-            {
-                case "ODP":
-                    intType = "NUMBER(10)";
-                    strType = "VARCHAR2(10)";
-                    break;
-
-                case "MCN":
-                    intType = "INT";
-                    strType = "VARCHAR(10)";
-                    break;
-
-                case "NPS":
-                    intType = "integer";
-                    strType = "varchar(10)";
-                    break;
-
-                default:
-                    intType = "int";
-                    strType = "nvarchar(10)";
-                    break;
-            }
-
-            dam.SetSqlByCommand(
-                "CREATE TABLE " + TestDataAccessUpdate.Table(dap) + " ("
-                + DataProvider.Quote(dap, "OrderID") + " " + intType + " NOT NULL, "
-                + DataProvider.Quote(dap, "ProductID") + " " + intType + " NOT NULL, "
-                + DataProvider.Quote(dap, "Qty") + " " + intType + ", "
-                + DataProvider.Quote(dap, "Note") + " " + strType + ", "
-                + "PRIMARY KEY (" + DataProvider.Quote(dap, "OrderID")
-                + ", " + DataProvider.Quote(dap, "ProductID") + "))");
-
-            dam.ExecInsUpDel_NonQuery();
-        }
-
-        /// <summary>テスト用の表を落とす</summary>
-        /// <param name="dam">BaseDam</param>
-        /// <param name="dap">データ プロバイダの識別子</param>
-        /// <remarks>
-        /// 存在しない場合の例外は無視する。
-        /// DROP TABLE IF EXISTS は Oracle では 23ai 以降でしか使えないため、
-        /// 分岐せずに「投げて握る」形にしている。
-        /// </remarks>
-        private static void DropTable(BaseDam dam, string dap)
-        {
-            try
-            {
-                dam.SetSqlByCommand("DROP TABLE " + TestDataAccessUpdate.Table(dap));
-                dam.ExecInsUpDel_NonQuery();
-            }
-            catch
-            {
-                // 表が無いだけ。
-            }
+            MyDebug.OutputDebugAndConsole("- 削除後の件数                : " + TestTable.Count(dam, dap));
         }
 
         #endregion
 
         #region ヘルパ
-
-        /// <summary>囲った表名</summary>
-        /// <param name="dap">データ プロバイダの識別子</param>
-        /// <returns>囲った表名</returns>
-        private static string Table(string dap)
-        {
-            return DataProvider.Quote(dap, TestDataAccessUpdate.TableName);
-        }
-
-        /// <summary>件数を取得する</summary>
-        /// <param name="dam">BaseDam</param>
-        /// <param name="dap">データ プロバイダの識別子</param>
-        /// <returns>件数</returns>
-        private static int Count(BaseDam dam, string dap)
-        {
-            dam.SetSqlByCommand("SELECT COUNT(*) FROM " + TestDataAccessUpdate.Table(dap));
-            return Convert.ToInt32(dam.ExecSelectScalar());
-        }
 
         /// <summary>全行を出力する</summary>
         /// <param name="dam">BaseDam</param>
@@ -317,7 +218,7 @@ namespace TestDataAccess
                 + ", " + DataProvider.Quote(dap, "ProductID")
                 + ", " + DataProvider.Quote(dap, "Qty")
                 + ", " + DataProvider.Quote(dap, "Note")
-                + " FROM " + TestDataAccessUpdate.Table(dap)
+                + " FROM " + TestTable.Quoted(dap)
                 + " ORDER BY " + DataProvider.Quote(dap, "OrderID"));
 
             dam.ExecSelectFill_DT(dt);
