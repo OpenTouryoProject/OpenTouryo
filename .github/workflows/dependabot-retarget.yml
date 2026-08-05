@@ -1,0 +1,45 @@
+# Dependabot が作成した PR のベース ブランチを deps へ振り替える。
+#
+# ＜なぜ必要か＞
+#   Dependabot のセキュリティ アップデートは、既定ブランチ（develop）にしか
+#   PR を出さない。dependabot.yml の target-branch はバージョン更新にしか
+#   効かないため、受けブランチへ向けるにはこの方法しかない。
+#
+# ＜なぜ pull_request_target か＞
+#   Dependabot が起こしたイベントでは GITHUB_TOKEN が既定で read-only になり、
+#   base の書き換えができない。pull_request_target は read-write にできる。
+#
+# ＜安全性＞
+#   pull_request_target は「ベース ブランチ側の定義」を書き込み権限付きで動かす。
+#   ここで PR のコードを checkout して実行すると、PR に任意のコードを書ける相手へ
+#   権限を渡すことになる（pwn request）。
+#   本ワークフローは checkout を行わず、gh コマンドだけを実行する。
+#   権限も pull-requests: write の 1 つだけに絞る。
+
+name: Retarget Dependabot PRs to deps
+
+on:
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  retarget:
+    # develop 宛の Dependabot の PR だけを対象にする。
+    # base の判定を入れているのは、既に deps 宛のものを再度書き換えないため。
+    if: >-
+      github.actor == 'dependabot[bot]' &&
+      github.event.pull_request.base.ref == 'develop'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Change base branch to deps
+        # 値は env 経由で渡す。run: に ${{ }} を直接書くと、
+        # 値の内容がシェルのコマンドとして解釈される余地が残る。
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: gh pr edit "$PR_NUMBER" --repo "$REPO" --base deps

@@ -118,6 +118,10 @@ $out = (Join-Path $env:TEMP "daogen/DaoDef.csv").Replace("\", "/")
 root/files/tools/DGenTemplates
 ```
 
+**このフォルダは `DPQuery_Tool` と共有している。** どのテンプレートがどちらで使われるか、
+`EntityTemplate` と `_bk` の使い分け、置換トークンの記法は
+[`DGenTemplates/README.md`](../../../../../files/tools/DGenTemplates/README.md) を参照。
+
 ### 4.3 DB
 
 `/MODE DAODEFGEN` は DB のスキーマを読むため、接続できる必要がある。

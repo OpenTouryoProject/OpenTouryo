@@ -122,7 +122,31 @@ echo NUGET_MSBUILD %NUGET_MSBUILD%
 @echo --------------------------------------------------
 set BUILD_CONFIG=Debug
 set DEBUG_TYPE=full
-set VisualStudioVersion=18.0
+
+@rem --------------------------------------------------
+@rem VisualStudioVersion は、上で解決した MSBuild と同じ VS から求める。
+@rem
+@rem Web アプリの csproj は、この値で targets のパスを組み立てる。
+@rem   <VSToolsPath>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+@rem   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" />
+@rem
+@rem 固定値にすると、別のバージョンの VS しか無い環境で見つからなくなる。
+@rem （例: GitHub Actions の windows-latest は VS 2022 = 17.x のため、
+@rem 　18.0 を渡すと v18.0\WebApplications\ を探して MSB4226 になる）
+@rem --------------------------------------------------
+set VSVER_MAJOR=
+
+if exist %VSWHERE% (
+  for /f "usebackq tokens=1 delims=." %%i in (
+    `%VSWHERE% -latest -products * -requires Microsoft.Component.MSBuild -property installationVersion`
+  ) do set VSVER_MAJOR=%%i
+)
+
+@rem vswhere が無い / 解決できない場合は従来の値にする。
+if not defined VSVER_MAJOR set VSVER_MAJOR=18
+
+set VisualStudioVersion=%VSVER_MAJOR%.0
+echo VisualStudioVersion %VisualStudioVersion%
 
 @echo --------------------------------------------------
 @echo Creating a build command.

@@ -301,3 +301,14 @@ __pycache__/
 /root/programs/*/Frameworks/Infrastructure/ServiceInterface/*/dll/
 /root/programs/*/Samples/WS_sample/Build/
 /root/programs/*/Samples4NetCore/Legacy/WS_sample/Build/
+
+# --------------------------------------------------
+# Open棟梁 test certificates (copies)
+#   copy_cert.bat と 2_RunAllTests.ps1 が
+#   root/files/resource/X509/ から複製する作業用のコピー。
+#   正本はそちらにあるため、複製側は追跡しない。
+#   ※ 対になる .pfx は上の汎用の "*.pfx" で既に無視される。
+#      .cer は正本 (root/files/resource/X509/*.cer) を追跡し続ける必要があるため、
+#      汎用パターンにはせず、複製先のフォルダに限定する。
+# --------------------------------------------------
+/root/programs/*/Frameworks/Tests/EncAndDecUtilCUI/*.cer
