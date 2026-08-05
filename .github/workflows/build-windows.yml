@@ -154,6 +154,43 @@ jobs:
                      -Query "SET NOCOUNT ON; SELECT COUNT(*) FROM dbo.Orders") -join ''
           Write-Host ("Northwind 準備完了 : Shippers=3  Orders={0}" -f $orders.Trim())
 
+      # ------------------------------------------------------------------
+      # テストが前提とする環境（C:\root と日本語ロケール）
+      # ------------------------------------------------------------------
+      - name: Set up C:\root and locale
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          # 構成ファイルが C:\root\files\... を絶対パスで参照している。
+          #   TestCode/App.config    FxXMLMSGDefinition / FxXMLSPDefinition
+          #   SimpleBatch/app.config SqlTextFilePath
+          # 無いと GetMessage が空を返し、SimpleBatch は
+          #   resource file [...] was not found
+          # で失敗する。コピーではなくジャンクションにして、実体を 1 つに保つ。
+          if (-not (Test-Path 'C:\root'))
+          {
+              New-Item -ItemType Junction -Path 'C:\root' `
+                       -Target (Join-Path $env:GITHUB_WORKSPACE 'root') | Out-Null
+          }
+
+          foreach ($p in @('C:\root\files\resource\Sql',
+                           'C:\root\files\resource\Xml\MSGDefinition.xml',
+                           'C:\root\files\resource\Xml\SPDefinition.xml'))
+          {
+              if (-not (Test-Path $p)) { throw "$p が見つかりません。" }
+          }
+          Write-Host "C:\root を配置しました。"
+
+          # 期待値は日本語ロケールで生成されている。runner の既定は en-US で、
+          # そのままだと日付の書式が変わり、正規化ルールに一致しない。
+          #   期待 : <DATE> 0:00:00        実測 : 4/24/1977 12:00:00 AM
+          # Set-Culture はレジストリを書き換えるため、以降に起動するプロセスに効く。
+          # （現在のセッションの Get-Culture は変わらないので、子プロセスで確認する）
+          Set-Culture ja-JP
+          $c = & powershell -NoProfile -Command "(Get-Culture).Name"
+          Write-Host ("新しいプロセスの Culture : {0}" -f $c)
+
       - name: Run all tests
         shell: pwsh
         working-directory: root/programs

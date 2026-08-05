@@ -368,6 +368,64 @@ Linux コンテナには Hyper-V による VM が要り、runner 自体が既に
 > **`instnwnd.sql` は DB を作らない。** 対象 DB の中で実行するスクリプトなので、
 > 先に `CREATE DATABASE Northwind` が要る。
 
+### テストが前提とする環境（DB 以外に 2 つある）
+
+初回の実行で 6 件すべてが NG になり、次の 2 つが不足していると分かった。
+
+#### ① `C:\root` が要る
+
+**構成ファイルが絶対パスを直書きしている。**
+
+| ファイル | キー | 値 |
+|---|---|---|
+| `TestCode/App.config` | `FxXMLMSGDefinition` | `C:\root\files\resource\Xml\MSGDefinition.xml` |
+| `TestCode/App.config` | `FxXMLSPDefinition` | `C:\root\files\resource\Xml\SPDefinition.xml` |
+| `TestBatch/SimpleBatch/app.config` | `SqlTextFilePath` | `C:\root\files\resource\Sql` |
+
+無いと、`GetMessage` は**例外を出さずに空を返し**、SimpleBatch は次で落ちる。
+
+```
+resource file [C:\...\ShipperCount.sql] was not found.
+   at Touryo.Infrastructure.Public.IO.ResourceLoader.LoadAsString(...)
+```
+
+実体はリポジトリ内（`root/files`、984 ファイル / 4.5 MB）にあるので、
+**コピーせずジャンクションで繋ぐ**（実体を 1 つに保つ）。
+
+```powershell
+New-Item -ItemType Junction -Path 'C:\root' -Target "$env:GITHUB_WORKSPACE\root"
+```
+
+#### ② 日本語ロケールが要る
+
+**期待値は日本語ロケールで生成されている。** runner の既定は `en-US` で、日付の書式が変わる。
+
+```
+期待 : 昭和52年4月24日（日）, ggy年M月d日（ddd）: <DATE> 0:00:00
+実測 : 昭和52年4月24日（日）, ggy年M月d日（ddd）: 4/24/1977 12:00:00 AM
+```
+
+`CompareResult.ps1` の `<DATE>` は `\d{4}/\d{1,2}/\d{1,2}`、つまり
+**`1977/4/24` の形にしか一致しない。** `4/24/1977` は素通りする。
+
+```powershell
+Set-Culture ja-JP     # レジストリを書き換えるので、以降に起動するプロセスに効く
+```
+
+> `Set-Culture` は現在のセッションには反映されない。確認は子プロセスで行う。
+
+#### ③ OS のメッセージは、これでも英語のまま
+
+`EncAndDecUtilCUI` に残る差分は、**Windows が返すエラー文字列**である。
+
+```
+実測 : ... System.Security.Cryptography.<B64URL>, Key does not exist.
+期待 : ... System.Security.Cryptography.<B64URL>, キーがありません。
+```
+
+これは `CurrentCulture` ではなく**表示言語**に従うため、`Set-Culture` では変わらない。
+日本語の言語パックを入れるか、比較側で扱うかの判断が要る。
+
 ### `2_RunAllTests.ps1` を CI で回すときの注意
 
 **これは回帰テストで、期待値は `HEAD` にコミットされた `Result*.txt`。**
