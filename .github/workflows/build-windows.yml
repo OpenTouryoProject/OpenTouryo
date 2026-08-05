@@ -1,0 +1,54 @@
+# 受けブランチ（deps）に入った変更を windows-latest でビルドする。
+#
+# ＜位置づけ＞
+#   リリース時の検証 3 本（RELEASE.md 3 節）のうち、1 本目だけを CI に載せたもの。
+#   「何をビルドするか」の正はバッチ側、「合否の判定」の正は 1_BuildAll.ps1 にある。
+#   ここには判定を書かない（書くと二重管理になる）。
+#
+# ＜2_RunAllTests.ps1 / 3_SmokeTest.ps1 を含めない理由＞
+#   どちらも SQL Server の Northwind を必要とするが、GitHub の Windows イメージには
+#   SQL Server が無い（LocalDB と sqlcmd のみ）。接続文字列も
+#   「Data Source=localhost / User ID=sa」で、LocalDB では代用できない。
+#   Northwind の作成スクリプトもリポジトリに無い。詳細は BUILDING.md。
+#
+# ＜MSB3482 を除外している理由＞
+#   WSClientWinCone_sample.csproj は ClickOnce の署名証明書を拇印で直接指定する。
+#   その証明書はストアにしか無く、同梱の .pfx はパスワード保護のため CI では再現できない。
+#   -IgnoreErrors で判定から外すが、除外した内容はログに一覧されるので握り潰しにはならない。
+
+name: Build on Windows
+
+on:
+  push:
+    branches: [deps]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    # ローカルの実測は約 5.8 分。CI の初回は NuGet の復元を伴うため余裕を持たせる。
+    timeout-minutes: 90
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 1_BuildAll.ps1 は git を使わないため、既定の浅い clone のままでよい。
+      - name: Build all
+        shell: pwsh
+        working-directory: root/programs
+        env:
+          LOG_DIR: ${{ runner.temp }}\BuildLogs
+        run: .\1_BuildAll.ps1 -OutputDir "$env:LOG_DIR" -IgnoreErrors "MSB3482"
+
+      # 失敗時こそ中身を見たいので、常に採取する。
+      - name: Upload build logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: ${{ runner.temp }}\BuildLogs
+          if-no-files-found: warn

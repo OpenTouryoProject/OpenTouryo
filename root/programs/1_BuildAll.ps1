@@ -25,11 +25,22 @@
 .PARAMETER OutputDir
     各ステップの出力ログの保存先。既定は %TEMP%\OpenTouryoBuildLogs。
 
+.PARAMETER IgnoreErrors
+    「既知のエラー」として合否判定から除外する正規表現。複数指定できる。
+    除外したものは黙って消さず、件数と内容をサマリに別枠で出す。
+
+    環境に依存して必ず出るエラーを、終了コードを汚さずに扱うための引数。
+    例: ClickOnce の署名エラー（MSB3482）は、csproj が証明書の拇印を
+    　　直接指定しているため、その証明書が無い環境では必ず失敗する。
+
 .EXAMPLE
     .\1_BuildAll.ps1
 
 .EXAMPLE
     .\1_BuildAll.ps1 -Only "Framework_Tool" -SkipClean
+
+.EXAMPLE
+    .\1_BuildAll.ps1 -IgnoreErrors "MSB3482"
 
 .NOTES
     作成者          ：玄人 幸道
@@ -37,12 +48,14 @@
      日時        更新者            内容
      ----------  ----------------  -------------------------------------------------
      2026/08/01  玄人 幸道         新規作成（リリース ワークのエージェント化）
+     2026/08/05  玄人 幸道         IgnoreErrors を追加（CI での既知エラーの除外）
 #>
 [CmdletBinding()]
 param(
     [string]$Only,
     [switch]$SkipClean,
-    [string]$OutputDir = (Join-Path $env:TEMP "OpenTouryoBuildLogs")
+    [string]$OutputDir = (Join-Path $env:TEMP "OpenTouryoBuildLogs"),
+    [string[]]$IgnoreErrors = @()
 )
 
 # 本スクリプトは root\programs に置き、C# 側（root\programs\CS）を対象とする。
@@ -166,12 +179,27 @@ function Get-Diagnostics([string[]]$lines)
     }
 }
 
+# -IgnoreErrors に指定された正規表現のいずれかに一致するか。
+# 一致したものは合否判定から外すが、握り潰しにならないよう別枠で一覧する。
+function Test-KnownError([string]$line)
+{
+    foreach ($pattern in $IgnoreErrors)
+    {
+        if ($line -match $pattern)
+        {
+            return $true
+        }
+    }
+    return $false
+}
+
 # ------------------------------------------------------------------
 # 実行
 # ------------------------------------------------------------------
 Push-Location $csRoot
 $results = @()
 $allErrors = New-Object System.Collections.Generic.List[string]
+$allKnown  = New-Object System.Collections.Generic.List[string]
 $total = [Diagnostics.Stopwatch]::StartNew()
 
 foreach ($s in $steps)
@@ -206,17 +234,35 @@ foreach ($s in $steps)
 
     $diag = Get-Diagnostics (Get-Content $log -EA SilentlyContinue)
 
-    foreach ($e in $diag.Errors) { $allErrors.Add(("[{0}] {1}" -f $s.Name, $e)) }
+    # 既知のエラーを判定対象から外す。件数はサマリに残すため、捨てずに分けて持つ。
+    $stepErrors = New-Object System.Collections.Generic.List[string]
+    $stepKnown  = New-Object System.Collections.Generic.List[string]
 
-    $verdict = if ($diag.Errors.Count -eq 0) { "OK" } else { "NG" }
+    foreach ($e in $diag.Errors)
+    {
+        if (Test-KnownError $e)
+        {
+            $stepKnown.Add($e)
+            $allKnown.Add(("[{0}] {1}" -f $s.Name, $e))
+        }
+        else
+        {
+            $stepErrors.Add($e)
+            $allErrors.Add(("[{0}] {1}" -f $s.Name, $e))
+        }
+    }
+
+    $verdict = if ($stepErrors.Count -eq 0) { "OK" } else { "NG" }
     $color   = if ($verdict -eq "OK") { "Green" } else { "Red" }
-    Write-Host ("  {0}  エラー {1} / 警告 {2}  ({3:N1} 秒)" -f `
-        $verdict, $diag.Errors.Count, $diag.Warnings.Count, $sw.Elapsed.TotalSeconds) -ForegroundColor $color
+    $knownNote = if ($stepKnown.Count -gt 0) { " / 既知 {0}" -f $stepKnown.Count } else { "" }
+    Write-Host ("  {0}  エラー {1} / 警告 {2}{3}  ({4:N1} 秒)" -f `
+        $verdict, $stepErrors.Count, $diag.Warnings.Count, $knownNote, $sw.Elapsed.TotalSeconds) -ForegroundColor $color
 
     $results += [pscustomobject]@{
         ステップ = $s.Name
         結果     = $verdict
-        エラー   = $diag.Errors.Count
+        エラー   = $stepErrors.Count
+        既知     = $stepKnown.Count
         警告     = $diag.Warnings.Count
         秒       = [Math]::Round($sw.Elapsed.TotalSeconds, 1)
     }
@@ -242,6 +288,19 @@ if ($allErrors.Count -gt 0)
     if ($allErrors.Count -gt 30)
     {
         Write-Host ("  ... 他 {0} 件（詳細はログを参照）" -f ($allErrors.Count - 30))
+    }
+}
+
+# 除外したものは必ず表示する。黙って消すと、-IgnoreErrors が広すぎたときに気付けない。
+if ($allKnown.Count -gt 0)
+{
+    Write-Host ""
+    Write-Host "======== 既知として除外したエラー ========" -ForegroundColor Yellow
+    Write-Host ("  除外条件 : {0}" -f ($IgnoreErrors -join " , "))
+    $allKnown | Select-Object -First 30 | ForEach-Object { Write-Host ("  " + $_) }
+    if ($allKnown.Count -gt 30)
+    {
+        Write-Host ("  ... 他 {0} 件（詳細はログを参照）" -f ($allKnown.Count - 30))
     }
 }
 
