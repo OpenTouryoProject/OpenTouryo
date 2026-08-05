@@ -40,6 +40,7 @@
      日時        更新者            内容
      ----------  ----------------  -------------------------------------------------
      2026/08/01  玄人 幸道         新規作成（リリース ワークのエージェント化）
+     2026/08/05  玄人 幸道         OSメッセージの正規化を追加（CI の英語環境への対応）
 #>
 [CmdletBinding()]
 param(
@@ -71,6 +72,14 @@ $normalizers = @(
     # 絶対パス（実行環境に依存する）
     @{ Name = 'パス';           Pattern = '[A-Za-z]:\\\\[^\s,]+';                      Replace = '<PATH>' }
     @{ Name = 'パス(単一)';     Pattern = '[A-Za-z]:\\[^\s,]+';                        Replace = '<PATH>' }
+    # OS が返すエラー文字列（Windows の表示言語で変わる）
+    # ※ .NET の CurrentUICulture ではなく OS の表示言語に従うため、設定では固定できない。
+    # 　 開発環境は日本語、GitHub ホステッドの runner は英語になる。
+    # ※ 例外が起きたこと自体は「行の存在」で分かるため、文言だけを潰す。
+    # 　 行ごと落とすと、例外が起きなくなったときに検知できない。
+    @{ Name = 'OSメッセージ'
+       Pattern = 'キーがありません。|Key does not exist\.|プロバイダーの公開キーは無効です。|Provider''s public key is invalid\.'
+       Replace = '<OSMSG>' }
     # GUID
     @{ Name = 'GUID';           Pattern = '[0-9a-fA-F]{8}-([0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}'; Replace = '<GUID>' }
     # XML 署名の値（要素で囲まれているため、先に要素単位で潰す）

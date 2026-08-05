@@ -283,23 +283,44 @@ Dependabot が PR を作成（base: develop）
       │ ① .github/workflows/dependabot-retarget.yml が base を deps へ書き換え
       ▼
  PR（base: deps）
+      │
+      │ ⓪ 人が deps を develop の先端に合わせる ← マージの前に必ず行う
       │ ② 人がマージ
       ▼
-   deps ─── ③ .github/workflows/build-windows.yml が windows-latest でビルド
+   deps ─── ③ .github/workflows/build-windows.yml が windows-latest で検証
       │ ④ 結果が OK なら、人が PR を作って develop へマージ
       ▼
   develop
 ```
 
-①③がワークフロー、②④が人の作業。`AGENTS.md` の線引き（マージは人が行う）に従う。
+①③がワークフロー、⓪②④が人の作業。`AGENTS.md` の線引き（マージは人が行う）に従う。
+
+### ⓪ を飛ばしてはいけない
+
+**`deps` が古いまま②を行うと、③が「`develop` に入る予定の状態」を検証しなくなる。**
+`deps` と `develop` の差（他の作業で進んだ分）が混ざるためで、④の PR もその差を巻き込む。
+
+```powershell
+git fetch origin
+git push origin origin/develop:deps    # 早送り。できないときは弾かれるので事故にならない
+```
+
+**早送りできるのは、`deps` に独自コミットが無い間だけ。**
+②の後の `deps` は独自コミットを持つため、この形は使えない。
+④で `develop` へ戻すと再び祖先になり、また早送りできる。**この周期を保つ。**
+
+> ④の直後に⓪を済ませておくと、次の PR が来たときには既に揃っている。
+> ただし、その後に `develop` が別の作業で進むこともあるため、
+> **判断の基準は「④の後」ではなく「②の前」。**
+
+> ⓪の push 自体が③を起こす（約 12 分）。`develop` の現状を検証する意味はある。
+> 公開リポジトリなので、GitHub ホステッド runner の費用はかからない。
 
 ### ワークフローの前提
 
 - **`deps` ブランチをあらかじめ作っておく。** `gh pr edit --base` は既存のブランチしか指せない
 - **`dependabot-retarget.yml` は `develop`（既定ブランチ）に無いと動かない。**
   `pull_request_target` はベース ブランチ側の定義で動くため
-- **④の後、`deps` を `develop` に合わせて進める。**
-  古いままだと次の PR の差分に無関係な変更が混ざる
 
 ### なぜ `dependabot.yml` の `target-branch` ではないのか
 
@@ -318,21 +339,216 @@ Dependabot が起こしたイベントでは `GITHUB_TOKEN` が既定で read-on
 > `dependabot-retarget.yml` は checkout せず、`gh` コマンドだけを実行し、
 > 権限も `pull-requests: write` の 1 つに絞っている。
 
-### CI に載せているのはビルドだけ
+### CI に載せている範囲
 
-| スクリプト | CI | 理由 |
+| スクリプト | CI | 備考 |
 |---|---|---|
 | `1_BuildAll.ps1` | **○** | DB を必要としない |
-| `2_RunAllTests.ps1` | — | 6 件中 2 件（SimpleBatch）が Northwind を使う |
-| `3_SmokeTest.ps1` | — | 18 件のほぼ全てが Northwind を使う |
+| `2_RunAllTests.ps1` | **○** | SQL Server を runner に導入して対応 |
+| `3_SmokeTest.ps1` | — | IIS Express・`aspnet_state`・他 DBMS まで要る |
 
-**GitHub の Windows イメージに SQL Server が無い**（LocalDB と `sqlcmd` のみ）。
-サンプルの接続文字列は `Data Source=localhost; User ID=sa` で、LocalDB
-（`(localdb)\MSSQLLocalDB`・Windows 認証）では代用できない。
-Docker は入っているが **Windows コンテナのみ**で、Linux の SQL Server イメージは動かない。
-**Northwind の作成スクリプトもリポジトリに無い**（`CREATE ORDERS2.sql` だけ）。
+**対象外は明示しておく。**
 
-これらを解消すれば 2・3 も載せられる。
+- **GUI アプリケーション**（WinForms / WPF / 各ツールの画面）… `RELEASE.md` 4 節の手作業
+- **SQL Server 以外の DBMS への接続** … 自動テストは `/Dap SQL` しか使わない
+  （`TestSQLUtility` は 4 DBMS 分の SQL 生成を検証するが、**接続はしない**ので対象内）
+
+### SQL Server をどう用意するか
+
+**`LocalServicesOnDocker` の `docker-compose.yml` はそのままでは使えない。**
+
+```yaml
+sqlserver:
+  image: mcr.microsoft.com/mssql/server:2022-latest   # ← Linux イメージ
+```
+
+`windows-latest` は Linux コンテナを動かせない。Docker は入っているが Windows コンテナ専用で、
+Linux コンテナには Hyper-V による VM が要り、runner 自体が既に入れ子の VM のため
+多段のネストができない。
+
+**そこで、runner へ直接 SQL Server を入れ、同リポジトリの `instnwnd.sql` だけを使う。**
+
+| 要素 | 入手先 |
+|---|---|
+| SQL Server 2022 | `ankane/setup-sqlserver`（**コミットで固定**。`v1` はタグではなくブランチ） |
+| `instnwnd.sql`（Microsoft 公式の Northwind DDL、約 1 MB） | `LocalServicesOnDocker`（**コミットで固定**） |
+| `CREATE ORDERS2.sql` | 本リポジトリに同梱 |
+
+初期化で押さえている点は 3 つ。
+
+1. **`sa` のパスワードを構成ファイルに合わせる。**
+   構成側を CI 用に書き換えると「実際に使われる設定」と乖離するため、DB 側を
+   `seigi@123`（`app.config` / `appsettings.json` の値）に変更する
+2. **照合順序を `Japanese_CI_AS` にする。**
+   `docker-compose.yml` の `MSSQL_COLLATION` と同じ。`CREATE DATABASE ... COLLATE` で
+   DB 既定として与える。Northwind の列は `COLLATE` 句を持たないため、各列がこれを継承する
+3. **ロードの完了を `Shippers` が 3 行あることで確認し、不完全なら作り直す。**
+   起動直後は一部のバッチが失敗して表だけできることがある。
+   判定方法は `LocalServicesOnDocker` の `start-up.sh` に合わせている
+
+> **`instnwnd.sql` は DB を作らない。** 対象 DB の中で実行するスクリプトなので、
+> 先に `CREATE DATABASE Northwind` が要る。
+
+### テストが前提とする環境（DB 以外に 2 つある）
+
+初回の実行で 6 件すべてが NG になり、次の 2 つが不足していると分かった。
+
+#### ① `C:\root` が要る
+
+**構成ファイルが絶対パスを直書きしている。**
+
+| ファイル | キー | 値 |
+|---|---|---|
+| `TestCode/App.config` | `FxXMLMSGDefinition` | `C:\root\files\resource\Xml\MSGDefinition.xml` |
+| `TestCode/App.config` | `FxXMLSPDefinition` | `C:\root\files\resource\Xml\SPDefinition.xml` |
+| `TestBatch/SimpleBatch/app.config` | `SqlTextFilePath` | `C:\root\files\resource\Sql` |
+
+無いと、`GetMessage` は**例外を出さずに空を返し**、SimpleBatch は次で落ちる。
+
+```
+resource file [C:\...\ShipperCount.sql] was not found.
+   at Touryo.Infrastructure.Public.IO.ResourceLoader.LoadAsString(...)
+```
+
+実体はリポジトリ内（`root/files`、984 ファイル / 4.5 MB）にあるので、
+**コピーせずジャンクションで繋ぐ**（実体を 1 つに保つ）。
+
+```powershell
+New-Item -ItemType Junction -Path 'C:\root' -Target "$env:GITHUB_WORKSPACE\root"
+```
+
+#### ② 日本語環境が要る（「書式」と「言語」は別物）
+
+**期待値は日本語環境で生成されている。** runner の既定は `en-US` で、**2 つの軸がずれる。**
+
+| 軸 | 何が変わるか | 直し方 |
+|---|---|---|
+| `CurrentCulture` | 日付・数値の**書式** | `Set-Culture ja-JP` |
+| `CurrentUICulture` | メッセージの**言語** | 言語パックの導入 |
+
+**`Set-Culture` は前者しか変えない。** 順に潰す必要がある。
+
+##### 書式（`CurrentCulture`）
+
+```
+期待 : 昭和52年4月24日（日）, ggy年M月d日（ddd）: <DATE> 0:00:00
+実測 : 昭和52年4月24日（日）, ggy年M月d日（ddd）: 4/24/1977 12:00:00 AM
+```
+
+`CompareResult.ps1` の `<DATE>` は `\d{4}/\d{1,2}/\d{1,2}`、つまり
+**`1977/4/24` の形にしか一致しない。** `4/24/1977` は素通りする。
+
+##### 言語（`CurrentUICulture`）
+
+**2 種類あるが、根は同じ。**
+
+**1. `GetMessage` はカルチャでファイルを選び分ける。**
+
+```
+実測 : GetMessage: - Description corresponding to the message-ID:I0001(normal system) -
+期待 : GetMessage: ～メッセージID:I0001に対応する記述（正常系）～
+```
+
+`root/files/resource/Xml/` には 3 つある。
+
+```
+MSGDefinition.xml        ← 英語（既定・フォールバック）
+MSGDefinition_ja.xml     ← 日本語
+MSGDefinition_zh-CN.xml
+```
+
+`GetMessage.cs` が `CurrentUICulture` から `_ja` 付きの名前を組み立てる。
+`en-US` では該当が無く、既定の英語版に落ちる。**例外にならないので気付きにくい。**
+
+> 設定で固定することもできる。`GetMessage.cs` は `FxBusinessMessageCulture`（`appSettings`）が
+> あればそれを優先する。ただし構成ファイルを CI の都合で変えると、
+> **`CurrentUICulture` を見る経路自体がテストされなくなる。**
+
+**2. 暗号系の例外文字列は Windows が返す。**
+
+```
+実測 : ... System.Security.Cryptography.<B64URL>, Key does not exist.
+期待 : ... System.Security.Cryptography.<B64URL>, キーがありません。
+```
+
+##### 対処
+
+**書式は runner 側で直せる。言語は直せない。**
+
+```powershell
+Set-Culture ja-JP     # これは効く（現在のセッションには反映されないので子プロセスで確認する）
+```
+
+**`CurrentUICulture` を日本語にする手段は、実質存在しない。** 試して駄目だったものを挙げる。
+
+| 試したこと | 結果 |
+|---|---|
+| `Install-Language -Language ja-JP` | **ハング。** Windows Update 経由で取得しようとして応答が返らず、ステップが 16 分以上停止（run 30976630947） |
+| `Set-WinUILanguageOverride` | 言語パックの導入が前提のため使えない |
+| `HKCU\Control Panel\Desktop\PreferredUILanguages` を直接書く | **無視された。** Windows は未インストールの言語を候補から外す |
+
+ワークフローの出力で確定している。
+
+```
+新しいプロセスの Culture / UICulture : ja-JP / en-US
+```
+
+そこで、言語に依存する 2 か所を**別々に処理する。**
+
+**1. `GetMessage` は設定で固定する。**
+
+`TestCode` の `App.config` と `appsettings.json` に次を足した。
+
+```xml
+<add key="FxBusinessMessageCulture" value="ja-JP" />
+```
+
+`GetMessage.cs` は、この指定があれば `CurrentUICulture` より優先する。
+`ja-JP` → `ja` のフォールバック（`GetMessage.cs` の `currentUICulture.Parent`）で
+`MSGDefinition_ja.xml` に解決されるため、**ローカルで起きている経路と同じ**になる。
+
+> **これは CI のための小細工ではなく、テストの決定性の問題。**
+> 固定しないと「どのマシンで動かすか」で結果が変わる。
+
+**2. OS のメッセージは正規化する。**
+
+`CompareResult.ps1` に規則を足し、**文言だけ**を `<OSMSG>` に潰す。
+
+```powershell
+@{ Name = 'OSメッセージ'
+   Pattern = 'キーがありません。|Key does not exist\.|プロバイダーの公開キーは無効です。|Provider''s public key is invalid\.'
+   Replace = '<OSMSG>' }
+```
+
+**行ごと落とさないのが要点。** 例外が起きたこと自体は「行の存在」で分かるため、
+行を残しておけば、**例外が起きなくなったときに差分として検知できる。**
+
+##### 潰した順序
+
+段階的に切り分けた。**一度に直そうとすると、どれが効いたのか分からなくなる。**
+
+| 実行 | 差分 | 何が分かったか |
+|---|---|---|
+| 1 回目 | 18 / 18 / 19 / 20 / 2 / 4 | `C:\root` の欠落と、ロケールの両方が出ていた |
+| 2 回目（`C:\root` ＋ `Set-Culture`） | 4 / 4 / **0** / **0** / 2 / 4 | SimpleBatch は解決。日付も解決。言語だけが残った |
+| 3 回目（`PreferredUILanguages`） | 4 / 4 / 0 / 0 / 2 / 4 | **変化なし** → UI 言語は runner 側では直せないと確定 |
+| 4 回目（設定 ＋ 正規化） | **すべて 0** | 完了 |
+
+### `2_RunAllTests.ps1` を CI で回すときの注意
+
+**これは回帰テストで、期待値は `HEAD` にコミットされた `Result*.txt`。**
+その期待値は開発環境で生成されたものなので、**照合順序・ロケール・タイム ゾーンが
+1 つでもずれると差分が出る。**
+
+サーバー レベルの照合順序までは合わせていない（変更にはインスタンスの再構築が要る）。
+DB レベルだけを合わせているため、`tempdb` を経由する比較などでは差が出る余地が残る。
+
+差分が出たときのために、ワークフローは**期待値と実測値の両方を artifact に採取する**。
+
+| artifact | 中身 |
+|---|---|
+| `build-logs` | `1_BuildAll.ps1` のステップ別ログ |
+| `test-results` | 期待値（`HEAD` 版）・ビルド ログ・再生成された `Result*.txt` |
 
 ### イメージ側の充足状況
 
@@ -393,14 +609,21 @@ VS 18 のある環境では従来どおり `18.0` になるため、**挙動は�
 > 固定値 `18.0` と一致していたため（`VisualStudioVersion 18.0` がログに出ている）。
 > ただし一致は偶然で、イメージの更新で崩れる。導出に変えたこと自体は妥当と判断した。
 
-### 初回実行の実測（run 30968286515）
+### 実測（run 30979772579 : 全ステップ成功）
 
-| 項目 | 結果 |
+| ステップ | 所要 |
 |---|---|
-| 所要時間 | **4 分 43 秒**（ローカルは 5.3 分） |
-| ログが出たステップ | 31（全ステップ） |
-| エラーが出たステップ | `WSClnt_sample (net48)` のみ |
-| 終了コード | 1 → 除外条件の修正で 0 になる見込み |
+| Build all（31 ステップ） | 5 分 36 秒 |
+| **Install SQL Server** | **4 分 49 秒** |
+| Set up Northwind | 16 秒 |
+| Set up C:\root and locale | 4 秒 |
+| Run all tests（6 件） | 43 秒 |
+| **合計** | **約 12 分** |
+
+**SQL Server の導入がビルドに次いで重い。** 短縮したい場合はここが対象になる。
+
+ローカルの実測（`1_BuildAll.ps1` 5.8 分 ＋ `2_RunAllTests.ps1` 1.3 分）と比べると、
+ビルドはほぼ同等で、差は DB の導入分。
 
 `CLI_sample (net48)` と `Framework_WSCore` はログが 27 行しかないが、**失敗ではない。**
 どちらもバッチ側で意図的に無効化されており、メッセージだけを出して終わる。

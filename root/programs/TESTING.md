@@ -117,6 +117,11 @@ SimpleBatch.exe /Dap SQL ... > ..\..\..\ResultSimpleBatch48.txt
 - **SQL Server の Northwind に接続できる**こと（SimpleBatch が使用）
 - **Northwind のテスト データが標準状態**であること（後述の「4. テスト データ」）
 
+> **GitHub Actions でも実行している。** 前提の揃え方（SQL Server の導入、Northwind の
+> ロード、照合順序）は [`BUILDING.md`](BUILDING.md) 9 節が一次情報。
+> **期待値は開発環境で生成されたもの**なので、CI 側の環境がずれると差分が出る。
+> そのため CI は期待値と実測値の両方を artifact に残す。
+
 ### テスト証明書について
 
 `EncAndDecUtilCUI` の csproj は `*.cer` / `*.pfx` を `CopyToOutputDirectory` しているため、
