@@ -140,7 +140,28 @@ error MSB3482: 署名中にエラーが発生しました: bin\Debug\app.publish
 
 **CI では証明書を用意できない。** 拇印での検索であるうえ、同梱の `.pfx` は
 パスワードで保護されており、実行のたびに作り直される環境には入れられない。
-このため CI では `-IgnoreErrors "MSB3482"` で判定から外している（9 節）。
+
+**しかも、出るエラーのコードがローカルと CI で違う。**
+
+| 環境 | コード | 失敗する箇所 |
+|---|---|---|
+| ローカル | `MSB3482` | マニフェストの署名。`.pfx` が既にキー コンテナへ取り込まれているため、最後まで進む |
+| CI | `MSB3325` ＋ `MSB3321` | `ResolveKeySource` によるキー ファイルの取り込み。署名に到達しない |
+
+```
+error MSB3325: Cannot import the following key file: WSClientWinCone_sample_TemporaryKey.pfx.
+               The key file may be password protected. ...
+error MSB3321: Importing key file "WSClientWinCone_sample_TemporaryKey.pfx" was canceled.
+```
+
+このため CI では 3 つのコードをまとめて、**当該プロジェクトに限定して**除外している（9 節）。
+
+```powershell
+-IgnoreErrors 'error MSB(3482|3325|3321):.*WSClientWinCone_sample\.csproj'
+```
+
+プロジェクト名まで含めているのは、同じコードが他のプロジェクトで出たときに
+見逃さないため。コードだけで除外すると範囲が広すぎる。
 
 ---
 
@@ -315,22 +336,32 @@ Docker は入っているが **Windows コンテナのみ**で、Linux の SQL S
 
 ### イメージ側の充足状況
 
-`windows-latest`（windows-2025）で確認した対応関係。
-
 | 必要なもの | イメージ |
 |---|---|
-| MSBuild | Visual Studio 2022 **Enterprise** 17.14 |
-| .NET Framework 4.8 の参照アセンブリ | あり（4.8 / 4.8.1） |
-| .NET 10 SDK | あり（10.0.302 ほか） |
-| IIS Express | あり |
+| MSBuild | **Visual Studio 18 Enterprise**（実行ログで確認） |
+| .NET Framework 4.8 の参照アセンブリ | あり |
+| .NET 10 SDK | あり |
 | `nuget.exe` | リポジトリに同梱（`root/programs/nuget.exe`） |
 | SQL Server | **無し**（LocalDB と `sqlcmd` のみ） |
 
-`z_Common.bat` は `vswhere` で MSBuild を解決するため、エディションが Enterprise でも通る。
+`z_Common.bat` は `vswhere` で MSBuild を解決するため、**エディションが Enterprise でも通る。**
+固定パスの並びは Community しか見ていないので、そちらだけでは解決できない。
+
+```
+BUILDFILEPATH15
+BUILDFILEPATH16
+BUILDFILEPATH17
+BUILDFILEPATH18
+BUILDFILEPATH "C:\Program Files\Microsoft Visual Studio\18\Enterprise\MSBuild\Current\Bin\MSBuild.exe"
+```
+
+> **イメージの README を鵜呑みにしないこと。** 本書は当初、README の記載に従って
+> 「VS 2022 Enterprise 17.14」と書いていたが、実際に流すと **VS 18 Enterprise** だった。
+> バージョンに依存する判断は、実行ログで裏を取ってから行う。
 
 ### `VisualStudioVersion` を固定値から変更した
 
-CI で Web アプリをビルドするために `z_Common.bat` を直した。
+`z_Common.bat` が固定値を持っていたのを、`vswhere` から求めるようにした。
 
 ```bat
 @rem 変更前
@@ -344,8 +375,8 @@ Web アプリの csproj は、この値で targets のパスを組み立てる�
 <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" />
 ```
 
-固定値 `18.0` は VS 18 のある環境でしか成立しない。CI の VS 2022（17.x）に渡すと
-`v18.0\WebApplications\` を探し、**5 節と同じ `MSB4226`** になる。
+固定値 `18.0` は **VS 18 のある環境でしか成立しない。** 例えば VS 2022（17.x）だけの環境に
+渡すと `v18.0\WebApplications\` を探し、**5 節と同じ `MSB4226`** になる。
 このため、MSBuild を解決したのと同じ `vswhere` からバージョンを求めるようにした。
 
 ```bat
@@ -356,4 +387,35 @@ if not defined VSVER_MAJOR set VSVER_MAJOR=18
 set VisualStudioVersion=%VSVER_MAJOR%.0
 ```
 
-VS 18 のある環境では従来どおり `18.0` になるため、**ローカルの挙動は変わらない。**
+VS 18 のある環境では従来どおり `18.0` になるため、**挙動は変わらない。**
+
+> **結果としては、この変更が無くても CI は通っていた。** runner にも VS 18 が入っており、
+> 固定値 `18.0` と一致していたため（`VisualStudioVersion 18.0` がログに出ている）。
+> ただし一致は偶然で、イメージの更新で崩れる。導出に変えたこと自体は妥当と判断した。
+
+### 初回実行の実測（run 30968286515）
+
+| 項目 | 結果 |
+|---|---|
+| 所要時間 | **4 分 43 秒**（ローカルは 5.3 分） |
+| ログが出たステップ | 31（全ステップ） |
+| エラーが出たステップ | `WSClnt_sample (net48)` のみ |
+| 終了コード | 1 → 除外条件の修正で 0 になる見込み |
+
+`CLI_sample (net48)` と `Framework_WSCore` はログが 27 行しかないが、**失敗ではない。**
+どちらもバッチ側で意図的に無効化されており、メッセージだけを出して終わる。
+
+```
+.NET Fx系のSystem.CommandLine と Sharprompt 問題で一時的？ドロップ
+Core系のBinarySerializeの完全廃止対応
+```
+
+### アクションのバージョン
+
+`actions/checkout` と `actions/upload-artifact` は **`@v7`** を使う。
+`@v4` は Node.js 20 を対象としており、次の警告が出る。
+
+```
+Node.js 20 is deprecated. The following actions target Node.js 20 but are being
+forced to run on Node.js 24: actions/checkout@v4, actions/upload-artifact@v4
+```

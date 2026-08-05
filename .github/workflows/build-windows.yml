@@ -11,10 +11,18 @@
 #   「Data Source=localhost / User ID=sa」で、LocalDB では代用できない。
 #   Northwind の作成スクリプトもリポジトリに無い。詳細は BUILDING.md。
 #
-# ＜MSB3482 を除外している理由＞
-#   WSClientWinCone_sample.csproj は ClickOnce の署名証明書を拇印で直接指定する。
-#   その証明書はストアにしか無く、同梱の .pfx はパスワード保護のため CI では再現できない。
-#   -IgnoreErrors で判定から外すが、除外した内容はログに一覧されるので握り潰しにはならない。
+# ＜署名エラーを除外している理由＞
+#   WSClientWinCone_sample.csproj は ClickOnce の署名が有効で、証明書を拇印で指定し、
+#   同梱の .pfx はパスワード保護されている。実行のたびに作り直される CI では用意できない。
+#
+#   ローカルと CI で出るコードが違うことに注意する。
+#     ローカル : MSB3482（マニフェストの署名で失敗）
+#              … .pfx が既にキー コンテナへ取り込まれており、最後の署名まで進むため
+#     CI       : MSB3325 / MSB3321（キー ファイルの取り込みで失敗）
+#              … ResolveKeySource が .pfx を取り込めず、署名に到達しないため
+#
+#   このため 3 つのコードを対象にし、さらに当該プロジェクトに限定する。
+#   除外した内容はログに一覧されるので、握り潰しにはならない。
 
 name: Build on Windows
 
@@ -34,7 +42,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # 1_BuildAll.ps1 は git を使わないため、既定の浅い clone のままでよい。
       - name: Build all
@@ -42,12 +50,12 @@ jobs:
         working-directory: root/programs
         env:
           LOG_DIR: ${{ runner.temp }}\BuildLogs
-        run: .\1_BuildAll.ps1 -OutputDir "$env:LOG_DIR" -IgnoreErrors "MSB3482"
+        run: .\1_BuildAll.ps1 -OutputDir "$env:LOG_DIR" -IgnoreErrors 'error MSB(3482|3325|3321):.*WSClientWinCone_sample\.csproj'
 
       # 失敗時こそ中身を見たいので、常に採取する。
       - name: Upload build logs
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: build-logs
           path: ${{ runner.temp }}\BuildLogs
