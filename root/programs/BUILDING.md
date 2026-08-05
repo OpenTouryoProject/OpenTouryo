@@ -318,21 +318,71 @@ Dependabot が起こしたイベントでは `GITHUB_TOKEN` が既定で read-on
 > `dependabot-retarget.yml` は checkout せず、`gh` コマンドだけを実行し、
 > 権限も `pull-requests: write` の 1 つに絞っている。
 
-### CI に載せているのはビルドだけ
+### CI に載せている範囲
 
-| スクリプト | CI | 理由 |
+| スクリプト | CI | 備考 |
 |---|---|---|
 | `1_BuildAll.ps1` | **○** | DB を必要としない |
-| `2_RunAllTests.ps1` | — | 6 件中 2 件（SimpleBatch）が Northwind を使う |
-| `3_SmokeTest.ps1` | — | 18 件のほぼ全てが Northwind を使う |
+| `2_RunAllTests.ps1` | **○** | SQL Server を runner に導入して対応 |
+| `3_SmokeTest.ps1` | — | IIS Express・`aspnet_state`・他 DBMS まで要る |
 
-**GitHub の Windows イメージに SQL Server が無い**（LocalDB と `sqlcmd` のみ）。
-サンプルの接続文字列は `Data Source=localhost; User ID=sa` で、LocalDB
-（`(localdb)\MSSQLLocalDB`・Windows 認証）では代用できない。
-Docker は入っているが **Windows コンテナのみ**で、Linux の SQL Server イメージは動かない。
-**Northwind の作成スクリプトもリポジトリに無い**（`CREATE ORDERS2.sql` だけ）。
+**対象外は明示しておく。**
 
-これらを解消すれば 2・3 も載せられる。
+- **GUI アプリケーション**（WinForms / WPF / 各ツールの画面）… `RELEASE.md` 4 節の手作業
+- **SQL Server 以外の DBMS への接続** … 自動テストは `/Dap SQL` しか使わない
+  （`TestSQLUtility` は 4 DBMS 分の SQL 生成を検証するが、**接続はしない**ので対象内）
+
+### SQL Server をどう用意するか
+
+**`LocalServicesOnDocker` の `docker-compose.yml` はそのままでは使えない。**
+
+```yaml
+sqlserver:
+  image: mcr.microsoft.com/mssql/server:2022-latest   # ← Linux イメージ
+```
+
+`windows-latest` は Linux コンテナを動かせない。Docker は入っているが Windows コンテナ専用で、
+Linux コンテナには Hyper-V による VM が要り、runner 自体が既に入れ子の VM のため
+多段のネストができない。
+
+**そこで、runner へ直接 SQL Server を入れ、同リポジトリの `instnwnd.sql` だけを使う。**
+
+| 要素 | 入手先 |
+|---|---|
+| SQL Server 2022 | `ankane/setup-sqlserver`（**コミットで固定**。`v1` はタグではなくブランチ） |
+| `instnwnd.sql`（Microsoft 公式の Northwind DDL、約 1 MB） | `LocalServicesOnDocker`（**コミットで固定**） |
+| `CREATE ORDERS2.sql` | 本リポジトリに同梱 |
+
+初期化で押さえている点は 3 つ。
+
+1. **`sa` のパスワードを構成ファイルに合わせる。**
+   構成側を CI 用に書き換えると「実際に使われる設定」と乖離するため、DB 側を
+   `seigi@123`（`app.config` / `appsettings.json` の値）に変更する
+2. **照合順序を `Japanese_CI_AS` にする。**
+   `docker-compose.yml` の `MSSQL_COLLATION` と同じ。`CREATE DATABASE ... COLLATE` で
+   DB 既定として与える。Northwind の列は `COLLATE` 句を持たないため、各列がこれを継承する
+3. **ロードの完了を `Shippers` が 3 行あることで確認し、不完全なら作り直す。**
+   起動直後は一部のバッチが失敗して表だけできることがある。
+   判定方法は `LocalServicesOnDocker` の `start-up.sh` に合わせている
+
+> **`instnwnd.sql` は DB を作らない。** 対象 DB の中で実行するスクリプトなので、
+> 先に `CREATE DATABASE Northwind` が要る。
+
+### `2_RunAllTests.ps1` を CI で回すときの注意
+
+**これは回帰テストで、期待値は `HEAD` にコミットされた `Result*.txt`。**
+その期待値は開発環境で生成されたものなので、**照合順序・ロケール・タイム ゾーンが
+1 つでもずれると差分が出る。**
+
+サーバー レベルの照合順序までは合わせていない（変更にはインスタンスの再構築が要る）。
+DB レベルだけを合わせているため、`tempdb` を経由する比較などでは差が出る余地が残る。
+
+差分が出たときのために、ワークフローは**期待値と実測値の両方を artifact に採取する**。
+
+| artifact | 中身 |
+|---|---|
+| `build-logs` | `1_BuildAll.ps1` のステップ別ログ |
+| `test-results` | 期待値（`HEAD` 版）・ビルド ログ・再生成された `Result*.txt` |
 
 ### イメージ側の充足状況
 
