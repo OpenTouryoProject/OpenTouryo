@@ -453,10 +453,17 @@ MSGDefinition_zh-CN.xml
 ##### 対処
 
 ```powershell
-Set-Culture ja-JP                          # 書式
-Install-Language -Language ja-JP           # 言語
-Set-WinUILanguageOverride -Language ja-JP
+# 書式
+Set-Culture ja-JP
+
+# 言語（UI 言語の優先順位を直接書く）
+Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop' `
+                 -Name 'PreferredUILanguages' -Value @('ja-JP') -Type MultiString
 ```
+
+> **`Install-Language` は使わないこと。** Windows Update 経由で言語パックを取得しようとして
+> runner 上では応答が返らず、ステップが **16 分以上ハングした**（run 30976630947）。
+> `Set-WinUILanguageOverride` も言語パックの導入を前提とするため使えない。
 
 > いずれもレジストリを書き換えるだけで、現在のセッションには反映されない。
 > **確認は子プロセスで行う**（ワークフローは `Get-Culture` / `Get-UICulture` を出力する）。

@@ -196,23 +196,20 @@ jobs:
           #     判定は Thread.CurrentThread.CurrentUICulture（GetMessage.cs)。
           #   ・暗号系の例外文字列は Windows が返すため、表示言語に従う。
           #       期待 : キーがありません。   実測 : Key does not exist.
-          #   どちらも Set-Culture では変わらない。言語パックの導入が要る。
+          #   どちらも Set-Culture では変わらない。
           Set-Culture ja-JP
 
-          try
-          {
-              Install-Language -Language ja-JP -ErrorAction Stop | Out-Null
-              Set-WinUILanguageOverride -Language ja-JP
-              Write-Host "日本語の言語パックを導入しました。"
-          }
-          catch
-          {
-              # 失敗しても止めない。テスト側の差分で影響範囲が分かる方が有益なため。
-              Write-Host ("言語パックを導入できませんでした : {0}" -f $_.Exception.Message)
-          }
+          # Install-Language は使わない。Windows Update 経由で言語パックを取得しようとして
+          # runner 上では応答が返らず、ステップが 16 分以上ハングした（run 30976630947）。
+          # Set-WinUILanguageOverride も言語パックの導入を前提とするため使えない。
+          #
+          # 代わりに、UI 言語の優先順位を直接書き込む。ダウンロードを伴わない。
+          # .NET はプロセス起動時にこれを読んで CurrentUICulture を決める。
+          Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop' `
+                           -Name 'PreferredUILanguages' -Value @('ja-JP') -Type MultiString
 
-          # Set-Culture / Set-WinUILanguageOverride はレジストリを書き換えるため、
-          # 現在のセッションには反映されない。子プロセスで確認する。
+          # 上記はいずれもレジストリを書き換えるだけで、現在のセッションには反映されない。
+          # 効いたかどうかを子プロセスで確認する。
           $c = & powershell -NoProfile -Command "(Get-Culture).Name + ' / ' + (Get-UICulture).Name"
           Write-Host ("新しいプロセスの Culture / UICulture : {0}" -f $c)
 
