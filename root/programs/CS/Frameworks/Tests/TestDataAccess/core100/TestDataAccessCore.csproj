@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <Compile Include="..\Program.cs" Link="Program.cs" />
+    <Compile Include="..\TestDataAccessPattern.cs" Link="TestDataAccessPattern.cs" />
     <Compile Include="..\TestSQLUtility.cs" Link="TestSQLUtility.cs" />
   </ItemGroup>
 
@@ -31,9 +32,14 @@
 
   <ItemGroup>
     <PackageReference Include="log4net" Version="3.3.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.6" />
+    <PackageReference Include="MySql.Data" Version="9.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Npgsql" Version="9.0.3" />
+    <PackageReference Include="System.Security.Permissions" Version="9.0.6" />
   </ItemGroup>
 
   <ItemGroup>
@@ -42,6 +48,15 @@
     </Reference>
     <Reference Include="OpenTouryo.Public">
       <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.DamManagedOdp">
+      <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.DamManagedOdp.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.DamMySQL">
+      <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.DamMySQL.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.DamPstGrS">
+      <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.DamPstGrS.dll</HintPath>
     </Reference>
   </ItemGroup>
 

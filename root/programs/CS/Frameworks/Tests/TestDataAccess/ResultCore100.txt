@@ -106,3 +106,10 @@ SQLUtility.GetInsertSQLParts
 (1, 10, 100, Cast('a' as char(1)))
 (2, 20, 200, Cast('b' as char(1)))
 ----------------------------------------------------------------------------------------------------
+[SQL]
+- ExecSelectScalar        : 3
+- ExecSelectFill_DT       : 3
+- ExecSelectFill_DS       : 3
+- ExecSelect_DR           : 3
+- SetSqlByFile ＋ Scalar  : 3
+----------------------------------------------------------------------------------------------------

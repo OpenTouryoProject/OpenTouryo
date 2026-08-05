@@ -88,6 +88,10 @@ namespace TestDataAccess
                 TestSQLUtility.Root();
                 #endregion
 
+                #region DBに接続するテスト
+                TestDataAccessPattern.Root(daps);
+                #endregion
+
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
 
                 // echoすると例外

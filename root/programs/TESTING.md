@@ -98,6 +98,37 @@ TestDataAccessFx.exe /MODE LOCAL       … ローカルで起動している DBM
 `TestCode` と分けているのは、**DB に接続するかどうかで前提が大きく違う**ため。
 混ぜると、DB が無い環境では `TestCode` ごと動かなくなる。
 
+#### 何をテストしているか
+
+| クラス | 接続 | 内容 |
+|---|---|---|
+| `TestSQLUtility` | **しない** | `SQLUtility` が生成する SQL を 4 DBMS 分（#515） |
+| `TestDataAccessPattern` | **する** | `Dam` の実行系メソッドを、対象 DBMS ごとに一通り |
+
+`TestDataAccessPattern` が呼ぶのは次の 5 つ。いずれも `Shippers`（3 件）に対する読み取りで、
+**件数だけを出力する**ため、DBMS が違っても結果は同じになる。
+
+```
+- ExecSelectScalar        : 3
+- ExecSelectFill_DT       : 3
+- ExecSelectFill_DS       : 3
+- ExecSelect_DR           : 3
+- SetSqlByFile ＋ Scalar  : 3     ← 静的SQL（DBMS ごとのフォルダから読む）
+```
+
+**`Dam` を直接使っている。** Ｂ層・Ｄ層を経由すると引数クラス・戻り値クラス・
+`LayerB` / `LayerD` の一式が要るが、ここで見たいのは実行系の挙動だから。
+Ｂ層・Ｄ層を通した確認は `TestBatch`（SimpleBatch）が担う。
+
+> **接続できない場合も落とさない。** `LOCAL` でコンテナが起動していないときは、
+> 例外の**型名だけ**を出して次のデータ プロバイダへ進む。
+> メッセージを出さないのは、OS の表示言語で変わり差分になるため（`BUILDING.md` 9 節）。
+>
+> ```
+> [ODP]
+> - 例外 : Oracle.ManagedDataAccess.Client.OracleException
+> ```
+
 ### ビルドをバッチに委ねている理由
 
 `csproj` / `sln` を直接 MSBuild してはならない。
