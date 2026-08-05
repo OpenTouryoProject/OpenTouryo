@@ -41,13 +41,19 @@ namespace TestDataAccess
     /// データ アクセスのパターンを、複数の DBMS に対して確認する（#520）。
     ///
     /// ＜なぜ TestCode と分けるか＞
-    ///   TestCode は DB に接続しない。こちらは接続するため、前提が大きく異なる。
+    ///   **このプロジェクトは DB を前提にする。** TestCode は前提にしない。
     ///   混ぜると「DB が無い環境では TestCode ごと動かない」ことになる。
+    ///
+    ///   ※ ただし**個々のテストが全て接続するわけではない。**
+    ///   　 SQL を組み立てるだけのものは接続を必要としない（下の region を参照）。
     ///
     /// ＜実行モード＞
     ///   クロス DB は GitHub Actions では実行できない（Docker の各 DB が Linux
     ///   コンテナで、windows-latest は Linux コンテナを動かせないため）。
     ///   このため、対象を切り替えられるようにしてある。
+    ///
+    /// ＜詳細＞
+    ///   何をなぜそう確認するかは、同じフォルダの README.md が一次情報。
     /// </remarks>
     public class Program
     {
@@ -82,13 +88,18 @@ namespace TestDataAccess
                 MyDebug.OutputDebugAndConsole("実行モード     : " + mode);
                 MyDebug.OutputDebugAndConsole("対象データプロバイダ : " + string.Join(", ", daps));
 
-                #region DBに接続しないテスト
-                // 実行モードによらず常に行う。
+                // 分かれ目は「接続するか」ではなく「実行するか、組み立てだけか」。
+                // TestDataAccessDpq は中で両方を行うため、クラス単位でも分けられない。
+
+                #region SQLを組み立てるだけ（接続しない）
+                // 実行モードによらず、対象データプロバイダにもよらず、常に 4 DBMS 分を行う。
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
                 TestSQLUtility.Root();
                 #endregion
 
-                #region DBに接続するテスト
+                #region 実行して結果を見る（接続する）
+                // ※ TestDataAccessDpq は、末尾で ExecGenerateSQL による
+                // 　 「組み立てるだけ」の確認も行う（そこは接続を必要としない）。
                 TestDataAccessPattern.Root(daps);
 
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");

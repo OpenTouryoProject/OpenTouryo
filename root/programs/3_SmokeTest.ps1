@@ -710,9 +710,22 @@ foreach ($t in $selected)
     #   コンソール幅に依存しなくなる。
     $flat = ($text -replace '\s+', ' ')
 
-    # ReadKey 由来の一文を、例外の宣言ごと落とす。
-    # .NET Framework と .NET (Core) で文言が少し違うため、末尾は緩く受ける。
-    $flat = $flat -replace 'Unhandled exception\..{0,200}?Cannot read keys[^.]*\.( Try Console\.Read\.)?', ''
+    # ReadKey 由来の例外を、宣言からスタック トレースまで丸ごと落とす。
+    #
+    # ＜メッセージ本文で判定しない理由＞
+    #   文言も見出しも環境で変わる。実測した 3 通り。
+    #     .NET (Core) 英語 : Unhandled exception. System.InvalidOperationException: Cannot read keys ...
+    #     .NET Fx     英語 : Unhandled Exception: System.InvalidOperationException: Cannot read keys ...
+    #     .NET Fx     日本語: Exception.ToString() が失敗したため、例外文字列を表示できません。
+    #   見出しは「.」と「:」で違い、日本語環境では**型名すら出ない**。
+    #   このため本文ではなく、**言語に依存しないスタック トレース**で捕まえる。
+    #
+    # ＜クラス名も実行環境で違う＞
+    #     .NET Fx     : at System.Console.ReadKey(Boolean intercept)
+    #     .NET (Core) : at System.ConsolePal.ReadKey(Boolean intercept)
+    #   このため System.〇〇.ReadKey として受ける。
+    $flat = $flat -replace `
+        '(Unhandled Exception[.:]\s*)?System\.\w+(\.\w+)*Exception[^|]*?at System\.\w+\.ReadKey[^ ]*', ''
 
     $fatal = @()
     $m0 = [regex]::Match($flat, '(Unhandled exception|ハンドルされない例外|System\.\w+Exception).{0,160}')
