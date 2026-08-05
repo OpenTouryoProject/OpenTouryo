@@ -396,9 +396,18 @@ resource file [C:\...\ShipperCount.sql] was not found.
 New-Item -ItemType Junction -Path 'C:\root' -Target "$env:GITHUB_WORKSPACE\root"
 ```
 
-#### ② 日本語ロケールが要る
+#### ② 日本語環境が要る（「書式」と「言語」は別物）
 
-**期待値は日本語ロケールで生成されている。** runner の既定は `en-US` で、日付の書式が変わる。
+**期待値は日本語環境で生成されている。** runner の既定は `en-US` で、**2 つの軸がずれる。**
+
+| 軸 | 何が変わるか | 直し方 |
+|---|---|---|
+| `CurrentCulture` | 日付・数値の**書式** | `Set-Culture ja-JP` |
+| `CurrentUICulture` | メッセージの**言語** | 言語パックの導入 |
+
+**`Set-Culture` は前者しか変えない。** 順に潰す必要がある。
+
+##### 書式（`CurrentCulture`）
 
 ```
 期待 : 昭和52年4月24日（日）, ggy年M月d日（ddd）: <DATE> 0:00:00
@@ -408,23 +417,49 @@ New-Item -ItemType Junction -Path 'C:\root' -Target "$env:GITHUB_WORKSPACE\root"
 `CompareResult.ps1` の `<DATE>` は `\d{4}/\d{1,2}/\d{1,2}`、つまり
 **`1977/4/24` の形にしか一致しない。** `4/24/1977` は素通りする。
 
-```powershell
-Set-Culture ja-JP     # レジストリを書き換えるので、以降に起動するプロセスに効く
+##### 言語（`CurrentUICulture`）
+
+**2 種類あるが、根は同じ。**
+
+**1. `GetMessage` はカルチャでファイルを選び分ける。**
+
+```
+実測 : GetMessage: - Description corresponding to the message-ID:I0001(normal system) -
+期待 : GetMessage: ～メッセージID:I0001に対応する記述（正常系）～
 ```
 
-> `Set-Culture` は現在のセッションには反映されない。確認は子プロセスで行う。
+`root/files/resource/Xml/` には 3 つある。
 
-#### ③ OS のメッセージは、これでも英語のまま
+```
+MSGDefinition.xml        ← 英語（既定・フォールバック）
+MSGDefinition_ja.xml     ← 日本語
+MSGDefinition_zh-CN.xml
+```
 
-`EncAndDecUtilCUI` に残る差分は、**Windows が返すエラー文字列**である。
+`GetMessage.cs` が `CurrentUICulture` から `_ja` 付きの名前を組み立てる。
+`en-US` では該当が無く、既定の英語版に落ちる。**例外にならないので気付きにくい。**
+
+> 設定で固定することもできる。`GetMessage.cs` は `FxBusinessMessageCulture`（`appSettings`）が
+> あればそれを優先する。ただし構成ファイルを CI の都合で変えると、
+> **`CurrentUICulture` を見る経路自体がテストされなくなる。**
+
+**2. 暗号系の例外文字列は Windows が返す。**
 
 ```
 実測 : ... System.Security.Cryptography.<B64URL>, Key does not exist.
 期待 : ... System.Security.Cryptography.<B64URL>, キーがありません。
 ```
 
-これは `CurrentCulture` ではなく**表示言語**に従うため、`Set-Culture` では変わらない。
-日本語の言語パックを入れるか、比較側で扱うかの判断が要る。
+##### 対処
+
+```powershell
+Set-Culture ja-JP                          # 書式
+Install-Language -Language ja-JP           # 言語
+Set-WinUILanguageOverride -Language ja-JP
+```
+
+> いずれもレジストリを書き換えるだけで、現在のセッションには反映されない。
+> **確認は子プロセスで行う**（ワークフローは `Get-Culture` / `Get-UICulture` を出力する）。
 
 ### `2_RunAllTests.ps1` を CI で回すときの注意
 

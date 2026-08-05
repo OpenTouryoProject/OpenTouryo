@@ -182,14 +182,39 @@ jobs:
           }
           Write-Host "C:\root を配置しました。"
 
-          # 期待値は日本語ロケールで生成されている。runner の既定は en-US で、
-          # そのままだと日付の書式が変わり、正規化ルールに一致しない。
+          # 期待値は日本語環境で生成されている。runner の既定は en-US で、
+          # 「書式」と「言語」の両方がずれる。両方を合わせる必要がある。
+          #
+          # ＜CurrentCulture（書式）＞
           #   期待 : <DATE> 0:00:00        実測 : 4/24/1977 12:00:00 AM
-          # Set-Culture はレジストリを書き換えるため、以降に起動するプロセスに効く。
-          # （現在のセッションの Get-Culture は変わらないので、子プロセスで確認する）
+          #   CompareResult.ps1 の <DATE> は \d{4}/\d{1,2}/\d{1,2} で、
+          #   1977/4/24 の形にしか一致しない。
+          #
+          # ＜CurrentUICulture（言語）＞
+          #   ・GetMessage はカルチャでファイルを選び分ける
+          #     （MSGDefinition.xml → MSGDefinition_ja.xml）。
+          #     判定は Thread.CurrentThread.CurrentUICulture（GetMessage.cs)。
+          #   ・暗号系の例外文字列は Windows が返すため、表示言語に従う。
+          #       期待 : キーがありません。   実測 : Key does not exist.
+          #   どちらも Set-Culture では変わらない。言語パックの導入が要る。
           Set-Culture ja-JP
-          $c = & powershell -NoProfile -Command "(Get-Culture).Name"
-          Write-Host ("新しいプロセスの Culture : {0}" -f $c)
+
+          try
+          {
+              Install-Language -Language ja-JP -ErrorAction Stop | Out-Null
+              Set-WinUILanguageOverride -Language ja-JP
+              Write-Host "日本語の言語パックを導入しました。"
+          }
+          catch
+          {
+              # 失敗しても止めない。テスト側の差分で影響範囲が分かる方が有益なため。
+              Write-Host ("言語パックを導入できませんでした : {0}" -f $_.Exception.Message)
+          }
+
+          # Set-Culture / Set-WinUILanguageOverride はレジストリを書き換えるため、
+          # 現在のセッションには反映されない。子プロセスで確認する。
+          $c = & powershell -NoProfile -Command "(Get-Culture).Name + ' / ' + (Get-UICulture).Name"
+          Write-Host ("新しいプロセスの Culture / UICulture : {0}" -f $c)
 
       - name: Run all tests
         shell: pwsh
