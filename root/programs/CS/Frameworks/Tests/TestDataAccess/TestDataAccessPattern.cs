@@ -75,7 +75,7 @@ namespace TestDataAccess
         {
             MyDebug.OutputDebugAndConsole("[" + dap + "]");
 
-            BaseDam dam = TestDataAccessPattern.CreateDam(dap);
+            BaseDam dam = DataProvider.CreateDam(dap);
 
             if (dam == null)
             {
@@ -86,7 +86,7 @@ namespace TestDataAccess
 
             try
             {
-                dam.ConnectionOpen(GetConfigParameter.GetConnectionString("ConnectionString_" + dap));
+                dam.ConnectionOpen(DataProvider.GetConnectionString(dap));
 
                 try
                 {
@@ -156,7 +156,7 @@ namespace TestDataAccess
         {
             string path = Path.Combine(
                 GetConfigParameter.GetConfigValue("SqlTextFilePath"),
-                TestDataAccessPattern.GetSqlFolder(dap),
+                DataProvider.GetSqlFolder(dap),
                 "ShipperCount.sql");
 
             if (!File.Exists(path))
@@ -167,61 +167,6 @@ namespace TestDataAccess
 
             dam.SetSqlByFile(path);
             MyDebug.OutputDebugAndConsole("- SetSqlByFile ＋ Scalar  : " + Convert.ToInt32(dam.ExecSelectScalar()));
-        }
-
-        /// <summary>データ プロバイダに対応する Dam を生成する</summary>
-        /// <param name="dap">データ プロバイダの識別子</param>
-        /// <returns>BaseDam（未対応の場合は null）</returns>
-        /// <remarks>
-        /// 対応関係は MyBaseLogic のデータ プロバイダ選択に合わせている。
-        /// PostgreSQL（NPS）は DamPstGrS が .NET (Core) 専用のため、net48 では生成しない。
-        /// </remarks>
-        private static BaseDam CreateDam(string dap)
-        {
-            switch (dap)
-            {
-                case "SQL":
-                    return new DamSqlSvr();
-
-                case "ODP":
-                    return new DamManagedOdp();
-
-                case "MCN":
-                    return new DamMySQL();
-
-#if NET48
-#else
-                case "NPS":
-                    return new DamPstGrS();
-#endif
-
-                default:
-                    return null;
-            }
-        }
-
-        /// <summary>データ プロバイダに対応する SQL の格納フォルダ</summary>
-        /// <param name="dap">データ プロバイダの識別子</param>
-        /// <returns>root/files/resource/Sql からの相対フォルダ名</returns>
-        private static string GetSqlFolder(string dap)
-        {
-            switch (dap)
-            {
-                case "SQL":
-                    return "sqlserver";
-
-                case "ODP":
-                    return "oracle";
-
-                case "MCN":
-                    return "mysql";
-
-                case "NPS":
-                    return "pstgrs";
-
-                default:
-                    return "";
-            }
         }
 
         #endregion

@@ -65,11 +65,17 @@
     <Compile Include="..\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\DataProvider.cs">
+      <Link>DataProvider.cs</Link>
+    </Compile>
     <Compile Include="..\Program.cs">
       <Link>Program.cs</Link>
     </Compile>
     <Compile Include="..\TestDataAccessPattern.cs">
       <Link>TestDataAccessPattern.cs</Link>
+    </Compile>
+    <Compile Include="..\TestDataAccessUpdate.cs">
+      <Link>TestDataAccessUpdate.cs</Link>
     </Compile>
     <Compile Include="..\TestSQLUtility.cs">
       <Link>TestSQLUtility.cs</Link>

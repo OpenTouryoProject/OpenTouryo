@@ -104,6 +104,8 @@ TestDataAccessFx.exe /MODE LOCAL       … ローカルで起動している DBM
 |---|---|---|
 | `TestSQLUtility` | **しない** | `SQLUtility` が生成する SQL を 4 DBMS 分（#515） |
 | `TestDataAccessPattern` | **する** | `Dam` の実行系メソッドを、対象 DBMS ごとに一通り |
+| `TestDataAccessUpdate` | **する** | 更新系（INSERT / UPDATE / DELETE）とトランザクション |
+| `DataProvider` | — | データ プロバイダごとの差異（Dam・囲い文字・DBMSType）を吸収 |
 
 `TestDataAccessPattern` が呼ぶのは次の 5 つ。いずれも `Shippers`（3 件）に対する読み取りで、
 **件数だけを出力する**ため、DBMS が違っても結果は同じになる。
@@ -119,6 +121,52 @@ TestDataAccessFx.exe /MODE LOCAL       … ローカルで起動している DBM
 **`Dam` を直接使っている。** Ｂ層・Ｄ層を経由すると引数クラス・戻り値クラス・
 `LayerB` / `LayerD` の一式が要るが、ここで見たいのは実行系の挙動だから。
 Ｂ層・Ｄ層を通した確認は `TestBatch`（SimpleBatch）が担う。
+
+#### 更新系（`TestDataAccessUpdate`）
+
+**専用の表 `TestOrders` を自分で作り、最後に落とす。** Northwind の表を更新すると
+`SimpleBatch` や `3_SmokeTest.ps1` の前提が壊れるため、**既存のデータには一切触れない。**
+
+```
+- INSERT（GetInsertSQLParts）  : 3 件
+  投入後 : 1, 10, 999, x
+  投入後 : 2, 20, 888, y
+  投入後 : 3, 30, 777, z
+- UPDATE（GetUpdateSQLParts）  : 2 件
+  更新後 : 1, 10, 100, a
+  更新後 : 2, 20, 200, b
+  更新後 : 3, 30, 777, z     ← 更新対象外。無傷であること
+- ロールバック後の件数        : 3
+- コミット後の件数            : 2
+- DELETE                      : 2 件
+- 削除後の件数                : 0
+```
+
+**`SQLUtility` が生成した SQL を実際に実行し、結果まで検証する。**
+#515 は「構文としては妥当でも、**誤った行に誤った値が入る**」不具合だった。
+生成結果の目視では見つけにくいため、**更新対象外の行 (3,30) を 1 件混ぜ、
+無傷であることまで確認する。** ここが崩れたら複合主キーの扱いが壊れている。
+
+> PostgreSQL と MySQL は `CASE ... WHEN ... THEN` による一括 UPDATE という別実装。
+> #515 の該当パスであり、実 DB での確認はこの 2 つで特に意味がある。
+
+##### 表を作るときの注意
+
+**囲い文字を `SQLUtility` が生成するものと一致させること。**
+
+| DBMS | 囲い文字 | 囲わないと |
+|---|---|---|
+| SQL Server | `[ ]` | （既定の照合順序では問題にならない） |
+| Oracle | `" "` | **大文字**に畳まれる |
+| PostgreSQL | `" "` | **小文字**に畳まれる |
+| MySQL | `` ` `` | （列名は大小同一視） |
+
+Oracle と PostgreSQL は、囲わずに表を作ると生成された SQL の `"Qty"` が
+**「存在しない列」**になる。`DataProvider.Quote` に集約してある。
+
+> `DROP TABLE IF EXISTS` は Oracle では 23ai 以降でしか使えないため、
+> 分岐せずに「投げて握る」形にしている。
+> DDL は Oracle では暗黙にコミットされるため、トランザクションの外で行う。
 
 > **接続できない場合も落とさない。** `LOCAL` でコンテナが起動していないときは、
 > 例外の**型名だけ**を出して次のデータ プロバイダへ進む。
@@ -185,12 +233,14 @@ LocalServicesOnDocker の既定値に合わせてあるので、**そのまま�
 
 ##### 実測（全 DBMS 起動時）
 
-| DBMS | net48 | .NET 10 |
+| DBMS | 参照系 5 パターン | 更新系 |
 |---|---|---|
-| SQL Server（`SQL`） | 5/5 | 5/5 |
-| Oracle（`ODP`） | 5/5 | 5/5 |
-| MySQL（`MCN`） | 5/5 | 5/5 |
-| PostgreSQL（`NPS`） | 対象外 | 5/5 |
+| SQL Server（`SQL`） | net48 5/5 ／ .NET 10 5/5 | **全項目一致** |
+| Oracle（`ODP`） | net48 5/5 ／ .NET 10 5/5 | **全項目一致** |
+| MySQL（`MCN`） | net48 5/5 ／ .NET 10 5/5 | **全項目一致** |
+| PostgreSQL（`NPS`） | net48 対象外 ／ .NET 10 5/5 | **全項目一致**（.NET 10 のみ） |
+
+更新系は **4 DBMS が同一の出力**になる（件数と値だけを出しているため）。
 
 ##### 失敗したときの切り分け
 

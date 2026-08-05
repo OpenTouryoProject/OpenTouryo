@@ -13,8 +13,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\DataProvider.cs" Link="DataProvider.cs" />
     <Compile Include="..\Program.cs" Link="Program.cs" />
     <Compile Include="..\TestDataAccessPattern.cs" Link="TestDataAccessPattern.cs" />
+    <Compile Include="..\TestDataAccessUpdate.cs" Link="TestDataAccessUpdate.cs" />
     <Compile Include="..\TestSQLUtility.cs" Link="TestSQLUtility.cs" />
   </ItemGroup>
 

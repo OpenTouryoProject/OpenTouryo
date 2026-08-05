@@ -90,6 +90,10 @@ namespace TestDataAccess
 
                 #region DBに接続するテスト
                 TestDataAccessPattern.Root(daps);
+
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                MyDebug.OutputDebugAndConsole("更新系（専用の表を作って落とす）");
+                TestDataAccessUpdate.Root(daps);
                 #endregion
 
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
