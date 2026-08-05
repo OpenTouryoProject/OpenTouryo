@@ -58,10 +58,8 @@ namespace TestCode
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
                 TestDeflateCompression.Root();
                 #endregion
-                #region Db
-                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
-                TestSQLUtility.Root();
-                #endregion
+                // Db は TestDataAccess へ移した（#520）。
+                // DB に接続するテストと前提が異なるため、プロジェクトを分けている。
                 #endregion
 
                 #region Business

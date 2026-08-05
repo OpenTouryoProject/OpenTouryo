@@ -1,0 +1,108 @@
+----------------------------------------------------------------------------------------------------
+実行モード     : SQLONLY
+対象データプロバイダ : SQL
+----------------------------------------------------------------------------------------------------
+SQLUtility.GetUpdateSQLParts
+[単一主キー]
+- SQLServer
+UPDATE Orders SET [Qty] = 100, [Note] = Convert(nvarchar(1), 'a') WHERE [OrderID] = 1 
+UPDATE Orders SET [Qty] = 200, [Note] = Convert(nvarchar(1), 'b') WHERE [OrderID] = 2 
+- Oracle
+UPDATE Orders SET "Qty" = 100, "Note" = CAST('a' AS varchar2(1)) WHERE "OrderID" = 1 
+UPDATE Orders SET "Qty" = 200, "Note" = CAST('b' AS varchar2(1)) WHERE "OrderID" = 2 
+- PstGrS
+UPDATE Orders SET "Qty" = CASE
+        WHEN "OrderID" = 1 THEN 100
+        WHEN "OrderID" = 2 THEN 200
+        ELSE "Qty"
+      END,
+    "Note" = CASE
+        WHEN "OrderID" = 1 THEN Cast('a' as text)
+        WHEN "OrderID" = 2 THEN Cast('b' as text)
+        ELSE "Note"
+      END 
+WHERE ("OrderID" = 1)
+   OR ("OrderID" = 2)
+- MySQL
+UPDATE Orders SET `Qty` = CASE
+        WHEN `OrderID` = 1 THEN 100
+        WHEN `OrderID` = 2 THEN 200
+        ELSE `Qty`
+      END,
+    `Note` = CASE
+        WHEN `OrderID` = 1 THEN Cast('a' as char(1))
+        WHEN `OrderID` = 2 THEN Cast('b' as char(1))
+        ELSE `Note`
+      END 
+WHERE (`OrderID` = 1)
+   OR (`OrderID` = 2)
+[複合主キー]
+- SQLServer
+UPDATE Orders SET [Qty] = 100, [Note] = Convert(nvarchar(1), 'a') WHERE [OrderID] = 1 AND [ProductID] = 10 
+UPDATE Orders SET [Qty] = 200, [Note] = Convert(nvarchar(1), 'b') WHERE [OrderID] = 2 AND [ProductID] = 20 
+- Oracle
+UPDATE Orders SET "Qty" = 100, "Note" = CAST('a' AS varchar2(1)) WHERE "OrderID" = 1 AND "ProductID" = 10 
+UPDATE Orders SET "Qty" = 200, "Note" = CAST('b' AS varchar2(1)) WHERE "OrderID" = 2 AND "ProductID" = 20 
+- PstGrS
+UPDATE Orders SET "Qty" = CASE
+        WHEN "OrderID" = 1 AND "ProductID" = 10 THEN 100
+        WHEN "OrderID" = 2 AND "ProductID" = 20 THEN 200
+        ELSE "Qty"
+      END,
+    "Note" = CASE
+        WHEN "OrderID" = 1 AND "ProductID" = 10 THEN Cast('a' as text)
+        WHEN "OrderID" = 2 AND "ProductID" = 20 THEN Cast('b' as text)
+        ELSE "Note"
+      END 
+WHERE ("OrderID" = 1 AND "ProductID" = 10)
+   OR ("OrderID" = 2 AND "ProductID" = 20)
+- MySQL
+UPDATE Orders SET `Qty` = CASE
+        WHEN `OrderID` = 1 AND `ProductID` = 10 THEN 100
+        WHEN `OrderID` = 2 AND `ProductID` = 20 THEN 200
+        ELSE `Qty`
+      END,
+    `Note` = CASE
+        WHEN `OrderID` = 1 AND `ProductID` = 10 THEN Cast('a' as char(1))
+        WHEN `OrderID` = 2 AND `ProductID` = 20 THEN Cast('b' as char(1))
+        ELSE `Note`
+      END 
+WHERE (`OrderID` = 1 AND `ProductID` = 10)
+   OR (`OrderID` = 2 AND `ProductID` = 20)
+[更新対象列なし]
+- SQLServer
+(生成なし)
+- Oracle
+(生成なし)
+- PstGrS
+(生成なし)
+- MySQL
+(生成なし)
+[主キーなし]
+- SQLServer
+(生成なし)
+- Oracle
+(生成なし)
+- PstGrS
+(生成なし)
+- MySQL
+(生成なし)
+----------------------------------------------------------------------------------------------------
+SQLUtility.GetInsertSQLParts
+- SQLServer
+([OrderID], [ProductID], [Qty], [Note])
+(1, 10, 100, Convert(nvarchar(1), 'a'))
+(2, 20, 200, Convert(nvarchar(1), 'b'))
+- Oracle
+("OrderID", "ProductID", "Qty", "Note")
+(1, 10, 100, CAST('a' AS varchar2(1)))
+(2, 20, 200, CAST('b' AS varchar2(1)))
+- PstGrS
+("OrderID", "ProductID", "Qty", "Note")
+(1, 10, 100, Cast('a' as text))
+(2, 20, 200, Cast('b' as text))
+- MySQL
+(`OrderID`, `ProductID`, `Qty`, `Note`)
+(1, 10, 100, Cast('a' as char(1)))
+(2, 20, 200, Cast('b' as char(1)))
+----------------------------------------------------------------------------------------------------

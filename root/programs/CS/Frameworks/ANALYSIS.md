@@ -50,7 +50,8 @@
 
 | 名前 | 内容 |
 |---|---|
-| `TestCode` | コンソール EXE。`Program.cs` から `Test*.Root()` を順次呼ぶ手動確認型。期待値は `Result48.txt` / `ResultCore100.txt` と目視比較 |
+| `TestCode` | コンソール EXE。`Program.cs` から `Test*.Root()` を順次呼ぶ手動確認型。期待値は `Result48.txt` / `ResultCore100.txt` と目視比較。**DB には接続しない** |
+| `TestDataAccess` | データ アクセスのテスト（#520）。`TestCode` と同じ構成だが**DB に接続する**。`/MODE` で対象 DBMS を切り替える（既定は SQL Server のみ） |
 | `TestLog` | ログ出力確認（log4net/NLog、1〜3） |
 | `TestBatch` | バッチ起動確認 |
 | `EncAndDecUtil` / `EncAndDecUtilCUI` | 暗号・署名ユーティリティの GUI/CUI 確認 |
