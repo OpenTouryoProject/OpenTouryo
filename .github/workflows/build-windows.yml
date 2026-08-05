@@ -5,8 +5,9 @@
 #   「何をビルドするか」の正はバッチ側、「合否の判定」の正は各 .ps1 にある。
 #   ここには判定を書かない（書くと二重管理になる）。
 #
-# ＜3_SmokeTest.ps1 を含めない理由＞
-#   IIS Express と aspnet_state、および Oracle / MySQL / PostgreSQL まで要るため。
+# ＜3_SmokeTest.ps1 を含めていない理由＞
+#   IIS Express（実在の確認が要る）と aspnet_state（サービスの開始）が未対応のため。
+#   DB は本ワークフローが用意する SQL Server で足りる（/DAP SQL しか使わない）。
 #   詳細は BUILDING.md 9 節。
 #
 # ＜対象外＞

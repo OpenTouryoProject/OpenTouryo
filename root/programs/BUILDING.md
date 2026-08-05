@@ -345,7 +345,12 @@ Dependabot が起こしたイベントでは `GITHUB_TOKEN` が既定で read-on
 |---|---|---|
 | `1_BuildAll.ps1` | **○** | DB を必要としない |
 | `2_RunAllTests.ps1` | **○** | SQL Server を runner に導入して対応 |
-| `3_SmokeTest.ps1` | — | IIS Express・`aspnet_state`・他 DBMS まで要る |
+| `3_SmokeTest.ps1` | — | IIS Express と `aspnet_state` が未対応 |
+
+> **DB は足りている。** `3_SmokeTest.ps1` も `/DAP SQL` しか使わないため、
+> 本ワークフローが用意する SQL Server で賄える。
+> 残るのは **IIS Express の実在確認**（Web 系 3 件）と
+> **`Start-Service aspnet_state`**（net48 の Web 2 件）だけで、いずれも runner 上で完結する。
 
 **対象外は明示しておく。**
 
