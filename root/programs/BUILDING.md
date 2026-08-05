@@ -654,21 +654,31 @@ VS 18 のある環境では従来どおり `18.0` になるため、**挙動は�
 > 固定値 `18.0` と一致していたため（`VisualStudioVersion 18.0` がログに出ている）。
 > ただし一致は偶然で、イメージの更新で崩れる。導出に変えたこと自体は妥当と判断した。
 
-### 実測（run 30979772579 : 全ステップ成功）
+### 実測（run 30984111639 : 全ステップ成功）
 
-| ステップ | 所要 |
-|---|---|
-| Build all（31 ステップ） | 5 分 36 秒 |
-| **Install SQL Server** | **4 分 49 秒** |
-| Set up Northwind | 16 秒 |
-| Set up C:\root and locale | 4 秒 |
-| Run all tests（6 件） | 43 秒 |
-| **合計** | **約 12 分** |
+| ステップ | CI | ローカル |
+|---|---|---|
+| Build all（31 ステップ） | 4 分 56 秒 | 5.8 分 |
+| **Install SQL Server** | **5 分 22 秒** | －（導入済み） |
+| Set up Northwind | 14 秒 | －（導入済み） |
+| Set up C:\root and locale | 11 秒 | －（導入済み） |
+| Run all tests（6 件） | 1 分 29 秒 | 1.3 分 |
+| Start aspnet_state | 1 秒 | －（手動） |
+| Smoke test（18 件） | 2 分 25 秒 | 2.4 分 |
+| **合計** | **約 15 分** | 約 9.5 分 |
 
-**SQL Server の導入がビルドに次いで重い。** 短縮したい場合はここが対象になる。
+**検証そのものの所要はローカルとほぼ同じ。差は環境の用意（約 5 分半）。**
+短縮したい場合は `Install SQL Server` が対象になる。
 
-ローカルの実測（`1_BuildAll.ps1` 5.8 分 ＋ `2_RunAllTests.ps1` 1.3 分）と比べると、
-ビルドはほぼ同等で、差は DB の導入分。
+疎通 18 件はすべて OK だった。Web 系 3 件（IIS Express の起動、`aspnet_state` を使う
+セッション、`__VIEWSTATE` を伴うポストバック、認証後のリダイレクト）も
+**追加の調整なしで通っている。**
+
+```
+MVC_Sample (net48)                OK   ログイン後 /Crud1/Index = 200
+WebForms_Sample (net48)           OK   ログイン後 menu.aspx = 200
+MVC_Sample (net10.0)              OK   ログイン後 /Crud1/Index = 200
+```
 
 `CLI_sample (net48)` と `Framework_WSCore` はログが 27 行しかないが、**失敗ではない。**
 どちらもバッチ側で意図的に無効化されており、メッセージだけを出して終わる。
