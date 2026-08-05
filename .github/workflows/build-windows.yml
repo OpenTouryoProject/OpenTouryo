@@ -191,25 +191,17 @@ jobs:
           #   1977/4/24 の形にしか一致しない。
           #
           # ＜CurrentUICulture（言語）＞
-          #   ・GetMessage はカルチャでファイルを選び分ける
-          #     （MSGDefinition.xml → MSGDefinition_ja.xml）。
-          #     判定は Thread.CurrentThread.CurrentUICulture（GetMessage.cs)。
-          #   ・暗号系の例外文字列は Windows が返すため、表示言語に従う。
-          #       期待 : キーがありません。   実測 : Key does not exist.
-          #   どちらも Set-Culture では変わらない。
+          #   ここでは直せない。試して駄目だったものは BUILDING.md 9 節に記録した。
+          #     Install-Language              … ハング（run 30976630947）
+          #     Set-WinUILanguageOverride     … 言語パックの導入が前提
+          #     PreferredUILanguages を直書き … 未インストールの言語は無視される
+          #   言語に依存する 2 か所は、リポジトリ側で処理している。
+          #     GetMessage    … TestCode の構成に FxBusinessMessageCulture=ja-JP を指定
+          #     OS のメッセージ … CompareResult.ps1 で <OSMSG> に正規化
           Set-Culture ja-JP
 
-          # Install-Language は使わない。Windows Update 経由で言語パックを取得しようとして
-          # runner 上では応答が返らず、ステップが 16 分以上ハングした（run 30976630947）。
-          # Set-WinUILanguageOverride も言語パックの導入を前提とするため使えない。
-          #
-          # 代わりに、UI 言語の優先順位を直接書き込む。ダウンロードを伴わない。
-          # .NET はプロセス起動時にこれを読んで CurrentUICulture を決める。
-          Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop' `
-                           -Name 'PreferredUILanguages' -Value @('ja-JP') -Type MultiString
-
-          # 上記はいずれもレジストリを書き換えるだけで、現在のセッションには反映されない。
-          # 効いたかどうかを子プロセスで確認する。
+          # Set-Culture はレジストリを書き換えるだけで、現在のセッションには反映されない。
+          # 効いたかどうかを子プロセスで確認する（UICulture は en-US のままが正常）。
           $c = & powershell -NoProfile -Command "(Get-Culture).Name + ' / ' + (Get-UICulture).Name"
           Write-Host ("新しいプロセスの Culture / UICulture : {0}" -f $c)
 

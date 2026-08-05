@@ -452,21 +452,55 @@ MSGDefinition_zh-CN.xml
 
 ##### 対処
 
-```powershell
-# 書式
-Set-Culture ja-JP
+**書式は runner 側で直せる。言語は直せない。**
 
-# 言語（UI 言語の優先順位を直接書く）
-Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop' `
-                 -Name 'PreferredUILanguages' -Value @('ja-JP') -Type MultiString
+```powershell
+Set-Culture ja-JP     # これは効く（現在のセッションには反映されないので子プロセスで確認する）
 ```
 
-> **`Install-Language` は使わないこと。** Windows Update 経由で言語パックを取得しようとして
-> runner 上では応答が返らず、ステップが **16 分以上ハングした**（run 30976630947）。
-> `Set-WinUILanguageOverride` も言語パックの導入を前提とするため使えない。
+**`CurrentUICulture` を日本語にする手段は、実質存在しない。** 試して駄目だったものを挙げる。
 
-> いずれもレジストリを書き換えるだけで、現在のセッションには反映されない。
-> **確認は子プロセスで行う**（ワークフローは `Get-Culture` / `Get-UICulture` を出力する）。
+| 試したこと | 結果 |
+|---|---|
+| `Install-Language -Language ja-JP` | **ハング。** Windows Update 経由で取得しようとして応答が返らず、ステップが 16 分以上停止（run 30976630947） |
+| `Set-WinUILanguageOverride` | 言語パックの導入が前提のため使えない |
+| `HKCU\Control Panel\Desktop\PreferredUILanguages` を直接書く | **無視された。** Windows は未インストールの言語を候補から外す |
+
+ワークフローの出力で確定している。
+
+```
+新しいプロセスの Culture / UICulture : ja-JP / en-US
+```
+
+そこで、言語に依存する 2 か所を**別々に処理する。**
+
+**1. `GetMessage` は設定で固定する。**
+
+`TestCode` の `App.config` と `appsettings.json` に次を足した。
+
+```xml
+<add key="FxBusinessMessageCulture" value="ja-JP" />
+```
+
+`GetMessage.cs` は、この指定があれば `CurrentUICulture` より優先する。
+`ja-JP` → `ja` のフォールバック（`GetMessage.cs` の `currentUICulture.Parent`）で
+`MSGDefinition_ja.xml` に解決されるため、**ローカルで起きている経路と同じ**になる。
+
+> **これは CI のための小細工ではなく、テストの決定性の問題。**
+> 固定しないと「どのマシンで動かすか」で結果が変わる。
+
+**2. OS のメッセージは正規化する。**
+
+`CompareResult.ps1` に規則を足し、**文言だけ**を `<OSMSG>` に潰す。
+
+```powershell
+@{ Name = 'OSメッセージ'
+   Pattern = 'キーがありません。|Key does not exist\.|プロバイダーの公開キーは無効です。|Provider''s public key is invalid\.'
+   Replace = '<OSMSG>' }
+```
+
+**行ごと落とさないのが要点。** 例外が起きたこと自体は「行の存在」で分かるため、
+行を残しておけば、**例外が起きなくなったときに差分として検知できる。**
 
 ### `2_RunAllTests.ps1` を CI で回すときの注意
 
