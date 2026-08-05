@@ -316,6 +316,31 @@ git push origin origin/develop:deps    # 早送り。できないときは弾か
 > ⓪の push 自体が③を起こす（約 12 分）。`develop` の現状を検証する意味はある。
 > 公開リポジトリなので、GitHub ホステッド runner の費用はかからない。
 
+### 任意のブランチで手動実行する
+
+`build-windows.yml` は `workflow_dispatch` を持つので、**`deps` 以外のブランチでも同じ検証を回せる。**
+
+```
+Actions → Build on Windows → Run workflow → Branch: <任意のブランチ>
+```
+
+実行されるのは**選んだブランチ側の定義**。`deps` への push と同じ内容
+（ビルド → 単体テスト → 疎通）が走る。
+
+成立の条件は 2 つ。
+
+| 条件 | 内容 |
+|---|---|
+| `develop`（既定ブランチ）に `workflow_dispatch` があること | 「Run workflow」ボタンの表示条件 |
+| **選ぶブランチにも `.github/workflows/build-windows.yml` があること** | 定義はそのブランチから読まれるため |
+
+2 つ目が実務上の注意になる。**`develop` より前に分岐した古いブランチにはファイルが無い**ので、
+選んでも動かない。先に `develop` を取り込むこと。
+
+> **手動実行でもクロス DB にはならない。** 対象は `SQLONLY`（SQL Server のみ）のまま。
+> 各 DBMS は Linux コンテナで、`windows-latest` では動かせない。
+> クロス DB は手元で行う（[`TESTING.md`](TESTING.md)）。
+
 ### ワークフローの前提
 
 - **`deps` ブランチをあらかじめ作っておく。** `gh pr edit --base` は既存のブランチしか指せない

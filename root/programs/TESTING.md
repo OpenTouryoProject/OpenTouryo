@@ -129,6 +129,89 @@ TestDataAccessFx.exe /MODE LOCAL       … ローカルで起動している DBM
 > - 例外 : Oracle.ManagedDataAccess.Client.OracleException
 > ```
 
+#### クロス DB テストの実施手順（`LOCAL`）
+
+**① DBMS を起動する**
+
+各 DBMS は [LocalServicesOnDocker](https://github.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker)
+のコンテナで動かす。
+
+```powershell
+cd <LocalServicesOnDocker のパス>
+.\Start-Services.ps1
+```
+
+`test\dotnet\start.bat` で、各サービスへ接続できるかを先に確かめられる。
+**ここで NG のものは、こちらのテストでも当然 NG になる。**
+
+**② ビルドする**
+
+```powershell
+cd root\programs\CS
+cmd /c "echo. | call y_Build_TestCode_DataAccess.bat"
+```
+
+**③ `/MODE LOCAL` で実行する**
+
+```powershell
+# net48（SQL Server / Oracle / MySQL）
+cd root\programs\CS\Frameworks\Tests\TestDataAccess\net48\bin\Debug
+.\TestDataAccessFx.exe /MODE LOCAL
+
+# .NET 10（＋ PostgreSQL）
+cd root\programs\CS\Frameworks\Tests\TestDataAccess\core100\bin\Debug\net10.0
+dotnet TestDataAccessCore.dll -- /MODE LOCAL
+```
+
+**`2_RunAllTests.ps1` からは実行できない。** バッチが `/MODE SQLONLY` を明示して呼び、
+その出力を `Result*.txt` に書くため。
+**`LOCAL` の出力で上書きすると期待値が壊れる**（起動している DBMS の数で内容が変わる）。
+手動実行だけにしてあるのはこのため。
+
+##### 接続文字列
+
+`App.config`（net48）と `appsettings.json`（.NET (Core)）に持っている。
+LocalServicesOnDocker の既定値に合わせてあるので、**そのまま使えば通る**。
+
+| DAP | キー | 既定値の要点 |
+|---|---|---|
+| `SQL` | `ConnectionString_SQL` | `localhost` / `sa` / `Northwind` |
+| `ODP` | `ConnectionString_ODP` | `SCOTT` / `tiger` / `localhost/XE` |
+| `MCN` | `ConnectionString_MCN` | `localhost` / `root` / `test` |
+| `NPS` | `ConnectionString_NPS` | `localhost` / `postgres` / `postgres`（.NET (Core) のみ） |
+
+> **ADO.NET のキー＝値形式では、パスワードの `@` をエンコードしない。**
+> `Password=seigi@123` のままでよい。`%40` が要るのは Mongo のような URI 形式のみ。
+
+##### 実測（全 DBMS 起動時）
+
+| DBMS | net48 | .NET 10 |
+|---|---|---|
+| SQL Server（`SQL`） | 5/5 | 5/5 |
+| Oracle（`ODP`） | 5/5 | 5/5 |
+| MySQL（`MCN`） | 5/5 | 5/5 |
+| PostgreSQL（`NPS`） | 対象外 | 5/5 |
+
+##### 失敗したときの切り分け
+
+**例外の型名だけでは足りないことがある。** その場合はエラー番号まで見る。
+
+| 症状 | 番号・型 | 原因 |
+|---|---|---|
+| MySQL に繋がらない | `1042` | **コンテナが起動していない**（ポートを待ち受けていない） |
+| 同上 | `1130` | サーバには届いている。アカウントのホスト パターン不一致 |
+| 同上 | `1045` | 認証情報の誤り |
+| Oracle が `FileNotFoundException` | — | **パッケージ名が net48 と違う。**<br>.NET (Core) は `Oracle.ManagedDataAccess.Core` |
+
+ポートの待ち受けは次で確認できる。空なら①が済んでいない。
+
+```powershell
+Get-NetTCPConnection -LocalPort 3306 -State Listen   # MySQL
+Get-NetTCPConnection -LocalPort 1521 -State Listen   # Oracle
+Get-NetTCPConnection -LocalPort 5432 -State Listen   # PostgreSQL
+Get-NetTCPConnection -LocalPort 1433 -State Listen   # SQL Server
+```
+
 ### ビルドをバッチに委ねている理由
 
 `csproj` / `sln` を直接 MSBuild してはならない。
