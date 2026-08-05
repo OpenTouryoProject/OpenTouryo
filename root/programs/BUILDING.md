@@ -345,12 +345,9 @@ Dependabot が起こしたイベントでは `GITHUB_TOKEN` が既定で read-on
 |---|---|---|
 | `1_BuildAll.ps1` | **○** | DB を必要としない |
 | `2_RunAllTests.ps1` | **○** | SQL Server を runner に導入して対応 |
-| `3_SmokeTest.ps1` | — | IIS Express と `aspnet_state` が未対応 |
+| `3_SmokeTest.ps1` | **○** | `aspnet_state` を開始すれば動く |
 
-> **DB は足りている。** `3_SmokeTest.ps1` も `/DAP SQL` しか使わないため、
-> 本ワークフローが用意する SQL Server で賄える。
-> 残るのは **IIS Express の実在確認**（Web 系 3 件）と
-> **`Start-Service aspnet_state`**（net48 の Web 2 件）だけで、いずれも runner 上で完結する。
+**リリース時の検証 3 本が、そのまま同じ順で回っている。**
 
 **対象外は明示しておく。**
 
@@ -554,16 +551,58 @@ DB レベルだけを合わせているため、`tempdb` を経由する比較�
 |---|---|
 | `build-logs` | `1_BuildAll.ps1` のステップ別ログ |
 | `test-results` | 期待値（`HEAD` 版）・ビルド ログ・再生成された `Result*.txt` |
+| `smoke-logs` | 各対象の標準出力（Web 系は IIS Express の起動ログも含む） |
+
+### `3_SmokeTest.ps1` の前提
+
+**DB は追加不要。** `3_SmokeTest.ps1` も `/DAP SQL` しか使わないため、
+`2_RunAllTests.ps1` のために用意した SQL Server で足りる。`Orders2` も作成済み。
+
+足りないのは 1 つだけだった。
+
+```powershell
+Start-Service aspnet_state
+```
+
+**`3_SmokeTest.ps1` は、これを自分では行わない。** サービスの開始はシステムの状態を
+変える操作であり、足りない場合は対処方法を示して NG にする設計（`AGENTS.md` の線引き）。
+**runner は使い捨てでこの判断が当てはまらない**ため、ワークフロー側で開始する。
+
+IIS Express は同梱されている。
+
+```
+[有] C:\Program Files\IIS Express\iisexpress.exe        (v10.0.26013.1000)
+[有] C:\Program Files (x86)\IIS Express\iisexpress.exe  (v10.0.26013.1000)
+
+[有] aspnet_state : Status=Stopped StartType=Manual
+     開始しました : Status=Running
+```
+
+`3_SmokeTest.ps1` が見るのも `%ProgramFiles%` 側なので、そのまま使える。
+
+> **調べ方。** 一時的に `workflow_dispatch` だけのワークフローを置いて実行した。
+> 12 分のビルドを回さずに 10 秒で答えが出る。
+> 同種の疑問が出たら、また作って捨てればよい。
 
 ### イメージ側の充足状況
 
 | 必要なもの | イメージ |
 |---|---|
-| MSBuild | **Visual Studio 18 Enterprise**（実行ログで確認） |
+| MSBuild | **Visual Studio 18 Enterprise** |
 | .NET Framework 4.8 の参照アセンブリ | あり |
 | .NET 10 SDK | あり |
+| **IIS Express** | **あり**（`%ProgramFiles%` / `%ProgramFiles(x86)%` の両方） |
+| **`aspnet_state`** | **あり**（`StartType=Manual`。開始できることを確認済み） |
 | `nuget.exe` | リポジトリに同梱（`root/programs/nuget.exe`） |
 | SQL Server | **無し**（LocalDB と `sqlcmd` のみ） |
+
+`windows-latest` の実体は次のとおり（実行ログで確認）。
+
+```
+Image   : win25-vs2026
+OS      : Microsoft Windows Server 2025 Datacenter (10.0.26100)
+Version : win25-vs2026/20260728.188
+```
 
 `z_Common.bat` は `vswhere` で MSBuild を解決するため、**エディションが Enterprise でも通る。**
 固定パスの並びは Community しか見ていないので、そちらだけでは解決できない。
@@ -576,9 +615,10 @@ BUILDFILEPATH18
 BUILDFILEPATH "C:\Program Files\Microsoft Visual Studio\18\Enterprise\MSBuild\Current\Bin\MSBuild.exe"
 ```
 
-> **イメージの README を鵜呑みにしないこと。** 本書は当初、README の記載に従って
-> 「VS 2022 Enterprise 17.14」と書いていたが、実際に流すと **VS 18 Enterprise** だった。
-> バージョンに依存する判断は、実行ログで裏を取ってから行う。
+> **どの README を見ているかを確かめること。** 本書は当初「VS 2022 Enterprise 17.14」と
+> 書いていたが、これは `Windows2025-Readme.md`（VS 2022 のイメージ）を見ていたため。
+> `windows-latest` の実体は `windows-2025-vs2026` で、正は `Windows2025-VS2026-Readme.md`。
+> **バージョンや実在に依存する判断は、実行ログで裏を取ってから行う。**
 
 ### `VisualStudioVersion` を固定値から変更した
 

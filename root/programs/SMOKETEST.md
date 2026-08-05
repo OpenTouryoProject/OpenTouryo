@@ -186,6 +186,11 @@ WinForms / WPF 系は、リリース チェックリスト（段階 4）の**手
 - **IIS Express** がインストールされていること（net48 の Web アプリ）
 - **ASP.NET 状態サービスが開始されている**こと（net48 の Web アプリ）
 
+> **GitHub Actions でも実行している。** 前提の揃え方（SQL Server の導入と Northwind の
+> ロード、`C:\root`、ロケール、`aspnet_state` の開始）は
+> [`BUILDING.md`](BUILDING.md) 9 節が一次情報。
+> IIS Express は `windows-latest` に同梱されているため、追加の導入は要らない。
+
 ### ASP.NET 状態サービス
 
 `MVC_Sample` / `WebForms_Sample` の `Web.config` は `StateServer` を使う。

@@ -1,14 +1,13 @@
-# 受けブランチ（deps）に入った変更を windows-latest でビルドし、単体テストを回す。
+# 受けブランチ（deps）に入った変更を windows-latest で検証する。
 #
 # ＜位置づけ＞
-#   リリース時の検証 3 本（RELEASE.md 3 節）のうち、1 本目と 2 本目を CI に載せたもの。
+#   リリース時の検証 3 本（RELEASE.md 3 節）を、そのまま順に実行する。
+#     1_BuildAll.ps1    全ビルド
+#     2_RunAllTests.ps1 単体テスト
+#     3_SmokeTest.ps1   サンプルの疎通
 #   「何をビルドするか」の正はバッチ側、「合否の判定」の正は各 .ps1 にある。
 #   ここには判定を書かない（書くと二重管理になる）。
-#
-# ＜3_SmokeTest.ps1 を含めていない理由＞
-#   IIS Express（実在の確認が要る）と aspnet_state（サービスの開始）が未対応のため。
-#   DB は本ワークフローが用意する SQL Server で足りる（/DAP SQL しか使わない）。
-#   詳細は BUILDING.md 9 節。
+#   順序も入れ替えない（1 のクリーンとアセンブリ配置が 2・3 の前提になる）。
 #
 # ＜対象外＞
 #   ・GUI アプリケーション（WinForms / WPF / 各ツールの画面）… RELEASE.md 4 節の手作業
@@ -146,7 +145,8 @@ jobs:
 
           if (-not $loaded) { throw "Northwind のロードが完了しませんでした。" }
 
-          # Northwind 標準には無い表。3_SmokeTest.ps1（将来）が使う。
+          # Northwind 標準には無い表。3_SmokeTest.ps1 の RerunnableBatch 系が使う。
+          # （Orders 830 件を読んで Orders2 へ INSERT する。空にするのはスクリプト側の役目）
           $orders2 = 'root/programs/CS/Samples/Bat_sample/RerunnableBatch_sample/CREATE ORDERS2.sql'
           Invoke-Sql -Password $env:SA_PASSWORD -Database Northwind -File $orders2 *> $null
 
@@ -211,6 +211,26 @@ jobs:
         working-directory: root/programs
         run: .\2_RunAllTests.ps1 -OutputDir "${{ runner.temp }}\TestResults"
 
+      # ------------------------------------------------------------------
+      # 疎通（3_SmokeTest.ps1）
+      # ------------------------------------------------------------------
+      # 3_SmokeTest.ps1 はサービスの開始を自分では行わない。システムの状態を変える
+      # 操作だからで、足りない場合は対処方法を示して NG にする（AGENTS.md の線引き）。
+      # runner は使い捨てで、この判断が当てはまらないため、ここで開始する。
+      - name: Start aspnet_state
+        shell: pwsh
+        run: |
+          Start-Service aspnet_state
+          Write-Host ("aspnet_state : {0}" -f (Get-Service aspnet_state).Status)
+
+      # IIS Express は windows-latest（win25-vs2026）に同梱されている。
+      #   C:\Program Files\IIS Express\iisexpress.exe  v10.0.26013.1000
+      # 3_SmokeTest.ps1 が見るのも %ProgramFiles% 側なので、そのまま使える。
+      - name: Smoke test
+        shell: pwsh
+        working-directory: root/programs
+        run: .\3_SmokeTest.ps1 -OutputDir "${{ runner.temp }}\SmokeTest"
+
       # 失敗時こそ中身を見たいので、常に採取する。
       - name: Upload build logs
         if: always()
@@ -230,4 +250,14 @@ jobs:
           path: |
             ${{ runner.temp }}\TestResults
             root/programs/CS/Frameworks/Tests/**/Result*.txt
+          if-no-files-found: warn
+
+      # 疎通は期待結果ファイルを持たないため、判定は各対象の標準出力に残る。
+      # Web 系は IIS Express の起動ログもここに入る。
+      - name: Upload smoke test logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: smoke-logs
+          path: ${{ runner.temp }}\SmokeTest
           if-no-files-found: warn
