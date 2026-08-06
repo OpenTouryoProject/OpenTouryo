@@ -40,6 +40,12 @@ namespace TestCode
                 TestStringVariableOperator.Root();
 
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestStringExtractor.Root();
+
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestUtil.Root();
+
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
                 TestStringConverter.Root();
 
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");

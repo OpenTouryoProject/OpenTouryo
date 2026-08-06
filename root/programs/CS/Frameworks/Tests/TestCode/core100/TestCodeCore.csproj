@@ -27,7 +27,9 @@
     <Compile Include="..\TestOutputLog.cs" Link="TestOutputLog.cs" />
     <Compile Include="..\TestStringChecker.cs" Link="TestStringChecker.cs" />
     <Compile Include="..\TestStringConverter.cs" Link="TestStringConverter.cs" />
+    <Compile Include="..\TestStringExtractor.cs" Link="TestStringExtractor.cs" />
     <Compile Include="..\TestStringVariableOperator.cs" Link="TestStringVariableOperator.cs" />
+    <Compile Include="..\TestUtil.cs" Link="TestUtil.cs" />
     <Compile Include="..\TestXmlLib.cs" Link="TestXmlLib.cs" />
   </ItemGroup>
 

@@ -107,8 +107,14 @@
     <Compile Include="..\TestStringConverter.cs">
       <Link>TestStringConverter.cs</Link>
     </Compile>
+    <Compile Include="..\TestStringExtractor.cs">
+      <Link>TestStringExtractor.cs</Link>
+    </Compile>
     <Compile Include="..\TestStringVariableOperator.cs">
       <Link>TestStringVariableOperator.cs</Link>
+    </Compile>
+    <Compile Include="..\TestUtil.cs">
+      <Link>TestUtil.cs</Link>
     </Compile>
     <Compile Include="..\TestXmlLib.cs">
       <Link>TestXmlLib.cs</Link>
