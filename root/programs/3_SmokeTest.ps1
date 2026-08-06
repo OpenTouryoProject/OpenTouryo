@@ -731,7 +731,14 @@ foreach ($t in $selected)
     $sw.Stop()
 
     # 標準出力と標準エラーを両方見る。
-    $text = (Get-Content $out -Raw -EA SilentlyContinue) + "`n" + (Get-Content $err -Raw -EA SilentlyContinue)
+    #
+    # **-Encoding UTF8 を必ず付ける。**
+    #   Start-Process は子プロセスの生バイトをそのまま書くため、BOM が付かない。
+    #   Windows PowerShell 5.1 の Get-Content は BOM が無いと既定の ANSI（日本語環境では
+    #   CP932）で読むため、UTF-8 の日本語が化けて期待値に一致しなくなる。
+    #   （従来の Out-File -Encoding UTF8 は BOM 付きだったので、たまたま成立していた）
+    $text = (Get-Content $out -Raw -Encoding UTF8 -EA SilentlyContinue) + "`n" `
+          + (Get-Content $err -Raw -Encoding UTF8 -EA SilentlyContinue)
     if ($null -eq $text) { $text = "" }
 
     # 判定
