@@ -16,11 +16,13 @@
     <Compile Include="..\TestDeflateCompression.cs" Link="TestDeflateCompression.cs" />
     <Compile Include="..\TestDto.cs" Link="TestDto.cs" />
     <Compile Include="..\TestEnumToStringExtensions.cs" Link="TestEnumToStringExtensions.cs" />
+    <Compile Include="..\TestFastReflection.cs" Link="TestFastReflection.cs" />
     <Compile Include="..\TestFormatChecker.cs" Link="TestFormatChecker.cs" />
     <Compile Include="..\TestFormatConverter.cs" Link="TestFormatConverter.cs" />
     <Compile Include="..\TestGetMessageAndProperty.cs" Link="TestGetMessageAndProperty.cs" />
     <Compile Include="..\TestJISCode.cs" Link="TestJISCode.cs" />
     <Compile Include="..\TestLatebind.cs" Link="TestLatebind.cs" />
+    <Compile Include="..\TestResourceLoader.cs" Link="TestResourceLoader.cs" />
     <Compile Include="..\TestObjectInspector.cs" Link="TestObjectInspector.cs" />
     <Compile Include="..\TestOutputLog.cs" Link="TestOutputLog.cs" />
     <Compile Include="..\TestStringChecker.cs" Link="TestStringChecker.cs" />
@@ -33,6 +35,12 @@
     <Content Include="..\SampleLogConf.xml" Link="SampleLogConf.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--LogicalName を明示する。既定のままだと「既定の名前空間 + ファイル名」になり、
+        net48（TestCodeFx）と .NET (Core)（TestCodeCore）で名前が食い違うため。-->
+    <EmbeddedResource Include="..\TestEmbedded.txt" LogicalName="TestCode.TestEmbedded.txt" />
   </ItemGroup>
 
   <ItemGroup>

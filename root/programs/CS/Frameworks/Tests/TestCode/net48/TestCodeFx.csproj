@@ -74,6 +74,9 @@
     <Compile Include="..\TestEnumToStringExtensions.cs">
       <Link>TestEnumToStringExtensions.cs</Link>
     </Compile>
+    <Compile Include="..\TestFastReflection.cs">
+      <Link>TestFastReflection.cs</Link>
+    </Compile>
     <Compile Include="..\TestFormatChecker.cs">
       <Link>TestFormatChecker.cs</Link>
     </Compile>
@@ -88,6 +91,9 @@
     </Compile>
     <Compile Include="..\TestLatebind.cs">
       <Link>TestLatebind.cs</Link>
+    </Compile>
+    <Compile Include="..\TestResourceLoader.cs">
+      <Link>TestResourceLoader.cs</Link>
     </Compile>
     <Compile Include="..\TestObjectInspector.cs">
       <Link>TestObjectInspector.cs</Link>
@@ -113,6 +119,14 @@
       <Link>SampleLogConf.xml</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <!--LogicalName を明示する。既定のままだと「既定の名前空間 + ファイル名」になり、
+        net48（TestCodeFx）と .NET (Core)（TestCodeCore）で名前が食い違うため。-->
+    <EmbeddedResource Include="..\TestEmbedded.txt">
+      <Link>TestEmbedded.txt</Link>
+      <LogicalName>TestCode.TestEmbedded.txt</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="OssCons.DotNetSubcommittee.TestClassLibrary1">

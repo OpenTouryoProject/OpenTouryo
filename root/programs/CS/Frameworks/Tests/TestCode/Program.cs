@@ -60,6 +60,9 @@ namespace TestCode
                 
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
                 TestDeflateCompression.Root();
+
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestResourceLoader.Root();
                 #endregion
                 #region Dto
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
@@ -72,6 +75,9 @@ namespace TestCode
                 #region Reflection
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
                 TestLatebind.Root();
+
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestFastReflection.Root();
                 #endregion
                 // Db は TestDataAccess へ移した（#520）。
                 // DB に接続するテストと前提が異なるため、プロジェクトを分けている。

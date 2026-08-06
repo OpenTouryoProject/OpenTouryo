@@ -70,11 +70,11 @@ log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.Level
 log4net: Created Appender [OPERATION2]
 log4net: Adding appender named [OPERATION2] to logger [OPERATION].
 log4net: Hierarchy Threshold []
-[2026/08/06 16:56:00,861],[DEBUG],[2],LogIF.DebugLog("ACCESS");
-[2026/08/06 16:56:00,873],[INFO ],[2],LogIF.InfoLog("ACCESS");
-[2026/08/06 16:56:00,873],[WARN ],[2],LogIF.WarnLog("ACCESS");
-[2026/08/06 16:56:00,874],[ERROR],[2],LogIF.ErrorLog("ACCESS");
-[2026/08/06 16:56:00,874],[FATAL],[2],LogIF.FatalLog("ACCESS");
+[2026/08/06 17:40:45,613],[DEBUG],[2],LogIF.DebugLog("ACCESS");
+[2026/08/06 17:40:45,627],[INFO ],[2],LogIF.InfoLog("ACCESS");
+[2026/08/06 17:40:45,627],[WARN ],[2],LogIF.WarnLog("ACCESS");
+[2026/08/06 17:40:45,627],[ERROR],[2],LogIF.ErrorLog("ACCESS");
+[2026/08/06 17:40:45,628],[FATAL],[2],LogIF.FatalLog("ACCESS");
 ----------------------------------------------------------------------------------------------------
 GetMessage: ～メッセージID:I0001に対応する記述（正常系）～
 GetMessage: ～メッセージID:E0001に対応する記述（異常系）～
@@ -2357,6 +2357,23 @@ DeflateCompression(FileStream)-2 > is working properly.
 --------------------------------------------------
 DeflateCompression(MemoryStream) > is working properly.
 ----------------------------------------------------------------------------------------------------
+ResourceLoader
+絶対パスで解決        : True
+絶対パスで読み込み    : リソースの内容
+環境変数入りで解決    : True
+配置フォルダ基準      : True
+見つからない（解決）  : null
+見つからない（Exists）: False
+見つからない（例外）  : System.ArgumentException
+空文字（解決）        : null
+null（解決）          : null
+----------------------------------------------------------------------------------------------------
+EmbeddedResourceLoader
+存在する              : True
+読み込み              : 埋め込まれたリソースの内容 / embedded resource
+存在しない            : False
+存在しない（例外）    : System.ArgumentException
+----------------------------------------------------------------------------------------------------
 DataToPoco
 [DataTableToList : 名前が一致]
 件数 : 2
@@ -2462,5 +2479,26 @@ CheckTypeOfBaseClass(Target, string)     : False
 CheckTypeOfMethodByName(PublicMethod)    : True
 CheckTypeOfMethodByName(PrivateMethod)   : True
 CheckTypeOfMethodByName(NotExist)        : False
+----------------------------------------------------------------------------------------------------
+InstanceCreator<T>.Factory
+生成できた       : True
+別のインスタンス : True
+既定値（Id）     : 0
+既定値（Name）   : (null)
+----------------------------------------------------------------------------------------------------
+AccessorCacher.CacheAccessor
+件数 : 5
+Count : 型=Nullable`1, 実体型=Int32, Get=True, Set=True
+Field : 型=String, 実体型=(null), Get=True, Set=True
+Id : 型=Int32, 実体型=(null), Get=True, Set=True
+Name : 型=String, 実体型=(null), Get=True, Set=True
+ReadOnly : 型=String, 実体型=(null), Get=True, Set=False
+Set → Get : 設定した値
+再取得しても同じ : True
+----------------------------------------------------------------------------------------------------
+CompiledExpressionCreater
+プロパティ Id : 42
+フィールド Field : フィールドの値
+存在しないメンバ : 例外 System.ArgumentException
 ----------------------------------------------------------------------------------------------------
 log4net: Shutdown called on Hierarchy [log4net-default-repository]
