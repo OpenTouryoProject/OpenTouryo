@@ -37,6 +37,9 @@ namespace TestCode
                 TestFormatChecker.Root();
 
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestStringVariableOperator.Root();
+
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
                 TestStringConverter.Root();
 
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
@@ -57,6 +60,14 @@ namespace TestCode
                 
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
                 TestDeflateCompression.Root();
+                #endregion
+                #region Dto
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestDto.Root();
+                #endregion
+                #region Diagnostics
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestObjectInspector.Root();
                 #endregion
                 // Db は TestDataAccess へ移した（#520）。
                 // DB に接続するテストと前提が異なるため、プロジェクトを分けている。

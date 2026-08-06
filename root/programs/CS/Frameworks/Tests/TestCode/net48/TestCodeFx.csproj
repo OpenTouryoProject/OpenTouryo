@@ -68,6 +68,9 @@
     <Compile Include="..\TestDeflateCompression.cs">
       <Link>TestDeflateCompression.cs</Link>
     </Compile>
+    <Compile Include="..\TestDto.cs">
+      <Link>TestDto.cs</Link>
+    </Compile>
     <Compile Include="..\TestEnumToStringExtensions.cs">
       <Link>TestEnumToStringExtensions.cs</Link>
     </Compile>
@@ -83,6 +86,9 @@
     <Compile Include="..\TestJISCode.cs">
       <Link>TestJISCode.cs</Link>
     </Compile>
+    <Compile Include="..\TestObjectInspector.cs">
+      <Link>TestObjectInspector.cs</Link>
+    </Compile>
     <Compile Include="..\TestOutputLog.cs">
       <Link>TestOutputLog.cs</Link>
     </Compile>
@@ -91,6 +97,9 @@
     </Compile>
     <Compile Include="..\TestStringConverter.cs">
       <Link>TestStringConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\TestStringVariableOperator.cs">
+      <Link>TestStringVariableOperator.cs</Link>
     </Compile>
     <Compile Include="..\TestXmlLib.cs">
       <Link>TestXmlLib.cs</Link>

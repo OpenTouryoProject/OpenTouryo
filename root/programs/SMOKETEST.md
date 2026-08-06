@@ -120,10 +120,12 @@ NG : /OUTPUT "C:\temp\out"    ← \ が消える
 
 | 方法 | 結果 |
 |---|---|
-| PowerShell の `& $exe ... *>&1 \| Out-File` | **取れる**（68 行） |
+| `Start-Process -RedirectStandardOutput` | **取れる**（現在の方式） |
+| PowerShell の `& $exe ... *>&1 \| Out-File` | 取れるが、**stderr が壊れる**（下記） |
 | `cmd /c "... > file"` | 取れない（0 行） |
 
-`3_SmokeTest.ps1` は前者で実行している。
+**`3_SmokeTest.ps1` は `Start-Process` でファイルへ直接リダイレクトする。**
+パイプ（`\| Out-File`）でも出力自体は取れるが、そちらは別の問題を抱える（9 節）。
 
 ### Web アプリ（3 件）
 
@@ -274,6 +276,61 @@ System.DllNotFoundException
 疎通テストで初めて表面化する種類の不具合である。
 
 他の 11 バッチと同じ形式で `nuget.exe restore ... %NUGET_MSBUILD%` を追加した。
+
+---
+
+## 7.2 修正の経緯 : 対象の起動方法を `Start-Process` にした
+
+**当初は PowerShell のパイプで実行していた。**
+
+```powershell
+& $exe @($t.Args) *>&1 | Out-File $out -Encoding UTF8
+```
+
+この形は 2 つの問題を抱えていて、**対症療法を 3 回繰り返しても直らなかった。**
+
+### ① stdin を与えないと止まる
+
+サンプルは終了前に `Console.ReadKey()` を呼ぶ。stdin がコンソールのままだと
+**本当にキー入力を待つ**。実測で `SimpleBatch_sample (net48)` が **386 秒**かかった。
+
+**CI では stdin が元からリダイレクトされているため顕在化しない。** 実機だけで止まる。
+
+### ② stderr が壊れる
+
+パイプで受けると、native の stderr が `ErrorRecord` になり**コンソール幅で折り返される。**
+折り返しは**語の途中にも入る**。
+
+```
+Cannot read keys when either application does not h ave a console ...
+                                                   ↑ 単語が割れている
+```
+
+**空白を畳んでも復元できない**（折り返しは何かを置き換えたのではなく、挿入されたため）。
+幅は環境ごとに違うので、判定側の除外規則をいくら調整しても直らない。
+
+### 現在の方式
+
+**`Start-Process` でファイルへ直接リダイレクトする。** PowerShell を経由しないので、
+出力は生のまま残り、環境による差も出ない。
+
+```powershell
+Start-Process $exe -ArgumentList $argList -NoNewWindow -Wait `
+    -WorkingDirectory (Split-Path $exe) `
+    -RedirectStandardInput $emptyIn -RedirectStandardOutput $out -RedirectStandardError $err
+```
+
+`-RedirectStandardInput` には**空ファイル**を渡す（実在するファイルが要る）。
+
+> **読み戻しには `-Encoding UTF8` を必ず付ける。**
+> `Start-Process` は子プロセスの生バイトをそのまま書くため **BOM が付かない**。
+> Windows PowerShell 5.1 の `Get-Content` は BOM が無いと既定の ANSI（CP932）で読むため、
+> **日本語の期待値だけが一致しなくなる**（ASCII の期待値は通るので気付きにくい）。
+> 従来の `Out-File -Encoding UTF8` は BOM 付きだったため、たまたま成立していた。
+
+**副次的に、`DaoGen_Tool` 実行時の画面の乱れも解消した。**
+`AttachConsole(-1)` が親コンソールへ直接書き込んでいたのが原因で、
+独立したリダイレクト先を持つようになったため起きなくなった。
 
 ---
 

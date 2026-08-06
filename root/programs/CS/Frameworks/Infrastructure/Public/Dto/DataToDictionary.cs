@@ -30,6 +30,7 @@
 //*  2018/07/23  西野 大介         新規作成
 //*  2018/10/03  西野 大介         性能対策
 //*  2018/10/23  西野 大介         微調整
+//*  2026/08/06  玄人 幸道         コンストラクタの引数の取り違えを修正（#522）
 //**********************************************************************************
 
 using System;
@@ -62,8 +63,13 @@ namespace Touryo.Infrastructure.Public.Dto
         public DataToDictionary(Dictionary<string, string> mapping, string dateTimeFormat, string timeSpanFormat)
         {
             this.Mapping = mapping;
-            this.DateTimeFormat = timeSpanFormat;
-            this.TimeSpanFormat = dateTimeFormat;
+
+            // 2026/08/06 まで、この 2 行は代入先が入れ替わっていた（#522）。
+            // dateTimeFormat が TimeSpanFormat に入るため DateTimeFormat が空のままになり、
+            // **日時が書式ではなく Ticks で出力される**（DataTableToDictionary の分岐）。
+            // 例外にならず値の形だけが変わるため、気付きにくい。
+            this.DateTimeFormat = dateTimeFormat;
+            this.TimeSpanFormat = timeSpanFormat;
         }
 
         #region DataTable
