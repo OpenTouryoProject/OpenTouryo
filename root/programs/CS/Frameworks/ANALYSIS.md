@@ -50,15 +50,19 @@
 
 | 名前 | 内容 | 専用の文書 |
 |---|---|---|
-| `TestCode` | コンソール EXE。`Program.cs` から `Test*.Root()` を順次呼ぶ手動確認型。期待値は `Result48.txt` / `ResultCore100.txt` と目視比較。**DB には接続しない** | — |
+| `TestCode` | コンソール EXE。`Program.cs` から `Test*.Root()` を順次呼ぶ手動確認型。期待値は `Result48.txt` / `ResultCore100.txt` と比較。**DB には接続しない** | [`README.md`](Tests/TestCode/README.md) |
 | `TestDataAccess` | データ アクセスのテスト（#520）。`TestCode` と同じ構成だが**DB に接続する**。`/MODE` で対象 DBMS を切り替える（既定は SQL Server のみ） | [`README.md`](Tests/TestDataAccess/README.md) |
 | `TestLog` | ログ出力確認（log4net/NLog、1〜3） | — |
 | `TestBatch` | バッチ起動確認 | — |
 | `EncAndDecUtil` / `EncAndDecUtilCUI` | 暗号・署名ユーティリティの GUI/CUI 確認 | — |
 
-**`TestDataAccess` だけ専用の `README.md` を持つ。** クロス DB の実施手順と、
-ケース設計の根拠（何をなぜそう確認するか）を置いてある。**そちらが一次情報。**
-`TESTING.md` は 8 ケース全体の運用を扱い、この詳細は持たない。
+**`TestCode` と `TestDataAccess` は専用の `README.md` を持つ。**
+「何をテストしているか」「ケースを書き足すときの決まり」「ケース設計の根拠」は
+そちらが一次情報。`TESTING.md` は 8 ケース全体の運用を扱い、この詳細は持たない。
+
+**テストを書き足す前に `TestCode/README.md` を読むこと。**
+結果ファイルとの比較で判定するため、**環境で変わる値を出してはならない**という制約がある
+（例外はメッセージを出さず型名だけ、日時は固定値、`csproj` は net48 / core100 の両方を直す）。
 
 **重要:** テスト プロジェクトはフレームワークを `ProjectReference` ではなく
 **`HintPath` で `Infrastructure/Build_netcore100/net10.0/*.dll` を参照**する。

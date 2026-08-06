@@ -66,7 +66,7 @@ cd root\programs
 
 | テスト | 結果ファイル（＝期待値） | ビルド バッチ | 備考 |
 |---|---|---|---|
-| TestCode (net48) | `TestCode/Result48.txt` | `y_Build_TestCode_Public.bat` | 部品層の総合テスト（約 2,300 行） |
+| TestCode (net48) | `TestCode/Result48.txt` | `y_Build_TestCode_Public.bat` | 部品層の総合テスト（約 2,500 行）。**DB に接続しない** |
 | TestCode (net10.0) | `TestCode/ResultCore100.txt` | 同上 | 同上 |
 | TestDataAccess (net48) | `TestDataAccess/Result48.txt` | `y_Build_TestCode_DataAccess.bat` | データ アクセス（#520）。**実行モードで対象 DBMS が変わる** |
 | TestDataAccess (net10.0) | `TestDataAccess/ResultCore100.txt` | 同上 | 同上 |
@@ -78,7 +78,20 @@ cd root\programs
 `EncAndDecUtilCUI/ResultCore100OnLinux.txt` は Linux 実行時の期待結果のため、
 Windows からの `2_RunAllTests.ps1` の対象外。
 
-### `TestDataAccess` は詳細を別文書に持つ
+### `TestCode` / `TestDataAccess` は詳細を別文書に持つ
+
+**「何をテストしているか」「ケースを書き足すときの決まり」は各プロジェクトの
+`README.md` が一次情報。** 本書はここに写さない（二重管理になるため）。
+
+| 文書 | そちらで扱うもの |
+|---|---|
+| [`TestCode/README.md`](CS/Frameworks/Tests/TestCode/README.md) | `Test*.cs` と対象名前空間の対応、環境依存の値を出さないための決まり、記録している「仕様」（読み違えやすい挙動） |
+| [`TestDataAccess/README.md`](CS/Frameworks/Tests/TestDataAccess/README.md) | 実行モードと対象 DBMS、更新系・動的パラメタライズドクエリのケース設計の根拠、クロス DB テストの実施手順 |
+
+`TestCode` と `TestDataAccess` を分けているのは、**`TestDataAccess` が DB を前提にする**ため。
+混ぜると、DB が無い環境では `TestCode` ごと動かなくなる。
+
+### `TestDataAccess` の実行モード
 
 **クロス DB は CI では実行できない。** LocalServicesOnDocker の各 DBMS は Linux コンテナで、
 `windows-latest` は Linux コンテナを動かせないため（[`BUILDING.md`](BUILDING.md) 9 節）。
@@ -88,20 +101,6 @@ Windows からの `2_RunAllTests.ps1` の対象外。
 TestDataAccessFx.exe /MODE SQLONLY     … SQL Server だけ（既定。CI はこちら）
 TestDataAccessFx.exe /MODE LOCAL       … ローカルで起動している DBMS をすべて
 ```
-
-**何をどう確認しているか、クロス DB テストの実施手順は
-[`TestDataAccess/README.md`](CS/Frameworks/Tests/TestDataAccess/README.md) が一次情報。**
-本書はここに写さない（二重管理になるため）。
-
-| そちらで扱うもの |
-|---|
-| 実行モードと対象 DBMS の対応 |
-| `TestSQLUtility` / `TestDataAccessPattern` / `TestDataAccessUpdate` / `TestDataAccessDpq` の役割 |
-| 更新系・動的パラメタライズドクエリのケース設計とその根拠 |
-| `ExecLocalTest.bat` によるクロス DB テストの実施手順 |
-
-`TestCode` と分けているのは、**`TestDataAccess` が DB を前提にする**ため。
-混ぜると、DB が無い環境では `TestCode` ごと動かなくなる。
 
 > **「接続するテスト」と一括りにはできない。** `TestDataAccess` の中でも、
 > SQL を組み立てるだけで接続を必要としないものがある。詳細は上記の README。

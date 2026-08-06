@@ -8,6 +8,10 @@ using Touryo.Infrastructure.Public.Diagnostics;
 namespace TestCode
 {
     /// <summary>Program</summary>
+    /// <remarks>
+    /// 何をテストしているか、ケースを書き足すときの決まりは README.md を参照。
+    /// **結果ファイルとの比較で判定するため、環境で変わる値を出してはならない。**
+    /// </remarks>
     public class Program
     {
         /// <summary>Main</summary>
