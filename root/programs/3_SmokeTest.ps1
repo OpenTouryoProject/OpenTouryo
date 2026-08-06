@@ -74,6 +74,15 @@ Remove-Item Env:\NoDefaultCurrentDirectoryInExePath -EA SilentlyContinue
 $csRoot = Join-Path $PSScriptRoot "CS"
 New-Item -ItemType Directory -Force $OutputDir | Out-Null
 
+# 対象に与える stdin（空）。
+# Start-Process -RedirectStandardInput は実在するファイルを要求するため、先に作る。
+# これが無いと Console.ReadKey() が本当にキー入力を待つ。
+$emptyIn = Join-Path $OutputDir "empty.in"
+if (-not (Test-Path $emptyIn))
+{
+    New-Item -ItemType File $emptyIn | Out-Null
+}
+
 # ------------------------------------------------------------------
 # コンソールのコード ページを先に UTF-8 にしておく
 # ------------------------------------------------------------------
@@ -662,9 +671,28 @@ foreach ($t in $selected)
     }
 
     # 実行
+    #
+    # ＜Start-Process で、PowerShell を経由せずに入出力を扱う理由＞
+    #
+    #   1. stdin を与えないと止まる
+    #      サンプルは終了前に Console.ReadKey() を呼ぶ（SimpleBatch_sample/Program.cs 等）。
+    #      stdin がコンソールのままだと**本当にキー入力を待つ**。
+    #      実測では SimpleBatch_sample (net48) が 386 秒かかった。
+    #      空ファイルを与えると、待たずに InvalidOperationException になる
+    #      （この例外は下の判定で除外する）。
+    #
+    #   2. PowerShell のパイプを通すと、stderr が壊れる
+    #      「| Out-File」で受けると、native の stderr が ErrorRecord になり
+    #      **コンソール幅で折り返される**。折り返しは語の途中にも入るため、
+    #      「does not h ave a console」のように**単語が割れて復元できない**。
+    #      幅は環境で違うので、後段の除外規則をいくら調整しても直らない。
+    #
+    #   Start-Process でファイルへ直接リダイレクトすれば、どちらも起きない。
+    #   出力は生のまま残り、環境による差も出ない。
+    $err = "$out.err"
     Write-Host "  実行中 ..."
     $sw = [Diagnostics.Stopwatch]::StartNew()
-    Push-Location (Split-Path $exe)
+
     if ($exe -like "*.dll")
     {
         # 「/DAP」のように「/」で始まる引数は dotnet 自身のオプションと紛らわしいため、
@@ -672,25 +700,82 @@ foreach ($t in $selected)
         # 一方 System.CommandLine を使う CLI では「--」以降が未解析トークン扱いになり、
         # サブコマンドが認識されなくなるため、区切らずに渡す。
         $needSep = @($t.Args | Where-Object { $_ -like "/*" }).Count -gt 0
-        if ($needSep) { & dotnet $exe -- @($t.Args) *>&1 | Out-File $out -Encoding UTF8 }
-        else          { & dotnet $exe    @($t.Args) *>&1 | Out-File $out -Encoding UTF8 }
+
+        $argList = @("`"$exe`"")
+        if ($needSep) { $argList += "--" }
+        $argList += @($t.Args)
+
+        Start-Process "dotnet" -ArgumentList $argList -NoNewWindow -Wait `
+            -WorkingDirectory (Split-Path $exe) `
+            -RedirectStandardInput $emptyIn -RedirectStandardOutput $out -RedirectStandardError $err
     }
     else
     {
-        & $exe @($t.Args) *>&1 | Out-File $out -Encoding UTF8
+        $argList = @($t.Args)
+
+        if ($argList.Count -eq 0)
+        {
+            # -ArgumentList に空の配列を渡すとエラーになる。
+            Start-Process $exe -NoNewWindow -Wait `
+                -WorkingDirectory (Split-Path $exe) `
+                -RedirectStandardInput $emptyIn -RedirectStandardOutput $out -RedirectStandardError $err
+        }
+        else
+        {
+            Start-Process $exe -ArgumentList $argList -NoNewWindow -Wait `
+                -WorkingDirectory (Split-Path $exe) `
+                -RedirectStandardInput $emptyIn -RedirectStandardOutput $out -RedirectStandardError $err
+        }
     }
-    Pop-Location
+
     $sw.Stop()
 
-    $text = Get-Content $out -Raw -EA SilentlyContinue
+    # 標準出力と標準エラーを両方見る。
+    #
+    # **-Encoding UTF8 を必ず付ける。**
+    #   Start-Process は子プロセスの生バイトをそのまま書くため、BOM が付かない。
+    #   Windows PowerShell 5.1 の Get-Content は BOM が無いと既定の ANSI（日本語環境では
+    #   CP932）で読むため、UTF-8 の日本語が化けて期待値に一致しなくなる。
+    #   （従来の Out-File -Encoding UTF8 は BOM 付きだったので、たまたま成立していた）
+    $text = (Get-Content $out -Raw -Encoding UTF8 -EA SilentlyContinue) + "`n" `
+          + (Get-Content $err -Raw -Encoding UTF8 -EA SilentlyContinue)
     if ($null -eq $text) { $text = "" }
 
     # 判定
+    #
     # ※ 末尾の Console.ReadKey() 由来の例外はテスト内容と無関係なので除外する。
-    $readKeyNoise = 'Cannot read keys when either application does not have a console'
-    $fatal = ($text -split "`r?`n") | Where-Object {
-        $_ -match 'Unhandled exception|ハンドルされない例外|System\.\w+Exception' -and
-        $_ -notmatch $readKeyNoise
+    #
+    #   PowerShell は native コマンドの stderr を ErrorRecord にし、
+    #   **コンソール幅で折り返す**。折り返しで語が分断されると行単位の除外が効かない。
+    #   実際 dotnet 起動の 4 件だけが、除外できずに NG になった。
+    #     例外 : dotnet.exe : Unhandled exception. ... does not h
+    #                                                         ↑ ここで改行
+    #   このため、**空白を畳んで 1 行にしてから**除外・判定する。
+    #   コンソール幅に依存しなくなる。
+    $flat = ($text -replace '\s+', ' ')
+
+    # ReadKey 由来の例外を、宣言からスタック トレースまで丸ごと落とす。
+    #
+    # ＜メッセージ本文で判定しない理由＞
+    #   文言も見出しも環境で変わる。実測した 3 通り。
+    #     .NET (Core) 英語 : Unhandled exception. System.InvalidOperationException: Cannot read keys ...
+    #     .NET Fx     英語 : Unhandled Exception: System.InvalidOperationException: Cannot read keys ...
+    #     .NET Fx     日本語: Exception.ToString() が失敗したため、例外文字列を表示できません。
+    #   見出しは「.」と「:」で違い、日本語環境では**型名すら出ない**。
+    #   このため本文ではなく、**言語に依存しないスタック トレース**で捕まえる。
+    #
+    # ＜クラス名も実行環境で違う＞
+    #     .NET Fx     : at System.Console.ReadKey(Boolean intercept)
+    #     .NET (Core) : at System.ConsolePal.ReadKey(Boolean intercept)
+    #   このため System.〇〇.ReadKey として受ける。
+    $flat = $flat -replace `
+        '(Unhandled Exception[.:]\s*)?System\.\w+(\.\w+)*Exception[^|]*?at System\.\w+\.ReadKey[^ ]*', ''
+
+    $fatal = @()
+    $m0 = [regex]::Match($flat, '(Unhandled exception|ハンドルされない例外|System\.\w+Exception).{0,160}')
+    if ($m0.Success)
+    {
+        $fatal = @($m0.Value.Trim())
     }
 
     $ok = $true

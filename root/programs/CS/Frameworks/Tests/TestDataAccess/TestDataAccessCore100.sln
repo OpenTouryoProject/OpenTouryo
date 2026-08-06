@@ -1,0 +1,25 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11205.157 d18.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestDataAccessCore", "core100\TestDataAccessCore.csproj", "{7285AED0-058A-4C30-A3E5-83BF430AEF47}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7285AED0-058A-4C30-A3E5-83BF430AEF47}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7285AED0-058A-4C30-A3E5-83BF430AEF47}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7285AED0-058A-4C30-A3E5-83BF430AEF47}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7285AED0-058A-4C30-A3E5-83BF430AEF47}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8BA454DE-0D7E-4FBC-9034-33600A3F13DB}
+	EndGlobalSection
+EndGlobal

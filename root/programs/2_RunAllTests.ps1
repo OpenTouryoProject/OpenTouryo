@@ -173,6 +173,14 @@ $tests = @(
         Result = "TestCode\ResultCore100.txt";       SkipLog4net = $false
     }
     @{
+        Name = "TestDataAccess (net48)";     Bat = "y_Build_TestCode_DataAccess.bat"
+        Result = "TestDataAccess\Result48.txt";      SkipLog4net = $false
+    }
+    @{
+        Name = "TestDataAccess (net10.0)";   Bat = "y_Build_TestCode_DataAccess.bat"
+        Result = "TestDataAccess\ResultCore100.txt"; SkipLog4net = $false
+    }
+    @{
         Name = "SimpleBatch (net48)";        Bat = "y_Build_TestCode_Batch.bat"
         Result = "TestBatch\ResultSimpleBatch48.txt";     SkipLog4net = $true
     }

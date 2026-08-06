@@ -62,12 +62,14 @@ cd root\programs
 生 diff を読むのは、正規化後に差分が出たときだけでよい。
 `Result*.txt` のコミットは、内容が変わった（新しい基準にしたい）ときだけでよい。
 
-### 対象テスト（6 ケース）
+### 対象テスト（8 ケース）
 
 | テスト | 結果ファイル（＝期待値） | ビルド バッチ | 備考 |
 |---|---|---|---|
 | TestCode (net48) | `TestCode/Result48.txt` | `y_Build_TestCode_Public.bat` | 部品層の総合テスト（約 2,300 行） |
 | TestCode (net10.0) | `TestCode/ResultCore100.txt` | 同上 | 同上 |
+| TestDataAccess (net48) | `TestDataAccess/Result48.txt` | `y_Build_TestCode_DataAccess.bat` | データ アクセス（#520）。**実行モードで対象 DBMS が変わる** |
+| TestDataAccess (net10.0) | `TestDataAccess/ResultCore100.txt` | 同上 | 同上 |
 | SimpleBatch (net48) | `TestBatch/ResultSimpleBatch48.txt` | `y_Build_TestCode_Batch.bat` | **DB 接続あり**（Northwind） |
 | SimpleBatch (net10.0) | `TestBatch/ResultSimpleBatchCore100.txt` | 同上 | 同上 |
 | EncAndDecUtilCUI (net48) | `EncAndDecUtilCUI/Result48.txt` | `y_Build_TestCode_SecCUI.bat` | 暗号・JWT・XML 署名 |
@@ -75,6 +77,34 @@ cd root\programs
 
 `EncAndDecUtilCUI/ResultCore100OnLinux.txt` は Linux 実行時の期待結果のため、
 Windows からの `2_RunAllTests.ps1` の対象外。
+
+### `TestDataAccess` は詳細を別文書に持つ
+
+**クロス DB は CI では実行できない。** LocalServicesOnDocker の各 DBMS は Linux コンテナで、
+`windows-latest` は Linux コンテナを動かせないため（[`BUILDING.md`](BUILDING.md) 9 節）。
+このため `/MODE` で対象を切り替える。**期待値は `SQLONLY`（SQL Server のみ）で記録している。**
+
+```
+TestDataAccessFx.exe /MODE SQLONLY     … SQL Server だけ（既定。CI はこちら）
+TestDataAccessFx.exe /MODE LOCAL       … ローカルで起動している DBMS をすべて
+```
+
+**何をどう確認しているか、クロス DB テストの実施手順は
+[`TestDataAccess/README.md`](CS/Frameworks/Tests/TestDataAccess/README.md) が一次情報。**
+本書はここに写さない（二重管理になるため）。
+
+| そちらで扱うもの |
+|---|
+| 実行モードと対象 DBMS の対応 |
+| `TestSQLUtility` / `TestDataAccessPattern` / `TestDataAccessUpdate` / `TestDataAccessDpq` の役割 |
+| 更新系・動的パラメタライズドクエリのケース設計とその根拠 |
+| `ExecLocalTest.bat` によるクロス DB テストの実施手順 |
+
+`TestCode` と分けているのは、**`TestDataAccess` が DB を前提にする**ため。
+混ぜると、DB が無い環境では `TestCode` ごと動かなくなる。
+
+> **「接続するテスト」と一括りにはできない。** `TestDataAccess` の中でも、
+> SQL を組み立てるだけで接続を必要としないものがある。詳細は上記の README。
 
 ### ビルドをバッチに委ねている理由
 

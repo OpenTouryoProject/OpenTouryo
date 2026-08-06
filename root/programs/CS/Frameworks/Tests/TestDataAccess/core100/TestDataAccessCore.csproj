@@ -2,18 +2,36 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
+    <NoWarn>$(NoWarn);NU1605</NoWarn>
     <TargetFramework>net10.0</TargetFramework>
-    <AssemblyName>SimpleBatchCore</AssemblyName>
-    <RootNamespace>SimpleBatchCore</RootNamespace>
+    <AssemblyName>TestDataAccessCore</AssemblyName>
+    <RootNamespace>TestDataAccess</RootNamespace>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>full</DebugType>
-    <DebugSymbols>true</DebugSymbols>
+  <PropertyGroup>
+    <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="readme.txt" />
+    <Compile Include="..\DataProvider.cs" Link="DataProvider.cs" />
+    <Compile Include="..\Program.cs" Link="Program.cs" />
+    <Compile Include="..\TestDataAccessDpq.cs" Link="TestDataAccessDpq.cs" />
+    <Compile Include="..\TestDataAccessPattern.cs" Link="TestDataAccessPattern.cs" />
+    <Compile Include="..\TestDataAccessUpdate.cs" Link="TestDataAccessUpdate.cs" />
+    <Compile Include="..\TestSQLUtility.cs" Link="TestSQLUtility.cs" />
+    <Compile Include="..\TestTable.cs" Link="TestTable.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\SampleLogConf.xml" Link="SampleLogConf.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\appsettings.json" Link="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -26,15 +44,17 @@
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Npgsql" Version="9.0.3" />
     <!--Oracle は .NET (Core) 版のパッケージ名が異なる（DamManagedOdp_netcore100.csproj に合わせる）。
-        net48 版（Oracle.ManagedDataAccess）では動かず、/Dap ODP の接続時に
-        System.IO.FileNotFoundException になる。-->
+        net48 は Oracle.ManagedDataAccess。無いと ODP の接続時に FileNotFoundException になる。-->
     <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="23.8.0" />
     <PackageReference Include="System.Security.Permissions" Version="9.0.6" />
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="OpenTouryo.Business">
-      <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Business.dll</HintPath>
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.DamManagedOdp">
       <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.DamManagedOdp.dll</HintPath>
@@ -45,29 +65,12 @@
     <Reference Include="OpenTouryo.DamPstGrS">
       <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.DamPstGrS.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTouryo.Framework">
-      <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Framework.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenTouryo.Public">
-      <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
   <ItemGroup>
     <None Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="MSGDefinition.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="SampleLogConf.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="SampleLogConf2CS.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="SPDefinition.xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
     </None>
   </ItemGroup>
 
