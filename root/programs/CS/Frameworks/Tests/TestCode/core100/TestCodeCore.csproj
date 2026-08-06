@@ -20,6 +20,7 @@
     <Compile Include="..\TestFormatConverter.cs" Link="TestFormatConverter.cs" />
     <Compile Include="..\TestGetMessageAndProperty.cs" Link="TestGetMessageAndProperty.cs" />
     <Compile Include="..\TestJISCode.cs" Link="TestJISCode.cs" />
+    <Compile Include="..\TestLatebind.cs" Link="TestLatebind.cs" />
     <Compile Include="..\TestObjectInspector.cs" Link="TestObjectInspector.cs" />
     <Compile Include="..\TestOutputLog.cs" Link="TestOutputLog.cs" />
     <Compile Include="..\TestStringChecker.cs" Link="TestStringChecker.cs" />

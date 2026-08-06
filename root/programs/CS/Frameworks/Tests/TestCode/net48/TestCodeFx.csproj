@@ -86,6 +86,9 @@
     <Compile Include="..\TestJISCode.cs">
       <Link>TestJISCode.cs</Link>
     </Compile>
+    <Compile Include="..\TestLatebind.cs">
+      <Link>TestLatebind.cs</Link>
+    </Compile>
     <Compile Include="..\TestObjectInspector.cs">
       <Link>TestObjectInspector.cs</Link>
     </Compile>

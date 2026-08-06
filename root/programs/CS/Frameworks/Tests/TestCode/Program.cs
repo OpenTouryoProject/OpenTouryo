@@ -69,6 +69,10 @@ namespace TestCode
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
                 TestObjectInspector.Root();
                 #endregion
+                #region Reflection
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestLatebind.Root();
+                #endregion
                 // Db は TestDataAccess へ移した（#520）。
                 // DB に接続するテストと前提が異なるため、プロジェクトを分けている。
                 #endregion
