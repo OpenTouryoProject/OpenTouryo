@@ -74,6 +74,15 @@ Remove-Item Env:\NoDefaultCurrentDirectoryInExePath -EA SilentlyContinue
 $csRoot = Join-Path $PSScriptRoot "CS"
 New-Item -ItemType Directory -Force $OutputDir | Out-Null
 
+# 対象に与える stdin（空）。
+# Start-Process -RedirectStandardInput は実在するファイルを要求するため、先に作る。
+# これが無いと Console.ReadKey() が本当にキー入力を待つ。
+$emptyIn = Join-Path $OutputDir "empty.in"
+if (-not (Test-Path $emptyIn))
+{
+    New-Item -ItemType File $emptyIn | Out-Null
+}
+
 # ------------------------------------------------------------------
 # コンソールのコード ページを先に UTF-8 にしておく
 # ------------------------------------------------------------------
@@ -663,20 +672,27 @@ foreach ($t in $selected)
 
     # 実行
     #
-    # ＜先頭の "" | が要る理由＞
-    #   サンプルは終了前に Console.ReadKey() を呼ぶ（SimpleBatch_sample/Program.cs 等）。
-    #   stdin がコンソールのままだと**本当にキー入力を待って止まる**。
-    #   実測では SimpleBatch_sample (net48) が 386 秒かかり、その後もコンソールの
-    #   入力モードが乱れて、以降の表示が二重になった。
+    # ＜Start-Process で、PowerShell を経由せずに入出力を扱う理由＞
     #
-    #   空文字を流し込んで stdin をリダイレクトすると、ReadKey は待たずに
-    #   InvalidOperationException になる。この例外は下の判定で除外している。
+    #   1. stdin を与えないと止まる
+    #      サンプルは終了前に Console.ReadKey() を呼ぶ（SimpleBatch_sample/Program.cs 等）。
+    #      stdin がコンソールのままだと**本当にキー入力を待つ**。
+    #      実測では SimpleBatch_sample (net48) が 386 秒かかった。
+    #      空ファイルを与えると、待たずに InvalidOperationException になる
+    #      （この例外は下の判定で除外する）。
     #
-    #   CI では stdin が元からリダイレクトされているため顕在化しない。
-    #   **実機のコンソールでだけ止まる**ので、気付きにくい。
+    #   2. PowerShell のパイプを通すと、stderr が壊れる
+    #      「| Out-File」で受けると、native の stderr が ErrorRecord になり
+    #      **コンソール幅で折り返される**。折り返しは語の途中にも入るため、
+    #      「does not h ave a console」のように**単語が割れて復元できない**。
+    #      幅は環境で違うので、後段の除外規則をいくら調整しても直らない。
+    #
+    #   Start-Process でファイルへ直接リダイレクトすれば、どちらも起きない。
+    #   出力は生のまま残り、環境による差も出ない。
+    $err = "$out.err"
     Write-Host "  実行中 ..."
     $sw = [Diagnostics.Stopwatch]::StartNew()
-    Push-Location (Split-Path $exe)
+
     if ($exe -like "*.dll")
     {
         # 「/DAP」のように「/」で始まる引数は dotnet 自身のオプションと紛らわしいため、
@@ -684,17 +700,38 @@ foreach ($t in $selected)
         # 一方 System.CommandLine を使う CLI では「--」以降が未解析トークン扱いになり、
         # サブコマンドが認識されなくなるため、区切らずに渡す。
         $needSep = @($t.Args | Where-Object { $_ -like "/*" }).Count -gt 0
-        if ($needSep) { "" | & dotnet $exe -- @($t.Args) *>&1 | Out-File $out -Encoding UTF8 }
-        else          { "" | & dotnet $exe    @($t.Args) *>&1 | Out-File $out -Encoding UTF8 }
+
+        $argList = @("`"$exe`"")
+        if ($needSep) { $argList += "--" }
+        $argList += @($t.Args)
+
+        Start-Process "dotnet" -ArgumentList $argList -NoNewWindow -Wait `
+            -WorkingDirectory (Split-Path $exe) `
+            -RedirectStandardInput $emptyIn -RedirectStandardOutput $out -RedirectStandardError $err
     }
     else
     {
-        "" | & $exe @($t.Args) *>&1 | Out-File $out -Encoding UTF8
+        $argList = @($t.Args)
+
+        if ($argList.Count -eq 0)
+        {
+            # -ArgumentList に空の配列を渡すとエラーになる。
+            Start-Process $exe -NoNewWindow -Wait `
+                -WorkingDirectory (Split-Path $exe) `
+                -RedirectStandardInput $emptyIn -RedirectStandardOutput $out -RedirectStandardError $err
+        }
+        else
+        {
+            Start-Process $exe -ArgumentList $argList -NoNewWindow -Wait `
+                -WorkingDirectory (Split-Path $exe) `
+                -RedirectStandardInput $emptyIn -RedirectStandardOutput $out -RedirectStandardError $err
+        }
     }
-    Pop-Location
+
     $sw.Stop()
 
-    $text = Get-Content $out -Raw -EA SilentlyContinue
+    # 標準出力と標準エラーを両方見る。
+    $text = (Get-Content $out -Raw -EA SilentlyContinue) + "`n" + (Get-Content $err -Raw -EA SilentlyContinue)
     if ($null -eq $text) { $text = "" }
 
     # 判定
