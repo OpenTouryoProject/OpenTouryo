@@ -153,8 +153,39 @@ namespace TestCode
             TestUtil.OutputArray("ShortenByteArray(8 → 3)",
                 delegate { return ArrayOperator.ShortenByteArray(bytes, 3); });
 
-            MyDebug.OutputDebugAndConsole(
-                "GetLongFromByte : " + ArrayOperator.GetLongFromByte(bytes));
+            TestUtil.TestGetLongFromByte();
+        }
+
+        /// <summary>GetLongFromByte</summary>
+        /// <remarks>
+        /// ビッグ エンディアンとして解釈する。**桁の境界を必ず押さえる。**
+        ///
+        /// 2026/08/06 まで、桁の重みを 256 * j（掛け算）で求めていたため
+        /// **3 byte 目から誤った値**を返していた（#522）。
+        /// 1〜2 byte は 256 * 1 == 256 ^ 1 でたまたま一致するため、
+        /// **2 byte までしか見ないと不具合に気付けない。**
+        /// </remarks>
+        private static void TestGetLongFromByte()
+        {
+            MyDebug.OutputDebugAndConsole("ArrayOperator.GetLongFromByte");
+
+            // 桁の境界。3 byte 目が 65536（256 ^ 2）の重みを持つこと。
+            TestUtil.OutputLong("1 byte", new byte[] { 0x01 });                    // 1
+            TestUtil.OutputLong("2 byte", new byte[] { 0x01, 0x02 });              // 258
+            TestUtil.OutputLong("3 byte", new byte[] { 0x01, 0x02, 0x03 });        // 66051
+            TestUtil.OutputLong("3 byte（上位のみ）", new byte[] { 0x01, 0x00, 0x00 }); // 65536
+
+            // 8 byte（上限）
+            TestUtil.OutputLong("8 byte",
+                new byte[] { 1, 2, 3, 4, 5, 6, 7, 8 });                            // 0x0102030405060708
+
+            // 8 byte で最上位ビットが立つと、Int64 の範囲を超えて負になる。
+            TestUtil.OutputLong("8 byte（最上位ビット）",
+                new byte[] { 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF });    // -1
+
+            // 範囲外
+            TestUtil.OutputLong("0 byte", new byte[] { });
+            TestUtil.OutputLong("9 byte", new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
         }
 
         /// <summary>設定と環境情報</summary>
@@ -236,6 +267,23 @@ namespace TestCode
             try
             {
                 MyDebug.OutputDebugAndConsole(caseName + " : " + TestUtil.Join(func()));
+            }
+            catch (Exception ex)
+            {
+                // メッセージは環境の言語で変わるため、型名だけを出す。
+                MyDebug.OutputDebugAndConsole(caseName + " : 例外 " + ex.GetType().FullName);
+            }
+        }
+
+        /// <summary>GetLongFromByte の結果を出力する</summary>
+        /// <param name="caseName">ケース名</param>
+        /// <param name="bytes">バイト配列</param>
+        private static void OutputLong(string caseName, byte[] bytes)
+        {
+            try
+            {
+                MyDebug.OutputDebugAndConsole(
+                    caseName + " : " + ArrayOperator.GetLongFromByte(bytes));
             }
             catch (Exception ex)
             {

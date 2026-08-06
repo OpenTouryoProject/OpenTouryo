@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/05/28  西野 大介         新規作成（分割
+//*  2026/08/06  玄人 幸道         GetLongFromByteのシフト量の誤りを修正（#522）
 //**********************************************************************************
 
 using System;
@@ -117,6 +118,21 @@ namespace Touryo.Infrastructure.Public.Util
         /// <summary>バイトデータを数値（Int64）データに変換</summary>
         /// <param name="bytes">バイトデータ（byte[]（8 byte以内））</param>
         /// <returns>数値（Int64）データ</returns>
+        /// <remarks>
+        /// ビッグ エンディアンとして解釈する（先頭のバイトが上位）。
+        ///
+        /// 2026/08/06 まで、桁の重みを 256 * j（掛け算）で求めていたため、
+        /// 3 byte 目以降が誤った値になっていた（#522）。
+        ///   ・1〜2 byte … 256 * 1 == 256 ^ 1 のため、たまたま正しかった
+        ///   ・3 byte 目 … 512 になっていた（正しくは 65536）
+        /// 呼び出し元の CheckCharCode は Shift_JIS の 1〜2 byte にしか使わないため
+        /// 影響は無かったが、public なので誤りは誤りとして直した。
+        ///
+        /// **重みは long で持つこと。** 8 byte 目の 256 ^ 7 は int に収まらない。
+        ///
+        /// なお 8 byte で最上位ビットが立つ場合、Int64 の範囲を超えるため負の値になる
+        /// （2 の補数として解釈した値。BitConverter.ToInt64 と同じ考え方）。
+        /// </remarks>
         public static long GetLongFromByte(byte[] bytes)
         {
             long rtnCode = 0;
@@ -128,15 +144,18 @@ namespace Touryo.Infrastructure.Public.Util
             }
             else if (bytes.Length <= 8)
             {
-                int j = 0; // 256 ( = 8 bit、= 1 byte)
+                long weight = 1; // 256 ( = 8 bit、= 1 byte)
                 for (int i = bytes.Length - 1; i >= 0; i--)
                 {
-                    // 数値化→bitシフト→加算。
-                    int bitShift = 256 * j;
-                    if (bitShift == 0) bitShift = 1;
-                    rtnCode += Convert.ToInt32(bytes[i]) * bitShift;
+                    // 数値化→重み付け→加算。
+                    rtnCode += Convert.ToInt64(bytes[i]) * weight;
 
-                    j++; // 8 bit シフトする。
+                    // 8 bit シフトする。
+                    // 先頭のバイト（i == 0）の後は使わないため、桁溢れしない。
+                    if (0 < i)
+                    {
+                        weight *= 256;
+                    }
                 }
             }
             else
