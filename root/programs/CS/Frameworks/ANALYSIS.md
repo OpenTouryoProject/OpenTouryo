@@ -605,16 +605,16 @@ powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.
 | プロジェクト | パッケージ |
 |---|---|
 | Public | `log4net` 3.3.0, `NLog` 5.5.0, `Microsoft.Data.SqlClient` 6.0.1, `System.Data.Odbc` 9.0.4, `Newtonsoft.Json` 13.0.3, `Microsoft.Extensions.Configuration*` 9.0.4, `Zipangu` 1.1.8 |
-| Public.Security | `jose-jwt` 5.1.1, `BouncyCastle.NetCore` 2.2.1, `System.Security.Cryptography.Xml` 9.0.15, `Newtonsoft.Json` 13.0.3 |
+| Public.Security | `jose-jwt` 5.1.1, `BouncyCastle.NetCore` 2.2.1, `System.Security.Cryptography.Xml` 9.0.18, `Newtonsoft.Json` 13.0.3 |
 | Framework | `Microsoft.AspNetCore.{Http,Http.Extensions,Mvc,Session}` 2.3.0, `Microsoft.Extensions.PlatformAbstractions` 1.1.0 |
-| Business | `Microsoft.AspNetCore.Authentication{,.Cookies}` 2.3.0, `Microsoft.AspNetCore.{Http,Mvc}` 2.3.0, `System.Security.Cryptography.Xml` 9.0.4, `Newtonsoft.Json` 13.0.3 ほか |
+| Business | `Microsoft.AspNetCore.Authentication{,.Cookies}` 2.3.0, `Microsoft.AspNetCore.{Http,Mvc}` 2.3.0, `System.Security.Cryptography.Xml` 9.0.18, `Newtonsoft.Json` 13.0.3 ほか |
 
 **注意 1:** `Microsoft.AspNetCore.*` は **2.3.0（互換シム パッケージ）** を使い続けている。
 net10.0 のフレームワーク参照（`Microsoft.AspNetCore.App`）ではない。安易に上げると壊れる可能性が高い。
 
-**注意 2:** `System.Security.Cryptography.Xml` は **`Public.Security` が 9.0.15、`Business` が 9.0.4** と
-版がずれている（Dependabot が 1 プロジェクトずつしか上げないため）。どちらも NU1903 が出る。
-**修正版は 9.0.18**（12 節に advisory と該当 4 箇所を挙げてある）。
+**注意 2:** `System.Security.Cryptography.Xml` は **4 箇所すべてを同じ版で揃える**こと。
+Dependabot が 1 プロジェクトずつしか上げないため、放っておくと版が割れて NU1903 が残る
+（12 節に advisory と該当箇所を挙げてある）。
 
 依存は Dependabot で随時更新される。**上表は目安であり、正確な値は csproj を直接見ること。**
 
@@ -638,29 +638,34 @@ net10.0 のフレームワーク参照（`Microsoft.AspNetCore.App`）ではな�
 9. `Public/Security/MyDebug.cs` は `Public/Diagnostics/MyDebug.cs` の**派生クラス**（重複ではない。
    アセンブリ分割の都合）。
 10. `TMProtocolDefinition2.xml` など「2」付きの定義ファイルが並存する。用途は用例違い。
-11. **`System.Security.Cryptography.Xml` に既知脆弱性（NU1903 / 高）**。
-    `1_BuildAll.ps1` の全体で **84 警告**（`Public.Security` の 9.0.15 が 60、`Business` の 9.0.4 が 24）。
+11. **`System.Security.Cryptography.Xml` は 9.0.18 で揃える**（NU1903 / 高、2026/08/08 に解消）。
 
-    **修正版は 9.0.18。** 2 件の advisory が出ており、9.0.15 では**片方しか直っていない**。
+    2 件の advisory が出ており、**9.0.15 では片方しか直っていない**。
 
     | Advisory | 影響（9 系） | 修正版 |
     |---|---|---|
     | `GHSA-23rf-6693-g89p`（CVE-2026-50648） | `>= 9.0.0, <= 9.0.17` | **9.0.18** |
     | `GHSA-37gx-xxp4-5rgx`（CVE-2026-33116） | `>= 9.0.0, <= 9.0.14` | 9.0.15 |
 
-    版を上げる場合は **net48 / netcore100 の両 csproj と `NuGet/*.nuspec` の
-    `<dependencies>` を同時に直す。** 現状ずれているのは次の 4 箇所。
+    参照は次の 4 箇所。**すべて netcore100 側だけ**である。
 
     ```
-    Public/Security/Public.Security_netcore100.csproj   9.0.15
-    Business/Business_netcore100.csproj                 9.0.4
-    Tests/EncAndDecUtilCUI/core100/*.csproj             9.0.6   ← Dependabot PR #510 が 9.0.18 へ
-    NuGet/Symbol_Public.Security.nuspec                 9.0.15
+    Public/Security/Public.Security_netcore100.csproj
+    Business/Business_netcore100.csproj
+    Tests/EncAndDecUtilCUI/core100/EncAndDecUtilCUICore.csproj
+    NuGet/Symbol_Public.Security.nuspec
     ```
 
-    **Dependabot は 1 プロジェクトずつしか上げない。** #510 はテスト プロジェクトのみで、
-    取り込んでも 84 警告は減らない。**残りは手で揃える**こと
-    （手順は [`BUILDING.md`](../../BUILDING.md) 9 節「複数の PR を `deps` に溜める」）。
+    > **net48 は、このパッケージを参照しない。** .NET Framework は
+    > `System.Security.dll` を BCL として持つため（`<Reference Include="System.Security" />`）。
+    > 「net48 / netcore100 の両方を直す」という一般則は、**このパッケージには当てはまらない。**
+
+    **Dependabot は 1 プロジェクトずつしか上げない。** #507 が `Public.Security` だけを
+    9.0.15 にし、#510 がテスト プロジェクトだけを 9.0.18 にしたため、
+    一時 4 箇所が 3 通りの版に割れていた（84 警告）。
+    **セキュリティ更新は、Dependabot の PR を取り込んだら他の参照も揃えること。**
+    揃えておけば「もう脆弱でない」ため、同じ箇所への PR が後から来て競合することも無い
+    （運用は [`BUILDING.md`](../../BUILDING.md) 9 節）。
 12. **結果ファイル比較のテストは、検算しないと不具合を「正」として固定する。**
     `ArrayOperator.GetLongFromByte` は桁の重みを `256 * j`（掛け算）で求めており、
     **3 byte 目から誤った値**を返していた（2026/08/06 に修正、#522）。
