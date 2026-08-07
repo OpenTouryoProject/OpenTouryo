@@ -1,0 +1,1922 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="lblCmpLv.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
+  </data>
+  <data name="&gt;&gt;btnCreateManifesto.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lblStatus.Text" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="&gt;&gt;lblRootDirCheck.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPageZip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;txtUID.Parent" xml:space="preserve">
+    <value>gbxWWW</value>
+  </data>
+  <data name="&gt;&gt;btnCheckUpdateAndInstall.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbxRootDir.Parent" xml:space="preserve">
+    <value>tabPageZip</value>
+  </data>
+  <data name="&gt;&gt;txtDomain.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnSelectSaveFile.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnAddZIPFile.Parent" xml:space="preserve">
+    <value>tabPageManifesto</value>
+  </data>
+  <data name="cbxFormat.TabIndex" type="System.Int32, mscorlib">
+    <value>17</value>
+  </data>
+  <data name="&gt;&gt;txtProxyPWD.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;txtExeName.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;lblPWD.Name" xml:space="preserve">
+    <value>lblPWD</value>
+  </data>
+  <data name="&gt;&gt;lblProxyUID.Name" xml:space="preserve">
+    <value>lblProxyUID</value>
+  </data>
+  <data name="&gt;&gt;label3.Parent" xml:space="preserve">
+    <value>tabPageManifesto</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="txtExeName.Size" type="System.Drawing.Size, System.Drawing">
+    <value>292, 20</value>
+  </data>
+  <data name="tabPageZip.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="&gt;&gt;btnRemoveZIPFile.Name" xml:space="preserve">
+    <value>btnRemoveZIPFile</value>
+  </data>
+  <data name="lbxZIPFiles.Location" type="System.Drawing.Point, System.Drawing">
+    <value>15, 16</value>
+  </data>
+  <data name="tabPageZipPackage.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="&gt;&gt;lblStatus.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="lblUID.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="lblCyp.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;btnSelectSaveFile.Name" xml:space="preserve">
+    <value>btnSelectSaveFile</value>
+  </data>
+  <data name="cmbHistorys.TabIndex" type="System.Int32, mscorlib">
+    <value>18</value>
+  </data>
+  <data name="lblStatus.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="lblDomain.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="txtPWD.Location" type="System.Drawing.Point, System.Drawing">
+    <value>87, 72</value>
+  </data>
+  <data name="lblEnc.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;btnCompress.Parent" xml:space="preserve">
+    <value>tabPageZip</value>
+  </data>
+  <data name="&gt;&gt;lblRootDirCheck.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;tabPageDeployWithHTTP.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbxRootDir.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;txtProxyDomain.Parent" xml:space="preserve">
+    <value>gbxProxy</value>
+  </data>
+  <data name="btnDecomp.Text" xml:space="preserve">
+    <value>Thawing</value>
+  </data>
+  <data name="lblProxyPWD.Text" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="&gt;&gt;txtPass.Name" xml:space="preserve">
+    <value>txtPass</value>
+  </data>
+  <data name="&gt;&gt;txtProxyPWD.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="lblFile.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lblHistorys.Size" type="System.Drawing.Size, System.Drawing">
+    <value>70, 13</value>
+  </data>
+  <data name="txtProxyURL.Size" type="System.Drawing.Size, System.Drawing">
+    <value>331, 20</value>
+  </data>
+  <data name="lblPass.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 122</value>
+  </data>
+  <data name="&gt;&gt;tabPageDeployWithHTTP.Name" xml:space="preserve">
+    <value>tabPageDeployWithHTTP</value>
+  </data>
+  <data name="btnDecomp.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 133</value>
+  </data>
+  <data name="lblExt.Size" type="System.Drawing.Size, System.Drawing">
+    <value>69, 27</value>
+  </data>
+  <data name="&gt;&gt;cmbEnc.ZOrder" xml:space="preserve">
+    <value>11</value>
+  </data>
+  <data name="&gt;&gt;txtFile.Parent" xml:space="preserve">
+    <value>tabPageZipPackage</value>
+  </data>
+  <data name="txtPass.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="&gt;&gt;cbxRootDir.Name" xml:space="preserve">
+    <value>cbxRootDir</value>
+  </data>
+  <data name="lblExeName.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 230</value>
+  </data>
+  <data name="tabZipUnZip.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 148</value>
+  </data>
+  <data name="btnSelectFolder.Size" type="System.Drawing.Size, System.Drawing">
+    <value>89, 25</value>
+  </data>
+  <data name="&gt;&gt;lblProxyPWD.Parent" xml:space="preserve">
+    <value>gbxProxy</value>
+  </data>
+  <data name="&gt;&gt;cmbCmpLv.Parent" xml:space="preserve">
+    <value>tabPageZip</value>
+  </data>
+  <data name="lblInsDir.Text" xml:space="preserve">
+    <value>Installation directory</value>
+  </data>
+  <data name="&gt;&gt;lblFolder.Name" xml:space="preserve">
+    <value>lblFolder</value>
+  </data>
+  <data name="lblEEFA.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lblDomain.Size" type="System.Drawing.Size, System.Drawing">
+    <value>43, 13</value>
+  </data>
+  <data name="lblInsDir.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 207</value>
+  </data>
+  <data name="lblExeName.Size" type="System.Drawing.Size, System.Drawing">
+    <value>87, 13</value>
+  </data>
+  <data name="&gt;&gt;lblProxyURL.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="label3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 291</value>
+  </data>
+  <data name="cmbEEFA.Location" type="System.Drawing.Point, System.Drawing">
+    <value>106, 13</value>
+  </data>
+  <data name="&gt;&gt;lblExt.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnCompress.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lblEEFA.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 16</value>
+  </data>
+  <data name="&gt;&gt;lblProxyURL.Parent" xml:space="preserve">
+    <value>gbxProxy</value>
+  </data>
+  <data name="tabZipUnZip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>430, 193</value>
+  </data>
+  <data name="&gt;&gt;txtProxyUID.Name" xml:space="preserve">
+    <value>txtProxyUID</value>
+  </data>
+  <data name="&gt;&gt;lblProxyPWD.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPageZipPackage.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;lblCyp.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmbHistorys.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="gbxProxy.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="lblExt.Text" xml:space="preserve">
+    <value>Exclusion extension</value>
+  </data>
+  <data name="&gt;&gt;lblCyp.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="btnSelectSaveFile.Location" type="System.Drawing.Point, System.Drawing">
+    <value>332, 35</value>
+  </data>
+  <data name="label2.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
+  <data name="lblRootDirCheck.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 8.25pt</value>
+  </data>
+  <data name="&gt;&gt;txtProxyUID.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="btnAddZIPFile.Size" type="System.Drawing.Size, System.Drawing">
+    <value>415, 25</value>
+  </data>
+  <data name="cmbHistorys.Location" type="System.Drawing.Point, System.Drawing">
+    <value>93, 10</value>
+  </data>
+  <data name="lblProxyUID.Text" xml:space="preserve">
+    <value>User ID</value>
+  </data>
+  <data name="&gt;&gt;txtFile.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lblStatus.Location" type="System.Drawing.Point, System.Drawing">
+    <value>5, 404</value>
+  </data>
+  <data name="lblProxyPWD.Location" type="System.Drawing.Point, System.Drawing">
+    <value>18, 77</value>
+  </data>
+  <data name="lblExt.TabIndex" type="System.Int32, mscorlib">
+    <value>18</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>DeployZipPackWithHTTP</value>
+  </data>
+  <data name="btnSelectFolder.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="txtDomain.PasswordChar" type="System.Char, mscorlib" xml:space="preserve">
+    <value>*</value>
+  </data>
+  <data name="tabPageUnZip.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="&gt;&gt;lblStatus.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="tabPageZip.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;cmbEnc.Name" xml:space="preserve">
+    <value>cmbEnc</value>
+  </data>
+  <data name="&gt;&gt;lblProxyDomain.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;lblProxyDomain.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="txtProxyDomain.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="&gt;&gt;txtExt.Name" xml:space="preserve">
+    <value>txtExt</value>
+  </data>
+  <data name="lblPWD.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="lblUID.Size" type="System.Drawing.Size, System.Drawing">
+    <value>43, 13</value>
+  </data>
+  <data name="txtProxyDomain.Location" type="System.Drawing.Point, System.Drawing">
+    <value>87, 101</value>
+  </data>
+  <data name="lblHistorys.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;lblURL.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="tabPageUnZip.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="&gt;&gt;saveFileDialog1.Name" xml:space="preserve">
+    <value>saveFileDialog1</value>
+  </data>
+  <data name="&gt;&gt;btnDelHistory.Parent" xml:space="preserve">
+    <value>tabPageDeployWithHTTP</value>
+  </data>
+  <data name="&gt;&gt;cmbEEFA.Parent" xml:space="preserve">
+    <value>tabPageUnZip</value>
+  </data>
+  <data name="btnCheckUpdateAndInstall.Size" type="System.Drawing.Size, System.Drawing">
+    <value>424, 25</value>
+  </data>
+  <data name="cbxFormat.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;txtInsDir.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="txtPWD.PasswordChar" type="System.Char, mscorlib" xml:space="preserve">
+    <value>*</value>
+  </data>
+  <data name="&gt;&gt;cbxFormat.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="txtDomain.Size" type="System.Drawing.Size, System.Drawing">
+    <value>331, 20</value>
+  </data>
+  <data name="lblRootDirCheck.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;lblPWD.Parent" xml:space="preserve">
+    <value>gbxWWW</value>
+  </data>
+  <data name="&gt;&gt;tabDeployZipPac.Name" xml:space="preserve">
+    <value>tabDeployZipPac</value>
+  </data>
+  <data name="txtExt.Location" type="System.Drawing.Point, System.Drawing">
+    <value>94, 64</value>
+  </data>
+  <data name="btnCheckUpdateAndInstall.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 321</value>
+  </data>
+  <data name="lblExt.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 67</value>
+  </data>
+  <data name="&gt;&gt;btnAddZIPFile.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="lblProxyPWD.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
+  </data>
+  <data name="&gt;&gt;txtPass.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="btnAddZIPFile.Location" type="System.Drawing.Point, System.Drawing">
+    <value>15, 142</value>
+  </data>
+  <data name="&gt;&gt;gbxWWW.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="btnSelectSaveFile.Text" xml:space="preserve">
+    <value>Selection</value>
+  </data>
+  <data name="&gt;&gt;tabZipUnZip.Parent" xml:space="preserve">
+    <value>tabPageZipPackage</value>
+  </data>
+  <data name="lblURL.Size" type="System.Drawing.Size, System.Drawing">
+    <value>29, 13</value>
+  </data>
+  <data name="&gt;&gt;gbxWWW.Parent" xml:space="preserve">
+    <value>tabPageDeployWithHTTP</value>
+  </data>
+  <data name="cbxRootDir.Size" type="System.Drawing.Size, System.Drawing">
+    <value>540, 15</value>
+  </data>
+  <data name="lblHistorys.Text" xml:space="preserve">
+    <value>Load settings</value>
+  </data>
+  <data name="&gt;&gt;txtProxyURL.Parent" xml:space="preserve">
+    <value>gbxProxy</value>
+  </data>
+  <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="cmbFormat.Size" type="System.Drawing.Size, System.Drawing">
+    <value>337, 21</value>
+  </data>
+  <data name="lblEEFA.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;lblFile.Parent" xml:space="preserve">
+    <value>tabPageZipPackage</value>
+  </data>
+  <data name="tabPageZip.Text" xml:space="preserve">
+    <value>Compression</value>
+  </data>
+  <data name="&gt;&gt;txtUID.Name" xml:space="preserve">
+    <value>txtUID</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 13</value>
+  </data>
+  <data name="tabPageDeployWithHTTP.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;tabPageUnZip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cmbHistorys.Size" type="System.Drawing.Size, System.Drawing">
+    <value>245, 21</value>
+  </data>
+  <data name="&gt;&gt;cbxExt.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;openFilesDialog1.Name" xml:space="preserve">
+    <value>openFilesDialog1</value>
+  </data>
+  <data name="&gt;&gt;btnDelHistory.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lblURL.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="tabPageDeployWithHTTP.Text" xml:space="preserve">
+    <value>Deployed in HTTP</value>
+  </data>
+  <data name="openFilesDialog1.Filter" xml:space="preserve">
+    <value>ZIP file |. * Zip</value>
+  </data>
+  <data name="txtProxyPWD.PasswordChar" type="System.Char, mscorlib" xml:space="preserve">
+    <value>*</value>
+  </data>
+  <data name="btnCreateManifesto.Text" xml:space="preserve">
+    <value>I want to create a manifest file</value>
+  </data>
+  <data name="lblProxyPWD.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;lblPass.Name" xml:space="preserve">
+    <value>lblPass</value>
+  </data>
+  <data name="&gt;&gt;txtInsDir.Parent" xml:space="preserve">
+    <value>tabPageManifesto</value>
+  </data>
+  <data name="&gt;&gt;lblUID.Name" xml:space="preserve">
+    <value>lblUID</value>
+  </data>
+  <data name="&gt;&gt;lblFolder.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbxExt.Parent" xml:space="preserve">
+    <value>tabPageZipPackage</value>
+  </data>
+  <data name="lblProxyDomain.Size" type="System.Drawing.Size, System.Drawing">
+    <value>43, 13</value>
+  </data>
+  <data name="&gt;&gt;lblDomain.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="txtUID.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 277</value>
+  </data>
+  <data name="lblProxyPWD.Size" type="System.Drawing.Size, System.Drawing">
+    <value>53, 13</value>
+  </data>
+  <data name="&gt;&gt;lblFile.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;lblURL.Parent" xml:space="preserve">
+    <value>gbxWWW</value>
+  </data>
+  <data name="&gt;&gt;openFileDialog1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.OpenFileDialog, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lblExeName.Text" xml:space="preserve">
+    <value>EXE name (path)</value>
+  </data>
+  <data name="lblCmpLv.Text" xml:space="preserve">
+    <value>Compression Lv</value>
+  </data>
+  <data name="lblCyp.Location" type="System.Drawing.Point, System.Drawing">
+    <value>2, 10</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cbxFormat.Location" type="System.Drawing.Point, System.Drawing">
+    <value>396, 66</value>
+  </data>
+  <data name="&gt;&gt;lblFile.Name" xml:space="preserve">
+    <value>lblFile</value>
+  </data>
+  <data name="lblInsDir.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="tabPageZip.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="lblFormat.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lblUID.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 48</value>
+  </data>
+  <data name="gbxWWW.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 35</value>
+  </data>
+  <data name="&gt;&gt;tabDeployZipPac.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="lblPWD.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 75</value>
+  </data>
+  <data name="&gt;&gt;lblHistorys.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;txtPWD.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="lblFormat.Location" type="System.Drawing.Point, System.Drawing">
+    <value>2, 66</value>
+  </data>
+  <data name="&gt;&gt;cmbEEFA.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="txtFolder.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;txtUID.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lblFile.Text" xml:space="preserve">
+    <value>File name</value>
+  </data>
+  <data name="&gt;&gt;txtURL.Parent" xml:space="preserve">
+    <value>gbxWWW</value>
+  </data>
+  <data name="cmbCyp.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="lblFile.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="lblEnc.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 94</value>
+  </data>
+  <data name="&gt;&gt;lblInsDir.Parent" xml:space="preserve">
+    <value>tabPageManifesto</value>
+  </data>
+  <data name="txtUID.Size" type="System.Drawing.Size, System.Drawing">
+    <value>331, 20</value>
+  </data>
+  <data name="gbxWWW.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="txtURL.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="tabZipUnZip.TabIndex" type="System.Int32, mscorlib">
+    <value>21</value>
+  </data>
+  <data name="&gt;&gt;lblStatus.Name" xml:space="preserve">
+    <value>lblStatus</value>
+  </data>
+  <data name="txtProxyDomain.PasswordChar" type="System.Char, mscorlib" xml:space="preserve">
+    <value>*</value>
+  </data>
+  <data name="&gt;&gt;lblEnc.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="txtProxyURL.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="&gt;&gt;btnCompress.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;cmbFormat.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblHistorys.Name" xml:space="preserve">
+    <value>lblHistorys</value>
+  </data>
+  <data name="cmbCmpLv.TabIndex" type="System.Int32, mscorlib">
+    <value>12</value>
+  </data>
+  <data name="&gt;&gt;lblDomain.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;folderBrowserDialog1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.FolderBrowserDialog, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="btnDelHistory.Size" type="System.Drawing.Size, System.Drawing">
+    <value>86, 25</value>
+  </data>
+  <data name="cbxRootDir.Text" xml:space="preserve">
+    <value>(Folder compression of individual) to be included in the root folder in the ZIP specified ZIP file name: unchecked.</value>
+  </data>
+  <data name="cmbEnc.Items2" xml:space="preserve">
+    <value>euc-jp</value>
+  </data>
+  <data name="lblEnc.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lblCmpLv.Size" type="System.Drawing.Size, System.Drawing">
+    <value>58, 28</value>
+  </data>
+  <data name="&gt;&gt;tabPageManifesto.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="btnCompress.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="tabPageZip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>422, 167</value>
+  </data>
+  <data name="&gt;&gt;gbxProxy.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lblProxyUID.Size" type="System.Drawing.Size, System.Drawing">
+    <value>43, 13</value>
+  </data>
+  <data name="tabPageDeployWithHTTP.Size" type="System.Drawing.Size, System.Drawing">
+    <value>442, 353</value>
+  </data>
+  <data name="&gt;&gt;lblFile.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cbxExt.Name" xml:space="preserve">
+    <value>cbxExt</value>
+  </data>
+  <data name="&gt;&gt;cmbHistorys.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;panel1.Name" xml:space="preserve">
+    <value>panel1</value>
+  </data>
+  <data name="&gt;&gt;lblFolder.Parent" xml:space="preserve">
+    <value>tabPageZipPackage</value>
+  </data>
+  <data name="label3.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="lblProxyUID.Location" type="System.Drawing.Point, System.Drawing">
+    <value>18, 50</value>
+  </data>
+  <data name="lblInsDir.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 13</value>
+  </data>
+  <data name="&gt;&gt;txtInsDir.Name" xml:space="preserve">
+    <value>txtInsDir</value>
+  </data>
+  <data name="&gt;&gt;lblEEFA.Name" xml:space="preserve">
+    <value>lblEEFA</value>
+  </data>
+  <data name="&gt;&gt;gbxProxy.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;btnDecomp.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblExt.Parent" xml:space="preserve">
+    <value>tabPageZipPackage</value>
+  </data>
+  <data name="&gt;&gt;btnSelectFolder.Name" xml:space="preserve">
+    <value>btnSelectFolder</value>
+  </data>
+  <data name="lblFormat.TabIndex" type="System.Int32, mscorlib">
+    <value>13</value>
+  </data>
+  <data name="lblRootDirCheck.Location" type="System.Drawing.Point, System.Drawing">
+    <value>25, 114</value>
+  </data>
+  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;lblProxyUID.Parent" xml:space="preserve">
+    <value>gbxProxy</value>
+  </data>
+  <data name="txtInsDir.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="lblPass.Size" type="System.Drawing.Size, System.Drawing">
+    <value>69, 13</value>
+  </data>
+  <data name="&gt;&gt;btnSelectFolder.Parent" xml:space="preserve">
+    <value>tabPageZipPackage</value>
+  </data>
+  <data name="&gt;&gt;cmbHistorys.Name" xml:space="preserve">
+    <value>cmbHistorys</value>
+  </data>
+  <data name="txtPWD.Size" type="System.Drawing.Size, System.Drawing">
+    <value>331, 20</value>
+  </data>
+  <data name="&gt;&gt;txtFile.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="cbxRootDir.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lblUID.Text" xml:space="preserve">
+    <value>User ID</value>
+  </data>
+  <data name="lblHistorys.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;lblUID.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="tabPageManifesto.Text" xml:space="preserve">
+    <value>To create a deployment manifest</value>
+  </data>
+  <data name="lblEnc.Size" type="System.Drawing.Size, System.Drawing">
+    <value>44, 13</value>
+  </data>
+  <data name="btnSelectFolder.Text" xml:space="preserve">
+    <value>Selection</value>
+  </data>
+  <data name="&gt;&gt;tabPageUnZip.Parent" xml:space="preserve">
+    <value>tabZipUnZip</value>
+  </data>
+  <data name="&gt;&gt;btnAddZIPFile.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblFolder.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;lblCmpLv.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="&gt;&gt;cmbFormat.Name" xml:space="preserve">
+    <value>cmbFormat</value>
+  </data>
+  <data name="txtProxyPWD.Location" type="System.Drawing.Point, System.Drawing">
+    <value>87, 74</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>% USERPROFILE% \ XXX \ YYY \ ZZZ: you can specify the environment variable to the installation directory</value>
+  </data>
+  <data name="&gt;&gt;tabPageManifesto.Name" xml:space="preserve">
+    <value>tabPageManifesto</value>
+  </data>
+  <data name="txtProxyPWD.Size" type="System.Drawing.Size, System.Drawing">
+    <value>331, 20</value>
+  </data>
+  <data name="&gt;&gt;txtPass.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnDelHistory.Name" xml:space="preserve">
+    <value>btnDelHistory</value>
+  </data>
+  <data name="&gt;&gt;txtPWD.Parent" xml:space="preserve">
+    <value>gbxWWW</value>
+  </data>
+  <data name="lblEEFA.Text" xml:space="preserve">
+    <value>Overwrite operation</value>
+  </data>
+  <data name="cbxFormat.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="lblPWD.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lblFile.Size" type="System.Drawing.Size, System.Drawing">
+    <value>52, 13</value>
+  </data>
+  <data name="lblFormat.Text" xml:space="preserve">
+    <value>Format</value>
+  </data>
+  <data name="&gt;&gt;txtURL.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;txtProxyDomain.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lblUID.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;lblPWD.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="gbxWWW.Text" xml:space="preserve">
+    <value>WWW server</value>
+  </data>
+  <data name="&gt;&gt;txtDomain.Name" xml:space="preserve">
+    <value>txtDomain</value>
+  </data>
+  <data name="&gt;&gt;txtFolder.ZOrder" xml:space="preserve">
+    <value>13</value>
+  </data>
+  <data name="&gt;&gt;lblEnc.Name" xml:space="preserve">
+    <value>lblEnc</value>
+  </data>
+  <data name="&gt;&gt;btnCompress.Name" xml:space="preserve">
+    <value>btnCompress</value>
+  </data>
+  <data name="btnRemoveZIPFile.Location" type="System.Drawing.Point, System.Drawing">
+    <value>15, 171</value>
+  </data>
+  <data name="txtDomain.Location" type="System.Drawing.Point, System.Drawing">
+    <value>87, 99</value>
+  </data>
+  <data name="&gt;&gt;saveFileDialog1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.SaveFileDialog, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lblExeName.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;btnRemoveZIPFile.Parent" xml:space="preserve">
+    <value>tabPageManifesto</value>
+  </data>
+  <data name="&gt;&gt;lblCmpLv.Parent" xml:space="preserve">
+    <value>tabPageZip</value>
+  </data>
+  <data name="&gt;&gt;lblProxyPWD.Name" xml:space="preserve">
+    <value>lblProxyPWD</value>
+  </data>
+  <data name="&gt;&gt;lbxZIPFiles.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ListBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label2.Name" xml:space="preserve">
+    <value>label2</value>
+  </data>
+  <data name="lblDomain.Text" xml:space="preserve">
+    <value>Domain</value>
+  </data>
+  <data name="lblFormat.Size" type="System.Drawing.Size, System.Drawing">
+    <value>39, 13</value>
+  </data>
+  <data name="&gt;&gt;cmbCyp.Parent" xml:space="preserve">
+    <value>tabPageZip</value>
+  </data>
+  <data name="lblProxyDomain.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lblProxyDomain.Text" xml:space="preserve">
+    <value>Domain</value>
+  </data>
+  <data name="lblProxyURL.Size" type="System.Drawing.Size, System.Drawing">
+    <value>29, 13</value>
+  </data>
+  <data name="cmbEEFA.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;lblEEFA.Parent" xml:space="preserve">
+    <value>tabPageUnZip</value>
+  </data>
+  <data name="lblProxyDomain.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 104</value>
+  </data>
+  <data name="&gt;&gt;txtFolder.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="txtExt.TabIndex" type="System.Int32, mscorlib">
+    <value>19</value>
+  </data>
+  <data name="tabPageManifesto.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="&gt;&gt;lblFormat.Name" xml:space="preserve">
+    <value>lblFormat</value>
+  </data>
+  <data name="lblFile.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 40</value>
+  </data>
+  <data name="&gt;&gt;txtFolder.Name" xml:space="preserve">
+    <value>txtFolder</value>
+  </data>
+  <data name="&gt;&gt;lblCyp.Parent" xml:space="preserve">
+    <value>tabPageZip</value>
+  </data>
+  <data name="&gt;&gt;txtProxyUID.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="btnDelHistory.TabIndex" type="System.Int32, mscorlib">
+    <value>19</value>
+  </data>
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAICAAAAEAGACoDAAAFgAAACgAAAAgAAAAQAAAAAEAGAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADS1/TS1/QAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAACirOg7T847T86irOgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC4v+2psukySMwIIsEIIsEy
+        SMypsum4v+0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAACjreg6T84gOMcIIsEAG78AG78IIsEgOMc6T86jregAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAChq+cySMwIIsEA
+        G78AG78AG78AG78AG78AG78IIsEySMyhq+cAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAC4v+2psukxR8sIIsEAG78AG78AG78AG78AG78AG78AG78AG78IIsEx
+        R8upsum4v+0AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACjreg6T84g
+        OMcIIsEAG78AG78AG78AG78AG78AG78AG78AG78AG78AG78IIsEgOMc6T86jregAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAChq+cySMwIIsEAG78AG78AG78AG78AG78AG78AG78AG78A
+        G78AG78AG78AG78AG78AG78IIsEySMyhq+cAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADL0fKy
+        uuwzScwIIsEAG78AG78AG78AG78AG78AG78AG78AG78AG78AG78AG78AG78AG78AG78AG78AG78IIsEz
+        ScyyuuzL0fIAAAAAAAAAAAAAAAAAAAAAAAAAAADd4PZlddhIW9EwRssoP8koP8koP8kgOMcIIsEAG78A
+        G78AG78AG78AG78AG78AG78AG78IIsEgOMcoP8koP8koP8kwRstIW9FkddfU1+wAAAAAAAAAAAAAAAAA
+        AAD29/3u8PvS1/TGzPHCyPC/xu/Axu/ByPCxuesgOMcAG78AG78AG78AG78AG78AG78AG78AG78gOMex
+        uOa8wNq2utO2utO2utO2utO+wdXZ2t/f3+IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AADDyvAoP8kAG78AG78AG78AG78AG78AG78AG78AG78oP8m8wNpkZGRKSkpKSkpKSkpKSkpKSkpeXl7B
+        wsMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADFy+8oP8kAG78AG78AG78AG78AG78A
+        G78AG78AG78oP8m2utNKSkooKCgoKCgoKCgoKCgoKCgvLy9ZWVnKysoAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAADc3NzY2d/M0e0oP8kAG78AG78AG78AG78AG78AG78AG78AG78oP8m2utNKSkooKCgoKCgo
+        KCgoKCgoKCgoKChDQ0O/v7/U1NQAAAAAAAAAAAAAAAAAAAAAAAAAAADg4OB+fn5/f3/Dx+EoP8kAG78A
+        G78AG78AG78AG78AG78AG78AG78oP8m2utNKSkooKCgvLy9DQ0NKSkpKSkpKSkpQUFBkZGR9fX3j4+MA
+        AAAAAAAAAAAAAAAAAADy8vLv7+/f39/Y2d/M0e0oP8kAG78AG78AG78AG78AG78AG78AG78AG78oP8m2
+        utNKSkooKChDQ0O9vb3Ly8vKysrJycnLy8vPz8/Z2dnx8fH39/cAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AADEyu4oP8kAG78AG78AG78AG78AG78AG78AG78AG78oP8m2utNKSkooKChKSkrLy8sAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAxu8oP8kAG78AG78AG78AG78AG78A
+        G78AG78AG78oP8m2utNKSkooKChKSkrKysoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAC9xO4oP8kAG78AG78AG78AG78AG78AG78AG78AG78oP8m2utNKSkooKChKSkrH
+        x8cAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC9xO4oP8kAG78A
+        G78AG78AG78AG78AG78AG78AG78oP8m2utNKSkooKChKSkrHx8cAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC9xO4oP8kAG78AG78AG78AG78AG78AG78AG78AG78oP8m2
+        utNKSkooKChKSkrHx8cAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAC9xO4oP8kAG78AG78AG78AG78AG78AG78AG78AG78oP8m2utNKSkooKChKSkrHx8cAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC9xO4oP8kAG78AG78AG78AG78AG78A
+        G78AG78AG78oP8m2utNKSkooKChKSkrHx8cAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAC9xO4oP8kAG78AG78AG78AG78AG78AG78AG78AG78oP8m2utNKSkooKChKSkrH
+        x8cAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC9xO4oP8kAG78A
+        G78AG78AG78AG78AG78AG78AG78oP8m2utNKSkooKChKSkrHx8cAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADCyPAoP8kAG78AG78AG78AG78AG78AG78AG78AG78oP8m2
+        utNKSkooKChKSkrHx8cAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AADL0fJIW9EoP8koP8koP8koP8koP8koP8koP8koP8lIW9G+wdVKSkooKChKSkrHx8cAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADX2/XL0fLEyvDEyu7L0Oy8wNq2utO2
+        utO2utO2utO+wdW7u8FDQ0MoKChKSkrHx8cAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADT1NpkZGRKSkpKSkpKSkpKSkpKSkpDQ0MvLy8oKChKSkrH
+        x8cAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AADS0tJKSkooKCgoKCgoKCgoKCgoKCgoKCgoKCgoKChKSkrLy8sAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADS0tJkZGRKSkpKSkpKSkpKSkpKSkpK
+        SkpKSkpKSkpkZGTS0tIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAADv7+/k5OTd3d3d3d3d3d3d3d3d3d3d3d3d3d3d3d3k5OTv7+8AAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAD/+f////D////AP///gB///wAP//wAA//4AAH/8AAA/8AAAD+AAAAfAAAAD/8A
+        AA//AAAH/AAAA/gAAAHwAAAA/wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8AAP//AAD//wAA//8A
+        AP//AAD///AA///wAP//8AD///AA/w==
+</value>
+  </data>
+  <data name="&gt;&gt;txtPWD.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="tabPageDeployWithHTTP.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="&gt;&gt;cmbHistorys.Parent" xml:space="preserve">
+    <value>tabPageDeployWithHTTP</value>
+  </data>
+  <data name="&gt;&gt;tabPageManifesto.Parent" xml:space="preserve">
+    <value>tabDeployZipPac</value>
+  </data>
+  <data name="cbxFormat.Size" type="System.Drawing.Size, System.Drawing">
+    <value>15, 14</value>
+  </data>
+  <data name="lblProxyURL.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lblProxyUID.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;lbxZIPFiles.Parent" xml:space="preserve">
+    <value>tabPageManifesto</value>
+  </data>
+  <data name="&gt;&gt;lblFormat.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="btnCreateManifesto.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="lblPass.Text" xml:space="preserve">
+    <value>Solution path</value>
+  </data>
+  <data name="&gt;&gt;openFilesDialog1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.OpenFileDialog, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="txtExt.Size" type="System.Drawing.Size, System.Drawing">
+    <value>306, 20</value>
+  </data>
+  <data name="&gt;&gt;lblExeName.Name" xml:space="preserve">
+    <value>lblExeName</value>
+  </data>
+  <data name="lblDomain.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 102</value>
+  </data>
+  <data name="label3.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
+  </data>
+  <data name="lblFolder.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;lblRootDirCheck.Name" xml:space="preserve">
+    <value>lblRootDirCheck</value>
+  </data>
+  <data name="lblCyp.Text" xml:space="preserve">
+    <value>Encryption</value>
+  </data>
+  <data name="txtPass.Location" type="System.Drawing.Point, System.Drawing">
+    <value>94, 119</value>
+  </data>
+  <data name="btnDecomp.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="cmbEnc.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="&gt;&gt;lblProxyURL.Name" xml:space="preserve">
+    <value>lblProxyURL</value>
+  </data>
+  <data name="&gt;&gt;lblPass.ZOrder" xml:space="preserve">
+    <value>12</value>
+  </data>
+  <data name="&gt;&gt;lblEnc.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabZipUnZip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="txtFolder.Location" type="System.Drawing.Point, System.Drawing">
+    <value>94, 10</value>
+  </data>
+  <data name="&gt;&gt;btnRemoveZIPFile.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="gbxProxy.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 174</value>
+  </data>
+  <data name="&gt;&gt;tabPageZipPackage.Name" xml:space="preserve">
+    <value>tabPageZipPackage</value>
+  </data>
+  <data name="&gt;&gt;btnSelectSaveFile.Parent" xml:space="preserve">
+    <value>tabPageZipPackage</value>
+  </data>
+  <data name="&gt;&gt;lblPass.Parent" xml:space="preserve">
+    <value>tabPageZipPackage</value>
+  </data>
+  <data name="&gt;&gt;lblExt.Name" xml:space="preserve">
+    <value>lblExt</value>
+  </data>
+  <data name="&gt;&gt;btnCheckUpdateAndInstall.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="lblFolder.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 13</value>
+  </data>
+  <data name="btnRemoveZIPFile.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;cmbEEFA.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="txtProxyUID.Location" type="System.Drawing.Point, System.Drawing">
+    <value>87, 47</value>
+  </data>
+  <data name="&gt;&gt;tabPageZip.Name" xml:space="preserve">
+    <value>tabPageZip</value>
+  </data>
+  <data name="lblProxyURL.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 23</value>
+  </data>
+  <data name="&gt;&gt;label1.Name" xml:space="preserve">
+    <value>label1</value>
+  </data>
+  <data name="&gt;&gt;tabPageUnZip.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>The path of the EXE to start is made in the installation directory] + [(path) EXE name.</value>
+  </data>
+  <data name="tabDeployZipPac.Size" type="System.Drawing.Size, System.Drawing">
+    <value>450, 379</value>
+  </data>
+  <data name="btnAddZIPFile.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="btnCompress.Location" type="System.Drawing.Point, System.Drawing">
+    <value>9, 133</value>
+  </data>
+  <data name="cmbFormat.Location" type="System.Drawing.Point, System.Drawing">
+    <value>53, 63</value>
+  </data>
+  <data name="txtExeName.Location" type="System.Drawing.Point, System.Drawing">
+    <value>138, 226</value>
+  </data>
+  <data name="cbxExt.TabIndex" type="System.Int32, mscorlib">
+    <value>20</value>
+  </data>
+  <data name="txtDomain.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="cbxRootDir.TabIndex" type="System.Int32, mscorlib">
+    <value>18</value>
+  </data>
+  <data name="lblInsDir.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="panel1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>462, 392</value>
+  </data>
+  <data name="lblEEFA.Size" type="System.Drawing.Size, System.Drawing">
+    <value>99, 13</value>
+  </data>
+  <data name="&gt;&gt;tabPageZipPackage.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="btnSelectSaveFile.Size" type="System.Drawing.Size, System.Drawing">
+    <value>89, 25</value>
+  </data>
+  <data name="txtPass.PasswordChar" type="System.Char, mscorlib" xml:space="preserve">
+    <value>*</value>
+  </data>
+  <data name="&gt;&gt;lblCmpLv.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cbxExt.Location" type="System.Drawing.Point, System.Drawing">
+    <value>406, 67</value>
+  </data>
+  <data name="txtProxyPWD.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
+  </data>
+  <data name="lblRootDirCheck.TabIndex" type="System.Int32, mscorlib">
+    <value>19</value>
+  </data>
+  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 249</value>
+  </data>
+  <data name="&gt;&gt;lblInsDir.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnAddZIPFile.Name" xml:space="preserve">
+    <value>btnAddZIPFile</value>
+  </data>
+  <data name="&gt;&gt;btnCreateManifesto.Parent" xml:space="preserve">
+    <value>tabPageManifesto</value>
+  </data>
+  <data name="cmbEnc.Items1" xml:space="preserve">
+    <value>shift_jis</value>
+  </data>
+  <data name="gbxWWW.Size" type="System.Drawing.Size, System.Drawing">
+    <value>424, 133</value>
+  </data>
+  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>420, 28</value>
+  </data>
+  <data name="&gt;&gt;label2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="btnAddZIPFile.Text" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="lblFolder.Text" xml:space="preserve">
+    <value>Folder</value>
+  </data>
+  <data name="cmbEEFA.Size" type="System.Drawing.Size, System.Drawing">
+    <value>312, 21</value>
+  </data>
+  <data name="lbxZIPFiles.ScrollAlwaysVisible" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="lblStatus.Size" type="System.Drawing.Size, System.Drawing">
+    <value>450, 16</value>
+  </data>
+  <data name="&gt;&gt;lblExeName.Parent" xml:space="preserve">
+    <value>tabPageManifesto</value>
+  </data>
+  <data name="&gt;&gt;lblRootDirCheck.Parent" xml:space="preserve">
+    <value>tabPageZip</value>
+  </data>
+  <data name="&gt;&gt;btnSelectFolder.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;txtProxyUID.Parent" xml:space="preserve">
+    <value>gbxProxy</value>
+  </data>
+  <data name="lblCyp.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;cmbCmpLv.Name" xml:space="preserve">
+    <value>cmbCmpLv</value>
+  </data>
+  <data name="&gt;&gt;tabPageManifesto.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;txtDomain.Parent" xml:space="preserve">
+    <value>gbxWWW</value>
+  </data>
+  <data name="txtProxyDomain.Size" type="System.Drawing.Size, System.Drawing">
+    <value>331, 20</value>
+  </data>
+  <data name="&gt;&gt;label2.Parent" xml:space="preserve">
+    <value>tabPageManifesto</value>
+  </data>
+  <data name="lblCyp.Size" type="System.Drawing.Size, System.Drawing">
+    <value>57, 13</value>
+  </data>
+  <data name="&gt;&gt;lblInsDir.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;cmbCmpLv.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="tabPageZipPackage.Text" xml:space="preserve">
+    <value>Create a Zip package</value>
+  </data>
+  <data name="&gt;&gt;lblProxyDomain.Name" xml:space="preserve">
+    <value>lblProxyDomain</value>
+  </data>
+  <data name="txtFile.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 20</value>
+  </data>
+  <data name="&gt;&gt;txtFolder.Parent" xml:space="preserve">
+    <value>tabPageZipPackage</value>
+  </data>
+  <data name="&gt;&gt;txtURL.Name" xml:space="preserve">
+    <value>txtURL</value>
+  </data>
+  <data name="lblDomain.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="txtFile.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="tabDeployZipPac.TabIndex" type="System.Int32, mscorlib">
+    <value>23</value>
+  </data>
+  <data name="txtPass.Size" type="System.Drawing.Size, System.Drawing">
+    <value>327, 20</value>
+  </data>
+  <data name="&gt;&gt;gbxWWW.Name" xml:space="preserve">
+    <value>gbxWWW</value>
+  </data>
+  <data name="&gt;&gt;txtInsDir.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="btnCompress.Size" type="System.Drawing.Size, System.Drawing">
+    <value>402, 25</value>
+  </data>
+  <data name="&gt;&gt;tabPageZip.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="panel1.TabIndex" type="System.Int32, mscorlib">
+    <value>23</value>
+  </data>
+  <data name="lblFolder.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
+  </data>
+  <data name="lblURL.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;txtExeName.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="cmbCyp.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
+  <data name="&gt;&gt;lbxZIPFiles.ZOrder" xml:space="preserve">
+    <value>10</value>
+  </data>
+  <data name="lblURL.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 21</value>
+  </data>
+  <data name="txtInsDir.Location" type="System.Drawing.Point, System.Drawing">
+    <value>138, 204</value>
+  </data>
+  <data name="txtFile.Location" type="System.Drawing.Point, System.Drawing">
+    <value>94, 37</value>
+  </data>
+  <data name="btnDelHistory.Text" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="&gt;&gt;btnSelectFolder.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="tabDeployZipPac.Location" type="System.Drawing.Point, System.Drawing">
+    <value>6, 7</value>
+  </data>
+  <data name="btnDecomp.Size" type="System.Drawing.Size, System.Drawing">
+    <value>380, 25</value>
+  </data>
+  <data name="&gt;&gt;tabZipUnZip.ZOrder" xml:space="preserve">
+    <value>10</value>
+  </data>
+  <data name="&gt;&gt;lblHistorys.Parent" xml:space="preserve">
+    <value>tabPageDeployWithHTTP</value>
+  </data>
+  <data name="btnRemoveZIPFile.Text" xml:space="preserve">
+    <value>Remove</value>
+  </data>
+  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>403, 13</value>
+  </data>
+  <data name="lblPass.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="cbxExt.Size" type="System.Drawing.Size, System.Drawing">
+    <value>15, 14</value>
+  </data>
+  <data name="cmbEnc.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="cmbEnc.Size" type="System.Drawing.Size, System.Drawing">
+    <value>327, 21</value>
+  </data>
+  <data name="lblRootDirCheck.Size" type="System.Drawing.Size, System.Drawing">
+    <value>600, 11</value>
+  </data>
+  <data name="lblProxyURL.Text" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="btnCheckUpdateAndInstall.Text" xml:space="preserve">
+    <value>Install it check for updates</value>
+  </data>
+  <data name="&gt;&gt;lblProxyPWD.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;lblStatus.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="txtPWD.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;cmbEnc.Parent" xml:space="preserve">
+    <value>tabPageZipPackage</value>
+  </data>
+  <data name="cmbCyp.Size" type="System.Drawing.Size, System.Drawing">
+    <value>358, 21</value>
+  </data>
+  <data name="lblHistorys.Location" type="System.Drawing.Point, System.Drawing">
+    <value>24, 13</value>
+  </data>
+  <data name="&gt;&gt;txtProxyURL.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;lblURL.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="txtURL.Location" type="System.Drawing.Point, System.Drawing">
+    <value>87, 17</value>
+  </data>
+  <data name="btnRemoveZIPFile.Size" type="System.Drawing.Size, System.Drawing">
+    <value>415, 25</value>
+  </data>
+  <data name="cmbEnc.Items" xml:space="preserve">
+    <value>utf-8</value>
+  </data>
+  <data name="lblProxyURL.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;tabDeployZipPac.Parent" xml:space="preserve">
+    <value>panel1</value>
+  </data>
+  <data name="&gt;&gt;btnDelHistory.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="tabPageUnZip.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;txtProxyDomain.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="txtProxyURL.Location" type="System.Drawing.Point, System.Drawing">
+    <value>87, 20</value>
+  </data>
+  <data name="&gt;&gt;lblCyp.Name" xml:space="preserve">
+    <value>lblCyp</value>
+  </data>
+  <data name="cmbCyp.Location" type="System.Drawing.Point, System.Drawing">
+    <value>61, 7</value>
+  </data>
+  <data name="txtUID.Location" type="System.Drawing.Point, System.Drawing">
+    <value>87, 44</value>
+  </data>
+  <data name="cbxExt.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="txtPass.TabIndex" type="System.Int32, mscorlib">
+    <value>15</value>
+  </data>
+  <data name="lblCmpLv.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 38</value>
+  </data>
+  <data name="lblPass.TabIndex" type="System.Int32, mscorlib">
+    <value>16</value>
+  </data>
+  <data name="&gt;&gt;txtExt.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabDeployZipPac.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPageUnZip.Name" xml:space="preserve">
+    <value>tabPageUnZip</value>
+  </data>
+  <data name="&gt;&gt;btnCheckUpdateAndInstall.Name" xml:space="preserve">
+    <value>btnCheckUpdateAndInstall</value>
+  </data>
+  <data name="&gt;&gt;btnRemoveZIPFile.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label3.Text" xml:space="preserve">
+    <value>EXE name (path) to be specified in a comma-separated, EXE the first is subject to activation.</value>
+  </data>
+  <data name="&gt;&gt;txtPass.Parent" xml:space="preserve">
+    <value>tabPageZipPackage</value>
+  </data>
+  <data name="&gt;&gt;lblProxyDomain.Parent" xml:space="preserve">
+    <value>gbxProxy</value>
+  </data>
+  <data name="&gt;&gt;btnCreateManifesto.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;panel1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;txtProxyDomain.Name" xml:space="preserve">
+    <value>txtProxyDomain</value>
+  </data>
+  <data name="lblExeName.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;gbxProxy.Name" xml:space="preserve">
+    <value>gbxProxy</value>
+  </data>
+  <data name="label2.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="&gt;&gt;lblPWD.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblProxyUID.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="lblPWD.Size" type="System.Drawing.Size, System.Drawing">
+    <value>53, 13</value>
+  </data>
+  <data name="&gt;&gt;lblEEFA.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label1.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;panel1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblFormat.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="btnCreateManifesto.Location" type="System.Drawing.Point, System.Drawing">
+    <value>15, 319</value>
+  </data>
+  <data name="&gt;&gt;lblURL.Name" xml:space="preserve">
+    <value>lblURL</value>
+  </data>
+  <data name="&gt;&gt;txtExeName.Name" xml:space="preserve">
+    <value>txtExeName</value>
+  </data>
+  <data name="gbxProxy.Size" type="System.Drawing.Size, System.Drawing">
+    <value>424, 133</value>
+  </data>
+  <data name="&gt;&gt;txtDomain.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;openFileDialog1.Name" xml:space="preserve">
+    <value>openFileDialog1</value>
+  </data>
+  <data name="lbxZIPFiles.Size" type="System.Drawing.Size, System.Drawing">
+    <value>415, 121</value>
+  </data>
+  <data name="&gt;&gt;txtProxyPWD.Parent" xml:space="preserve">
+    <value>gbxProxy</value>
+  </data>
+  <data name="&gt;&gt;cbxFormat.Parent" xml:space="preserve">
+    <value>tabPageZip</value>
+  </data>
+  <data name="&gt;&gt;tabPageDeployWithHTTP.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="txtProxyUID.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
+  </data>
+  <data name="&gt;&gt;txtProxyURL.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPageDeployWithHTTP.Parent" xml:space="preserve">
+    <value>tabDeployZipPac</value>
+  </data>
+  <data name="tabPageZipPackage.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;cmbCyp.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;cbxFormat.Name" xml:space="preserve">
+    <value>cbxFormat</value>
+  </data>
+  <data name="&gt;&gt;txtExt.ZOrder" xml:space="preserve">
+    <value>9</value>
+  </data>
+  <data name="&gt;&gt;lblFormat.Parent" xml:space="preserve">
+    <value>tabPageZip</value>
+  </data>
+  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
+    <value>tabPageManifesto</value>
+  </data>
+  <data name="tabPageUnZip.Text" xml:space="preserve">
+    <value>Thawing (test)</value>
+  </data>
+  <data name="&gt;&gt;txtExt.Parent" xml:space="preserve">
+    <value>tabPageZipPackage</value>
+  </data>
+  <data name="&gt;&gt;lblProxyUID.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="btnDelHistory.Location" type="System.Drawing.Point, System.Drawing">
+    <value>344, 8</value>
+  </data>
+  <data name="&gt;&gt;txtProxyURL.Name" xml:space="preserve">
+    <value>txtProxyURL</value>
+  </data>
+  <data name="cmbCmpLv.Size" type="System.Drawing.Size, System.Drawing">
+    <value>358, 21</value>
+  </data>
+  <data name="lblFolder.Size" type="System.Drawing.Size, System.Drawing">
+    <value>36, 13</value>
+  </data>
+  <data name="&gt;&gt;cbxFormat.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;lblCmpLv.Name" xml:space="preserve">
+    <value>lblCmpLv</value>
+  </data>
+  <data name="&gt;&gt;label1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="btnCheckUpdateAndInstall.TabIndex" type="System.Int32, mscorlib">
+    <value>14</value>
+  </data>
+  <data name="&gt;&gt;lblUID.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="cbxRootDir.Location" type="System.Drawing.Point, System.Drawing">
+    <value>8, 91</value>
+  </data>
+  <data name="&gt;&gt;gbxWWW.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;cmbCyp.Name" xml:space="preserve">
+    <value>cmbCyp</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>464, 427</value>
+  </data>
+  <data name="lblProxyUID.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="lblRootDirCheck.Text" xml:space="preserve">
+    <value>(Compression from the root folder) that you do not want to include in the root folder in the ZIP ZIP file name specified: Checked.</value>
+  </data>
+  <data name="&gt;&gt;cbxExt.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="gbxProxy.Text" xml:space="preserve">
+    <value>Proxy server</value>
+  </data>
+  <data name="&gt;&gt;folderBrowserDialog1.Name" xml:space="preserve">
+    <value>folderBrowserDialog1</value>
+  </data>
+  <data name="cmbFormat.TabIndex" type="System.Int32, mscorlib">
+    <value>14</value>
+  </data>
+  <data name="&gt;&gt;btnSelectSaveFile.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="tabPageZipPackage.Size" type="System.Drawing.Size, System.Drawing">
+    <value>442, 353</value>
+  </data>
+  <data name="&gt;&gt;txtURL.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblPass.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="txtURL.Size" type="System.Drawing.Size, System.Drawing">
+    <value>331, 20</value>
+  </data>
+  <data name="&gt;&gt;lblDomain.Name" xml:space="preserve">
+    <value>lblDomain</value>
+  </data>
+  <data name="&gt;&gt;txtFile.Name" xml:space="preserve">
+    <value>txtFile</value>
+  </data>
+  <data name="btnSelectSaveFile.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="txtInsDir.Size" type="System.Drawing.Size, System.Drawing">
+    <value>292, 20</value>
+  </data>
+  <data name="&gt;&gt;lblUID.Parent" xml:space="preserve">
+    <value>gbxWWW</value>
+  </data>
+  <data name="&gt;&gt;txtPWD.Name" xml:space="preserve">
+    <value>txtPWD</value>
+  </data>
+  <data name="&gt;&gt;tabZipUnZip.Name" xml:space="preserve">
+    <value>tabZipUnZip</value>
+  </data>
+  <data name="cmbEnc.Location" type="System.Drawing.Point, System.Drawing">
+    <value>94, 91</value>
+  </data>
+  <data name="&gt;&gt;gbxProxy.Parent" xml:space="preserve">
+    <value>tabPageDeployWithHTTP</value>
+  </data>
+  <data name="&gt;&gt;btnDecomp.Parent" xml:space="preserve">
+    <value>tabPageUnZip</value>
+  </data>
+  <data name="&gt;&gt;lblDomain.Parent" xml:space="preserve">
+    <value>gbxWWW</value>
+  </data>
+  <data name="lblProxyDomain.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="cbxRootDir.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 8.25pt</value>
+  </data>
+  <data name="&gt;&gt;cmbEEFA.Name" xml:space="preserve">
+    <value>cmbEEFA</value>
+  </data>
+  <data name="&gt;&gt;tabPageZip.Parent" xml:space="preserve">
+    <value>tabZipUnZip</value>
+  </data>
+  <data name="&gt;&gt;label3.Name" xml:space="preserve">
+    <value>label3</value>
+  </data>
+  <data name="&gt;&gt;btnDecomp.Name" xml:space="preserve">
+    <value>btnDecomp</value>
+  </data>
+  <data name="&gt;&gt;cbxRootDir.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="lblEnc.Text" xml:space="preserve">
+    <value>Encode</value>
+  </data>
+  <data name="tabPageDeployWithHTTP.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="lblURL.Text" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="panel1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>1, 2</value>
+  </data>
+  <data name="btnCreateManifesto.Size" type="System.Drawing.Size, System.Drawing">
+    <value>415, 25</value>
+  </data>
+  <data name="&gt;&gt;lblHistorys.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>Form1</value>
+  </data>
+  <data name="btnCompress.Text" xml:space="preserve">
+    <value>Compression</value>
+  </data>
+  <data name="&gt;&gt;txtExeName.Parent" xml:space="preserve">
+    <value>tabPageManifesto</value>
+  </data>
+  <data name="txtProxyUID.Size" type="System.Drawing.Size, System.Drawing">
+    <value>331, 20</value>
+  </data>
+  <data name="tabPageZipPackage.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="&gt;&gt;lblEEFA.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="lbxZIPFiles.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;cmbEnc.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="txtFolder.Size" type="System.Drawing.Size, System.Drawing">
+    <value>232, 20</value>
+  </data>
+  <data name="&gt;&gt;lblExeName.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="cmbCmpLv.Location" type="System.Drawing.Point, System.Drawing">
+    <value>61, 35</value>
+  </data>
+  <data name="&gt;&gt;label3.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lbxZIPFiles.Name" xml:space="preserve">
+    <value>lbxZIPFiles</value>
+  </data>
+  <data name="tabPageManifesto.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;lblExeName.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="tabPageManifesto.Size" type="System.Drawing.Size, System.Drawing">
+    <value>442, 353</value>
+  </data>
+  <data name="&gt;&gt;tabPageZipPackage.Parent" xml:space="preserve">
+    <value>tabDeployZipPac</value>
+  </data>
+  <data name="&gt;&gt;btnDecomp.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;btnCreateManifesto.Name" xml:space="preserve">
+    <value>btnCreateManifesto</value>
+  </data>
+  <data name="&gt;&gt;lblProxyURL.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="tabPageUnZip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>422, 167</value>
+  </data>
+  <data name="&gt;&gt;lblEnc.Parent" xml:space="preserve">
+    <value>tabPageZipPackage</value>
+  </data>
+  <data name="lblPWD.Text" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="&gt;&gt;cmbFormat.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;cmbCmpLv.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;cmbFormat.Parent" xml:space="preserve">
+    <value>tabPageZip</value>
+  </data>
+  <data name="&gt;&gt;lblInsDir.Name" xml:space="preserve">
+    <value>lblInsDir</value>
+  </data>
+  <data name="&gt;&gt;btnCheckUpdateAndInstall.Parent" xml:space="preserve">
+    <value>tabPageDeployWithHTTP</value>
+  </data>
+  <data name="txtExeName.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;txtUID.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="btnSelectFolder.Location" type="System.Drawing.Point, System.Drawing">
+    <value>332, 8</value>
+  </data>
+  <data name="&gt;&gt;cmbCyp.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblExt.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;txtProxyPWD.Name" xml:space="preserve">
+    <value>txtProxyPWD</value>
+  </data>
+  <data name="&gt;&gt;panel1.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>433, 26</value>
+  </data>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="saveFileDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>178, 17</value>
+  </metadata>
+  <metadata name="openFilesDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>441, 17</value>
+  </metadata>
+  <metadata name="openFileDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>309, 17</value>
+  </metadata>
+  <metadata name="folderBrowserDialog1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+</root>
