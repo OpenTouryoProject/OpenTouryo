@@ -186,6 +186,9 @@ namespace TestCode
             // 範囲外
             TestUtil.OutputLong("0 byte", new byte[] { });
             TestUtil.OutputLong("9 byte", new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 });
+
+            // null は ArgumentNullException（2026/08/06 まで NullReferenceException だった）
+            TestUtil.OutputLong("null", null);
         }
 
         /// <summary>設定と環境情報</summary>

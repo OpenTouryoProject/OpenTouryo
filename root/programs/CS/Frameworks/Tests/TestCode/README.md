@@ -105,6 +105,29 @@ MyDebug.OutputDebugAndConsole(
     "EnvInfo.MachineName が取れる : " + !string.IsNullOrEmpty(EnvInfo.MachineName));
 ```
 
+### 期待値は「出力をそのまま貼る」のではなく、**検算する**
+
+結果ファイルとの比較方式は、**実装が誤っていても、その誤った出力を「正」として固定してしまう。**
+`OK` が出続けるので、後から気付けない。
+
+**値が自明でないものは、実装を読んで手計算で確かめてから記録すること。**
+
+`ArrayOperator.GetLongFromByte` がこれで漏れた（#522）。
+桁の重みを `256 * j`（掛け算）で求めていたため 3 byte 目から誤っていたが、
+8 byte の出力をそのまま期待値にしていたため、いったん見逃した。
+
+### 境界は必ず跨ぐ
+
+同じ `GetLongFromByte` は、**1〜2 byte だけを見ていると不具合に気付けない。**
+`256 * 1 == 256 ^ 1` のため、2 byte までは誤った実装でも正しい値になる。
+
+```
+2 byte : 258      ← 誤った実装でも一致する
+3 byte : 66051    ← ここで初めて差が出る
+```
+
+**「たまたま一致する範囲」の外側にケースを置く。**
+
 ### 日時は固定値を与える
 
 `DateTime.Now` を使わない。UTC で与えれば、時差のある環境でも同じ結果になる。
@@ -128,6 +151,8 @@ DateTimeOffset dto = new DateTimeOffset(2026, 8, 6, 12, 34, 56, TimeSpan.Zero);
 |---|---|
 | `PubCmnFunction.GetFileNameNoEx` | 第 2 引数は**パス区切り**。拡張子の区切りだと思って `'.'` を渡すと空文字が返る |
 | `ArrayOperator.CopyArray` | **配列を伸ばせない。** コピー長が「コピー先配列の長さ」で固定のため、コピー先を大きくするとコピー元が足りず落ちる。書込開始位置を 0 より後ろにしても落ちる |
+| `ArrayOperator.ShortenByteArray` | 単純な切り詰めではなく、**XOR で畳み込む**（暗号鍵の生成用） |
+| `ArrayOperator.GetLongFromByte` | ビッグ エンディアン。8 byte で最上位ビットが立つと **Int64 の範囲を超えて負になる**（2 の補数として解釈した値） |
 | `StringExtractor.GetParameterFromQueryString` | 「値が空」と「名前が無い」を**区別できない**（どちらも `""`） |
 | `ObjectInspector` | 再帰の深さは **5 まで**。入口で加算・出口で減算するカウンタで抑えている |
 | `Latebind` | `NonPublic` を含むため **private も呼べる**。呼び先の例外は `TargetInvocationException` に包まれる |

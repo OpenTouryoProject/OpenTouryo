@@ -408,7 +408,7 @@ MVC_Sample (net10.0)              OK   ログイン後 /Crud1/Index = 200
 利用者が `powershell.exe`（5.1）で実行したときに落ちる。
 
 > **規約の実体は
-> [`CS/Frameworks/ANALYSIS.md`](CS/Frameworks/ANALYSIS.md) の 8.4 節**にある。
+> [`CS/Frameworks/ANALYSIS.md`](CS/Frameworks/ANALYSIS.md) の 8.5 節**にある。
 > 落とし穴の一覧と対処方法は、そちらを参照すること。
 
 本スクリプト群は、次の 4 点を**実際に踏んだ**うえで対処してある。

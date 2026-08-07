@@ -118,7 +118,7 @@ cd root\programs
 
 規約の実体は
 [`Frameworks/ANALYSIS.md`](root/programs/CS/Frameworks/ANALYSIS.md) の
-**8.4 節「ps1 ファイルの文字コードと、PowerShell 5.1 / 7 の両対応」**にある。
+**8.5 節「ps1 ファイルの文字コードと、PowerShell 5.1 / 7 の両対応」**にある。
 
 前提となるサービスや DB の状態が足りない場合は、**勝手に変えず、対処方法とともに報告する。**
 

@@ -472,7 +472,39 @@ net48 のサンプルとツールが一切ビルドできない。**
   アプリ側は `LayerB` / `LayerD` / `TestParameterValue` / `TestReturnValue` を実装（`Samples/` 参照）。
 - 変数はプライベート フィールド `_xxx` ＋ 明示的プロパティ（自動プロパティは新しい箇所のみ）。
 
-### 8.3 bat ファイルの文字コード
+### 8.3 引数を検査する例外（`ArgumentException` だけ引数の順が違う）
+
+**3 つとも「引数名」を渡すが、渡す位置が違う。**
+`ArgumentException` **だけメッセージが先**で、ここが取り違えの温床になる。
+
+| 例外 | 第 1 引数 | 第 2 引数 |
+|---|---|---|
+| `ArgumentNullException` | **引数名** | メッセージ |
+| `ArgumentOutOfRangeException` | **引数名** | 実際の値（3 引数版）→ メッセージ |
+| `ArgumentException` | **メッセージ** | **引数名** |
+
+`ArgumentException("userId")` と書くと、**引数名ではなくメッセージが "userId" になる**。
+引数名を伝えたいなら第 2 引数に置く。
+
+```csharp
+throw new ArgumentNullException(nameof(bytes));
+throw new ArgumentOutOfRangeException("ecc", ecc, "Invalid");
+throw new ArgumentException("Length is less than 128 bits.", "cek");   // 引数名は第 2
+```
+
+既存コードは 148 箇所すべてこの規約どおり
+（`ArgumentException` は 139 箇所あり、大半はメッセージのみ。
+メッセージは `PublicExceptionMessage` の定数を使う）。
+
+**引数名は `nameof` で書く。** 引数名を変えたときに追随するため。
+文字列リテラルだと乖離しても誰も気付かない。実際、`ArrayOperator.GetLongFromByte` は
+分割時（2019/05/28）の旧名 `"bytData"` が残り、**存在しない引数名**を渡していた
+（2026/08/06 に修正、#522）。
+
+> **既存箇所の一括置換はしない。** 下位互換の維持が最優先のため
+> （[`Contributing.ja.md`](../../../Contributing.ja.md)）、新規・修正箇所から適用する。
+
+### 8.4 bat ファイルの文字コード
 
 **非 ASCII 文字（日本語）を含む `.bat` は UTF-8 BOM 付きにする。**
 
@@ -493,7 +525,7 @@ BOM が無いと、cmd.exe がバッチをバイト オフセットで読み進�
 
 `root/programs/CS/` 配下で非 ASCII を含む bat は、すべて BOM 付きになっている。
 
-### 8.4 ps1 ファイルの文字コードと、PowerShell 5.1 / 7 の両対応
+### 8.5 ps1 ファイルの文字コードと、PowerShell 5.1 / 7 の両対応
 
 **`.ps1` は Windows PowerShell 5.1 と PowerShell 7 の両方で動くこと。**
 
@@ -519,7 +551,7 @@ if ([Console]::OutputEncoding.CodePage -ne 65001)
 }
 ```
 
-- **`.bat` は「非 ASCII を含むときだけ」BOM 付き**（8.3）だが、
+- **`.bat` は「非 ASCII を含むときだけ」BOM 付き**（8.4）だが、
   **`.ps1` は非 ASCII を含むなら必ず BOM 付き**。5.1 が既定で ANSI として読むため。
 - 5.1 の `[Console]::OutputEncoding` は**起動時の値のまま**で、実行中にコード ページが
   変わっても追随しない。同じ画面で 2 回目を実行したときに化ける原因になる。
@@ -610,7 +642,14 @@ net10.0 のフレームワーク参照（`Microsoft.AspNetCore.App`）ではな�
     - `Business` = 9.0.4 → `Business_netcore100.sln` のビルドで **18 警告**
     - 修正版の有無を確認したうえで更新するか、`NoWarn` での抑止を検討する。
       版を上げる場合は net48 / netcore100 の両 csproj と `NuGet/*.nuspec` の `<dependencies>` を同時に直す。
-12. **`Symbol_Framework.RichClient.nuspec` の lib TFM が不正確**。
+12. **結果ファイル比較のテストは、検算しないと不具合を「正」として固定する。**
+    `ArrayOperator.GetLongFromByte` は桁の重みを `256 * j`（掛け算）で求めており、
+    **3 byte 目から誤った値**を返していた（2026/08/06 に修正、#522）。
+    1〜2 byte は `256 * 1 == 256 ^ 1` でたまたま一致するため、呼び出し元
+    （`CheckCharCode` → Shift_JIS の 1〜2 byte）では顕在化していなかった。
+    **期待値を作るときは、出力をそのまま貼らず実装から検算し、境界を跨いだケースを置く**
+    （[`Tests/TestCode/README.md`](Tests/TestCode/README.md)）。
+13. **`Symbol_Framework.RichClient.nuspec` の lib TFM が不正確**。
     `net10.0-windows7.0` ビルドを `lib\net10.0` に配置している。本来は `lib\net10.0-windows` が正しく、
     現状は Linux 上の net10.0 消費者も解決してしまう。直すとパッケージ解決セマンティクスが変わるため据え置き。
 

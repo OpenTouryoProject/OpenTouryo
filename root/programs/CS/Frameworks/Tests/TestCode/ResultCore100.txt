@@ -70,11 +70,11 @@ log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.Level
 log4net: Created Appender [OPERATION2]
 log4net: Adding appender named [OPERATION2] to logger [OPERATION].
 log4net: Hierarchy Threshold []
-[2026/08/06 18:25:17,143],[DEBUG],[2],LogIF.DebugLog("ACCESS");
-[2026/08/06 18:25:17,160],[INFO ],[2],LogIF.InfoLog("ACCESS");
-[2026/08/06 18:25:17,161],[WARN ],[2],LogIF.WarnLog("ACCESS");
-[2026/08/06 18:25:17,162],[ERROR],[2],LogIF.ErrorLog("ACCESS");
-[2026/08/06 18:25:17,162],[FATAL],[2],LogIF.FatalLog("ACCESS");
+[2026/08/06 20:40:24,675],[DEBUG],[2],LogIF.DebugLog("ACCESS");
+[2026/08/06 20:40:24,685],[INFO ],[2],LogIF.InfoLog("ACCESS");
+[2026/08/06 20:40:24,686],[WARN ],[2],LogIF.WarnLog("ACCESS");
+[2026/08/06 20:40:24,687],[ERROR],[2],LogIF.ErrorLog("ACCESS");
+[2026/08/06 20:40:24,687],[FATAL],[2],LogIF.FatalLog("ACCESS");
 ----------------------------------------------------------------------------------------------------
 GetMessage: ～メッセージID:I0001に対応する記述（正常系）～
 GetMessage: ～メッセージID:E0001に対応する記述（異常系）～
@@ -2251,7 +2251,16 @@ CopyArray(読取開始位置をずらす) : [2, 3]
 CopyArray(書込開始位置をずらす) : 例外 System.ArgumentException
 CombineArray : [1, 2, 3, 4, 5]
 ShortenByteArray(8 → 3) : [2, 15, 5]
-GetLongFromByte : 21512
+ArrayOperator.GetLongFromByte
+1 byte : 1
+2 byte : 258
+3 byte : 66051
+3 byte（上位のみ） : 65536
+8 byte : 72623859790382856
+8 byte（最上位ビット） : -1
+0 byte : 例外 System.ArgumentOutOfRangeException
+9 byte : 例外 System.ArgumentOutOfRangeException
+null : 例外 System.ArgumentNullException
 ----------------------------------------------------------------------------------------------------
 GetConfigParameter / EnvInfo
 GetConfigValue(FxBusinessMessageCulture) : ja-JP
