@@ -64,6 +64,29 @@ INSERT の方法（1 件ずつ／SQL 連結／INSERT 文組み立て）で、い
 残っていると重複で落ちる。スクリプトが `DELETE FROM [Orders2]` を行ってから実行する。
 実行後は 830 件＝初期状態に戻るため、後始末は不要。
 
+#### `Orders2` はスクリプトが作る
+
+**`Orders2` は Northwind 標準の表ではない。** `instnwnd.sql` に含まれないため、
+**DB を作り直すたびに消える**。そのたびに手で作るのは現実的でないので、
+事前準備の中で存在を確認し、無ければ作る。
+
+```
+Orders2 がありません。作成します（...\RerunnableBatch_sample\CREATE ORDERS2.sql）。
+```
+
+DDL はサンプル同梱の `CREATE ORDERS2.sql` をそのまま流す。**スクリプトに書き写さない**
+（同じ DDL がサンプル配下に 9 つ重複しており、増やす意味がない）。
+
+流すときの注意が 2 つある。
+
+- **`GO` は自前で分割する。** `SqlClient` は `GO` を解釈できない（`sqlcmd` の
+  バッチ区切りであって T-SQL ではない）。このファイルは 3 バッチに分かれる。
+- **`USE [Northwind]` は流さない。** 接続先は接続文字列に従うべきで、
+  流すと接続文字列が別 DB を指していた場合にそちらへ表を作ってしまう。
+
+> CI では `Set up Northwind` ステップが `instnwnd.sql` の直後に同じ DDL を流している。
+> そちらは `sqlcmd` なので `GO` をそのまま解釈できる。
+
 ### CLI（1 件）
 
 | 対象 | 判定 |
@@ -120,10 +143,12 @@ NG : /OUTPUT "C:\temp\out"    ← \ が消える
 
 | 方法 | 結果 |
 |---|---|
-| PowerShell の `& $exe ... *>&1 \| Out-File` | **取れる**（68 行） |
+| `Start-Process -RedirectStandardOutput` | **取れる**（現在の方式） |
+| PowerShell の `& $exe ... *>&1 \| Out-File` | 取れるが、**stderr が壊れる**（下記） |
 | `cmd /c "... > file"` | 取れない（0 行） |
 
-`3_SmokeTest.ps1` は前者で実行している。
+**`3_SmokeTest.ps1` は `Start-Process` でファイルへ直接リダイレクトする。**
+パイプ（`\| Out-File`）でも出力自体は取れるが、そちらは別の問題を抱える（9 節）。
 
 ### Web アプリ（3 件）
 
@@ -180,9 +205,6 @@ WinForms / WPF 系は、リリース チェックリスト（段階 4）の**手
 - **SQL Server の Northwind に接続できる**こと
   - 接続文字列は `CS\Samples\Bat_sample\SimpleBatch_sample\App.config` の
     `ConnectionString_SQL` を読む。ここで別途ハードコードすると追随できなくなるため
-- **`Orders2` テーブルが存在する**こと
-  - Northwind 標準ではない。無い場合は
-    `CS\Samples\Bat_sample\RerunnableBatch_sample\CREATE ORDERS2.sql` を実行する
 - **IIS Express** がインストールされていること（net48 の Web アプリ）
 - **ASP.NET 状態サービスが開始されている**こと（net48 の Web アプリ）
 
@@ -277,6 +299,61 @@ System.DllNotFoundException
 
 ---
 
+## 7.2 修正の経緯 : 対象の起動方法を `Start-Process` にした
+
+**当初は PowerShell のパイプで実行していた。**
+
+```powershell
+& $exe @($t.Args) *>&1 | Out-File $out -Encoding UTF8
+```
+
+この形は 2 つの問題を抱えていて、**対症療法を 3 回繰り返しても直らなかった。**
+
+### ① stdin を与えないと止まる
+
+サンプルは終了前に `Console.ReadKey()` を呼ぶ。stdin がコンソールのままだと
+**本当にキー入力を待つ**。実測で `SimpleBatch_sample (net48)` が **386 秒**かかった。
+
+**CI では stdin が元からリダイレクトされているため顕在化しない。** 実機だけで止まる。
+
+### ② stderr が壊れる
+
+パイプで受けると、native の stderr が `ErrorRecord` になり**コンソール幅で折り返される。**
+折り返しは**語の途中にも入る**。
+
+```
+Cannot read keys when either application does not h ave a console ...
+                                                   ↑ 単語が割れている
+```
+
+**空白を畳んでも復元できない**（折り返しは何かを置き換えたのではなく、挿入されたため）。
+幅は環境ごとに違うので、判定側の除外規則をいくら調整しても直らない。
+
+### 現在の方式
+
+**`Start-Process` でファイルへ直接リダイレクトする。** PowerShell を経由しないので、
+出力は生のまま残り、環境による差も出ない。
+
+```powershell
+Start-Process $exe -ArgumentList $argList -NoNewWindow -Wait `
+    -WorkingDirectory (Split-Path $exe) `
+    -RedirectStandardInput $emptyIn -RedirectStandardOutput $out -RedirectStandardError $err
+```
+
+`-RedirectStandardInput` には**空ファイル**を渡す（実在するファイルが要る）。
+
+> **読み戻しには `-Encoding UTF8` を必ず付ける。**
+> `Start-Process` は子プロセスの生バイトをそのまま書くため **BOM が付かない**。
+> Windows PowerShell 5.1 の `Get-Content` は BOM が無いと既定の ANSI（CP932）で読むため、
+> **日本語の期待値だけが一致しなくなる**（ASCII の期待値は通るので気付きにくい）。
+> 従来の `Out-File -Encoding UTF8` は BOM 付きだったため、たまたま成立していた。
+
+**副次的に、`DaoGen_Tool` 実行時の画面の乱れも解消した。**
+`AttachConsole(-1)` が親コンソールへ直接書き込んでいたのが原因で、
+独立したリダイレクト先を持つようになったため起きなくなった。
+
+---
+
 ## 8. 実行結果の例
 
 ```
@@ -351,7 +428,7 @@ MVC_Sample (net10.0)              OK   ログイン後 /Crud1/Index = 200
 利用者が `powershell.exe`（5.1）で実行したときに落ちる。
 
 > **規約の実体は
-> [`CS/Frameworks/ANALYSIS.md`](CS/Frameworks/ANALYSIS.md) の 8.4 節**にある。
+> [`CS/Frameworks/ANALYSIS.md`](CS/Frameworks/ANALYSIS.md) の 8.5 節**にある。
 > 落とし穴の一覧と対処方法は、そちらを参照すること。
 
 本スクリプト群は、次の 4 点を**実際に踏んだ**うえで対処してある。

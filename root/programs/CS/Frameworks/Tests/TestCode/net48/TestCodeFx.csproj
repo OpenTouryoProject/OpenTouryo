@@ -68,8 +68,14 @@
     <Compile Include="..\TestDeflateCompression.cs">
       <Link>TestDeflateCompression.cs</Link>
     </Compile>
+    <Compile Include="..\TestDto.cs">
+      <Link>TestDto.cs</Link>
+    </Compile>
     <Compile Include="..\TestEnumToStringExtensions.cs">
       <Link>TestEnumToStringExtensions.cs</Link>
+    </Compile>
+    <Compile Include="..\TestFastReflection.cs">
+      <Link>TestFastReflection.cs</Link>
     </Compile>
     <Compile Include="..\TestFormatChecker.cs">
       <Link>TestFormatChecker.cs</Link>
@@ -83,6 +89,15 @@
     <Compile Include="..\TestJISCode.cs">
       <Link>TestJISCode.cs</Link>
     </Compile>
+    <Compile Include="..\TestLatebind.cs">
+      <Link>TestLatebind.cs</Link>
+    </Compile>
+    <Compile Include="..\TestResourceLoader.cs">
+      <Link>TestResourceLoader.cs</Link>
+    </Compile>
+    <Compile Include="..\TestObjectInspector.cs">
+      <Link>TestObjectInspector.cs</Link>
+    </Compile>
     <Compile Include="..\TestOutputLog.cs">
       <Link>TestOutputLog.cs</Link>
     </Compile>
@@ -91,6 +106,15 @@
     </Compile>
     <Compile Include="..\TestStringConverter.cs">
       <Link>TestStringConverter.cs</Link>
+    </Compile>
+    <Compile Include="..\TestStringExtractor.cs">
+      <Link>TestStringExtractor.cs</Link>
+    </Compile>
+    <Compile Include="..\TestStringVariableOperator.cs">
+      <Link>TestStringVariableOperator.cs</Link>
+    </Compile>
+    <Compile Include="..\TestUtil.cs">
+      <Link>TestUtil.cs</Link>
     </Compile>
     <Compile Include="..\TestXmlLib.cs">
       <Link>TestXmlLib.cs</Link>
@@ -101,6 +125,14 @@
       <Link>SampleLogConf.xml</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <!--LogicalName を明示する。既定のままだと「既定の名前空間 + ファイル名」になり、
+        net48（TestCodeFx）と .NET (Core)（TestCodeCore）で名前が食い違うため。-->
+    <EmbeddedResource Include="..\TestEmbedded.txt">
+      <Link>TestEmbedded.txt</Link>
+      <LogicalName>TestCode.TestEmbedded.txt</LogicalName>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="OssCons.DotNetSubcommittee.TestClassLibrary1">

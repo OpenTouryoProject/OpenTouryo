@@ -28,6 +28,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/05/28  西野 大介         新規作成（分割
+//*  2026/08/06  玄人 幸道         GetLongFromByteのシフト量の誤りを修正（#522）
+//*  2026/08/06  玄人 幸道         GetLongFromByteをシフト演算に変更・引数検査を追加（#522）
 //**********************************************************************************
 
 using System;
@@ -117,32 +119,41 @@ namespace Touryo.Infrastructure.Public.Util
         /// <summary>バイトデータを数値（Int64）データに変換</summary>
         /// <param name="bytes">バイトデータ（byte[]（8 byte以内））</param>
         /// <returns>数値（Int64）データ</returns>
+        /// <remarks>
+        /// ビッグ エンディアンとして解釈する（先頭のバイトが上位）。
+        ///
+        /// 2026/08/06 まで、桁の重みを 256 * j（掛け算）で求めていたため、
+        /// 3 byte 目以降が誤った値になっていた（#522）。
+        ///   ・1〜2 byte … 256 * 1 == 256 ^ 1 のため、たまたま正しかった
+        ///   ・3 byte 目 … 512 になっていた（正しくは 65536）
+        /// 呼び出し元の CheckCharCode は Shift_JIS の 1〜2 byte にしか使わないため
+        /// 影響は無かったが、public なので誤りは誤りとして直した。
+        ///
+        /// **掛け算ではなくシフトで積むこと。** 8 byte 目の重み（256 ^ 7）を掛ける方式は、
+        /// 最上位ビットが立つと Int64 の範囲を超えるため、checked ビルドでは例外になる。
+        /// シフト演算は checked の影響を受けないので、この差が出ない。
+        ///
+        /// なお 8 byte で最上位ビットが立つ場合の戻り値は負になる
+        /// （2 の補数として解釈した値。BitConverter.ToInt64 と同じ考え方）。
+        /// </remarks>
         public static long GetLongFromByte(byte[] bytes)
         {
+            if (bytes == null)
+            {
+                throw new ArgumentNullException(nameof(bytes));
+            }
+
+            if (bytes.Length == 0 || 8 < bytes.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(bytes));
+            }
+
             long rtnCode = 0;
 
-            if (bytes.Length <= 0)
+            for (int i = 0; i < bytes.Length; i++)
             {
-                // bytData.Length <= 0（ArgumentOutOfRangeException
-                throw new ArgumentOutOfRangeException("bytData");
-            }
-            else if (bytes.Length <= 8)
-            {
-                int j = 0; // 256 ( = 8 bit、= 1 byte)
-                for (int i = bytes.Length - 1; i >= 0; i--)
-                {
-                    // 数値化→bitシフト→加算。
-                    int bitShift = 256 * j;
-                    if (bitShift == 0) bitShift = 1;
-                    rtnCode += Convert.ToInt32(bytes[i]) * bitShift;
-
-                    j++; // 8 bit シフトする。
-                }
-            }
-            else
-            {
-                // 8 < bytData（ArgumentOutOfRangeException
-                throw new ArgumentOutOfRangeException("bytData");
+                // 8 bit シフトして下位に積む（先頭のバイトが上位になる）。
+                rtnCode = (rtnCode << 8) | bytes[i];
             }
 
             // 戻す

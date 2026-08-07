@@ -70,11 +70,11 @@ log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.Level
 log4net: Created Appender [OPERATION2]
 log4net: Adding appender named [OPERATION2] to logger [OPERATION].
 log4net: Hierarchy Threshold []
-[2026/08/05 20:29:54,825],[DEBUG],[2],LogIF.DebugLog("ACCESS");
-[2026/08/05 20:29:54,837],[INFO ],[2],LogIF.InfoLog("ACCESS");
-[2026/08/05 20:29:54,838],[WARN ],[2],LogIF.WarnLog("ACCESS");
-[2026/08/05 20:29:54,838],[ERROR],[2],LogIF.ErrorLog("ACCESS");
-[2026/08/05 20:29:54,838],[FATAL],[2],LogIF.FatalLog("ACCESS");
+[2026/08/06 20:40:24,675],[DEBUG],[2],LogIF.DebugLog("ACCESS");
+[2026/08/06 20:40:24,685],[INFO ],[2],LogIF.InfoLog("ACCESS");
+[2026/08/06 20:40:24,686],[WARN ],[2],LogIF.WarnLog("ACCESS");
+[2026/08/06 20:40:24,687],[ERROR],[2],LogIF.ErrorLog("ACCESS");
+[2026/08/06 20:40:24,687],[FATAL],[2],LogIF.FatalLog("ACCESS");
 ----------------------------------------------------------------------------------------------------
 GetMessage: ～メッセージID:I0001に対応する記述（正常系）～
 GetMessage: ～メッセージID:E0001に対応する記述（異常系）～
@@ -2170,6 +2170,105 @@ JpIpPhoneNumber_NoHyphen
 08099999999: False
 09099999999: False
 ----------------------------------------------------------------------------------------------------
+StringVariableOperator.GetPropsFromPropString
+[1 組] a=1
+  件数 : 1
+  A = 1
+[2 組] a=1;b=2
+  件数 : 2
+  A = 1
+  B = 2
+[値が空] a=;b=2
+  件数 : 2
+  A = 
+  B = 2
+[値に = を含む] a={=};b=2
+  件数 : 2
+  A = =
+  B = 2
+[値に ; を含む] a={;};b=2
+  件数 : 2
+  A = ;
+  B = 2
+[名前に = を含む] a{=}b=1
+  件数 : 1
+  A=B = 1
+[= が無い] a
+  件数 : 0
+[空文字] 
+  件数 : 0
+----------------------------------------------------------------------------------------------------
+StringVariableOperator.BuiltStringIntoEnvironmentVariable
+[そのまま] abc → abc
+[埋め込み] x%OPENTOURYO_TEST_VAR%y → xVALUEy
+[2 回] %OPENTOURYO_TEST_VAR%-%OPENTOURYO_TEST_VAR% → VALUE-VALUE
+[未定義] x%OPENTOURYO_NOT_EXIST%y → xy
+[閉じていない] x%OPENTOURYO_TEST_VAR → x%OPENTOURYO_TEST_VAR
+[null] (null) → (null)
+[空文字]  → 
+----------------------------------------------------------------------------------------------------
+StringExtractor.GetParameterFromQueryString
+[先頭の値] a → "1"
+[途中の値] b → "xyz"
+[空の値] c → ""
+[無い名前] z → ""
+[クエリ無し] a → ""
+[前方一致の紛れ] a → "1"
+----------------------------------------------------------------------------------------------------
+StringExtractor.GetAttributeFromXml
+[最初の属性] id → "1"
+[2 番目の属性] name → "abc"
+[無い属性] notexist → ""
+----------------------------------------------------------------------------------------------------
+ToStringExtension.XmlToString
+宣言なし : <root><child id="1">値</child></root>
+インデントあり :
+<root>
+  <child id="1">値</child>
+</root>
+----------------------------------------------------------------------------------------------------
+PubCmnFunction
+ChangeType string → int : 123 (Int32)
+ChangeType int → string : 123 (String)
+ChangeType string → int? : 123 (Int32)
+ChangeType null → int? : null
+ChangeType string → decimal : 1.5 (Decimal)
+ChangeType 変換できない : 例外 System.FormatException
+GetUnderlyingType(int?)  : Int32
+GetUnderlyingType(int)   : (null)
+GetUnderlyingType(string): (null)
+ToUnixTime : 1786019696
+GetFileNameNoEx(パス付き)    : a
+GetFileNameNoEx(二重拡張子)  : a.b
+GetFileNameNoEx(拡張子なし)  : 
+GetFileNameNoEx(区切りを「.」): ""
+GetCurrentMethodName : GetCurrentMethodName
+----------------------------------------------------------------------------------------------------
+ArrayOperator
+CopyArray(3 → 2) : [1, 2]
+CopyArray(3 → 5) : 例外 System.ArgumentException
+CopyArray(読取開始位置をずらす) : [2, 3]
+CopyArray(書込開始位置をずらす) : 例外 System.ArgumentException
+CombineArray : [1, 2, 3, 4, 5]
+ShortenByteArray(8 → 3) : [2, 15, 5]
+ArrayOperator.GetLongFromByte
+1 byte : 1
+2 byte : 258
+3 byte : 66051
+3 byte（上位のみ） : 65536
+8 byte : 72623859790382856
+8 byte（最上位ビット） : -1
+0 byte : 例外 System.ArgumentOutOfRangeException
+9 byte : 例外 System.ArgumentOutOfRangeException
+null : 例外 System.ArgumentNullException
+----------------------------------------------------------------------------------------------------
+GetConfigParameter / EnvInfo
+GetConfigValue(FxBusinessMessageCulture) : ja-JP
+無いキー : null または空
+EnvInfo.MachineName が取れる       : True
+EnvInfo.OsVersionString が取れる   : True
+EnvInfo.ProcessBit が 32 または 64 : True
+----------------------------------------------------------------------------------------------------
 StringConverter.ToHankaku - アアア: アアア
 StringConverter.ToZenkaku - アアア: アアア
 StringConverter.ToHiragana - アアア: あああ
@@ -2319,5 +2418,149 @@ DeflateCompression(FileStream)-1 > is working properly.
 DeflateCompression(FileStream)-2 > is working properly.
 --------------------------------------------------
 DeflateCompression(MemoryStream) > is working properly.
+----------------------------------------------------------------------------------------------------
+ResourceLoader
+絶対パスで解決        : True
+絶対パスで読み込み    : リソースの内容
+環境変数入りで解決    : True
+配置フォルダ基準      : True
+見つからない（解決）  : null
+見つからない（Exists）: False
+見つからない（例外）  : System.ArgumentException
+空文字（解決）        : null
+null（解決）          : null
+----------------------------------------------------------------------------------------------------
+EmbeddedResourceLoader
+存在する              : True
+読み込み              : 埋め込まれたリソースの内容 / embedded resource
+存在しない            : False
+存在しない（例外）    : System.ArgumentException
+----------------------------------------------------------------------------------------------------
+DataToPoco
+[DataTableToList : 名前が一致]
+件数 : 2
+OrderID=1, Note=x, Qty=0
+OrderID=2, Note=(null), Qty=0
+[DataTableToPOCO : 先頭行だけ]
+OrderID=1, Note=x, Qty=0
+[マップ無 : 列名が PK_OrderID]
+件数 : 1
+OrderID=0, Note=y, Qty=0
+[マップ有 : OrderID → PK_OrderID]
+件数 : 1
+OrderID=9, Note=y, Qty=0
+----------------------------------------------------------------------------------------------------
+PocoToPoco
+[Map : 同名のみ]
+OrderID=3, Note=z, Qty=0
+[Map : Qty ← OrderID]
+OrderID=3, Note=z, Qty=3
+----------------------------------------------------------------------------------------------------
+DataToDictionary
+OrderID   : 4
+Note      : w
+OrderDate : 2026/08/06 12:34:56
+----------------------------------------------------------------------------------------------------
+DTTable
+[FromDataTable]
+表名 : TestOrders
+列   : OrderID, Note
+行   : 5, a
+行   : 6, b
+[文字列との往復]
+表の数 : 1
+表名 : TestOrders
+列   : OrderID, Note
+行   : 5, a
+行   : 6, b
+----------------------------------------------------------------------------------------------------
+ObjectInspector.Inspect : 基本の型
+[null]
+null
+[int]
+123
+[string]
+"あいう"
+[bool]
+True
+[空文字]
+""
+[int[]]
+[1, 2, 3]
+[int[] （8 要素）]
+[1, 2, 3, 4, 5, 6, 7, 8]
+[List<string>]
+["a", "b"]
+[Dictionary]
+[x = 1, y = 2]
+----------------------------------------------------------------------------------------------------
+ObjectInspector.Inspect : POCO
+[入れ子が null]
+[Name = "外側", Inner = null, Numbers = [10, 20]]
+[入れ子に値]
+[Name = "外側", Inner = [Code = "C1", Value = 99], Numbers = [10, 20]]
+----------------------------------------------------------------------------------------------------
+ObjectInspector.Inspect : 深さの上限
+[入れ子 8 段]
+[Level = 1, Child = [Level = 2, Child = [Level = 3, Child = [Level = 4, Child = [Level = -over-, Child = -over-]]]]]
+[循環参照]
+[Level = 1, Child = [Level = 1, Child = [Level = 1, Child = [Level = 1, Child = [Level = -over-, Child = -over-]]]]]
+----------------------------------------------------------------------------------------------------
+ObjectInspector.Inspect : 日時
+[DateTime（書式あり）]
+2026/08/06 12:34:56
+[TimeSpan（書式あり）]
+1.02:03:04
+----------------------------------------------------------------------------------------------------
+ObjectInspector.Inspect : 除外
+[除外なし]
+[Name = "外側", Inner = [Code = "C2", Value = 1], Numbers = [1]]
+[InnerPoco を除外]
+[Name = "外側", Inner = excluded. TestCode.TestObjectInspector+InnerPoco, Numbers = [1]]
+----------------------------------------------------------------------------------------------------
+Latebind.InvokeMethod
+[引数なし] PublicMethod
+[引数あり] WithArgs:1:x
+[static] StaticMethod
+[private] PrivateMethod
+[基底のメソッド] BaseMethod
+[呼び先が例外] 例外 : System.Reflection.TargetInvocationException
+----------------------------------------------------------------------------------------------------
+Latebind : メソッドが無いとき
+[InvokeMethod] 例外 : System.ArgumentException
+[InvokeMethod_NoErr] null
+----------------------------------------------------------------------------------------------------
+Latebind : オーバーロード
+[引数 1 個] Overloaded(int):1
+[引数 2 個] Overloaded(int,int):1:2
+[引数 3 個（該当なし）] 例外 : System.ArgumentException
+----------------------------------------------------------------------------------------------------
+Latebind : 型とメソッドの確認
+CheckTypeOfBaseClass(Target, TargetBase) : True
+CheckTypeOfBaseClass(Target, string)     : False
+CheckTypeOfMethodByName(PublicMethod)    : True
+CheckTypeOfMethodByName(PrivateMethod)   : True
+CheckTypeOfMethodByName(NotExist)        : False
+----------------------------------------------------------------------------------------------------
+InstanceCreator<T>.Factory
+生成できた       : True
+別のインスタンス : True
+既定値（Id）     : 0
+既定値（Name）   : (null)
+----------------------------------------------------------------------------------------------------
+AccessorCacher.CacheAccessor
+件数 : 5
+Count : 型=Nullable`1, 実体型=Int32, Get=True, Set=True
+Field : 型=String, 実体型=(null), Get=True, Set=True
+Id : 型=Int32, 実体型=(null), Get=True, Set=True
+Name : 型=String, 実体型=(null), Get=True, Set=True
+ReadOnly : 型=String, 実体型=(null), Get=True, Set=False
+Set → Get : 設定した値
+再取得しても同じ : True
+----------------------------------------------------------------------------------------------------
+CompiledExpressionCreater
+プロパティ Id : 42
+フィールド Field : フィールドの値
+存在しないメンバ : 例外 System.ArgumentException
 ----------------------------------------------------------------------------------------------------
 log4net: Shutdown called on Hierarchy [log4net-default-repository]

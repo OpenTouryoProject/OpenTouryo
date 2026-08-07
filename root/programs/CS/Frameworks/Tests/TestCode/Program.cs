@@ -8,6 +8,10 @@ using Touryo.Infrastructure.Public.Diagnostics;
 namespace TestCode
 {
     /// <summary>Program</summary>
+    /// <remarks>
+    /// 何をテストしているか、ケースを書き足すときの決まりは README.md を参照。
+    /// **結果ファイルとの比較で判定するため、環境で変わる値を出してはならない。**
+    /// </remarks>
     public class Program
     {
         /// <summary>Main</summary>
@@ -37,6 +41,15 @@ namespace TestCode
                 TestFormatChecker.Root();
 
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestStringVariableOperator.Root();
+
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestStringExtractor.Root();
+
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestUtil.Root();
+
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
                 TestStringConverter.Root();
 
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
@@ -57,6 +70,24 @@ namespace TestCode
                 
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
                 TestDeflateCompression.Root();
+
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestResourceLoader.Root();
+                #endregion
+                #region Dto
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestDto.Root();
+                #endregion
+                #region Diagnostics
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestObjectInspector.Root();
+                #endregion
+                #region Reflection
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestLatebind.Root();
+
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestFastReflection.Root();
                 #endregion
                 // Db は TestDataAccess へ移した（#520）。
                 // DB に接続するテストと前提が異なるため、プロジェクトを分けている。

@@ -147,6 +147,12 @@ jobs:
 
           # Northwind 標準には無い表。3_SmokeTest.ps1 の RerunnableBatch 系が使う。
           # （Orders 830 件を読んで Orders2 へ INSERT する。空にするのはスクリプト側の役目）
+          #
+          # 3_SmokeTest.ps1 も無ければ作るため、ここは無くても通る。
+          # それでも流しておくのは、DB の準備をこのステップに閉じるため
+          # （疎通確認より前に、表が揃っていることを確かめられる）。
+          # なお sqlcmd は GO をそのまま解釈できる。SqlClient で流すスクリプト側は
+          # 自前で分割している。
           $orders2 = 'root/programs/CS/Samples/Bat_sample/RerunnableBatch_sample/CREATE ORDERS2.sql'
           Invoke-Sql -Password $env:SA_PASSWORD -Database Northwind -File $orders2 *> $null
 

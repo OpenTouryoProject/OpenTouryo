@@ -581,7 +581,8 @@ DB レベルだけを合わせているため、`tempdb` を経由する比較�
 ### `3_SmokeTest.ps1` の前提
 
 **DB は追加不要。** `3_SmokeTest.ps1` も `/DAP SQL` しか使わないため、
-`2_RunAllTests.ps1` のために用意した SQL Server で足りる。`Orders2` も作成済み。
+`2_RunAllTests.ps1` のために用意した SQL Server で足りる。
+`Orders2` は `Set up Northwind` で作成済み（無くても `3_SmokeTest.ps1` が作る）。
 
 足りないのは 1 つだけだった。
 

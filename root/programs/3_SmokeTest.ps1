@@ -50,6 +50,7 @@
      日時        更新者            内容
      ----------  ----------------  -------------------------------------------------
      2026/08/01  玄人 幸道         新規作成（リリース ワークのエージェント化）
+     2026/08/07  玄人 幸道         Orders2が無ければ作成するようにした
 #>
 [CmdletBinding()]
 param(
@@ -154,8 +155,45 @@ function Invoke-Sql([string]$sql)
 #    必ず例外で終わる。これはテスト内容とは無関係なので、判定から除外する。
 $batchArgs = @("/DAP", "SQL", "/MODE1", "individual", "/MODE2", "static", "/EXROLLBACK", "-")
 
+# ------------------------------------------------------------------
+# Orders2（Northwind 標準には無い表）
+# ------------------------------------------------------------------
+# instnwnd.sql に含まれないため、**DB を作り直すたびに消える**。
+# 無いまま実行すると「オブジェクト名 'Orders2' が無効です」で事前準備が落ち、
+# 原因が読み取れない。ここで作ってしまう。
+#
+# DDL は同梱の CREATE ORDERS2.sql をそのまま流す。**ここに書き写さない。**
+# （同じ DDL がサンプル配下に 9 つ重複しており、さらに増やす意味がない）
+function Initialize-Orders2
+{
+    $exists = Invoke-Sql "SELECT OBJECT_ID('dbo.Orders2', 'U')"
+    if ($null -ne $exists -and $exists -isnot [DBNull]) { return }
+
+    $ddl = Join-Path $csRoot "Samples\Bat_sample\RerunnableBatch_sample\CREATE ORDERS2.sql"
+    if (-not (Test-Path $ddl))
+    {
+        throw "Orders2 が無く、DDL も見つかりません : $ddl"
+    }
+
+    Write-Host "  Orders2 がありません。作成します（$ddl）。"
+
+    # sqlcmd ではなく SqlClient で流すため、GO（バッチ区切り）は自前で分ける。
+    # SqlClient は GO を解釈できず、構文エラーになる。
+    foreach ($batch in ((Get-Content $ddl -Raw) -split '(?im)^\s*GO\s*$'))
+    {
+        # USE は流さない。接続先は接続文字列に従う（別 DB を指していても壊さない）。
+        if ($batch -match '\S' -and $batch -notmatch '(?im)^\s*USE\s')
+        {
+            Invoke-Sql $batch | Out-Null
+        }
+    }
+}
+
 # RerunnableBatch 系は Orders → Orders2 の INSERT。実行前に Orders2 を空にする。
-$clearOrders2 = { Invoke-Sql "DELETE FROM [Orders2]" | Out-Null }
+$clearOrders2 = {
+    Initialize-Orders2
+    Invoke-Sql "DELETE FROM [Orders2]" | Out-Null
+}
 # 実行後は Orders と同数（830 件）になっていること。
 $verifyOrders2 = {
     $src = [int](Invoke-Sql "SELECT COUNT(*) FROM [Orders]")
