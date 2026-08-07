@@ -70,11 +70,11 @@ log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.Level
 log4net: Created Appender [OPERATION2]
 log4net: Adding appender named [OPERATION2] to logger [OPERATION].
 log4net: Hierarchy Threshold []
-[2026/08/06 20:40:24,675],[DEBUG],[2],LogIF.DebugLog("ACCESS");
-[2026/08/06 20:40:24,685],[INFO ],[2],LogIF.InfoLog("ACCESS");
-[2026/08/06 20:40:24,686],[WARN ],[2],LogIF.WarnLog("ACCESS");
-[2026/08/06 20:40:24,687],[ERROR],[2],LogIF.ErrorLog("ACCESS");
-[2026/08/06 20:40:24,687],[FATAL],[2],LogIF.FatalLog("ACCESS");
+[2026/08/08 01:48:31,710],[DEBUG],[2],LogIF.DebugLog("ACCESS");
+[2026/08/08 01:48:31,724],[INFO ],[2],LogIF.InfoLog("ACCESS");
+[2026/08/08 01:48:31,725],[WARN ],[2],LogIF.WarnLog("ACCESS");
+[2026/08/08 01:48:31,725],[ERROR],[2],LogIF.ErrorLog("ACCESS");
+[2026/08/08 01:48:31,726],[FATAL],[2],LogIF.FatalLog("ACCESS");
 ----------------------------------------------------------------------------------------------------
 GetMessage: ～メッセージID:I0001に対応する記述（正常系）～
 GetMessage: ～メッセージID:E0001に対応する記述（異常系）～
@@ -2435,6 +2435,37 @@ EmbeddedResourceLoader
 読み込み              : 埋め込まれたリソースの内容 / embedded resource
 存在しない            : False
 存在しない（例外）    : System.ArgumentException
+----------------------------------------------------------------------------------------------------
+ZipperV2 → UnZipperV2（往復）
+解凍した件数 : 4
+  root/a.txt
+  root/b.log
+  root/sub/c.txt
+  root/日本語.txt
+内容が一致 : True
+----------------------------------------------------------------------------------------------------
+暗号化
+[暗号化なし] 往復して一致 : True
+[PkzipWeak] 往復して一致 : True
+[WinZipAes128] 往復して一致 : True
+[WinZipAes256] 往復して一致 : True
+[パスワード誤り] 例外 ICSharpCode.SharpZipLib.Zip.ZipException
+[パスワード未指定] 例外 System.ArgumentException
+----------------------------------------------------------------------------------------------------
+選択デリゲート
+[圧縮時に .log を除く]
+  a.txt
+  sub/c.txt
+  日本語.txt
+[上書き時の動作]
+  DoNotOverwrite の解凍件数 : 0
+  OverwriteSilently の解凍件数 : 3
+  Throw : 例外 System.IO.IOException
+----------------------------------------------------------------------------------------------------
+進捗イベント
+SaveProgress    : Saving_Started, Saving_BeforeWriteEntry, Saving_EntryBytesRead, Saving_AfterWriteEntry, Saving_Completed
+ExtractProgress : Extracting_Started, Extracting_BeforeExtractEntry, Extracting_EntryBytesWritten, Extracting_AfterExtractEntry, Extracting_Completed
+無圧縮より BestCompression の方が小さい : True
 ----------------------------------------------------------------------------------------------------
 DataToPoco
 [DataTableToList : 名前が一致]

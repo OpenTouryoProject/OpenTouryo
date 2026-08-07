@@ -96,6 +96,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="NLog" Version="5.5.0" />
+    <PackageReference Include="SharpZipLib" Version="1.4.2" />
     <PackageReference Include="System.Data.Odbc" Version="9.0.4" />
     <PackageReference Include="Zipangu" Version="1.1.8" />
   </ItemGroup>

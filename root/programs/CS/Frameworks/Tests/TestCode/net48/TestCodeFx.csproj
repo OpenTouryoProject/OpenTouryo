@@ -119,6 +119,9 @@
     <Compile Include="..\TestXmlLib.cs">
       <Link>TestXmlLib.cs</Link>
     </Compile>
+    <Compile Include="..\TestZipV2.cs">
+      <Link>TestZipV2.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\SampleLogConf.xml">

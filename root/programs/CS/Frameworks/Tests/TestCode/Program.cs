@@ -73,6 +73,9 @@ namespace TestCode
 
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
                 TestResourceLoader.Root();
+
+                MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+                TestZipV2.Root();
                 #endregion
                 #region Dto
                 MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
