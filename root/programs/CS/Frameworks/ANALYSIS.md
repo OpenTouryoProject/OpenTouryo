@@ -613,7 +613,8 @@ powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.
 net10.0 のフレームワーク参照（`Microsoft.AspNetCore.App`）ではない。安易に上げると壊れる可能性が高い。
 
 **注意 2:** `System.Security.Cryptography.Xml` は **`Public.Security` が 9.0.15、`Business` が 9.0.4** と
-版がずれている（Dependabot が `Public.Security` のみ更新したため）。どちらも NU1903 が出る（12 節）。
+版がずれている（Dependabot が 1 プロジェクトずつしか上げないため）。どちらも NU1903 が出る。
+**修正版は 9.0.18**（12 節に advisory と該当 4 箇所を挙げてある）。
 
 依存は Dependabot で随時更新される。**上表は目安であり、正確な値は csproj を直接見ること。**
 
@@ -638,10 +639,28 @@ net10.0 のフレームワーク参照（`Microsoft.AspNetCore.App`）ではな�
    アセンブリ分割の都合）。
 10. `TMProtocolDefinition2.xml` など「2」付きの定義ファイルが並存する。用途は用例違い。
 11. **`System.Security.Cryptography.Xml` に既知脆弱性（NU1903 / 高）**。
-    - `Public.Security` = 9.0.15 → `Nuget_netcore100.sln` のビルドで **20 警告**
-    - `Business` = 9.0.4 → `Business_netcore100.sln` のビルドで **18 警告**
-    - 修正版の有無を確認したうえで更新するか、`NoWarn` での抑止を検討する。
-      版を上げる場合は net48 / netcore100 の両 csproj と `NuGet/*.nuspec` の `<dependencies>` を同時に直す。
+    `1_BuildAll.ps1` の全体で **84 警告**（`Public.Security` の 9.0.15 が 60、`Business` の 9.0.4 が 24）。
+
+    **修正版は 9.0.18。** 2 件の advisory が出ており、9.0.15 では**片方しか直っていない**。
+
+    | Advisory | 影響（9 系） | 修正版 |
+    |---|---|---|
+    | `GHSA-23rf-6693-g89p`（CVE-2026-50648） | `>= 9.0.0, <= 9.0.17` | **9.0.18** |
+    | `GHSA-37gx-xxp4-5rgx`（CVE-2026-33116） | `>= 9.0.0, <= 9.0.14` | 9.0.15 |
+
+    版を上げる場合は **net48 / netcore100 の両 csproj と `NuGet/*.nuspec` の
+    `<dependencies>` を同時に直す。** 現状ずれているのは次の 4 箇所。
+
+    ```
+    Public/Security/Public.Security_netcore100.csproj   9.0.15
+    Business/Business_netcore100.csproj                 9.0.4
+    Tests/EncAndDecUtilCUI/core100/*.csproj             9.0.6   ← Dependabot PR #510 が 9.0.18 へ
+    NuGet/Symbol_Public.Security.nuspec                 9.0.15
+    ```
+
+    **Dependabot は 1 プロジェクトずつしか上げない。** #510 はテスト プロジェクトのみで、
+    取り込んでも 84 警告は減らない。**残りは手で揃える**こと
+    （手順は [`BUILDING.md`](../../BUILDING.md) 9 節「複数の PR を `deps` に溜める」）。
 12. **結果ファイル比較のテストは、検算しないと不具合を「正」として固定する。**
     `ArrayOperator.GetLongFromByte` は桁の重みを `256 * j`（掛け算）で求めており、
     **3 byte 目から誤った値**を返していた（2026/08/06 に修正、#522）。
