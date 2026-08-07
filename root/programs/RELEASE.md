@@ -74,9 +74,8 @@ cd root\programs
       … `1_DeleteDir.bat` が `.vs` を削除するため
 - [ ] **SQL Server の Northwind に接続できる**
 - [ ] **Northwind が初期状態**（`Shippers` 3 件 / `Orders` 830 件）  
-      … 汚れている場合の戻し方は [`TESTING.md`](TESTING.md) 「テスト データの戻し方」
-- [ ] **`Orders2` テーブルが存在する** … Northwind 標準ではない。無ければ  
-      `CS\Samples\Bat_sample\RerunnableBatch_sample\CREATE ORDERS2.sql` を実行
+      … 汚れている場合の戻し方は [`TESTING.md`](TESTING.md) 「テスト データの戻し方」  
+      … `Orders2`（Northwind 標準ではない）は `3_SmokeTest.ps1` が無ければ作るため、事前準備は不要
 - [ ] **サービスが開始されている**（`Start-Service`、`aspnet_state`、要管理者権限）
   - Start-Service … アプリが 使うデータストア（Dockerコンテナ）を起動、初期化する。
   - aspnet_state … net48 の Web アプリが使うASP.NET 状態サービスを起動する。

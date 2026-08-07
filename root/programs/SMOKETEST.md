@@ -64,6 +64,29 @@ INSERT の方法（1 件ずつ／SQL 連結／INSERT 文組み立て）で、い
 残っていると重複で落ちる。スクリプトが `DELETE FROM [Orders2]` を行ってから実行する。
 実行後は 830 件＝初期状態に戻るため、後始末は不要。
 
+#### `Orders2` はスクリプトが作る
+
+**`Orders2` は Northwind 標準の表ではない。** `instnwnd.sql` に含まれないため、
+**DB を作り直すたびに消える**。そのたびに手で作るのは現実的でないので、
+事前準備の中で存在を確認し、無ければ作る。
+
+```
+Orders2 がありません。作成します（...\RerunnableBatch_sample\CREATE ORDERS2.sql）。
+```
+
+DDL はサンプル同梱の `CREATE ORDERS2.sql` をそのまま流す。**スクリプトに書き写さない**
+（同じ DDL がサンプル配下に 9 つ重複しており、増やす意味がない）。
+
+流すときの注意が 2 つある。
+
+- **`GO` は自前で分割する。** `SqlClient` は `GO` を解釈できない（`sqlcmd` の
+  バッチ区切りであって T-SQL ではない）。このファイルは 3 バッチに分かれる。
+- **`USE [Northwind]` は流さない。** 接続先は接続文字列に従うべきで、
+  流すと接続文字列が別 DB を指していた場合にそちらへ表を作ってしまう。
+
+> CI では `Set up Northwind` ステップが `instnwnd.sql` の直後に同じ DDL を流している。
+> そちらは `sqlcmd` なので `GO` をそのまま解釈できる。
+
 ### CLI（1 件）
 
 | 対象 | 判定 |
@@ -182,9 +205,6 @@ WinForms / WPF 系は、リリース チェックリスト（段階 4）の**手
 - **SQL Server の Northwind に接続できる**こと
   - 接続文字列は `CS\Samples\Bat_sample\SimpleBatch_sample\App.config` の
     `ConnectionString_SQL` を読む。ここで別途ハードコードすると追随できなくなるため
-- **`Orders2` テーブルが存在する**こと
-  - Northwind 標準ではない。無い場合は
-    `CS\Samples\Bat_sample\RerunnableBatch_sample\CREATE ORDERS2.sql` を実行する
 - **IIS Express** がインストールされていること（net48 の Web アプリ）
 - **ASP.NET 状態サービスが開始されている**こと（net48 の Web アプリ）
 
