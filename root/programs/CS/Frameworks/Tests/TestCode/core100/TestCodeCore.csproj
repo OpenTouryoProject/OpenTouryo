@@ -31,6 +31,7 @@
     <Compile Include="..\TestStringVariableOperator.cs" Link="TestStringVariableOperator.cs" />
     <Compile Include="..\TestUtil.cs" Link="TestUtil.cs" />
     <Compile Include="..\TestXmlLib.cs" Link="TestXmlLib.cs" />
+    <Compile Include="..\TestZipV2.cs" Link="TestZipV2.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -56,6 +57,9 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.6" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.6" />
+    <!--フレームワークは HintPath で参照しており、NuGet の推移的依存が効かない。
+        OpenTouryo.Public が使うパッケージは、ここにも並べる必要がある。-->
+    <PackageReference Include="SharpZipLib" Version="1.4.2" />
     <PackageReference Include="Zipangu" Version="1.1.8" />
   </ItemGroup>
 

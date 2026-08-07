@@ -577,7 +577,7 @@ powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.
 | `Public.Log` | `LogIF`（静的 façade）。ロガー名は慣習的に `"ACCESS"` と `"SQLTRACE"`。バックエンドは `LogLib` 設定で log4net / NLog |
 | `Public.Reflection` | `Latebind`（フレームワークの動的呼び出しの心臓部）、`MyAssemblies` |
 | `Public.FastReflection` | `AccessorCacher` `CompiledExpressionCreater` `InstanceCreator<T>` `EnumToString*Extensions` |
-| `Public.IO` | `ResourceLoader` `EmbeddedResourceLoader` `DeflateCompression` `ExponentialBackoff` `Zipper/UnZipper`(net48) |
+| `Public.IO` | `ResourceLoader` `EmbeddedResourceLoader` `DeflateCompression` `ExponentialBackoff` `ZipperV2/UnZipperV2` |
 | `Public.Util` | `GetConfigParameter` `PerformanceRecorder` `RandomValueGenerator` `EnvInfo` `PubCmnFunction` |
 | `Public.Diagnostics` | `MyDebug`（`OutputDebugAndConsole`）`ObjectInspector` `StackFrameOperator` |
 | `Public.Win32` / `WinProc` | P/Invoke 群（net48 のみ） |
@@ -613,7 +613,8 @@ powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.
 net10.0 のフレームワーク参照（`Microsoft.AspNetCore.App`）ではない。安易に上げると壊れる可能性が高い。
 
 **注意 2:** `System.Security.Cryptography.Xml` は **`Public.Security` が 9.0.15、`Business` が 9.0.4** と
-版がずれている（Dependabot が `Public.Security` のみ更新したため）。どちらも NU1903 が出る（12 節）。
+版がずれている（Dependabot が 1 プロジェクトずつしか上げないため）。どちらも NU1903 が出る。
+**修正版は 9.0.18**（12 節に advisory と該当 4 箇所を挙げてある）。
 
 依存は Dependabot で随時更新される。**上表は目安であり、正確な値は csproj を直接見ること。**
 
@@ -638,10 +639,28 @@ net10.0 のフレームワーク参照（`Microsoft.AspNetCore.App`）ではな�
    アセンブリ分割の都合）。
 10. `TMProtocolDefinition2.xml` など「2」付きの定義ファイルが並存する。用途は用例違い。
 11. **`System.Security.Cryptography.Xml` に既知脆弱性（NU1903 / 高）**。
-    - `Public.Security` = 9.0.15 → `Nuget_netcore100.sln` のビルドで **20 警告**
-    - `Business` = 9.0.4 → `Business_netcore100.sln` のビルドで **18 警告**
-    - 修正版の有無を確認したうえで更新するか、`NoWarn` での抑止を検討する。
-      版を上げる場合は net48 / netcore100 の両 csproj と `NuGet/*.nuspec` の `<dependencies>` を同時に直す。
+    `1_BuildAll.ps1` の全体で **84 警告**（`Public.Security` の 9.0.15 が 60、`Business` の 9.0.4 が 24）。
+
+    **修正版は 9.0.18。** 2 件の advisory が出ており、9.0.15 では**片方しか直っていない**。
+
+    | Advisory | 影響（9 系） | 修正版 |
+    |---|---|---|
+    | `GHSA-23rf-6693-g89p`（CVE-2026-50648） | `>= 9.0.0, <= 9.0.17` | **9.0.18** |
+    | `GHSA-37gx-xxp4-5rgx`（CVE-2026-33116） | `>= 9.0.0, <= 9.0.14` | 9.0.15 |
+
+    版を上げる場合は **net48 / netcore100 の両 csproj と `NuGet/*.nuspec` の
+    `<dependencies>` を同時に直す。** 現状ずれているのは次の 4 箇所。
+
+    ```
+    Public/Security/Public.Security_netcore100.csproj   9.0.15
+    Business/Business_netcore100.csproj                 9.0.4
+    Tests/EncAndDecUtilCUI/core100/*.csproj             9.0.6   ← Dependabot PR #510 が 9.0.18 へ
+    NuGet/Symbol_Public.Security.nuspec                 9.0.15
+    ```
+
+    **Dependabot は 1 プロジェクトずつしか上げない。** #510 はテスト プロジェクトのみで、
+    取り込んでも 84 警告は減らない。**残りは手で揃える**こと
+    （手順は [`BUILDING.md`](../../BUILDING.md) 9 節「複数の PR を `deps` に溜める」）。
 12. **結果ファイル比較のテストは、検算しないと不具合を「正」として固定する。**
     `ArrayOperator.GetLongFromByte` は桁の重みを `256 * j`（掛け算）で求めており、
     **3 byte 目から誤った値**を返していた（2026/08/06 に修正、#522）。
@@ -649,7 +668,17 @@ net10.0 のフレームワーク参照（`Microsoft.AspNetCore.App`）ではな�
     （`CheckCharCode` → Shift_JIS の 1〜2 byte）では顕在化していなかった。
     **期待値を作るときは、出力をそのまま貼らず実装から検算し、境界を跨いだケースを置く**
     （[`Tests/TestCode/README.md`](Tests/TestCode/README.md)）。
-13. **`Symbol_Framework.RichClient.nuspec` の lib TFM が不正確**。
+13. **`Public/IO` に、ビルド対象外の旧 ZIP 部品が残っている**。
+    `ZipBase.cs` / `Zipper.cs` / `UnZipper.cs` は DotNetZip（非推奨・既知脆弱性
+    `GHSA-xhg6-9j5j-w4vf`）に依存しており、**net48 / netcore100 の両方で除外**してある。
+    - net48 … 列挙形式のため `<Compile>` に載っていない
+    - netcore100 … `<Compile Remove="IO\Zipper.cs" />` 等で明示的に除外
+
+    **現役は `ZipperV2` / `UnZipperV2`**（SharpZipLib、#524）。
+    旧ファイルを直しても何も起きない。**触るなら V2 の方。**
+    I/F 互換は無いが、**引数の並びと名前、列挙体のメンバ名は旧に合わせて**ある。
+    自己解凍書庫・選択条件の文字列・`StatusMSG` は落とした（代替は `ExtractedFiles`）。
+14. **`Symbol_Framework.RichClient.nuspec` の lib TFM が不正確**。
     `net10.0-windows7.0` ビルドを `lib\net10.0` に配置している。本来は `lib\net10.0-windows` が正しく、
     現状は Linux 上の net10.0 消費者も解決してしまう。直すとパッケージ解決セマンティクスが変わるため据え置き。
 
