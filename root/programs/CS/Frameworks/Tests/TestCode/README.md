@@ -43,6 +43,7 @@ y_Build_TestCode_Public.bat     … ビルド → 実行 → 結果ファイル�
 | `TestXmlLib` | `Public.Xml` | XML の読み書き |
 | `TestDeflateCompression` | `Public.IO` | Deflate の圧縮・伸張 |
 | `TestResourceLoader` | `Public.IO` | ファイル・埋め込みリソースの読み取り（#522） |
+| `TestZipV2` | `Public.IO` | ZIP の圧縮・解凍（`ZipperV2` / `UnZipperV2`、#524） |
 
 ### Dto
 
@@ -140,6 +141,22 @@ DateTimeOffset dto = new DateTimeOffset(2026, 8, 6, 12, 34, 56, TimeSpan.Zero);
 
 `net48/TestCodeFx.csproj` と `core100/TestCodeCore.csproj` の**両方**に
 `Compile` を足す。片方だけだと、そちらのフレームワークでしかテストが動かない。
+
+### フレームワークが使うパッケージは、テスト側にも並べる
+
+**フレームワークは `HintPath` で参照しており、NuGet の推移的依存が効かない。**
+`OpenTouryo.Public` が新しいパッケージを使い始めたら、
+`core100/TestCodeCore.csproj` にも同じ `PackageReference` を足す。
+
+足りないと**ビルドは通るのに実行時に落ちる**。
+
+```
+System.IO.FileNotFoundException: Could not load file or assembly
+'ICSharpCode.SharpZipLib, Version=1.4.2.13, ...'
+```
+
+net48 側は `4_Build_CopyAssemblies.bat` が依存 DLL を `Build_net48` へ並べるため
+顕在化しにくい。**.NET (Core) 側だけで落ちる**ことがある（#524 で踏んだ）。
 
 ---
 

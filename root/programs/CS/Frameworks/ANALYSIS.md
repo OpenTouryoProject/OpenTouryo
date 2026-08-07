@@ -577,7 +577,7 @@ powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.
 | `Public.Log` | `LogIF`（静的 façade）。ロガー名は慣習的に `"ACCESS"` と `"SQLTRACE"`。バックエンドは `LogLib` 設定で log4net / NLog |
 | `Public.Reflection` | `Latebind`（フレームワークの動的呼び出しの心臓部）、`MyAssemblies` |
 | `Public.FastReflection` | `AccessorCacher` `CompiledExpressionCreater` `InstanceCreator<T>` `EnumToString*Extensions` |
-| `Public.IO` | `ResourceLoader` `EmbeddedResourceLoader` `DeflateCompression` `ExponentialBackoff` `Zipper/UnZipper`(net48) |
+| `Public.IO` | `ResourceLoader` `EmbeddedResourceLoader` `DeflateCompression` `ExponentialBackoff` `ZipperV2/UnZipperV2` |
 | `Public.Util` | `GetConfigParameter` `PerformanceRecorder` `RandomValueGenerator` `EnvInfo` `PubCmnFunction` |
 | `Public.Diagnostics` | `MyDebug`（`OutputDebugAndConsole`）`ObjectInspector` `StackFrameOperator` |
 | `Public.Win32` / `WinProc` | P/Invoke 群（net48 のみ） |
@@ -668,7 +668,17 @@ net10.0 のフレームワーク参照（`Microsoft.AspNetCore.App`）ではな�
     （`CheckCharCode` → Shift_JIS の 1〜2 byte）では顕在化していなかった。
     **期待値を作るときは、出力をそのまま貼らず実装から検算し、境界を跨いだケースを置く**
     （[`Tests/TestCode/README.md`](Tests/TestCode/README.md)）。
-13. **`Symbol_Framework.RichClient.nuspec` の lib TFM が不正確**。
+13. **`Public/IO` に、ビルド対象外の旧 ZIP 部品が残っている**。
+    `ZipBase.cs` / `Zipper.cs` / `UnZipper.cs` は DotNetZip（非推奨・既知脆弱性
+    `GHSA-xhg6-9j5j-w4vf`）に依存しており、**net48 / netcore100 の両方で除外**してある。
+    - net48 … 列挙形式のため `<Compile>` に載っていない
+    - netcore100 … `<Compile Remove="IO\Zipper.cs" />` 等で明示的に除外
+
+    **現役は `ZipperV2` / `UnZipperV2`**（SharpZipLib、#524）。
+    旧ファイルを直しても何も起きない。**触るなら V2 の方。**
+    I/F 互換は無いが、**引数の並びと名前、列挙体のメンバ名は旧に合わせて**ある。
+    自己解凍書庫・選択条件の文字列・`StatusMSG` は落とした（代替は `ExtractedFiles`）。
+14. **`Symbol_Framework.RichClient.nuspec` の lib TFM が不正確**。
     `net10.0-windows7.0` ビルドを `lib\net10.0` に配置している。本来は `lib\net10.0-windows` が正しく、
     現状は Linux 上の net10.0 消費者も解決してしまう。直すとパッケージ解決セマンティクスが変わるため据え置き。
 
