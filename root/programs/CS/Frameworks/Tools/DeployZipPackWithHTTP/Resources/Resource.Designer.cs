@@ -277,6 +277,87 @@ namespace DeployZipPackWithHTTP.Resources {
         }
         
         /// <summary>
+        ///   /ZIPGEN Creates a ZIP file. /SRCDIR and /ZIPFILE are require に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string A0025 {
+            get {
+                return ResourceManager.GetString("A0025", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /SRCDIR xxxx Specifies the folder to compress. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string A0026 {
+            get {
+                return ResourceManager.GetString("A0026", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /ZIPFILE xxxx Specifies the ZIP to create (without extension に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string A0027 {
+            get {
+                return ResourceManager.GetString("A0027", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /ROOTINZIP xxxx Specifies the root folder in the archive. If に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string A0028 {
+            get {
+                return ResourceManager.GetString("A0028", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /TOPONLY Compresses only the files directly under /SRCDIR (n に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string A0029 {
+            get {
+                return ResourceManager.GetString("A0029", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /EXCLUDEEXT \"txt,csv\" Specifies the extensions to exclude  に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string A0030 {
+            get {
+                return ResourceManager.GetString("A0030", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /CYP xxxx Encryption (None, PkzipWeak, WinZipAes128, WinZipA に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string A0031 {
+            get {
+                return ResourceManager.GetString("A0031", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /ZIPGEN requires /SRCDIR and /ZIPFILE. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string A0032 {
+            get {
+                return ResourceManager.GetString("A0032", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   The ZIP file was created. [{0}] {1} file(s). に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string A0033 {
+            get {
+                return ResourceManager.GetString("A0033", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   An error has occurred. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string E0001 {

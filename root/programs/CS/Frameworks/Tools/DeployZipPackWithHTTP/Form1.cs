@@ -221,41 +221,26 @@ namespace DeployZipPackWithHTTP
                 // チェック処理
                 this.CheckComp_DeComp();
 
-                // 圧縮部品
-                ZipperV2 z = new ZipperV2();
-
-                // 選択基準
+                // UIコントロールから情報を取得する。
                 string[] exts = null;
-                ZipBaseV2.SelectionDelegate scd = null;
-
                 if (this.txtExt.Enabled)
                 {
                     exts = this.txtExt.Text.Split(',');
-                    scd = Program.SelectionCriteriaDlgt1;
                 }
 
-                // ZIP内パスのルート名
-                string[] temp = this.txtFile.Text.Split('\\');
-
-                // 進捗報告処理
-                z.SaveProgress = Program.MySaveProgressEventHandler;
-
                 // ルートのディレクトリを作るか作らないか。
+                //   チェック無し … 指定ZIPファイル名をルートZIP内フォルダに含める（個別のフォルダ圧縮）
+                //   チェック有り … 含めない（ルート フォルダからの圧縮）
                 string rootPathInArchive = "";
 
                 if (!this.cbxRootDir.Checked)
                 {
+                    string[] temp = this.txtFile.Text.Split('\\');
                     rootPathInArchive = temp[temp.Length - 1];
                 }
 
-                // 圧縮：デリゲートでフィルタ
-                //
-                // 旧 Zipper には selectionCriteriaString（"name != *.txt" 等）で
-                // フィルタするオーバーロードもあったが、DotNetZip 独自の DSL であり
-                // 代替が無いため廃止した（#524）。デリゲートに一本化している。
-                z.CreateZipFromFolder(
-                    this.txtFile.Text, this.txtFolder.Text,
-                    scd, exts, rootPathInArchive, // ここを空文字列にするとルートフォルダ無しになる。
+                int count = this.Compress(
+                    this.txtFile.Text, this.txtFolder.Text, exts, false, rootPathInArchive,
                     Encoding.GetEncoding((string)this.cmbEnc.SelectedItem),
                     (ZipEncryptionAlgorithmV2)this.cmbCyp.SelectedItem, this.txtPass.Text,
                     (ZipCompressionLevelV2)this.cmbCmpLv.SelectedItem);
@@ -265,7 +250,7 @@ namespace DeployZipPackWithHTTP
                 // ResourceMgr.GetString で取り出す（国際化のため）。
                 CustMsgBox custMsgBox = new CustMsgBox(
                     ResourceMgr.GetString("Error0002"),
-                    string.Format(ResourceMgr.GetString("I0007"), z.ZippedFiles.Length),
+                    string.Format(ResourceMgr.GetString("I0007"), count),
                     SystemIcons.Information);
                 custMsgBox.ShowDialog();
             }
@@ -275,6 +260,70 @@ namespace DeployZipPackWithHTTP
                 //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
                 MessageBox.Show(ex.Message, ResourceMgr.GetString("E0001"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        /// <summary>圧縮処理</summary>
+        /// <param name="zipFileToCreate">圧縮ファイル名（拡張子は付けない。".zip"が付く）</param>
+        /// <param name="directoryToZip">圧縮対象フォルダ</param>
+        /// <param name="excludeExts">除外する拡張子（nullなら除外しない）</param>
+        /// <param name="topOnly">直下のファイルだけを対象にする（サブフォルダを再帰しない）</param>
+        /// <param name="rootPathInArchive">書庫内ルートフォルダ（空ならルートから）</param>
+        /// <param name="enc">エンコーディング</param>
+        /// <param name="cyp">暗号化</param>
+        /// <param name="zipPassword">パスワード</param>
+        /// <param name="cmpLv">圧縮レベル</param>
+        /// <returns>圧縮したファイル数</returns>
+        /// <remarks>
+        /// btnCompress_Click から切り出したもの（#528）。
+        /// **UIコントロールを参照しない。** 引数は組み込み型のみで、CUI からも呼べる。
+        /// 例外の表示は、呼び出し側の責務とする。
+        ///
+        /// topOnly は CUI で足したもの（GUI には対応するチェック ボックスが無い）。
+        /// **これが無いと「ルート直下だけの ZIP」が作れない。**
+        /// CreateZipFromFolder は再帰するため、ルートを対象にすると
+        /// サブフォルダまで入ってしまう。
+        /// </remarks>
+        public int Compress(
+            string zipFileToCreate, string directoryToZip,
+            string[] excludeExts, bool topOnly, string rootPathInArchive,
+            Encoding enc, ZipEncryptionAlgorithmV2 cyp, string zipPassword,
+            ZipCompressionLevelV2 cmpLv)
+        {
+            // 圧縮部品
+            ZipperV2 z = new ZipperV2();
+
+            // 進捗報告処理
+            z.SaveProgress = Program.MySaveProgressEventHandler;
+
+            // 選択基準
+            //
+            // 除外拡張子と「直下だけ」は、どちらも選択デリゲートで実現する。
+            // **ZipperV2 は変えない。** 走査はするが、選ばれなければ書庫に入らない。
+            ZipBaseV2.SelectionDelegate scd = null;
+            object info = null;
+
+            if (topOnly)
+            {
+                scd = Program.SelectionCriteriaDlgt3;
+                info = new object[] { directoryToZip, excludeExts };
+            }
+            else if (excludeExts != null)
+            {
+                scd = Program.SelectionCriteriaDlgt1;
+                info = excludeExts;
+            }
+
+            // 圧縮：デリゲートでフィルタ
+            //
+            // 旧 Zipper には selectionCriteriaString（"name != *.txt" 等）で
+            // フィルタするオーバーロードもあったが、DotNetZip 独自の DSL であり
+            // 代替が無いため廃止した（#524）。デリゲートに一本化している。
+            z.CreateZipFromFolder(
+                zipFileToCreate, directoryToZip,
+                scd, info, rootPathInArchive, // ここを空文字列にするとルートフォルダ無しになる。
+                enc, cyp, zipPassword, cmpLv);
+
+            return z.ZippedFiles.Length;
         }
 
         /// <summary>解凍処理</summary>

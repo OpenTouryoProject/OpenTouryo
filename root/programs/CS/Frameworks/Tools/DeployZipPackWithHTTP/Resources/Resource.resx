@@ -285,4 +285,31 @@
   <data name="A0024" xml:space="preserve">
     <value>The manifest file was created. [{0}]</value>
   </data>
+  <data name="A0025" xml:space="preserve">
+    <value>/ZIPGEN Creates a ZIP file. /SRCDIR and /ZIPFILE are required.</value>
+  </data>
+  <data name="A0026" xml:space="preserve">
+    <value>/SRCDIR xxxx Specifies the folder to compress.</value>
+  </data>
+  <data name="A0027" xml:space="preserve">
+    <value>/ZIPFILE xxxx Specifies the ZIP to create (without extension).</value>
+  </data>
+  <data name="A0028" xml:space="preserve">
+    <value>/ROOTINZIP xxxx Specifies the root folder in the archive. If omitted, no root folder is created.</value>
+  </data>
+  <data name="A0029" xml:space="preserve">
+    <value>/TOPONLY Compresses only the files directly under /SRCDIR (no recursion).</value>
+  </data>
+  <data name="A0030" xml:space="preserve">
+    <value>/EXCLUDEEXT \"txt,csv\" Specifies the extensions to exclude (comma separated).</value>
+  </data>
+  <data name="A0031" xml:space="preserve">
+    <value>/CYP xxxx Encryption (None, PkzipWeak, WinZipAes128, WinZipAes256).  /PASS xxxx Password.  /CMPLV xxxx Compression level (None, BestSpeed, Default, BestCompression).  /ENC xxxx Encoding.</value>
+  </data>
+  <data name="A0032" xml:space="preserve">
+    <value>/ZIPGEN requires /SRCDIR and /ZIPFILE.</value>
+  </data>
+  <data name="A0033" xml:space="preserve">
+    <value>The ZIP file was created. [{0}] {1} file(s).</value>
+  </data>
 </root>

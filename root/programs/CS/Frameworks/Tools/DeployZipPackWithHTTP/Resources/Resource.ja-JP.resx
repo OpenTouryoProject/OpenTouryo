@@ -285,4 +285,31 @@
   <data name="A0024" xml:space="preserve">
     <value>マニュフェスト ファイルを生成しました。[{0}]</value>
   </data>
+  <data name="A0025" xml:space="preserve">
+    <value>/ZIPGEN ZIPファイルを生成します。/SRCDIR と /ZIPFILE が必須です。</value>
+  </data>
+  <data name="A0026" xml:space="preserve">
+    <value>/SRCDIR xxxx 圧縮対象のフォルダを指定します。</value>
+  </data>
+  <data name="A0027" xml:space="preserve">
+    <value>/ZIPFILE xxxx 生成するZIPを指定します（拡張子は付けない）。</value>
+  </data>
+  <data name="A0028" xml:space="preserve">
+    <value>/ROOTINZIP xxxx 書庫内ルート フォルダを指定します。省略時は書庫内ルートを作りません。</value>
+  </data>
+  <data name="A0029" xml:space="preserve">
+    <value>/TOPONLY /SRCDIR 直下のファイルだけを圧縮します（サブフォルダを再帰しない）。</value>
+  </data>
+  <data name="A0030" xml:space="preserve">
+    <value>/EXCLUDEEXT \"txt,csv\" 除外する拡張子を指定します（カンマ区切り）。</value>
+  </data>
+  <data name="A0031" xml:space="preserve">
+    <value>/CYP xxxx 暗号化（None, PkzipWeak, WinZipAes128, WinZipAes256）。  /PASS xxxx パスワード。  /CMPLV xxxx 圧縮レベル（None, BestSpeed, Default, BestCompression）。  /ENC xxxx 文字コード。</value>
+  </data>
+  <data name="A0032" xml:space="preserve">
+    <value>/ZIPGEN には /SRCDIR と /ZIPFILE が必要です。</value>
+  </data>
+  <data name="A0033" xml:space="preserve">
+    <value>ZIPファイルを生成しました。[{0}] {1} 件。</value>
+  </data>
 </root>

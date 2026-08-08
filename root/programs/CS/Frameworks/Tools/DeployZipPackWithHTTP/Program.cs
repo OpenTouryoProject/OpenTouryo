@@ -391,10 +391,29 @@ namespace DeployZipPackWithHTTP
                     Console.WriteLine(ResourceMgr.GetString("A0020"));
                     Console.WriteLine(ResourceMgr.GetString("A0021"));
                     Console.WriteLine(ResourceMgr.GetString("A0022"));
+                    Console.WriteLine("");
+                    // ZIP の生成（#528）
+                    Console.WriteLine(ResourceMgr.GetString("A0025"));
+                    Console.WriteLine(ResourceMgr.GetString("A0026"));
+                    Console.WriteLine(ResourceMgr.GetString("A0027"));
+                    Console.WriteLine(ResourceMgr.GetString("A0028"));
+                    Console.WriteLine(ResourceMgr.GetString("A0029"));
+                    Console.WriteLine(ResourceMgr.GetString("A0030"));
+                    Console.WriteLine(ResourceMgr.GetString("A0031"));
 
                     // コンソール デタッチ
                     Program.FreeConsole();
 
+                    return;　// 終了
+                }
+
+                // ZIP の生成（#528）
+                if (argsDic.ContainsKey("/ZIPGEN"))
+                {
+                    // コンソール アタッチ
+                    Program.AttachConsole(-1);
+
+                    Environment.ExitCode = Program.CreateZip(argsDic);
                     return;　// 終了
                 }
 
@@ -611,6 +630,81 @@ namespace DeployZipPackWithHTTP
         /// <param name="dic">ディクショナリ</param>
         /// <param name="key">キー</param>
         /// <returns>出力文字列（nullを含まない）</returns>
+        #region ZIP の生成（CUI）
+
+        /// <summary>CUI（非対話）でZIPを生成する</summary>
+        /// <param name="argsDic">コマンドライン引数</param>
+        /// <returns>終了コード（0：正常、1：引数の誤り、2：生成の失敗）</returns>
+        /// <remarks>
+        /// GUI の「圧縮」タブと同じ処理を行う（#528）。
+        /// **Form1 は表示しない。** UIコントロールは初期化のみ行われる。
+        ///
+        /// ＜書庫内ルートの指定＞
+        ///   /ROOTINZIP あり … 指定名を書庫内ルートにする（GUI の「個別のフォルダ圧縮」）
+        ///   /ROOTINZIP なし … 書庫内ルートを作らない（GUI の「ルート フォルダからの圧縮」）
+        /// </remarks>
+        private static int CreateZip(Dictionary<string, string> argsDic)
+        {
+            string srcDir = Program.NullToEmptyString(argsDic, "/SRCDIR");
+            string zipFile = Program.NullToEmptyString(argsDic, "/ZIPFILE");
+
+            if (string.IsNullOrEmpty(srcDir) || string.IsNullOrEmpty(zipFile))
+            {
+                Console.WriteLine(ResourceMgr.GetString("A0032"));
+                return 1;
+            }
+
+            string rootInZip = Program.NullToEmptyString(argsDic, "/ROOTINZIP");
+            bool topOnly = argsDic.ContainsKey("/TOPONLY");
+
+            // 除外拡張子
+            string[] excludeExts = null;
+            string exts = Program.NullToEmptyString(argsDic, "/EXCLUDEEXT");
+            if (!string.IsNullOrEmpty(exts)) { excludeExts = exts.Split(','); }
+
+            // 文字コード（省略時は既定）
+            Encoding enc = null;
+            string encStr = Program.NullToEmptyString(argsDic, "/ENC");
+            if (!string.IsNullOrEmpty(encStr)) { enc = Encoding.GetEncoding(encStr); }
+
+            try
+            {
+                ZipEncryptionAlgorithmV2 cyp = ZipEncryptionAlgorithmV2.None;
+                string cypStr = Program.NullToEmptyString(argsDic, "/CYP");
+                if (!string.IsNullOrEmpty(cypStr))
+                {
+                    cyp = (ZipEncryptionAlgorithmV2)Enum.Parse(
+                        typeof(ZipEncryptionAlgorithmV2), cypStr, true);
+                }
+
+                ZipCompressionLevelV2 cmpLv = ZipCompressionLevelV2.Default;
+                string cmpStr = Program.NullToEmptyString(argsDic, "/CMPLV");
+                if (!string.IsNullOrEmpty(cmpStr))
+                {
+                    cmpLv = (ZipCompressionLevelV2)Enum.Parse(
+                        typeof(ZipCompressionLevelV2), cmpStr, true);
+                }
+
+                // 生成処理の呼び出し
+                // ※ Form1 は表示しない。UIコントロールは初期化のみ行われる。
+                Form1 form1 = new Form1();
+                int count = form1.Compress(
+                    zipFile, srcDir, excludeExts, topOnly, rootInZip,
+                    enc, cyp, Program.NullToEmptyString(argsDic, "/PASS"), cmpLv);
+
+                Console.WriteLine(string.Format(
+                    ResourceMgr.GetString("A0033"), zipFile + ".zip", count));
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return 2;
+            }
+        }
+
+        #endregion
+
         #region マニュフェスト ファイルの生成（CUI）
 
         /// <summary>CUI（非対話）でマニュフェスト ファイルを生成する</summary>
@@ -2067,6 +2161,36 @@ namespace DeployZipPackWithHTTP
         /// 真：ファイルを書庫に追加する。
         /// 偽：ファイルを書庫に追加しない。
         /// </returns>
+        /// <summary>選択基準を実装するデリゲート（直下のファイルだけ＋除外拡張子）</summary>
+        /// <param name="o">ファイル（FileInfo）</param>
+        /// <param name="info">object[] { 対象フォルダ, 除外拡張子（string[] または null） }</param>
+        /// <returns>圧縮するならtrue</returns>
+        /// <remarks>
+        /// `/ZIPGEN /TOPONLY` 用（#528）。
+        /// **ZipperV2 は再帰を止められない。** 走査自体は行われるので、
+        /// 「対象フォルダの直下にあるか」で選び分けて、実質的に再帰を無効にする。
+        /// </remarks>
+        public static bool SelectionCriteriaDlgt3(object o, object info)
+        {
+            FileInfo f = (FileInfo)o;
+
+            object[] ary = (object[])info;
+            string dir = (string)ary[0];
+            string[] exts = (string[])ary[1];
+
+            // 直下でなければ対象外
+            if (!string.Equals(
+                    Path.GetFullPath(f.DirectoryName).TrimEnd(Path.DirectorySeparatorChar),
+                    Path.GetFullPath(dir).TrimEnd(Path.DirectorySeparatorChar),
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            // 除外拡張子
+            return Program.SelectionCriteriaDlgt1(f, exts);
+        }
+
         public static bool SelectionCriteriaDlgt1(object o, object info)
         {
             FileInfo f = (FileInfo)o;
