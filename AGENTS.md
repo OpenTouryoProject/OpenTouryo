@@ -129,6 +129,7 @@ cd root\programs
 | ツール | 読む文書 |
 |---|---|
 | `DaoGen_Tool`（Ｄ層自動生成ツール／墨壺） | [`README.md`](root/programs/CS/Frameworks/Tools/DaoGen_Tool/README.md) |
+| `DeployZipPackWithHTTP`（ZIP パッケージの HTTP 配布） | [`README.md`](root/programs/CS/Frameworks/Tools/DeployZipPackWithHTTP/README.md) |
 
 **引数の一覧は README に書かない。** ツールの `/HELP` が一次情報であり、
 書き写すと二重管理になる。README には README にしか書けないこと

@@ -81,10 +81,6 @@ namespace Touryo.Infrastructure.Public.IO
     /// <remarks>
     /// 旧 UnZipper が使っていた Ionic.Zip.ExtractExistingFileAction の代替。
     /// **メンバ名は旧と同じ**。
-    ///
-    /// 旧にあった InvokeExtractProgressEvent（イベントで問い合わせる）は持たない。
-    /// 上書きの可否をイベント経由で決める作りは、呼び出し側の実装が要るうえ、
-    /// 使われていなかったため。
     /// </remarks>
     public enum ExtractExistingFileActionV2
     {
@@ -96,6 +92,18 @@ namespace Touryo.Infrastructure.Public.IO
 
         /// <summary>上書きせず、そのファイルを飛ばす</summary>
         DoNotOverwrite = 2,
+
+        /// <summary>ExtractProgressイベントで、1件ずつ問い合わせる</summary>
+        /// <remarks>
+        /// Extracting_ExtractEntryWouldOverwrite でイベントが起き、
+        /// ハンドラが ZipProgressEventArgsV2.ExtractExistingFile に
+        /// Throw / OverwriteSilently / DoNotOverwrite のいずれかを設定して返す。
+        /// Cancel に true を設定すると、以降の解凍を打ち切る。
+        ///
+        /// **ここに InvokeExtractProgressEvent を設定して返してはいけない**（無限に問い合わせるため）。
+        /// その場合は DoNotOverwrite として扱う。
+        /// </remarks>
+        InvokeExtractProgressEvent = 3,
     }
 
     /// <summary>進捗の種別</summary>

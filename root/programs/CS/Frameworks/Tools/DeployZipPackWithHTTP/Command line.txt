@@ -1,0 +1,3 @@
+﻿ショートカットのリンク先に設定すると楽。
+
+DeployZipPackWithHTTP.exe /cui /wwwurl "http://localhost/test/test.mft" /wwwuid administrator /wwwpwd seigi

@@ -45,6 +45,24 @@ namespace Touryo.Infrastructure.Public.IO
     /// </remarks>
     public class ZipperV2 : ZipBaseV2
     {
+        #region ZippedFiles
+
+        /// <summary>圧縮したファイルのパス</summary>
+        private List<string> _zippedFiles = new List<string>();
+
+        /// <summary>圧縮したファイルのパス</summary>
+        /// <remarks>
+        /// 旧 StatusMSG の代替（UnZipperV2.ExtractedFiles と対）。
+        /// **CreateZipFromFolder のたびに作り直す**（前回の内容は残らない）。
+        /// 選択デリゲートで除いたファイルは含まない。
+        /// </remarks>
+        public string[] ZippedFiles
+        {
+            get { return this._zippedFiles.ToArray(); }
+        }
+
+        #endregion
+
         #region CreateZipFromFolder
 
         /// <summary>フォルダ以下を圧縮</summary>
@@ -71,6 +89,8 @@ namespace Touryo.Infrastructure.Public.IO
             // ファイル選択基準
             base.SetSelectionCriteria(selectionDlgt, selectionCriteriaInfo);
 
+            this._zippedFiles = new List<string>();
+
             string zipFileName = zipFileToCreate + ".zip";
 
             // 圧縮対象を先に数え上げる。
@@ -94,6 +114,7 @@ namespace Touryo.Infrastructure.Public.IO
                 foreach (ZipperV2.Target t in targets)
                 {
                     this.AddEntry(zos, t, zipFileName, cyp, targets.Count, processed);
+                    this._zippedFiles.Add(t.FilePath);
                     processed++;
                 }
 

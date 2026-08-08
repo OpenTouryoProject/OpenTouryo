@@ -1,4 +1,4 @@
-# RELEASE.md — リリース チェックリスト
+﻿# RELEASE.md — リリース チェックリスト
 
 対象: `root/programs/CS`（C# 側）
 配置: `root/programs`
@@ -108,7 +108,7 @@ cd root\programs
 - [ ] **`1_BuildAll.ps1` のエラーが「既知の 1 件」だけである**
       … `-SkipClean` は**使わない**。前回の成果物が残っていると通ったように見える
 - [ ] **`2_RunAllTests.ps1` が終了コード 0**（8 ケース）
-- [ ] **`3_SmokeTest.ps1` が終了コード 0**（18 件）
+- [ ] **`3_SmokeTest.ps1` が終了コード 0**（22 件）
 
 > **`1_BuildAll.ps1` は現状ここで終了コード 1 になる。**
 > `WSClnt_sample (net48)` の ClickOnce 署名エラー（`MSB3482`）が残るため。
@@ -132,7 +132,7 @@ cd root\programs
 |---|---|
 | `1_BuildAll.ps1`（31 ステップ） | 5.8 分 |
 | `2_RunAllTests.ps1`（8 ケース） | 1.3 分 |
-| `3_SmokeTest.ps1`（18 件） | 2.4 分 |
+| `3_SmokeTest.ps1`（22 件） | 2.3 分 |
 
 ### 順序を守る
 
@@ -200,11 +200,15 @@ cd root\programs
 | `DaoGen_Tool`（墨壺） | **GUI 起動のみ**。CUI（`/HELP` `/CUI /MODE ...`）は `3_SmokeTest.ps1` が網羅済み |
 | `DPQuery_Tool` | GUI 起動 |
 | `EncAndDecUtil` | GUI 起動（CUI 版は `2_RunAllTests.ps1` が網羅済み） |
+| `DeployZipPackWithHTTP` | GUI 起動 ＋ **圧縮・解凍**（ZIP 部品の唯一の利用者。#528） |
 
 - [ ] `DaoGen_Tool` が GUI で起動し、D 層定義・SQL が生成できる
       … 生成ロジック自体は CUI 側で自動確認済み。ここで見るのは **GUI が動くこと**
 - [ ] `DPQuery_Tool` が GUI で起動する
 - [ ] `EncAndDecUtil` が GUI で起動する
+- [ ] `DeployZipPackWithHTTP` が GUI で起動し、**圧縮と解凍ができる**
+      … `ZipperV2` / `UnZipperV2` を使う唯一の利用者。ZIP 部品を変えたら必ず見ること。
+      設定と履歴は `current.json` / `histories.json`（旧 `.bin` は読まない）
 
 ### 既知の環境依存（NG でも可）
 
@@ -253,7 +257,7 @@ cd root\programs
 | `DaoGen_Tool` の CUI（6 件） | 済 | #508 で CUI 化。DB → 定義 CSV → Dao・SQL まで通せる |
 | Web アプリ（3 件） | 済 | ログインまで通せば認証・セッションまで確認できる |
 | **UI 系サンプル（18 本）** | **見送り** | UI Automation が必要。画面定義の変更で壊れやすく維持費が高い。<br>通す B 層／D 層は Web 系・バッチ系と重複し、回帰検出力の増分が小さい |
-| **GUI ツール（3 本）** | **見送り** | 同上。`DaoGen_Tool` は生成ロジックを CUI 側で確認済みのため、<br>手作業で見るのは GUI が起動することだけでよい |
+| **GUI ツール（4 本）** | **見送り** | 同上。`DaoGen_Tool` は生成ロジックを CUI 側で確認済みのため、<br>手作業で見るのは GUI が起動することだけでよい。<br>`DeployZipPackWithHTTP` は ZIP の圧縮・解凍まで見る（CUI が無いため） |
 | **Web サービス** | **不可** | 本リポジトリにホストが無い（別リポジトリへ移設済み） |
 
 **自動化した対象が「起動する」ことは、手作業側の確認範囲を狭める。**

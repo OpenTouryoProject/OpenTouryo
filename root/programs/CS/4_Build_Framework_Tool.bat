@@ -31,5 +31,13 @@ rem --------------------------------------------------
 
 pause
 
+rem --------------------------------------------------
+rem Batch build of DeployZipPackWithHTTP.
+rem --------------------------------------------------
+..\nuget.exe restore "Frameworks\Tools\DeployZipPackWithHTTP\DeployZipPackWithHTTP.sln" %NUGET_MSBUILD%
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tools\DeployZipPackWithHTTP\DeployZipPackWithHTTP.sln"
+
+pause
+
 rem -------------------------------------------------------
 endlocal

@@ -45,6 +45,14 @@
 
 - `DaoGen_Tool` : DB スキーマから D層 Dao クラス＋SQL(XML) を自動生成
 - `DPQuery_Tool` : DPQ（動的パラメタライズド・クエリ）XML の編集・検証
+- `DeployZipPackWithHTTP` : ZIP を HTTP で配布し、クライアントで展開する（#528 で復元）
+
+> `DeployZipPackWithHTTP` は `ZipperV2` / `UnZipperV2` を使う唯一の利用者。
+> **ZIP 部品を変えたら、このツールのビルドと疎通も確かめること**
+> （`4_Build_Framework_Tool.bat` / `4_Build_Framework_ToolCore.bat` に入れてある）。
+> **実行方法・マニフェストの書式・疎通の手順は
+> [`README.md`](Tools/DeployZipPackWithHTTP/README.md) が一次情報。**
+> IIS Express で完結するので、IIS を立てなくても確かめられる。
 
 ### 2.3 `Tests/` — テスト（**xUnit/NUnit ではない**）
 
@@ -468,6 +476,23 @@ net48 のサンプルとツールが一切ビルドできない。**
   P層の集約イベント ハンドラも `UOC_<ControlId>_Click` のような命名規則でリフレクション解決される。
 - 定数は `FxLiteral`（Framework, 777 行）/ `MyLiteral`（Business）/ `PubLiteral`（Public）に集約。
   **文字列リテラル直書きではなく、これらに定数を追加する。**
+- **利用者に見せる文言は `Resources` の `.resx` に置く**（国際化のため）。
+  `FxLiteral` 等は「変わらない値」、`.resx` は「訳し分ける文言」で、役割が違う。
+  **フレームワークにもツールにもある。** 対応は次のとおり。
+
+  | 場所 | リソース | 取り出し方 |
+  |---|---|---|
+  | `Infrastructure/Public/Resources/` | `PublicExceptionMessageResource` | `PublicExceptionMessage.XXX`（プロパティ名がキー） |
+  | `Infrastructure/Framework/Resources/` | `FrameworkExceptionMessageResource` | `FrameworkExceptionMessage.XXX` |
+  | `Infrastructure/Business/Resources/` | `MyBusiness{Application,System}ExceptionMessageResource` | 同上 |
+  | `Tools/*/Resources/` | `Resource` | `ResourceMgr.GetString("キー")` |
+
+  **`.resx` は 2 つ 1 組。** 既定（英語）と `*.ja-JP.resx`（日本語）の**両方**に足す。
+  `*.Designer.cs` も更新が要る（VS でデザイナを開けば再生成される）。
+
+  例外メッセージには別系統もある。**`MSGDefinition.xml` / `MSGDefinition_ja-JP.xml`**
+  を `GetMessage.GetMessageDescription("I0011")` で引く形で、
+  こちらは `root/files/resource/Xml/` と各ツールの配下にある。**既存に合わせること。**
 - 命名: `Base*`（Framework 提供の抽象）→ `My*`（Business 層テンプレート、アプリで改変前提）。
   アプリ側は `LayerB` / `LayerD` / `TestParameterValue` / `TestReturnValue` を実装（`Samples/` 参照）。
 - 変数はプライベート フィールド `_xxx` ＋ 明示的プロパティ（自動プロパティは新しい箇所のみ）。

@@ -1,4 +1,4 @@
-# SMOKETEST.md — サンプルの疎通確認
+﻿# SMOKETEST.md — サンプルの疎通確認
 
 対象: `root/programs/CS`（C# 側）
 配置: `root/programs`
@@ -46,7 +46,7 @@ cd root\programs
 
 ---
 
-## 3. 対象（18 件）
+## 3. 対象（22 件）
 
 ### バッチ（8 件）
 
@@ -149,6 +149,76 @@ NG : /OUTPUT "C:\temp\out"    ← \ が消える
 
 **`3_SmokeTest.ps1` は `Start-Process` でファイルへ直接リダイレクトする。**
 パイプ（`\| Out-File`）でも出力自体は取れるが、そちらは別の問題を抱える（9 節）。
+
+### DeployZipPackWithHTTP の CUI モード（4 件）
+
+| 対象 | 判定 |
+|---|---|
+| `DeployZip /MFTGEN` (net48 / net10.0) | マニュフェストが生成され、**MD5 が同梱のものと一致する** |
+| `DeployZip 配置` (net48 / net10.0) | **配置結果が圧縮前のフォルダと全ファイル一致する** |
+
+`#528` で `/ZIPGEN`（ZIP 生成）と `/MFTGEN`（マニュフェスト生成）を追加し、
+**圧縮 → マニュフェスト → 配布 → 配置**を CUI で通せるようになった。
+前段の出力を後段の入力に使う点は `DaoGen_Tool` と同じ。
+
+**配布物（ZIP）は追跡していない。** `Pre` で `FormAppRoot` から毎回作る。
+
+```
+/ZIPGEN /TOPONLY            → root.zip（ルート直下だけ、書庫内ルート無し）
+/ZIPGEN /ROOTINZIP aaa      → aaa.zip （フォルダごと、書庫内ルート = aaa）
+```
+
+**両方のモードを通る。** GUI のチェック ボックス
+（「個別のフォルダ圧縮」／「ルート フォルダからの圧縮」）に対応する分岐である。
+
+`Sample/FormAppRoot` が配布前の姿なので、**配置結果を MD5 で突き合わせられる**（21 ファイル）。
+
+**ここだけ ZIP 部品（`ZipperV2` / `UnZipperV2`）を通る。**
+単体テスト（`TestCode/TestZipV2.cs`）は部品の振る舞いを見るが、
+配布フロー全体を通すのはこの 2 件だけ。
+
+#### マニュフェストの MD5 は計算し直して突き合わせる
+
+```powershell
+$want = $md5s[$i].Substring(4).Trim()
+$got  = [Convert]::ToBase64String($md5.ComputeHash([IO.File]::ReadAllBytes($path)))
+```
+
+**作り置きの ZIP を追跡していた頃は、ここで気付けなかった。**
+`FormAppRoot` を直したのに ZIP を作り直さないと MD5 が合わなくなるが、
+比較相手も作り置きだと両方が古いままで通ってしまう。
+
+#### 配信は IIS Express で立てる
+
+Web アプリと違い**対象は EXE** なので、本文側の Web ホスト起動の仕組みには乗らない。
+`Pre` で起動し、`Verify` の最後で止める。
+
+**起動待ちにコンテンツを要求してはいけない。** 404 でも「起動している」ため、
+応答の内容で判定すると、ファイルが無いときに待ち続け、
+**IIS Express が残って次回のポート登録を塞ぐ**（`0x800700b7`）。TCP で繋がるかだけを見る。
+
+#### 配置先は `-OutputDir` の下
+
+同梱のマニュフェストは `c:\FormAppRoot\` を指すが、**疎通確認で環境を汚さない**よう、
+`$OutputDir\deploy_<tag>\ins` を指すマニュフェストを作り直してから配布する。
+
+#### `/NB` を必ず付ける
+
+マニュフェストの `exe` 行のアセンブリを、**配置後に起動してしまう**ため。
+起動すると GUI が開き、非対話の実行が止まる。
+
+> 引数の渡し方に癖がある（`\` がエスケープされる・`/INSDIR` だけは `\` を残す・
+> 空白を含む値は自分で引用符を付ける）。
+> **一次情報は [`Tools/DeployZipPackWithHTTP/README.md`](CS/Frameworks/Tools/DeployZipPackWithHTTP/README.md) の 3.4 節。**
+
+#### 古いビルドに新しいスイッチを渡すと、以前は GUI が開いた
+
+**引数があるのにどのモードにも当たらない場合、GUI へ落ちる実装だった**（#528 で修正）。
+非対話では画面が出たまま止まるため、疎通確認や CI が停止する。
+現在は**エラーで終わる**（終了コード 1）。
+
+`/ZIPGEN` を実装した直後、`.NET 10` 側を建て直さずに回して実際に踏んだ。
+**片方のビルドだけを更新しない**こと。
 
 ### Web アプリ（3 件）
 
@@ -374,6 +444,10 @@ DaoGen_Tool DAOSQLGEN (net48)     OK   生成が完了しました。
 DaoGen_Tool /HELP (net10.0)       OK   DaoGen_Tool（D層自動生成ツール／墨壺）
 DaoGen_Tool DAODEFGEN (net10.0)   OK   生成が完了しました。
 DaoGen_Tool DAOSQLGEN (net10.0)   OK   生成が完了しました。
+DeployZip /MFTGEN (net48)         OK   マニュフェスト ファイルを生成しました。
+DeployZip 配置 (net48)            OK   履歴に新規追加しました。
+DeployZip /MFTGEN (net10.0)       OK   マニュフェスト ファイルを生成しました。
+DeployZip 配置 (net10.0)          OK   履歴に新規追加しました。
 MVC_Sample (net48)                OK   ログイン後 /Crud1/Index = 200
 WebForms_Sample (net48)           OK   ログイン後 menu.aspx = 200
 MVC_Sample (net10.0)              OK   ログイン後 /Crud1/Index = 200
@@ -381,7 +455,7 @@ MVC_Sample (net10.0)              OK   ログイン後 /Crud1/Index = 200
   全対象 OK
 ```
 
-全 18 件（ビルド 7 バッチ ＋ 疎通 18 件）で **約 2.4 分**。
+全 22 件（ビルド 7 バッチ ＋ 疎通 22 件）で **約 2.3 分**。
 
 ### リダイレクトの扱い
 
@@ -415,6 +489,36 @@ MVC_Sample (net10.0)              OK   ログイン後 /Crud1/Index = 200
 **判定条件は「動いていれば必ず満たす」ものにする。**
 実行のたびに変わる値（件数以外の可変値、日時など）を条件に入れると、
 環境差で落ちるだけの脆いテストになる。
+
+### `Args` は `Pre` より前に組み立てられる
+
+対象定義（`$targets`）は**スクリプトの読み込み時に評価される**。
+`Pre` が作るフォルダを `Args` の組み立てで参照すると、**まだ存在しない。**
+
+```powershell
+NG : $zips = Get-ChildItem (Join-Path $OutputDir "deploy_net48\web") ...  ← Pre がまだ動いていない
+OK : $zips = Get-ChildItem $deploySampleWeb ...                           ← リポジトリ側から採る
+```
+
+実行時に決めたいなら、`Args` ではなく `Pre` の中で `$script:` 変数に入れて渡す。
+
+### 対象が EXE でも Web サーバが要ることがある
+
+`Kind = "Web"` は**対象自身が Web アプリ**のときの仕組みで、
+「EXE の相手として Web サーバを立てたい」場合には使えない。
+`Pre` で起動し、`Verify` の最後で止める（`DeployZipPackWithHTTP` がこの形）。
+
+**起動待ちに、特定のコンテンツを要求してはいけない。**
+404 でも「起動している」ため、応答の内容で待つと、
+ファイルが無いときに待ち続けたうえで**プロセスが残る**。
+残った IIS Express は URL の登録を握るので、
+**次回以降の起動が `0x800700b7`（既に存在する）で失敗し続ける。**
+
+```powershell
+# TCP で繋がるかだけを見る。開始前に前回の残りも止める。
+$client = New-Object System.Net.Sockets.TcpClient
+$client.Connect("localhost", $port)
+```
 
 ### `dotnet` への引数の渡し方
 

@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE MSGD[
+	<!ELEMENT MSGD (Message*)>
+	<!ELEMENT Message EMPTY>
+	<!ATTLIST Message
+		id ID #REQUIRED
+		description CDATA #REQUIRED>
+]>
+<!-- idの先頭には、数字を使用できない。 -->
+<!-- 先頭Eは異常系、先頭Iは正常系など -->
+<MSGD>
+  <Message id="I0000" description="★ progress update confirmation dialog ★"/>
+	<Message id="I0001" description="I am working on a [{0}]."/>
+	<Message id="I0002" description="Update is complete."/>
+	<Message id="I0003" description="I was newly added to the history [{0}]."/>
+	<Message id="I0004" description="I have been removed from the history [{0}]."/>
+	<Message id="I0005" description="I have updated the history of [{0}]."/>
+
+  <Message id="I0006" description="Update [{0}] (no update date header)."/>
+  <Message id="I0007" description="[{0}] is up to date."/>
+  <Message id="I0008" description="Update the [{0}] (update)."/>
+  <Message id="I0009" description="Update the [{0}] (new)."/>
+  <Message id="I0010" description="I downloaded the [{0}]."/>
+  <Message id="I0011" description="Unzip and install [{0}] (update)."/>
+  <Message id="I0012" description="Because the / NB switch is specified, do not start the assembly."/>
+  
+  <!--####-->
+
+  <Message id="E0001" description="EXE file to start [{0}] does not exist."/>
+  <Message id="E0002" description="EXE file [{0}] has already been started."/>
+  <Message id="E0003" description="Manifest file is invalid. {0}"/>
+  <Message id="E0004" description="Only ZIP file will be considered."/>
+  <Message id="E0005" description="MD5 Hash of [{0}] is a mismatch. {1}, {2}"/>
+  <Message id="E0006" description="You can not update for [{0}] file is open."/>
+  <Message id="E0007" description="[{0}] has not been entered."/>
+  <Message id="E0008" description="I will return to its previous state arrangement target all files."/>
+  <Message id="E0009" description="I failed to HEAD request to [{0}]."/>
+  
+  <!--####-->
+
+  <Message id="M0001" description="Folder path"/>
+  <Message id="M0002" description="File Path"/>
+  <Message id="M0003" description="ZIP files"/>
+  <Message id="M0004" description="Installation directory"/>
+  <Message id="M0005" description="EXE name (path)"/>
+  <Message id="M0006" description="Installation directory has been changed {0}."/>
+</MSGD>

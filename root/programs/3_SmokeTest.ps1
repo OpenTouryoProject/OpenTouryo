@@ -285,6 +285,256 @@ $verifyDaoDefCore  = { Test-DaoDef "core" }
 $verifyDaoGenCore  = { Test-DaoGen "core" }
 
 # ------------------------------------------------------------------
+# DeployZipPackWithHTTP の CUI モード
+# ------------------------------------------------------------------
+# #528 で /MFTGEN（マニュフェスト生成）を追加し、生成から配置まで CUI で通せる。
+#
+# ＜配置先を C:\ 直下にしない＞
+#   同梱サンプルのマニフェストは c:\FormAppRoot\ を指すが、
+#   疎通確認で環境を汚さないよう、$OutputDir 配下を指すマニフェストを作り直す。
+#
+# ＜引数の癖＞（Tools\DeployZipPackWithHTTP\README.md 3.4 節）
+#   ・「\」はエスケープ文字として食べられる → パスは「/」で渡す
+#   ・ただし /INSDIR だけは「\」を残す（ins 行がそのまま配置先になるため）
+#   ・空白を含む値は、自分で引用符を付ける
+$deployWebPort = 51084
+$deploySampleSrc = Join-Path $csRoot "Frameworks\Tools\DeployZipPackWithHTTP\Sample\FormAppRoot"
+
+# **配布物（ZIP）は追跡していない。** FormAppRoot から毎回作る。
+#   /ZIPGEN … ルート直下（/TOPONLY）と各フォルダ（/ROOTINZIP）を別々の ZIP にする
+#   /MFTGEN … その ZIP からマニュフェストを作る
+# 作り置きを追跡すると、元を直したときの作り直し漏れで MD5 が合わなくなる。
+$deployZipNames = @("root", "aaa", "bbb", "ccc")
+
+function Get-DeployWork([string]$tag)
+{
+    return (Join-Path $OutputDir "deploy_$tag")
+}
+
+# 配信フォルダを用意し、FormAppRoot から ZIP を作る
+function New-DeployWeb([string]$tag, [string]$exe)
+{
+    $work = Get-DeployWork $tag
+    $web  = Join-Path $work "web"
+    $ins  = Join-Path $work "ins"
+
+    Get-ChildItem $work -Recurse -File -EA SilentlyContinue | Remove-Item -Force -EA SilentlyContinue
+    New-Item -ItemType Directory -Force $web | Out-Null
+    New-Item -ItemType Directory -Force $ins | Out-Null
+
+    # .mft は既定で MIME 未登録のため 404.3 になる
+    $conf = '<?xml version="1.0" encoding="utf-8"?>' + "`r`n" +
+            '<configuration><system.webServer><staticContent>' +
+            '<remove fileExtension=".mft" />' +
+            '<mimeMap fileExtension=".mft" mimeType="text/plain" />' +
+            '</staticContent></system.webServer></configuration>'
+    Set-Content (Join-Path $web "web.config") $conf -Encoding UTF8
+
+    #region ZIP を作る（/ZIPGEN）
+
+    # **パスの区切りは「/」で渡す。** コマンドライン解析が「\」を食べる。
+    $src = $deploySampleSrc.Replace("\", "/")
+
+    foreach ($name in $deployZipNames)
+    {
+        $out = (Join-Path $web $name).Replace("\", "/")
+
+        if ($name -eq "root")
+        {
+            # ルート直下だけ（サブフォルダは各 ZIP が持つ）。書庫内ルートは作らない。
+            $a = @("/ZIPGEN", "/SRCDIR", $src, "/ZIPFILE", $out, "/TOPONLY")
+        }
+        else
+        {
+            # フォルダごと。書庫内ルートをフォルダ名にする（個別のフォルダ圧縮）。
+            $a = @("/ZIPGEN", "/SRCDIR", "$src/$name", "/ZIPFILE", $out, "/ROOTINZIP", $name)
+        }
+
+        $log = Join-Path $OutputDir "deploy_zipgen_$tag`_$name.log"
+        Start-Process $exe -ArgumentList $a -NoNewWindow -Wait `
+            -WorkingDirectory (Split-Path $exe) -RedirectStandardOutput $log
+
+        if (-not (Test-Path (Join-Path $web ($name + ".zip"))))
+        {
+            Write-Host ("     ZIP を生成できない : {0}.zip" -f $name)
+            return $work
+        }
+    }
+
+    #endregion
+
+    return $work
+}
+
+function New-MftGenArgs([string]$tag)
+{
+    $work = Get-DeployWork $tag
+    $web  = Join-Path $work "web"
+
+    # **ファイル一覧を採ってはいけない。**
+    # 引数は対象定義の時点（Pre より前）で組み立てられるため、ZIP はまだ無い。
+    # 名前は決まっているので、そこから組み立てる。
+    $zips = @($deployZipNames | Sort-Object |
+              ForEach-Object { (Join-Path $web ($_ + ".zip")).Replace("\", "/") }) -join ","
+
+    # ins 行はそのまま配置先になるので「\」を残す（「\\」でエスケープ）
+    $ins = (Join-Path $work "ins") + "\"
+    $insArg = $ins.Replace("\", "\\")
+
+    $mft = (Join-Path $web "FormAppRoot.mft").Replace("\", "/")
+
+    # **exe 行はインストール先からの相対パス。** サブフォルダのものは、そう書く。
+    # 二重起動チェックがこれを使うため、実在しないパスを書くと検出が効かない。
+    return @("/MFTGEN", "/ZIPFILES", $zips, "/INSDIR", $insArg,
+             "/EXENAME", '"top.exe, aaa\\top1.exe, bbb\\top2.exe"', "/MFTFILE", $mft)
+}
+
+# /NB … マニフェストの exe 行で指定されたアセンブリを起動しない
+# /FORCE … 履歴を消して毎回やり直す（前回の結果に依存しない）
+$deployArgs = @("/CUI", "/NB", "/FORCE", "/WWWURL",
+                ("http://localhost:{0}/FormAppRoot.mft" -f $deployWebPort))
+
+# マニュフェストが生成され、MD5 が実ファイルのものと一致すること
+function Test-MftGen([string]$tag)
+{
+    $web = Join-Path (Get-DeployWork $tag) "web"
+    $mft = Join-Path $web "FormAppRoot.mft"
+    if (-not (Test-Path $mft)) { Write-Host "     マニュフェストが生成されていない"; return $false }
+
+    $lines = @(Get-Content $mft -Encoding UTF8)
+    Write-Host ("     マニュフェスト : {0} 行" -f $lines.Count)
+
+    $zips = @($lines | Where-Object { $_ -like "zip *" })
+    $md5s = @($lines | Where-Object { $_ -like "md5 *" })
+
+    if (($zips.Count -ne $deployZipNames.Count) -or ($md5s.Count -ne $deployZipNames.Count))
+    {
+        Write-Host "     zip / md5 の組数が合わない"
+        return $false
+    }
+
+    # **書かれた MD5 を、実ファイルから計算し直して突き合わせる。**
+    # ここが合わないと配布時に弾かれる。作り置きの ZIP を使っていた頃は、
+    # 元を直したのに ZIP を作り直さず、ここで気付けなかった。
+    $md5 = [System.Security.Cryptography.MD5]::Create()
+
+    for ($i = 0; $i -lt $zips.Count; $i++)
+    {
+        $name = $zips[$i].Substring(4).Trim()
+        $path = Join-Path $web $name
+
+        if (-not (Test-Path $path)) { Write-Host ("     ZIP が無い : {0}" -f $name); return $false }
+
+        $want = $md5s[$i].Substring(4).Trim()
+        $got  = [Convert]::ToBase64String($md5.ComputeHash([IO.File]::ReadAllBytes($path)))
+
+        if ($want -ne $got) { Write-Host ("     MD5 が一致しない : {0}" -f $name); return $false }
+    }
+
+    return $true
+}
+
+# 配置結果が、圧縮前のフォルダと一致すること
+function Test-Deploy([string]$tag)
+{
+    $ins = Join-Path (Get-DeployWork $tag) "ins"
+    $md5 = [System.Security.Cryptography.MD5]::Create()
+
+    $src = @(Get-ChildItem $deploySampleSrc -Recurse -File)
+    $dst = @(Get-ChildItem $ins -Recurse -File -EA SilentlyContinue)
+    Write-Host ("     配置 : {0} / {1} ファイル" -f $dst.Count, $src.Count)
+
+    if ($dst.Count -ne $src.Count) { return $false }
+
+    foreach ($f in $src)
+    {
+        $rel = $f.FullName.Substring($deploySampleSrc.Length + 1)
+        $t = Join-Path $ins $rel
+        if (-not (Test-Path $t)) { Write-Host ("     欠落 : {0}" -f $rel); return $false }
+
+        $a = [Convert]::ToBase64String($md5.ComputeHash([IO.File]::ReadAllBytes($f.FullName)))
+        $b = [Convert]::ToBase64String($md5.ComputeHash([IO.File]::ReadAllBytes($t)))
+        if ($a -ne $b) { Write-Host ("     内容相違 : {0}" -f $rel); return $false }
+    }
+
+    return $true
+}
+
+# 配信用の IIS Express を起動・停止する
+#
+# Web 系の対象（Kind = "Web"）は本文側が起動・停止するが、こちらは
+# **EXE を実行する対象なので、その仕組みに乗らない。**
+# Pre で起動し、Verify の最後で止める。
+$script:deployWebProc = $null
+
+function Start-DeployWeb([string]$tag)
+{
+    $iis = Join-Path $env:ProgramFiles "IIS Express\iisexpress.exe"
+    if (-not (Test-Path $iis)) { return $false }
+
+    # **前回の残りを先に止める。**
+    # 起動に失敗した IIS Express が URL の登録を握ったままだと、
+    # 次の起動が 0x800700b7（既に存在する）で失敗し続ける。
+    Stop-DeployWeb
+
+    $web = Join-Path (Get-DeployWork $tag) "web"
+    $log = Join-Path $OutputDir "deploy_web_$tag.log"
+
+    $script:deployWebProc = Start-Process $iis `
+        -ArgumentList "/path:`"$web`"", "/port:$deployWebPort", "/systray:false" `
+        -PassThru -WindowStyle Hidden `
+        -RedirectStandardOutput $log -RedirectStandardError "$log.err"
+
+    # 起動を待つ（接続できるまで最大 15 秒）
+    #
+    # **コンテンツを要求して待ってはいけない。** 404 でも「起動している」ため、
+    # 応答の内容で判定すると、ファイルが無いときに待ち続けて
+    # 起動したままのプロセスが残る。TCP で繋がるかだけを見る。
+    for ($i = 0; $i -lt 30; $i++)
+    {
+        Start-Sleep -Milliseconds 500
+
+        $client = New-Object System.Net.Sockets.TcpClient
+        try
+        {
+            $client.Connect("localhost", $deployWebPort)
+            if ($client.Connected) { $client.Close(); return $true }
+        }
+        catch { }
+        finally { $client.Dispose() }
+    }
+
+    Write-Host "     配信サーバが応答しない"
+    Stop-DeployWeb
+    return $false
+}
+
+function Stop-DeployWeb
+{
+    if ($null -ne $script:deployWebProc)
+    {
+        try { $script:deployWebProc | Stop-Process -Force -EA SilentlyContinue } catch { }
+        $script:deployWebProc = $null
+    }
+}
+
+# ZIP を作るのは対象と同じ実行ファイル（net48 / .NET 10 のそれぞれで確かめる）
+$deployExe48   = Join-Path $csRoot "Frameworks\Tools\DeployZipPackWithHTTP\bin\Debug\OpenTouryo.DeployZipPackWithHTTP.exe"
+$deployExeCore = Join-Path $csRoot "Frameworks\Tools\DeployZipPackWithHTTP\bin\Debug\net10.0-windows7.0\OpenTouryo.DeployZipPackWithHTTP.exe"
+
+$prepareDeploy48   = { [void](New-DeployWeb "net48" $deployExe48) }
+$prepareDeployCore = { [void](New-DeployWeb "core"  $deployExeCore) }
+$mftGenArgs48      = New-MftGenArgs "net48"
+$mftGenArgsCore    = New-MftGenArgs "core"
+$verifyMftGen48    = { Test-MftGen "net48" }
+$verifyMftGenCore  = { Test-MftGen "core" }
+# 配置の確認が終わったら、配信サーバを止める（起動しっぱなしにしない）
+$startDeployWeb48   = { [void](Start-DeployWeb "net48") }
+$startDeployWebCore = { [void](Start-DeployWeb "core") }
+$verifyDeploy48    = { $r = Test-Deploy "net48"; Stop-DeployWeb; return $r }
+$verifyDeployCore  = { $r = Test-Deploy "core";  Stop-DeployWeb; return $r }
+
+# ------------------------------------------------------------------
 # HTTP 要求
 # ------------------------------------------------------------------
 # リダイレクトを追わずに状態コードを見たいが、Invoke-WebRequest は
@@ -505,6 +755,35 @@ $targets = @(
         Exe  = "Frameworks\Tools\DaoGen_Tool\bin\Debug\net10.0-windows7.0\OpenTouryo.DaoGen_Tool.exe"
         Args = $daoSqlArgsCore;  Expect = '生成が完了しました。'
         Verify = $verifyDaoGenCore
+    }
+
+    # --- DeployZipPackWithHTTP の CUI モード ---
+    # #528 で /MFTGEN を追加し、生成 → 配布 → 配置 まで CUI で通せるようになった。
+    # マニュフェストを作り、IIS Express で配信し、実際に配置して突き合わせる。
+    # ※ /NB を付けないと、配置した EXE が起動して止まる。
+    @{
+        Name = "DeployZip /MFTGEN (net48)";        Bat = "4_Build_Framework_Tool.bat"
+        Exe  = "Frameworks\Tools\DeployZipPackWithHTTP\bin\Debug\OpenTouryo.DeployZipPackWithHTTP.exe"
+        Args = $mftGenArgs48;  Expect = 'マニュフェスト ファイルを生成しました。'
+        Pre = $prepareDeploy48;  Verify = $verifyMftGen48
+    }
+    @{
+        Name = "DeployZip 配置 (net48)";           Bat = "4_Build_Framework_Tool.bat"
+        Exe  = "Frameworks\Tools\DeployZipPackWithHTTP\bin\Debug\OpenTouryo.DeployZipPackWithHTTP.exe"
+        Args = $deployArgs;  Expect = '履歴に新規追加しました。'
+        Pre = $startDeployWeb48;  Verify = $verifyDeploy48
+    }
+    @{
+        Name = "DeployZip /MFTGEN (net10.0)";      Bat = "4_Build_Framework_ToolCore.bat"
+        Exe  = "Frameworks\Tools\DeployZipPackWithHTTP\bin\Debug\net10.0-windows7.0\OpenTouryo.DeployZipPackWithHTTP.exe"
+        Args = $mftGenArgsCore;  Expect = 'マニュフェスト ファイルを生成しました。'
+        Pre = $prepareDeployCore;  Verify = $verifyMftGenCore
+    }
+    @{
+        Name = "DeployZip 配置 (net10.0)";         Bat = "4_Build_Framework_ToolCore.bat"
+        Exe  = "Frameworks\Tools\DeployZipPackWithHTTP\bin\Debug\net10.0-windows7.0\OpenTouryo.DeployZipPackWithHTTP.exe"
+        Args = $deployArgs;  Expect = '履歴に新規追加しました。'
+        Pre = $startDeployWebCore;  Verify = $verifyDeployCore
     }
 
     # --- Web アプリ ---

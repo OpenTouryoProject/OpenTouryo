@@ -1,4 +1,4 @@
-#region Apache License
+﻿#region Apache License
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -109,8 +109,12 @@ namespace Touryo.Infrastructure.Public.IO
                     // 解凍対象ファイルを選択（ファイル選択デリゲードを使用）
                     if (base.SelectionDlgt(entry.Name, base.SelectionCriteriaInfo))
                     {
-                        this.ExtractEntry(zip, entry, zipFileName, directoryToUnZip,
-                            extractExistingFile, (int)zip.Count, processed);
+                        if (!this.ExtractEntry(zip, entry, zipFileName, directoryToUnZip,
+                                extractExistingFile, (int)zip.Count, processed))
+                        {
+                            // ハンドラが Cancel を立てたので、以降を処理しない。
+                            break;
+                        }
                     }
 
                     processed++;
@@ -136,7 +140,8 @@ namespace Touryo.Infrastructure.Public.IO
         /// <param name="extractExistingFile">上書き時の動作</param>
         /// <param name="entriesTotal">エントリの総数</param>
         /// <param name="entriesProcessed">処理済みのエントリ数</param>
-        private void ExtractEntry(
+        /// <returns>処理を続けるならtrue（ハンドラがCancelを立てたらfalse）</returns>
+        private bool ExtractEntry(
             ZipFile zip,
             ZipEntry entry,
             string zipFileName,
@@ -151,20 +156,51 @@ namespace Touryo.Infrastructure.Public.IO
 
             if (File.Exists(path))
             {
-                if (extractExistingFile == ExtractExistingFileActionV2.Throw)
+                ExtractExistingFileActionV2 action = extractExistingFile;
+
+                if (action == ExtractExistingFileActionV2.InvokeExtractProgressEvent)
+                {
+                    // ハンドラに問い合わせる。
+                    ZipProgressEventArgsV2 ask = new ZipProgressEventArgsV2(
+                        ZipProgressEventTypeV2.Extracting_ExtractEntryWouldOverwrite, zipFileName);
+                    ask.EntriesTotal = entriesTotal;
+                    ask.EntriesProcessed = entriesProcessed;
+                    ask.CurrentEntryName = entry.Name;
+                    ask.ExtractLocation = directoryToUnZip;
+                    ask.IsQuery = true;
+
+                    // 既定は「上書きしない」。ハンドラが何もしなければ安全側に倒れる。
+                    ask.ExtractExistingFile = ExtractExistingFileActionV2.DoNotOverwrite;
+
+                    base.OnExtractProgress(ask);
+
+                    if (ask.Cancel) { return false; }
+
+                    action = ask.ExtractExistingFile;
+
+                    // 問い合わせを返されても、また問い合わせない（無限になるため）。
+                    if (action == ExtractExistingFileActionV2.InvokeExtractProgressEvent)
+                    {
+                        action = ExtractExistingFileActionV2.DoNotOverwrite;
+                    }
+                }
+
+                if (action == ExtractExistingFileActionV2.Throw)
                 {
                     throw new IOException(path);
                 }
-                else if (extractExistingFile == ExtractExistingFileActionV2.DoNotOverwrite)
+                else if (action == ExtractExistingFileActionV2.DoNotOverwrite)
                 {
                     ZipProgressEventArgsV2 skip = new ZipProgressEventArgsV2(
                         ZipProgressEventTypeV2.Extracting_ExtractEntryWouldOverwrite, zipFileName);
                     skip.EntriesTotal = entriesTotal;
                     skip.EntriesProcessed = entriesProcessed;
                     skip.CurrentEntryName = entry.Name;
+                    skip.ExtractLocation = directoryToUnZip;
+                    skip.IsQuery = false;
                     base.OnExtractProgress(skip);
 
-                    return;
+                    return true;
                 }
             }
 
@@ -223,6 +259,8 @@ namespace Touryo.Infrastructure.Public.IO
             e.TotalBytesToTransfer = entry.Size;
             e.BytesTransferred = transferred;
             base.OnExtractProgress(e);
+
+            return true;
         }
 
         /// <summary>解凍先のパスを求める</summary>
