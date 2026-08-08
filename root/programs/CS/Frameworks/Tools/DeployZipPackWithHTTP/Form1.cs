@@ -49,6 +49,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Resources;
 using System.Windows.Forms;
@@ -457,32 +458,13 @@ namespace DeployZipPackWithHTTP
         /// <summary>マニュフェストファイルを生成</summary>
         private void btnCreateManifesto_Click(object sender, EventArgs e)
         {
-            this.CreateManifesto();
-        }
-
-        /// <summary>マニュフェストファイルを生成</summary>
-        /// <remarks>
-        /// btnCreateManifesto_Click から切り出したもの（#528）。
-        /// **中身は変えていない。** CUI からも呼べるようにするための第 1 段階で、
-        /// この時点ではまだ UI コントロールを参照している。
-        /// </remarks>
-        public void CreateManifesto()
-        {
             try
             {
-                if (this.lbxZIPFiles.Items.Count ==0)
+                // UIコントロールから情報を取得する。
+                List<string> zipFiles = new List<string>();
+                foreach (string zipFile in this.lbxZIPFiles.Items)
                 {
-                    throw new Exception(string.Format(GetMessage.GetMessageDescription("E0007"), GetMessage.GetMessageDescription("M0003")));
-                }
-
-                if (string.IsNullOrEmpty(this.txtInsDir.Text))
-                {
-                    throw new Exception(string.Format(GetMessage.GetMessageDescription("E0007"), GetMessage.GetMessageDescription("M0004")));
-                }
-
-                if (string.IsNullOrEmpty(this.txtExeName.Text))
-                {
-                    throw new Exception(string.Format(GetMessage.GetMessageDescription("E0007"), GetMessage.GetMessageDescription("M0005")));
+                    zipFiles.Add(zipFile);
                 }
 
                 // 保存
@@ -490,24 +472,59 @@ namespace DeployZipPackWithHTTP
                 this.saveFileDialog1.DefaultExt = "mft";
                 this.saveFileDialog1.ShowDialog();
 
-                using (StreamWriter sw = new StreamWriter(
-                    saveFileDialog1.FileName, false, Encoding.GetEncoding(CustomEncode.UTF_8)))
-                {
-                    sw.WriteLine("ins " + this.txtInsDir.Text);
-                    sw.WriteLine("exe " + this.txtExeName.Text);
-
-                    foreach (string zipFile in this.lbxZIPFiles.Items)
-                    {
-                        string[] temp = zipFile.Split('\\');
-
-                        sw.WriteLine("zip " + temp[temp.Length - 1]);
-                        sw.WriteLine("md5 " + Program.GetMD5Hash(zipFile));
-                    }
-                }
+                this.CreateManifesto(
+                    zipFiles.ToArray(), this.txtInsDir.Text,
+                    this.txtExeName.Text, this.saveFileDialog1.FileName);
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, ResourceMgr.GetString("E0001"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        /// <summary>マニュフェストファイルを生成</summary>
+        /// <param name="zipFiles">ZIPファイルのパス</param>
+        /// <param name="insDir">インストール先ディレクトリ</param>
+        /// <param name="exeName">起動アセンブリ（カンマ区切り）</param>
+        /// <param name="mftFilePath">出力するマニュフェスト ファイルのパス</param>
+        /// <remarks>
+        /// btnCreateManifesto_Click から切り出したもの（#528）。
+        /// **UIコントロールを参照しない。** 引数は組み込み型のみで、CUI からも呼べる。
+        /// 対話（SaveFileDialog）と例外の表示は、呼び出し側の責務とする。
+        /// </remarks>
+        public void CreateManifesto(
+            string[] zipFiles, string insDir, string exeName, string mftFilePath)
+        {
+            if (zipFiles == null || zipFiles.Length ==0)
+            {
+                throw new Exception(string.Format(GetMessage.GetMessageDescription("E0007"), GetMessage.GetMessageDescription("M0003")));
+            }
+
+            if (string.IsNullOrEmpty(insDir))
+            {
+                throw new Exception(string.Format(GetMessage.GetMessageDescription("E0007"), GetMessage.GetMessageDescription("M0004")));
+            }
+
+            if (string.IsNullOrEmpty(exeName))
+            {
+                throw new Exception(string.Format(GetMessage.GetMessageDescription("E0007"), GetMessage.GetMessageDescription("M0005")));
+            }
+
+            using (StreamWriter sw = new StreamWriter(
+                mftFilePath, false, Encoding.GetEncoding(CustomEncode.UTF_8)))
+            {
+                sw.WriteLine("ins " + insDir);
+                sw.WriteLine("exe " + exeName);
+
+                foreach (string zipFile in zipFiles)
+                {
+                    // 2026/08/08 まで zipFile.Split('\\') の末尾を採っていた（#528）。
+                    // **CUI では区切りが「/」になる**（コマンドライン解析が「\」を
+                    // エスケープ文字として食べるため、呼び出し側が「/」で渡す）。
+                    // Path.GetFileName は両方の区切りを解釈するので、GUI でも結果は変わらない。
+                    sw.WriteLine("zip " + Path.GetFileName(zipFile));
+                    sw.WriteLine("md5 " + Program.GetMD5Hash(zipFile));
+                }
             }
         }
 

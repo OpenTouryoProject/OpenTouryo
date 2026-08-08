@@ -90,6 +90,41 @@ if (Program.IsBoot)          // /NB が指定されていない
 
 `/FORCE` は履歴を消して強制的に取り直す。**試行錯誤のときはこれを使う。**
 
+### 3.4 引数の渡し方（`/MFTGEN` で必ず踏む）
+
+コマンドライン解析（`StringVariableOperator.GetCommandArgs`）に癖がある。
+
+**① `\` はエスケープ文字として食べられる**
+
+```
+NG : /MFTFILE "C:\temp\a.mft"     ← \ が消えて C:tempa.mft になる
+OK : /MFTFILE "C:/temp/a.mft"     ← / なら素通り
+OK : /MFTFILE "C:\\temp\\a.mft"   ← \\ で \ 1 個
+```
+
+**② ただし `/INSDIR` だけは `\` を残すこと**
+
+`ins` 行の値は**そのまま配置先になる**。`/` のままだと配置に失敗し、
+**それまでの配置物ごとロールバックされる。** `\\` でエスケープする。
+
+```
+OK : /INSDIR "c:\\FormAppRoot\\"   → ins c:\FormAppRoot\
+NG : /INSDIR "c:/FormAppRoot/"     → 配置時に失敗してロールバック
+```
+
+**③ 空白を含む値は、自分で引用符を付ける**
+
+PowerShell の `Start-Process -ArgumentList` は**空白を含む要素に引用符を付けない**。
+付けないと空白で切れる。
+
+```powershell
+NG : "/EXENAME", "top.exe, top1.exe"      → exe top.exe,   で切れる
+OK : "/EXENAME", '"top.exe, top1.exe"'    → 引用符を値に埋め込む
+```
+
+> **終了コードでは検出できないものがある。** ①③は `0` を返しつつ内容が壊れる。
+> **生成物を必ず開いて確かめること。**
+
 ---
 
 ## 4. マニフェスト（`*.mft`）
@@ -112,10 +147,23 @@ md5 jSKAbZeoGgjIPJek53/kAA==
 
 ZIP は**マニフェストと同じ場所**から取りに行く（URL のフォルダを基準にする）。
 
-### 作成は GUI だけ
+### 作成（`/MFTGEN`）
 
-**CLI にマニフェスト作成のモードは無い。** 「声明文作成」タブで作る。
-書式は上記のとおり単純なので、手で書くか生成しても構わない。
+GUI の「声明文作成」タブと同じものを CUI で作れる（#528）。
+
+```powershell
+$zips = ((Get-ChildItem $web -Filter *.zip | ForEach-Object { $_.FullName.Replace("\","/") }) -join ",")
+
+Start-Process $exe -ArgumentList `
+    "/MFTGEN", `
+    "/ZIPFILES", $zips, `
+    "/INSDIR",  "c:\\FormAppRoot\\", `
+    "/EXENAME", '"top.exe, top1.exe, top2.exe, top3.exe"', `
+    "/MFTFILE", "$env:TEMP/FormAppRoot.mft" `
+    -NoNewWindow -Wait -WorkingDirectory (Split-Path $exe)
+```
+
+**引数の渡し方に 3 つの癖がある**（3.4 節）。上の例はそれを踏まえた形。
 
 > **MD5 は「実ファイルの MD5」である。**
 > 2026/08/08 まで `Program.LoadFile` が**最終ブロックを前ブロックの残骸で埋めていた**ため、
@@ -214,8 +262,7 @@ DotNetZip（非推奨・既知脆弱性 `GHSA-xhg6-9j5j-w4vf`）から移行し�
 
 ## 8. 制約
 
-- **CUI にマニフェスト作成が無い**ため、`3_SmokeTest.ps1` の対象にできていない。
-  配布物を用意する工程が GUI に残っている
-- **GUI の確認は手作業**（`RELEASE.md` 4 節）
+- **GUI の確認は手作業**（`RELEASE.md` 4 節）。CUI は `/MFTGEN` と `/CUI` で
+  生成から配置まで通せるため、疎通確認に載せられる
 - 文言は `Resources\Resource.resx` / `Resource.ja-JP.resx` に置く。**直書きしない**
   （例外メッセージは `MSGDefinition.xml` / `MSGDefinition_ja-JP.xml` 側）

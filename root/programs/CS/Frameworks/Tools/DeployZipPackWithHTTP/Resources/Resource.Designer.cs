@@ -223,6 +223,60 @@ namespace DeployZipPackWithHTTP.Resources {
         }
         
         /// <summary>
+        ///   /MFTGEN Creates a manifest file. The following arguments are required. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string A0019 {
+            get {
+                return ResourceManager.GetString("A0019", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /ZIPFILES ... Specifies the ZIP files (comma separated). に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string A0020 {
+            get {
+                return ResourceManager.GetString("A0020", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /INSDIR ... /EXENAME ... に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string A0021 {
+            get {
+                return ResourceManager.GetString("A0021", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /MFTFILE ... Specifies the manifest file to create. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string A0022 {
+            get {
+                return ResourceManager.GetString("A0022", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   /MFTGEN requires /ZIPFILES, /INSDIR, /EXENAME and /MFTFILE. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string A0023 {
+            get {
+                return ResourceManager.GetString("A0023", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   The manifest file was created. [{0}] に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string A0024 {
+            get {
+                return ResourceManager.GetString("A0024", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   An error has occurred. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string E0001 {

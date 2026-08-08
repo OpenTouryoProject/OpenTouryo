@@ -267,4 +267,22 @@
   <data name="I0008" xml:space="preserve">
     <value>{0} 件のファイルを解凍しました。</value>
   </data>
+  <data name="A0019" xml:space="preserve">
+    <value>/MFTGEN マニュフェスト ファイルを生成します。以下の引数が必須です。</value>
+  </data>
+  <data name="A0020" xml:space="preserve">
+    <value>/ZIPFILES \"a.zip,b.zip\" 対象のZIPファイルを指定します（カンマ区切り）。</value>
+  </data>
+  <data name="A0021" xml:space="preserve">
+    <value>/INSDIR xxxx インストール先ディレクトリを指定します。  /EXENAME xxxx 起動アセンブリを指定します（カンマ区切り）。</value>
+  </data>
+  <data name="A0022" xml:space="preserve">
+    <value>/MFTFILE xxxx 生成するマニュフェスト ファイルを指定します。</value>
+  </data>
+  <data name="A0023" xml:space="preserve">
+    <value>/MFTGEN には /ZIPFILES /INSDIR /EXENAME /MFTFILE が必要です。</value>
+  </data>
+  <data name="A0024" xml:space="preserve">
+    <value>マニュフェスト ファイルを生成しました。[{0}]</value>
+  </data>
 </root>

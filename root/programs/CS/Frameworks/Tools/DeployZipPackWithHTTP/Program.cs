@@ -385,10 +385,26 @@ namespace DeployZipPackWithHTTP
                     Console.WriteLine(ResourceMgr.GetString("A0017"));
                     Console.WriteLine("");
                     Console.WriteLine(ResourceMgr.GetString("A0018"));
+                    Console.WriteLine("");
+                    // マニュフェスト ファイルの生成（#528）
+                    Console.WriteLine(ResourceMgr.GetString("A0019"));
+                    Console.WriteLine(ResourceMgr.GetString("A0020"));
+                    Console.WriteLine(ResourceMgr.GetString("A0021"));
+                    Console.WriteLine(ResourceMgr.GetString("A0022"));
 
                     // コンソール デタッチ
                     Program.FreeConsole();
 
+                    return;　// 終了
+                }
+
+                // マニュフェスト ファイルの生成（#528）
+                if (argsDic.ContainsKey("/MFTGEN"))
+                {
+                    // コンソール アタッチ
+                    Program.AttachConsole(-1);
+
+                    Environment.ExitCode = Program.CreateManifesto(argsDic);
                     return;　// 終了
                 }
 
@@ -595,6 +611,59 @@ namespace DeployZipPackWithHTTP
         /// <param name="dic">ディクショナリ</param>
         /// <param name="key">キー</param>
         /// <returns>出力文字列（nullを含まない）</returns>
+        #region マニュフェスト ファイルの生成（CUI）
+
+        /// <summary>CUI（非対話）でマニュフェスト ファイルを生成する</summary>
+        /// <param name="argsDic">コマンドライン引数</param>
+        /// <returns>終了コード（0：正常、1：引数の誤り、2：生成の失敗）</returns>
+        /// <remarks>
+        /// GUI の「声明文作成」タブと同じ処理を行う（#528）。
+        /// **Form1 は表示しない。** UIコントロールは初期化のみ行われる。
+        /// </remarks>
+        private static int CreateManifesto(Dictionary<string, string> argsDic)
+        {
+            string zipFiles = Program.NullToEmptyString(argsDic, "/ZIPFILES");
+            string insDir = Program.NullToEmptyString(argsDic, "/INSDIR");
+            string exeName = Program.NullToEmptyString(argsDic, "/EXENAME");
+            string mftFile = Program.NullToEmptyString(argsDic, "/MFTFILE");
+
+            if (string.IsNullOrEmpty(zipFiles) || string.IsNullOrEmpty(insDir)
+                || string.IsNullOrEmpty(exeName) || string.IsNullOrEmpty(mftFile))
+            {
+                Console.WriteLine(ResourceMgr.GetString("A0023"));
+                return 1;
+            }
+
+            // カンマ区切りを分割する。**前後の空白は落とす。**
+            // 引数を "a.zip, b.zip" のように書けるようにするため。
+            List<string> zipFileLst = new List<string>();
+            foreach (string zipFile in zipFiles.Split(','))
+            {
+                if (!string.IsNullOrEmpty(zipFile.Trim()))
+                {
+                    zipFileLst.Add(zipFile.Trim());
+                }
+            }
+
+            try
+            {
+                // 生成処理の呼び出し
+                // ※ Form1 は表示しない。UIコントロールは初期化のみ行われる。
+                Form1 form1 = new Form1();
+                form1.CreateManifesto(zipFileLst.ToArray(), insDir, exeName, mftFile);
+
+                Console.WriteLine(string.Format(ResourceMgr.GetString("A0024"), mftFile));
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return 2;
+            }
+        }
+
+        #endregion
+
         public static string NullToEmptyString(Dictionary<string, string> dic, string key)
         {
             if (dic.ContainsKey(key))

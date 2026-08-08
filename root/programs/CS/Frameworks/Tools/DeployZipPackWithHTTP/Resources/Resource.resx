@@ -267,4 +267,22 @@
   <data name="I0008" xml:space="preserve">
     <value>{0} file(s) were extracted.</value>
   </data>
+  <data name="A0019" xml:space="preserve">
+    <value>/MFTGEN Creates a manifest file. The following arguments are required.</value>
+  </data>
+  <data name="A0020" xml:space="preserve">
+    <value>/ZIPFILES \"a.zip,b.zip\" Specifies the ZIP files (comma separated).</value>
+  </data>
+  <data name="A0021" xml:space="preserve">
+    <value>/INSDIR xxxx Specifies the installation directory.  /EXENAME xxxx Specifies the assemblies to start (comma separated).</value>
+  </data>
+  <data name="A0022" xml:space="preserve">
+    <value>/MFTFILE xxxx Specifies the manifest file to create.</value>
+  </data>
+  <data name="A0023" xml:space="preserve">
+    <value>/MFTGEN requires /ZIPFILES, /INSDIR, /EXENAME and /MFTFILE.</value>
+  </data>
+  <data name="A0024" xml:space="preserve">
+    <value>The manifest file was created. [{0}]</value>
+  </data>
 </root>
