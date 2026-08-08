@@ -506,6 +506,24 @@ namespace DeployZipPackWithHTTP
                     // コンソール デタッチ
                     Program.FreeConsole();
                 }
+                else if (0 < argsDic.Count)
+                {
+                    // **引数があるのに、どのモードにも当たらなかった。**
+                    //
+                    // ここで GUI を開いてはいけない（#528）。
+                    // 非対話で呼ばれた場合、画面が出たまま応答を待ち続け、
+                    // 呼び出し側（CI や 3_SmokeTest.ps1）が停止する。
+                    // 綴りの誤りや、古いビルドで未実装のスイッチを渡したときに起きる。
+                    Program.AttachConsole(-1);
+
+                    Console.WriteLine(string.Format(
+                        ResourceMgr.GetString("A0034"),
+                        string.Join(" ", new List<string>(argsDic.Keys).ToArray())));
+
+                    Program.FreeConsole();
+
+                    Environment.ExitCode = 1;
+                }
                 else
                 {
                     // GUI起動

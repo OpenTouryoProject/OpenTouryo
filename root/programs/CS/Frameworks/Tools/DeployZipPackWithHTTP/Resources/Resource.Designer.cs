@@ -358,6 +358,15 @@ namespace DeployZipPackWithHTTP.Resources {
         }
         
         /// <summary>
+        ///   Unknown argument(s) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string A0034 {
+            get {
+                return ResourceManager.GetString("A0034", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   An error has occurred. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string E0001 {

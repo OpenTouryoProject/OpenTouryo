@@ -299,15 +299,20 @@ $verifyDaoGenCore  = { Test-DaoGen "core" }
 #   ・空白を含む値は、自分で引用符を付ける
 $deployWebPort = 51084
 $deploySampleSrc = Join-Path $csRoot "Frameworks\Tools\DeployZipPackWithHTTP\Sample\FormAppRoot"
-$deploySampleWeb = Join-Path $csRoot "Frameworks\Tools\DeployZipPackWithHTTP\Sample\FormAppRootWeb"
+
+# **配布物（ZIP）は追跡していない。** FormAppRoot から毎回作る。
+#   /ZIPGEN … ルート直下（/TOPONLY）と各フォルダ（/ROOTINZIP）を別々の ZIP にする
+#   /MFTGEN … その ZIP からマニュフェストを作る
+# 作り置きを追跡すると、元を直したときの作り直し漏れで MD5 が合わなくなる。
+$deployZipNames = @("root", "aaa", "bbb", "ccc")
 
 function Get-DeployWork([string]$tag)
 {
     return (Join-Path $OutputDir "deploy_$tag")
 }
 
-# 配信フォルダを用意する（ZIP を置き、.mft の MIME を登録する）
-function New-DeployWeb([string]$tag)
+# 配信フォルダを用意し、FormAppRoot から ZIP を作る
+function New-DeployWeb([string]$tag, [string]$exe)
 {
     $work = Get-DeployWork $tag
     $web  = Join-Path $work "web"
@@ -317,8 +322,6 @@ function New-DeployWeb([string]$tag)
     New-Item -ItemType Directory -Force $web | Out-Null
     New-Item -ItemType Directory -Force $ins | Out-Null
 
-    Copy-Item (Join-Path $deploySampleWeb "*.zip") $web -Force
-
     # .mft は既定で MIME 未登録のため 404.3 になる
     $conf = '<?xml version="1.0" encoding="utf-8"?>' + "`r`n" +
             '<configuration><system.webServer><staticContent>' +
@@ -326,6 +329,39 @@ function New-DeployWeb([string]$tag)
             '<mimeMap fileExtension=".mft" mimeType="text/plain" />' +
             '</staticContent></system.webServer></configuration>'
     Set-Content (Join-Path $web "web.config") $conf -Encoding UTF8
+
+    #region ZIP を作る（/ZIPGEN）
+
+    # **パスの区切りは「/」で渡す。** コマンドライン解析が「\」を食べる。
+    $src = $deploySampleSrc.Replace("\", "/")
+
+    foreach ($name in $deployZipNames)
+    {
+        $out = (Join-Path $web $name).Replace("\", "/")
+
+        if ($name -eq "root")
+        {
+            # ルート直下だけ（サブフォルダは各 ZIP が持つ）。書庫内ルートは作らない。
+            $a = @("/ZIPGEN", "/SRCDIR", $src, "/ZIPFILE", $out, "/TOPONLY")
+        }
+        else
+        {
+            # フォルダごと。書庫内ルートをフォルダ名にする（個別のフォルダ圧縮）。
+            $a = @("/ZIPGEN", "/SRCDIR", "$src/$name", "/ZIPFILE", $out, "/ROOTINZIP", $name)
+        }
+
+        $log = Join-Path $OutputDir "deploy_zipgen_$tag`_$name.log"
+        Start-Process $exe -ArgumentList $a -NoNewWindow -Wait `
+            -WorkingDirectory (Split-Path $exe) -RedirectStandardOutput $log
+
+        if (-not (Test-Path (Join-Path $web ($name + ".zip"))))
+        {
+            Write-Host ("     ZIP を生成できない : {0}.zip" -f $name)
+            return $work
+        }
+    }
+
+    #endregion
 
     return $work
 }
@@ -335,12 +371,11 @@ function New-MftGenArgs([string]$tag)
     $work = Get-DeployWork $tag
     $web  = Join-Path $work "web"
 
-    # **同梱の Sample 側から列挙する。**
-    # 引数は対象定義の時点（Pre より前）で組み立てられるため、
-    # コピー先の web フォルダはまだ存在しない。
-    # マニュフェストに書かれるのはファイル名だけなので、どちらから採っても同じ。
-    $zips = @(Get-ChildItem $deploySampleWeb -Filter *.zip | Sort-Object Name |
-              ForEach-Object { $_.FullName.Replace("\", "/") }) -join ","
+    # **ファイル一覧を採ってはいけない。**
+    # 引数は対象定義の時点（Pre より前）で組み立てられるため、ZIP はまだ無い。
+    # 名前は決まっているので、そこから組み立てる。
+    $zips = @($deployZipNames | Sort-Object |
+              ForEach-Object { (Join-Path $web ($_ + ".zip")).Replace("\", "/") }) -join ","
 
     # ins 行はそのまま配置先になるので「\」を残す（「\\」でエスケープ）
     $ins = (Join-Path $work "ins") + "\"
@@ -348,8 +383,10 @@ function New-MftGenArgs([string]$tag)
 
     $mft = (Join-Path $web "FormAppRoot.mft").Replace("\", "/")
 
+    # **exe 行はインストール先からの相対パス。** サブフォルダのものは、そう書く。
+    # 二重起動チェックがこれを使うため、実在しないパスを書くと検出が効かない。
     return @("/MFTGEN", "/ZIPFILES", $zips, "/INSDIR", $insArg,
-             "/EXENAME", '"top.exe, top1.exe, top2.exe, top3.exe"', "/MFTFILE", $mft)
+             "/EXENAME", '"top.exe, aaa\\top1.exe, bbb\\top2.exe"', "/MFTFILE", $mft)
 }
 
 # /NB … マニフェストの exe 行で指定されたアセンブリを起動しない
@@ -357,27 +394,44 @@ function New-MftGenArgs([string]$tag)
 $deployArgs = @("/CUI", "/NB", "/FORCE", "/WWWURL",
                 ("http://localhost:{0}/FormAppRoot.mft" -f $deployWebPort))
 
-# マニュフェストが生成され、同梱の既存マニフェストと同じ MD5 になっていること
+# マニュフェストが生成され、MD5 が実ファイルのものと一致すること
 function Test-MftGen([string]$tag)
 {
-    $mft = Join-Path (Join-Path (Get-DeployWork $tag) "web") "FormAppRoot.mft"
+    $web = Join-Path (Get-DeployWork $tag) "web"
+    $mft = Join-Path $web "FormAppRoot.mft"
     if (-not (Test-Path $mft)) { Write-Host "     マニュフェストが生成されていない"; return $false }
 
     $lines = @(Get-Content $mft -Encoding UTF8)
     Write-Host ("     マニュフェスト : {0} 行" -f $lines.Count)
 
-    # zip と md5 が 5 組
-    $zipCnt = @($lines | Where-Object { $_ -like "zip *" }).Count
-    $md5Cnt = @($lines | Where-Object { $_ -like "md5 *" }).Count
+    $zips = @($lines | Where-Object { $_ -like "zip *" })
+    $md5s = @($lines | Where-Object { $_ -like "md5 *" })
 
-    # 同梱の既存マニフェストと MD5 が一致すること（ins 行は配置先が異なるため比較しない）
-    $expected = @(Get-Content (Join-Path $deploySampleWeb "FormAppRoot.mft") -Encoding UTF8) |
-                Where-Object { $_ -like "md5 *" }
-    $actual   = $lines | Where-Object { $_ -like "md5 *" }
-    $same = (@(Compare-Object $expected $actual).Count -eq 0)
+    if (($zips.Count -ne $deployZipNames.Count) -or ($md5s.Count -ne $deployZipNames.Count))
+    {
+        Write-Host "     zip / md5 の組数が合わない"
+        return $false
+    }
 
-    if (-not $same) { Write-Host "     MD5 が同梱のマニュフェストと一致しない" }
-    return (($zipCnt -eq 5) -and ($md5Cnt -eq 5) -and $same)
+    # **書かれた MD5 を、実ファイルから計算し直して突き合わせる。**
+    # ここが合わないと配布時に弾かれる。作り置きの ZIP を使っていた頃は、
+    # 元を直したのに ZIP を作り直さず、ここで気付けなかった。
+    $md5 = [System.Security.Cryptography.MD5]::Create()
+
+    for ($i = 0; $i -lt $zips.Count; $i++)
+    {
+        $name = $zips[$i].Substring(4).Trim()
+        $path = Join-Path $web $name
+
+        if (-not (Test-Path $path)) { Write-Host ("     ZIP が無い : {0}" -f $name); return $false }
+
+        $want = $md5s[$i].Substring(4).Trim()
+        $got  = [Convert]::ToBase64String($md5.ComputeHash([IO.File]::ReadAllBytes($path)))
+
+        if ($want -ne $got) { Write-Host ("     MD5 が一致しない : {0}" -f $name); return $false }
+    }
+
+    return $true
 }
 
 # 配置結果が、圧縮前のフォルダと一致すること
@@ -464,8 +518,12 @@ function Stop-DeployWeb
     }
 }
 
-$prepareDeploy48   = { [void](New-DeployWeb "net48") }
-$prepareDeployCore = { [void](New-DeployWeb "core") }
+# ZIP を作るのは対象と同じ実行ファイル（net48 / .NET 10 のそれぞれで確かめる）
+$deployExe48   = Join-Path $csRoot "Frameworks\Tools\DeployZipPackWithHTTP\bin\Debug\OpenTouryo.DeployZipPackWithHTTP.exe"
+$deployExeCore = Join-Path $csRoot "Frameworks\Tools\DeployZipPackWithHTTP\bin\Debug\net10.0-windows7.0\OpenTouryo.DeployZipPackWithHTTP.exe"
+
+$prepareDeploy48   = { [void](New-DeployWeb "net48" $deployExe48) }
+$prepareDeployCore = { [void](New-DeployWeb "core"  $deployExeCore) }
 $mftGenArgs48      = New-MftGenArgs "net48"
 $mftGenArgsCore    = New-MftGenArgs "core"
 $verifyMftGen48    = { Test-MftGen "net48" }

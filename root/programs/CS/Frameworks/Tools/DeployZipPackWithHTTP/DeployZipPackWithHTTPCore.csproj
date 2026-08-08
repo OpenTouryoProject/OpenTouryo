@@ -27,6 +27,12 @@
 
   <ItemGroup>
     <Compile Remove="Properties\AssemblyInfo.cs" />
+    <!--Sample\ 配下は別プロジェクト（SampleConsoleApp）と配布物である。
+        **SDK 形式は配下の **\*.cs を既定で拾う**ため、除外しないと
+        入れ子のプロジェクトが混ざって CS0579（属性の重複）になる。-->
+    <Compile Remove="Sample\**" />
+    <EmbeddedResource Remove="Sample\**" />
+    <None Remove="Sample\**" />
   </ItemGroup>
 
   <ItemGroup>

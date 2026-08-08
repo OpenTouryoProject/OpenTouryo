@@ -312,4 +312,7 @@
   <data name="A0033" xml:space="preserve">
     <value>The ZIP file was created. [{0}] {1} file(s).</value>
   </data>
+  <data name="A0034" xml:space="preserve">
+    <value>Unknown argument(s): {0}  Run /HELP to see the usage. (The GUI is not opened when arguments are given.)</value>
+  </data>
 </root>

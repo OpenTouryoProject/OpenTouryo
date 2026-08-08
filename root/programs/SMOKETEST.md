@@ -157,15 +157,36 @@ NG : /OUTPUT "C:\temp\out"    ← \ が消える
 | `DeployZip /MFTGEN` (net48 / net10.0) | マニュフェストが生成され、**MD5 が同梱のものと一致する** |
 | `DeployZip 配置` (net48 / net10.0) | **配置結果が圧縮前のフォルダと全ファイル一致する** |
 
-`#528` で `/MFTGEN`（マニュフェスト生成）を追加し、**生成 → 配布 → 配置**を CUI で
-通せるようになった。前段の出力を後段の入力に使う点は `DaoGen_Tool` と同じ。
+`#528` で `/ZIPGEN`（ZIP 生成）と `/MFTGEN`（マニュフェスト生成）を追加し、
+**圧縮 → マニュフェスト → 配布 → 配置**を CUI で通せるようになった。
+前段の出力を後段の入力に使う点は `DaoGen_Tool` と同じ。
 
-同梱の `Sample/` が `FormAppRoot`（配布前）と `FormAppRootWeb`（ZIP 化後）の対に
-なっているため、**配置結果を MD5 で突き合わせられる**（25 ファイル）。
+**配布物（ZIP）は追跡していない。** `Pre` で `FormAppRoot` から毎回作る。
+
+```
+/ZIPGEN /TOPONLY            → root.zip（ルート直下だけ、書庫内ルート無し）
+/ZIPGEN /ROOTINZIP aaa      → aaa.zip （フォルダごと、書庫内ルート = aaa）
+```
+
+**両方のモードを通る。** GUI のチェック ボックス
+（「個別のフォルダ圧縮」／「ルート フォルダからの圧縮」）に対応する分岐である。
+
+`Sample/FormAppRoot` が配布前の姿なので、**配置結果を MD5 で突き合わせられる**（21 ファイル）。
 
 **ここだけ ZIP 部品（`ZipperV2` / `UnZipperV2`）を通る。**
 単体テスト（`TestCode/TestZipV2.cs`）は部品の振る舞いを見るが、
 配布フロー全体を通すのはこの 2 件だけ。
+
+#### マニュフェストの MD5 は計算し直して突き合わせる
+
+```powershell
+$want = $md5s[$i].Substring(4).Trim()
+$got  = [Convert]::ToBase64String($md5.ComputeHash([IO.File]::ReadAllBytes($path)))
+```
+
+**作り置きの ZIP を追跡していた頃は、ここで気付けなかった。**
+`FormAppRoot` を直したのに ZIP を作り直さないと MD5 が合わなくなるが、
+比較相手も作り置きだと両方が古いままで通ってしまう。
 
 #### 配信は IIS Express で立てる
 
@@ -189,6 +210,15 @@ Web アプリと違い**対象は EXE** なので、本文側の Web ホスト�
 > 引数の渡し方に癖がある（`\` がエスケープされる・`/INSDIR` だけは `\` を残す・
 > 空白を含む値は自分で引用符を付ける）。
 > **一次情報は [`Tools/DeployZipPackWithHTTP/README.md`](CS/Frameworks/Tools/DeployZipPackWithHTTP/README.md) の 3.4 節。**
+
+#### 古いビルドに新しいスイッチを渡すと、以前は GUI が開いた
+
+**引数があるのにどのモードにも当たらない場合、GUI へ落ちる実装だった**（#528 で修正）。
+非対話では画面が出たまま止まるため、疎通確認や CI が停止する。
+現在は**エラーで終わる**（終了コード 1）。
+
+`/ZIPGEN` を実装した直後、`.NET 10` 側を建て直さずに回して実際に踏んだ。
+**片方のビルドだけを更新しない**こと。
 
 ### Web アプリ（3 件）
 

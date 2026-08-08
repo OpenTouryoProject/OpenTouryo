@@ -312,4 +312,7 @@
   <data name="A0033" xml:space="preserve">
     <value>ZIPファイルを生成しました。[{0}] {1} 件。</value>
   </data>
+  <data name="A0034" xml:space="preserve">
+    <value>認識できない引数です : {0}  使い方は /HELP を参照してください。（引数がある場合、GUI は起動しません）</value>
+  </data>
 </root>
