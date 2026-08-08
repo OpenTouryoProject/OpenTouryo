@@ -197,8 +197,6 @@ namespace DeployZipPackWithHTTP
                     }
 
                     // ステータスを書き込む
-                    //this.Status = "正常終了";
-                    //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
                     this.Status = ResourceMgr.GetString("S0001");
                     if (ArgsDic.ContainsKey("/QUIET"))
                     {
@@ -207,8 +205,6 @@ namespace DeployZipPackWithHTTP
                     else
                     {
                         // メッセージ表示する
-                        //MessageBox.Show(message, "メッセージ", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
                         MessageBox.Show(message, ResourceMgr.GetString("M0001"), MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                 }
@@ -221,15 +217,11 @@ namespace DeployZipPackWithHTTP
                     string message = "";
                     Exception ex = (Exception)retVal;
 
-                    //message += "＜メッセージ＞\r\n";
-                    //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
                     message += ResourceMgr.GetString("M0002") + "\r\n";
                     message += ex.Message;
                     message += "\r\n";
 
                     message += "\r\n";
-                    //message += "＜スタック トレース＞\r\n";
-                    //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
                     message += ResourceMgr.GetString("M0003") + "\r\n";
                     message += ex.StackTrace;
                     message += "\r\n";
@@ -237,8 +229,6 @@ namespace DeployZipPackWithHTTP
                     if (ex.InnerException != null)
                     {
                         message += "\r\n";
-                        //message += "＜内部例外＞\r\n";
-                        //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
                         message += ResourceMgr.GetString("M0004") + "\r\n";
                         message += ex.InnerException.ToString();
                         message += "\r\n";
@@ -247,8 +237,6 @@ namespace DeployZipPackWithHTTP
                     Program.OutPutMessage(message, LogLevel.ErrorLog);
 
                     // ステータスを書き込む
-                    //this.Status = "異常終了";
-                    //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
                     this.Status = ResourceMgr.GetString("S0002");
 
                     // Exceptionではメッセージ表示しない。
@@ -295,8 +283,6 @@ namespace DeployZipPackWithHTTP
                 catch(Exception ex)
                 {
                     // 例外を潰してログに出力
-                    //Program.OutPutMessage(Program.TempZipFileName + "削除例外：" + ex.ToString(), LogLevel.ErrorLog);
-                    //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
                     Program.OutPutMessage(Program.TempZipFileName + ResourceMgr.GetString("E0002") + ex.ToString(), LogLevel.ErrorLog);
                 }
 
@@ -309,15 +295,11 @@ namespace DeployZipPackWithHTTP
 
             if (Program.Af.Start())
             {
-                //this.ｘｘｘ(string.Format(
-                //    "キューイングされました、現在のスレッド数:{0}",
-                //    BaseAsyncFunc.ThreadCount.ToString()));
+                //this.XXXX(string.Format("キューイングされました、現在のスレッド数:{0}", BaseAsyncFunc.ThreadCount.ToString()));
             }
             else
             {
-                //this.ｘｘｘ(string.Format(
-                //    "非同期スレッドが最大数に達しています。:{0}",
-                //    BaseAsyncFunc.ThreadCount.ToString()));
+                //this.XXXX(string.Format("非同期スレッドが最大数に達しています。:{0}", BaseAsyncFunc.ThreadCount.ToString()));
             }
 
             #endregion
@@ -363,15 +345,11 @@ namespace DeployZipPackWithHTTP
 
             if (Program.Af.Start())
             {
-                //this.ｘｘｘ(string.Format(
-                //    "キューイングされました、現在のスレッド数:{0}",
-                //    BaseAsyncFunc.ThreadCount.ToString()));
+                //this.XXXX(string.Format("キューイングされました、現在のスレッド数:{0}", BaseAsyncFunc.ThreadCount.ToString()));
             }
             else
             {
-                //this.ｘｘｘ(string.Format(
-                //    "非同期スレッドが最大数に達しています。:{0}",
-                //    BaseAsyncFunc.ThreadCount.ToString()));
+                //this.XXXX(string.Format("非同期スレッドが最大数に達しています。:{0}", BaseAsyncFunc.ThreadCount.ToString()));
             }
         }
 
