@@ -168,8 +168,16 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="DotNetZip">
-      <Version>1.12.0</Version>
+    <!--ZIP は OpenTouryo.Public の ZipperV2 / UnZipperV2（SharpZipLib）を使う（#528）。
+        DotNetZip は非推奨かつ既知脆弱性（GHSA-xhg6-9j5j-w4vf）のため除去した。
+        SharpZipLib は OpenTouryo.Public の依存として Build に配置される。-->
+    <PackageReference Include="SharpZipLib">
+      <Version>1.4.2</Version>
+    </PackageReference>
+    <!--設定と履歴の保存に使う（#528）。
+        BinaryFormatter が .NET 9 以降で削除されたため JSON に替えた。-->
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

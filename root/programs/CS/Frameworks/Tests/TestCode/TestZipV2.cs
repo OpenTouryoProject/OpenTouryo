@@ -229,6 +229,59 @@ namespace TestCode
                 }
 
                 #endregion
+
+                #region 上書きをハンドラに問い合わせる
+
+                // InvokeExtractProgressEvent … 1 件ずつ問い合わせる。
+                // DeployZipPackWithHTTP が上書き確認ダイアログに使っている（#528）。
+                MyDebug.OutputDebugAndConsole("[上書きの問い合わせ]");
+
+                // (1) 問い合わせに「上書きする」と答える
+                int asked = 0;
+                uz.ExtractProgress = delegate (object sender, ZipProgressEventArgsV2 e)
+                {
+                    if (e.EventType == ZipProgressEventTypeV2.Extracting_ExtractEntryWouldOverwrite
+                        && e.IsQuery)
+                    {
+                        asked++;
+                        e.ExtractExistingFile = ExtractExistingFileActionV2.OverwriteSilently;
+                    }
+                };
+                uz.ExtractFileFromZip(
+                    Path.Combine(work, "archive.zip"), dst,
+                    null, null,
+                    ExtractExistingFileActionV2.InvokeExtractProgressEvent, null, null);
+                MyDebug.OutputDebugAndConsole(
+                    "  上書きすると答えた : 問い合わせ " + asked + " 件 / 解凍 " + uz.ExtractedFiles.Length + " 件");
+
+                // (2) 何も答えない … 既定は「上書きしない」（安全側）
+                uz.ExtractProgress = null;
+                uz.ExtractFileFromZip(
+                    Path.Combine(work, "archive.zip"), dst,
+                    null, null,
+                    ExtractExistingFileActionV2.InvokeExtractProgressEvent, null, null);
+                MyDebug.OutputDebugAndConsole(
+                    "  答えない（既定）   : 解凍 " + uz.ExtractedFiles.Length + " 件");
+
+                // (3) 1 件目で打ち切る
+                uz.ExtractProgress = delegate (object sender, ZipProgressEventArgsV2 e)
+                {
+                    if (e.EventType == ZipProgressEventTypeV2.Extracting_ExtractEntryWouldOverwrite
+                        && e.IsQuery)
+                    {
+                        e.Cancel = true;
+                    }
+                };
+                uz.ExtractFileFromZip(
+                    Path.Combine(work, "archive.zip"), dst,
+                    null, null,
+                    ExtractExistingFileActionV2.InvokeExtractProgressEvent, null, null);
+                MyDebug.OutputDebugAndConsole(
+                    "  打ち切る           : 解凍 " + uz.ExtractedFiles.Length + " 件");
+
+                uz.ExtractProgress = null;
+
+                #endregion
             }
             finally { TestZipV2.DeleteWorkDir(work); }
         }

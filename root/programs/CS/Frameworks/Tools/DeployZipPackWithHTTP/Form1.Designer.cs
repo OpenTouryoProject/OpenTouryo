@@ -74,10 +74,7 @@
             this.tabPageZip = new System.Windows.Forms.TabPage();
             this.lblRootDirCheck = new System.Windows.Forms.Label();
             this.cbxRootDir = new System.Windows.Forms.CheckBox();
-            this.cbxFormat = new System.Windows.Forms.CheckBox();
             this.btnCompress = new System.Windows.Forms.Button();
-            this.cmbFormat = new System.Windows.Forms.ComboBox();
-            this.lblFormat = new System.Windows.Forms.Label();
             this.cmbCmpLv = new System.Windows.Forms.ComboBox();
             this.lblCyp = new System.Windows.Forms.Label();
             this.lblCmpLv = new System.Windows.Forms.Label();
@@ -387,10 +384,7 @@
             resources.ApplyResources(this.tabPageZip, "tabPageZip");
             this.tabPageZip.Controls.Add(this.lblRootDirCheck);
             this.tabPageZip.Controls.Add(this.cbxRootDir);
-            this.tabPageZip.Controls.Add(this.cbxFormat);
             this.tabPageZip.Controls.Add(this.btnCompress);
-            this.tabPageZip.Controls.Add(this.cmbFormat);
-            this.tabPageZip.Controls.Add(this.lblFormat);
             this.tabPageZip.Controls.Add(this.cmbCmpLv);
             this.tabPageZip.Controls.Add(this.lblCyp);
             this.tabPageZip.Controls.Add(this.lblCmpLv);
@@ -409,31 +403,12 @@
             this.cbxRootDir.Name = "cbxRootDir";
             this.cbxRootDir.UseVisualStyleBackColor = true;
             // 
-            // cbxFormat
-            // 
-            resources.ApplyResources(this.cbxFormat, "cbxFormat");
-            this.cbxFormat.Name = "cbxFormat";
-            this.cbxFormat.UseVisualStyleBackColor = true;
-            this.cbxFormat.CheckedChanged += new System.EventHandler(this.cmbFormat_CheckedChanged);
-            // 
             // btnCompress
             // 
             resources.ApplyResources(this.btnCompress, "btnCompress");
             this.btnCompress.Name = "btnCompress";
             this.btnCompress.UseVisualStyleBackColor = true;
             this.btnCompress.Click += new System.EventHandler(this.btnCompress_Click);
-            // 
-            // cmbFormat
-            // 
-            resources.ApplyResources(this.cmbFormat, "cmbFormat");
-            this.cmbFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbFormat.FormattingEnabled = true;
-            this.cmbFormat.Name = "cmbFormat";
-            // 
-            // lblFormat
-            // 
-            resources.ApplyResources(this.lblFormat, "lblFormat");
-            this.lblFormat.Name = "lblFormat";
             // 
             // cmbCmpLv
             // 
@@ -662,10 +637,7 @@
         private System.Windows.Forms.TabControl tabZipUnZip;
         private System.Windows.Forms.TabPage tabPageZip;
         private System.Windows.Forms.CheckBox cbxRootDir;
-        private System.Windows.Forms.CheckBox cbxFormat;
         private System.Windows.Forms.Button btnCompress;
-        private System.Windows.Forms.ComboBox cmbFormat;
-        private System.Windows.Forms.Label lblFormat;
         private System.Windows.Forms.ComboBox cmbCmpLv;
         private System.Windows.Forms.Label lblCyp;
         private System.Windows.Forms.Label lblCmpLv;

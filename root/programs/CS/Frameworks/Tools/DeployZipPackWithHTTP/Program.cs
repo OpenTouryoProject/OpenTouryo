@@ -77,7 +77,8 @@ using System.Resources;
 using System.Windows.Forms;
 
 using Microsoft.VisualBasic.FileIO;
-using Ionic.Zip;
+using Newtonsoft.Json;
+
 
 using Touryo.Infrastructure.Business.RichClient.Asynchronous;
 using Touryo.Infrastructure.Framework.Util;
@@ -118,9 +119,9 @@ namespace DeployZipPackWithHTTP
         #region 定数
 
         /// <summary>カレントファイル</summary>
-        private static readonly string CurrentFileName = "\\current.bin";
+        private static readonly string CurrentFileName = "\\current.json";
         /// <summary>履歴ファイル</summary>
-        private static readonly string HistoryFileName = "\\histories.bin";
+        private static readonly string HistoryFileName = "\\histories.json";
 
         /// <summary>マニュフェスト一時ファイル</summary>
         public static readonly string TempMftFileName = "\\temp.mft";
@@ -1243,24 +1244,32 @@ namespace DeployZipPackWithHTTP
         /// <summary>ファイルにセーブ</summary>
         /// <param name="obj">オブジェクト</param>
         /// <param name="filePath">ファイル パス</param>
+        /// <remarks>
+        /// 2026/08/08 まで BinarySerialize（BinaryFormatter）を使っていた（#528）。
+        /// **.NET 9 以降で BinaryFormatter が削除された**ため JSON に替えた
+        /// （Public_netcore100.csproj は IO\BinarySerialize.cs を Compile Remove している）。
+        ///
+        /// 保存先は current.json / histories.json。**旧 .bin は読まない。**
+        /// 中身は画面の入力値と接続先の履歴だけで、失われても入れ直せばよいため。
+        /// </remarks>
         public static void SaveFile(object obj, string filePath)
         {
-            FileStream fs = null;
+            File.WriteAllText(filePath,
+                JsonConvert.SerializeObject(obj, Formatting.Indented), Encoding.UTF8);
+        }
 
-            try
-            {
-                // バイナリ シリアライズしてファイル出力
-                byte[] temp = BinarySerialize.ObjectToBytes(obj);
-                fs = new FileStream(filePath, FileMode.Create, FileAccess.Write);
+        /// <summary>ファイルからロード（JSON）</summary>
+        /// <typeparam name="T">オブジェクトの型</typeparam>
+        /// <param name="filePath">ファイル パス</param>
+        /// <returns>オブジェクト（ファイルが無ければ既定値）</returns>
+        public static T LoadJsonFile<T>(string filePath)
+        {
+            if (!File.Exists(filePath)) { return default(T); }
 
-                // バイト型配列の内容をすべて書き込む
-                fs.Write(temp, 0, temp.Length);
-            }
-            finally
-            {
-                // 閉じる
-                if (fs != null) { fs.Close(); }
-            }
+            string json = File.ReadAllText(filePath, Encoding.UTF8);
+            if (string.IsNullOrEmpty(json)) { return default(T); }
+
+            return JsonConvert.DeserializeObject<T>(json);
         }
 
         #endregion
@@ -1296,7 +1305,11 @@ namespace DeployZipPackWithHTTP
                         if (readSize == 0) { break; }
 
                         // マージ
-                        ms.Write(buffer, 0, buffer.Length);
+                        //
+                        // 2026/08/08 まで buffer.Length を渡していたため、
+                        // **最後のブロックで読めなかった分まで 0 で埋めていた**（#528）。
+                        // ファイル サイズが 4KB の倍数でないと、末尾に余計な 0 が付く。
+                        ms.Write(buffer, 0, readSize);
                     }
 
                     // オブジェクト化して設定
@@ -1322,18 +1335,8 @@ namespace DeployZipPackWithHTTP
         /// <returns>Entry（前回入力）</returns>
         public static Entry LoadCurrent()
         {
-            byte[] current = null;
-            current = Program.LoadFile(
+            return Program.LoadJsonFile<Entry>(
                 Program.OrgCurrentDirectory + Program.CurrentFileName);
-
-            if (current == null)
-            {
-                return null;
-            }
-            else
-            {
-                return (Entry)BinarySerialize.BytesToObject(current);
-            }
         }
 
         /// <summary>current.binのSave処理</summary>
@@ -1352,19 +1355,10 @@ namespace DeployZipPackWithHTTP
         /// <returns>List＜Entry＞（履歴）</returns>
         public static List<Entry> LoadHistories()
         {
-            byte[] current = null;
-            current = Program.LoadFile(Program.OrgCurrentDirectory + Program.HistoryFileName);
-
-            if (current == null)
-            {
-                //return null;
-                Program.Histories = new List<Entry>();
-            }
-            else
-            {
-                //return (List<Entry>)BinarySerialize.BytesToObject(current);
-                Program.Histories = (List<Entry>)BinarySerialize.BytesToObject(current);
-            }
+            Program.Histories =
+                Program.LoadJsonFile<List<Entry>>(
+                    Program.OrgCurrentDirectory + Program.HistoryFileName)
+                ?? new List<Entry>();
 
             // 設定しつつ戻す
             return Program.Histories;
@@ -1955,11 +1949,11 @@ namespace DeployZipPackWithHTTP
             // 解凍
 
             // 解凍部品
-            UnZipper uz = new UnZipper();
+            UnZipperV2 uz = new UnZipperV2();
 
             // 選択基準なしで
             string[] exts = null;
-            Zipper.SelectionDelegate scd = null;
+            ZipBaseV2.SelectionDelegate scd = null;
 
             //if (this.txtExt.Enabled)
             //{
@@ -1970,37 +1964,25 @@ namespace DeployZipPackWithHTTP
             // 解凍時、上書き制御
             uz.ExtractProgress = Program.MyExtractProgressEventHandler;
 
-            // 解凍（１）デリゲートでフィルタ
+            // 解凍：デリゲートでフィルタ
             uz.ExtractFileFromZip(
                 Program.OrgCurrentDirectory + Program.TempZipFileName,
                 StringVariableOperator.BuiltStringIntoEnvironmentVariable(entry.InstallDir),
-                scd, exts, ExtractExistingFileAction.OverwriteSilently,
+                scd, exts, ExtractExistingFileActionV2.OverwriteSilently,
                 Encoding.GetEncoding(encStr), "");
 
             // メッセージ
             Program.OutPutMessage(string.Format(
                 GetMessage.GetMessageDescription("I0011"), zipFile), LogLevel.InfoLog);
 
-            // 解凍先のファイルのパスを抽出
-            string header = "extract file ";
-            StringReader srZipContents = new StringReader(uz.StatusMSG);
-            List<string> zipContents = new List<string>();
-
-            string tempContentFile = srZipContents.ReadLine();
-            while (tempContentFile != null && tempContentFile.Trim() != "")
-            {
-                if (tempContentFile.IndexOf(header) == 0)
-                {
-                    // 解凍先のファイルのパスを抽出（[- 3] は[...]の分）
-                    zipContents.Add(tempContentFile.Substring(header.Length, tempContentFile.Length - header.Length - 3));
-                }
-
-                // 次へ
-                tempContentFile = srZipContents.ReadLine();
-            }
-
             // 解凍先のファイルのパスを保存する（次回の削除処理に使用）。
-            entry.HttpZipContents[zipFile] = zipContents.ToArray();
+            //
+            // 2026/08/08 まで、DotNetZip が吐くログ（StatusMSG）の
+            //   extract file <パス>[...]
+            // という行を文字列で切り出して集めていた（#528）。
+            // ログの文言に依存しており、ライブラリを替えると必ず壊れる作りだった。
+            // UnZipperV2 は解凍したパスをそのまま返すため、解析は要らない。
+            entry.HttpZipContents[zipFile] = uz.ExtractedFiles;
         }
 
         #endregion
@@ -2083,40 +2065,40 @@ namespace DeployZipPackWithHTTP
         #region 組込デリゲート
 
         /// <summary>セーブ処理の進捗表示デリゲート</summary>
-        public static void MySaveProgressEventHandler(Object sender, SaveProgressEventArgs e)
+        public static void MySaveProgressEventHandler(Object sender, ZipProgressEventArgsV2 e)
         {
-            if (e.EventType == ZipProgressEventType.Saving_Started)
+            if (e.EventType == ZipProgressEventTypeV2.Saving_Started)
             {
                 // 書庫の作成を開始
                 //Debug.WriteLine(string.Format("{0} の作成開始", e.ArchiveName));
                 //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
                 Debug.WriteLine(string.Format(ResourceMgr.GetString("I0001"), e.ArchiveName));
             }
-            else if (e.EventType == ZipProgressEventType.Saving_BeforeWriteEntry)
+            else if (e.EventType == ZipProgressEventTypeV2.Saving_BeforeWriteEntry)
             {
                 // エントリの書き込み開始
-                //Debug.WriteLine(string.Format("{0} の書き込み開始", e.CurrentEntry.FileName));
+                //Debug.WriteLine(string.Format("{0} の書き込み開始", e.CurrentEntryName));
                 //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
-                Debug.WriteLine(string.Format(ResourceMgr.GetString("I0002"), e.CurrentEntry.FileName));
+                Debug.WriteLine(string.Format(ResourceMgr.GetString("I0002"), e.CurrentEntryName));
             }
-            else if (e.EventType == ZipProgressEventType.Saving_EntryBytesRead)
+            else if (e.EventType == ZipProgressEventTypeV2.Saving_EntryBytesRead)
             {
                 // エントリを書き込み中
                 //Debug.WriteLine(string.Format("{0}/{1} バイト 書き込みました", e.BytesTransferred, e.TotalBytesToTransfer));
                 //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
                 Debug.WriteLine(string.Format(ResourceMgr.GetString("I0003"), e.BytesTransferred, e.TotalBytesToTransfer));
             }
-            else if (e.EventType == ZipProgressEventType.Saving_AfterWriteEntry)
+            else if (e.EventType == ZipProgressEventTypeV2.Saving_AfterWriteEntry)
             {
                 // エントリの書き込み終了
-                //Debug.WriteLine(string.Format("{0} の書き込み終了", e.CurrentEntry.FileName));
-                //Debug.WriteLine(string.Format("{0} 個中 {1} 個のエントリの書き込みが完了しました", e.EntriesTotal, e.EntriesSaved));
+                //Debug.WriteLine(string.Format("{0} の書き込み終了", e.CurrentEntryName));
+                //Debug.WriteLine(string.Format("{0} 個中 {1} 個のエントリの書き込みが完了しました", e.EntriesTotal, e.EntriesProcessed));
                 //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
-                Debug.WriteLine(string.Format(ResourceMgr.GetString("I0004"), e.CurrentEntry.FileName));
-                Debug.WriteLine(string.Format(ResourceMgr.GetString("I0005"), e.EntriesTotal, e.EntriesSaved));
+                Debug.WriteLine(string.Format(ResourceMgr.GetString("I0004"), e.CurrentEntryName));
+                Debug.WriteLine(string.Format(ResourceMgr.GetString("I0005"), e.EntriesTotal, e.EntriesProcessed));
                     
             }
-            else if (e.EventType == ZipProgressEventType.Saving_Completed)
+            else if (e.EventType == ZipProgressEventTypeV2.Saving_Completed)
             {
                 // 書庫の作成が完了
                 //Debug.WriteLine(string.Format("{0} の作成終了", e.ArchiveName));
@@ -2127,13 +2109,16 @@ namespace DeployZipPackWithHTTP
         }
 
         /// <summary>上書き確認デリゲート</summary>
-        public static void MyExtractProgressEventHandler(Object sender, ExtractProgressEventArgs e)
+        public static void MyExtractProgressEventHandler(Object sender, ZipProgressEventArgsV2 e)
         {
-            if (e.EventType == ZipProgressEventType.Extracting_ExtractEntryWouldOverwrite)
+            if (e.EventType == ZipProgressEventTypeV2.Extracting_ExtractEntryWouldOverwrite)
             {
+                // 問い合わせでなければ、既に「上書きしない」と決まっている（通知のみ）。
+                if (!e.IsQuery) { return; }
+
                 // 展開するファイル名
                 string filePath = Path.Combine(
-                    e.ExtractLocation, e.CurrentEntry.FileName.Replace('/', '\\'));
+                    e.ExtractLocation, e.CurrentEntryName.Replace('/', '\\'));
 
                 // ダイアログを表示する
                 //DialogResult res = MessageBox.Show(
@@ -2154,14 +2139,14 @@ namespace DeployZipPackWithHTTP
                 if (res == DialogResult.Yes)
                 {
                     // 上書きする
-                    e.CurrentEntry.ExtractExistingFile =
-                        ExtractExistingFileAction.OverwriteSilently;
+                    e.ExtractExistingFile =
+                        ExtractExistingFileActionV2.OverwriteSilently;
                 }
                 else if (res == DialogResult.No)
                 {
                     // 上書きしない
-                    e.CurrentEntry.ExtractExistingFile =
-                        ExtractExistingFileAction.DoNotOverwrite;
+                    e.ExtractExistingFile =
+                        ExtractExistingFileActionV2.DoNotOverwrite;
                 }
                 else if (res == DialogResult.Cancel)
                 {

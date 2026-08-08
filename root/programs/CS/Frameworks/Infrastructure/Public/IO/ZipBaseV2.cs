@@ -232,5 +232,33 @@ namespace Touryo.Infrastructure.Public.IO
 
         /// <summary>処理中のエントリの転送済みバイト数</summary>
         public long BytesTransferred { get; set; }
+
+        /// <summary>解凍先のフォルダ</summary>
+        /// <remarks>解凍時のみ設定される。</remarks>
+        public string ExtractLocation { get; set; }
+
+        /// <summary>ハンドラへの問い合わせか</summary>
+        /// <remarks>
+        /// Extracting_ExtractEntryWouldOverwrite は 2 つの意味で起きる。
+        ///   true  … **問い合わせ**。ExtractExistingFile に返答を設定すること
+        ///   false … **通知**。既に「上書きしない」と決まっており、設定しても効かない
+        /// **既定値に頼って見分けてはいけない**ため、明示的に持たせている。
+        /// </remarks>
+        public bool IsQuery { get; set; }
+
+        /// <summary>このエントリをどう扱うか</summary>
+        /// <remarks>
+        /// **ハンドラが書き換えるためのプロパティ。**
+        /// EventType が Extracting_ExtractEntryWouldOverwrite のときだけ意味を持つ
+        /// （ExtractExistingFileActionV2.InvokeExtractProgressEvent を指定した場合）。
+        ///
+        /// 旧 Ionic では ZipEntry 側のプロパティ（e.CurrentEntry.ExtractExistingFile）
+        /// だったが、こちらはイベント引数に持たせている。
+        /// </remarks>
+        public ExtractExistingFileActionV2 ExtractExistingFile { get; set; }
+
+        /// <summary>以降の処理を打ち切るか</summary>
+        /// <remarks>ハンドラが true を設定すると、残りのエントリを処理しない。</remarks>
+        public bool Cancel { get; set; }
     }
 }

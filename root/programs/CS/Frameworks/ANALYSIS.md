@@ -45,6 +45,13 @@
 
 - `DaoGen_Tool` : DB スキーマから D層 Dao クラス＋SQL(XML) を自動生成
 - `DPQuery_Tool` : DPQ（動的パラメタライズド・クエリ）XML の編集・検証
+- `DeployZipPackWithHTTP` : ZIP を HTTP で配布し、クライアントで展開する（#528 で復元）
+
+> `DeployZipPackWithHTTP` は `ZipperV2` / `UnZipperV2` を使う唯一の利用者。
+> **ZIP 部品を変えたら、このツールのビルドも確かめること**
+> （`4_Build_Framework_Tool.bat` / `4_Build_Framework_ToolCore.bat` に入れてある）。
+> 設定と履歴は `current.json` / `histories.json` に保存する
+> （BinaryFormatter が .NET 9 以降で削除されたため、`.bin` から移行した）。
 
 ### 2.3 `Tests/` — テスト（**xUnit/NUnit ではない**）
 

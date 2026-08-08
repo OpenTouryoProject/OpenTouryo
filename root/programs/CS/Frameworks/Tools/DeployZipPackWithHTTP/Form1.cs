@@ -53,9 +53,6 @@ using System.Drawing;
 using System.Resources;
 using System.Windows.Forms;
 
-using Ionic.Zip;
-using Ionic.Zlib;
-
 using Touryo.Infrastructure.Business.RichClient.Asynchronous;
 using Touryo.Infrastructure.Framework.RichClient.Asynchronous;
 using Touryo.Infrastructure.Framework.Util;
@@ -106,19 +103,18 @@ namespace DeployZipPackWithHTTP
 
             // 列挙型設定
             this.cmbEnc.SelectedIndex = 0;
-            this.cmbCyp.DataSource = Enum.GetValues(typeof(EncryptionAlgorithm));
-            this.cmbCmpLv.DataSource = Enum.GetValues(typeof(CompressionLevel));
-#if NETCOREAPP
-#else
-            this.cmbFormat.DataSource = Enum.GetValues(typeof(SelfExtractorFlavor));
-#endif
-            this.cmbEEFA.DataSource = Enum.GetValues(typeof(ExtractExistingFileAction));
+            this.cmbCyp.DataSource = Enum.GetValues(typeof(ZipEncryptionAlgorithmV2));
+            this.cmbCmpLv.DataSource = Enum.GetValues(typeof(ZipCompressionLevelV2));
+            this.cmbEEFA.DataSource = Enum.GetValues(typeof(ExtractExistingFileActionV2));
+
+            // 自己解凍書庫（cbxFormat / cmbFormat）は廃止した（#528）。
+            // SharpZipLib に相当機能が無いため。配布フローは .zip しか扱わず、
+            // 作った自己解凍 EXE を本ツール自身が読む経路も無かった。
 
             // ZIP作成
             this.txtExt.Text = "txt,csv,cs";
 
             this.txtExt.Enabled = false;
-            this.cmbFormat.Enabled = false;
 
             // 声明文作成
 
@@ -225,26 +221,17 @@ namespace DeployZipPackWithHTTP
                 this.CheckComp_DeComp();
 
                 // 圧縮部品
-                Zipper z = new Zipper();
+                ZipperV2 z = new ZipperV2();
 
                 // 選択基準
                 string[] exts = null;
-                Zipper.SelectionDelegate scd = null;
+                ZipBaseV2.SelectionDelegate scd = null;
 
                 if (this.txtExt.Enabled)
                 {
                     exts = this.txtExt.Text.Split(',');
                     scd = Program.SelectionCriteriaDlgt1;
                 }
-
-                // 形式指定
-#if NETCOREAPP
-#else
-                SelfExtractorFlavor? selfEx = null;
-
-                if (this.cmbFormat.Enabled)
-                { selfEx = (SelfExtractorFlavor)this.cmbFormat.SelectedItem; }
-#endif
 
                 // ZIP内パスのルート名
                 string[] temp = this.txtFile.Text.Split('\\');
@@ -260,49 +247,22 @@ namespace DeployZipPackWithHTTP
                     rootPathInArchive = temp[temp.Length - 1];
                 }
 
-                // 圧縮（１）デリゲートでフィルタ
+                // 圧縮：デリゲートでフィルタ
+                //
+                // 旧 Zipper には selectionCriteriaString（"name != *.txt" 等）で
+                // フィルタするオーバーロードもあったが、DotNetZip 独自の DSL であり
+                // 代替が無いため廃止した（#524）。デリゲートに一本化している。
                 z.CreateZipFromFolder(
                     this.txtFile.Text, this.txtFolder.Text,
                     scd, exts, rootPathInArchive, // ここを空文字列にするとルートフォルダ無しになる。
                     Encoding.GetEncoding((string)this.cmbEnc.SelectedItem),
-                    (EncryptionAlgorithm)this.cmbCyp.SelectedItem, this.txtPass.Text,
-                    (CompressionLevel)this.cmbCmpLv.SelectedItem
-#if NETCOREAPP
-                    );
-#else
-                    , selfEx);
-#endif
+                    (ZipEncryptionAlgorithmV2)this.cmbCyp.SelectedItem, this.txtPass.Text,
+                    (ZipCompressionLevelV2)this.cmbCmpLv.SelectedItem);
 
-
-                //// 圧縮（２）：selectionCriteriaStringでフィルタ
-                //string selectionCriteriaString = "";
-                //if (exts != null)
-                //{
-                //    foreach (string ext in exts)
-                //    {
-                //        if (selectionCriteriaString == "")
-                //        {
-                //            selectionCriteriaString = "name != *." + ext;
-                //        }
-                //        else
-                //        {
-                //            selectionCriteriaString += " and name != *." + ext;
-                //        }
-                //    }
-                //}
-
-                //z.CreateZipFromFolder(
-                //    this.txtFile.Text, this.txtFolder.Text,
-                //    selectionCriteriaString,
-                //    temp[temp.Length - 1],
-                //    Encoding.GetEncoding((string)this.cmbEnc.SelectedItem),
-                //    (EncryptionAlgorithm)this.cmbCyp.SelectedItem, this.txtPass.Text,
-                //    (CompressionLevel)this.cmbCmpLv.SelectedItem, selfEx);
-
-                //MessageBox.Show(z.StatusMSG,"サマリ",
-                //    MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                CustMsgBox custMsgBox = new CustMsgBox(ResourceMgr.GetString("Error0002"), z.StatusMSG, SystemIcons.Information);
+                // 旧 StatusMSG（DotNetZip のログ文言）は無い。圧縮したファイル数を出す。
+                CustMsgBox custMsgBox = new CustMsgBox(
+                    ResourceMgr.GetString("Error0002"),
+                    string.Format("{0} file(s).", z.ZippedFiles.Length), SystemIcons.Information);
                 custMsgBox.ShowDialog();
             }
             catch (Exception ex)
@@ -322,11 +282,11 @@ namespace DeployZipPackWithHTTP
                 this.CheckComp_DeComp();
 
                 // 解凍部品
-                UnZipper uz = new UnZipper();
+                UnZipperV2 uz = new UnZipperV2();
 
                 // 選択基準
                 string[] exts = null;
-                Zipper.SelectionDelegate scd = null;
+                ZipBaseV2.SelectionDelegate scd = null;
 
                 if (this.txtExt.Enabled)
                 {
@@ -337,44 +297,17 @@ namespace DeployZipPackWithHTTP
                 // 解凍時、上書き制御
                 uz.ExtractProgress = Program.MyExtractProgressEventHandler;
 
-                // 解凍（１）デリゲートでフィルタ
+                // 解凍：デリゲートでフィルタ
                 uz.ExtractFileFromZip(
                     this.txtFile.Text, this.txtFolder.Text, scd, exts,
-                    (ExtractExistingFileAction)this.cmbEEFA.SelectedItem,
+                    (ExtractExistingFileActionV2)this.cmbEEFA.SelectedItem,
                     Encoding.GetEncoding((string)this.cmbEnc.SelectedItem),
                     this.txtPass.Text);
 
-                //// 解凍（２）：selectionCriteriaStringでフィルタ
-                //string selectionCriteriaString = "";
-                //if (exts != null)
-                //{
-                //    foreach (string ext in exts)
-                //    {
-                //        if (selectionCriteriaString == "")
-                //        {
-                //            selectionCriteriaString = "name != *." + ext;
-                //        }
-                //        else
-                //        {
-                //            selectionCriteriaString += " and name != *." + ext;
-                //        }
-                //    }
-                //}
-
-                //uz.ExtractFileFromZip(
-                //    this.txtFile.Text,
-                //    this.txtFolder.Text,
-                //    selectionCriteriaString,
-                //    (ExtractExistingFileAction)this.cmbEEFA.SelectedItem,
-                //    Encoding.GetEncoding((string)this.cmbEnc.SelectedItem),
-                //    this.txtPass.Text);
-
-                //MessageBox.Show(uz.StatusMSG, "サマリ",
-                //    MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                //CustMsgBox custMsgBox = new CustMsgBox("サマリ（解凍）", uz.StatusMSG, SystemIcons.Information);
-                //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
-                CustMsgBox custMsgBox = new CustMsgBox(ResourceMgr.GetString("Error0003"), uz.StatusMSG, SystemIcons.Information);
+                // 旧 StatusMSG（DotNetZip のログ文言）は無い。解凍したファイル数を出す。
+                CustMsgBox custMsgBox = new CustMsgBox(
+                    ResourceMgr.GetString("Error0003"),
+                    string.Format("{0} file(s).", uz.ExtractedFiles.Length), SystemIcons.Information);
                 custMsgBox.ShowDialog();
             }
             catch(Exception ex)
@@ -408,15 +341,38 @@ namespace DeployZipPackWithHTTP
         /// <summary>フォルダ選択</summary>
         private void btnSelectFolder_Click(object sender, EventArgs e)
         {
-            this.folderBrowserDialog1.ShowDialog();
-            this.txtFolder.Text = folderBrowserDialog1.SelectedPath;
+            //this.folderBrowserDialog1.ShowDialog();
+            this.txtFolder.Text = BrowseFolder(); //folderBrowserDialog1.SelectedPath;
+        }
+
+        /// <summary>
+        /// フォルダ選択（OpenFileDialogで代用）
+        /// </summary>
+        /// <remarks>
+        /// https://gomana2.hatenablog.jp/entry/2020/07/15/163000
+        /// </remarks>
+        /// <returns>
+        /// 選択フォルダのパス
+        /// </returns>
+        private string BrowseFolder()
+        {
+            using (var ofd = new OpenFileDialog() {
+                FileName = "SelectFolder", Filter = "Folder|.",
+                CheckFileExists = false, InitialDirectory = Environment.CurrentDirectory})
+            {
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    return Path.GetDirectoryName(ofd.FileName);
+                }
+            }
+
+            return "";
         }
 
         /// <summary>ファイル選択</summary>
         private void btnSelectSaveFile_Click(object sender, EventArgs e)
         {
             //if (this.tabZipUnZip.SelectedTab.Text == "圧縮")
-            //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
             if (this.tabZipUnZip.SelectedTab.Text == ResourceMgr.GetString("T0001"))
             {
                 // 保存
@@ -428,7 +384,6 @@ namespace DeployZipPackWithHTTP
             {
                 // 開く
                 //this.openFileDialog1.Filter = "ZIPファイル|*.zip";
-                //For internationalization, Replaced all the Japanese language to ResourceMgr.GetString() method call
                 this.openFileDialog1.Filter = ResourceMgr.GetString("EXT0001");
                 
                 this.openFileDialog1.ShowDialog();
@@ -449,18 +404,6 @@ namespace DeployZipPackWithHTTP
             }
         }
 
-        /// <summary>形式選択</summary>
-        private void cmbFormat_CheckedChanged(object sender, EventArgs e)
-        {
-            if (((CheckBox)sender).Checked == true)
-            {
-                this.cmbFormat.Enabled = true;
-            }
-            else
-            {
-                this.cmbFormat.Enabled = false;
-            }
-        }
 
         #endregion
 
