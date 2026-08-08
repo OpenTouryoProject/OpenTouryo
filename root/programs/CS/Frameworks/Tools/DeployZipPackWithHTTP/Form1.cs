@@ -457,6 +457,17 @@ namespace DeployZipPackWithHTTP
         /// <summary>マニュフェストファイルを生成</summary>
         private void btnCreateManifesto_Click(object sender, EventArgs e)
         {
+            this.CreateManifesto();
+        }
+
+        /// <summary>マニュフェストファイルを生成</summary>
+        /// <remarks>
+        /// btnCreateManifesto_Click から切り出したもの（#528）。
+        /// **中身は変えていない。** CUI からも呼べるようにするための第 1 段階で、
+        /// この時点ではまだ UI コントロールを参照している。
+        /// </remarks>
+        public void CreateManifesto()
+        {
             try
             {
                 if (this.lbxZIPFiles.Items.Count ==0)
