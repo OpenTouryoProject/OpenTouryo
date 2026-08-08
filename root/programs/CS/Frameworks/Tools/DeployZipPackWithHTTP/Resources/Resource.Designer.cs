@@ -331,6 +331,24 @@ namespace DeployZipPackWithHTTP.Resources {
         }
         
         /// <summary>
+        ///   {0} file(s) were compressed. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string I0007 {
+            get {
+                return ResourceManager.GetString("I0007", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   {0} file(s) were extracted. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string I0008 {
+            get {
+                return ResourceManager.GetString("I0008", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Message に類似しているローカライズされた文字列を検索します。
         /// </summary>
         internal static string M0001 {

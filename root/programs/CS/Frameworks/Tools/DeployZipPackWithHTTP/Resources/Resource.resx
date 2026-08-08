@@ -261,4 +261,10 @@
   <data name="T0001" xml:space="preserve">
     <value>Compression</value>
   </data>
+  <data name="I0007" xml:space="preserve">
+    <value>{0} file(s) were compressed.</value>
+  </data>
+  <data name="I0008" xml:space="preserve">
+    <value>{0} file(s) were extracted.</value>
+  </data>
 </root>

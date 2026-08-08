@@ -261,4 +261,10 @@
   <data name="T0001" xml:space="preserve">
     <value>圧縮</value>
   </data>
+  <data name="I0007" xml:space="preserve">
+    <value>{0} 件のファイルを圧縮しました。</value>
+  </data>
+  <data name="I0008" xml:space="preserve">
+    <value>{0} 件のファイルを解凍しました。</value>
+  </data>
 </root>

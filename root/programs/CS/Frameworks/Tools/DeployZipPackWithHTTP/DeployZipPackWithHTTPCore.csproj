@@ -1,0 +1,104 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <!--RichClient（Business.RichClient / Framework.RichClient）が
+        net10.0-windows7.0 のため、こちらも合わせる。-->
+    <TargetFramework>net10.0-windows7.0</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon />
+    <StartupObject />
+    <RootNamespace>DeployZipPackWithHTTP</RootNamespace>
+    <AssemblyName>OpenTouryo.DeployZipPackWithHTTP</AssemblyName>
+    <!--WFO1000（デザイナのシリアル化を構成していないプロパティ）を抑止する。
+        .NET の WinForms アナライザが既定でエラーにするが、
+        Status / Title / Message は画面から使うだけでデザイナには出さない。
+        net48 側では出ない指摘であり、コードの不具合ではない。-->
+    <NoWarn>$(NoWarn);WFO1000</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;NETCOREAPP</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="app.config" />
+    <None Remove="Command line.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--ZIP は OpenTouryo.Public の ZipperV2 / UnZipperV2（SharpZipLib）を使う（#528）。
+        フレームワークは HintPath 参照のため、NuGet の推移的依存が効かない。
+        Public が使うパッケージは、ここにも並べる必要がある。-->
+    <PackageReference Include="log4net" Version="3.3.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="9.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="9.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.4" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="SharpZipLib" Version="1.4.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--RichClient は net10.0-windows7.0 の側に出力される。
+        **net10.0 のフォルダには無い**ので、パスを取り違えないこと。-->
+    <Reference Include="OpenTouryo.Business.RichClient">
+      <HintPath>..\..\Infrastructure\Build_netcore100\net10.0-windows7.0\OpenTouryo.Business.RichClient.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Framework.RichClient">
+      <HintPath>..\..\Infrastructure\Build_netcore100\net10.0-windows7.0\OpenTouryo.Framework.RichClient.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\Resource.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Log4DeployZipPackWithHTTP.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="MSGDefinition.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Update="MSGDefinition_ja-JP.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

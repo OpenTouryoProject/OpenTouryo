@@ -260,9 +260,12 @@ namespace DeployZipPackWithHTTP
                     (ZipCompressionLevelV2)this.cmbCmpLv.SelectedItem);
 
                 // 旧 StatusMSG（DotNetZip のログ文言）は無い。圧縮したファイル数を出す。
+                // **文言は直書きしない。** Resources\Resource.resx に置いて
+                // ResourceMgr.GetString で取り出す（国際化のため）。
                 CustMsgBox custMsgBox = new CustMsgBox(
                     ResourceMgr.GetString("Error0002"),
-                    string.Format("{0} file(s).", z.ZippedFiles.Length), SystemIcons.Information);
+                    string.Format(ResourceMgr.GetString("I0007"), z.ZippedFiles.Length),
+                    SystemIcons.Information);
                 custMsgBox.ShowDialog();
             }
             catch (Exception ex)
@@ -307,7 +310,8 @@ namespace DeployZipPackWithHTTP
                 // 旧 StatusMSG（DotNetZip のログ文言）は無い。解凍したファイル数を出す。
                 CustMsgBox custMsgBox = new CustMsgBox(
                     ResourceMgr.GetString("Error0003"),
-                    string.Format("{0} file(s).", uz.ExtractedFiles.Length), SystemIcons.Information);
+                    string.Format(ResourceMgr.GetString("I0008"), uz.ExtractedFiles.Length),
+                    SystemIcons.Information);
                 custMsgBox.ShowDialog();
             }
             catch(Exception ex)
