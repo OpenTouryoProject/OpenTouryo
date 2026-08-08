@@ -84,13 +84,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Log4DeployZipPackWithHTTP.xml">
+    <!--Update ではなく Include にする。**.xml は既定の項目に含まれない**ため、
+        Update だけでは何も起きず、出力にコピーされない（#528）。
+        ResourceLoader がこれらを実ファイルとして探すので、出力に要る。-->
+    <EmbeddedResource Include="Log4DeployZipPackWithHTTP.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Update="MSGDefinition.xml">
+    <EmbeddedResource Include="MSGDefinition.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
-    <EmbeddedResource Update="MSGDefinition_ja-JP.xml">
+    <EmbeddedResource Include="MSGDefinition_ja-JP.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
