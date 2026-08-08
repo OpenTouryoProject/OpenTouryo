@@ -321,3 +321,4 @@ __pycache__/
 #   MD5 が合わなくなり、配布が失敗する。生成手順は同フォルダの README.md。
 # --------------------------------------------------
 /root/programs/*/Frameworks/Tools/DeployZipPackWithHTTP/Sample/FormAppRootWeb/
+/root/programs/*/Frameworks/Tools/DeployZipPackWithHTTP/Sample/FormAppRootWeb2/

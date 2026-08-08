@@ -123,6 +123,52 @@ ins C:\Users\xxxx\...\FormAppRoot\   ← 特定の環境でしか動かない
 **旧 `.bin` は読まない。** 履歴が一度空になるだけで、URL を入れ直せばよい。
 
 `/FORCE` は履歴を消して強制的に取り直す。**試行錯誤のときはこれを使う。**
+### 3.6 `/FORCE` は配置先を丸ごと消してから配る
+
+```csharp
+// 強制モードでは一度削除してから
+if (Program.IsForce)
+{
+    if (Directory.Exists(entry.InstallDir))
+    {
+        Directory.Delete(entry.InstallDir, true);   // ← 丸ごと削除
+    }
+}
+```
+
+**「入れ直す」モードである。** 差分でも通常の上書きでもない。
+
+削除が途中で失敗すると、**消しかけの状態で止まる。**
+この削除はバックアップより前に行われる（バックアップは ZIP を展開する直前で取る）ため、
+**この失敗はロールバックの対象にならない。**
+
+実測では、配置先の `bbb\top2.dll` を掴んだ状態で `/FORCE` を実行し、
+21 ファイルが 1 ファイルまで消えた。
+
+```
+別のプロセスで使用されているため、プロセスはファイル 'top2.dll' にアクセスできません。
+   場所 System.IO.Directory.Delete(...)
+   場所 DeployZipPackWithHTTP.Program.ExecUpdate(...) 行 1096
+```
+
+**復旧は難しくない。** 掴んでいるプロセスを終わらせて、**もう一度 `/FORCE`** でよい
+（実測でも 21 ファイルに戻った）。配置物はサーバから作り直せるものなので、
+消えて困る情報は無い。
+
+> **前チェックは万能ではない。** あれは `exe` 行のアセンブリが動いているかを見るだけで、
+> **EXE 以外のファイルが掴まれている場合は素通りする。**
+
+**本当に戻らないのは、配布物でないファイルを配置先に置いていた場合。**
+`/FORCE` は配置先を**中身ごと**消すため、アプリが書いた設定やログも消える。
+これは失敗したときに限らず、**成功しても同じ**である。
+
+| | `/FORCE` なし | `/FORCE` あり |
+|---|---|---|
+| 展開の失敗 | ロールバックされる（下記） | ― |
+| 削除の失敗 | 起きない | 消しかけで止まる。**再度 `/FORCE` で復旧** |
+| 配布物でないファイル | 残る | **成否によらず消える** |
+
+> **常用しない。** 差分が効かなくなり（履歴を消すため）、毎回すべて取り直しになる。
 
 ### 3.4 引数の渡し方（`/MFTGEN` で必ず踏む）
 
@@ -220,33 +266,241 @@ return true;
 > 挙げ漏らすと、**配置の途中で失敗してロールバックされる**（それ自体は安全側）。
 > ただし原因が「別の EXE が動いていた」ことだと分かりにくい。
 
+### 失敗したときの守り（2 段）
+
+**第 1 段 : 配置に入る前に止める**
+
+`exe` 行のアセンブリが 1 つでも動いていれば、**ZIP を 1 つも取得せずに中止**する。
+
+```
+[FormAppRoot.mft]をダウンロードしました。
+EXEファイル[...\aaa\top1.exe]が既に起動されています。
+```
+
+**先頭ではなく、実際に動いていたものが示される。**
+`exe` 行を相対パスで正しく書いていないと、この検出が効かない。
+
+**第 2 段 : 途中で失敗したら元に戻す**
+
+展開に失敗すると、**その回に触ったものをすべて直前の状態へ戻す。**
+
+```
+[aaa.zip]は最新の状態です。
+[bbb.zip]を更新します（更新）。
+[bbb.zip]をダウンロードしました。
+全ての配置対象ファイルを直前の状態に戻します。
+[...\bbb\data2.txt]ファイルが開かれているため更新できません。
+```
+
+実測では、**先に成功していた `root.zip` の内容まで戻り**、ファイル数も変わらなかった。
+
+> **`/FORCE` を付けるとこの守りが働かない場面がある。** 3.6 節を読むこと。
+
 ### ZIP の作成（`/ZIPGEN`）
 
 GUI の「圧縮」タブと同じものを CUI で作れる（#528）。
 
-**GUI のチェック ボックスは `/ROOTINZIP` の有無に対応する。**
+#### 2 つの圧縮方式
 
-| GUI | CUI | 書庫の中身 | 展開結果 |
-|---|---|---|---|
-| チェック無し（**個別のフォルダ圧縮**） | `/ROOTINZIP aaa` | `aaa/top1.exe` | `<ins>\aaa\top1.exe` |
-| チェック有り（**ルート フォルダからの圧縮**） | 省略 | `top1.exe` | `<ins>\top1.exe` |
+**違いは「書庫内にルート フォルダを作るか」だけ**である。
+GUI のチェック ボックスが、そのまま `/ROOTINZIP` の有無に対応する。
 
-`/TOPONLY` は CUI だけにある。**直下のファイルだけ**を対象にする。
+| | 個別のフォルダ圧縮 | ルート フォルダからの圧縮 |
+|---|---|---|
+| GUI | チェック**無し** | チェック**有り** |
+| CUI | `/ROOTINZIP <名前>` | 省略 |
+| 書庫内ルート | `<名前>/` を作る | 作らない |
+| 書庫の中身 | `aaa/top1.exe` | `top1.exe` |
+| 展開結果 | `<ins>\aaa\top1.exe` | `<ins>\top1.exe` |
+
+**圧縮の対象（`/SRCDIR`）と組み合わせて考える。**
 
 ```powershell
-# ルート直下だけ → root.zip（書庫内ルート無し）
-"/ZIPGEN", "/SRCDIR", "C:/…/FormAppRoot", "/ZIPFILE", "C:/…/web/root", "/TOPONLY"
+# 個別のフォルダ圧縮 : FormAppRoot\aaa を、書庫内 aaa/ に入れる
+/ZIPGEN /SRCDIR "C:/…/FormAppRoot/aaa" /ZIPFILE "C:/…/web/aaa" /ROOTINZIP aaa
+        → aaa.zip の中身 : aaa/top1.exe, aaa/data1.csv, ...
+        → 展開           : <ins>\aaa\top1.exe
 
-# フォルダごと → aaa.zip（書庫内ルート = aaa）
-"/ZIPGEN", "/SRCDIR", "C:/…/FormAppRoot/aaa", "/ZIPFILE", "C:/…/web/aaa", "/ROOTINZIP", "aaa"
+# ルート フォルダからの圧縮 : FormAppRoot をまるごと、書庫内ルート無しで
+/ZIPGEN /SRCDIR "C:/…/FormAppRoot" /ZIPFILE "C:/…/web/all"
+        → all.zip の中身 : top.exe, aaa/top1.exe, bbb/top2.exe, ...
+        → 展開           : <ins>\top.exe, <ins>\aaa\top1.exe
 ```
 
-> **`/TOPONLY` が無いと「ルート直下だけの ZIP」が作れない。**
-> `CreateZipFromFolder` は再帰するため、ルートを対象にするとサブフォルダまで入る。
-> 実装は選択デリゲート（`SelectionCriteriaDlgt3`）で、`ZipperV2` は変えていない。
+**どちらも展開結果は同じにできる。** 違うのは**配布物の分け方**であり、
+それが次項の差分配布に効く。
+
+#### `/TOPONLY`（CUI だけ）
+
+**直下のファイルだけ**を対象にし、サブフォルダを含めない。
+
+```powershell
+/ZIPGEN /SRCDIR "C:/…/FormAppRoot" /ZIPFILE "C:/…/web/root" /TOPONLY
+        → root.zip の中身 : top.exe, readme.txt, ...（aaa/ 等は入らない）
+```
+
+`CreateZipFromFolder` は再帰するため、ルートを対象にするとサブフォルダまで入る。
+実装は選択デリゲート（`SelectionCriteriaDlgt3`）で、**`ZipperV2` は変えていない。**
+
+> **これは近道であって、GUI にできないことではない。**
+> **`/TOPONLY` は CUI だけにあり、これが無い GUI ではステージングが要る。**
+> 直下のファイルを別フォルダへ集め、そこを圧縮すれば同じ ZIP になる。
+>
+> ```powershell
+> # GUI と同じ経路（/TOPONLY を使わない）でも、結果は一致する
+> Get-ChildItem $src -File | Copy-Item -Destination "$t\stage"
+> /ZIPGEN /SRCDIR "$t/stage" /ZIPFILE "$t/out/byStage"
+> ```
+>
+> 実測で、`/TOPONLY` で作ったものと**エントリが完全に一致**した。
+
+> **除外拡張子では代替できないことがある。** 同じ拡張子がルートとサブフォルダの
+> 両方にあると絞り込めない（同梱サンプルは `.txt` がルートと `ccc` の双方にある）。
+> **ステージングの方が確実。**
 
 暗号化・圧縮レベル・文字コードも指定できる（`/CYP` `/PASS` `/CMPLV` `/ENC`）。
 除外拡張子は `/EXCLUDEEXT "txt,csv"`。
+
+#### CUI 専用は `/TOPONLY` だけ
+
+他の引数は、すべて GUI の入力に対応する。
+
+| CUI | GUI |
+|---|---|
+| `/SRCDIR` / `/ZIPFILE` | フォルダ / ファイル名 |
+| `/ROOTINZIP` の有無 | チェック ボックス |
+| `/EXCLUDEEXT` | 除外拡張子 |
+| `/CYP` `/PASS` `/CMPLV` `/ENC` | 各コンボ ボックス |
+| **`/TOPONLY`** | **無し**（ステージングで代替） |
+
+---
+
+### 差分配布（ZIP を分ける理由）
+
+**このツールは ZIP 単位で差分を取る。** 分け方が更新の粒度になる。
+
+#### 差分は 2 段構え
+
+**マニフェストが先に効く。** ZIP 単位の判定はその後である。
+
+| 段 | 対象 | 変わっていなければ |
+|---|---|---|
+| **第 1 段** | `*.mft` の `Last-Modified` | **ZIP を 1 つも見に行かない**（HEAD すら送らない） |
+| **第 2 段** | 各 `*.zip` の `Last-Modified` | その ZIP だけ飛ばす |
+
+第 1 段が効くと、**HTTP 要求は HEAD 1 回で終わる。**
+
+```
+[.../FormAppRoot.mft]は最新の状態です。       ← これ 1 行で完了
+```
+
+**マニフェストを作り直すと第 1 段は破れる。** `/MFTGEN` は毎回書き出すため、
+`Last-Modified` が変わる。ZIP を 1 つでも作り直したらマニフェストも作り直しになるので、
+**実運用では「第 1 段は初回以外の無変更時に効く」**と考えるとよい。
+
+#### 判定の実装
+
+配布側は、マニフェストの `zip` 行ごとに **HEAD 要求で `Last-Modified` を見る。**
+
+```csharp
+// HEAD（Last-Modifiedチェック）
+if (Program.LastModifiedCheck_ByHead(entry, history, zipFile))
+{
+    Program.GetAndSaveContent(entry, zipFile);   // 変わっていた → GET して展開
+    isUpdated = true;
+}
+else
+{
+    isUpdated = false;                            // 変わっていない → 何もしない
+}
+```
+
+比較相手は**履歴（`histories.json`）に残した前回の `Last-Modified`** である。
+
+```csharp
+httpLastModifiedHis = history.HttpZipLastModified[zipFile];
+...
+if (httpLastModifiedHis == httpLastModifiedWeb) { return false; }   // 一致 → 飛ばす
+```
+
+> **大小ではなく一致で判定する。** サーバ側を古いものに戻した場合も「変わった」と見なす。
+> 履歴に無い ZIP（初回・追加された ZIP）は必ず取得する。
+
+#### 実測（`FormAppRoot` を 4 分割、`/FORCE` なし）
+
+| 回 | 状況 | 結果 |
+|---|---|---|
+| 1 回目 | 初回 | 4 つとも取得・展開 |
+| 2 回目 | 変更なし | **第 1 段で完了**。ZIP は見に行かない |
+| 3 回目 | `aaa` だけ変更 | `.mft` と **`aaa.zip` だけ**取得。他 3 つは「最新の状態です」 |
+
+```
+[aaa.zip]を更新します（更新）。
+[aaa.zip]を解凍・インストールします（更新）。
+[bbb.zip]は最新の状態です。
+[ccc.zip]は最新の状態です。
+[root.zip]は最新の状態です。
+```
+
+配置結果も、**変更は反映され、他は触られず、ファイル数は変わらない。**
+
+#### だから「個別のフォルダ圧縮」を使う
+
+| 方式 | ZIP の数 | `aaa` の 1 ファイルを直したとき |
+|---|---|---|
+| **個別のフォルダ圧縮** | フォルダごと | **`aaa.zip` だけ**を取り直す |
+| ルート フォルダからの圧縮 | 1 つ | **全体**を取り直す |
+
+同梱の `FormAppRootWeb` は**個別のフォルダ圧縮**で作っている
+（`root.zip` ＋ `aaa.zip` / `bbb.zip` / `ccc.zip`）。
+**ルート直下のファイルも 1 つの単位**として切り出す必要があるため、
+そこだけ `/TOPONLY` を使う。
+
+```powershell
+/ZIPGEN /SRCDIR "$src"      /ZIPFILE "$w/root" /TOPONLY          # ルート直下
+/ZIPGEN /SRCDIR "$src/aaa"  /ZIPFILE "$w/aaa"  /ROOTINZIP aaa    # 以下、フォルダごと
+/ZIPGEN /SRCDIR "$src/bbb"  /ZIPFILE "$w/bbb"  /ROOTINZIP bbb
+/ZIPGEN /SRCDIR "$src/ccc"  /ZIPFILE "$w/ccc"  /ROOTINZIP ccc
+```
+
+#### 「ルート フォルダからの圧縮」でも分けられる
+
+**`/SRCDIR` はルートのまま、対象を絞って複数回**実行する。
+書庫内のパスがルートからの相対になるため、**どの ZIP も正しい位置に展開される。**
+
+```powershell
+# 実行ファイルの類だけ
+/ZIPGEN /SRCDIR "$src" /ZIPFILE "$w/bin"  /EXCLUDEEXT "txt,csv,bin"
+
+# データだけ（上と補い合う組み合わせにする）
+/ZIPGEN /SRCDIR "$src" /ZIPFILE "$w/data" /EXCLUDEEXT "exe,dll,json"
+```
+
+こちらは**フォルダの区切りに縛られない**ので、
+「実行ファイルは滅多に変わらないが、データは頻繁に変わる」といった
+**更新頻度で分ける**使い方に向く。
+
+> **重複と抜けに気を付ける。** 絞り込みは除外指定なので、
+> 組み合わせを誤ると**同じファイルが 2 つの ZIP に入る**（後勝ちで上書きされる）か、
+> **どの ZIP にも入らない**（配置されない）。
+> 分けたら**合計が元のファイル数と一致するか**を確かめること。
+
+| 分け方 | 向く場面 |
+|---|---|
+| **個別のフォルダ圧縮** | フォルダが機能の単位になっている。分け方が自明 |
+| **ルート フォルダからの圧縮**（＋絞り込みで複数回） | 更新頻度や種類で分けたい。フォルダをまたぐ |
+| ルート フォルダからの圧縮（1 つだけ） | 分けない。配布物が小さい、更新が常に全体に及ぶ |
+
+#### 差分を効かせるときの注意
+
+- **`/FORCE` を付けると差分が効かない。** 履歴を消すため、**両段とも**素通りして
+  毎回すべて取り直す。試行錯誤には便利だが、**差分の確認にはならない。**
+- **ZIP を作り直すと `Last-Modified` が変わる。** 中身が同じでも取り直しになる。
+  変わっていないフォルダは、**ZIP も作り直さない**こと。
+- **MD5 が一致しなければ配置しない。** 差分で取得した ZIP も検証される。
+- **履歴は EXE の隣（`histories.json`）にある。** 消すと差分が効かなくなる。
+  配置先を消しても履歴は残るため、**「配置先は空なのに最新の状態です」**になり得る。
+  その場合は `/FORCE` で取り直す。
 
 ### MFT の作成（`/MFTGEN`）
 
@@ -315,7 +569,23 @@ Start-Process "${env:ProgramFiles}\IIS Express\iisexpress.exe" `
 Sample/
   SampleConsoleApp/     … 配布する EXE のソース（net10.0 のコンソール アプリ）
   FormAppRoot/          … 配布物（21 ファイル）。**追跡している**
-  FormAppRootWeb/       … 配布用の ZIP とマニュフェスト。**追跡しない（生成物）**
+  FormAppRootWeb/       … 個別のフォルダ圧縮で作った ZIP 一式。**追跡しない（生成物）**
+  FormAppRootWeb2/      … ルート フォルダからの圧縮で作った ZIP 一式。**同上**
+```
+
+**`FormAppRootWeb` と `FormAppRootWeb2` は、同じ `FormAppRoot` を別の方式で分けたもの。**
+どちらを配布しても、展開結果は同じ 21 ファイルになる。
+
+| | 分け方 | ZIP |
+|---|---|---|
+| `FormAppRootWeb` | **フォルダごと**（`/ROOTINZIP`）＋ルート直下（`/TOPONLY`） | `root` `aaa` `bbb` `ccc` |
+| `FormAppRootWeb2` | **ルートから＋種類で分割**（`/EXCLUDEEXT`） | `app`（実行ファイル一式）`data`（データ） |
+
+```powershell
+# FormAppRootWeb2 の作り方（除外指定は補い合う組み合わせにする）
+/ZIPGEN /SRCDIR "$src" /ZIPFILE "$w2/app"  /EXCLUDEEXT "txt,csv,bin"   → 12 件
+/ZIPGEN /SRCDIR "$src" /ZIPFILE "$w2/data" /EXCLUDEEXT "exe,dll,json"  →  9 件
+                                                          合計 21 件（重複 0）
 ```
 
 `FormAppRoot` の EXE は `SampleConsoleApp` を**アセンブリ名だけ変えてビルド**したもの。
