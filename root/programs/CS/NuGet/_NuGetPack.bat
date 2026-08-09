@@ -41,16 +41,23 @@ if not defined OT_VERSION (
 @rem AssemblyVersion has four components (3.0.0.0) and OpenTouryoVersion has
 @rem three (3.0.0), so only the first three are compared.
 @rem
+@rem OpenTouryoVersion may carry a prerelease suffix (3.3.0-alpha1). The
+@rem suffix never reaches the assemblies: the SDK assigns VersionPrefix to
+@rem AssemblyVersion / FileVersion and the whole string to
+@rem InformationalVersion. It is therefore stripped before comparing.
+@rem
 @rem _T_NuGetPack.bat does NOT need this check. The test package takes its
 @rem version from the command line and never reads OpenTouryoVersion, so the
 @rem version only names the package and is not written into any assembly.
 @rem There is nothing for the assemblies to disagree with.
 @rem --------------------------------------------------
+for /f "delims=- tokens=1" %%x in ("%OT_VERSION%") do set OT_VERPREFIX=%%x
+
 echo --------------------------------------------------
-echo Checking the net48 AssemblyVersion against OpenTouryoVersion.
+echo Checking the net48 AssemblyVersion against %OT_VERPREFIX%.
 echo --------------------------------------------------
 
-powershell -NoProfile -ExecutionPolicy Bypass -Command "$v='%OT_VERSION%'; $ok=$true; foreach($p in 'Public','Public\Security','Framework','Framework\RichClient','Public\Db\DamManagedOdp','Public\Db\DamMySQL'){ $f=Join-Path '%OT_INFRA%' ($p+'\Properties\AssemblyInfo.cs'); if(-not (Test-Path $f)){ Write-Host ('  NG  '+$p+' : AssemblyInfo.cs not found'); $ok=$false; continue }; $m=Select-String -Path $f -Pattern 'AssemblyVersion\(.([0-9]+\.[0-9]+\.[0-9]+)' | Select-Object -First 1; if(-not $m){ Write-Host ('  NG  '+$p+' : AssemblyVersion not found'); $ok=$false; continue }; $a=$m.Matches[0].Groups[1].Value; if($a -eq $v){ Write-Host ('  OK  '+$p+' : '+$a) } else { Write-Host ('  NG  '+$p+' : '+$a+'  expected '+$v); $ok=$false } }; if(-not $ok){ exit 1 }"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$v='%OT_VERPREFIX%'; $ok=$true; foreach($p in 'Public','Public\Security','Framework','Framework\RichClient','Public\Db\DamManagedOdp','Public\Db\DamMySQL'){ $f=Join-Path '%OT_INFRA%' ($p+'\Properties\AssemblyInfo.cs'); if(-not (Test-Path $f)){ Write-Host ('  NG  '+$p+' : AssemblyInfo.cs not found'); $ok=$false; continue }; $m=Select-String -Path $f -Pattern 'AssemblyVersion\(.([0-9]+\.[0-9]+\.[0-9]+)' | Select-Object -First 1; if(-not $m){ Write-Host ('  NG  '+$p+' : AssemblyVersion not found'); $ok=$false; continue }; $a=$m.Matches[0].Groups[1].Value; if($a -eq $v){ Write-Host ('  OK  '+$p+' : '+$a) } else { Write-Host ('  NG  '+$p+' : '+$a+'  expected '+$v); $ok=$false } }; if(-not $ok){ exit 1 }"
 
 if errorlevel 1 goto VersionMismatch
 
@@ -94,7 +101,8 @@ exit /b 0
 
 :VersionMismatch
 echo.
-echo [ERROR] The net48 AssemblyVersion does not match OpenTouryoVersion = %OT_VERSION%
+echo [ERROR] The net48 AssemblyVersion does not match %OT_VERPREFIX%
+echo         ^(OpenTouryoVersion = %OT_VERSION%^)
 echo         Update Properties\AssemblyInfo.cs in the projects marked NG above,
 echo         rebuild with 0_Release4Nuget.bat, then run this again.
 echo         See RELEASE.md phase 0.

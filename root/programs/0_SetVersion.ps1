@@ -18,8 +18,16 @@
     本スクリプトは、そもそもずれた状態を作らないためのもの。
 
 .PARAMETER Version
-    設定するバージョン。3 桁（例: 3.1.0）で指定する。
-    AssemblyVersion には 4 桁目に 0 を補って書き込む（例: 3.1.0.0）。
+    設定するバージョン。3 桁（例: 3.1.0）か、
+    プレリリース サフィックス付き（例: 3.3.0-alpha1）で指定する。
+
+    ・OpenTouryoVersion   … 指定した文字列をそのまま書き込む（3.3.0-alpha1）
+    ・AssemblyVersion     … サフィックスを落とし、4 桁目に 0 を補う（3.3.0.0）
+
+    **アセンブリの版にサフィックスは入らない。**
+    SDK 形式 csproj の <Version> も、AssemblyVersion / FileVersion には
+    VersionPrefix（3.3.0）を、InformationalVersion には全体（3.3.0-alpha1）を
+    割り当てる。その挙動に合わせてある。
 
 .PARAMETER WhatIf
     書き換えずに、変更内容だけを表示する。
@@ -65,13 +73,17 @@ if ([Console]::OutputEncoding.CodePage -ne 65001)
 # --------------------------------------------------
 # 引数の検証
 # --------------------------------------------------
-if ($Version -notmatch '^[0-9]+\.[0-9]+\.[0-9]+$')
+# プレリリース サフィックス（-alpha1 等）を許す。
+# 前半 3 桁を VersionPrefix として取り出し、アセンブリの版に使う。
+if ($Version -notmatch '^([0-9]+\.[0-9]+\.[0-9]+)(-[0-9A-Za-z][0-9A-Za-z.-]*)?$')
 {
-    Write-Host "[ERROR] Version は 3 桁で指定してください（例: 3.1.0）。指定値: $Version" -ForegroundColor Red
+    Write-Host "[ERROR] Version の書式が不正です。3 桁、またはサフィックス付きで指定してください。" -ForegroundColor Red
+    Write-Host "        例: 3.1.0 / 3.3.0-alpha1        指定値: $Version" -ForegroundColor Red
     exit 1
 }
 
-$assemblyVersion = "$Version.0"
+$versionPrefix   = $Matches[1]
+$assemblyVersion = "$versionPrefix.0"
 
 # --------------------------------------------------
 # 対象ファイル
@@ -184,7 +196,14 @@ function Update-VersionInFile
 
 Write-Host ""
 Write-Host "--------------------------------------------------"
-Write-Host " OpenTouryoVersion = $Version   AssemblyVersion = $assemblyVersion"
+Write-Host " OpenTouryoVersion = $Version   （NuGet パッケージの版）"
+Write-Host " AssemblyVersion   = $assemblyVersion   （アセンブリの版）"
+
+if ($Version -ne $versionPrefix)
+{
+    Write-Host " ※ プレリリース サフィックスは、アセンブリの版には入らない。"
+}
+
 Write-Host "--------------------------------------------------"
 
 # --------------------------------------------------

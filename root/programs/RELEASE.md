@@ -83,21 +83,50 @@ cd root\programs
 
 ### バージョン番号
 
-- [ ] **`CS/Frameworks/Infrastructure/Directory.Build.props` の `OpenTouryoVersion` を更新した**
-      … SDK 形式アセンブリ 7 個と NuGet パッケージの唯一の定義箇所
-- [ ] **net48（旧形式 csproj）の `Properties\AssemblyInfo.cs` を更新した**
-      … `Directory.Build.props` が効かないため別管理。**NuGet パッケージに入る次の 6 本**
+- [ ] **`0_SetVersion.ps1` でバージョンを更新した**
+
+      ```powershell
+      cd root\programs
+      .\0_SetVersion.ps1 -Version 3.3.0-alpha1 -WhatIf   # 変更内容の確認
+      .\0_SetVersion.ps1 -Version 3.3.0-alpha1           # 実行
+      ```
+
+      … **バージョンの定義箇所は 2 系統に分かれており、手作業では追随を忘れやすい**ため、
+      一括で更新する（#531）
+
+      | 更新先 | 書き込む値 |
+      |---|---|
+      | `CS/Frameworks/Infrastructure/Directory.Build.props` の `OpenTouryoVersion` | `3.3.0-alpha1`（指定値そのまま） |
+      | net48 6 本の `Properties\AssemblyInfo.cs` の `AssemblyVersion` | `3.3.0.0`（サフィックスを落とし 4 桁目に `0`） |
+
+      … net48 の対象は**パッケージに入る 6 本**。
+      `DamPstGrS` は net48 が無く、`Business` は非パッケージかつ別系統のため対象外
 
       ```
       Public / Public.Security / Framework / Framework.RichClient
       Public\Db\DamManagedOdp / Public\Db\DamMySQL
       ```
 
-      … `DamPstGrS` は net48 が無い。`Business` は非パッケージかつ別系統
+      … **該当行が見つからなければ NG で停止する**（黙って素通りさせない）。
+      同じ版で再実行しても「変更なし」になる
 - [ ] **`Business` 系は 1.0.0 のまま**であることを確認した
-      … Public / Framework / Public.Security の 3.0.0 とは意図的に別系統
+      … 意図的に別系統。`0_SetVersion.ps1` は触らない
 - [ ] **nuspec の `<dependencies>` が csproj の `PackageReference` と一致している**
       … 依存を増減したら nuspec 側も合わせる。相互依存の版は `$version$` で自動追随
+
+> **プレリリース版は、サフィックス付きで指定する**（`3.3.0-alpha1`）。
+> サフィックスは `OpenTouryoVersion` にだけ入り、**アセンブリの版には入らない。**
+> SDK 形式 csproj の `<Version>` も、`AssemblyVersion` / `FileVersion` には
+> `VersionPrefix`（`3.3.0`）を、`InformationalVersion` には全体を割り当てる。
+> その挙動に合わせてある。
+>
+> [`CS/NuGet/README.md`](CS/NuGet/README.md) 1 節（0）の
+> 「α・β版などを使用して 2 回以上繰り返す」は、次のように回す。
+>
+> ```powershell
+> .\0_SetVersion.ps1 -Version 3.3.0-alpha1   # プレ公開（develop 段階）
+> .\0_SetVersion.ps1 -Version 3.3.0          # 本番（master マージ＋タグ後）
+> ```
 
 > **`OpenTouryoVersion` はアセンブリに焼き込まれる。**
 > `*_netcore100.csproj` が `<Version>$(OpenTouryoVersion)</Version>` で参照するため、
@@ -111,13 +140,23 @@ cd root\programs
 >
 > ```
 >   NG  Public : 3.0.0  expected 3.1.0
-> [ERROR] The net48 AssemblyVersion does not match OpenTouryoVersion = 3.1.0
+> [ERROR] The net48 AssemblyVersion does not match 3.1.0
 > ```
+>
+> **`0_SetVersion.ps1` を使っていれば、この検査に引っかかることはない。**
+> 手で書き換えた場合や、片方だけ revert した場合の保険である。
 >
 > **`_T_NuGetPack.bat`（テスト用）には、この検査は無い。**
 > テスト用パッケージは版を**引数で受け取り**、`OpenTouryoVersion` を読まない。
 > 版はパッケージに名前を付けるだけで、**アセンブリには書き込まれない**ため、
 > 食い違いようがない。
+
+> **補足 : パッケージの版とアセンブリの版は、一致しなくてよい**（NuGet の制約ではなく慣習）。
+> テスト公開した `Erutcurtsarfni.Oyruot.Public 3.3.0-alpha2` は、
+> パッケージが `3.3.0-alpha2`、中の DLL が `3.0.0.0` で、正常に動作した。
+>
+> **検査が見ているのは、パッケージの版とアセンブリの版の一致ではなく、
+> 同じパッケージに入る net48 と net10.0 のアセンブリどうしが揃っているか**である。
 
 > `Directory.Build.props` の XML コメントに `--`（ハイフン 2 個）を書くと
 > MSBuild がプロジェクトの読み込みに失敗する。区切り線に使わないこと。
