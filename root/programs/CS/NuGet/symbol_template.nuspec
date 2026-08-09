@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <package >
   <metadata>
     <id>[名前空間（Touryo.Infrastructure.xxxx）]</id>★
@@ -15,6 +15,10 @@
     <releaseNotes>https://github.com/OpenTouryoProject/OpenTouryo/releases</releaseNotes>
     <copyright></copyright>
     <tags>OpenTouryo Open棟梁</tags>
+    <!--Source Link で参照するソースの位置（#531）。
+        commit は _NuGetPack.bat が渡す（$commit$）。
+        nuget.org 上で、どのコミットから作られたパッケージかを辿れるようにする。-->
+    <repository type="git" url="https://github.com/OpenTouryoProject/OpenTouryo" commit="$commit$" />
     <dependencies>
       <group targetFramework="net48">
         <dependency id="記入" version="記入" />

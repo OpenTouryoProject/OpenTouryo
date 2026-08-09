@@ -1,3 +1,94 @@
+＜この文書について＞
+NuGet パッケージの作成と公開の手順。
+シンボル サーバー（.snupkg）とソース サーバー（Source Link）を機能させることを含む。
+
+参考：リリース・エンジニアリング - Open 棟梁 Wiki
+https://opentouryo.osscons.jp/index.php?%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E3%83%BB%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0
+以下とも重複があるので最終的には統合を行う。
+https://github.com/OpenTouryoProject/OpenTouryo/wiki/HowToCreateOpenTouryoNuGetPackages.ja
+
+
+＜本番手順＞
+本番手順は、α・β版などを使用して、２回以上繰り返す（プレ、本番）。
+
+（１）リリース・エンジニアリングの手順を実施する
+　　RELEASE.md（root/programs/RELEASE.md）に従い、検証３本を通しておく。
+
+（２）ビルドを行う。
+　　...\OpenTouryo\root\programs\CS\0_Release4Nuget.bat
+
+　　※ このバッチが DEBUG_TYPE=portable を指定する。手で書き換える必要は無い（#531）。
+　　　 z_Common.bat は、呼び出し側が設定済みならその値を尊重する。
+
+（３）パッケージングを行う。
+　　...\OpenTouryo\root\programs\CS\NuGet\_NuGetPack.bat
+
+　　・Build_* から in\ へ dll/pdb/xml を複製する（バッチが行う）
+　　・バージョンは Directory.Build.props から読む
+　　・コミット ハッシュは git から読み、nuspec の <repository> に渡す
+　　・.nupkg と .snupkg が out\sp に出る
+
+（４）最後にNuGetパッケージをNuGetにプッシュする。
+　　APIキーをNuGetサイトから取得して以下のbat内に設定してから実行する。
+　　...\OpenTouryo\root\programs\CS\NuGet\out\sp\_NuGetPush.bat
+　　※ 最新では「sp」の方だけで良い。「pp」の方はシンボルを登録しないケースで利用可。
+
+（５）後始末としてrevertする。
+　　・_NuGetPush.bat：ApiKey
+　　※ z_Common.bat の DEBUG_TYPE は、もう書き換えないので revert 不要（#531）。
+
+（６）テストプロジェクトを用いて、
+　　シンボル サーバー、ソース サーバーが機能するかどうかを確認する。
+
+
+＜公開前の確認（#531）＞
+プッシュは取り消しが困難なので、（３）の後・（４）の前に確認する。
+
+■ 確認１：.nupkg と .snupkg が対で出ていること
+　　out\sp に、同じ名前・同じバージョンで両方があること。
+　　.nupkg に .pdb が入っていないこと（nuget.exe が .snupkg 側へ振り分ける）。
+
+■ 確認２：PDB が portable であること
+　　.snupkg 内の .pdb の先頭４バイトが「BSJB」であること。
+　　「Micr」なら Windows PDB で、**nuget.org は受け付けない**。
+　　→ DEBUG_TYPE が portable になっていない。（２）をやり直す。
+
+■ 確認３：Source Link の情報が入っていること
+　　.pdb の中に次の形の URL があること。
+　　　https://raw.githubusercontent.com/OpenTouryoProject/OpenTouryo/<commit>/*
+
+　　**net48 と net10.0 の両方**を見ること。
+　　net10.0 は .NET 8 以降の SDK が自動で入れるが、
+　　**net48（旧形式 csproj）は Microsoft.SourceLink.GitHub を明示的に参照している**。
+　　参照が外れると net48 側だけ静かに機能しなくなる。
+
+　　PowerShell での確認例：
+　　　Add-Type -AssemblyName System.IO.Compression.FileSystem
+　　　$a = [IO.Compression.ZipFile]::OpenRead("out\sp\Touryo.Infrastructure.Public.3.0.0.snupkg")
+　　　（.pdb を取り出して、先頭４バイトと "raw.githubusercontent" の有無を見る）
+
+■ 確認４：<repository> にコミットが入っていること
+　　.nupkg 内の .nuspec に次があること。
+　　　<repository type="git" url="https://github.com/..." commit="＜40桁＞" />
+　　空なら、git からハッシュを取得できていない。
+
+　　※ Source Link 自体は PDB の情報で動くので、ここが空でもデバッグはできる。
+　　　 nuget.org 上で辿りやすくするための情報。
+
+
+＜利用側（Visual Studio）の設定＞
+パッケージ側が正しくても、利用側の設定が要る。
+
+　「ツール」→「オプション」→「デバッグ」→「全般」
+　　・「マイ コードのみを有効にする」の **チェックを外す**
+　　・「Source Link サポートを有効にする」に **チェックを入れる**
+
+　「ツール」→「オプション」→「デバッグ」→「シンボル」
+　　・「NuGet.org シンボル サーバー」に **チェックを入れる**
+
+これで、F11 でステップインすると該当コミットのソースが取得される。
+
+
 ＜テスト手順＞
 ・本番手順のうち、（テストを意味する）T_プレフィックスのあるファイルを使用する。
 ・対象は、Touryo.Infrastructure.Public（OpenTouryo.Public）のみ。
@@ -6,35 +97,22 @@
 
 ※ シンボル サーバー、ソース サーバーが機能する手順を確立したら移行テストは不要。
 
-＜本番手順＞
-本番手順は、α・β版などを使用して、２回以上繰り返す（プレ、本番）。
 
-（１）リリース・エンジニアリングの手順を実施する
-　　
-（２）ビルドを行う。
-　　既存のビルド・スクリプトを使用する。
-　　
-（２）dllを配置する。
-　　...\OpenTouryo\root\programs\CS\NuGet\in\
-　　
-（３）パッケージングを行う。
-　　_NuGetPack.bat を使用。
-　　
-（４）最後にNuGetパッケージをNuGetにプッシュする。
-　　APIキーをNuGetサイトから取得して以下のbat内に設定してから実行する。
-　　...\OpenTouryo\root\programs\CS\NuGet\out\sp\_NuGetPush.bat
-　　※ 最新では「sp」の方だけで良い。「pp」の方はシンボルを登録しないケースで利用可。
+＜仕組みの要点（#531）＞
+■ シンボル サーバー（.snupkg）
+　　PDB を別パッケージにして公開する。利用者は明示的に取得しなくてよい。
+　　**portable PDB でなければ受け付けられない。**
 
-（５）後始末としてrevertする。
-　　・z_Common.bat：DEBUG_TYPE（？）
-　　・_NuGetPush.bat：ApiKey
+■ ソース サーバー（Source Link）
+　　PDB の中に「このソースはどの URL から取れるか」を書いておく仕組み。
+　　ビルド時に git のリモート URL とコミットから生成される。
+　　　net10.0 … .NET 8 以降の SDK が自動で組み込む
+　　　net48 　… 旧形式 csproj は自動にならないため、
+　　　　　　　　 Microsoft.SourceLink.GitHub を PackageReference で入れている
+　　　　　　　　（PrivateAssets=all なので、利用者の依存関係には現れない）
 
-（６）テストプロジェクトを用いて、
-　　シンボル サーバー、ソース サーバーが
-　　するかどうかを確認する。
-
-参考：リリース・エンジニアリング - Open 棟梁 Wiki
-https://opentouryo.osscons.jp/index.php?%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E3%83%BB%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0
-以下とも重複があるので最終的には統合を行う。
-https://github.com/OpenTouryoProject/OpenTouryo/wiki/HowToCreateOpenTouryoNuGetPackages.ja
-
+■ 押さえるべき設定
+　　*_net48.csproj … PublishRepositoryUrl / EmbedUntrackedSources
+　　　　　　　　　　  ＋ Microsoft.SourceLink.GitHub
+　　0_Release4Nuget.bat … DEBUG_TYPE=portable
+　　_NuGetPack.bat 　　… version と commit を nuspec へ渡す
