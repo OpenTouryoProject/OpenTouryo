@@ -78,19 +78,34 @@ root\programs\CS\NuGet\_NuGetPack.bat
 
 ### （4）NuGet にプッシュする
 
-API キーを NuGet サイトから取得し、次の bat 内に設定してから実行する。
+API キーを NuGet サイトから取得し、**環境変数で渡してから**実行する。
 
 ```
+set NUGET_API_KEY=＜nuget.org で発行したキー＞
 root\programs\CS\NuGet\out\sp\_NuGetPush.bat
 ```
 
 **最新では `sp` の方だけでよい。** `pp` の方はシンボルを登録しないケースで利用可。
 
-### （5）後始末として revert する
+**キーを bat に直書きしてはならない**（#531）。理由は 8 節。
 
-- `_NuGetPush.bat` の ApiKey
+キーは**スコープ（対象パッケージ）と有効期限を絞り、使用後に nuget.org 側で削除**する。
 
-> `z_Common.bat` の `DEBUG_TYPE` は、**もう書き換えないので revert 不要**（#531）。
+> **Trusted Publishing は使えない。**
+> nuget.org は API キーより Trusted Publishing を推奨しているが、
+> これは **GitHub Actions からの公開にのみ対応**する仕組みである。
+> 本手順は人がコマンドラインから実行するため、対象外（nuget.org の案内にも
+> 「コマンドラインからの公開……APIキーは引き続き使用できます」とある）。
+> Actions へ移すなら別途検討する。
+
+### （5）後始末
+
+**revert するものは無い**（#531）。
+
+| | |
+|---|---|
+| API キー | **環境変数なので、コンソールを閉じれば消える** |
+| `z_Common.bat` の `DEBUG_TYPE` | **もう書き換えないので不要** |
 
 ### （6）テスト プロジェクトで確認する
 
@@ -158,6 +173,17 @@ $a.Dispose()
 
 > **Source Link 自体は PDB の情報で動く**ので、ここが空でもデバッグはできる。
 > nuget.org 上で辿りやすくするための情報。
+
+**確認 3 で見た PDB のコミットと、一致していること。** 出どころが違う。
+
+| | コミットが決まる時点 |
+|---|---|
+| nuspec の `<repository>` | **`_NuGetPack.bat` の実行時**（`-Properties commit=`） |
+| **PDB の Source Link** | **`0_Release4Nuget.bat` の実行時**（SourceLink がコンパイル時に git を読む） |
+
+**詰め直すだけでは PDB のコミットは変わらない。**
+ビルド後にコミットしてから詰めると、nuspec だけが新しくなって食い違う。
+**（2）から通しでやり直すこと。**
 
 ### 確認 5 : そのコミットが GitHub 上にあること
 
@@ -246,25 +272,43 @@ root\programs\CS\NuGet\_T_NuGetPack.bat 3.3.0-alpha1
 #### （3）公開前の確認を行う
 
 **2 節の確認 5 点を、本番と同じように行う。**
-`T_` 系は本番用と別のファイルなので、**本番側に入れた改善が
-入っていないことがある**（#531 では `<repository>` と `-Properties` が
-`T_` 系にだけ無かった）。
+
+`T_` 系は本番用と**別のファイル**であり、**ずれやすい。**
+現在は揃っているが、本番側に手を入れたら `T_` 側も見ること。
+
+| 本番 | テスト | 意図的な差 |
+|---|---|---|
+| `Symbol_Public.nuspec` | `T_Symbol_Public.nuspec` | `<id>` / `<title>` が偽名 |
+| `_NuGetPack.bat` | `_T_NuGetPack.bat` | 版の出どころ（`Directory.Build.props` ／ **引数**） |
+| `out\sp\_NuGetPush.bat` | `out\sp\_T_NuGetPush.bat` | push 対象のワイルドカード |
+
+**これ以外は同じであるべき。**
+`<repository>` の有無、`-Properties` で渡す `version` / `commit`、
+API キーの渡し方（8 節）は、本番・テストで揃っている。
+
+> #531 では、本番側にだけ `<repository>` と `-Properties` を入れて
+> `T_` 系を取りこぼした。`Symbol_*.nuspec` という**ワイルドカードで一括置換したため、
+> `T_` で始まるファイルが対象から漏れた**。
+> テスト用パッケージを詰めて初めて分かる類の漏れなので、確認 5 点は省かない。
 
 #### （4）プッシュする
 
-API キーを設定してから実行する。
+本番と同じく、**環境変数で渡す**。
 
 ```
+set NUGET_API_KEY=＜nuget.org で発行したキー＞
 root\programs\CS\NuGet\out\sp\_T_NuGetPush.bat
 ```
+
+テスト用のキーは **`Erutcurtsarfni.Oyruot.*` にスコープを絞る**とよい。
 
 **プッシュ対象はワイルドカード（`Erutcurtsarfni.Oyruot.Public.*.nupkg`）である。**
 `out\sp` に古い版が残っていると**それも公開される**ので、
 実行前にフォルダの中身を見ること。
 
-#### （5）後始末として revert する
+#### （5）後始末
 
-- `_T_NuGetPush.bat` の ApiKey
+**revert するものは無い**（本番手順の（5）と同じ）。
 
 #### （6）確認する
 
@@ -376,3 +420,39 @@ master は履歴を書き換えないため、これが最も確実である。
 取り消しも unlist（一覧から隠す）だけである。**次のバージョンを出すしかない。**
 
 だからこそ、公開前に確認 5 を行う。
+
+---
+
+## 8. API キーは環境変数で渡す（#531）
+
+`_NuGetPush.bat` / `_T_NuGetPush.bat` は `NUGET_API_KEY` から読む。
+未設定なら**エラーで止まる**（キー無しで push を試みない）。
+
+```
+set NUGET_API_KEY=＜nuget.org で発行したキー＞
+```
+
+### なぜ `SetApiKey` をやめたか
+
+以前は bat 内に `nuget.exe SetApiKey [ApiKey]` と書き、
+実行前に実キーへ差し替え、実行後にプレースホルダへ戻す運用だった。
+**戻し忘れが 2 か所で漏洩につながる。**
+
+| | 問題 |
+|---|---|
+| **bat ファイル** | **Git で追跡されている。** キーを直書きしたままコミットすると、公開リポジトリに載る |
+| **`NuGet.Config`** | `SetApiKey` はキーを `%AppData%\NuGet\NuGet.Config` の `<apikeys>` へ**永続化する**。bat を戻しても消えない |
+
+環境変数なら**コンソールを閉じれば消える**ため、後始末が要らない。
+
+> 過去に `SetApiKey` を実行していた場合、`%AppData%\NuGet\NuGet.Config` に
+> キーが残っている。`nuget.exe 6.13` の `setApiKey` に削除オプションは無いので、
+> **`<apikeys>` の該当する `<add>` 行を手で削除する。**
+
+### キーの発行
+
+nuget.org でキーを作る際は、次を絞る。
+
+- **スコープ** … 対象パッケージを限定する（テスト用なら `Erutcurtsarfni.Oyruot.*`）
+- **有効期限** … 最短にする
+- **使用後** … nuget.org 側で削除する

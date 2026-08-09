@@ -223,24 +223,40 @@ cd root\programs
 手順の一次情報は [`CS/NuGet/README.md`](CS/NuGet/README.md)。
 **ここに書き写すと二重管理になるため、要点と抜けやすい点だけを挙げる。**
 
-- [ ] `CS\z_Common.bat` の `DEBUG_TYPE` を `full` → **`portable`** に変更した
+- [ ] **正式版は、`develop` → `master` をマージ（`--no-ff`）し、タグを打った後に詰めた**
+      … パッケージは**詰めた時のコミットに永久に固定される**。
+      同じバージョンは一度しか公開できないため、develop 段階で出すなら
+      **プレリリース版**（`3.3.0-alpha1` など）にする（`README.md` 1 節（0）・7 節）
+- [ ] **そのコミットを push 済みである**
+      … 未 push だと Source Link が 404 になる。**公開後には直せない**
 - [ ] `CS\0_Release4Nuget.bat` を実行した
       … `1_DeleteDir` → `2_Build_NuGet_net48` → `1_DeleteDir` →
       `2_Build_NuGet_netcore100` → `4_Build_CopyAssemblies` のみ。サンプルはビルドしない
+      … `DEBUG_TYPE` は**このバッチが指定する。手で書き換えない**（#531）
 - [ ] `CS\NuGet\_NuGetPack.bat` でパッケージ化した
-- [ ] `CS\NuGet\out\sp\_NuGetPush.bat` に API キーを設定し、push した
-      … 最新は `sp`（シンボル付き）のみでよい
+      … **ビルドとパッケージ化は同じコミットで行う。**
+      PDB のコミットは**ビルド時**、nuspec のコミットは**パッケージ化時**に決まるため、
+      間にコミットすると食い違う（`README.md` 2 節 確認 4）
+- [ ] `README.md` 2 節の**確認 5 点**を通した
+- [ ] `set NUGET_API_KEY=＜キー＞` の上で `CS\NuGet\out\sp\_NuGetPush.bat` を実行し、push した
+      … 最新は `sp`（シンボル付き）のみでよい。**キーを bat に直書きしない**（#531）
 - [ ] Wiki の手順（NuGet 利用リポジトリの参照貼り直し）を実施した
 
 ---
 
 ## 6. フェーズ 5 : 後始末
 
-**revert を忘れやすい。** 特に API キーはリポジトリに残してはならない。
+**revert する項目は無くなった**（#531）。忘れやすい作業を、そもそも作らない形に変えた。
 
-- [ ] `CS\z_Common.bat` の `DEBUG_TYPE` を `full` に戻した
-- [ ] `CS\NuGet\out\sp\_NuGetPush.bat` を**プレースホルダに戻した**
-      … コミットされている状態は `nuget.exe SetApiKey [ApiKey]`。実キーを残さない
+| 以前 revert していたもの | 現在 |
+|---|---|
+| `CS\z_Common.bat` の `DEBUG_TYPE` | `0_Release4Nuget.bat` が指定するので**書き換えない** |
+| `_NuGetPush.bat` の API キー | **環境変数 `NUGET_API_KEY` で渡す**ので、コンソールを閉じれば消える |
+
+- [ ] **API キーを nuget.org 側で削除した**（有効期限を最短にしていても、使ったら消す）
+- [ ] `%AppData%\NuGet\NuGet.Config` の `<apikeys>` に**キーが残っていない**
+      … 過去に `nuget.exe SetApiKey` を使っていた場合、そこに永続化されている。
+      削除オプションが無いため、該当する `<add>` 行を手で削除する（`README.md` 8 節）
 - [ ] `git status` に意図しない変更が残っていない
       … 特に `Result*.txt`（`2_RunAllTests.ps1` が再生成する）と
       `CS\Frameworks\Tests\EncAndDecUtilCUI\*.cer` / `*.pfx`（Git 管理外の作業用コピー）
