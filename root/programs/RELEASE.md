@@ -86,11 +86,38 @@ cd root\programs
 - [ ] **`CS/Frameworks/Infrastructure/Directory.Build.props` の `OpenTouryoVersion` を更新した**
       … SDK 形式アセンブリ 7 個と NuGet パッケージの唯一の定義箇所
 - [ ] **net48（旧形式 csproj）の `Properties\AssemblyInfo.cs` を更新した**
-      … `Directory.Build.props` が効かないため別管理
+      … `Directory.Build.props` が効かないため別管理。**NuGet パッケージに入る次の 6 本**
+
+      ```
+      Public / Public.Security / Framework / Framework.RichClient
+      Public\Db\DamManagedOdp / Public\Db\DamMySQL
+      ```
+
+      … `DamPstGrS` は net48 が無い。`Business` は非パッケージかつ別系統
 - [ ] **`Business` 系は 1.0.0 のまま**であることを確認した
       … Public / Framework / Public.Security の 3.0.0 とは意図的に別系統
 - [ ] **nuspec の `<dependencies>` が csproj の `PackageReference` と一致している**
       … 依存を増減したら nuspec 側も合わせる。相互依存の版は `$version$` で自動追随
+
+> **`OpenTouryoVersion` はアセンブリに焼き込まれる。**
+> `*_netcore100.csproj` が `<Version>$(OpenTouryoVersion)</Version>` で参照するため、
+> **書き換えたら必ずリビルド（フェーズ 3 の `0_Release4Nuget.bat`）が要る。**
+> 先にパッケージ化すると、古いアセンブリに新しい版番号が付く。
+
+> **`_NuGetPack.bat` が、net48 の `AssemblyVersion` と `OpenTouryoVersion` の
+> 一致を検査して、ずれていれば停止する**（#531）。
+> 追随を忘れたまま公開すると、**同じパッケージの net48 と net10.0 で
+> アセンブリの版が食い違い、公開後には直せない。**
+>
+> ```
+>   NG  Public : 3.0.0  expected 3.1.0
+> [ERROR] The net48 AssemblyVersion does not match OpenTouryoVersion = 3.1.0
+> ```
+>
+> **`_T_NuGetPack.bat`（テスト用）には、この検査は無い。**
+> テスト用パッケージは版を**引数で受け取り**、`OpenTouryoVersion` を読まない。
+> 版はパッケージに名前を付けるだけで、**アセンブリには書き込まれない**ため、
+> 食い違いようがない。
 
 > `Directory.Build.props` の XML コメントに `--`（ハイフン 2 個）を書くと
 > MSBuild がプロジェクトの読み込みに失敗する。区切り線に使わないこと。

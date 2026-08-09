@@ -94,10 +94,35 @@ root\programs\CS\NuGet\_NuGetPack.bat
 
 このバッチが次を行う。
 
-- `Build_*` から `in\` へ dll / pdb / xml を複製する
 - バージョンを `Directory.Build.props` から読む
+- **net48 の `AssemblyVersion` が、それと一致するかを検査する**（後述）
+- `Build_*` から `in\` へ dll / pdb / xml を複製する
 - **コミット ハッシュを git から読み、nuspec の `<repository>` へ渡す**
 - `.nupkg` と `.snupkg` を `out\sp` に出す
+
+#### net48 の版の検査
+
+**`Directory.Build.props` は旧形式 csproj に効かない。**
+net48 の版は各プロジェクトの `Properties\AssemblyInfo.cs` が持つ。
+
+`OpenTouryoVersion` だけ上げて追随を忘れると、**同じパッケージの中で
+net48 と net10.0 のアセンブリの版が食い違う。公開後には直せない。**
+
+そこで、パッケージ化の前に 6 本を照合し、ずれていれば停止する。
+
+```
+  OK  Public : 3.0.0
+  NG  Framework : 3.0.0  expected 3.1.0
+[ERROR] The net48 AssemblyVersion does not match OpenTouryoVersion = 3.1.0
+```
+
+対象は**パッケージに入る 6 本**（`DamPstGrS` は net48 が無い。
+`Business` は非パッケージかつ意図的に別系統の `1.0.0`）。
+
+**`_T_NuGetPack.bat` にこの検査は無い。**
+テスト用パッケージは版を**引数で受け取り**、`OpenTouryoVersion` を読まない。
+版はパッケージに名前を付けるだけで**アセンブリには書き込まれない**ため、
+食い違いようがない。
 
 **プッシュの前に 2 節の確認を行うこと。**
 
