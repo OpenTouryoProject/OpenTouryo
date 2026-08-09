@@ -14,6 +14,19 @@
 @rem --------------------------------------------------
 set DEBUG_TYPE=portable
 
+@rem --------------------------------------------------
+@rem Normalize the source paths recorded in the PDB to /_/... (#531).
+@rem
+@rem   - the published package no longer carries the local paths of the
+@rem     machine that built it
+@rem   - Visual Studio opens the file at the path in the PDB when it exists,
+@rem     so an absolute path means Source Link is never used on the build
+@rem     machine. Normalizing lets it be verified there as well.
+@rem
+@rem z_Common.bat defaults this to false, so ordinary builds are unaffected.
+@rem --------------------------------------------------
+set CI_BUILD=true
+
 @echo on
 timeout 5
 

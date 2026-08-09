@@ -134,6 +134,27 @@ set BUILD_CONFIG=Debug
 if not defined DEBUG_TYPE set DEBUG_TYPE=full
 
 @rem --------------------------------------------------
+@rem CI_BUILD も、呼び出し側が先に設定していればそれを尊重する（#531）。
+@rem
+@rem true にすると ContinuousIntegrationBuild が有効になり、PDB に記録される
+@rem ソースのパスが /_/... に正規化される。
+@rem   ・公開物に、ビルドしたマシンのローカル パスが埋まらなくなる
+@rem   ・Visual Studio は「PDB のパスにファイルが在ればそれを開く」ため、
+@rem     絶対パスのままだと、ビルドしたマシンでは Source Link を通らない。
+@rem     正規化しておくと、そのマシンでも Source Link 経由で確認できる
+@rem
+@rem 通常のビルドでは空（無効）。NuGet パッケージ用のビルド
+@rem （0_Release4Nuget.bat）だけが true を渡す。
+@rem
+@rem **DeterministicSourcePaths も一緒に渡す。**
+@rem ContinuousIntegrationBuild から DeterministicSourcePaths への変換は
+@rem Microsoft.NET.Sdk のターゲットが行うため、**旧形式 csproj には効かない**。
+@rem （Source Link の自動組み込みが効かないのと同じ構図。net48 側だけ
+@rem 　絶対パスのまま残る。）
+@rem --------------------------------------------------
+if not defined CI_BUILD set CI_BUILD=false
+
+@rem --------------------------------------------------
 @rem VisualStudioVersion は、上で解決した MSBuild と同じ VS から求める。
 @rem
 @rem Web アプリの csproj は、この値で targets のパスを組み立てる。
@@ -162,7 +183,7 @@ echo VisualStudioVersion %VisualStudioVersion%
 @echo Creating a build command.
 @echo --------------------------------------------------
 @set COMMANDLINE=/p:Configuration=%BUILD_CONFIG% -v:d
-set COMMANDLINE=/p:Configuration=%BUILD_CONFIG% /p:DebugType=%DEBUG_TYPE% -v:d
+set COMMANDLINE=/p:Configuration=%BUILD_CONFIG% /p:DebugType=%DEBUG_TYPE% /p:ContinuousIntegrationBuild=%CI_BUILD% /p:DeterministicSourcePaths=%CI_BUILD% -v:d
 
 @echo --------------------------------------------------
 @echo Set the proxy settings of Nuget.

@@ -58,8 +58,33 @@ root\programs\CS\0_Release4Nuget.bat
 ```
 
 **`DebugType` を手で書き換える必要は無い**（#531）。
-このバッチが `DEBUG_TYPE=portable` を指定し、`z_Common.bat` は
+このバッチが次の 2 つを指定し、`z_Common.bat` は
 **呼び出し側が設定済みならその値を尊重する。**
+
+| 変数 | 渡す値 | 既定（通常のビルド） |
+|---|---|---|
+| `DEBUG_TYPE` | `portable` | `full` |
+| `CI_BUILD` | `true` → `/p:ContinuousIntegrationBuild=true` ＋ `/p:DeterministicSourcePaths=true` | `false` |
+
+`ContinuousIntegrationBuild` は、**PDB に記録されるソースのパスを `/_/...` に正規化する。**
+
+```
+無効  C:\OpenTouryo\root\programs\CS\Frameworks\Infrastructure\Public\Db\DamODBC.cs
+有効  /_/root/programs/CS/Frameworks/Infrastructure/Public/Db/DamODBC.cs
+```
+
+これが要る理由は 2 つある。
+
+- **公開物に、ビルドしたマシンのローカル パスが埋まらない**
+- **Visual Studio は「PDB のパスにファイルが在れば、それを開く」。**
+  絶対パスのままだと、**ビルドしたマシンでは Source Link を通らない**ため、
+  4 節の確認が「ローカルのソースが開いただけ」になり、検証にならない
+
+> **`DeterministicSourcePaths` も渡す必要がある。**
+> `ContinuousIntegrationBuild` から `DeterministicSourcePaths` への変換は
+> `Microsoft.NET.Sdk` のターゲットが行うため、**旧形式 csproj には効かない。**
+> 渡さないと **net48 側だけ絶対パスのまま残る**（Source Link の自動組み込みが
+> 効かないのと同じ構図。5 節を参照）。
 
 ### （3）パッケージングを行う
 
@@ -350,7 +375,8 @@ PDB の中に「このソースはどの URL から取れるか」を書いて�
 | ファイル | 設定 |
 |---|---|
 | `*_net48.csproj`（6 本） | `PublishRepositoryUrl` / `EmbedUntrackedSources` ＋ `Microsoft.SourceLink.GitHub` |
-| `0_Release4Nuget.bat` | `DEBUG_TYPE=portable` |
+| `0_Release4Nuget.bat` | `DEBUG_TYPE=portable` ＋ `CI_BUILD=true` |
+| `z_Common.bat` | `CI_BUILD` を `ContinuousIntegrationBuild` と **`DeterministicSourcePaths` の両方**へ渡す |
 | `_NuGetPack.bat` | `version` と `commit` を nuspec へ渡す |
 | `Symbol_*.nuspec` | `<repository ... commit="$commit$" />` |
 

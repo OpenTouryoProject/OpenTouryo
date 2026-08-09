@@ -356,8 +356,30 @@ net48 側は MSBuild / devenv が必要（Windows + VS 前提）。
 
 | | ビルド ツール | `%COMMANDLINE%` |
 |---|---|---|
-| `z_Common.bat` | MSBuild.exe | `/p:Configuration=<構成> /p:DebugType=<型> -v:d` |
+| `z_Common.bat` | MSBuild.exe | `/p:Configuration=<構成> /p:DebugType=<型> /p:ContinuousIntegrationBuild=<真偽> /p:DeterministicSourcePaths=<真偽> -v:d` |
 | `z_Common2.bat` | devenv.com / devenv.exe | `/build <構成>`（devenv 構文） |
+
+`z_Common.bat` の次の 2 つは、**呼び出し側が先に設定していればその値を尊重する**（#531）。
+NuGet パッケージ用のビルド（`0_Release4Nuget.bat`）だけが既定と異なる値を渡す。
+
+| 変数 | 既定 | `0_Release4Nuget.bat` | 目的 |
+|---|---|---|---|
+| `DEBUG_TYPE` | `full` | `portable` | `.snupkg` は portable PDB でなければ受け付けられない |
+| `CI_BUILD` | `false` | `true` | PDB のソース パスを `/_/...` に正規化する |
+
+`CI_BUILD` は `ContinuousIntegrationBuild` と `DeterministicSourcePaths` の
+**両方**に渡している。前者から後者への変換は `Microsoft.NET.Sdk` のターゲットが
+行うため、**旧形式 csproj には効かない**（Source Link の自動組み込みが効かないのと
+同じ構図。渡さないと **net48 側だけ絶対パスのまま残る**）。
+
+**以前は `z_Common.bat` を手で書き換えて戻す運用だった。**
+戻し忘れると `full` のまま公開してしまうため、呼び出し側から渡す形にした。
+
+`ContinuousIntegrationBuild` を有効にすると、PDB に**ビルドしたマシンの
+ローカル パスが残らない**。これは体裁の問題ではない。Visual Studio は
+**PDB のパスにファイルが在れば、それを開く**ため、絶対パスのままだと
+**ビルドしたマシンでは Source Link を通らず、動作確認にならない**。
+詳細は [`NuGet/README.md`](../NuGet/README.md)。
 
 `z_Common2.bat` は、**MSBuild.exe ではエラーになるが devenv.com では通る、というケースが
 散在していた時期に、ビルド ツールを devenv へ差し替えるために用意されたもの**。
