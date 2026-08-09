@@ -121,7 +121,17 @@ echo NUGET_MSBUILD %NUGET_MSBUILD%
 @echo https://learn.microsoft.com/ja-jp/dotnet/csharp/language-reference/compiler-options/code-generation#debugtype
 @echo --------------------------------------------------
 set BUILD_CONFIG=Debug
-set DEBUG_TYPE=full
+
+@rem --------------------------------------------------
+@rem DEBUG_TYPE は、呼び出し側が先に設定していればそれを尊重する（#531）。
+@rem
+@rem NuGet パッケージ用のビルド（0_Release4Nuget.bat）は portable を要求する。
+@rem   ・.snupkg（シンボル パッケージ）は portable PDB でなければ受け付けられない
+@rem   ・Source Link の情報も portable PDB に載る
+@rem 以前は、その都度この行を手で書き換えて戻す運用だった。
+@rem **戻し忘れると full のまま公開してしまう**ため、呼び出し側から渡す形にした。
+@rem --------------------------------------------------
+if not defined DEBUG_TYPE set DEBUG_TYPE=full
 
 @rem --------------------------------------------------
 @rem VisualStudioVersion は、上で解決した MSBuild と同じ VS から求める。

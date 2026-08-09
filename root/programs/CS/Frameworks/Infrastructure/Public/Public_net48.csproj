@@ -24,6 +24,12 @@
     <OldToolsVersion>2.0</OldToolsVersion>
     <UpgradeBackupLocation />
     <TargetFrameworkProfile />
+    <!--Source Link（#531）
+        .NET 8 以降の SDK は Source Link を自動で組み込むが、**旧形式 csproj には効かない**
+        （Microsoft.Common.props を通らないため）。net48 側は明示的に入れる。
+        これが無いと、利用者は lib\net48 を参照したときにソースへ踏み込めない。-->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -186,6 +192,13 @@
     </PackageReference>
     <PackageReference Include="SharpZipLib">
       <Version>1.4.2</Version>
+    </PackageReference>
+    <!--Source Link（#531）。**ビルド時にだけ使う**ので PrivateAssets=all にし、
+        NuGet パッケージの依存関係には出さない。-->
+    <PackageReference Include="Microsoft.SourceLink.GitHub">
+      <Version>10.0.301</Version>
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
