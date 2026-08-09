@@ -1,37 +1,45 @@
-﻿setlocal
+setlocal
 @echo off
-chcp 65001 >nul
 
 @rem --------------------------------------------------
-@rem API キーは環境変数 NUGET_API_KEY で渡す（#531）。
+@rem Pass the API key through the NUGET_API_KEY environment variable (#531).
 @rem
-@rem 以前は nuget.exe SetApiKey を使っていたが、次の 2 点で危険だった。
+@rem "nuget.exe SetApiKey" used to be written here, with the key pasted in
+@rem before the run and reverted afterwards. That was dangerous twice over.
 @rem
-@rem   ・このファイルは Git で追跡されている。キーを直書きすると、
-@rem     戻し忘れたままコミットに載る。
-@rem   ・SetApiKey はキーを %AppData%\NuGet\NuGet.Config へ永続化する。
-@rem     このファイルをプレースホルダに戻しても、そちらは消えない。
+@rem   - This file is tracked by Git. A key left in it lands in a commit.
+@rem   - SetApiKey persists the key into %AppData%\NuGet\NuGet.Config.
+@rem     Reverting this file does not remove it from there.
 @rem
-@rem 環境変数なら、コンソールを閉じれば消えるため後始末が要らない。
-@rem 実行前に、同じコンソールで次を実行する。
+@rem An environment variable disappears when the console is closed,
+@rem so there is nothing to clean up. Run this first, in the same console:
 @rem
-@rem   set NUGET_API_KEY=＜nuget.org で発行したキー＞
+@rem   set NUGET_API_KEY=<the API key issued at nuget.org>
 @rem
-@rem キーは**スコープと有効期限を絞り、使用後に nuget.org 側で削除**すること。
+@rem The symbol server needs -SymbolApiKey. -ApiKey alone is NOT used for it,
+@rem and the push of the .snupkg fails with 403 (#531).
+@rem
+@rem Scope the key to the target packages, give it the shortest expiry,
+@rem and delete it at nuget.org once it has been used.
+@rem
+@rem NOTE: keep this file pure ASCII (#532).
+@rem       Non-ASCII comments are decoded with the console code page,
+@rem       which misaligns the parser and executes comment fragments.
 @rem --------------------------------------------------
 if not defined NUGET_API_KEY (
-  echo [ERROR] 環境変数 NUGET_API_KEY が設定されていません。
-  echo         set NUGET_API_KEY=＜nuget.org で発行したキー＞
+  echo [ERROR] The environment variable NUGET_API_KEY is not set.
+  echo         set NUGET_API_KEY=^<the API key issued at nuget.org^>
   pause
   exit /b 1
 )
-rem .nupkg と .snupkg の両方が在れば、両方が公開される。
-rem -sourceオプションは、NuGet.Config の DefaultPushSource 値がなければ必須
-"..\..\..\..\nuget.exe" push Touryo.Infrastructure.Public.*.nupkg -ApiKey %NUGET_API_KEY% -source https://api.nuget.org/v3/index.json
-"..\..\..\..\nuget.exe" push Touryo.Infrastructure.Framework.*.nupkg -ApiKey %NUGET_API_KEY% -source https://api.nuget.org/v3/index.json
+@rem A .snupkg next to the .nupkg is published together with it.
+@rem -source is required unless NuGet.Config defines DefaultPushSource.
+"..\..\..\..\nuget.exe" push Touryo.Infrastructure.Public.*.nupkg -ApiKey %NUGET_API_KEY% -SymbolApiKey %NUGET_API_KEY% -source https://api.nuget.org/v3/index.json
+"..\..\..\..\nuget.exe" push Touryo.Infrastructure.Framework.*.nupkg -ApiKey %NUGET_API_KEY% -SymbolApiKey %NUGET_API_KEY% -source https://api.nuget.org/v3/index.json
 
-rem 従って、以下のコマンドは実行不要になった。
-rem "..\..\..\..\nuget.exe" push Touryo.Infrastructure.Public.*.snupkg -source https://api.nuget.org/v3/index.json
-rem "..\..\..\..\nuget.exe" push Touryo.Infrastructure.Framework.*.snupkg -source https://api.nuget.org/v3/index.json
+@rem The symbol packages therefore need no explicit push.
+@rem If the .nupkg was already published, its push fails with 409 and the
+@rem symbols are never reached. Push the .snupkg on its own in that case:
+@rem   "..\..\..\..\nuget.exe" push Touryo.Infrastructure.Public.*.snupkg -ApiKey %NUGET_API_KEY% -SymbolApiKey %NUGET_API_KEY% -source https://api.nuget.org/v3/index.json
 
 pause

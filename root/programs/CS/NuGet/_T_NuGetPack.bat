@@ -1,36 +1,38 @@
-﻿setlocal
+setlocal
 @echo off
-chcp 65001 >nul
 
 @rem --------------------------------------------------
-@rem テスト用パッケージ（Erutcurtsarfni.Oyruot.Public）を作る。
-@rem シンボル サーバー・ソース サーバーの確認に使う（#531）。
+@rem Build the test package (Erutcurtsarfni.Oyruot.Public).
+@rem It is used to verify the symbol server and Source Link (#531).
 @rem
-@rem 版は引数で渡す。**本番版（Directory.Build.props）とは独立**に付ける。
-@rem   例： _T_NuGetPack.bat 3.3.0-alpha1
+@rem The version is passed as an argument. It is INDEPENDENT of the
+@rem production version in Directory.Build.props.
+@rem   e.g. _T_NuGetPack.bat 3.3.0-alpha1
 @rem
-@rem 公開済みより大きい版でなければ nuget.org は受け付けない。
+@rem nuget.org only accepts a version higher than the published ones.
 @rem   https://www.nuget.org/packages/Erutcurtsarfni.Oyruot.Public/
+@rem
+@rem NOTE: keep this file pure ASCII (#532).
 @rem --------------------------------------------------
 set OT_VERSION=%~1
 
 if not defined OT_VERSION (
-  echo [ERROR] 版を指定してください。
-  echo         例: _T_NuGetPack.bat 3.3.0-alpha1
+  echo [ERROR] Specify the package version.
+  echo         e.g. _T_NuGetPack.bat 3.3.0-alpha1
   pause
   exit /b 1
 )
 
 @rem --------------------------------------------------
-@rem コミット ハッシュを取得する（#531）。
-@rem nuspec の ^<repository commit="$commit$"^> に渡す。
+@rem Read the commit hash (#531).
+@rem It is passed to <repository commit="$commit$"> in the nuspec.
 @rem --------------------------------------------------
 set OT_COMMIT=
 
 for /f "usebackq delims=" %%c in (`git rev-parse HEAD 2^>nul`) do set OT_COMMIT=%%c
 
 if not defined OT_COMMIT (
-  echo [WARN] git からコミット ハッシュを取得できませんでした。空のまま続行します。
+  echo [WARN] Could not read the commit hash from git. Continuing with an empty value.
   set OT_COMMIT=
 )
 

@@ -1,13 +1,16 @@
-﻿@echo off
+@echo off
 @rem --------------------------------------------------
-@rem NuGet パッケージ用のビルド（#531）
+@rem Build for the NuGet packages (#531)
 @rem
-@rem **DEBUG_TYPE=portable を渡す。** z_Common.bat は、呼び出し側が
-@rem 設定済みならその値を尊重する。以前は z_Common.bat を手で書き換えて
-@rem 戻す運用だったが、戻し忘れると full のまま公開してしまうため。
+@rem Pass DEBUG_TYPE=portable. z_Common.bat honours the value when the
+@rem caller has already set it. z_Common.bat used to be edited by hand
+@rem and reverted afterwards, which risked publishing with "full" when
+@rem the revert was forgotten.
 @rem
-@rem   ・.snupkg は portable PDB でなければ受け付けられない
-@rem   ・Source Link の情報も portable PDB に載る
+@rem   - a .snupkg is only accepted when the PDB is portable
+@rem   - the Source Link information also lives in the portable PDB
+@rem
+@rem NOTE: keep this file pure ASCII (#532).
 @rem --------------------------------------------------
 set DEBUG_TYPE=portable
 

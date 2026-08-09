@@ -543,12 +543,44 @@ BOM が無いと、cmd.exe がバッチをバイト オフセットで読み進�
 | **あり** | **エラーなし** | **エラーなし** |
 
 - 実害は「紛らわしいエラー表示」に留まり、**後続の実コマンドは飛ばない**。
-- `chcp 65001` は**画面出力の文字化け対策**であって、この解析ずれの対策ではない。
-  日本語を `echo` する場合に併用する。
 - 純粋に ASCII のみの bat に BOM は不要（差分ノイズになるだけ）。
+
   **日本語を書き足すときに BOM の有無を確認すること。**
 
 `root/programs/CS/` 配下で非 ASCII を含む bat は、すべて BOM 付きになっている。
+
+#### BOM は万能ではない。危ない bat は ASCII のみにする（#532）
+
+**BOM を付けても、対話コンソール（CP=932）で解析ずれが起きることがある。**
+
+#531 で、NuGet の push bat（UTF-8 BOM ＋ CRLF ＋ `chcp` なし）を
+利用者が cmd から実行したところ、日本語の `@rem` が実行されて次が出た。
+
+```
+'onfig' is not recognized as an internal or external command,
+'…ても、そちらは消えない。' is not recognized as an internal or external command,
+'NuGet.Config' is not recognized as an internal or external command,
+```
+
+- **非対話（`cmd /c`）では再現しない。** 手元で確認しても出ないため気付けない
+- **`chcp 65001` を入れても直らない。**
+  むしろコードページが途中で変わる分、条件が増える
+- 上の表（BOM あり＝エラーなし）は**目安であって保証ではない**
+
+**実害は紛らわしいエラー表示に留まり、後続の実コマンドは飛ばない**
+（#531 でも、エラー表示の後で push 自体は成功していた）。
+とはいえ、公開作業中に大量のエラーが出るのは危険である。
+
+> **重要な bat（リリース・公開に使うもの）は、非 ASCII を一切書かない。**
+> コメントも英語にする。ASCII のみなら BOM は不要で、
+> どのコードページから起動しても壊れない。
+>
+> `root\programs\CS\NuGet\*.bat` と `root\programs\CS\0_Release4Nuget.bat` は
+> この方針にしてある（各ファイルの先頭に `NOTE: keep this file pure ASCII` と記載）。
+
+**日本語を `echo` する場合も同じ。**
+cmd.exe は BOM 付き UTF-8 でも、内容をコンソールのコードページで解釈するため、
+CP=932 では文字化けする（`chcp` を入れても、それ自体が解析ずれの種になる）。
 
 ### 8.5 ps1 ファイルの文字コードと、PowerShell 5.1 / 7 の両対応
 

@@ -1,11 +1,12 @@
-﻿setlocal
+setlocal
 @echo off
-chcp 65001 >nul
 
 @rem --------------------------------------------------
-@rem バージョン番号を Directory.Build.props から取得する。
-@rem （nuspec 側は $version$ トークンのままにしてあり、
-@rem 　バージョンの定義箇所を1か所に集約している。）
+@rem Read the version number from Directory.Build.props.
+@rem The nuspec files keep the $version$ token, so the version is
+@rem defined in exactly one place.
+@rem
+@rem NOTE: keep this file pure ASCII (#532).
 @rem --------------------------------------------------
 set OT_PROPS=..\Frameworks\Infrastructure\Directory.Build.props
 set OT_VERSION=
@@ -15,25 +16,26 @@ for /f "usebackq delims=" %%v in (
 ) do set OT_VERSION=%%v
 
 if not defined OT_VERSION (
-  echo [ERROR] %OT_PROPS% から OpenTouryoVersion を取得できませんでした。
+  echo [ERROR] Failed to read OpenTouryoVersion from %OT_PROPS%.
   pause
   exit /b 1
 )
 
 @rem --------------------------------------------------
-@rem コミット ハッシュを取得する（#531）。
-@rem nuspec の <repository commit="$commit$"> に渡し、
-@rem nuget.org 上で「どのコミットから作られたか」を辿れるようにする。
+@rem Read the commit hash (#531).
+@rem It is passed to <repository commit="$commit$"> in the nuspec so that
+@rem nuget.org shows which commit the package was built from.
 @rem
-@rem **Source Link 自体は PDB の情報で動く**ため、ここが空でも
-@rem ソース デバッグはできる。辿りやすさのための情報である。
+@rem Source Link itself works from the information inside the PDB, so
+@rem source debugging still works when this is empty. It only helps
+@rem people navigate back to the source.
 @rem --------------------------------------------------
 set OT_COMMIT=
 
 for /f "usebackq delims=" %%c in (`git rev-parse HEAD 2^>nul`) do set OT_COMMIT=%%c
 
 if not defined OT_COMMIT (
-  echo [WARN] git からコミット ハッシュを取得できませんでした。空のまま続行します。
+  echo [WARN] Could not read the commit hash from git. Continuing with an empty value.
   set OT_COMMIT=
 )
 

@@ -432,6 +432,30 @@ master は履歴を書き換えないため、これが最も確実である。
 set NUGET_API_KEY=＜nuget.org で発行したキー＞
 ```
 
+### `-ApiKey` と `-SymbolApiKey` の両方を渡す
+
+**`nuget.exe` はシンボル サーバーには `-SymbolApiKey` を使う。`-ApiKey` は効かない。**
+
+```
+nuget.exe push xxx.nupkg -ApiKey %KEY% -SymbolApiKey %KEY% -source https://api.nuget.org/v3/index.json
+```
+
+`-SymbolApiKey` を省くと、**`.nupkg` は通るが `.snupkg` だけが 403 になる。**
+
+```
+Pushing Erutcurtsarfni.Oyruot.Public.3.3.0-alpha1.snupkg to 'https://www.nuget.org/api/v2/symbolpackage'...
+  Forbidden https://www.nuget.org/api/v2/symbolpackage/
+403 (The specified API key is invalid, has expired, or does not have permission
+     to access the specified package.)
+```
+
+**メッセージはキーが無効であるかのように読めるが、実際には
+「シンボル用のキーが渡されていない」**という意味である。
+
+> 旧方式（`nuget.exe SetApiKey`）でこれが問題にならなかったのは、
+> キーが `NuGet.Config` に保存され、**シンボル側も同じ保存値を拾っていた**ため。
+> 環境変数方式に変えるなら、**両方のオプションを明示する必要がある。**
+
 ### なぜ `SetApiKey` をやめたか
 
 以前は bat 内に `nuget.exe SetApiKey [ApiKey]` と書き、
