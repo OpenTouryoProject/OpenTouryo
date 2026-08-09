@@ -40,7 +40,7 @@
          ここを書き換えれば、SDK 形式アセンブリと NuGet パッケージの
          双方に反映される。
          ================================================================ -->
-    <OpenTouryoVersion>3.0.0</OpenTouryoVersion>
+    <OpenTouryoVersion>3.3.0-alpha1</OpenTouryoVersion>
 
     <!-- 全アセンブリ共通のメタデータ -->
     <Company>Hitachi Solutions</Company>
