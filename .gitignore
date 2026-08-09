@@ -322,3 +322,22 @@ __pycache__/
 # --------------------------------------------------
 /root/programs/*/Frameworks/Tools/DeployZipPackWithHTTP/Sample/FormAppRootWeb/
 /root/programs/*/Frameworks/Tools/DeployZipPackWithHTTP/Sample/FormAppRootWeb2/
+
+# --------------------------------------------------
+# NuGet パッケージング（#531）
+#   in\  … Build_* からの複製（_NuGetPack.bat の xcopy）
+#   out\ … 生成した .nupkg / .snupkg
+#   いずれも毎回作り直すため追跡しない。
+#   ※ 各フォルダの説明用 .txt と _NuGetPush.bat は追跡し続ける必要があるため、
+#      フォルダごとではなく、生成物の種類で除外する。
+#   ※ .nupkg は上の汎用パターンで既に無視される。.snupkg は形式が
+#      後から使われるようになったため、指定が漏れていた。
+# --------------------------------------------------
+/root/programs/*/NuGet/in/*/*.dll
+/root/programs/*/NuGet/in/*/*.pdb
+/root/programs/*/NuGet/in/*/*.xml
+/root/programs/*/NuGet/in/*/*.XML
+/root/programs/*/NuGet/in/*/*.config
+/root/programs/*/NuGet/in/*/*.json
+/root/programs/*/NuGet/in/*/*/
+*.snupkg

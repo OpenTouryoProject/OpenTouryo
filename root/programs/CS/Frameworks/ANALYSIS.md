@@ -1,4 +1,4 @@
-# ANALYSIS.md — Open棟梁 フレームワーク本体（CS/Frameworks）コード分析
+﻿# ANALYSIS.md — Open棟梁 フレームワーク本体（CS/Frameworks）コード分析
 
 対象: `root/programs/CS/Frameworks` / ブランチ: `develop`
 最終更新: 2026-07-31
@@ -411,7 +411,7 @@ net48 のサンプルとツールが一切ビルドできない。**
 ### 7.3 NuGet パッケージ化
 
 `root/programs/CS/NuGet/`（`*.nuspec` + `_NuGetPack.bat`、`in/` に DLL を staging）。
-手順は `NuGet/_手順の説明.txt` を参照。
+手順は [`NuGet/README.md`](../NuGet/README.md) を参照。
 
 - **nuspec の `<dependencies>` は csproj の `PackageReference` と一致している**（余分・不足・版ズレなし）。
   依存を増減したら nuspec 側も合わせること。

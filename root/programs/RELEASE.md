@@ -12,7 +12,7 @@
 > | 全ビルドの実行と判定 | [`BUILDING.md`](BUILDING.md) |
 > | 単体テストの実行と判定 | [`TESTING.md`](TESTING.md) |
 > | サンプルの疎通確認 | [`SMOKETEST.md`](SMOKETEST.md) |
-> | NuGet パッケージ化・公開の手順 | [`CS/NuGet/_手順の説明.txt`](CS/NuGet/_手順の説明.txt) |
+> | NuGet パッケージ化・公開の手順 | [`CS/NuGet/README.md`](CS/NuGet/README.md) |
 
 ---
 
@@ -220,7 +220,7 @@ cd root\programs
 
 ## 5. フェーズ 3・4 : パッケージ化と公開
 
-手順の一次情報は [`CS/NuGet/_手順の説明.txt`](CS/NuGet/_手順の説明.txt)。
+手順の一次情報は [`CS/NuGet/README.md`](CS/NuGet/README.md)。
 **ここに書き写すと二重管理になるため、要点と抜けやすい点だけを挙げる。**
 
 - [ ] `CS\z_Common.bat` の `DEBUG_TYPE` を `full` → **`portable`** に変更した
