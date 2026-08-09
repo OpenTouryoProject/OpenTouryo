@@ -5,10 +5,10 @@ set DIRECTORIES=packages, obj, bin, bld, Temp, Build, PrecompiledWeb, .vs
 @echo Delete the %DIRECTORIES% folders.
 @echo --------------------------------------------------
 
-@rem カンマをスペースに変換
+@rem Turn the commas into spaces.
 set w1=%DIRECTORIES:,= %
 
-@rem 連続したスペースを、スペース１個に変換
+@rem Collapse runs of spaces into a single space.
 set w2=%w1:  = %
 
 for %%a in ( %w2% ) do (
@@ -24,10 +24,10 @@ set DIRECTORIES=Build, Build_net45, Build_net46, Build_net47, Build_net48, Build
 @echo Delete the %DIRECTORIES% folders.
 @echo --------------------------------------------------
 
-@rem カンマをスペースに変換
+@rem Turn the commas into spaces.
 set w1=%DIRECTORIES:,= %
 
-@rem 連続したスペースを、スペース１個に変換
+@rem Collapse runs of spaces into a single space.
 set w2=%w1:  = %
 
 for %%a in ( %w2% ) do (

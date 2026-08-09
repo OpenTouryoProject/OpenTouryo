@@ -1,4 +1,4 @@
-# ANALYSIS.md — Open棟梁 フレームワーク本体（CS/Frameworks）コード分析
+﻿# ANALYSIS.md — Open棟梁 フレームワーク本体（CS/Frameworks）コード分析
 
 対象: `root/programs/CS/Frameworks` / ブランチ: `develop`
 最終更新: 2026-07-31
@@ -356,8 +356,30 @@ net48 側は MSBuild / devenv が必要（Windows + VS 前提）。
 
 | | ビルド ツール | `%COMMANDLINE%` |
 |---|---|---|
-| `z_Common.bat` | MSBuild.exe | `/p:Configuration=<構成> /p:DebugType=<型> -v:d` |
+| `z_Common.bat` | MSBuild.exe | `/p:Configuration=<構成> /p:DebugType=<型> /p:ContinuousIntegrationBuild=<真偽> /p:DeterministicSourcePaths=<真偽> -v:d` |
 | `z_Common2.bat` | devenv.com / devenv.exe | `/build <構成>`（devenv 構文） |
+
+`z_Common.bat` の次の 2 つは、**呼び出し側が先に設定していればその値を尊重する**（#531）。
+NuGet パッケージ用のビルド（`0_Release4Nuget.bat`）だけが既定と異なる値を渡す。
+
+| 変数 | 既定 | `0_Release4Nuget.bat` | 目的 |
+|---|---|---|---|
+| `DEBUG_TYPE` | `full` | `portable` | `.snupkg` は portable PDB でなければ受け付けられない |
+| `CI_BUILD` | `false` | `true` | PDB のソース パスを `/_/...` に正規化する |
+
+`CI_BUILD` は `ContinuousIntegrationBuild` と `DeterministicSourcePaths` の
+**両方**に渡している。前者から後者への変換は `Microsoft.NET.Sdk` のターゲットが
+行うため、**旧形式 csproj には効かない**（Source Link の自動組み込みが効かないのと
+同じ構図。渡さないと **net48 側だけ絶対パスのまま残る**）。
+
+**以前は `z_Common.bat` を手で書き換えて戻す運用だった。**
+戻し忘れると `full` のまま公開してしまうため、呼び出し側から渡す形にした。
+
+`ContinuousIntegrationBuild` を有効にすると、PDB に**ビルドしたマシンの
+ローカル パスが残らない**。これは体裁の問題ではない。Visual Studio は
+**PDB のパスにファイルが在れば、それを開く**ため、絶対パスのままだと
+**ビルドしたマシンでは Source Link を通らず、動作確認にならない**。
+詳細は [`NuGet/README.md`](../NuGet/README.md)。
 
 `z_Common2.bat` は、**MSBuild.exe ではエラーになるが devenv.com では通る、というケースが
 散在していた時期に、ビルド ツールを devenv へ差し替えるために用意されたもの**。
@@ -411,7 +433,7 @@ net48 のサンプルとツールが一切ビルドできない。**
 ### 7.3 NuGet パッケージ化
 
 `root/programs/CS/NuGet/`（`*.nuspec` + `_NuGetPack.bat`、`in/` に DLL を staging）。
-手順は `NuGet/_手順の説明.txt` を参照。
+手順は [`NuGet/README.md`](../NuGet/README.md) を参照。
 
 - **nuspec の `<dependencies>` は csproj の `PackageReference` と一致している**（余分・不足・版ズレなし）。
   依存を増減したら nuspec 側も合わせること。
@@ -420,177 +442,23 @@ net48 のサンプルとツールが一切ビルドできない。**
 
 ---
 
-## 8. コーディング規約（既存コードに合わせること）
+## 8. コーディング規約
 
-### 8.1 ファイル ヘッダ（**新規追加時も必須**。ただし新規と既存で書式が異なる）
+**[`CODING.md`](../../CODING.md) に移した（`root/programs/CODING.md`）。**
 
-#### 新規ファイルに付けるヘッダ（これが現行の書式）
+ファイル ヘッダの書式と更新者名、`ArgumentException` 系の引数の順、
+`.bat` / `.ps1` の文字コードは、いずれもそちらが一次情報である。
 
-```csharp
-#region Apache License
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// ...（定型 15 行）
-//
-#endregion
+`root/programs/` 配下に共通で効く規約であり、
+本書（Frameworks の分析）に置くと他領域から参照しにくいため分離した。
 
-//**********************************************************************************
-//* クラス名        ：CallController
-//* クラス日本語名  ：クライアント ライブラリ
-//*
-//* 作成者          ：xxx
-//* 更新履歴        ：
-//*
-//*  日時        更新者            内容
-//*  ----------  ----------------  -------------------------------------------------
-//*  2026/07/31  xxx               新規作成
-//**********************************************************************************
-```
-
-※ 更新者は ClaudeCode：玄人 幸道、GitHubCopilot：後輩 郎党 で。
-
-> **`Copyright (C) ... Hitachi Solutions,Ltd.` のブロックは、新規ファイルには付けない。**
-> 開発元が企業からコミュニティに移ったため。
-> Apache License の region と、クラス名・日本語名・更新履歴のブロックは従来どおり必要。
-
-#### 既存ファイルの場合
-
-既存ファイルの先頭には次の Copyright ブロックが付いている。**これは削除せず、そのまま残す。**
-
-```csharp
-//**********************************************************************************
-//* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
-//**********************************************************************************
-```
-
-**既存ファイルを変更した場合は、更新履歴に 1 行追記するのがこのリポジトリの慣習。**
-
-### 8.2 その他の規約
-
-- **コメント・XML ドキュメントは日本語**。`<summary>` は全 public/protected メンバに付与
-  （`DocumentationFile` を出力しているため、欠けると警告）。
-- `#region` / `#endregion` による細かいブロック分割が徹底されている（`BaseController` は 100 以上）。
-- `<remarks>自由に利用できる。</remarks>` … 業務コードから直接呼んでよい API の目印。
-  `<remarks>業務コード親クラス１から利用される派生の末端</remarks>` … オーバーライド専用の目印。
-- 拡張ポイントは **`UOC_` プレフィクス**（`FxLiteral.UOC_METHOD_HEADER`）。
-  P層の集約イベント ハンドラも `UOC_<ControlId>_Click` のような命名規則でリフレクション解決される。
-- 定数は `FxLiteral`（Framework, 777 行）/ `MyLiteral`（Business）/ `PubLiteral`（Public）に集約。
-  **文字列リテラル直書きではなく、これらに定数を追加する。**
-- **利用者に見せる文言は `Resources` の `.resx` に置く**（国際化のため）。
-  `FxLiteral` 等は「変わらない値」、`.resx` は「訳し分ける文言」で、役割が違う。
-  **フレームワークにもツールにもある。** 対応は次のとおり。
-
-  | 場所 | リソース | 取り出し方 |
-  |---|---|---|
-  | `Infrastructure/Public/Resources/` | `PublicExceptionMessageResource` | `PublicExceptionMessage.XXX`（プロパティ名がキー） |
-  | `Infrastructure/Framework/Resources/` | `FrameworkExceptionMessageResource` | `FrameworkExceptionMessage.XXX` |
-  | `Infrastructure/Business/Resources/` | `MyBusiness{Application,System}ExceptionMessageResource` | 同上 |
-  | `Tools/*/Resources/` | `Resource` | `ResourceMgr.GetString("キー")` |
-
-  **`.resx` は 2 つ 1 組。** 既定（英語）と `*.ja-JP.resx`（日本語）の**両方**に足す。
-  `*.Designer.cs` も更新が要る（VS でデザイナを開けば再生成される）。
-
-  例外メッセージには別系統もある。**`MSGDefinition.xml` / `MSGDefinition_ja-JP.xml`**
-  を `GetMessage.GetMessageDescription("I0011")` で引く形で、
-  こちらは `root/files/resource/Xml/` と各ツールの配下にある。**既存に合わせること。**
-- 命名: `Base*`（Framework 提供の抽象）→ `My*`（Business 層テンプレート、アプリで改変前提）。
-  アプリ側は `LayerB` / `LayerD` / `TestParameterValue` / `TestReturnValue` を実装（`Samples/` 参照）。
-- 変数はプライベート フィールド `_xxx` ＋ 明示的プロパティ（自動プロパティは新しい箇所のみ）。
-
-### 8.3 引数を検査する例外（`ArgumentException` だけ引数の順が違う）
-
-**3 つとも「引数名」を渡すが、渡す位置が違う。**
-`ArgumentException` **だけメッセージが先**で、ここが取り違えの温床になる。
-
-| 例外 | 第 1 引数 | 第 2 引数 |
-|---|---|---|
-| `ArgumentNullException` | **引数名** | メッセージ |
-| `ArgumentOutOfRangeException` | **引数名** | 実際の値（3 引数版）→ メッセージ |
-| `ArgumentException` | **メッセージ** | **引数名** |
-
-`ArgumentException("userId")` と書くと、**引数名ではなくメッセージが "userId" になる**。
-引数名を伝えたいなら第 2 引数に置く。
-
-```csharp
-throw new ArgumentNullException(nameof(bytes));
-throw new ArgumentOutOfRangeException("ecc", ecc, "Invalid");
-throw new ArgumentException("Length is less than 128 bits.", "cek");   // 引数名は第 2
-```
-
-既存コードは 148 箇所すべてこの規約どおり
-（`ArgumentException` は 139 箇所あり、大半はメッセージのみ。
-メッセージは `PublicExceptionMessage` の定数を使う）。
-
-**引数名は `nameof` で書く。** 引数名を変えたときに追随するため。
-文字列リテラルだと乖離しても誰も気付かない。実際、`ArrayOperator.GetLongFromByte` は
-分割時（2019/05/28）の旧名 `"bytData"` が残り、**存在しない引数名**を渡していた
-（2026/08/06 に修正、#522）。
-
-> **既存箇所の一括置換はしない。** 下位互換の維持が最優先のため
-> （[`Contributing.ja.md`](../../../Contributing.ja.md)）、新規・修正箇所から適用する。
-
-### 8.4 bat ファイルの文字コード
-
-**非 ASCII 文字（日本語）を含む `.bat` は UTF-8 BOM 付きにする。**
-
-BOM が無いと、cmd.exe がバッチをバイト オフセットで読み進める際に文字境界がずれ、
-**`@rem` コメントの途中から先がコマンドとして実行される**ことがある
-（`'xxx' は、内部コマンドまたは外部コマンド…として認識されていません` が出る）。
-
-| BOM | 起動 CP=932 | 起動 CP=65001 |
-|---|---|---|
-| なし | エラーなし | **エラーあり（間欠）** |
-| **あり** | **エラーなし** | **エラーなし** |
-
-- 実害は「紛らわしいエラー表示」に留まり、**後続の実コマンドは飛ばない**。
-- `chcp 65001` は**画面出力の文字化け対策**であって、この解析ずれの対策ではない。
-  日本語を `echo` する場合に併用する。
-- 純粋に ASCII のみの bat に BOM は不要（差分ノイズになるだけ）。
-  **日本語を書き足すときに BOM の有無を確認すること。**
-
-`root/programs/CS/` 配下で非 ASCII を含む bat は、すべて BOM 付きになっている。
-
-### 8.5 ps1 ファイルの文字コードと、PowerShell 5.1 / 7 の両対応
-
-**`.ps1` は Windows PowerShell 5.1 と PowerShell 7 の両方で動くこと。**
-
-開発時は `pwsh`（7）で確認しがちだが、利用者は `powershell.exe`（5.1）で実行する。
-7 だけで確認すると 5.1 で落ちる。既踏の落とし穴は次の 4 点。
-
-| 事象 | 原因 | 対処 |
-|---|---|---|
-| 構文エラー・文字化け（`繧ｹ繝・ャ繝・`） | 5.1 は BOM 無しの `.ps1` を **ANSI（Shift_JIS）**として読む | **UTF-8 BOM 付き**で保存する |
-| 同じファイルなのに差分が出る | `Get-Content` の既定エンコードが 5.1 は ANSI、7 は UTF-8 | **`-Encoding UTF8`** を明示する |
-| HTTP が常に失敗（状態コード `-1`） | `-SkipHttpErrorCheck` は **7 以降にしかない** | バージョンを見て付け外しする |
-| 実行中に画面がクリアされ、それまでの結果が消える | 子プロセスの `chcp 65001` はコンソール全体に影響する | スクリプト冒頭で先に切り替える |
-
-```powershell
-# 7 専用の引数は、バージョンを見て付け外しする
-if ($PSVersionTable.PSVersion.Major -ge 6) { $p.SkipHttpErrorCheck = $true }
-
-# コンソールのコード ページと、PowerShell の出力エンコードは別物。判定を分けること
-if ((cmd /c chcp) -notmatch '65001') { cmd /c chcp 65001 | Out-Null }
-if ([Console]::OutputEncoding.CodePage -ne 65001)
-{
-    [Console]::OutputEncoding = New-Object Text.UTF8Encoding $false
-}
-```
-
-- **`.bat` は「非 ASCII を含むときだけ」BOM 付き**（8.4）だが、
-  **`.ps1` は非 ASCII を含むなら必ず BOM 付き**。5.1 が既定で ANSI として読むため。
-- 5.1 の `[Console]::OutputEncoding` は**起動時の値のまま**で、実行中にコード ページが
-  変わっても追随しない。同じ画面で 2 回目を実行したときに化ける原因になる。
-- **変更したら 5.1 でも実行して確かめること。**
-
-```powershell
-powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.ps1"
-```
-
-検証スクリプト側での具体的な適用例は
-[`SMOKETEST.md`](../../SMOKETEST.md) 「PowerShell 5.1 と 7 の両対応」を参照。
-
----
-
+| | `CODING.md` の節 |
+|---|---|
+| ファイル ヘッダ（**新規と既存で書式が違う**） | 1 |
+| その他の規約（コメント・リソース・命名） | 2 |
+| 引数を検査する例外 | 3 |
+| bat ファイルの文字コード | 4 |
+| ps1 の文字コードと PowerShell 5.1 / 7 の両対応 | 5 |
 ## 9. Public 層の主なユーティリティ（再実装しないこと）
 
 | 名前空間 | 主なクラス |

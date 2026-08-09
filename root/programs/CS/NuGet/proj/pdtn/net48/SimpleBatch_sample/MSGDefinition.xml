@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE MSGD[
+	<!ELEMENT MSGD (Message*)>
+	<!ELEMENT Message EMPTY>
+	<!ATTLIST Message
+		id ID #REQUIRED
+		description CDATA #REQUIRED>
+]>
+<!-- idの先頭には、数字を使用できない。 -->
+<!-- 先頭Eは異常系、先頭Iは正常系など -->
+<MSGD>
+	<Message id="I0001" description="～メッセージIDに対応する記述１（正常系）～"/>
+	<Message id="I0002" description="～メッセージIDに対応する記述２（正常系）～"/>
+	<Message id="I0003" description="～メッセージIDに対応する記述３（正常系）～"/>
+	<Message id="I0004" description="～メッセージIDに対応する記述４（正常系）～"/>
+	<Message id="I0005" description="～メッセージIDに対応する記述５（正常系）～"/>
+	
+	<Message id="E0001" description="○△□エラー、%1が%2しました。"/>
+	<Message id="E0002" description="～メッセージIDに対応する記述２（異常系）～"/>
+	<Message id="E0003" description="～メッセージIDに対応する記述３（異常系）～"/>
+	<Message id="E0004" description="～メッセージIDに対応する記述４（異常系）～"/>
+	<Message id="E0005" description="～メッセージIDに対応する記述５（異常系）～"/>
+</MSGD>

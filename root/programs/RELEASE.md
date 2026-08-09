@@ -12,7 +12,7 @@
 > | 全ビルドの実行と判定 | [`BUILDING.md`](BUILDING.md) |
 > | 単体テストの実行と判定 | [`TESTING.md`](TESTING.md) |
 > | サンプルの疎通確認 | [`SMOKETEST.md`](SMOKETEST.md) |
-> | NuGet パッケージ化・公開の手順 | [`CS/NuGet/_手順の説明.txt`](CS/NuGet/_手順の説明.txt) |
+> | NuGet パッケージ化・公開の手順 | [`CS/NuGet/README.md`](CS/NuGet/README.md) |
 
 ---
 
@@ -83,14 +83,91 @@ cd root\programs
 
 ### バージョン番号
 
-- [ ] **`CS/Frameworks/Infrastructure/Directory.Build.props` の `OpenTouryoVersion` を更新した**
-      … SDK 形式アセンブリ 7 個と NuGet パッケージの唯一の定義箇所
-- [ ] **net48（旧形式 csproj）の `Properties\AssemblyInfo.cs` を更新した**
-      … `Directory.Build.props` が効かないため別管理
+- [ ] **`0_SetVersion.ps1` でバージョンを更新した**
+
+      ```powershell
+      cd root\programs
+      .\0_SetVersion.ps1 -Version 3.3.0-alpha1 -WhatIf   # 変更内容の確認
+      .\0_SetVersion.ps1 -Version 3.3.0-alpha1           # 実行
+      ```
+
+      … **バージョンの定義箇所は 2 系統に分かれており、手作業では追随を忘れやすい**ため、
+      一括で更新する（#531）
+
+      | 更新先 | 書き込む値 |
+      |---|---|
+      | `CS/Frameworks/Infrastructure/Directory.Build.props` の `OpenTouryoVersion` | `3.3.0-alpha1`（指定値そのまま） |
+      | net48 6 本の `Properties\AssemblyInfo.cs` の `AssemblyVersion` | `3.3.0.0`（サフィックスを落とし 4 桁目に `0`） |
+
+      … net48 の対象は**パッケージに入る 6 本**。
+      `DamPstGrS` は net48 が無く、`Business` は非パッケージかつ別系統のため対象外
+
+      ```
+      Public / Public.Security / Framework / Framework.RichClient
+      Public\Db\DamManagedOdp / Public\Db\DamMySQL
+      ```
+
+      … **該当行が見つからなければ NG で停止する**（黙って素通りさせない）。
+      同じ版で再実行しても「変更なし」になる
 - [ ] **`Business` 系は 1.0.0 のまま**であることを確認した
-      … Public / Framework / Public.Security の 3.0.0 とは意図的に別系統
+      … 意図的に別系統。`0_SetVersion.ps1` は触らない
 - [ ] **nuspec の `<dependencies>` が csproj の `PackageReference` と一致している**
       … 依存を増減したら nuspec 側も合わせる。相互依存の版は `$version$` で自動追随
+
+> **プレリリース版は、サフィックス付きで指定する**（`3.3.0-alpha1`）。
+> サフィックスは `OpenTouryoVersion` にだけ入り、**アセンブリの版には入らない。**
+> SDK 形式 csproj の `<Version>` も、`AssemblyVersion` / `FileVersion` には
+> `VersionPrefix`（`3.3.0`）を、`InformationalVersion` には全体を割り当てる。
+> その挙動に合わせてある。
+>
+> [`CS/NuGet/README.md`](CS/NuGet/README.md) 1 節（0）の
+> 「α・β版などを使用して 2 回以上繰り返す」は、次のように回す。
+>
+> ```powershell
+> .\0_SetVersion.ps1 -Version 3.3.0-alpha1   # プレ公開（develop 段階）
+> .\0_SetVersion.ps1 -Version 3.3.0          # 本番（master マージ＋タグ後）
+> ```
+
+> **`OpenTouryoVersion` はアセンブリに焼き込まれる。**
+> `*_netcore100.csproj` が `<Version>$(OpenTouryoVersion)</Version>` で参照するため、
+> **書き換えたら必ずリビルド（フェーズ 3 の `0_Release4Nuget.bat`）が要る。**
+> 先にパッケージ化すると、古いアセンブリに新しい版番号が付く。
+
+> **`_NuGetPack.bat` が、net48 の `AssemblyVersion` と `OpenTouryoVersion` の
+> 一致を検査して、ずれていれば停止する**（#531）。
+> 追随を忘れたまま公開すると、**同じパッケージの net48 と net10.0 で
+> アセンブリの版が食い違い、公開後には直せない。**
+>
+> ```
+>   NG  Public : 3.0.0  expected 3.1.0
+> [ERROR] The net48 AssemblyVersion does not match 3.1.0
+> ```
+>
+> **`0_SetVersion.ps1` を使っていれば、この検査に引っかかることはない。**
+> 手で書き換えた場合や、片方だけ revert した場合の保険である。
+
+> **`_NuGetPack.bat` は、詰めたアセンブリの版も検査する**（#531）。
+> 上の検査は**ソースどうしを突き合わせているだけ**なので、
+> `0_SetVersion.ps1` の後に `0_Release4Nuget.bat` を飛ばしても通ってしまう。
+> `in\` へ複製した後の**実際の DLL** を見て、ずれていれば停止する。
+>
+> ```
+>   NG  in\net48\OpenTouryo.Public.dll : 3.3.0.0  expected 3.4.0.x
+> [ERROR] The packaged assemblies do not carry 3.4.0
+>         so the rebuild was skipped. Run CS\0_Release4Nuget.bat,
+> ```
+>
+> **`_T_NuGetPack.bat`（テスト用）には、この検査は無い。**
+> テスト用パッケージは版を**引数で受け取り**、`OpenTouryoVersion` を読まない。
+> 版はパッケージに名前を付けるだけで、**アセンブリには書き込まれない**ため、
+> 食い違いようがない。
+
+> **補足 : パッケージの版とアセンブリの版は、一致しなくてよい**（NuGet の制約ではなく慣習）。
+> テスト公開した `Erutcurtsarfni.Oyruot.Public 3.3.0-alpha2` は、
+> パッケージが `3.3.0-alpha2`、中の DLL が `3.0.0.0` で、正常に動作した。
+>
+> **検査が見ているのは、パッケージの版とアセンブリの版の一致ではなく、
+> 同じパッケージに入る net48 と net10.0 のアセンブリどうしが揃っているか**である。
 
 > `Directory.Build.props` の XML コメントに `--`（ハイフン 2 個）を書くと
 > MSBuild がプロジェクトの読み込みに失敗する。区切り線に使わないこと。
@@ -220,27 +297,49 @@ cd root\programs
 
 ## 5. フェーズ 3・4 : パッケージ化と公開
 
-手順の一次情報は [`CS/NuGet/_手順の説明.txt`](CS/NuGet/_手順の説明.txt)。
+手順の一次情報は [`CS/NuGet/README.md`](CS/NuGet/README.md)。
 **ここに書き写すと二重管理になるため、要点と抜けやすい点だけを挙げる。**
 
-- [ ] `CS\z_Common.bat` の `DEBUG_TYPE` を `full` → **`portable`** に変更した
+- [ ] **正式版は、`develop` → `master` をマージ（`--no-ff`）し、タグを打った後に詰めた**
+      … パッケージは**詰めた時のコミットに永久に固定される**。
+      同じバージョンは一度しか公開できないため、develop 段階で出すなら
+      **プレリリース版**（`3.3.0-alpha1` など）にする（`README.md` 1 節（0）・7 節）
+- [ ] **そのコミットを push 済みである**
+      … 未 push だと Source Link が 404 になる。**公開後には直せない**
 - [ ] `CS\0_Release4Nuget.bat` を実行した
       … `1_DeleteDir` → `2_Build_NuGet_net48` → `1_DeleteDir` →
       `2_Build_NuGet_netcore100` → `4_Build_CopyAssemblies` のみ。サンプルはビルドしない
+      … `DEBUG_TYPE` は**このバッチが指定する。手で書き換えない**（#531）
 - [ ] `CS\NuGet\_NuGetPack.bat` でパッケージ化した
-- [ ] `CS\NuGet\out\sp\_NuGetPush.bat` に API キーを設定し、push した
-      … 最新は `sp`（シンボル付き）のみでよい
+      … **ビルドとパッケージ化は同じコミットで行う。**
+      PDB のコミットは**ビルド時**、nuspec のコミットは**パッケージ化時**に決まるため、
+      間にコミットすると食い違う（`README.md` 2 節 確認 4）
+      … `in\` と `out\` は**このバッチが先に消す**ので、手で片付けなくてよい
+      （`README.md` 6 節）
+- [ ] `README.md` 2 節の**確認 5 点**を通した
+- [ ] `set NUGET_API_KEY=＜キー＞` の上で `CS\NuGet\out\sp\_NuGetPush.bat` を実行し、push した
+      … 最新は `sp`（シンボル付き）のみでよい。**キーを bat に直書きしない**（#531）
 - [ ] Wiki の手順（NuGet 利用リポジトリの参照貼り直し）を実施した
 
 ---
 
 ## 6. フェーズ 5 : 後始末
 
-**revert を忘れやすい。** 特に API キーはリポジトリに残してはならない。
+**revert する項目は無くなった**（#531）。忘れやすい作業を、そもそも作らない形に変えた。
 
-- [ ] `CS\z_Common.bat` の `DEBUG_TYPE` を `full` に戻した
-- [ ] `CS\NuGet\out\sp\_NuGetPush.bat` を**プレースホルダに戻した**
-      … コミットされている状態は `nuget.exe SetApiKey [ApiKey]`。実キーを残さない
+| 以前 revert していたもの | 現在 |
+|---|---|
+| `CS\z_Common.bat` の `DEBUG_TYPE` | `0_Release4Nuget.bat` が指定するので**書き換えない** |
+| `_NuGetPush.bat` の API キー | **環境変数 `NUGET_API_KEY` で渡す**ので、コンソールを閉じれば消える |
+
+- [ ] **API キーを `Revoke` した**（`Delete` はしない）
+      … `Revoke` は即座に無効化するが、**行は `Revoked` として残り、
+      次回は `Regenerate` で再び使える**。スコープ（グロブ）の設定を作り直さずに済む
+      … `Delete` は**キーの定義ごと消える**ため、その系統をもう使わないときだけ
+      … 有効期限を最短にしてあるなら、失効に任せてもよい（`README.md` 8 節）
+- [ ] `%AppData%\NuGet\NuGet.Config` の `<apikeys>` に**キーが残っていない**
+      … 過去に `nuget.exe SetApiKey` を使っていた場合、そこに永続化されている。
+      削除オプションが無いため、該当する `<add>` 行を手で削除する（`README.md` 8 節）
 - [ ] `git status` に意図しない変更が残っていない
       … 特に `Result*.txt`（`2_RunAllTests.ps1` が再生成する）と
       `CS\Frameworks\Tests\EncAndDecUtilCUI\*.cer` / `*.pfx`（Git 管理外の作業用コピー）

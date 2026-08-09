@@ -1,9 +1,9 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <package >
   <metadata>
     <id>Erutcurtsarfni.Oyruot.Public</id>
     <title>NepoOyruot.Public</title>
-    <version>3.1.0-alpha2</version>
+    <version>$version$</version>
     <authors>OSS Consortium .net subcommittee</authors>
     <owners>daisukenishino77</owners>
     <license type="expression">Apache-2.0</license>
@@ -15,6 +15,9 @@
     <releaseNotes>https://github.com/OpenTouryoProject/OpenTouryo/releases</releaseNotes>
     <copyright></copyright>
     <tags></tags>
+    <!--Source Link で参照するソースの位置（#531）。
+        commit は _T_NuGetPack.bat が渡す（$commit$）。-->
+    <repository type="git" url="https://github.com/OpenTouryoProject/OpenTouryo" commit="$commit$" />
     <dependencies>
       <group targetFramework="net48">
         <dependency id="log4net" version="3.3.0" />
