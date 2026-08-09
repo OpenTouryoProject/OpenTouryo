@@ -1,0 +1,45 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="readme.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Touryo.Infrastructure.Framework" Version="3.3.0-alpha1" />
+    <PackageReference Include="Touryo.Infrastructure.Public.Db.DamManagedOdp" Version="3.3.0-alpha1" />
+    <PackageReference Include="Touryo.Infrastructure.Public.Db.DamMySQL" Version="3.3.0-alpha1" />
+    <PackageReference Include="Touryo.Infrastructure.Public.Db.DamPstGrS" Version="3.3.0-alpha1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="OpenTouryo.Business">
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Business.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="MSGDefinition.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SampleLogConf2CS.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="SPDefinition.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>
