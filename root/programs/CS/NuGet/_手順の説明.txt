@@ -1,39 +1,40 @@
 ＜テスト手順＞
-・本番手順のうち、T_プレフィックスのあるファイルを使用する。
+・本番手順のうち、（テストを意味する）T_プレフィックスのあるファイルを使用する。
 ・対象は、Touryo.Infrastructure.Public（OpenTouryo.Public）のみ。
 ・Erutcurtsarfni.Oyruot.Public... と言う偽名を使用したα版として登録。
-・コレを使用して、NuGet.org のシンボル サーバーが機能するかどうかを確認する。
-・コレには、VSでシンボル・ソースに https://symbols.nuget.org/download/symbols を追加する。
+・コレを使用して、シンボル サーバー、ソース サーバーが機能するかどうかを確認する。
+
+※ シンボル サーバー、ソース サーバーが機能する手順を確立したら移行テストは不要。
 
 ＜本番手順＞
-（１）以下の手順を実施する
-　　リリース・エンジニアリング - Open 棟梁 Wiki
-　　https://opentouryo.osscons.jp/index.php?%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E3%83%BB%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0
-　　※ コレは全体像の説明で、先ずは、個々の修正を行う。
+本番手順は、α・β版などを使用して、２回以上繰り返す（プレ、本番）。
+
+（１）リリース・エンジニアリングの手順を実施する
 　　
-（２）次に、bat使用してビルドを行う。
-　　・以下の設定ファイルのDEBUG_TYPE=fullをportableに変更する。
-　　　...\OpenTouryo\root\programs\CS\z_Common.bat
-　　・以下のビルドbatを実行する。
-　　　...\OpenTouryo\root\programs\CS\0_Release4Nuget.bat
-
-（３）次に、NuGetパッケージにパッケージングを行う。
-　　_NuGetPack.bat
-
+（２）ビルドを行う。
+　　既存のビルド・スクリプトを使用する。
+　　
+（２）dllを配置する。
+　　...\OpenTouryo\root\programs\CS\NuGet\in\
+　　
+（３）パッケージングを行う。
+　　_NuGetPack.bat を使用。
+　　
 （４）最後にNuGetパッケージをNuGetにプッシュする。
 　　APIキーをNuGetサイトから取得して以下のbat内に設定してから実行する。
 　　...\OpenTouryo\root\programs\CS\NuGet\out\sp\_NuGetPush.bat
 　　※ 最新では「sp」の方だけで良い。「pp」の方はシンボルを登録しないケースで利用可。
 
 （５）後始末としてrevertする。
-　　・z_Common.bat：DEBUG_TYPE
+　　・z_Common.bat：DEBUG_TYPE（？）
 　　・_NuGetPush.bat：ApiKey
 
-（６）以下の手順を実施する
-　　リリース・エンジニアリング - Open 棟梁 Wiki
-　　https://opentouryo.osscons.jp/index.php?%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E3%83%BB%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0
-　　※ NuGet利用リポジトリのNuGet参照の貼り直し。
+（６）テストプロジェクトを用いて、
+　　シンボル サーバー、ソース サーバーが
+　　するかどうかを確認する。
 
+参考：リリース・エンジニアリング - Open 棟梁 Wiki
+https://opentouryo.osscons.jp/index.php?%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E3%83%BB%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0
 以下とも重複があるので最終的には統合を行う。
 https://github.com/OpenTouryoProject/OpenTouryo/wiki/HowToCreateOpenTouryoNuGetPackages.ja
-リリース・エンジニアリング - Open 棟梁 Wiki も 新設した RELEASE.md との乖離がある。
+
