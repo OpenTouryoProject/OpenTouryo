@@ -18,7 +18,7 @@ call %CURRENT_DIR%z_Common.bat
 rem --------------------------------------------------
 rem Batch build of ServiceInterface(ASPNETWebService).
 rem --------------------------------------------------
-..\nuget.exe restore "Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\ASPNETWebService.sln"
+..\nuget.exe restore "Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\ASPNETWebService.sln" %NUGET_MSBUILD%
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\ServiceInterface\ASPNETWebService\ASPNETWebService.sln"
 
 pause
@@ -34,6 +34,7 @@ pause
 rem --------------------------------------------------
 rem Batch build of ServiceInterface(WCFService).
 rem --------------------------------------------------
+..\nuget.exe restore "Frameworks\Infrastructure\ServiceInterface\WCFService\WCFService.sln" %NUGET_MSBUILD%
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Infrastructure\ServiceInterface\WCFService\WCFService.sln"
 
 pause
