@@ -41,6 +41,15 @@ echo version = %OT_VERSION%
 echo commit  = %OT_COMMIT%
 echo --------------------------------------------------
 
+@rem --------------------------------------------------
+@rem Clear the working folders before packing (#531).
+@rem
+@rem Only the test packages are removed. The production packages built by
+@rem _NuGetPack.bat are left alone; their push uses a different wildcard.
+@rem The reasons are in _Cleanup.bat, which can also be run on its own.
+@rem --------------------------------------------------
+call "%~dp0_Cleanup.bat" Erutcurtsarfni.Oyruot.Public /NOPAUSE
+
 xcopy /E /Y "..\Frameworks\Infrastructure\Build_net48" "in\net48"
 xcopy /E /Y "..\Frameworks\Infrastructure\Build_netcore100\net10.0" "in\net10.0"
 xcopy /E /Y "..\Frameworks\Infrastructure\Build_netcore100\net10.0-windows7.0" "in\net10.0-windows"

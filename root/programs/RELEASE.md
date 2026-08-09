@@ -145,6 +145,17 @@ cd root\programs
 >
 > **`0_SetVersion.ps1` を使っていれば、この検査に引っかかることはない。**
 > 手で書き換えた場合や、片方だけ revert した場合の保険である。
+
+> **`_NuGetPack.bat` は、詰めたアセンブリの版も検査する**（#531）。
+> 上の検査は**ソースどうしを突き合わせているだけ**なので、
+> `0_SetVersion.ps1` の後に `0_Release4Nuget.bat` を飛ばしても通ってしまう。
+> `in\` へ複製した後の**実際の DLL** を見て、ずれていれば停止する。
+>
+> ```
+>   NG  in\net48\OpenTouryo.Public.dll : 3.3.0.0  expected 3.4.0.x
+> [ERROR] The packaged assemblies do not carry 3.4.0
+>         so the rebuild was skipped. Run CS\0_Release4Nuget.bat,
+> ```
 >
 > **`_T_NuGetPack.bat`（テスト用）には、この検査は無い。**
 > テスト用パッケージは版を**引数で受け取り**、`OpenTouryoVersion` を読まない。
@@ -303,6 +314,8 @@ cd root\programs
       … **ビルドとパッケージ化は同じコミットで行う。**
       PDB のコミットは**ビルド時**、nuspec のコミットは**パッケージ化時**に決まるため、
       間にコミットすると食い違う（`README.md` 2 節 確認 4）
+      … `in\` と `out\` は**このバッチが先に消す**ので、手で片付けなくてよい
+      （`README.md` 6 節）
 - [ ] `README.md` 2 節の**確認 5 点**を通した
 - [ ] `set NUGET_API_KEY=＜キー＞` の上で `CS\NuGet\out\sp\_NuGetPush.bat` を実行し、push した
       … 最新は `sp`（シンボル付き）のみでよい。**キーを bat に直書きしない**（#531）
@@ -319,7 +332,11 @@ cd root\programs
 | `CS\z_Common.bat` の `DEBUG_TYPE` | `0_Release4Nuget.bat` が指定するので**書き換えない** |
 | `_NuGetPush.bat` の API キー | **環境変数 `NUGET_API_KEY` で渡す**ので、コンソールを閉じれば消える |
 
-- [ ] **API キーを nuget.org 側で削除した**（有効期限を最短にしていても、使ったら消す）
+- [ ] **API キーを `Revoke` した**（`Delete` はしない）
+      … `Revoke` は即座に無効化するが、**行は `Revoked` として残り、
+      次回は `Regenerate` で再び使える**。スコープ（グロブ）の設定を作り直さずに済む
+      … `Delete` は**キーの定義ごと消える**ため、その系統をもう使わないときだけ
+      … 有効期限を最短にしてあるなら、失効に任せてもよい（`README.md` 8 節）
 - [ ] `%AppData%\NuGet\NuGet.Config` の `<apikeys>` に**キーが残っていない**
       … 過去に `nuget.exe SetApiKey` を使っていた場合、そこに永続化されている。
       削除オプションが無いため、該当する `<add>` 行を手で削除する（`README.md` 8 節）

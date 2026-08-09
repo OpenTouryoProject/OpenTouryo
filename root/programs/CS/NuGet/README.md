@@ -119,10 +119,46 @@ net48 と net10.0 のアセンブリの版が食い違う。公開後には直�
 対象は**パッケージに入る 6 本**（`DamPstGrS` は net48 が無い。
 `Business` は非パッケージかつ意図的に別系統の `1.0.0`）。
 
-**`_T_NuGetPack.bat` にこの検査は無い。**
+#### 詰めたアセンブリの検査
+
+**上の検査は、ソースどうしを突き合わせているだけである。**
+`Directory.Build.props` と `AssemblyInfo.cs` の両方を更新してあれば通る。
+**ビルドを飛ばしたことは、原理的に検出できない。**
+
+```
+0_SetVersion.ps1 3.4.0  →（0_Release4Nuget.bat を飛ばす）→  _NuGetPack.bat
+  ソースは 3.4.0                Build_* は 3.3.0 のまま
+  → ソース側の検査は OK          → 中身が 3.3.0 のパッケージが 3.4.0 として出る
+```
+
+そこで、`in\` へ複製した**後**、`nuget pack` の**前**に、
+**実際の DLL の `AssemblyVersion`** を照合する。
+
+```
+Checking the packaged assemblies against 3.4.0.
+  NG  in\net48\OpenTouryo.Public.dll : 3.3.0.0  expected 3.4.0.x
+[ERROR] The packaged assemblies do not carry 3.4.0
+        so the rebuild was skipped. Run CS\0_Release4Nuget.bat,
+```
+
+**対象は nuspec の `<file>` から取っている**ので、パッケージを増やしても
+このバッチを直さなくてよい。`OpenTouryo.Business.dll` はどの nuspec にも
+無いため対象外である（意図的に別系統の `1.0.0`）。
+
+> `symbol_template.nuspec` は除外している。
+> **Windows のグロブは大文字小文字を区別しない**ため、`Symbol_*.nuspec` が
+> テンプレートにも一致し、プレースホルダ（`OpenTouryo.xxxx.dll`）を
+> 「見つからない」と報告してしまう。
+
+| 検査 | 捕まえる間違い |
+|---|---|
+| **ソース側** | `AssemblyInfo.cs` の追随忘れ。**ビルド前に止まる**ので、無駄なビルドをしない |
+| **DLL 側** | **リビルド忘れ**。ソース側では検出できない |
+
+**`_T_NuGetPack.bat` には、どちらの検査も無い。**
 テスト用パッケージは版を**引数で受け取り**、`OpenTouryoVersion` を読まない。
 版はパッケージに名前を付けるだけで**アセンブリには書き込まれない**ため、
-食い違いようがない。
+**照合すべき期待値が無い。**
 
 > **補足 : パッケージの版とアセンブリの版は、一致しなくてよい。**
 >
@@ -441,6 +477,37 @@ DamManagedOdp / DamMySQL
 **フォルダごとではなく、生成物の種類で除外している。**
 各フォルダの説明用 `.txt` と `_NuGetPush.bat` は**追跡し続ける必要がある**ため。
 
+### 詰める前に消す — `_Cleanup.bat`
+
+**`_NuGetPack.bat` / `_T_NuGetPack.bat` は、`xcopy` の前に `_Cleanup.bat` を呼ぶ**（#531）。
+後始末ではなく前始末である。残っていて困るのは「次に詰めるとき」だからである。
+
+```
+_Cleanup.bat                        in\ と out\ の全パッケージ
+_Cleanup.bat <パッケージ ID の接頭辞>  in\ と、その接頭辞のパッケージだけ
+```
+
+`/NOPAUSE` を付けると最後の `pause` を省く（**どちらの位置でもよい**）。
+単独で実行すれば、手作業での全消去にも使える。
+
+| 対象 | 消す理由 |
+|---|---|
+| `in\<tfm>\` の `*.dll` `*.pdb` `*.xml` `*.config` `*.json` とサブフォルダ | **`xcopy /E /Y` は上書きするだけで、削除しない。** ビルドが出さなくなったファイルが残り続け、nuspec が拾い得る。実際 `in\net48` には、過去の依存が持ち込んだサテライト アセンブリが 14 言語分溜まっていた |
+| `out\{sp,pp}\` の `.nupkg` / `.snupkg` | **`_NuGetPush.bat` はワイルドカードで push する。** 古い版が残っていると一緒に公開され、**未公開のプレリリース版が意図せず出る** |
+
+**パック バッチは、自分の成果物だけを消す。**
+
+```
+_NuGetPack.bat   → _Cleanup.bat Touryo.Infrastructure /NOPAUSE
+_T_NuGetPack.bat → _Cleanup.bat Erutcurtsarfni.Oyruot.Public /NOPAUSE
+```
+
+**push のワイルドカードと範囲を一致させてある**ので、互いの成果物を巻き込まない。
+引数なしで単独実行したときだけ、両方が消える。
+
+**説明用の `.txt` と `_NuGetPush.bat` は消さない。** フォルダごと消すのではなく、
+`.gitignore` と同じ範囲（生成物の種類とサブフォルダ）だけを消している。
+
 ---
 
 ## 7. 詰めたコミットを消してはならない
@@ -543,10 +610,46 @@ Pushing Erutcurtsarfni.Oyruot.Public.3.3.0-alpha1.snupkg to 'https://www.nuget.o
 > キーが残っている。`nuget.exe 6.13` の `setApiKey` に削除オプションは無いので、
 > **`<apikeys>` の該当する `<add>` 行を手で削除する。**
 
-### キーの発行
+### キーの発行と、次回への回し方
 
-nuget.org でキーを作る際は、次を絞る。
+https://www.nuget.org/account/apikeys
 
-- **スコープ** … 対象パッケージを限定する（テスト用なら `Erutcurtsarfni.Oyruot.*`）
-- **有効期限** … 最短にする
-- **使用後** … nuget.org 側で削除する
+**パッケージ系統ごとに 1 本作り、`Regenerate` と `Revoke` で回す。**
+
+```
+作成（スコープを設定）→ Regenerate → 公開に使う → Revoke → 次回は Regenerate → ...
+```
+
+**`Delete` しない限り、スコープの設定は残り続ける。**
+
+```
+Glob pattern: Touryo.Infrastructure.*        ← 本番
+Glob pattern: Erutcurtsarfni.Oyruot.*        ← テスト（4 節）
+```
+
+| 作るとき | |
+|---|---|
+| **スコープ** | 対象パッケージをグロブで限定する |
+| **有効期限** | **最短にする**（数時間で十分） |
+
+| 使い終わったら | |
+|---|---|
+| **`Revoke`** | **即座に無効化する。行は `Revoked` として残り、`Regenerate` で再び使える**（実測確認済み）。**これを既定にする** |
+| 放置する | 期限が切れれば無害になる。設定も残るので、これでもよい |
+| `Delete` | **キーの定義ごと消える。** スコープの設定も失われ、次回は作り直しになる。**その系統をもう使わないときだけ** |
+
+```
+Touryo.Infrastructure
+ Revoked   Push new packages and package versions, Unlist or relist package versions
+ Glob pattern: Touryo.Infrastructure.*
+ Copy  Edit  Regenerate  Delete        ← Regenerate が残る
+```
+
+`Revoke` すると `support@nuget.org` から通知が届く。
+
+> **`Delete` を既定にしない。**
+> 「使ったら消す」は**有効期限を設定しない運用の話**である。
+> スコープを設定したキーは、**定義を残して値だけ回す**方がよい。
+
+> `Regenerate` は**値だけを新しくする**（キーは有効になる）。
+> 使い終わったキーを無効化する目的では使えない。**無効化は `Revoke`。**

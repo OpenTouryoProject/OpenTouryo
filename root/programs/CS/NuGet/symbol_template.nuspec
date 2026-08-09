@@ -23,6 +23,9 @@
       <group targetFramework="net48">
         <dependency id="記入" version="記入" />
       </group>
+      <group targetFramework="net10.0">
+        <dependency id="記入" version="記入" />
+      </group>
     </dependencies>
   </metadata>
   <files>
@@ -31,6 +34,10 @@
     <file src="in\net48\OpenTouryo.xxxx.dll" target="lib\net48" />
     <file src="in\net48\OpenTouryo.xxxx.pdb" target="lib\net48" />
     <file src="in\net48\OpenTouryo.xxxx.xml" target="lib\net48" />
+    
+    <file src="in\net10.0\OpenTouryo.xxxxx.dll" target="lib\net10.0" />
+    <file src="in\net10.0\OpenTouryo.xxxxx.pdb" target="lib\net10.0" />
+    <file src="in\net10.0\OpenTouryo.xxxxx.xml" target="lib\net10.0" />
 
   </files>
 </package>

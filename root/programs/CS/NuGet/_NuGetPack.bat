@@ -84,9 +84,46 @@ echo OpenTouryoVersion = %OT_VERSION%
 echo commit            = %OT_COMMIT%
 echo --------------------------------------------------
 
+@rem --------------------------------------------------
+@rem Clear the working folders before packing (#531).
+@rem
+@rem Only this batch's own output is removed. The test packages built by
+@rem _T_NuGetPack.bat are left alone; their push uses a different wildcard.
+@rem The reasons are in _Cleanup.bat, which can also be run on its own.
+@rem --------------------------------------------------
+call "%~dp0_Cleanup.bat" Touryo.Infrastructure /NOPAUSE
+
 xcopy /E /Y "%OT_INFRA%\Build_net48" "in\net48"
 xcopy /E /Y "%OT_INFRA%\Build_netcore100\net10.0" "in\net10.0"
 xcopy /E /Y "%OT_INFRA%\Build_netcore100\net10.0-windows7.0" "in\net10.0-windows"
+
+@rem --------------------------------------------------
+@rem Verify that the copied assemblies were actually rebuilt (#531).
+@rem
+@rem The check above compares two SOURCE files with each other
+@rem (Directory.Build.props and AssemblyInfo.cs). It cannot notice that
+@rem 0_Release4Nuget.bat was skipped: Build_* would still hold the previous
+@rem version, _Cleanup.bat would refresh in\ from it, and a package carrying
+@rem old assemblies would be published under the new version number.
+@rem That cannot be corrected once published.
+@rem
+@rem The list of assemblies is taken from the nuspec files themselves, so a
+@rem new package is covered without editing this batch. Satellite
+@rem assemblies are skipped; they carry the same version anyway.
+@rem OpenTouryo.Business.dll is not listed in any nuspec and is therefore
+@rem not checked - it is deliberately on a separate version line (1.0.0.0).
+@rem
+@rem symbol_template.nuspec is excluded. Windows globbing is case
+@rem insensitive, so Symbol_*.nuspec would otherwise match the template and
+@rem report its placeholder (OpenTouryo.xxxx.dll) as missing.
+@rem --------------------------------------------------
+echo --------------------------------------------------
+echo Checking the packaged assemblies against %OT_VERPREFIX%.
+echo --------------------------------------------------
+
+powershell -NoProfile -ExecutionPolicy Bypass -Command "$v='%OT_VERPREFIX%'; $ok=$true; $n=0; foreach($f in Get-ChildItem -Path 'Symbol_*.nuspec' -Exclude 'symbol_template.nuspec'){ $x=[xml](Get-Content $f.FullName -Raw); foreach($e in $x.package.files.file){ $s=$e.src; if($s -notlike '*.dll'){continue}; if($s -like '*ja-JP*'){continue}; if(-not (Test-Path $s)){ Write-Host ('  NG  '+$s+' : not found'); $ok=$false; continue }; $a=[Reflection.AssemblyName]::GetAssemblyName((Resolve-Path $s)).Version; $a3=''+$a.Major+'.'+$a.Minor+'.'+$a.Build; $n++; if($a3 -eq $v){ Write-Host ('  OK  '+$s+' : '+$a) } else { Write-Host ('  NG  '+$s+' : '+$a+'  expected '+$v+'.x'); $ok=$false } } }; if($n -eq 0){ Write-Host '  NG  no assemblies were checked'; $ok=$false }; if(-not $ok){ exit 1 }"
+
+if errorlevel 1 goto AssemblyMismatch
 
 "..\..\nuget.exe" pack Symbol_Public.nuspec -Properties version=%OT_VERSION%;commit=%OT_COMMIT% -OutputDirectory "out\sp" -Symbols -SymbolPackageFormat snupkg
 "..\..\nuget.exe" pack Symbol_Public.Security.nuspec -Properties version=%OT_VERSION%;commit=%OT_COMMIT% -OutputDirectory "out\sp" -Symbols -SymbolPackageFormat snupkg
@@ -106,5 +143,16 @@ echo         ^(OpenTouryoVersion = %OT_VERSION%^)
 echo         Update Properties\AssemblyInfo.cs in the projects marked NG above,
 echo         rebuild with 0_Release4Nuget.bat, then run this again.
 echo         See RELEASE.md phase 0.
+pause
+exit /b 1
+
+:AssemblyMismatch
+echo.
+echo [ERROR] The packaged assemblies do not carry %OT_VERPREFIX%
+echo         ^(OpenTouryoVersion = %OT_VERSION%^)
+echo         The sources say the right version but the binaries do not,
+echo         so the rebuild was skipped. Run CS\0_Release4Nuget.bat,
+echo         then run this again.
+echo         See RELEASE.md phase 0 and phase 3.
 pause
 exit /b 1
