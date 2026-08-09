@@ -182,7 +182,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Erutcurtsarfni.Oyruot.Public">
-      <Version>3.3.0-alpha1</Version>
+      <Version>3.3.0-alpha2</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -7,4 +7,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Erutcurtsarfni.Oyruot.Public" Version="3.3.0-alpha2" />
+  </ItemGroup>
+
 </Project>
