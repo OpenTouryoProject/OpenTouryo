@@ -1,4 +1,4 @@
-# ANALYSIS.md — Open棟梁 サンプル アプリ（CS/Samples）コード分析
+﻿# ANALYSIS.md — Open棟梁 サンプル アプリ（CS/Samples）コード分析
 
 対象: `root/programs/CS/Samples`（**.NET Framework 4.8 専用**） / ブランチ: `develop`
 最終更新: 2026-07-31
@@ -368,7 +368,7 @@ switch ((testParameter.ActionType.Split('%'))[1])
 - [ ] `Frameworks` を先にビルド → `4_Build_CopyAssemblies.bat` を実行（`Build\` を作る）
 - [ ] Web 系を触るなら `nuget.exe restore`（`packages.config` 方式）
 - [ ] 新規 .cs にはヘッダ コメント（Apache License / クラス名・日本語名・更新履歴）を付与、既存変更時は履歴に 1 行追記。
-      **Copyright ブロックは新規には付けない**（`../Frameworks/ANALYSIS.md` 8.1 節）
+      **Copyright ブロックは新規には付けない**（`../../CODING.md` 1 節）
 - [ ] `UOC_` メソッドの冒頭で `this.ReturnValue = ...` を設定
 - [ ] `ActionType` の `%` 区切り規約を壊さない（6 節）
 - [ ] 設定キーを増やしたら `app.config`（Web は `app.config` 側）に追記

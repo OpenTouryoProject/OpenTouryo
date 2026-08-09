@@ -68,26 +68,30 @@ gh auth switch --user OsscJpDevInfra  # 異なる場合は切り替え
 **Issue のクローズ・ラベル変更・アサイン、PR の作成やマージは人が行う。**
 これらは成果物の検収と同じ扱いとし、エージェントは提案に留める。
 
-### コーディング規約は、領域ごとの ANALYSIS.md に従う
+### コーディング規約は CODING.md、領域ごとの事情は ANALYSIS.md に従う
 
-`root/programs/CS/` 配下は領域ごとに基準が異なる。
-**コードを変更する前に、作業対象を所管する `ANALYSIS.md` を読むこと。**
+**規約は全領域に共通、分析は領域ごと**に分かれている。
 
-| 作業対象 | 読む文書 |
+| 内容 | 読む文書 |
 |---|---|
-| `root/programs/CS/Frameworks/` | [`Frameworks/ANALYSIS.md`](root/programs/CS/Frameworks/ANALYSIS.md) |
-| `root/programs/CS/Samples/` | [`Samples/ANALYSIS.md`](root/programs/CS/Samples/ANALYSIS.md) |
-| `root/programs/CS/Samples4NetCore/` | [`Samples4NetCore/ANALYSIS.md`](root/programs/CS/Samples4NetCore/ANALYSIS.md) |
+| **コーディング規約（全領域共通）** | [`CODING.md`](root/programs/CODING.md) |
+| `root/programs/CS/Frameworks/` の分析 | [`Frameworks/ANALYSIS.md`](root/programs/CS/Frameworks/ANALYSIS.md) |
+| `root/programs/CS/Samples/` の分析 | [`Samples/ANALYSIS.md`](root/programs/CS/Samples/ANALYSIS.md) |
+| `root/programs/CS/Samples4NetCore/` の分析 | [`Samples4NetCore/ANALYSIS.md`](root/programs/CS/Samples4NetCore/ANALYSIS.md) |
 
-各 `ANALYSIS.md` が、その領域におけるアーキテクチャ・ビルド手順・条件コンパイル・
-コーディング規約・既知の落とし穴の**一次情報**である。末尾の
+**コードを変更する前に、[`CODING.md`](root/programs/CODING.md) と、
+作業対象を所管する `ANALYSIS.md` の両方を読むこと。**
+
+`CODING.md` には、ファイル ヘッダの書式と**更新者名**、新規ファイルにおける
+Copyright ブロックの扱い、`ArgumentException` 系の引数の順、`.bat` / `.ps1` の
+文字コードなど、**エージェントが見落としやすい指定**が含まれる。
+
+各 `ANALYSIS.md` は、その領域におけるアーキテクチャ・ビルド手順・条件コンパイル・
+既知の落とし穴の**一次情報**である。末尾の
 「エージェント向け作業チェックリスト」には着手前に目を通すこと。
 
-ファイル ヘッダの書式と**更新者名**、新規ファイルにおける Copyright ブロックの扱い、
-`.bat` の文字コードなど、**エージェントが見落としやすい指定**が含まれる。
-
-規約の実体はこのファイル（AGENTS.md）には書かない。領域ごとに基準が分かれるため、
-二重管理になり、どちらが正なのか分からなくなる。
+規約の実体はこのファイル（AGENTS.md）には書かない。二重管理になり、
+どちらが正なのか分からなくなる。
 
 ### ビルド・テスト・リリースの検証は、専用の文書に従う
 

@@ -1,4 +1,4 @@
-# ANALYSIS.md — Open棟梁 サンプル アプリ（CS/Samples4NetCore）コード分析
+﻿# ANALYSIS.md — Open棟梁 サンプル アプリ（CS/Samples4NetCore）コード分析
 
 対象: `root/programs/CS/Samples4NetCore`（**.NET 10.0**） / ブランチ: `develop`
 最終更新: 2026-07-31
@@ -355,6 +355,6 @@ bat を経由せず **`dotnet build <sln>` を直接叩いてよい**（Core 側
 - [ ] 定義 XML を追加したら `Legacy/*` の csproj に `CopyToOutputDirectory` を追記
 - [ ] パッケージ バージョンを変えるならフレームワーク本体との整合を確認（7 節）
 - [ ] 新規 .cs にはヘッダ コメント（Apache License / クラス名・日本語名・更新履歴）を付与、既存変更時は履歴に 1 行追記。
-      **Copyright ブロックは新規には付けない**（`../Frameworks/ANALYSIS.md` 8.1 節）
+      **Copyright ブロックは新規には付けない**（`../../CODING.md` 1 節）
 - [ ] `UOC_` メソッドの冒頭で `this.ReturnValue = ...` を設定
 - [ ] 実行確認をするなら `C:\root\files` と Northwind DB の準備状況を先に確認
