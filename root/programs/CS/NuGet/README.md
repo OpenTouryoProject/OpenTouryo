@@ -161,6 +161,68 @@ $a.Dispose()
 Source Link は確認できるが、**`.snupkg` は nuget.org が展開する**ため、
 シンボル サーバーの確認にはならない。
 
+### 手順
+
+#### （1）ビルドを行う
+
+```
+root\programs\CS\0_Release4Nuget.bat
+```
+
+**本番手順と同じものを使う。** ここを省いてはならない。
+
+`1_BuildAll.ps1` や Visual Studio で建てた直後の `Build_*` は
+**`DebugType=full`（Windows PDB）**になっており、そのまま詰めると
+確認 2 で失格になる。**成果物は共通の `Build_*` に出るため、後から上書きされる。**
+
+#### （2）パッケージングを行う
+
+**版を引数で渡す。**
+
+```
+root\programs\CS\NuGet\_T_NuGetPack.bat 3.3.0-alpha1
+```
+
+本番用（`Symbol_*.nuspec`）は `Directory.Build.props` の
+`OpenTouryoVersion` を使うが、**テスト用は本番の版とは無関係に付ける**ため、
+`T_Symbol_Public.nuspec` の `<version>` は `$version$` のままにして
+バッチの引数から渡している。
+
+**公開済みより大きい版でなければ nuget.org は受け付けない。**
+公開済みの一覧は次で分かる。
+
+```powershell
+(Invoke-RestMethod "https://api.nuget.org/v3-flatcontainer/erutcurtsarfni.oyruot.public/index.json").versions
+```
+
+#### （3）公開前の確認を行う
+
+**2 節の確認 4 点を、本番と同じように行う。**
+`T_` 系は本番用と別のファイルなので、**本番側に入れた改善が
+入っていないことがある**（#531 では `<repository>` と `-Properties` が
+`T_` 系にだけ無かった）。
+
+#### （4）プッシュする
+
+API キーを設定してから実行する。
+
+```
+root\programs\CS\NuGet\out\sp\_T_NuGetPush.bat
+```
+
+**プッシュ対象はワイルドカード（`Erutcurtsarfni.Oyruot.Public.*.nupkg`）である。**
+`out\sp` に古い版が残っていると**それも公開される**ので、
+実行前にフォルダの中身を見ること。
+
+#### （5）後始末として revert する
+
+- `_T_NuGetPush.bat` の ApiKey
+
+#### （6）確認する
+
+3 節の設定を行った上で、テスト プロジェクトから
+`Erutcurtsarfni.Oyruot.Public` を参照し、**F11 でステップイン**できることを見る。
+
 ---
 
 ## 5. 仕組みの要点（#531）
