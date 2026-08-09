@@ -1,11 +1,11 @@
 @rem --------------------------------------------------
 @rem Execution of the common processing.
+@rem
+@rem NOTE: keep this file pure ASCII (#532).
+@rem       Non-ASCII text is decoded with the console code page, which can
+@rem       misalign the parser and execute the tail of an @rem line.
+@rem       chcp inside the file makes it worse, so it is not used here.
 @rem --------------------------------------------------
-
-@rem --------------------------------------------------
-@rem 文字化け対策
-@rem --------------------------------------------------
-chcp 65001
 
 @rem --------------------------------------------------
 @rem Specifying Build tool.
@@ -58,9 +58,9 @@ echo BUILDFILEPATH %BUILDFILEPATH%
 
 @echo --------------------------------------------------
 @echo The choice of build configuration (Debug / Release).
-@echo BUILD_CONFIG は 特定の構成（Debug や Release）を指定
-@echo DEBUG_TYPE は full, pdbonly, portable, embedded, none
-@echo https://learn.microsoft.com/ja-jp/dotnet/csharp/language-reference/compiler-options/code-generation#debugtype
+@echo BUILD_CONFIG names the configuration (Debug or Release).
+@echo DEBUG_TYPE is full, pdbonly, portable, embedded or none.
+@echo https://learn.microsoft.com/dotnet/csharp/language-reference/compiler-options/code-generation#debugtype
 @echo --------------------------------------------------
 set BUILD_CONFIG=Debug
 set DEBUG_TYPE=full

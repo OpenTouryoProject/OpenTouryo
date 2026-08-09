@@ -1,11 +1,17 @@
-﻿@rem --------------------------------------------------
+@rem --------------------------------------------------
 @rem Execution of the common processing.
+@rem
+@rem NOTE: keep this file pure ASCII (#532).
+@rem
+@rem cmd.exe reads a batch file by byte offset. Non-ASCII text is decoded
+@rem with the console code page, which can misalign the parser and make it
+@rem execute the tail of an @rem line as a command. A UTF-8 BOM reduces
+@rem this but does not prevent it, and "chcp 65001" inside the file makes
+@rem it worse by changing the code page half way through.
+@rem
+@rem This file is called by every build batch, so it is kept ASCII only.
+@rem chcp is not used here; a caller that needs UTF-8 output sets it up.
 @rem --------------------------------------------------
-
-@rem --------------------------------------------------
-@rem 文字化け対策
-@rem --------------------------------------------------
-chcp 65001
 
 @rem --------------------------------------------------
 @rem Specifying Build tool.
@@ -54,9 +60,9 @@ echo BUILDFILEPATH17 %BUILDFILEPATH17%
 echo BUILDFILEPATH18 %BUILDFILEPATH18%
 
 @rem --------------------------------------------------
-@rem vswhere による MSBuild の解決（エディション非依存）
-@rem 上記の固定パスは Community しか探さないため、
-@rem Professional / Enterprise / BuildTools でも解決できるようにする。
+@rem Resolve MSBuild with vswhere, independently of the VS edition.
+@rem The fixed paths above only look for Community, so this also finds
+@rem Professional / Enterprise / BuildTools.
 @rem --------------------------------------------------
 set VSWHERE="%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
 set BUILDFILEPATH=
@@ -68,7 +74,7 @@ if exist %VSWHERE% (
 )
 
 @rem --------------------------------------------------
-@rem フォールバック（vswhere が無い / 解決できない場合）
+@rem Fallback, for when vswhere is missing or resolves nothing.
 @rem --------------------------------------------------
 if not defined BUILDFILEPATH set BUILDFILEPATH=%BUILDFILEPATH18%
 if not defined BUILDFILEPATH set BUILDFILEPATH=%BUILDFILEPATH17%
@@ -77,37 +83,38 @@ if not defined BUILDFILEPATH set BUILDFILEPATH=%BUILDFILEPATH16%
 echo BUILDFILEPATH %BUILDFILEPATH%
 
 @rem --------------------------------------------------
-@rem 未検出チェック
-@rem （空のまま進むと "/p:Configuration=..." が先頭コマンドとして
-@rem 　実行され、原因が分かりにくいエラーになるため、ここで止める。）
+@rem Stop when nothing was found.
+@rem Carrying on with an empty value makes "/p:Configuration=..." run as
+@rem the command itself, which is hard to diagnose.
 @rem --------------------------------------------------
 if not defined BUILDFILEPATH (
-  echo [ERROR] MSBuild.exe が見つかりません。
-  echo         Visual Studio または Build Tools のインストール状況を確認してください。
+  echo [ERROR] MSBuild.exe was not found.
+  echo         Check the Visual Studio or Build Tools installation.
   exit /b 1
 )
 
 @rem --------------------------------------------------
-@rem nuget.exe restore に渡す MSBuild の指定
+@rem The MSBuild passed to nuget.exe restore.
 @rem
-@rem nuget.exe は MSBuild を自動検出するが、SQL Server Management Studio など
-@rem MSBuild を同梱する別製品が入っていると、そちらを選ぶことがある。
-@rem （例: "MSBuild 自動検出: 'C:\Program Files\Microsoft SQL Server Management
-@rem 　Studio 22\Release\MSBuild\Current\bin' から MSBuild バージョン ... を使用します。"）
+@rem nuget.exe detects MSBuild on its own, but when another product that
+@rem ships MSBuild is installed - SQL Server Management Studio, say - it
+@rem can pick that one instead.
+@rem   e.g. "Using MSBuild version ... from 'C:\Program Files\Microsoft SQL
+@rem         Server Management Studio 22\Release\MSBuild\Current\bin'."
 @rem
-@rem その MSBuild には Web アプリ用の Microsoft.WebApplication.targets が無く、
-@rem また生成される project.assets.json が実際のビルドと噛み合わないため、
-@rem 下記のようなエラーになる。
-@rem   error MSB4226: インポートされたプロジェクト "...WebApplications\
-@rem                  Microsoft.WebApplication.targets" が見つかりませんでした。
+@rem That MSBuild has no Microsoft.WebApplication.targets for web apps, and
+@rem the project.assets.json it writes does not match the real build, so
+@rem errors like these follow.
+@rem   error MSB4226: The imported project "...WebApplications\
+@rem                  Microsoft.WebApplication.targets" was not found.
 @rem   error : Your project file doesn't list 'win' as a "RuntimeIdentifier".
 @rem
-@rem このため、上で解決した MSBuild のフォルダを明示的に渡す。
+@rem The folder resolved above is therefore passed explicitly.
 @rem --------------------------------------------------
 for %%i in (%BUILDFILEPATH%) do set MSBUILDDIR=%%~dpi
 
-@rem 末尾の \ を除去する（-MSBuildPath "...\" は \" が
-@rem エスケープと解釈され、引数が壊れるため）。
+@rem Strip the trailing backslash. In -MSBuildPath "...\" the \" would be
+@rem read as an escape and the argument would break.
 if defined MSBUILDDIR set MSBUILDDIR=%MSBUILDDIR:~0,-1%
 
 set NUGET_MSBUILD=-MSBuildPath "%MSBUILDDIR%"
@@ -116,54 +123,56 @@ echo NUGET_MSBUILD %NUGET_MSBUILD%
 
 @echo --------------------------------------------------
 @echo The choice of build configuration (Debug / Release).
-@echo BUILD_CONFIG は 特定の構成（Debug や Release）を指定
-@echo DEBUG_TYPE は full, pdbonly, portable, embedded, none
-@echo https://learn.microsoft.com/ja-jp/dotnet/csharp/language-reference/compiler-options/code-generation#debugtype
+@echo BUILD_CONFIG names the configuration (Debug or Release).
+@echo DEBUG_TYPE is full, pdbonly, portable, embedded or none.
+@echo https://learn.microsoft.com/dotnet/csharp/language-reference/compiler-options/code-generation#debugtype
 @echo --------------------------------------------------
 set BUILD_CONFIG=Debug
 
 @rem --------------------------------------------------
-@rem DEBUG_TYPE は、呼び出し側が先に設定していればそれを尊重する（#531）。
+@rem DEBUG_TYPE honours the value the caller has already set (#531).
 @rem
-@rem NuGet パッケージ用のビルド（0_Release4Nuget.bat）は portable を要求する。
-@rem   ・.snupkg（シンボル パッケージ）は portable PDB でなければ受け付けられない
-@rem   ・Source Link の情報も portable PDB に載る
-@rem 以前は、その都度この行を手で書き換えて戻す運用だった。
-@rem **戻し忘れると full のまま公開してしまう**ため、呼び出し側から渡す形にした。
+@rem The build for the NuGet packages (0_Release4Nuget.bat) needs portable.
+@rem   - a .snupkg is only accepted when the PDB is portable
+@rem   - the Source Link information also lives in the portable PDB
+@rem This line used to be edited by hand and reverted afterwards. Forgetting
+@rem the revert meant publishing with "full", so the caller passes it now.
 @rem --------------------------------------------------
 if not defined DEBUG_TYPE set DEBUG_TYPE=full
 
 @rem --------------------------------------------------
-@rem CI_BUILD も、呼び出し側が先に設定していればそれを尊重する（#531）。
+@rem CI_BUILD likewise honours the value the caller has already set (#531).
 @rem
-@rem true にすると ContinuousIntegrationBuild が有効になり、PDB に記録される
-@rem ソースのパスが /_/... に正規化される。
-@rem   ・公開物に、ビルドしたマシンのローカル パスが埋まらなくなる
-@rem   ・Visual Studio は「PDB のパスにファイルが在ればそれを開く」ため、
-@rem     絶対パスのままだと、ビルドしたマシンでは Source Link を通らない。
-@rem     正規化しておくと、そのマシンでも Source Link 経由で確認できる
+@rem true turns on ContinuousIntegrationBuild, which normalizes the source
+@rem paths recorded in the PDB to /_/... .
+@rem   - the published package no longer carries the local paths of the
+@rem     machine that built it
+@rem   - Visual Studio opens the file at the path in the PDB when it exists,
+@rem     so an absolute path means Source Link is never used on the build
+@rem     machine. Normalizing lets it be verified there as well.
 @rem
-@rem 通常のビルドでは空（無効）。NuGet パッケージ用のビルド
-@rem （0_Release4Nuget.bat）だけが true を渡す。
+@rem Off for ordinary builds. Only the build for the NuGet packages
+@rem (0_Release4Nuget.bat) passes true.
 @rem
-@rem **DeterministicSourcePaths も一緒に渡す。**
-@rem ContinuousIntegrationBuild から DeterministicSourcePaths への変換は
-@rem Microsoft.NET.Sdk のターゲットが行うため、**旧形式 csproj には効かない**。
-@rem （Source Link の自動組み込みが効かないのと同じ構図。net48 側だけ
-@rem 　絶対パスのまま残る。）
+@rem DeterministicSourcePaths is passed as well. The conversion from
+@rem ContinuousIntegrationBuild is done by the Microsoft.NET.Sdk targets,
+@rem so it does not reach the old-style projects - the same shape as Source
+@rem Link not being picked up automatically. Without it, only the net48
+@rem side keeps absolute paths.
 @rem --------------------------------------------------
 if not defined CI_BUILD set CI_BUILD=false
 
 @rem --------------------------------------------------
-@rem VisualStudioVersion は、上で解決した MSBuild と同じ VS から求める。
+@rem VisualStudioVersion comes from the same VS as the MSBuild resolved
+@rem above.
 @rem
-@rem Web アプリの csproj は、この値で targets のパスを組み立てる。
+@rem A web app csproj builds its targets path from this value.
 @rem   <VSToolsPath>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
 @rem   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" />
 @rem
-@rem 固定値にすると、別のバージョンの VS しか無い環境で見つからなくなる。
-@rem （例: GitHub Actions の windows-latest は VS 2022 = 17.x のため、
-@rem 　18.0 を渡すと v18.0\WebApplications\ を探して MSB4226 になる）
+@rem A fixed value breaks on a machine that only has another VS version.
+@rem   e.g. windows-latest on GitHub Actions is VS 2022 = 17.x, so passing
+@rem        18.0 makes it look for v18.0\WebApplications\ and fail MSB4226.
 @rem --------------------------------------------------
 set VSVER_MAJOR=
 
@@ -173,7 +182,8 @@ if exist %VSWHERE% (
   ) do set VSVER_MAJOR=%%i
 )
 
-@rem vswhere が無い / 解決できない場合は従来の値にする。
+@rem Fall back to the previous value when vswhere is missing or resolves
+@rem nothing.
 if not defined VSVER_MAJOR set VSVER_MAJOR=18
 
 set VisualStudioVersion=%VSVER_MAJOR%.0
