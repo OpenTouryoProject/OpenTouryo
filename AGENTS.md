@@ -60,6 +60,23 @@ gh issue create --repo OpenTouryoProject/OpenTouryo --title <title> --body-file 
 - 本文は一時ファイルに書き、`--body-file` で渡す（改行・記号の欠落を避ける）
 - 投稿後は URL を報告する
 
+**テンプレートは自動では適用されない。読んで、その構成に沿って書くこと。**
+
+`gh issue create` / `gh pr create` の `--template` は「エディタで編集する前提の
+開始テキスト」であり、**`--body-file` と併用すると本文で上書きされる。**
+エージェントは `--body-file` を使うため、テンプレートは効かない。
+
+```
+.github/ISSUE_TEMPLATE/bug.md          不具合
+.github/ISSUE_TEMPLATE/enhancement.md  機能追加・改善
+.github/ISSUE_TEMPLATE/quality.md      品質改善（リファクタリング・規約・CI・文書）
+.github/pull_request_template.md       PR
+```
+
+**テンプレートは任意**（`blank_issues_enabled: true`）だが、
+**「利用者への影響」は、無いなら「無し」と明記する。**
+空欄だと、確認したのか未確認なのかが読み手に分からない。
+
 **このリポジトリでは `OsscJpDevInfra` アカウントを使用する。**
 `gh auth status` に複数のアカウントが登録されていることがあるため、
 投稿前にアクティブなアカウントを確認すること。異なる場合は `gh auth switch` で切り替える。

@@ -312,6 +312,8 @@ allow_rebase_merge   false   … 同上
 | [`workflows/build-windows.yml`](.github/workflows/build-windows.yml) | 検証 3 本（ビルド・単体テスト・疎通）を windows-latest で |
 | [`workflows/dependabot-retarget.yml`](.github/workflows/dependabot-retarget.yml) | Dependabot PR の向き先を `deps` へ変更 |
 | [`secret_scanning.yml`](.github/secret_scanning.yml) | Secret scanning のアラートから除外するパス（1 節） |
+| [`ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE) | Issue テンプレート 3 種 ＋ `config.yml`（5 節） |
+| [`pull_request_template.md`](.github/pull_request_template.md) | PR テンプレート（5 節） |
 
 **`dependabot.yml` は置いていない**（4 節）。
 
@@ -374,7 +376,9 @@ Actions が PR を承認できると、`master` のレビュー必須が形骸�
 
 ---
 
-## 5. Issue のラベル
+## 5. Issue と PR
+
+### ラベル
 
 11 個を定義している。**設定は人が行う**（`AGENTS.md`）。
 
@@ -390,6 +394,35 @@ Actions が PR を承認できると、`master` のレビュー必須が形骸�
 gh label list --repo OpenTouryoProject/OpenTouryo
 gh issue view <番号> --repo OpenTouryoProject/OpenTouryo --json labels
 ```
+
+### テンプレート
+
+```
+.github/ISSUE_TEMPLATE/config.yml       任意化 ＋ Security への導線
+.github/ISSUE_TEMPLATE/bug.md           不具合          → labels: bug
+.github/ISSUE_TEMPLATE/enhancement.md   機能追加・改善  → labels: enhancement
+.github/ISSUE_TEMPLATE/quality.md       品質改善        → labels: quality improvement
+.github/pull_request_template.md        PR
+```
+
+**強制しない。** そのために次の 2 点を選んでいる。
+
+| | 理由 |
+|---|---|
+| **Markdown 形式（`.md`）** | YAML フォーム（`.yml`）は**必須項目を強制できる**。書きたいことが書けなくなる |
+| **`blank_issues_enabled: true`** | 「Open a blank issue」から**素の Issue も起票できる** |
+
+`config.yml` の `contact_links` で、**セキュリティ問題を Private vulnerability reporting へ
+誘導している**（Issue の選択画面で分岐するので、公開 Issue に書かれる前に止まる）。
+
+**ラベルはテンプレートの front matter が自動で付ける。**
+画面から起票した場合のみで、`gh` の `--body-file` では付かない。
+
+> **エージェントにはテンプレートが自動適用されない。**
+> `--template` は「エディタで編集する前提の開始テキスト」で、
+> **`--body-file` と併用すると本文で上書きされる。**
+> エージェントはテンプレートを**読んで、その構成に沿って書く**
+> （[`AGENTS.md`](AGENTS.md)）。
 
 ---
 
@@ -583,7 +616,6 @@ DB の導入と初期化が入るため。**リリース時はこれを見込む
 | | 内容 |
 |---|---|
 | `allowed_actions` を絞る / SHA 固定 | 現在 `all` / 強制なし。サプライ チェーン対策。**運用が重くなる**ので、必要性とあわせて判断する |
-| Issue / PR テンプレート | 「調査 → 実装 → 検証」の型が定まっているのでテンプレート化できる |
 | `.github/dependabot.yml` | #517 の決着後 |
 
 > **`develop` を必須チェックの対象にはしない。**

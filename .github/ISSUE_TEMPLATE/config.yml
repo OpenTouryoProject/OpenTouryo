@@ -1,0 +1,16 @@
+# Issue テンプレートの設定
+#
+# blank_issues_enabled: true にしてあるため、**テンプレートは任意**である。
+# 「Open a blank issue」から、素の Issue も起票できる。
+#
+# テンプレートを Markdown（.md）にしているのも、任意にするため。
+# YAML フォーム（.yml）にすると必須項目を強制でき、書きたいことが書けなくなる。
+blank_issues_enabled: true
+
+contact_links:
+  - name: 脆弱性の報告（Security）
+    url: https://github.com/OpenTouryoProject/OpenTouryo/security/advisories/new
+    about: セキュリティに関する問題は、公開の Issue ではなく Private vulnerability reporting へ。SECURITY.md を参照。
+  - name: 質問・相談
+    url: https://github.com/OpenTouryoProject/OpenTouryo/issues?q=is%3Aissue
+    about: 同じ問題が既に挙がっていないか、先に検索してください。
