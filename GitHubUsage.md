@@ -108,8 +108,8 @@ CodeQL の内訳（上位）。
 | **`Missing X-Frame-Options`** | 8 | **6 件は対応済み**（下表）。残る 2 件は MVC の `Views/Web.config` で、**応答ヘッダを出す設定ファイルではない**ため対応しない |
 | **`requireSSL` が `true` でない** | 4 | **対応済み。** `requireSSL="true"` の行を**コメントアウトで併記**し、「本番ではコメントアウトを外す」と明記。**サンプルは HTTP で動かす**ため、既定は `false` のまま |
 | **`Encryption using ECB`** | 1 | **対応済み → 棄却。** `EnumSymmetricAlgorithm.CipherMode_ECB` に **`[Obsolete]` を付与**した。利用者が指定したときだけ通る 5 択の 1 つで、**既定ではない**（指定しなければ .NET 既定の CBC）。リポジトリ内に指定箇所は 0 件。**削除は下位互換を壊す**ため、非推奨化に留めた。コードは残るのでアラートは消えず、`won't fix` で棄却する |
-| **`Cookie 'Secure'` 未設定** | 2 | **未決。** `StdMigration/CookieExtensions.cs`。`Secure=true` を既定にすると **HTTP の開発環境で Cookie が送られなくなる** |
-| **`DOM text reinterpreted as HTML`** | 2 | **未決。** サンプルの `common.js`（自作）。擬似ダイアログの `iframe.src` に `url` をそのまま設定している |
+| **`Cookie 'Secure'` 未設定** | 2 | **対応済み → 棄却。** 指摘されたのは `StdMigration/CookieExtensions.cs` の `Set` 3 つのうち **`CookieOptions` を受け取らない 2 つ**で、**リポジトリ内に呼び出しが 1 件も無い**（利用者向けに残している移植 API）。実際に Cookie を作るのは `CookieOptions` 版を呼ぶ `FxCmnFunction` で、そちらの **4 箇所**（net48 / netcore100 各 2）を修正した。**`HttpOnly` は設定済みだったが `Secure` が無かった**（前者は XSS 対策、後者は盗聴対策で別物） |
+| **`DOM text reinterpreted as HTML`** | 2 | **対応済み。** サンプルの `common.js`（自作、CS / VB 同一）。擬似ダイアログの `iframe.src` に URL を設定する前に、`Fx_IsSafeDialogUrl()` でスキームを検証するようにした。**既存の脆弱性を塞いだのではない**（URL はフレームワークの `ShowModalScreen` が組み立て、利用者入力は入らず、AppScan もクリア済み）。**サンプルを手本にしたコードが動的な URL を流し込む場合に備える多層防御** |
 
 **棄却は削除ではない。** Security タブに `Dismissed` として残り、
 棄却した人・日時・理由・コメントが記録される。復帰もできる。
@@ -124,6 +124,40 @@ CodeQL の内訳（上位）。
 
 **既定は `DENY`、必要な所だけ `SAMEORIGIN` に緩める。**
 一律に緩めると、緩める必要のない画面まで枠に入れられるようになる。
+
+### Cookie の `Secure` は「HTTPS のときだけ」立てる
+
+```csharp
+cookieOptions.HttpOnly = true;
+cookieOptions.Secure = MyHttpContext.Current.Request.IsHttps;        // netcore100
+newCookie.Secure = HttpContext.Current.Request.IsSecureConnection;   // net48
+```
+
+**無条件に `true` にしてはならない。** HTTP で動かす開発環境とサンプルで、
+ブラウザが Cookie を保存しなくなり、**セッション タイムアウト検出が機能しなくなる**
+（疎通も通らなくなる）。
+
+**CodeQL が指摘した場所と、直すべき場所が違った例。**
+
+`StdMigration/CookieExtensions.cs` の `Set` は 3 つある。
+
+| オーバーロード | 指摘 | 呼び出し |
+|---|---|---|
+| `Set(key, value)` | **あり** | **0 件**（利用者向けに残している移植 API） |
+| `Set(key, value, int expireTime)` | **あり** | **0 件**（同上） |
+| `Set(key, value, CookieOptions)` | なし | `FxCmnFunction` が使用 |
+
+**クラス自体は使われている。**
+`Samples4NetCore/Backend/MVC_Sample` も `MyHttpContext` / `SessionExtensions` とあわせ、
+`FxCmnFunction.DeleteCookieForSessionTimeoutDetection()` 経由で
+`CookieOptions` 版を呼んでいる。
+
+**直したのは `FxCmnFunction` 側**（Cookie を実際に組み立てている場所）。
+**net48 側は指摘されていないが、同じ設計の別実装なので揃えた。**
+
+> `Samples4NetCore` の `Startup.cs` には
+> `//Secure = CookieSecurePolicy.Always` がコメントアウトで残っている。
+> アプリ全体の Cookie ポリシーで一括指定する方法もある（未検討）。
 
 ---
 
@@ -263,5 +297,4 @@ gh api -X PATCH orgs/OpenTouryoProject/code-security/configurations/265927 \
 | `SECURITY.md` | Private vulnerability reporting は有効にしたが、文書は未整備 |
 | Issue / PR テンプレート | 「調査 → 実装 → 検証」の型が定まっているのでテンプレート化できる |
 | `.github/dependabot.yml` | #517 の決着後 |
-| **CodeQL の未決 4 件** | `Cookie 'Secure'` 2 / `DOM text reinterpreted as HTML` 2。いずれも**開発環境やサンプルの動作への影響**があり、判断が要る |
-| `Views/Web.config` の 2 件 | 応答ヘッダを出す設定ファイルではないため対応しない。棄却するか放置するかは未決 |
+| **CodeQL の再スキャン待ち** | 修正した 10 件（`X-Frame-Options` 6 / `requireSSL` 4）は `develop` で再スキャンされるまで `open` のまま。**`requireSSL` は有効な設定が `false` のままなので消えない見込み**で、その 4 件は結果を見てから棄却する |
