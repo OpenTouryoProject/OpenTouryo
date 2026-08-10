@@ -7,6 +7,14 @@
 
 > 変更したら本書も更新すること。**設定と本書が食い違うと、本書の方が害になる。**
 
+**本書はリポジトリ内部の記録である。** 利用者に影響する変更は Issue に書く。
+
+| 内容 | 一次情報 |
+|---|---|
+| CodeQL のトリアージと、**利用者に影響する変更** | [#536](https://github.com/OpenTouryoProject/OpenTouryo/issues/536) |
+| Secret scanning の除外パス | [`.github/secret_scanning.yml`](.github/secret_scanning.yml) |
+| 手順の早見 | [`CHEATSHEET.md`](root/programs/CHEATSHEET.md) |
+
 最終更新: 2026-08-10
 
 ---
@@ -97,9 +105,15 @@ CodeQL の内訳（上位）。
 
 ### トリアージの方針
 
-**30 件を Issue にはしない。** アラートは Security タブが追跡するので、
+> **経緯と実施内容は
+> [#536](https://github.com/OpenTouryoProject/OpenTouryo/issues/536) が一次情報。**
+> **利用者に影響する変更が 2 点ある**（`CipherMode_ECB` の非推奨化と、
+> Cookie の `Secure` 属性）。リリース ノートからはそちらを参照する。
+
+**アラート 1 件ごとに Issue は立てない。** Security タブが追跡するので、
 同じものを Issue でも管理すると二重管理になる。
-**Issue にするのは「調べて判断が要るもの」だけ**にする。
+**Issue に書くのは「何を決めたか」と「利用者への影響」**であり、
+一覧そのものではない。
 
 | 分類 | 件数 | 方針 |
 |---|---|---|
