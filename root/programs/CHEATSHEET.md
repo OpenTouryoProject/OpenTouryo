@@ -186,6 +186,8 @@ powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.
 
 - **Git 操作をしない**（`add` / `commit` / `push` / `checkout` / `switch` / `branch` /
   `reset` / `restore` / `stash`）。参照系（`status` / `diff` / `log` / `show` 等）は自由
+- **状態を報告する直前に取り直す。** `git status --porcelain` / `gh issue view` / `gh api`。
+  **前のターンの出力から書かない**（人が独立にコミット・操作するため）
 - **GitHub への投稿は、文面を提示して承認を得てから。** `gh` で行い、`--body-file` を使う。
   アカウントは `OsscJpDevInfra`（`gh auth status` で確認）
 - **Issue のクローズ・ラベル・アサイン、PR の作成やマージは人が行う**
