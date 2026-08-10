@@ -265,18 +265,41 @@ gh api "repos/OpenTouryoProject/OpenTouryo/collaborators?affiliation=direct" --j
 gh api repos/OpenTouryoProject/OpenTouryo/invitations   # 承諾待ちの招待
 ```
 
-### 現状の弱点
+### 意図的にそうしている設定
+
+**弱点に見えるが、この運用では正しい**もの。理由を書いておかないと、また提案が出る。
+
 
 - **`develop` に必須ステータス チェックは置かない**（意図的）。
   `deps` ⇔ `develop` ⇔ feature と往復が多く、毎回のマージが CI 待ちになるため。
   代わりに **`master` 宛の PR で CI を動かす**（3 節・7 節）
 - `master` の `enforce_admins` は無効（少人数運用のため意図的）
-- `delete_branch_on_merge` は無効。マージ済みブランチが残る
+- **`delete_branch_on_merge` は無効にしておく**（意図的）。
+  **作業ブランチを継続利用する運用**のため。`3rd_agent` は 4 回、`2nd_agent` は 6 回と、
+  同じブランチを何度も `develop` へマージしている。
+  **自動削除にすると 1 回目で消えて、毎回作り直しになる。**
+  `deps`（Dependabot の受けブランチ）が消えると、`dependabot-retarget.yml` も機能しなくなる。
+  この設定は **PR ごとに使い捨てるブランチ**を前提としたもので、この運用には合わない
 
-> **squash merge / rebase merge を許可している。**
-> ただし **squash はコミットを消すため、NuGet パッケージの Source Link を壊す**
-> （[`root/programs/CS/NuGet/README.md`](root/programs/CS/NuGet/README.md) 7 節）。
-> `master` へは `--no-ff` で入れること。**運用で担保している。**
+### マージ方式は「通常のマージ」だけ
+
+```
+allow_merge_commit   true
+allow_squash_merge   false   … 2026-08-10 に無効化
+allow_rebase_merge   false   … 同上
+```
+
+**squash と rebase はコミットを消す**（rebase は SHA が変わる）。
+公開済みの NuGet パッケージは**詰めた時のコミットに固定される**ため、
+そのコミットが到達不能になると **Source Link が壊れる。公開後には直せない**
+（[`root/programs/CS/NuGet/README.md`](root/programs/CS/NuGet/README.md) 7 節）。
+
+**以前は「`master` へは `--no-ff` で」という申し合わせだけで担保していた。**
+実績としても squash は未使用、rebase も 1 度だけだったため、
+**選択肢ごと無くして、仕組みで防ぐことにした。**
+
+> ローカルの `git rebase`（push 前の整理）には影響しない。
+> PR のマージ ボタンから選択肢が消えるだけである。
 
 ---
 
@@ -560,8 +583,6 @@ DB の導入と初期化が入るため。**リリース時はこれを見込む
 | | 内容 |
 |---|---|
 | `allowed_actions` を絞る / SHA 固定 | 現在 `all` / 強制なし。サプライ チェーン対策。**運用が重くなる**ので、必要性とあわせて判断する |
-| `delete_branch_on_merge` | マージ済みブランチを自動削除する |
-| `SECURITY.md` | Private vulnerability reporting は有効にしたが、文書は未整備 |
 | Issue / PR テンプレート | 「調査 → 実装 → 検証」の型が定まっているのでテンプレート化できる |
 | `.github/dependabot.yml` | #517 の決着後 |
 

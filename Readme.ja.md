@@ -36,3 +36,12 @@ Open 棟梁のドキュメントは、[OpenTouryoDocuments リポジトリ](http
 ### [AGENTS.md](AGENTS.md)
 コーディング エージェントで本リポジトリを扱う場合の**入口**です。
 守るべきポリシーと、参照すべき文書への導線をまとめています。
+
+### [Contributing.ja.md](Contributing.ja.md)
+コーディング規約、ブランチ運用、プルリクエストの粒度をまとめています。
+**人もコーディング エージェントも、同じ規約に従います。**
+
+### [Security.ja.md](Security.ja.md)
+脆弱性の報告方法、対象バージョン、対象範囲をまとめています。
+**セキュリティに関する問題を、公開の Issue に書かないでください。**
+[Private vulnerability reporting](https://github.com/OpenTouryoProject/OpenTouryo/security/advisories/new) を使ってください。
