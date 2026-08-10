@@ -234,16 +234,42 @@ fixed 12 件  ≠  12 件が直った
 | ブランチ | 役割 | 保護 |
 |---|---|---|
 | `develop` | 既定ブランチ。開発の集約先 | force-push 禁止 / 削除禁止 |
-| `master` | リリース | 上記 ＋ **レビュー 1 名必須** |
+| `master` | リリース | 上記 ＋ **レビュー 1 名必須** ＋ **必須チェック `build`** |
 | `deps` | Dependabot PR の受け先 | なし |
 
 ブランチ運用は git-flow。**規約は [`Contributing.ja.md`](Contributing.ja.md)。**
+
+### レビュアー
+
+`master` へのマージには**レビュー 1 名の承認**が要る（必須チェック `build` とあわせて 2 つの関所）。
+
+| | ロール | 承認 |
+|---|---|---|
+| `daisukenishino2` | admin | 可 |
+| `OsscJpDevInfra` | admin | 可 |
+| `daisukenishino77` | **write**（2026-08-10 に追加） | 可 |
+
+> **承認が必須レビューとして数えられるのは、`write` 以上の人だけ。**
+> `read` / `triage` でもレビューは書けるが、**ブランチ保護は満たさない。**
+> 公開リポジトリなので誰でも `read` は持つが、それでは足りない。
+
+> **自分が出した PR は、自分で承認できない。**
+> 3 名いるので、誰が PR を出しても残り 2 名から選べる。
+
+組織の `default_repository_permission` は `none`。
+リポジトリへの権限は**明示的に付与する**（`affiliation=direct` で確認できる）。
+
+```bash
+gh api repos/OpenTouryoProject/OpenTouryo/collaborators/<login>/permission --jq '{permission, role_name}'
+gh api "repos/OpenTouryoProject/OpenTouryo/collaborators?affiliation=direct" --jq '.[] | "\(.login) \(.role_name)"'
+gh api repos/OpenTouryoProject/OpenTouryo/invitations   # 承諾待ちの招待
+```
 
 ### 現状の弱点
 
 - **`develop` に必須ステータス チェックは置かない**（意図的）。
   `deps` ⇔ `develop` ⇔ feature と往復が多く、毎回のマージが CI 待ちになるため。
-  代わりに **`master` 宛の PR で CI を動かす**（7 節）
+  代わりに **`master` 宛の PR で CI を動かす**（3 節・7 節）
 - `master` の `enforce_admins` は無効（少人数運用のため意図的）
 - `delete_branch_on_merge` は無効。マージ済みブランチが残る
 
@@ -325,7 +351,26 @@ Actions が PR を承認できると、`master` のレビュー必須が形骸�
 
 ---
 
-## 5. 有効にしていない機能
+## 5. Issue のラベル
+
+11 個を定義している。**設定は人が行う**（`AGENTS.md`）。
+
+| ラベル | 用途 |
+|---|---|
+| `bug` / `enhancement` / `question` | 種別 |
+| `duplicate` / `invalid` / `wontfix` | 処理の結果 |
+| **`quality improvement`** | 品質改善。**リファクタリング・規約整備・CI/セキュリティの整備**はここ |
+| `good first issue` / `help wanted` | 外部の参加者向け |
+| `dependencies` / `.NET` | **Dependabot が自動で付ける**。手で付けない |
+
+```bash
+gh label list --repo OpenTouryoProject/OpenTouryo
+gh issue view <番号> --repo OpenTouryoProject/OpenTouryo --json labels
+```
+
+---
+
+## 6. 有効にしていない機能
 
 | 機能 | 判断 |
 |---|---|
@@ -337,7 +382,7 @@ Actions が PR を承認できると、`master` のレビュー必須が形骸�
 
 ---
 
-## 6. 実行したコマンドの記録
+## 7. 実行したコマンドの記録
 
 **エージェントが `gh` で直接実行した設定変更。** 参照系（GET）は除く。
 
@@ -424,6 +469,76 @@ gh api repos/OpenTouryoProject/OpenTouryo/actions/permissions/workflow
 grep -A3 '^permissions:' .github/workflows/*.yml
 ```
 
+### 2026-08-10 : master に必須チェックを設定
+
+`develop → master` の PR で `build-windows.yml` を発火させ（`pull_request: [master]`）、
+その成功をマージの条件にする。**リリースの関所。**
+
+**チェック名は `build`**（ワークフロー名 `Build on Windows` ではなく **ジョブ名**）。
+実測で確認すること。**名前を誤ると、通らないチェックを待ち続けてマージできなくなる。**
+
+```bash
+gh api repos/OpenTouryoProject/OpenTouryo/actions/runs/<run_id>/jobs --jq '.jobs[].name'
+```
+
+**`PATCH .../required_status_checks` は使えない**（未設定の状態では 404）。
+**ブランチ保護全体を `PUT` する**ため、**既存の設定を取得してから同じ値を明示的に渡す。**
+渡し漏れた項目は既定値に戻ってしまう。
+
+```bash
+# 1. 現在の設定を確認する
+gh api repos/OpenTouryoProject/OpenTouryo/branches/master/protection
+
+# 2. 既存値を保ったまま required_status_checks を足して PUT する
+cat > prot.json <<'JSON'
+{
+  "required_status_checks": { "strict": false, "contexts": ["build"] },
+  "enforce_admins": false,
+  "required_pull_request_reviews": {
+    "dismiss_stale_reviews": false,
+    "require_code_owner_reviews": false,
+    "require_last_push_approval": false,
+    "required_approving_review_count": 1
+  },
+  "restrictions": null,
+  "required_linear_history": false,
+  "allow_force_pushes": false,
+  "allow_deletions": false,
+  "block_creations": false,
+  "required_conversation_resolution": false,
+  "lock_branch": false,
+  "allow_fork_syncing": false
+}
+JSON
+
+gh api -X PUT repos/OpenTouryoProject/OpenTouryo/branches/master/protection --input prot.json
+
+# 3. 全項目を照合する（渡し漏れが無いか）
+gh api repos/OpenTouryoProject/OpenTouryo/branches/master/protection
+```
+
+`strict`（Require branches to be up to date）は **`false`**。
+`true` にすると、`master` が動くたびに PR の再更新と CI 再実行が要る。
+リリース時の 1 回きりの操作なので不要。
+
+> **詰まったら。** `enforce_admins` は `false` なので管理者権限で回避できる。
+> 解除は同じ `PUT` で `required_status_checks` を `null` にする。
+
+**設定した直後に、検証用の PR で動作を確かめた**（`#539`、マージせずクローズ）。
+
+```
+build           pass  13m57s   ← pull_request:[master] で発火し、成功
+CodeQL          pass
+mergeStateStatus  BLOCKED
+reviewDecision    REVIEW_REQUIRED   ← 止まっているのはレビュー未承認だけ
+```
+
+**チェック名が違っていれば、`build` が「Required だが未実行」として別の形で止まる。**
+`BLOCKED` の理由がレビューだけであることを確認すれば、名前が一致していると分かる。
+
+**CI は約 14 分**かかる。ローカルの実測（ビルド 9 分 ＋ テスト ＋ 疎通）より長いのは、
+DB の導入と初期化が入るため。**リリース時はこれを見込むこと。**
+
 ### 有効化後の運用
 
 **新しく push する内容だけ**が検査される。既存の履歴は対象外。
@@ -440,11 +555,10 @@ grep -A3 '^permissions:' .github/workflows/*.yml
 
 ---
 
-## 7. 未着手の提案
+## 8. 未着手の提案
 
 | | 内容 |
 |---|---|
-| **`master` の CI 必須化** | `build-windows.yml` に `on: pull_request: branches: [master]` を足し、`master` のブランチ保護で必須チェックにする。**リリースの関所**として働く（下記） |
 | `allowed_actions` を絞る / SHA 固定 | 現在 `all` / 強制なし。サプライ チェーン対策。**運用が重くなる**ので、必要性とあわせて判断する |
 | `delete_branch_on_merge` | マージ済みブランチを自動削除する |
 | `SECURITY.md` | Private vulnerability reporting は有効にしたが、文書は未整備 |
