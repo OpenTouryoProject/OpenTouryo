@@ -55,6 +55,7 @@
 //*  2018/01/31  西野 大介         ネストしたユーザ コントロールに対応（senderで親UCを確認する）
 //*  2018/03/29  西野 大介         .NET Standard対応で、削除機能に関連するメソッドを削除
 //*  2018/03/29  西野 大介         .NET Standard対応で、HttpCookieのポーティング
+//*  2026/08/10  玄人 幸道         Cookie に Secure 属性を設定（HTTPS のときのみ。CodeQL 対応）
 //**********************************************************************************
 
 using Touryo.Infrastructure.Framework.Exceptions;
@@ -964,6 +965,11 @@ namespace Touryo.Infrastructure.Framework.Util
             // HttpOnly属性を設定
             cookieOptions.HttpOnly = true;
 
+            // Secure属性を設定（CodeQL: Cookie 'Secure' attribute is not set to true）
+            // HTTPSのときだけ立てる。無条件にtrueにすると、HTTPで動かす
+            // 開発環境やサンプルでブラウザがCookieを保存しなくなるため。
+            cookieOptions.Secure = MyHttpContext.Current.Request.IsHttps;
+
             // 設定
             responseCookies.Set(
                 FxHttpCookieIndex.SESSION_TIMEOUT,
@@ -997,6 +1003,11 @@ namespace Touryo.Infrastructure.Framework.Util
 
             // HttpOnly属性を設定
             cookieOptions.HttpOnly = true;
+
+            // Secure属性を設定（CodeQL: Cookie 'Secure' attribute is not set to true）
+            // HTTPSのときだけ立てる。無条件にtrueにすると、HTTPで動かす
+            // 開発環境やサンプルでブラウザがCookieを保存しなくなるため。
+            cookieOptions.Secure = MyHttpContext.Current.Request.IsHttps;
 
             // 設定
             responseCookies.Set(FxHttpCookieIndex.SESSION_TIMEOUT, "", cookieOptions);
@@ -1032,6 +1043,11 @@ namespace Touryo.Infrastructure.Framework.Util
             // HttpOnly属性を設定
             newCookie.HttpOnly = true;
 
+            // Secure属性を設定（CodeQL: Cookie 'Secure' attribute is not set to true）
+            // HTTPSのときだけ立てる。無条件にtrueにすると、HTTPで動かす
+            // 開発環境やサンプルでブラウザがCookieを保存しなくなるため。
+            newCookie.Secure = HttpContext.Current.Request.IsSecureConnection;
+
             // セッションタイムアウト検出用Cookie（データ有）
             return newCookie;
         }
@@ -1065,6 +1081,11 @@ namespace Touryo.Infrastructure.Framework.Util
 
             // HttpOnly属性を設定
             newCookie.HttpOnly = true;
+
+            // Secure属性を設定（CodeQL: Cookie 'Secure' attribute is not set to true）
+            // HTTPSのときだけ立てる。無条件にtrueにすると、HTTPで動かす
+            // 開発環境やサンプルでブラウザがCookieを保存しなくなるため。
+            newCookie.Secure = HttpContext.Current.Request.IsSecureConnection;
 
             // セッションタイムアウト検出用Cookie（データ空）
             return newCookie;

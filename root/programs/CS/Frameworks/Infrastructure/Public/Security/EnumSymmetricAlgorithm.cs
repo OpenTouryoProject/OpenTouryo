@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/10/30  西野 大介         新規作成（分離）
+//*  2026/08/10  玄人 幸道         CipherMode_ECB を非推奨化（CodeQL: Encryption using ECB）
 //**********************************************************************************
 
 using System;
@@ -90,6 +91,12 @@ namespace Touryo.Infrastructure.Public.Security
         /// <summary>CipherMode.CTS</summary>
         CipherMode_CTS = 1 << 10,
         /// <summary>CipherMode.ECB</summary>
+        /// <remarks>
+        /// ECB は各ブロックを独立に暗号化するため、同じ平文ブロックが常に同じ暗号文ブロックになる。
+        /// 平文のパターンが暗号文に透け、ブロックの入れ替え・削除・再利用にも耐えない。
+        /// 指定しなければ .NET の既定である CBC が使われる。
+        /// </remarks>
+        [Obsolete("CipherMode_ECB is deprecated, please use CipherMode_CBC instead.")]
         CipherMode_ECB = 1 << 11,
         /// <summary>CipherMode.OFB</summary>
         CipherMode_OFB = 1 << 12,

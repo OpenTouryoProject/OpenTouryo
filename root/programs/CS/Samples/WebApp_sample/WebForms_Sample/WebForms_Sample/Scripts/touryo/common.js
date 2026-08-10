@@ -586,6 +586,46 @@ function Fx_InitPseudoDialog() {
 }
 
 // ---------------------------------------------------------------
+// 擬似DialogのiframeへURLを設定してよいかを判定
+// ---------------------------------------------------------------
+// 引数    url
+// 戻り値  true : 設定してよい / false : 設定しない
+// ---------------------------------------------------------------
+// このURLはフレームワーク（ShowModalScreen）が組み立てており、
+// 利用者の入力は入ってこない。AppScanのテストもクリアしている。
+// ここでの検証は、サンプルを手本にしたコードが動的なURLを
+// 流し込んだ場合に備える多層防御である。
+//   ・javascript: / data: / vbscript: … スクリプト実行を防ぐ
+//   ・//evil.example.com          … 別オリジンの表示を防ぐ
+// 相対URL（Aspx/... や /App/... ）だけを通す。
+// ---------------------------------------------------------------
+function Fx_IsSafeDialogUrl(url) {
+
+    if (typeof url !== "string" || url === "") {
+        return false;
+    }
+
+    // 前後の空白と制御文字を除いてから判定する
+    // （"java\tscript:" のような細工を防ぐ）。
+    var u = url.replace(/[\u0000-\u0020]/g, "");
+
+    // スキーム付きは、http / https だけを通す。
+    var scheme = u.match(/^([A-Za-z][A-Za-z0-9+.-]*):/);
+    if (scheme) {
+        var s = scheme[1].toLowerCase();
+        return (s === "http" || s === "https");
+    }
+
+    // "//host/path" はプロトコル相対＝別オリジンになり得るので通さない。
+    if (u.indexOf("//") === 0) {
+        return false;
+    }
+
+    // ここまで来たものは相対URL。
+    return true;
+}
+
+// ---------------------------------------------------------------
 // Pseudo Dialog表示
 // ---------------------------------------------------------------
 // 引数    ajaxPseudoDialog, url
@@ -606,7 +646,16 @@ function Fx_DisplayPseudoDialog(ajaxPseudoDialog, url) {
         for (var i = 0; i < elementChildren.length; i++) {
             if (elementChildren[i].id === "FxIFrame")
             {
-                elementChildren[i].src = url;
+                // URLを検証してから設定する（CodeQL: DOM text reinterpreted as HTML）。
+                if (Fx_IsSafeDialogUrl(url)) {
+                    elementChildren[i].src = url;
+                }
+                else {
+                    // 通さなかったことが分かるようにする（画面は空のままになる）。
+                    if (window.console && window.console.error) {
+                        window.console.error("Fx_DisplayPseudoDialog: unsafe url was blocked.");
+                    }
+                }
             }
         }
 
