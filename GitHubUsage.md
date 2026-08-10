@@ -234,23 +234,72 @@ fixed 12 件  ≠  12 件が直った
 | ブランチ | 役割 | 保護 |
 |---|---|---|
 | `develop` | 既定ブランチ。開発の集約先 | force-push 禁止 / 削除禁止 |
-| `master` | リリース | 上記 ＋ **レビュー 1 名必須** |
+| `master` | リリース | 上記 ＋ **レビュー 1 名必須** ＋ **必須チェック `build`** |
 | `deps` | Dependabot PR の受け先 | なし |
 
 ブランチ運用は git-flow。**規約は [`Contributing.ja.md`](Contributing.ja.md)。**
 
-### 現状の弱点
+### レビュアー
+
+`master` へのマージには**レビュー 1 名の承認**が要る（必須チェック `build` とあわせて 2 つの関所）。
+
+| | ロール | 承認 |
+|---|---|---|
+| `daisukenishino2` | admin | 可 |
+| `OsscJpDevInfra` | admin | 可 |
+| `daisukenishino77` | **write**（2026-08-10 に追加） | 可 |
+
+> **承認が必須レビューとして数えられるのは、`write` 以上の人だけ。**
+> `read` / `triage` でもレビューは書けるが、**ブランチ保護は満たさない。**
+> 公開リポジトリなので誰でも `read` は持つが、それでは足りない。
+
+> **自分が出した PR は、自分で承認できない。**
+> 3 名いるので、誰が PR を出しても残り 2 名から選べる。
+
+組織の `default_repository_permission` は `none`。
+リポジトリへの権限は**明示的に付与する**（`affiliation=direct` で確認できる）。
+
+```bash
+gh api repos/OpenTouryoProject/OpenTouryo/collaborators/<login>/permission --jq '{permission, role_name}'
+gh api "repos/OpenTouryoProject/OpenTouryo/collaborators?affiliation=direct" --jq '.[] | "\(.login) \(.role_name)"'
+gh api repos/OpenTouryoProject/OpenTouryo/invitations   # 承諾待ちの招待
+```
+
+### 意図的にそうしている設定
+
+**弱点に見えるが、この運用では正しい**もの。理由を書いておかないと、また提案が出る。
+
 
 - **`develop` に必須ステータス チェックは置かない**（意図的）。
   `deps` ⇔ `develop` ⇔ feature と往復が多く、毎回のマージが CI 待ちになるため。
-  代わりに **`master` 宛の PR で CI を動かす**（7 節）
+  代わりに **`master` 宛の PR で CI を動かす**（3 節・7 節）
 - `master` の `enforce_admins` は無効（少人数運用のため意図的）
-- `delete_branch_on_merge` は無効。マージ済みブランチが残る
+- **`delete_branch_on_merge` は無効にしておく**（意図的）。
+  **作業ブランチを継続利用する運用**のため。`3rd_agent` は 4 回、`2nd_agent` は 6 回と、
+  同じブランチを何度も `develop` へマージしている。
+  **自動削除にすると 1 回目で消えて、毎回作り直しになる。**
+  `deps`（Dependabot の受けブランチ）が消えると、`dependabot-retarget.yml` も機能しなくなる。
+  この設定は **PR ごとに使い捨てるブランチ**を前提としたもので、この運用には合わない
 
-> **squash merge / rebase merge を許可している。**
-> ただし **squash はコミットを消すため、NuGet パッケージの Source Link を壊す**
-> （[`root/programs/CS/NuGet/README.md`](root/programs/CS/NuGet/README.md) 7 節）。
-> `master` へは `--no-ff` で入れること。**運用で担保している。**
+### マージ方式は「通常のマージ」だけ
+
+```
+allow_merge_commit   true
+allow_squash_merge   false   … 2026-08-10 に無効化
+allow_rebase_merge   false   … 同上
+```
+
+**squash と rebase はコミットを消す**（rebase は SHA が変わる）。
+公開済みの NuGet パッケージは**詰めた時のコミットに固定される**ため、
+そのコミットが到達不能になると **Source Link が壊れる。公開後には直せない**
+（[`root/programs/CS/NuGet/README.md`](root/programs/CS/NuGet/README.md) 7 節）。
+
+**以前は「`master` へは `--no-ff` で」という申し合わせだけで担保していた。**
+実績としても squash は未使用、rebase も 1 度だけだったため、
+**選択肢ごと無くして、仕組みで防ぐことにした。**
+
+> ローカルの `git rebase`（push 前の整理）には影響しない。
+> PR のマージ ボタンから選択肢が消えるだけである。
 
 ---
 
@@ -263,6 +312,8 @@ fixed 12 件  ≠  12 件が直った
 | [`workflows/build-windows.yml`](.github/workflows/build-windows.yml) | 検証 3 本（ビルド・単体テスト・疎通）を windows-latest で |
 | [`workflows/dependabot-retarget.yml`](.github/workflows/dependabot-retarget.yml) | Dependabot PR の向き先を `deps` へ変更 |
 | [`secret_scanning.yml`](.github/secret_scanning.yml) | Secret scanning のアラートから除外するパス（1 節） |
+| [`ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE) | Issue テンプレート 3 種 ＋ `config.yml`（5 節） |
+| [`pull_request_template.md`](.github/pull_request_template.md) | PR テンプレート（5 節） |
 
 **`dependabot.yml` は置いていない**（4 節）。
 
@@ -325,7 +376,57 @@ Actions が PR を承認できると、`master` のレビュー必須が形骸�
 
 ---
 
-## 5. 有効にしていない機能
+## 5. Issue と PR
+
+### ラベル
+
+11 個を定義している。**設定は人が行う**（`AGENTS.md`）。
+
+| ラベル | 用途 |
+|---|---|
+| `bug` / `enhancement` / `question` | 種別 |
+| `duplicate` / `invalid` / `wontfix` | 処理の結果 |
+| **`quality improvement`** | 品質改善。**リファクタリング・規約整備・CI/セキュリティの整備**はここ |
+| `good first issue` / `help wanted` | 外部の参加者向け |
+| `dependencies` / `.NET` | **Dependabot が自動で付ける**。手で付けない |
+
+```bash
+gh label list --repo OpenTouryoProject/OpenTouryo
+gh issue view <番号> --repo OpenTouryoProject/OpenTouryo --json labels
+```
+
+### テンプレート
+
+```
+.github/ISSUE_TEMPLATE/config.yml       任意化 ＋ Security への導線
+.github/ISSUE_TEMPLATE/bug.md           不具合          → labels: bug
+.github/ISSUE_TEMPLATE/enhancement.md   機能追加・改善  → labels: enhancement
+.github/ISSUE_TEMPLATE/quality.md       品質改善        → labels: quality improvement
+.github/pull_request_template.md        PR
+```
+
+**強制しない。** そのために次の 2 点を選んでいる。
+
+| | 理由 |
+|---|---|
+| **Markdown 形式（`.md`）** | YAML フォーム（`.yml`）は**必須項目を強制できる**。書きたいことが書けなくなる |
+| **`blank_issues_enabled: true`** | 「Open a blank issue」から**素の Issue も起票できる** |
+
+`config.yml` の `contact_links` で、**セキュリティ問題を Private vulnerability reporting へ
+誘導している**（Issue の選択画面で分岐するので、公開 Issue に書かれる前に止まる）。
+
+**ラベルはテンプレートの front matter が自動で付ける。**
+画面から起票した場合のみで、`gh` の `--body-file` では付かない。
+
+> **エージェントにはテンプレートが自動適用されない。**
+> `--template` は「エディタで編集する前提の開始テキスト」で、
+> **`--body-file` と併用すると本文で上書きされる。**
+> エージェントはテンプレートを**読んで、その構成に沿って書く**
+> （[`AGENTS.md`](AGENTS.md)）。
+
+---
+
+## 6. 有効にしていない機能
 
 | 機能 | 判断 |
 |---|---|
@@ -337,7 +438,7 @@ Actions が PR を承認できると、`master` のレビュー必須が形骸�
 
 ---
 
-## 6. 実行したコマンドの記録
+## 7. 実行したコマンドの記録
 
 **エージェントが `gh` で直接実行した設定変更。** 参照系（GET）は除く。
 
@@ -424,6 +525,76 @@ gh api repos/OpenTouryoProject/OpenTouryo/actions/permissions/workflow
 grep -A3 '^permissions:' .github/workflows/*.yml
 ```
 
+### 2026-08-10 : master に必須チェックを設定
+
+`develop → master` の PR で `build-windows.yml` を発火させ（`pull_request: [master]`）、
+その成功をマージの条件にする。**リリースの関所。**
+
+**チェック名は `build`**（ワークフロー名 `Build on Windows` ではなく **ジョブ名**）。
+実測で確認すること。**名前を誤ると、通らないチェックを待ち続けてマージできなくなる。**
+
+```bash
+gh api repos/OpenTouryoProject/OpenTouryo/actions/runs/<run_id>/jobs --jq '.jobs[].name'
+```
+
+**`PATCH .../required_status_checks` は使えない**（未設定の状態では 404）。
+**ブランチ保護全体を `PUT` する**ため、**既存の設定を取得してから同じ値を明示的に渡す。**
+渡し漏れた項目は既定値に戻ってしまう。
+
+```bash
+# 1. 現在の設定を確認する
+gh api repos/OpenTouryoProject/OpenTouryo/branches/master/protection
+
+# 2. 既存値を保ったまま required_status_checks を足して PUT する
+cat > prot.json <<'JSON'
+{
+  "required_status_checks": { "strict": false, "contexts": ["build"] },
+  "enforce_admins": false,
+  "required_pull_request_reviews": {
+    "dismiss_stale_reviews": false,
+    "require_code_owner_reviews": false,
+    "require_last_push_approval": false,
+    "required_approving_review_count": 1
+  },
+  "restrictions": null,
+  "required_linear_history": false,
+  "allow_force_pushes": false,
+  "allow_deletions": false,
+  "block_creations": false,
+  "required_conversation_resolution": false,
+  "lock_branch": false,
+  "allow_fork_syncing": false
+}
+JSON
+
+gh api -X PUT repos/OpenTouryoProject/OpenTouryo/branches/master/protection --input prot.json
+
+# 3. 全項目を照合する（渡し漏れが無いか）
+gh api repos/OpenTouryoProject/OpenTouryo/branches/master/protection
+```
+
+`strict`（Require branches to be up to date）は **`false`**。
+`true` にすると、`master` が動くたびに PR の再更新と CI 再実行が要る。
+リリース時の 1 回きりの操作なので不要。
+
+> **詰まったら。** `enforce_admins` は `false` なので管理者権限で回避できる。
+> 解除は同じ `PUT` で `required_status_checks` を `null` にする。
+
+**設定した直後に、検証用の PR で動作を確かめた**（`#539`、マージせずクローズ）。
+
+```
+build           pass  13m57s   ← pull_request:[master] で発火し、成功
+CodeQL          pass
+mergeStateStatus  BLOCKED
+reviewDecision    REVIEW_REQUIRED   ← 止まっているのはレビュー未承認だけ
+```
+
+**チェック名が違っていれば、`build` が「Required だが未実行」として別の形で止まる。**
+`BLOCKED` の理由がレビューだけであることを確認すれば、名前が一致していると分かる。
+
+**CI は約 14 分**かかる。ローカルの実測（ビルド 9 分 ＋ テスト ＋ 疎通）より長いのは、
+DB の導入と初期化が入るため。**リリース時はこれを見込むこと。**
+
 ### 有効化後の運用
 
 **新しく push する内容だけ**が検査される。既存の履歴は対象外。
@@ -440,15 +611,11 @@ grep -A3 '^permissions:' .github/workflows/*.yml
 
 ---
 
-## 7. 未着手の提案
+## 8. 未着手の提案
 
 | | 内容 |
 |---|---|
-| **`master` の CI 必須化** | `build-windows.yml` に `on: pull_request: branches: [master]` を足し、`master` のブランチ保護で必須チェックにする。**リリースの関所**として働く（下記） |
 | `allowed_actions` を絞る / SHA 固定 | 現在 `all` / 強制なし。サプライ チェーン対策。**運用が重くなる**ので、必要性とあわせて判断する |
-| `delete_branch_on_merge` | マージ済みブランチを自動削除する |
-| `SECURITY.md` | Private vulnerability reporting は有効にしたが、文書は未整備 |
-| Issue / PR テンプレート | 「調査 → 実装 → 検証」の型が定まっているのでテンプレート化できる |
 | `.github/dependabot.yml` | #517 の決着後 |
 
 > **`develop` を必須チェックの対象にはしない。**

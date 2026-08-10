@@ -42,7 +42,8 @@ cd root\programs
 **一次情報は [`RELEASE.md`](RELEASE.md) と [`CS/NuGet/README.md`](CS/NuGet/README.md)。**
 
 ```
-1. develop → master へマージ（--no-ff）し、タグをプッシュ
+1. develop → master へ PR を出し、マージ（--no-ff）してタグをプッシュ
+     master は PR 経由のみ。レビュー 1 名 ＋ CI（build、約 14 分）が要る
 2. .\0_SetVersion.ps1 -Version 3.3.0
 3. コミット & push                      ← Source Link はこのコミットに固定される
 4. CS\0_Release4Nuget.bat               ← 版はアセンブリに焼き込まれる
@@ -188,5 +189,6 @@ powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.
 - **GitHub への投稿は、文面を提示して承認を得てから。** `gh` で行い、`--body-file` を使う。
   アカウントは `OsscJpDevInfra`（`gh auth status` で確認）
 - **Issue のクローズ・ラベル・アサイン、PR の作成やマージは人が行う**
+- **PR のレビューは `--comment` だけ。** `--approve` / `--request-changes` は人のみ
 - **NuGet への push は人のみ**（外部公開で取り消しが困難）
 - 前提となるサービスや DB の状態が足りないときは、**勝手に変えず対処方法とともに報告する**

@@ -546,6 +546,14 @@ https://raw.githubusercontent.com/OpenTouryoProject/OpenTouryo/＜SHA＞/＜パ�
 **したがって、詰めたコミットは `--no-ff` で develop → master へ流して残す。**
 master は履歴を書き換えないため、これが最も確実である。
 
+> **上の 2 つ（squash / rebase）は、GitHub 側で選べないようにしてある。**
+> リポジトリ設定で `allow_squash_merge` / `allow_rebase_merge` を無効にしたため、
+> **PR のマージ ボタンからは「通常のマージ」しか選べない**
+> （[`GitHubUsage.md`](../../../../GitHubUsage.md) 2 節）。
+>
+> **残る 3 つは依然として手作業で起こせる。**
+> force-push と、ブランチの削除には気を付けること。
+
 ### 「先頭コミット」ではない
 
 守るべきは**詰めた時点の HEAD** であり、そのブランチの先端であり続ける必要はない。

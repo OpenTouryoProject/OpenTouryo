@@ -60,6 +60,23 @@ gh issue create --repo OpenTouryoProject/OpenTouryo --title <title> --body-file 
 - 本文は一時ファイルに書き、`--body-file` で渡す（改行・記号の欠落を避ける）
 - 投稿後は URL を報告する
 
+**テンプレートは自動では適用されない。読んで、その構成に沿って書くこと。**
+
+`gh issue create` / `gh pr create` の `--template` は「エディタで編集する前提の
+開始テキスト」であり、**`--body-file` と併用すると本文で上書きされる。**
+エージェントは `--body-file` を使うため、テンプレートは効かない。
+
+```
+.github/ISSUE_TEMPLATE/bug.md          不具合
+.github/ISSUE_TEMPLATE/enhancement.md  機能追加・改善
+.github/ISSUE_TEMPLATE/quality.md      品質改善（リファクタリング・規約・CI・文書）
+.github/pull_request_template.md       PR
+```
+
+**テンプレートは任意**（`blank_issues_enabled: true`）だが、
+**「利用者への影響」は、無いなら「無し」と明記する。**
+空欄だと、確認したのか未確認なのかが読み手に分からない。
+
 **このリポジトリでは `OsscJpDevInfra` アカウントを使用する。**
 `gh auth status` に複数のアカウントが登録されていることがあるため、
 投稿前にアクティブなアカウントを確認すること。異なる場合は `gh auth switch` で切り替える。
@@ -71,6 +88,23 @@ gh auth switch --user OsscJpDevInfra  # 異なる場合は切り替え
 
 **Issue のクローズ・ラベル変更・アサイン、PR の作成やマージは人が行う。**
 これらは成果物の検収と同じ扱いとし、エージェントは提案に留める。
+
+**PR のレビューは、`--comment` だけ行ってよい。**
+
+| 操作 | 誰が行うか |
+|---|---|
+| `gh pr review --comment` | **エージェント可**（文面を提示し、承認を得てから） |
+| `gh pr review --approve` / `--request-changes` | **人のみ。検収に当たる** |
+| PR の作成・マージ | **人のみ** |
+
+`--comment` は `COMMENTED` として記録され、**必須レビューを満たさない**。
+`reviewDecision` は `REVIEW_REQUIRED` のまま変わらないので、
+**マージを進めてしまう心配は無い。**
+
+> **承認が必須レビューとして数えられるのは `write` 以上の人だけ。**
+> 公開リポジトリなので誰でも `read` は持つが、それでは足りない。
+> **自分が出した PR は、自分で承認できない。**
+> レビュアーの構成は [`GitHubUsage.md`](GitHubUsage.md) 2 節。
 
 ### コーディング規約は CODING.md、領域ごとの事情は ANALYSIS.md に従う
 

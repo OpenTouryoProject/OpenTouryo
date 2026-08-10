@@ -36,3 +36,12 @@ For the setup and build steps, refer to [/root/README.md](root/README.md).
 ### [AGENTS.md](AGENTS.md)
 This is the **entry point** when working on this repository with a coding agent.
 It summarizes the policies to follow and the links to the documents to refer to.
+
+### [CONTRIBUTING.md](CONTRIBUTING.md)
+Coding rules and conventions, the branching model, and the granularity of pull requests.
+**The same rules apply to people and to coding agents.**
+
+### [SECURITY.md](SECURITY.md)
+How to report a vulnerability, which versions are supported, and what is out of scope.
+**Do not open a public issue for a security problem** — use
+[private vulnerability reporting](https://github.com/OpenTouryoProject/OpenTouryo/security/advisories/new).
