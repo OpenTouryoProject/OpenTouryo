@@ -1,4 +1,4 @@
-//**********************************************************************************
+﻿//**********************************************************************************
 //* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
@@ -41,6 +41,7 @@
 //*  2018/10/30  西野 大介         各種プロバイダのサポートを追加
 //*  2018/10/30  西野 大介         CipherMode, PaddingMode指定の追加（CipherModeによってはIVを無視する）。
 //*  2018/11/09  西野 大介         インスタンス・メソッド化
+//*  2026/08/10  玄人 幸道         CipherMode_ECB 非推奨化に伴う CS0618 の抑止（CodeQL 対応）
 //**********************************************************************************
 
 using System;
@@ -282,10 +283,14 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 cm = CipherMode.CTS;
             }
+            // CipherMode_ECB は非推奨だが、指定された場合は従来どおり動作させる（下位互換）。
+            // 参照するだけで CS0618 が出るため、この分岐に限って抑止する。
+#pragma warning disable CS0618
             else if (esa.HasFlag(EnumSymmetricAlgorithm.CipherMode_ECB))
             {
                 cm = CipherMode.ECB;
             }
+#pragma warning restore CS0618
             else if (esa.HasFlag(EnumSymmetricAlgorithm.CipherMode_OFB))
             {
                 cm = CipherMode.OFB;

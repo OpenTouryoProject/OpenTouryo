@@ -95,12 +95,35 @@ CodeQL の内訳（上位）。
 1  Deserialization of untrusted data     ← critical
 ```
 
-- **critical 1 件は `Public/IO/BinarySerialize.cs`**（`Deserialization of untrusted data`）。
-  **フレームワーク本体であり、要検討**
-- 上位の多くは**サンプルの同梱 JS（`jquery.validate*.js`）と `Web.config`** に集中している。
-  サンプルであることを踏まえた判断が要る
+### トリアージの方針
 
-**未トリアージ。** 対応方針は別途決める。
+**30 件を Issue にはしない。** アラートは Security タブが追跡するので、
+同じものを Issue でも管理すると二重管理になる。
+**Issue にするのは「調べて判断が要るもの」だけ**にする。
+
+| 分類 | 件数 | 方針 |
+|---|---|---|
+| **同梱のサードパーティ製 JS** | 15 | **棄却済み**（`won't fix`）。jQuery / jQuery Validation であり、修正対象ではない。更新はライブラリの版上げで行う。`-vsdoc.js` は IntelliSense 用で実行されない |
+| **`BinarySerialize.cs`（critical）** | 1 | **棄却済み**（`won't fix`）。**net48 でのみ継続利用**。`Public_netcore100.csproj` で `<Compile Remove>` しており、netcore100 ではコンパイルされない（`BinaryFormatter` は .NET 9 で削除済み）。net48 の下位互換のために残す |
+| **`Missing X-Frame-Options`** | 8 | **6 件は対応済み**（下表）。残る 2 件は MVC の `Views/Web.config` で、**応答ヘッダを出す設定ファイルではない**ため対応しない |
+| **`requireSSL` が `true` でない** | 4 | **対応済み。** `requireSSL="true"` の行を**コメントアウトで併記**し、「本番ではコメントアウトを外す」と明記。**サンプルは HTTP で動かす**ため、既定は `false` のまま |
+| **`Encryption using ECB`** | 1 | **対応済み → 棄却。** `EnumSymmetricAlgorithm.CipherMode_ECB` に **`[Obsolete]` を付与**した。利用者が指定したときだけ通る 5 択の 1 つで、**既定ではない**（指定しなければ .NET 既定の CBC）。リポジトリ内に指定箇所は 0 件。**削除は下位互換を壊す**ため、非推奨化に留めた。コードは残るのでアラートは消えず、`won't fix` で棄却する |
+| **`Cookie 'Secure'` 未設定** | 2 | **未決。** `StdMigration/CookieExtensions.cs`。`Secure=true` を既定にすると **HTTP の開発環境で Cookie が送られなくなる** |
+| **`DOM text reinterpreted as HTML`** | 2 | **未決。** サンプルの `common.js`（自作）。擬似ダイアログの `iframe.src` に `url` をそのまま設定している |
+
+**棄却は削除ではない。** Security タブに `Dismissed` として残り、
+棄却した人・日時・理由・コメントが記録される。復帰もできる。
+
+### `X-Frame-Options` の値を対象ごとに分けている理由
+
+| 対象 | 値 | 理由 |
+|---|---|---|
+| `WebForms_Sample`（CS / VB） | **`SAMEORIGIN`** | 擬似ダイアログが**同一オリジンの `iframe`** を使う（`Scripts/touryo/common.js` の `FxIFrame`）。**`DENY` にすると動作しなくなる** |
+| `MVC_Sample`（CS / VB） | `DENY` | MVC 版の `common.js` は**別物（818 行）で `iframe` を使わない**。WebForms 版は 1656 行で `iframe` 6 箇所 |
+| `ASPNETWebService`（CS / VB） | `DENY` | SOAP の Web サービス。フレームに表示する用途がない |
+
+**既定は `DENY`、必要な所だけ `SAMEORIGIN` に緩める。**
+一律に緩めると、緩める必要のない画面まで枠に入れられるようになる。
 
 ---
 
@@ -240,4 +263,5 @@ gh api -X PATCH orgs/OpenTouryoProject/code-security/configurations/265927 \
 | `SECURITY.md` | Private vulnerability reporting は有効にしたが、文書は未整備 |
 | Issue / PR テンプレート | 「調査 → 実装 → 検証」の型が定まっているのでテンプレート化できる |
 | `.github/dependabot.yml` | #517 の決着後 |
-| **CodeQL アラート 30 件のトリアージ** | 特に critical 1 件（`BinarySerialize.cs`） |
+| **CodeQL の未決 4 件** | `Cookie 'Secure'` 2 / `DOM text reinterpreted as HTML` 2。いずれも**開発環境やサンプルの動作への影響**があり、判断が要る |
+| `Views/Web.config` の 2 件 | 応答ヘッダを出す設定ファイルではないため対応しない。棄却するか放置するかは未決 |
