@@ -13,6 +13,10 @@ https://github.com/OpenTouryoProject/OpenTouryo/
 "プルリクエスト" の粒度は、人もエージェントも同じ規約による。
 本書は、そこに書かれていない**エージェント固有の制約**を扱う。
 
+> **手順を思い出したいだけなら [`CHEATSHEET.md`](root/programs/CHEATSHEET.md) を見る。**
+> 検証・リリース・VB ビルド・ツール・規約の要点と、よく踏む落とし穴を 1 枚にまとめてある。
+> **理由や判断が要ることは書いていない**ので、迷ったらそこからリンク先へ辿ること。
+
 ### Git 操作は行わない（状態を変える操作をしない）
 
 **成果物の検収は人が行う。** エージェントは作業結果をワーキング ツリーに残すところまでを担当し、
@@ -99,6 +103,7 @@ Copyright ブロックの扱い、`ArgumentException` 系の引数の順、`.bat
 
 | 目的 | 読む文書 |
 |---|---|
+| **手順だけを引く（早見）** | [`CHEATSHEET.md`](root/programs/CHEATSHEET.md) |
 | リリース時の作業全体 | [`RELEASE.md`](root/programs/RELEASE.md) |
 | 全ビルドの実行と判定 | [`BUILDING.md`](root/programs/BUILDING.md) |
 | 単体テストの実行と判定 | [`TESTING.md`](root/programs/TESTING.md) |

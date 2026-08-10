@@ -1,4 +1,4 @@
-# NuGet パッケージの作成と公開
+﻿# NuGet パッケージの作成と公開
 
 パッケージの作成と公開の手順。
 **シンボル サーバー（`.snupkg`）とソース サーバー（Source Link）を機能させる**ところまでを含む。
@@ -653,3 +653,27 @@ Touryo.Infrastructure
 
 > `Regenerate` は**値だけを新しくする**（キーは有効になる）。
 > 使い終わったキーを無効化する目的では使えない。**無効化は `Revoke`。**
+
+---
+
+## 9. よく踏む落とし穴
+
+**いずれも「気付かないまま公開してしまう」類。** 詳細は右端の節を読むこと。
+
+| 症状 | 原因 | 詳細 |
+|---|---|---|
+| `.nupkg` は通るが **`.snupkg` だけ 403** | `-ApiKey` はシンボル サーバーに使われない。**`-SymbolApiKey` も渡す** | 8 節 |
+| **F11 でローカルのソースが開く** | PDB に絶対パスが残っている。**Source Link を通っていない** | 1 節（2） |
+| nuspec と PDB のコミットが食い違う | PDB は**ビルド時**、nuspec は**パック時**に決まる。間でコミットしない | 2 節 確認 4 |
+| 中身が古いのに新しい版で出る | リビルドを飛ばした。`_NuGetPack.bat` が DLL を検査して止める | 1 節（3） |
+| net48 側だけ Source Link / パス正規化が効かない | 旧形式 csproj は SDK の自動処理が効かない。明示指定が要る | 5 節 |
+| 公開したコミットが消えた | rebase / squash / ブランチ削除。**公開後は直せない** | 7 節 |
+
+**上 5 つは公開前に机上で分かる。** 2 節の確認 5 点を省かないこと。
+最後の 1 つだけは、公開後に他人の操作で起こり得る。
+
+> **`MSB4226`（`Microsoft.WebApplication.targets` が見つからない）** は
+> パッケージ作成ではなくビルドの問題。
+> nuget が別製品（SQL Server Management Studio 等）同梱の MSBuild を拾っている。
+> `nuget.exe restore ... %NUGET_MSBUILD%` を渡す
+> （[`Frameworks/ANALYSIS.md`](../Frameworks/ANALYSIS.md) 7 章）。
