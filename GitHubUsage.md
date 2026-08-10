@@ -36,7 +36,7 @@ https://github.com/organizations/OpenTouryoProject/settings/security_products
 | Code scanning（CodeQL 既定セットアップ） | 有効 | ワークフローを自前で持たずに済む |
 | Private vulnerability reporting | 有効 | **暗号・認証ライブラリを公開している**ため、非公開の報告窓口が要る |
 | Secret scanning | 有効 | |
-| **Secret scanning: Push protection** | **無効** | **後述。棚卸し後に有効化する** |
+| **Secret scanning: Push protection** | **有効** | 2026-08-10 に有効化（後述） |
 | **Secret scanning: Non-provider patterns** | **無効** | **後述** |
 | **Secret scanning: Validity checks** | **無効** | **後述** |
 | GitHub Advanced Security | 有効 | 公開リポジトリでは無料 |
@@ -52,12 +52,12 @@ https://github.com/organizations/OpenTouryoProject/settings/security_products
 
 #### Push protection
 
-**段階分けのため。** 有効にすると、検知した push をその場で止める。
+**段階分けのため、最初は無効にした。** 有効にすると、検知した push をその場で止める。
 
 ```
-1. Secret scanning だけ先に有効化      ← いまここ
-2. アラートを棚卸し（現在 0 件）
-3. Push protection を有効化
+1. .github/secret_scanning.yml を develop へ入れる
+2. Secret scanning だけ先に有効化   → アラート 0 件で立ち上がり、棚卸しは不要だった
+3. Push protection を有効化         → 2026-08-10 実施
 ```
 
 いきなり両方入れると、**リリース作業の途中で不意に止まる**。
@@ -123,7 +123,7 @@ CodeQL の内訳（上位）。
 | **`requireSSL` が `true` でない** | 4 | **対応済み。** `requireSSL="true"` の行を**コメントアウトで併記**し、「本番ではコメントアウトを外す」と明記。**サンプルは HTTP で動かす**ため、既定は `false` のまま |
 | **`Encryption using ECB`** | 1 | **対応済み → 棄却。** `EnumSymmetricAlgorithm.CipherMode_ECB` に **`[Obsolete]` を付与**した。利用者が指定したときだけ通る 5 択の 1 つで、**既定ではない**（指定しなければ .NET 既定の CBC）。リポジトリ内に指定箇所は 0 件。**削除は下位互換を壊す**ため、非推奨化に留めた。コードは残るのでアラートは消えず、`won't fix` で棄却する |
 | **`Cookie 'Secure'` 未設定** | 2 | **対応済み → 棄却。** 指摘されたのは `StdMigration/CookieExtensions.cs` の `Set` 3 つのうち **`CookieOptions` を受け取らない 2 つ**で、**リポジトリ内に呼び出しが 1 件も無い**（利用者向けに残している移植 API）。実際に Cookie を作るのは `CookieOptions` 版を呼ぶ `FxCmnFunction` で、そちらの **4 箇所**（net48 / netcore100 各 2）を修正した。**`HttpOnly` は設定済みだったが `Secure` が無かった**（前者は XSS 対策、後者は盗聴対策で別物） |
-| **`DOM text reinterpreted as HTML`** | 2 | **対応済み。** サンプルの `common.js`（自作、CS / VB 同一）。擬似ダイアログの `iframe.src` に URL を設定する前に、`Fx_IsSafeDialogUrl()` でスキームを検証するようにした。**既存の脆弱性を塞いだのではない**（URL はフレームワークの `ShowModalScreen` が組み立て、利用者入力は入らず、AppScan もクリア済み）。**サンプルを手本にしたコードが動的な URL を流し込む場合に備える多層防御** |
+| **`DOM text reinterpreted as HTML`** | 2 | **多層防御を追加したが、アラートは残る → 棄却。** 擬似ダイアログの `iframe.src` に URL を設定する前に `Fx_IsSafeDialogUrl()` でスキームを検証するようにした。**CodeQL はこの検証関数をサニタイザと認識しない**ため、指摘は消えない。**既存の脆弱性を塞いだのではない**（URL はフレームワークの `ShowModalScreen` が組み立て、利用者入力は入らず、AppScan もクリア済み） |
 
 **棄却は削除ではない。** Security タブに `Dismissed` として残り、
 棄却した人・日時・理由・コメントが記録される。復帰もできる。
@@ -173,6 +173,60 @@ newCookie.Secure = HttpContext.Current.Request.IsSecureConnection;   // net48
 > `//Secure = CookieSecurePolicy.Always` がコメントアウトで残っている。
 > アプリ全体の Cookie ポリシーで一括指定する方法もある（未検討）。
 
+### CodeQL の挙動（踏んだので記録する）
+
+#### ① 棄却は、コードが動くと外れる
+
+**アラートの同一性は「ルール ＋ 位置」で判定される。**
+棄却した箇所の周辺を編集して行番号がずれると、
+**別のアラートとして作り直され、`open` に戻る。**
+
+`Encryption using ECB` がこれに当たった。棄却済みだったが、
+`#pragma warning disable` とコメントを足したことで **287 行 → 291 行**にずれ、
+新しい番号で `open` に戻ったため、**同じ理由で棄却し直した。**
+
+**棄却済みの箇所を触ったら、棄却が残っているかを確認すること。**
+
+#### ② `fixed` は「直った」とは限らない
+
+`#537` のマージ後、`fixed` が 12 件になったが、
+**本当に解消したのは `Missing X-Frame-Options` の 6 件だけ**だった。
+
+```
+fixed 12 件  ≠  12 件が直った
+   6 件  解消（新しいアラートが出ていない）
+   6 件  位置が変わっただけ（同数が open に出ている）
+```
+
+**`fixed` の件数だけを見て「減った」と判断してはならない。**
+`open` の中身とあわせて確認する。
+
+#### ③ PR のチェックと、ブランチ全体のスキャンは別物
+
+**PR のチェックは差分中心で、ブランチ全体の状態とは一致しない。**
+
+- `#537` の `CodeQL` チェックは `fail` だったが、**新しい脆弱性ではなかった**。
+  行番号がずれた 2 件を「この PR で追加された」と数えたため
+- 逆に、PR 時点では `'requireSSL'` が解消したように見えたが、
+  **`develop` の全体スキャンでは残っていた**
+
+**判断は `develop`（既定ブランチ）のスキャン結果で行うこと。**
+
+#### ④ 検証を足してもアラートは消えないことがある
+
+`DOM text reinterpreted as HTML` に対して `Fx_IsSafeDialogUrl()` を追加したが、
+**CodeQL はこの関数をサニタイザと認識せず、指摘は残った。**
+
+**「アラートが消えること」と「安全になること」は別である。**
+
+| | アラート | 実際の安全性 |
+|---|---|---|
+| `'requireSSL'`（コメントで併記） | **消えない** | **変わらない**（有効な設定は `false` のまま） |
+| `DOM text ...`（検証を追加） | **消えない** | **上がった**（危険なスキームを実際に弾く） |
+| `X-Frame-Options`（ヘッダ追加） | **消えた** | **上がった** |
+
+**アラート件数を目的にすると判断を誤る。** 何を守りたいかで決めること。
+
 ---
 
 ## 2. ブランチと保護
@@ -187,8 +241,9 @@ newCookie.Secure = HttpContext.Current.Request.IsSecureConnection;   // net48
 
 ### 現状の弱点
 
-- **`develop` に必須ステータス チェックが無い。** CI は `push: [deps]` でしか動かないため、
-  `develop` へ入る変更は CI で検証されていない
+- **`develop` に必須ステータス チェックは置かない**（意図的）。
+  `deps` ⇔ `develop` ⇔ feature と往復が多く、毎回のマージが CI 待ちになるため。
+  代わりに **`master` 宛の PR で CI を動かす**（7 節）
 - `master` の `enforce_admins` は無効（少人数運用のため意図的）
 - `delete_branch_on_merge` は無効。マージ済みブランチが残る
 
@@ -199,16 +254,62 @@ newCookie.Secure = HttpContext.Current.Request.IsSecureConnection;   // net48
 
 ---
 
-## 3. ワークフロー
+## 3. GitHub Actions
 
-| ファイル | 発火 | 内容 |
+### `.github/` の中身
+
+| ファイル | 役割 |
+|---|---|
+| [`workflows/build-windows.yml`](.github/workflows/build-windows.yml) | 検証 3 本（ビルド・単体テスト・疎通）を windows-latest で |
+| [`workflows/dependabot-retarget.yml`](.github/workflows/dependabot-retarget.yml) | Dependabot PR の向き先を `deps` へ変更 |
+| [`secret_scanning.yml`](.github/secret_scanning.yml) | Secret scanning のアラートから除外するパス（1 節） |
+
+**`dependabot.yml` は置いていない**（4 節）。
+
+### ワークフロー
+
+| ファイル | 発火 | `permissions` |
 |---|---|---|
-| [`build-windows.yml`](.github/workflows/build-windows.yml) | `push: [deps]` / 手動 | 検証 3 本（ビルド・単体テスト・疎通）を windows-latest で |
-| [`dependabot-retarget.yml`](.github/workflows/dependabot-retarget.yml) | `pull_request_target` | Dependabot PR の向き先を `deps` へ変更 |
-| CodeQL（既定セットアップ） | GitHub 管理 | ワークフロー ファイルを持たない |
+| `build-windows.yml` | `push: [deps]` / **`pull_request: [master]`** / 手動 | `contents: read` |
+| `dependabot-retarget.yml` | `pull_request_target`（`opened`） | `pull-requests: write` |
+| CodeQL（既定セットアップ） | GitHub 管理。`push` / `pull_request` / 週次 | ワークフロー ファイルを持たない |
 
 `build-windows.yml` は既知の署名エラー（`MSB3482` / `MSB3325` / `MSB3321`）を除外する。
 **ローカルと CI で出るコードが違う**理由はファイル冒頭のコメントにある。
+
+> **`dependabot-retarget.yml` は `pull_request_target` を使う。**
+> これは**ベース ブランチ側の定義を、書き込み権限付きで動かす**トリガである。
+> ここで PR のコードを `checkout` して実行すると、
+> **PR に任意のコードを書ける相手へ権限を渡すことになる**（pwn request）。
+>
+> 本ワークフローは **`checkout` を行わず**、`gh` コマンドだけを実行し、
+> 権限も `pull-requests: write` の 1 つに絞っている。
+> **この 2 点は変更しないこと。** 理由はファイル冒頭のコメントにある。
+
+### GitHub 側の設定
+
+```
+Actions                            enabled
+allowed_actions                    all          … 使用できるアクションを制限していない
+sha_pinning_required               false        … アクションの SHA 固定を強制していない
+default_workflow_permissions       read         … 2026-08-10 に write から変更
+can_approve_pull_request_reviews   false        … 2026-08-10 に true から変更
+Secrets / Variables                なし
+```
+
+**既定を `read` にした。** 各ワークフローは `permissions:` を明示して
+最小権限にしているため、**既定を下げても動く**（実測で確認）。
+**`permissions:` を書き忘れた新しいワークフローが、
+書き込み権限を持ってしまう状態を無くすため。**
+
+> それでも**新しいワークフローを足すときは `permissions:` を書くこと。**
+> 何を必要としているかが、ファイルを見て分かる方がよい。
+
+**`can_approve_pull_request_reviews` も無効にした。**
+Actions が PR を承認できると、`master` のレビュー必須が形骸化するため。
+
+`Secrets` は 1 つも登録していない。**認証が要る操作は入れていない**ということであり、
+足すときは「本当に必要か」を先に考える。
 
 ---
 
@@ -290,14 +391,52 @@ gh api orgs/OpenTouryoProject/code-security/configurations/265927/repositories \
   --jq '.[] | {status, repo: .repository.full_name}'
 ```
 
-### 次に Push protection を有効化するとき
+### 2026-08-10 : Push protection の有効化
 
-**構成の値を変えるだけでよい**（リポジトリ個別の設定は触らない）。
+Secret scanning のアラートが 0 件で安定したことを確認した上で実施。
+**構成の値を変えるだけ**で、リポジトリ個別の設定は触らない。
 
 ```bash
 gh api -X PATCH orgs/OpenTouryoProject/code-security/configurations/265927 \
   -f secret_scanning_push_protection=enabled
+
+# リポジトリ側へ反映されたかを確認する
+gh api repos/OpenTouryoProject/OpenTouryo --jq '.security_and_analysis'
 ```
+
+**戻すとき**も同じ形（`-f secret_scanning_push_protection=disabled`）。
+
+### 2026-08-10 : Actions の既定権限を絞る
+
+**リポジトリ設定**（組織の構成ではない）。`repo` スコープで実行できる。
+
+```bash
+gh api -X PUT repos/OpenTouryoProject/OpenTouryo/actions/permissions/workflow   -f default_workflow_permissions=read -F can_approve_pull_request_reviews=false
+
+# 確認
+gh api repos/OpenTouryoProject/OpenTouryo/actions/permissions/workflow
+```
+
+**下げる前に、各ワークフローが `permissions:` を明示しているかを確認すること。**
+既定に頼っているワークフローがあると、権限不足で失敗する。
+
+```bash
+grep -A3 '^permissions:' .github/workflows/*.yml
+```
+
+### 有効化後の運用
+
+**新しく push する内容だけ**が検査される。既存の履歴は対象外。
+
+| | |
+|---|---|
+| 止まるもの | **発行元を特定できる形のキー**（NuGet の `oy2...`、AWS、GitHub PAT など） |
+| 止まらないもの | `.pfx` / `.cer`、接続文字列の `Password=`（`Non-provider patterns` が無効のため） |
+
+止まった場合は理由を選んでバイパスできる（**管理者に通知され、記録が残る**）。
+
+> **`.github/secret_scanning.yml` の除外は Push protection には効かない。**
+> あちらはアラート（Secret scanning）の抑制であり、push の判定は見ていない。
 
 ---
 
@@ -305,10 +444,19 @@ gh api -X PATCH orgs/OpenTouryoProject/code-security/configurations/265927 \
 
 | | 内容 |
 |---|---|
-| **`develop` の CI 必須化** | `build-windows.yml` の `on: push` に `develop` を追加し、ブランチ保護で必須チェックにする |
-| **Push protection の有効化** | Secret scanning のアラートが 0 件で安定していることを確認してから |
+| **`master` の CI 必須化** | `build-windows.yml` に `on: pull_request: branches: [master]` を足し、`master` のブランチ保護で必須チェックにする。**リリースの関所**として働く（下記） |
+| `allowed_actions` を絞る / SHA 固定 | 現在 `all` / 強制なし。サプライ チェーン対策。**運用が重くなる**ので、必要性とあわせて判断する |
 | `delete_branch_on_merge` | マージ済みブランチを自動削除する |
 | `SECURITY.md` | Private vulnerability reporting は有効にしたが、文書は未整備 |
 | Issue / PR テンプレート | 「調査 → 実装 → 検証」の型が定まっているのでテンプレート化できる |
 | `.github/dependabot.yml` | #517 の決着後 |
-| **CodeQL の再スキャン待ち** | 修正した 10 件（`X-Frame-Options` 6 / `requireSSL` 4）は `develop` で再スキャンされるまで `open` のまま。**`requireSSL` は有効な設定が `false` のままなので消えない見込み**で、その 4 件は結果を見てから棄却する |
+
+> **`develop` を必須チェックの対象にはしない。**
+> `deps` ⇔ `develop` ⇔ feature と**往復が多いハブ**であり、
+> 毎回のマージが CI 待ちになる。
+> `deps` 由来の変更は**すでに `deps` で検証済み**なので、二度手間でもある。
+>
+> **`master` は往復しない。** `develop` からのマージはリリース時だけで、
+> 1 回あたり 9 分程度の待ちは受け入れられる。
+> `RELEASE.md` フェーズ 1 の「検証 3 本」を、機械的に担保できる。
+

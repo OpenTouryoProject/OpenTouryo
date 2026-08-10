@@ -32,6 +32,16 @@ name: Build on Windows
 on:
   push:
     branches: [deps]
+  # master 宛の PR ではリリースの関所として動かす。
+  #
+  #   ・master へのマージは develop からのリリース時だけで、往復しない。
+  #     1 回あたり 10 分前後の待ちは受け入れられる。
+  #   ・RELEASE.md フェーズ 1 の「検証 3 本」を機械的に担保する。
+  #
+  # develop は対象にしない。deps ⇔ develop ⇔ feature と往復が多く、
+  # 毎回のマージが CI 待ちになる。deps 由来の変更は deps で検証済みでもある。
+  pull_request:
+    branches: [master]
   workflow_dispatch:
 
 permissions:
