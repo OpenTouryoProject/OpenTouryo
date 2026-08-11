@@ -615,9 +615,54 @@ DB の導入と初期化が入るため。**リリース時はこれを見込む
 
 | | 内容 |
 |---|---|
-| `allowed_actions` を絞る / SHA 固定 | 現在 `all` / 強制なし。サプライ チェーン対策。**運用が重くなる**ので、必要性とあわせて判断する |
+| **`allowed_actions` を絞る / SHA 固定** | 現在 `all` / 強制なし。**方針としては厳し目に倒す**（下記） |
 | `.github/dependabot.yml` | #517 の決着後 |
 
+### `allowed_actions` と SHA 固定について
+
+**方針 : Actions の設定は厳し目に倒す。**
+ワークフローは**エージェントが書き足すことが多く**、その際に未知のアクションや
+可変タグが入り込む余地を、仕組みで塞いでおきたい。
+
+#### 2 つは別の話
+
+| | 何を制限するか |
+|---|---|
+| **`allowed_actions`** | **どのアクションを使ってよいか**。`all` / `local_only` / `selected` |
+| **SHA 固定**（`sha_pinning_required`） | **`@v7` のようなタグ指定を禁じ、40 桁の SHA を強制する** |
+
+**タグは動かせる。** アクションの作者（またはアカウントを乗っ取った第三者）が
+`v7` を別のコミットへ付け替えると、**こちらは何も変えていないのに、
+次の実行から違うコードが動く。** SHA なら、そのコミットしか実行されない。
+
+#### 現状
+
+```
+actions/checkout@v7                      GitHub 製・タグ
+actions/upload-artifact@v7               GitHub 製・タグ（3 箇所）
+ankane/setup-sqlserver@82b78e23...  # v1 ★第三者製・SHA 固定済み
+```
+
+**最も危険な「第三者製」は、既に SHA 固定されている。**
+被害範囲も限定的である（`Secrets` は 0 件、`GITHUB_TOKEN` の既定は `read`、
+`build-windows.yml` の `permissions` は `contents: read`）。
+
+#### 実施するときの順序
+
+**順序を誤るとワークフローが動かなくなる。**
+
+```
+1. actions/* の 4 箇所を SHA へ書き換える
+2. build-windows.yml を手動実行して通ることを確かめる
+3. sha_pinning_required を true にする
+4. allowed_actions を selected にし、GitHub 製 ＋ ankane/* を許可する
+```
+
+**`.github/dependabot.yml` とセットにするのが合理的。**
+`github-actions` エコシステムを有効にすると、**Dependabot が SHA を自動更新する**ため、
+固定の運用コストがほぼ消える（`dependabot.yml` は #517 の決着後）。
+
+### 覚書
 > **`develop` を必須チェックの対象にはしない。**
 > `deps` ⇔ `develop` ⇔ feature と**往復が多いハブ**であり、
 > 毎回のマージが CI 待ちになる。
