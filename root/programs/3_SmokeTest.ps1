@@ -29,6 +29,21 @@
       RerunnableBatch 系は Orders(830 件) を読み Orders2 へ INSERT するため、
       実行前に Orders2 を空にする必要がある。実行後は 830 件＝初期状態に戻る。
 
+    ＜C# 版と VB 版＞
+      VB 版は C# 版からの移植で、疎通の手順がそのまま通る（#542 で突き合わせ済み）。
+        ・接続文字列名          ConnectionString_SQL
+        ・MVC のログイン画面    Views/Home/Login.cshtml が同一
+        ・認証が要る画面        /Crud1/Index（Crud1Controller に Authorize）
+        ・WebForms のコントロール ctl00$ContentPlaceHolder_A$txtUserID ほか
+      このため判定（Flow / Verify）は両者で共有し、対象定義だけを分ける。
+      分けて書くと、サンプルの画面を直したとき片方だけ直す事故が起きる。
+
+.PARAMETER Lang
+    対象の言語。CS（既定）/ VB / Both。
+
+    ※ 既定に VB を含めない。リリース時の検証（RELEASE.md 3 節）は C# 版が対象で、
+    　 VB を含めると毎回 VB のビルドが乗るため。
+
 .PARAMETER Only
     対象名の部分一致で絞る（例: -Only "Rerunnable"）。
 
@@ -44,6 +59,9 @@
 .EXAMPLE
     .\3_SmokeTest.ps1 -Only "net48" -SkipBuild
 
+.EXAMPLE
+    .\3_SmokeTest.ps1 -Lang VB
+
 .NOTES
     作成者          ：玄人 幸道
     更新履歴        ：
@@ -51,9 +69,12 @@
      ----------  ----------------  -------------------------------------------------
      2026/08/01  玄人 幸道         新規作成（リリース ワークのエージェント化）
      2026/08/07  玄人 幸道         Orders2が無ければ作成するようにした
+     2026/08/13  玄人 幸道         Lang を追加（VB 版の疎通に対応）
 #>
 [CmdletBinding()]
 param(
+    [ValidateSet("CS", "VB", "Both")]
+    [string]$Lang = "CS",
     [string]$Only,
     [switch]$SkipBuild,
     [string]$OutputDir = (Join-Path $env:TEMP "OpenTouryoSmokeTest")
@@ -70,9 +91,18 @@ $ErrorActionPreference = "Continue"
 # （TESTING.md の「PowerShell から .bat を呼ぶときの注意」と同じ）
 Remove-Item Env:\NoDefaultCurrentDirectoryInExePath -EA SilentlyContinue
 
-# 本スクリプトは root\programs に置き、C# 側（root\programs\CS）を対象とする。
-# ビルド バッチもサンプルも CS 配下にあるため、そこを起点にする。
+# 本スクリプトは root\programs に置き、その配下の CS / VB を対象とする。
+# ビルド バッチもサンプルも各言語のフォルダにあるため、そこを起点にする。
+#
+# ツール（DaoGen_Tool / DeployZipPackWithHTTP）は C# にしか無いので、
+# それらの準備・検証は $csRoot を直接参照してよい。
 $csRoot = Join-Path $PSScriptRoot "CS"
+
+# 構成ファイル（接続文字列）と Orders2 の DDL を、どちらから読むか。
+# 中身は CS / VB で同じだが、「実際に使われる構成ファイルから読む」という
+# 建て付けを崩さないため、対象に含まれる方を使う。
+$configRoot = if ($Lang -eq "VB") { Join-Path $PSScriptRoot "VB" } else { $csRoot }
+
 New-Item -ItemType Directory -Force $OutputDir | Out-Null
 
 # 対象に与える stdin（空）。
@@ -116,7 +146,7 @@ if ([Console]::OutputEncoding.CodePage -ne 65001)
 # ここで別途ハードコードすると、サンプル側の変更に追随できなくなる。
 function Get-SampleConnectionString
 {
-    $config = Join-Path $csRoot "Samples\Bat_sample\SimpleBatch_sample\App.config"
+    $config = Join-Path $configRoot "Samples\Bat_sample\SimpleBatch_sample\App.config"
     if (-not (Test-Path $config)) { return $null }
 
     $xml = [xml](Get-Content $config -Raw)
@@ -143,8 +173,10 @@ function Invoke-Sql([string]$sql)
 # ------------------------------------------------------------------
 # 対象の定義
 # ------------------------------------------------------------------
-# Name    : 表示名
-# Bat     : ビルドに使うバッチ（root\programs\CS 配下）
+# Name    : 表示名（ログのファイル名にもなるため、言語をまたいで重複させない）
+# Dir     : バッチとサンプルのあるフォルダ（root\programs からの相対）。
+#           省略時は対象言語のフォルダ。
+# Bat     : ビルドに使うバッチ（Dir 配下）
 # Exe     : 実行ファイル（net48）。Dll を指定した場合は dotnet で実行する。
 # Args    : コマンドライン引数
 # Pre     : 実行前に行う準備（スクリプト ブロック）
@@ -169,7 +201,7 @@ function Initialize-Orders2
     $exists = Invoke-Sql "SELECT OBJECT_ID('dbo.Orders2', 'U')"
     if ($null -ne $exists -and $exists -isnot [DBNull]) { return }
 
-    $ddl = Join-Path $csRoot "Samples\Bat_sample\RerunnableBatch_sample\CREATE ORDERS2.sql"
+    $ddl = Join-Path $configRoot "Samples\Bat_sample\RerunnableBatch_sample\CREATE ORDERS2.sql"
     if (-not (Test-Path $ddl))
     {
         throw "Orders2 が無く、DDL も見つかりません : $ddl"
@@ -649,7 +681,7 @@ $webFormsFlow = {
     }
 
     # マスタ ページ配下のため、コントロール名は ctl00$ContentPlaceHolder_A$ が付く。
-    # btnButton1 がログイン ボタン（btnButton2 はキャンセル）。
+    # btnButton1 がログイン ボタン（btnButton2 は「外部ログイン」。CS / VB とも同じ）。
     $fields["ctl00`$ContentPlaceHolder_A`$txtUserID"]   = "smoke"
     $fields["ctl00`$ContentPlaceHolder_A`$txtPassword"] = "smoke"
     $fields["ctl00`$ContentPlaceHolder_A`$btnButton1"]  = "ログイン"
@@ -664,7 +696,7 @@ $webFormsFlow = {
     return @{ Ok = $true; Detail = "ログイン後 menu.aspx = 200" }
 }
 
-$targets = @(
+$targetsCS = @(
     # --- バッチ (net48) ---
     @{
         Name = "SimpleBatch_sample (net48)";      Bat = "5_Build_Bat_sample.bat"
@@ -810,20 +842,115 @@ $targets = @(
 )
 
 # ------------------------------------------------------------------
+# VB 版の対象
+# ------------------------------------------------------------------
+# VB にあるのは Bat_sample と WebApp_sample だけで、Core 版・CLI_sample・
+# ツール（Frameworks\Tools）は無い（#542）。
+#
+# 判定（Args / Pre / Verify / Flow）は C# 版と同じものを使い回す。
+# 上の定義と同じ変数を指しているので、片方だけ直すことができない。
+#
+# ＜ポートを分ける＞
+#   -Lang Both では C# 版と続けて起動するため、51081/51082 とは別にする。
+$targetsVB = @(
+    # --- バッチ (net48) ---
+    @{
+        Name = "SimpleBatch_sample (VB net48)";      Bat = "5_Build_Bat_sample.bat"
+        Exe  = "Samples\Bat_sample\SimpleBatch_sample\bin\Debug\SimpleBatch_sample.exe"
+        Args = $batchArgs;  Expect = '\d+件のデータがあります'
+    }
+    @{
+        Name = "RerunnableBatch_sample (VB net48)";  Bat = "5_Build_Bat_sample.bat"
+        Exe  = "Samples\Bat_sample\RerunnableBatch_sample\bin\Debug\RerunnableBatch_sample.exe"
+        Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
+    }
+    @{
+        Name = "RerunnableBatch_sample2 (VB net48)"; Bat = "5_Build_Bat_sample.bat"
+        Exe  = "Samples\Bat_sample\RerunnableBatch_sample2\bin\Debug\RerunnableBatch_sample2.exe"
+        Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
+    }
+    @{
+        Name = "RerunnableBatch_sample3 (VB net48)"; Bat = "5_Build_Bat_sample.bat"
+        Exe  = "Samples\Bat_sample\RerunnableBatch_sample3\bin\Debug\RerunnableBatch_sample3.exe"
+        Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
+    }
+
+    # --- Web アプリ ---
+    @{
+        Name = "MVC_Sample (VB net48)";      Bat = "10_Build_WebApp_sample.bat"
+        Kind = "Web";  WebHost = "IISExpress";  Port = 51085
+        Site = "Samples\WebApp_sample\MVC_Sample\MVC_Sample"
+        Need = "aspnet_state"
+        Flow = $mvcLoginFlow
+    }
+    @{
+        Name = "WebForms_Sample (VB net48)"; Bat = "10_Build_WebApp_sample.bat"
+        Kind = "Web";  WebHost = "IISExpress";  Port = 51086
+        Site = "Samples\WebApp_sample\WebForms_Sample\WebForms_Sample"
+        Need = "aspnet_state"
+        Flow = $webFormsFlow
+    }
+)
+
+# 省略されている Dir を、その言語のフォルダで補う。
+function Add-DefaultDir($items, [string]$dir)
+{
+    foreach ($i in $items)
+    {
+        if (-not $i.ContainsKey("Dir")) { $i.Dir = $dir }
+    }
+    return $items
+}
+
+$targets = @()
+if ($Lang -ne "VB") { $targets += @(Add-DefaultDir $targetsCS "CS") }
+if ($Lang -ne "CS") { $targets += @(Add-DefaultDir $targetsVB "VB") }
+
+# ------------------------------------------------------------------
+# VB のビルドは自己完結しない
+# ------------------------------------------------------------------
+# C# 側は各ビルド バッチが単独で通るが、VB 側は違う。
+# 5_Build_Bat_sample.bat だけを呼んでも、参照するアセンブリが揃っていないため
+# 建たない。VB\0_ExecAllBat.bat が前段で行っていることを、ここでも行う。
+#
+#   2_Build_NuGet_net48.bat（CS 側）  … 1_GetLibrariesFromCS.bat が取りに行く実体
+#   1_GetLibrariesFromCS.bat          … CS の Build_net48 を VB 配下へ複写
+#   3_Build_Business_net48.bat        … VB の Business（B層基盤）
+#   3_Build_BusinessRichClient_net48.bat
+#   4_Build_CopyAssemblies.bat        … 参照解決用の Build フォルダを作る
+#
+# ＜0_ExecAllBat.bat を丸ごと呼ばない理由＞
+#   ・1_DeleteDir.bat が bin / obj を消す。疎通は成果物を使うので、消したくない
+#   ・WinForms / WPF のサンプルまで建てる。疎通の対象ではないので、時間だけ増える
+#   ・timeout 5 が入っており、stdin をリダイレクトすると
+#     「ERROR: Input redirection is not supported」がログに出る
+$prerequisitesVB = @(
+    @{ Dir = "CS"; Bat = "2_Build_NuGet_net48.bat" }
+    @{ Dir = "VB"; Bat = "1_GetLibrariesFromCS.bat" }
+    @{ Dir = "VB"; Bat = "3_Build_Business_net48.bat" }
+    @{ Dir = "VB"; Bat = "3_Build_BusinessRichClient_net48.bat" }
+    @{ Dir = "VB"; Bat = "4_Build_CopyAssemblies.bat" }
+)
+
+# ------------------------------------------------------------------
 # ビルド
 # ------------------------------------------------------------------
-function Invoke-BuildBat([string]$bat)
+function Invoke-BuildBat([string]$dir, [string]$bat)
 {
-    $path = Join-Path $csRoot $bat
+    $root = Join-Path $PSScriptRoot $dir
+    $path = Join-Path $root $bat
+
     if (-not (Test-Path $path))
     {
-        Write-Host ("  ビルド バッチが見つかりません : {0}" -f $bat) -ForegroundColor Red
+        Write-Host ("  ビルド バッチが見つかりません : {0}\{1}" -f $dir, $bat) -ForegroundColor Red
         return $false
     }
 
-    $log = Join-Path $OutputDir ("build_" + ($bat -replace '[^A-Za-z0-9]','_') + ".log")
+    $log = Join-Path $OutputDir ("build_" + $dir + "_" + ($bat -replace '[^A-Za-z0-9]','_') + ".log")
 
-    Push-Location $csRoot
+    # バッチは自分のフォルダから呼ぶ。相対パスで参照を解決しているため、
+    # 呼び出し元のカレントが違うと、ソリューションを見つけられない。
+    Push-Location $root
     # バッチ末尾（および途中）の pause に対応するため stdin を与える。
     cmd /c "echo. | call `"$path`"" *>&1 | Out-File $log -Encoding UTF8
     Pop-Location
@@ -855,12 +982,14 @@ function Wait-Port([int]$port, [int]$timeoutSec = 30)
 
 function Start-WebHost($t, [string]$log)
 {
+    $root = Join-Path $PSScriptRoot $t.Dir
+
     if ($t.WebHost -eq "IISExpress")
     {
         $iis = Join-Path $env:ProgramFiles "IIS Express\iisexpress.exe"
         if (-not (Test-Path $iis)) { return $null }
 
-        $site = Join-Path $csRoot $t.Site
+        $site = Join-Path $root $t.Site
         return Start-Process $iis `
             -ArgumentList "/path:`"$site`"", "/port:$($t.Port)", "/systray:false" `
             -PassThru -WindowStyle Hidden `
@@ -868,7 +997,7 @@ function Start-WebHost($t, [string]$log)
     }
     else
     {
-        $dll = Join-Path $csRoot $t.Exe
+        $dll = Join-Path $root $t.Exe
         if (-not (Test-Path $dll)) { return $null }
 
         # コンテンツ ルートを合わせるため、出力フォルダを作業ディレクトリにする。
@@ -882,15 +1011,34 @@ function Start-WebHost($t, [string]$log)
 # ------------------------------------------------------------------
 # 実行
 # ------------------------------------------------------------------
-$selected = $targets | Where-Object { -not $Only -or $_.Name -like "*$Only*" }
+Write-Host ("対象 : {0}" -f $Lang) -ForegroundColor Cyan
+
+$selected = @($targets | Where-Object { -not $Only -or $_.Name -like "*$Only*" })
 
 if (-not $SkipBuild)
 {
-    foreach ($bat in ($selected | ForEach-Object { $_.Bat } | Select-Object -Unique))
+    # ビルドする単位は「フォルダ ＋ バッチ」。同じバッチ名が CS と VB の
+    # 両方にあるため（5_Build_Bat_sample.bat 等）、バッチ名だけでは一意化できない。
+    $builds = @()
+
+    # VB を含むなら、前提のビルドを先に通す。
+    if (@($selected | Where-Object { $_.Dir -eq "VB" }).Count -gt 0)
     {
-        Write-Host ("=== ビルド : {0} ===" -f $bat) -ForegroundColor Cyan
+        $builds += $prerequisitesVB
+    }
+
+    $builds += @($selected | ForEach-Object { @{ Dir = $_.Dir; Bat = $_.Bat } })
+
+    $done = @{}
+    foreach ($b in $builds)
+    {
+        $key = $b.Dir + "\" + $b.Bat
+        if ($done.ContainsKey($key)) { continue }
+        $done[$key] = $true
+
+        Write-Host ("=== ビルド : {0} ===" -f $key) -ForegroundColor Cyan
         $sw = [Diagnostics.Stopwatch]::StartNew()
-        [void](Invoke-BuildBat $bat)
+        [void](Invoke-BuildBat $b.Dir $b.Bat)
         $sw.Stop()
         Write-Host ("  完了 ({0:N1} 秒)" -f $sw.Elapsed.TotalSeconds)
     }
@@ -967,7 +1115,7 @@ foreach ($t in $selected)
     # ------------------------------------------------------------------
     # プロセス（バッチ・CLI）
     # ------------------------------------------------------------------
-    $exe = Join-Path $csRoot $t.Exe
+    $exe = Join-Path (Join-Path $PSScriptRoot $t.Dir) $t.Exe
     if (-not (Test-Path $exe))
     {
         Write-Host "  実行ファイルが見つかりません" -ForegroundColor Red

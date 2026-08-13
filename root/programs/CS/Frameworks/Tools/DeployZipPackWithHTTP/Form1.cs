@@ -44,6 +44,8 @@
 //*                                Japanese language exception messages to MSGDefinition.xml file for internationalization supporting English Language.
 //*  2014/04/25  Sai               Replaced all the Japanese language in both UI and code with ResorceManager.GetString() method call
 //*  2020/08/03  西野 大介         NETCOREAPP対応
+//*  2026/08/01  玄人 幸道         ZIP部品をV2へ差し替え（#524）。
+//*                                CUI化のためマニフェスト生成と圧縮をstaticメソッドへ抽出（#528）
 //**********************************************************************************
 
 using System;

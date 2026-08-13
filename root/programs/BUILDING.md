@@ -1,6 +1,6 @@
 # BUILDING.md — 全ビルドの実行と判定
 
-対象: `root/programs/CS`（C# 側）
+対象: `root/programs/CS`（C# 側、既定）／ `root/programs/VB`（VB 側、`-Lang VB`）
 配置: `root/programs`
 本書は、リリース時に行っていた「build バッチで全ビルドが通ることを確認」を、
 **合否が出る形に機械化**するための手順と判定基準を記述する（#513 段階 2）。
@@ -28,12 +28,16 @@ cd root\programs
 
 # 環境に依存して必ず出るエラーを、判定から外す（4 節）
 .\1_BuildAll.ps1 -IgnoreErrors "MSB3482"
+
+# VB 側を建てる（10 節）
+.\1_BuildAll.ps1 -Lang VB
 ```
 
 終了コードは `0` = 全ステップ OK、`1` = NG あり。
 
 | オプション | 内容 |
 |---|---|
+| `-Lang <CS\|VB\|Both>` | 対象の言語（既定 `CS`）。10 節 |
 | `-Only <文字列>` | ステップ名／bat 名の部分一致で対象を絞る |
 | `-SkipClean` | クリーン処理（`1_DeleteDir` / `1_DeleteFile`）を省略 |
 | `-OutputDir <パス>` | ステップ別ログの保存先（既定 `%TEMP%\OpenTouryoBuildLogs`） |
@@ -294,6 +298,11 @@ Dependabot が PR を作成（base: develop）
 ```
 
 ①③がワークフロー、⓪②④が人の作業。`AGENTS.md` の線引き（マージは人が行う）に従う。
+
+> **VB 側は別のワークフロー**（`.github/workflows/build-windows-vb.yml`）で、
+> **手動実行（`workflow_dispatch`）だけ**である。この流れには載せていない。
+> 理由と、DB の準備を重複させている事情は 10 節と
+> [`GitHubUsage.md`](../../GitHubUsage.md) 3 節。
 
 ### ⓪ を飛ばしてはいけない
 
@@ -772,3 +781,72 @@ Core系のBinarySerializeの完全廃止対応
 Node.js 20 is deprecated. The following actions target Node.js 20 but are being
 forced to run on Node.js 24: actions/checkout@v4, actions/upload-artifact@v4
 ```
+
+---
+
+## 10. VB 側を建てる（`-Lang VB`）
+
+`-Lang VB` は `VB\0_ExecAllBat.bat` と同じ順序・同じ内容を実行する。
+`-Lang Both` は C# → VB の順で通す。
+
+```powershell
+.\1_BuildAll.ps1 -Lang VB
+.\1_BuildAll.ps1 -Lang Both
+```
+
+**解析部（`Get-Diagnostics`）は言語を問わない。** MSBuild のエラー行は
+`: error CS1002:` と `: error BC30451:` のようにコード部の綴りが違うだけで書式は同じで、
+`:\s*error(\s+[A-Za-z]+\d+)?\s*:` がどちらにも一致する。
+このため言語で違うのは「どのバッチを、どのフォルダで呼ぶか」だけになる（#542）。
+
+### `-IgnoreErrors` は VB では要らない
+
+| | CS | VB |
+|---|---|---|
+| `WS_sample/WSClient_sample` | WPF / Win / Win2 / **WinCone** | WPF / Win / Win2 |
+| `.pfx` | あり | **無し** |
+
+ClickOnce 署名のプロジェクトが無いため、4 節の `MSB3482` / `MSB3325` / `MSB3321` は出ない。
+
+### C# 側の成果物に依存する
+
+VB のステップ表は、先頭に **C# 側の** `2_Build_NuGet_net48.bat` を含む。
+`VB\1_GetLibrariesFromCS.bat` が
+
+```bat
+xcopy /E /Y "..\CS\Frameworks\Infrastructure\Build_net48" "Frameworks\Infrastructure\Build_net48\"
+```
+
+とその出力を取りに行くためで、`VB\0_ExecAllBat.bat` が `cd "..\CS"` しているのと同じ理由である。
+
+**`-Lang Both` では、この 1 ステップだけが飛ぶ**（`実行済み` と表示される）。
+C# 側の `1_DeleteDir.bat` の対象は `packages` `obj` `bin` `bld` `Temp` `PrecompiledWeb`
+`MigrationBackup` `.vs` で、**`Build_net48` を消さない**ため、C# の通しで作った出力が残るからである。
+
+> **`1_GetLibrariesFromCS.bat` の方は飛ばせない。** これはビルドではなく複写で、
+> C# を建てても VB 側には何も置かれない。しかも `VB\1_DeleteDir.bat` は 2 セット目で
+> `Build` / `Build_net48` を消すため、直前に VB 側の複写先が空になっている。
+> **クリーンの位置と順序は入れ替えないこと。**
+
+### VB のサンプルにも `nuget restore` が要る（#542 で修正）
+
+VB の `.vbproj` は `Microsoft.Data.SqlClient` などを `PackageReference` で参照している。
+**restore しないと、ネイティブ DLL が出力に配置されない。**
+
+- 管理 DLL（`Microsoft.Data.SqlClient.dll`）は `Build\` から `HintPath` 経由で入るため、
+  **ビルドは通る**
+- 落ちるのは実行時で、`Microsoft.Data.SqlClient.SNI.x64.dll` が見つからない
+
+```
+例外情報:System.DllNotFoundException
+   場所 Microsoft.Data.SqlClient.SNINativeManagedWrapperX64.SNIInitialize(IntPtr)
+```
+
+このため、パッケージを参照する sln には C# 側と同じ 1 行を置く。
+
+```bat
+..\nuget.exe restore "Samples\Bat_sample\SimpleBatch_sample\SimpleBatch_sample.sln" %NUGET_MSBUILD%
+```
+
+**ビルドの成否では気付けない。** 疎通確認（`3_SmokeTest.ps1 -Lang VB`）で初めて分かる。
+実際、#533 で「VB の全ビルドが通る」ことを確認した後も、この不具合は残っていた。

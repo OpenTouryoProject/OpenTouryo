@@ -1,0 +1,224 @@
+# VB 版のビルドと疎通を windows-latest で検証する（手動実行のみ）。
+#
+# ＜なぜ別ワークフローで、手動だけなのか＞（#542）
+#   ・VB は C# からの移植で、フレームワーク本体を共有している。回帰は
+#     build-windows.yml の 3 本でほぼ捕まる。VB 固有の回帰は「VB プロジェクトが
+#     建つか」で、これはビルドで分かる。
+#   ・VB の疎通は C# 版と同じ Northwind / Orders2 を使う。同じジョブに入れるなら
+#     順次実行が必須で、並列にできない。
+#   ・VB\1_DeleteDir.bat は bin / obj に加えて Build / Build_net48 も消す。
+#     C# 側の疎通と同じジョブに置くと、順序の縛りが増える。
+#   このため deps への push と master 宛 PR のトリガには載せない。
+#   リリース前や VB に手を入れたときに、人が回す想定である。
+#
+# ＜実行するもの＞
+#   1_BuildAll.ps1  -Lang VB   全ビルド（14 ステップ）
+#   3_SmokeTest.ps1 -Lang VB   疎通（6 件）
+#
+#   2_RunAllTests.ps1 は無い。VB にテスト プロジェクトが無く、単体テストは
+#   C# の Frameworks\Tests に集約されているため（BUILDING.md 10 節）。
+#
+# ＜-IgnoreErrors が無い理由＞
+#   VB には ClickOnce 署名のプロジェクト（WSClientWinCone_sample）も .pfx も無い。
+#   build-windows.yml が除外している MSB3482 / MSB3325 / MSB3321 は出ない。
+#
+# ＜Set-Culture をしない理由＞
+#   build-windows.yml のロケール設定は 2_RunAllTests.ps1 の期待値のためのもので、
+#   本ワークフローには単体テストが無い。疎通の判定は状態コードと、
+#   サンプルのソースに直接書かれた文字列（"件のデータがあります"）を見るだけで、
+#   OS のロケールに依存しない。
+#
+# ＜DB と C:\root の準備が build-windows.yml と重複している＞
+#   **意図的に写している。** 共通化するには composite action か再利用可能
+#   ワークフローへ切り出すことになるが、それは build-windows.yml（master の
+#   必須チェック）にも手を入れることを意味する。実際に CI を回して確かめるまでは
+#   触らない方針とし、まずは独立した形で置く。
+#   **準備の理由と経緯は build-windows.yml と BUILDING.md 9 節が一次情報。**
+
+name: Build VB on Windows
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    # ローカルの実測はビルド 4.3 分＋疎通 1.5 分。DB の導入と初期化を足して余裕を持たせる。
+    timeout-minutes: 90
+
+    env:
+      # ankane/setup-sqlserver が設定する既定のパスワード。
+      INITIAL_SA_PASSWORD: 'YourStrong!Passw0rd'
+      # サンプルの構成ファイルに直書きされている値。
+      #   Data Source=localhost;Initial Catalog=Northwind;User ID=sa;Password=seigi@123;Encrypt=false;
+      # 構成側を CI 用に書き換えると「実際に使われる設定」と乖離するため、DB 側を合わせる。
+      SA_PASSWORD: 'seigi@123'
+      # LocalServicesOnDocker の docker-compose.yml が指定する照合順序と同じ。
+      COLLATION: 'Japanese_CI_AS'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # VB のステップ表は、先頭に C# 側の 2_Build_NuGet_net48.bat を含む。
+      # VB\1_GetLibrariesFromCS.bat がその出力を取りに行くためで、
+      # VB\0_ExecAllBat.bat が cd "..\CS" しているのと同じ理由（BUILDING.md 10 節）。
+      - name: Build all (VB)
+        shell: pwsh
+        working-directory: root/programs
+        run: .\1_BuildAll.ps1 -Lang VB -OutputDir "${{ runner.temp }}\BuildLogs"
+
+      # ------------------------------------------------------------------
+      # 疎通のための SQL Server
+      # ------------------------------------------------------------------
+      # 第三者のアクションなのでコミットで固定する（v1 はタグではなくブランチ）。
+      - name: Install SQL Server
+        uses: ankane/setup-sqlserver@82b78e23506d0c8acfb64e05728ac450ff8a98c6 # v1
+        with:
+          accept-eula: true
+          sqlserver-version: 2022
+
+      - name: Set up Northwind
+        shell: pwsh
+        env:
+          # LocalServicesOnDocker のコミットに固定する。
+          # 中身は Microsoft 公式の Northwind DDL（約 1 MB）。
+          NORTHWIND_URL: https://raw.githubusercontent.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker/90763cd5f2aa681b1172d9277a2b133514fdaebe/sqlserver/init/instnwnd.sql
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          # sqlcmd 18 以降は既定で暗号化するため -C（サーバー証明書を信頼）が要る。
+          # 旧版は -C を解釈しないので、使えるかどうかを一度だけ判定する。
+          $cflag = @()
+          & sqlcmd -S localhost -U sa -P $env:INITIAL_SA_PASSWORD -C -Q "SELECT 1" *> $null
+          if ($LASTEXITCODE -eq 0) { $cflag = @('-C') }
+
+          function Invoke-Sql
+          {
+              param([string]$Password, [string]$Database, [string]$Query, [string]$File, [switch]$Raw)
+
+              $a = @('-S', 'localhost', '-U', 'sa', '-P', $Password, '-b') + $cflag
+              if ($Database) { $a += @('-d', $Database) }
+              if ($Raw)      { $a += @('-h', '-1', '-W') }
+              if ($Query)    { $a += @('-Q', $Query) }
+              if ($File)     { $a += @('-i', $File) }
+              & sqlcmd @a
+          }
+
+          # 構成ファイルに合わせてパスワードを変更する。
+          Write-Host "sa のパスワードを構成ファイルに合わせます。"
+          Invoke-Sql -Password $env:INITIAL_SA_PASSWORD -Query "ALTER LOGIN sa WITH PASSWORD = '$($env:SA_PASSWORD)'"
+          if ($LASTEXITCODE -ne 0) { throw "sa のパスワードを変更できませんでした。" }
+
+          $sql = Join-Path $env:RUNNER_TEMP 'instnwnd.sql'
+          Invoke-WebRequest -Uri $env:NORTHWIND_URL -OutFile $sql
+          Write-Host ("instnwnd.sql を取得しました（{0:N0} バイト）。" -f (Get-Item $sql).Length)
+
+          # instnwnd.sql は DB を作らない（対象 DB の中で実行する）ため、先に CREATE する。
+          # 照合順序は DB 既定として与える。Northwind の列は COLLATE 句を持たないので、
+          # 各列がこれを継承する。
+          #
+          # 起動直後は一部のバッチが失敗して不完全なロードになることがあるため
+          # （表だけできてデータが入らない等）、Shippers が 3 行あるかで検証して再試行する。
+          $loaded = $false
+
+          foreach ($attempt in 1..3)
+          {
+              Write-Host "Northwind をロードします（$attempt 回目）。"
+
+              # ヒアストリングは使わない。YAML のブロック スカラーはインデントを
+              # 剥がすため、終端の "@ を行頭に置く必要があり、桁が衝突する。
+              $drop   = "IF DB_ID('Northwind') IS NOT NULL BEGIN ALTER DATABASE Northwind SET SINGLE_USER WITH ROLLBACK IMMEDIATE; DROP DATABASE Northwind; END;"
+              $create = "CREATE DATABASE Northwind COLLATE $($env:COLLATION);"
+
+              Invoke-Sql -Password $env:SA_PASSWORD -Query "$drop $create"
+              Invoke-Sql -Password $env:SA_PASSWORD -Database Northwind -File $sql *> $null
+
+              $n = (Invoke-Sql -Password $env:SA_PASSWORD -Database Northwind -Raw `
+                    -Query "SET NOCOUNT ON; SELECT COUNT(*) FROM dbo.Shippers") -join ''
+              if ($n.Trim() -eq '3') { $loaded = $true; break }
+
+              Write-Host "  ロードが不完全です。再試行します。"
+          }
+
+          if (-not $loaded) { throw "Northwind のロードが完了しませんでした。" }
+
+          # Northwind 標準には無い表。3_SmokeTest.ps1 の RerunnableBatch 系が使う。
+          # DDL は VB 側の同梱物を使う（-Lang VB では構成ファイルも VB 側から読むため）。
+          # 中身は C# 側と同じで、3_SmokeTest.ps1 も無ければ自分で作る。
+          # それでも流しておくのは、疎通より前に表が揃っていることを確かめられるため。
+          $orders2 = 'root/programs/VB/Samples/Bat_sample/RerunnableBatch_sample/CREATE ORDERS2.sql'
+          Invoke-Sql -Password $env:SA_PASSWORD -Database Northwind -File $orders2 *> $null
+
+          $orders = (Invoke-Sql -Password $env:SA_PASSWORD -Database Northwind -Raw `
+                     -Query "SET NOCOUNT ON; SELECT COUNT(*) FROM dbo.Orders") -join ''
+          Write-Host ("Northwind 準備完了 : Shippers=3  Orders={0}" -f $orders.Trim())
+
+      # ------------------------------------------------------------------
+      # サンプルが前提とする C:\root
+      # ------------------------------------------------------------------
+      # VB 側の構成ファイルも C:\root\files\... を絶対パスで参照している。
+      #   Bat_sample\SimpleBatch_sample\app.config    SqlTextFilePath
+      #   WebApp_sample\*\app.config                  MSGDefinition / SPDefinition ほか
+      # コピーではなくジャンクションにして、実体を 1 つに保つ。
+      - name: Set up C:\root
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          if (-not (Test-Path 'C:\root'))
+          {
+              New-Item -ItemType Junction -Path 'C:\root' `
+                       -Target (Join-Path $env:GITHUB_WORKSPACE 'root') | Out-Null
+          }
+
+          foreach ($p in @('C:\root\files\resource\Sql',
+                           'C:\root\files\resource\Xml\MSGDefinition.xml',
+                           'C:\root\files\resource\Xml\SPDefinition.xml'))
+          {
+              if (-not (Test-Path $p)) { throw "$p が見つかりません。" }
+          }
+          Write-Host "C:\root を配置しました。"
+
+      # ------------------------------------------------------------------
+      # 疎通（3_SmokeTest.ps1 -Lang VB）
+      # ------------------------------------------------------------------
+      # 3_SmokeTest.ps1 はサービスの開始を自分では行わない。システムの状態を変える
+      # 操作だからで、足りない場合は対処方法を示して NG にする（AGENTS.md の線引き）。
+      # runner は使い捨てで、この判断が当てはまらないため、ここで開始する。
+      #
+      # VB の MVC_Sample / WebForms_Sample も Web.config で StateServer を使う。
+      - name: Start aspnet_state
+        shell: pwsh
+        run: |
+          Start-Service aspnet_state
+          Write-Host ("aspnet_state : {0}" -f (Get-Service aspnet_state).Status)
+
+      # IIS Express は windows-latest に同梱されている（%ProgramFiles% 側）。
+      # 3_SmokeTest.ps1 が見るのも同じ場所なので、追加の導入は要らない。
+      - name: Smoke test (VB)
+        shell: pwsh
+        working-directory: root/programs
+        run: .\3_SmokeTest.ps1 -Lang VB -OutputDir "${{ runner.temp }}\SmokeTest"
+
+      # 失敗時こそ中身を見たいので、常に採取する。
+      - name: Upload build logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: build-logs-vb
+          path: ${{ runner.temp }}\BuildLogs
+          if-no-files-found: warn
+
+      # 疎通は期待結果ファイルを持たないため、判定は各対象の標準出力に残る。
+      # Web 系は IIS Express の起動ログもここに入る。
+      - name: Upload smoke test logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: smoke-logs-vb
+          path: ${{ runner.temp }}\SmokeTest
+          if-no-files-found: warn

@@ -61,6 +61,8 @@
 //*  2014/04/26  Sai               Replaced all the Japanese language in both UI and code with ResorceManager.GetString() method call
 //*  2014/05/12  Sai               Removed <start> and <End> tags, added check while reading FxBusinessMessageCulture from app.config file
 //*  2016/01/07  Sandeep           Comment out the DefaultWebProxy property, because there is no use of this property in the component   
+//*  2026/08/01  玄人 幸道         CUI化（/MFTGEN, /ZIPGEN, /TOPONLY）と、引数不正時のGUI起動抑止（#528）。
+//*                                設定・履歴の保存をBinarySerializeからJSONへ変更
 //**********************************************************************************
 
 using System;
