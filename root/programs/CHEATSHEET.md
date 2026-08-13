@@ -28,6 +28,8 @@ cd root\programs
 | 単体テスト | 8/8 OK、差分 0 | [`TESTING.md`](TESTING.md) |
 | 疎通 | 22/22 OK | [`SMOKETEST.md`](SMOKETEST.md) |
 
+**既定は C# 側。VB 側は `-Lang` で回す**（3 節）。
+
 - **`-IgnoreErrors` を付けないと `MSB3482` で NG になる。** ClickOnce の署名で、
   証明書が無い環境では必ず出る（[`BUILDING.md`](BUILDING.md) 4 節）。
   **`0_RunAll.ps1` はこれを渡さない**ので、`1_BuildAll.ps1` が `1` を返すことがある。
@@ -100,7 +102,17 @@ CS\NuGet\_Cleanup.bat Touryo.Infrastructure ← その接頭辞だけ
 
 ---
 
-## 3. VB 側のビルド
+## 3. VB 側のビルドと疎通
+
+```powershell
+cd root\programs
+.\0_RunAll.ps1 -Lang VB       # 1 と 3 を VB で通す（2 は対象外）
+
+.\1_BuildAll.ps1 -Lang VB     # 全ビルド（14 ステップ、4.3 分）
+.\3_SmokeTest.ps1 -Lang VB    # 疎通（6 件、1.5 分）
+```
+
+従来の bat も使える。
 
 ```
 root\programs\VB\0_ExecAllBat.bat           ← 通し（先に CS 側を建てる）
@@ -109,7 +121,13 @@ root\programs\VB\0_ExecAllBat.bat           ← 通し（先に CS 側を建て�
 - 先頭で `cd "..\CS"` して C# 側の `2_Build_NuGet_net48.bat` を呼ぶ。**VB は C# の成果物に依存する**
 - **個別実行では見つからない不具合がある。** `1_DeleteDir.bat` が `obj` / `packages` を
   消した後にだけ露見するものがあるため、**通しで確かめること**（#533）
-- 合格の目安 : ビルド成功 22 / 失敗 0
+- 合格の目安 : ビルド 14/14 OK、疎通 6/6 OK
+- **`-IgnoreErrors` は要らない**（VB に ClickOnce 署名のプロジェクトが無い）
+- **単体テストは対象外**（VB にテスト プロジェクトが無い）
+
+> **VB のサンプルは `nuget restore` が要る。** しないと
+> `Microsoft.Data.SqlClient.SNI.x64.dll` が出力に入らず、**ビルドは通って実行時に落ちる**。
+> [`BUILDING.md`](BUILDING.md) 10 節・[`SMOKETEST.md`](SMOKETEST.md) 10 節。
 
 ---
 
@@ -167,6 +185,7 @@ powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.
 |---|---|---|
 | `'xxx' is not recognized` が大量に出る | bat の非 ASCII とコード ページ | ASCII 化。[`CODING.md`](CODING.md) 4 節 |
 | `MSB4226`（`Microsoft.WebApplication.targets`） | nuget が別製品の MSBuild を拾った | `nuget.exe restore ... %NUGET_MSBUILD%` |
+| ビルドは通るのに `DllNotFoundException`（`...SNI...`） | `nuget restore` を呼んでおらず、ネイティブ DLL が出力に入らない | 該当 sln に restore を足す。[`BUILDING.md`](BUILDING.md) 10 節 |
 
 **NuGet パッケージ作成の落とし穴は
 [`CS/NuGet/README.md`](CS/NuGet/README.md) 9 節**にまとめてある。

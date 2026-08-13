@@ -310,6 +310,7 @@ allow_rebase_merge   false   … 同上
 | ファイル | 役割 |
 |---|---|
 | [`workflows/build-windows.yml`](.github/workflows/build-windows.yml) | 検証 3 本（ビルド・単体テスト・疎通）を windows-latest で |
+| [`workflows/build-windows-vb.yml`](.github/workflows/build-windows-vb.yml) | **VB 版**のビルドと疎通を windows-latest で（手動のみ） |
 | [`workflows/dependabot-retarget.yml`](.github/workflows/dependabot-retarget.yml) | Dependabot PR の向き先を `deps` へ変更 |
 | [`secret_scanning.yml`](.github/secret_scanning.yml) | Secret scanning のアラートから除外するパス（1 節） |
 | [`ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE) | Issue テンプレート 3 種 ＋ `config.yml`（5 節） |
@@ -322,11 +323,28 @@ allow_rebase_merge   false   … 同上
 | ファイル | 発火 | `permissions` |
 |---|---|---|
 | `build-windows.yml` | `push: [deps]` / **`pull_request: [master]`** / 手動 | `contents: read` |
+| `build-windows-vb.yml` | **手動のみ**（`workflow_dispatch`） | `contents: read` |
 | `dependabot-retarget.yml` | `pull_request_target`（`opened`） | `pull-requests: write` |
 | CodeQL（既定セットアップ） | GitHub 管理。`push` / `pull_request` / 週次 | ワークフロー ファイルを持たない |
 
 `build-windows.yml` は既知の署名エラー（`MSB3482` / `MSB3325` / `MSB3321`）を除外する。
 **ローカルと CI で出るコードが違う**理由はファイル冒頭のコメントにある。
+
+**`build-windows-vb.yml` を自動発火させていない理由**（#542）。
+
+- VB は C# からの移植で、**フレームワーク本体を共有している**。回帰は
+  `build-windows.yml` の 3 本でほぼ捕まる
+- VB の疎通は C# 版と**同じ Northwind / Orders2 を使う**。同じジョブに入れるなら
+  順次実行が必須で、並列にできない
+- `VB\1_DeleteDir.bat` は `bin` / `obj` に加えて `Build` / `Build_net48` も消す
+
+除外条件（`-IgnoreErrors`）を持たないのは、**VB に ClickOnce 署名のプロジェクトも
+`.pfx` も無い**ため。単体テストの段が無いのは、VB にテスト プロジェクトが無いため。
+
+> **DB と `C:\root` の準備が `build-windows.yml` と重複している。意図的である。**
+> 共通化するには composite action か再利用可能ワークフローへ切り出すことになるが、
+> それは **master の必須チェックである `build-windows.yml` にも手を入れる**ことを意味する。
+> 実際に CI を回して確かめるまでは触らない方針とし、まずは独立した形で置いた。
 
 > **`dependabot-retarget.yml` は `pull_request_target` を使う。**
 > これは**ベース ブランチ側の定義を、書き込み権限付きで動かす**トリガである。

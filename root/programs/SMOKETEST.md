@@ -1,6 +1,6 @@
 ﻿# SMOKETEST.md — サンプルの疎通確認
 
-対象: `root/programs/CS`（C# 側）
+対象: `root/programs/CS`（C# 側、既定）／ `root/programs/VB`（VB 側、`-Lang VB`）
 配置: `root/programs`
 本書は、リリース時に行っていた「サンプルを幾つか見繕って手動で疎通を行う」を、
 **合否が出る形に機械化**するための手順と判定基準を記述する（#513 段階 3）。
@@ -18,12 +18,16 @@ cd root\programs
 # 一部だけ（動作確認用）
 .\3_SmokeTest.ps1 -Only "net48"
 .\3_SmokeTest.ps1 -Only "Rerunnable" -SkipBuild
+
+# VB 側の疎通（10 節）
+.\3_SmokeTest.ps1 -Lang VB
 ```
 
 終了コードは `0` = 全対象 OK、`1` = NG あり。
 
 | オプション | 内容 |
 |---|---|
+| `-Lang <CS\|VB\|Both>` | 対象の言語（既定 `CS`）。10 節 |
 | `-Only <文字列>` | 対象名の部分一致で絞る |
 | `-SkipBuild` | ビルドを省略し、既存のバイナリで疎通のみ行う |
 | `-OutputDir <パス>` | ログの保存先（既定 `%TEMP%\OpenTouryoSmokeTest`） |
@@ -550,3 +554,79 @@ $client.Connect("localhost", $port)
 
 `TESTING.md` と同じく、`NoDefaultCurrentDirectoryInExePath` を解除している。
 解除しないと、バッチ内でパス区切りを含まない名前で起動している exe が動かない。
+
+---
+
+## 10. VB 側の疎通（`-Lang VB`）
+
+```powershell
+.\3_SmokeTest.ps1 -Lang VB     # VB のみ（6 件）
+.\3_SmokeTest.ps1 -Lang Both   # C# 22 件 ＋ VB 6 件
+```
+
+**既定に VB を含めない。** リリース時の検証（[`RELEASE.md`](RELEASE.md) 3 節）は
+C# 側が対象で、VB を含めると毎回 VB のビルドが乗るためである。
+
+### 対象は 6 件
+
+| C# の対象 | 件数 | VB |
+|---|---|---|
+| `Bat_sample` (net48) | 4 | **あり** |
+| `Bat_sample` (net10.0) | 4 | 無し（Core 版が無い） |
+| `CLI_sample` (net10.0) | 1 | 無し（#533 で削除） |
+| `DaoGen_Tool` | 6 | 無し（`Frameworks/Tools` は C# のみ） |
+| `DeployZipPackWithHTTP` | 4 | 同上 |
+| `MVC` / `WebForms` (net48) | 2 | **あり** |
+| `MVC` (net10.0) | 1 | 無し |
+
+### 判定は C# 版と共有している
+
+VB 版は C# 版からの移植で、疎通の手順がそのまま通る。
+
+| | CS | VB |
+|---|---|---|
+| 接続文字列名 | `ConnectionString_SQL` | **同一** |
+| MVC のログイン画面 | `@Html.AntiForgeryToken()` / `UserName` / `Password` / `name="normal"` | **`Views/Home/Login.cshtml` が同一** |
+| 認証が要る画面 | `/Crud1/Index` | `Crud1Controller.vb` に `<Authorize>` |
+| WebForms | `ctl00$ContentPlaceHolder_A$txtUserID` ほか | **同一** |
+
+このため `$targetsVB` は `Flow` / `Verify` / `Args` に**同じ変数を指している**。
+別ファイル（`3_SmokeTestVB.ps1`）に分けると、**サンプルの画面を直したとき
+片方だけ直す事故**が起きるため、そうしていない（#542）。
+
+**Web の待ち受けポートだけは分けてある**（`51085` / `51086`）。
+`-Lang Both` では C# 版（`51081` / `51082`）と続けて起動するため。
+
+### VB のビルドは自己完結しない
+
+C# 側は各ビルド バッチが単独で通るが、VB 側は違う。
+`5_Build_Bat_sample.bat` だけを呼んでも、参照するアセンブリが揃っていないため建たない。
+このため `$prerequisitesVB` として、`VB\0_ExecAllBat.bat` が前段で行っていることを先に通す。
+
+```
+CS\2_Build_NuGet_net48.bat            1_GetLibrariesFromCS.bat が取りに行く実体
+VB\1_GetLibrariesFromCS.bat           CS の Build_net48 を VB 配下へ複写
+VB\3_Build_Business_net48.bat
+VB\3_Build_BusinessRichClient_net48.bat
+VB\4_Build_CopyAssemblies.bat         参照解決用の Build フォルダを作る
+```
+
+**`0_ExecAllBat.bat` を丸ごと呼んではいない。** 理由は 3 つ。
+
+- `1_DeleteDir.bat` が `bin` / `obj` を消す。疎通は成果物を使うので、消したくない
+- WinForms / WPF のサンプルまで建てる。疎通の対象ではないので、時間だけ増える
+- `timeout 5` が入っており、stdin をリダイレクトすると
+  `ERROR: Input redirection is not supported` がログに出る
+
+ビルドの単位は「フォルダ ＋ バッチ」で一意化している。
+`5_Build_Bat_sample.bat` のように**同じ名前のバッチが CS と VB の両方にある**ため、
+バッチ名だけでは一意化できない。
+
+### ネイティブ DLL の欠落（#542 で修正）
+
+VB のサンプル ビルド バッチが `nuget restore` を呼んでおらず、
+`Microsoft.Data.SqlClient.SNI.x64.dll` が出力に入っていなかった。
+**ビルドは通り、実行時にだけ `System.DllNotFoundException` で落ちる。**
+
+この疎通確認を用意して初めて分かった不具合である。経緯は
+[`BUILDING.md`](BUILDING.md) 10 節。

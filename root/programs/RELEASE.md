@@ -211,6 +211,21 @@ cd root\programs
 | `2_RunAllTests.ps1`（8 ケース） | 1.3 分 |
 | `3_SmokeTest.ps1`（22 件） | 2.3 分 |
 
+### VB 側は、この 3 本に含めない
+
+上の表はすべて C# 側（`-Lang` の既定）である。VB 側は `-Lang VB` で別に回す。
+
+```powershell
+.\0_RunAll.ps1 -Lang VB     # 1 と 3 だけを VB で通す（2 は対象外）
+```
+
+- **NuGet パッケージは C# 側から作る。** VB 側はリリース成果物ではない
+- VB にテスト プロジェクトは無く、単体テストは C# の `Frameworks\Tests` に集約されている
+- 所要は全ビルド 4.3 分 ＋ 疎通 1.5 分（6 件）
+
+**リリースのたびに回す必要は無いが、VB 側に手を入れたリリースでは通すこと。**
+詳細は [`BUILDING.md`](BUILDING.md) 10 節と [`SMOKETEST.md`](SMOKETEST.md) 10 節。
+
 ### 順序を守る
 
 **`1_BuildAll.ps1` → `2_RunAllTests.ps1` → `3_SmokeTest.ps1` の順で行う。**

@@ -14,6 +14,20 @@
       ・-v:d（詳細）で出力が膨大なため、目視での確認が難しい
     このため、stdin を与えて実行し、出力から error / warning を抽出して判定する。
 
+    ＜C# 版と VB 版＞
+      本体は言語に依存しない。出力の解析（Get-Diagnostics）が見る MSBuild の
+      エラー行は「: error CS1002:」「: error BC30451:」のようにコード部の綴りが
+      違うだけで、書式は同じだからである（#542）。
+      このため、違うのは「どのバッチを、どのフォルダで呼ぶか」だけになる。
+
+.PARAMETER Lang
+    対象の言語。CS（既定）/ VB / Both。
+
+    ※ VB 側は C# 側の成果物に依存する（VB\1_GetLibrariesFromCS.bat が
+    　 CS\Frameworks\Infrastructure\Build_net48 を取りに行く）。このため
+    　 VB のステップ表は、先頭に C# 側の 2_Build_NuGet_net48.bat を含む。
+    　 VB\0_ExecAllBat.bat が cd "..\CS" してから呼んでいるのと同じ理由。
+
 .PARAMETER Only
     ステップ名の部分一致で対象を絞る（例: -Only "net48"）。動作確認用。
 
@@ -42,6 +56,9 @@
 .EXAMPLE
     .\1_BuildAll.ps1 -IgnoreErrors "MSB3482"
 
+.EXAMPLE
+    .\1_BuildAll.ps1 -Lang VB
+
 .NOTES
     作成者          ：玄人 幸道
     更新履歴        ：
@@ -49,18 +66,20 @@
      ----------  ----------------  -------------------------------------------------
      2026/08/01  玄人 幸道         新規作成（リリース ワークのエージェント化）
      2026/08/05  玄人 幸道         IgnoreErrors を追加（CI での既知エラーの除外）
+     2026/08/13  玄人 幸道         Lang を追加（VB 版のビルドに対応）
 #>
 [CmdletBinding()]
 param(
+    [ValidateSet("CS", "VB", "Both")]
+    [string]$Lang = "CS",
     [string]$Only,
     [switch]$SkipClean,
     [string]$OutputDir = (Join-Path $env:TEMP "OpenTouryoBuildLogs"),
     [string[]]$IgnoreErrors = @()
 )
 
-# 本スクリプトは root\programs に置き、C# 側（root\programs\CS）を対象とする。
-# ビルド バッチはすべて CS 直下にあるため、そこを起点にする。
-$csRoot = Join-Path $PSScriptRoot "CS"
+# 本スクリプトは root\programs に置き、その配下の CS / VB を対象とする。
+# ビルド バッチはそれぞれの直下にあるため、ステップごとにそこへ移動して呼ぶ。
 New-Item -ItemType Directory -Force $OutputDir | Out-Null
 
 # ------------------------------------------------------------------
@@ -93,10 +112,15 @@ if ([Console]::OutputEncoding.CodePage -ne 65001)
 }
 
 # ------------------------------------------------------------------
-# ビルド ステップの定義（0_ExecAllBat.bat と同じ順序・同じ内容）
+# ビルド ステップの定義（各言語の 0_ExecAllBat.bat と同じ順序・同じ内容）
 # ------------------------------------------------------------------
-# Clean = $true のものは -SkipClean で省略される。
-$steps = @(
+# Name       : 表示名（ログのファイル名にもなるため、言語をまたいで重複させない）
+# Bat        : 呼び出すバッチ
+# Dir        : バッチのあるフォルダ（root\programs からの相対）。
+#              省略時は対象言語のフォルダ。VB のステップだけ、先頭で "CS" を明示する。
+# Clean      : $true のものは -SkipClean で省略される
+# SkipIfDone : 同じ実行内で同じバッチが既に走っていれば飛ばす（-Lang Both 用）
+$stepsCS = @(
     # --- net48 : 基盤 ---
     @{ Name = "Clean (net48 基盤)";            Bat = "1_DeleteDir.bat";                        Clean = $true }
     @{ Name = "Clean files (net48 基盤)";      Bat = "1_DeleteFile.bat";                       Clean = $true }
@@ -138,6 +162,71 @@ $steps = @(
     @{ Name = "WSClntCore_sample";             Bat = "8_Build_WSClntCore_sample.bat" }
     @{ Name = "WebAppCore_sample";             Bat = "10_Build_WebAppCore_sample.bat" }
 )
+
+# VB\0_ExecAllBat.bat と同じ順序・同じ内容。
+#
+# ＜先頭が CS 側なのは移植ミスではない＞
+#   VB\1_GetLibrariesFromCS.bat が
+#     xcopy /E /Y "..\CS\Frameworks\Infrastructure\Build_net48" ...
+#   と C# 側の成果物を取りに行くため、その出力を作る 2_Build_NuGet_net48.bat を
+#   先に通す必要がある。VB\0_ExecAllBat.bat も cd "..\CS" して同じことをしている。
+#
+# ＜クリーンの位置＞
+#   VB\1_DeleteDir.bat は 2 セット目で Build_net48 / Build も消す。
+#   GetLibrariesFromCS より前に置くことで、毎回 C# 側から採り直す形になる。
+#   この順序は入れ替えない。
+#
+#   なお 1_GetLibrariesFromCS.bat は -Lang Both でも飛ばせない。ビルドではなく
+#   「C# 側の出力を VB 配下へ複写する」処理で、C# を建てても VB 側には何も置かれず、
+#   しかも直前のクリーンで VB 側の Build_net48 が消えているためである。
+#
+# ＜netcore100 が無い＞
+#   VB 側は net48 だけで、Core 版のサンプルを持たない（#542）。
+$stepsVB = @(
+    # --- C# 側の成果物（VB の前提） ---
+    #
+    # CS\1_DeleteDir.bat の対象は packages/obj/bin/bld/Temp/PrecompiledWeb/
+    # MigrationBackup/.vs だけで、Build_net48 を消さない（VB 側とはここが違う）。
+    # このため -Lang Both では C# の通しで作った出力がそのまま残っており、
+    # 建て直す必要が無い。SkipIfDone で飛ばす。
+    #
+    # ※ -Lang Both でも -Only で C# 側が絞り落とされることがあるため、
+    # 　「Both なら無条件で飛ばす」にはしない。実際に走ったかどうかで判断する。
+    @{ Name = "VB : NuGet (net48, CS 側)";     Bat = "2_Build_NuGet_net48.bat";  Dir = "CS"
+       SkipIfDone = $true }
+
+    # --- 基盤 ---
+    @{ Name = "VB : Clean";                    Bat = "1_DeleteDir.bat";          Clean = $true }
+    @{ Name = "VB : Clean files";              Bat = "1_DeleteFile.bat";         Clean = $true }
+    @{ Name = "VB : GetLibrariesFromCS";       Bat = "1_GetLibrariesFromCS.bat" }
+    @{ Name = "VB : Business (net48)";         Bat = "3_Build_Business_net48.bat" }
+    @{ Name = "VB : Business.RichClient";      Bat = "3_Build_BusinessRichClient_net48.bat" }
+    @{ Name = "VB : CopyAssemblies";           Bat = "4_Build_CopyAssemblies.bat" }
+
+    # --- サンプル ---
+    @{ Name = "VB : Bat_sample";               Bat = "5_Build_Bat_sample.bat" }
+    @{ Name = "VB : 2CS_sample";               Bat = "5_Build_2CS_sample.bat" }
+    @{ Name = "VB : WSSrv_sample";             Bat = "6_Build_WSSrv_sample.bat" }
+    @{ Name = "VB : Framework_WS";             Bat = "7_Build_Framework_WS.bat" }
+    @{ Name = "VB : WSClntWin_sample";         Bat = "8_Build_WSClntWin_sample.bat" }
+    @{ Name = "VB : WSClntWPF_sample";         Bat = "9_Build_WSClntWPF_sample.bat" }
+    @{ Name = "VB : WebApp_sample";            Bat = "10_Build_WebApp_sample.bat" }
+)
+
+# 省略されている Dir を、その言語のフォルダで補う。
+# Dir を明示しているステップ（VB 表の先頭）は、そのまま残す。
+function Add-DefaultDir($steps, [string]$dir)
+{
+    foreach ($s in $steps)
+    {
+        if (-not $s.ContainsKey("Dir")) { $s.Dir = $dir }
+    }
+    return $steps
+}
+
+$steps = @()
+if ($Lang -ne "VB") { $steps += @(Add-DefaultDir $stepsCS "CS") }
+if ($Lang -ne "CS") { $steps += @(Add-DefaultDir $stepsVB "VB") }
 
 # ------------------------------------------------------------------
 # 出力の解析
@@ -196,11 +285,17 @@ function Test-KnownError([string]$line)
 # ------------------------------------------------------------------
 # 実行
 # ------------------------------------------------------------------
-Push-Location $csRoot
+Write-Host ("対象 : {0}" -f $Lang) -ForegroundColor Cyan
+
 $results = @()
 $allErrors = New-Object System.Collections.Generic.List[string]
 $allKnown  = New-Object System.Collections.Generic.List[string]
 $total = [Diagnostics.Stopwatch]::StartNew()
+
+# 実行済みのバッチ（"フォルダ\バッチ名"）。SkipIfDone の判定に使う。
+# ※ 1_DeleteDir.bat のように意図して繰り返すステップがあるため、
+# 　 一律の重複排除はしない。SkipIfDone を付けたものだけを対象にする。
+$executed = @{}
 
 foreach ($s in $steps)
 {
@@ -213,7 +308,24 @@ foreach ($s in $steps)
         continue
     }
 
-    $bat = Join-Path $csRoot $s.Bat
+    $key = $s.Dir + "\" + $s.Bat
+
+    if ($s.SkipIfDone -and $executed.ContainsKey($key))
+    {
+        Write-Host ("=== {0} ===" -f $s.Name) -ForegroundColor Cyan
+        Write-Host ("  実行済みのため飛ばします : {0}" -f $key)
+        $results += [pscustomobject]@{
+            ステップ = $s.Name; 結果 = "実行済み"
+            エラー = 0; 既知 = 0; 警告 = 0; 秒 = 0
+        }
+        continue
+    }
+
+    # バッチは自分のフォルダから呼ぶ。相対パスで参照を解決しているため、
+    # 呼び出し元のカレントが違うと、ソリューションを見つけられない。
+    $dir = Join-Path $PSScriptRoot $s.Dir
+    $bat = Join-Path $dir $s.Bat
+
     if (-not (Test-Path $bat))
     {
         Write-Host ("  [{0}] バッチが見つかりません : {1}" -f $s.Name, $s.Bat) -ForegroundColor Red
@@ -229,8 +341,12 @@ foreach ($s in $steps)
 
     # 各バッチは末尾に pause を持つため、stdin を与えて実行する
     # （0_ExecAllBat.bat の "echo | call ..." と同じ方式）。
+    Push-Location $dir
     cmd /c "echo. | call `"$bat`"" *>&1 | Out-File $log -Encoding UTF8
+    Pop-Location
     $sw.Stop()
+
+    $executed[$key] = $true
 
     $diag = Get-Diagnostics (Get-Content $log -EA SilentlyContinue)
 
@@ -269,7 +385,6 @@ foreach ($s in $steps)
 }
 
 $total.Stop()
-Pop-Location
 
 # ------------------------------------------------------------------
 # サマリ
@@ -304,7 +419,8 @@ if ($allKnown.Count -gt 0)
     }
 }
 
-$ng = @($results | Where-Object { $_.結果 -ne "OK" })
+# 「実行済み」は飛ばした印であって失敗ではないので、NG に数えない。
+$ng = @($results | Where-Object { $_.結果 -ne "OK" -and $_.結果 -ne "実行済み" })
 Write-Host ""
 if ($ng.Count -eq 0)
 {

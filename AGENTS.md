@@ -186,6 +186,15 @@ cd root\programs
 `2_RunAllTests.ps1` はワーキング ツリーの `Result*.txt` を書き換える（従来のバッチ運用と同じ）。
 **コミットの要否は人が判断する**ため、エージェントは差分を報告するに留める。
 
+**上記の既定は C# 側である。VB 側に手を入れたときは `-Lang` で回す。**
+
+```powershell
+.\0_RunAll.ps1 -Lang VB          # 1 と 3 を VB で通す（2 は VB に対象が無い）
+```
+
+理由と対象は [`BUILDING.md`](root/programs/BUILDING.md) 10 節・
+[`SMOKETEST.md`](root/programs/SMOKETEST.md) 10 節。
+
 **`.ps1` は Windows PowerShell 5.1 と PowerShell 7 の両方で動くこと。**
 エージェントの実行環境は 7 だが、利用者は 5.1（`powershell.exe`）で実行するため、
 7 だけで確認すると 5.1 で落ちる。**変更したら 5.1 でも実行して確かめること。**
