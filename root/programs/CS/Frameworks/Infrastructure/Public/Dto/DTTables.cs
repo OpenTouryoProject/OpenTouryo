@@ -1,4 +1,4 @@
-﻿//**********************************************************************************
+//**********************************************************************************
 //* Copyright (C) 2007,2016 Hitachi Solutions,Ltd.
 //**********************************************************************************
 
@@ -27,17 +27,11 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2010/03/xx  西野 大介         新規作成
-//*  2010/11/11  前川 祐介         一覧更新処理対応（行ステータス）
-//*  2010/11/11  前川 祐介         Silverlight対応（ジェネリック）
-//*  2011/10/09  西野 大介         国際化対応
-//*  2011/11/21  西野 大介         マーシャリングのサポート メソッドを追加
-//*  2014/09/05  Rituparna         Added TableRecords class ,SaveJson and LoadJson Method
-//*  2014/09/09  Rituparna         Modified TableRecords class ,SaveJson and LoadJson Method
-//*  2015/01/15	 Supragyan         Added StringFromPrimitivetypes and PrimitivetypeFromString method
-//*  2015/01/15	 Supragyan         Modified SaveJson,LoadJson,Save,Load method by implementing 
-//*                                StringFromPrimitivetypes and PrimitivetypeFromString method
-//*  2015/03/20  Sai               Modifed varaiable '_tbls' access specifier to Private instead of Public 
+//*  2010/03/xx  西野  大介        新規作成
+//*  2010/11/11  前川  祐介        一覧更新処理対応（行ステータス）
+//*  2010/11/11  前川  祐介        Silverlight対応（ジェネリック）
+//*  2011/10/09  西野  大介        国際化対応
+//*  2011/11/21  西野  大介        マーシャリングのサポート メソッドを追加
 //**********************************************************************************
 
 using System;
@@ -46,28 +40,11 @@ using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 
-using Newtonsoft.Json;
-
-using Touryo.Infrastructure.Public.Util;
-
 namespace Touryo.Infrastructure.Public.Dto
 {
     /// <summary>表コレクション</summary>
     public class DTTables : IEnumerable
     {
-        /// <summary>
-        /// Added the class to save the records in Json Format
-        /// </summary>
-        public class TableRecords
-        {
-            /// <summary>tbl</summary>
-            public string tbl { get; set; }
-            /// <summary>col</summary>
-            public Dictionary<string, string> col { get; set; }
-            /// <summary>row</summary>
-            public ArrayList row { get; set; }
-        }
-
         #region インスタンス変数
 
         /// <summary>表を保持するList</summary>
@@ -156,72 +133,6 @@ namespace Touryo.Infrastructure.Public.Dto
 
         #endregion
 
-        #region SaveJson
-
-        /// <summary>
-        /// SaveJson Method(To save records in Json Format)
-        /// </summary>
-        /// <returns>string</returns>
-        public string SaveJson()
-        {
-            TableRecords tableRecords = null;
-
-            List<TableRecords> lstTableRecords = new List<TableRecords>();
-
-            int tblNo = -1;
-            foreach (DTTable dt in this._tbls)
-            {
-                tblNo++;
-
-                tableRecords = new TableRecords();
-
-                tableRecords.tbl = dt.TableName;
-
-                tableRecords.col = new Dictionary<string, string>();
-                foreach (DTColumn col in dt.Cols)
-                {
-                    tableRecords.col.Add(col.ColName, DTColumn.EnumToString(col.ColType));
-                }
-
-                tableRecords.row = new ArrayList();
-                Dictionary<string, object> rowDetails = null;
-                int colNo = 0;
-                int rowStateFlag = 0;
-
-                foreach (DTRow dr in dt.Rows)
-                {
-                    rowDetails = new Dictionary<string, object>();
-                    rowStateFlag = 1;
-                    foreach (DTColumn col in dt.Cols)
-                    {
-                        colNo = colNo + 1;
-                        object colValue;
-                        colValue = dr[col.ColName];
-
-                        // add values to rowdetails based on colvalue.
-                        string strTemp = CustomMarshaler.StringFromPrimitivetype(colValue, false);
-                        rowDetails.Add(col.ColName, strTemp);
-
-                        // adding rowState in rowDeatils.
-                        if (rowStateFlag == 1 && colNo == dt.Cols.Count)
-                        {
-                            rowDetails.Add("rowstate", (int)dr.RowState);
-                            rowStateFlag = 0;
-                            colNo = 0;
-                        }
-                    }
-                    tableRecords.row.Add(rowDetails);
-                }
-                lstTableRecords.Add(tableRecords);
-            }
-
-            //converting the list into json format and return that string value
-            string json = JsonConvert.SerializeObject(lstTableRecords);
-            return json;
-        }
-
-        #endregion
-
         #region セーブ＆ロード（テキスト化）
 
         /// <summary>テキストとしてセーブする</summary>
@@ -279,100 +190,6 @@ namespace Touryo.Infrastructure.Public.Dto
                     tw.WriteLine("row:" + (int)dr.RowState);
 
                     tw.WriteLine("---");
-                }
-            }
-        }
-
-        /// <summary>
-        /// LoadJson Method(To Load records from Json format)
-        /// </summary>
-        /// <param name="sr">StreamReader</param>
-        public void LoadJson(StreamReader sr)
-        {
-            List<TableRecords> lstTableRecords = new List<TableRecords>();
-            string json = sr.ReadToEnd();
-            lstTableRecords = JsonConvert.DeserializeObject<List<TableRecords>>(json);
-
-            DTTable tbl = null;
-            DTColumn col = null;
-            DTRow row = null;
-            int bkColIndex = 0;
-            for (int i = 0; i < lstTableRecords.Count; i++)
-            {
-                string tblName = lstTableRecords[i].tbl;
-
-                //add the DTTable present in lstTableRecords into tbl
-                tbl = new DTTable(tblName);
-
-                // add the tbl into DTTables
-                this.Add(tbl);
-
-                Dictionary<string, string> tempCol = lstTableRecords[i].col;
-
-                foreach (string key in tempCol.Keys)
-                {
-                    string colName = key;
-                    string colType = tempCol[key];
-
-                    //add the colName and colValue into DTColumn
-                    col = new DTColumn(colName, DTColumn.StringToEnum(colType));
-
-                    // add the col into tbl
-                    tbl.Cols.Add(col);
-                }
-
-                ArrayList tempRow = lstTableRecords[i].row;
-                for (int j = 0; j < lstTableRecords[i].row.Count; j++)
-                {
-                    //deserialize the first value inside row of lstTableRecords
-                    object rowJson = JsonConvert.DeserializeObject(lstTableRecords[i].row[j].ToString());
-
-                    //Convert the deserialized value into dictionary
-                    Dictionary<string, object> rowDetails = JsonConvert.DeserializeObject<Dictionary<string, object>>(rowJson.ToString());
-
-                    int colIndex = 0;
-                    if (colIndex == 0)
-                    {
-                        // add new row
-                        row = tbl.Rows.AddNew();
-                    }
-                    else
-                    {
-                        // do nothing
-                    }
-                    foreach (var key in rowDetails)
-                    {
-                        string colName = key.Key;
-                        object colValue = rowDetails[colName];
-
-                        // getting the values and adding it to rows
-                        if (colName != "rowstate")
-                        {
-                            col = (DTColumn)tbl.Cols.ColsInfo[colIndex];
-
-                            if (colValue == null)
-                            {
-                                row[colIndex] = null;
-                            }
-                            else if (col.ColType == DTType.String)
-                            {
-                                // そのまま
-                                row[colIndex] = colValue;
-                                // インデックスを退避
-                                bkColIndex = colIndex;
-                            }
-                            else
-                            {
-                                object primitiveData = CustomMarshaler.PrimitivetypeFromString(col.ColType, colValue.ToString());
-                                row[colIndex] = primitiveData;
-                            }
-                            colIndex = colIndex + 1;
-                        }
-                        else
-                        {
-                            row.RowState = (DataRowState)(int.Parse)(colValue.ToString());
-                        }
-                    }
                 }
             }
         }
@@ -459,13 +276,16 @@ namespace Touryo.Infrastructure.Public.Dto
                                 // 継続行
                             }
 
+                            // セルに値を設定
                             if (celString == "null")
                             {
                                 // row[colIndex] = null;
                             }
                             else
                             {
+                                // 列情報
                                 col = (DTColumn)tbl.Cols.ColsInfo[colIndex];
+
                                 if (col.ColType == DTType.String)
                                 {
                                     // そのまま
@@ -512,8 +332,6 @@ namespace Touryo.Infrastructure.Public.Dto
         }
 
         #endregion
-
-
 
         #region マーシャリングのサポート メソッド
 
