@@ -32,6 +32,8 @@
 //*  2010/11/11  前川  祐介        Silverlight対応（ジェネリック）
 //*  2011/10/09  西野  大介        国際化対応
 //*  2011/11/21  西野  大介        マーシャリングのサポート メソッドを追加
+//*  2026/08/14  玄人 幸道         SaveJson / LoadJson を追加（#544）。
+//*  2026/08/14  玄人 幸道         値と文字列の相互変換の呼び先をDTColumnに変更（#544）。
 //**********************************************************************************
 
 using System;
@@ -39,6 +41,8 @@ using System.IO;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
+
+using Newtonsoft.Json;
 
 namespace Touryo.Infrastructure.Public.Dto
 {
@@ -177,7 +181,7 @@ namespace Touryo.Infrastructure.Public.Dto
                         // 列番号のインクリメント
                         colNo++;
 
-                        string strTemp = CustomMarshaler.StringFromPrimitivetype(o, true);
+                        string strTemp = DTColumn.StringFromPrimitivetype(o, true);
                         tw.WriteLine(
                                   "cel:"
                                   + tblNo.ToString() + "," + rowNo.ToString() + "," + colNo.ToString() +
@@ -286,17 +290,13 @@ namespace Touryo.Infrastructure.Public.Dto
                                 // 列情報
                                 col = (DTColumn)tbl.Cols.ColsInfo[colIndex];
 
+                                // String もそのまま返るようになったため、分岐は要らない（#544）
+                                row[colIndex] = DTColumn.PrimitivetypeFromString(col.ColType, celString);
+
                                 if (col.ColType == DTType.String)
                                 {
-                                    // そのまま
-                                    row[colIndex] = celString;
-                                    // インデックスを退避
+                                    // 改行の継続行（rnr: / rnn:）を連結する先として、インデックスを退避
                                     bkColIndex = colIndex;
-                                }
-                                else
-                                {
-                                    object primitiveData = CustomMarshaler.PrimitivetypeFromString(col.ColType, celString.ToString());
-                                    row[colIndex] = primitiveData;
                                 }
                             }
 
@@ -333,6 +333,192 @@ namespace Touryo.Infrastructure.Public.Dto
 
         #endregion
 
+        #region セーブ＆ロード（JSON化）
+
+        #region 中間生成物（JSONとの相互変換に使うクラス）
+
+        // ＜なぜ DTTables を直接シリアライズしないのか＞（#544）
+        //   DTTables / DTTable / DTRow は内部にインデックスのマップや行数の
+        //   カウンタを持ち、そのままでは JSON として素直な形にならない。
+        //   間に単純なクラスを挟み、JSON の構造をこちらで決める。
+        //
+        // ＜列と行を「配列」で持つ理由＞
+        //   ・JSON オブジェクトのキー順は、本来は無保証。
+        //     列を Dictionary で持つと、行の値と列の対応が順序に依存して危うい。
+        //   ・行ステータスをセルと同じ階層に置くと、
+        //     「rowstate」という名前の列があったときに壊れる。
+        //   このため列も行のセルも配列にし、行ステータスはセルの外に出してある。
+        //
+        // ＜ASP.NET Core から使うとき＞
+        //   このクラス群はプレーンなクラスと List だけで出来ているため、
+        //   コントローラの戻り値にすれば System.Text.Json でもそのまま直列化できる。
+        //   ToJsonObject / FromJsonObject はそのために公開している。
+
+        /// <summary>JSONとの相互変換に使う中間生成物（表コレクション）</summary>
+        public class JsonTables
+        {
+            /// <summary>表</summary>
+            public List<JsonTable> tbls { get; set; }
+        }
+
+        /// <summary>JSONとの相互変換に使う中間生成物（表）</summary>
+        public class JsonTable
+        {
+            /// <summary>表名</summary>
+            public string tbl { get; set; }
+
+            /// <summary>列（順序に意味があるため配列）</summary>
+            public List<JsonColumn> cols { get; set; }
+
+            /// <summary>行</summary>
+            public List<JsonRow> rows { get; set; }
+        }
+
+        /// <summary>JSONとの相互変換に使う中間生成物（列）</summary>
+        public class JsonColumn
+        {
+            /// <summary>列名</summary>
+            public string name { get; set; }
+
+            /// <summary>列の型（DTTypeの文字列表現）</summary>
+            public string type { get; set; }
+        }
+
+        /// <summary>JSONとの相互変換に使う中間生成物（行）</summary>
+        public class JsonRow
+        {
+            /// <summary>セル（列と同じ順序。nullはnullのまま）</summary>
+            public List<string> cels { get; set; }
+
+            /// <summary>行ステータス（DataRowStateの数値）</summary>
+            public int state { get; set; }
+        }
+
+        #endregion
+
+        #region 中間生成物との相互変換
+
+        /// <summary>中間生成物に変換する</summary>
+        /// <returns>JsonTables</returns>
+        public JsonTables ToJsonObject()
+        {
+            JsonTables jTbls = new JsonTables();
+            jTbls.tbls = new List<JsonTable>();
+
+            foreach (DTTable dt in this._tbls)
+            {
+                JsonTable jTbl = new JsonTable();
+                jTbl.tbl = dt.TableName;
+
+                // 列情報
+                jTbl.cols = new List<JsonColumn>();
+                foreach (DTColumn col in dt.Cols)
+                {
+                    JsonColumn jCol = new JsonColumn();
+                    jCol.name = col.ColName;
+                    jCol.type = DTColumn.EnumToString(col.ColType);
+                    jTbl.cols.Add(jCol);
+                }
+
+                // 行のセル
+                jTbl.rows = new List<JsonRow>();
+                foreach (DTRow dr in dt.Rows)
+                {
+                    JsonRow jRow = new JsonRow();
+                    jRow.cels = new List<string>();
+
+                    foreach (object o in dr)
+                    {
+                        // テキスト版と違い、改行のエスケープは行わない（false）。
+                        // 行単位で区切る形式ではなく、エスケープは JSON 側の仕事のため。
+                        jRow.cels.Add(DTColumn.StringFromPrimitivetype(o, false));
+                    }
+
+                    jRow.state = (int)dr.RowState;
+                    jTbl.rows.Add(jRow);
+                }
+
+                jTbls.tbls.Add(jTbl);
+            }
+
+            return jTbls;
+        }
+
+        /// <summary>中間生成物から復元する</summary>
+        /// <param name="jTbls">JsonTables</param>
+        public void FromJsonObject(JsonTables jTbls)
+        {
+            // 初期化
+            this._tbls = new List<DTTable>();
+            this._tblsNameIndexMap = new Dictionary<string, int>();
+
+            if (jTbls == null || jTbls.tbls == null) { return; }
+
+            foreach (JsonTable jTbl in jTbls.tbls)
+            {
+                // 表を生成して追加
+                DTTable tbl = new DTTable(jTbl.tbl);
+                this.Add(tbl);
+
+                // 列情報
+                if (jTbl.cols != null)
+                {
+                    foreach (JsonColumn jCol in jTbl.cols)
+                    {
+                        tbl.Cols.Add(new DTColumn(jCol.name, DTColumn.StringToEnum(jCol.type)));
+                    }
+                }
+
+                if (jTbl.rows == null) { continue; }
+
+                // 行のセル
+                foreach (JsonRow jRow in jTbl.rows)
+                {
+                    // AddNew は行ステータスを Added にするため、値を入れ終えてから戻す。
+                    DTRow row = tbl.Rows.AddNew();
+
+                    if (jRow.cels != null)
+                    {
+                        for (int i = 0; i < jRow.cels.Count; i++)
+                        {
+                            string cel = jRow.cels[i];
+
+                            // null は設定しない（DTRow の初期値のままにする）。
+                            if (cel == null) { continue; }
+
+                            DTColumn col = (DTColumn)tbl.Cols.ColsInfo[i];
+                            row[i] = DTColumn.PrimitivetypeFromString(col.ColType, cel);
+                        }
+                    }
+
+                    // 行ステータス（値を設定すると Modified になるため、最後に戻す）
+                    row.RowState = (DataRowState)jRow.state;
+                }
+            }
+        }
+
+        #endregion
+
+        #region セーブ＆ロード
+
+        /// <summary>JSONとしてセーブする</summary>
+        /// <param name="tw">任意のTextWriter</param>
+        public void SaveJson(TextWriter tw)
+        {
+            tw.Write(JsonConvert.SerializeObject(this.ToJsonObject()));
+        }
+
+        /// <summary>JSONからロードする</summary>
+        /// <param name="tr">任意のTextReader</param>
+        public void LoadJson(TextReader tr)
+        {
+            this.FromJsonObject(JsonConvert.DeserializeObject<JsonTables>(tr.ReadToEnd()));
+        }
+
+        #endregion
+
+        #endregion
+
         #region マーシャリングのサポート メソッド
 
         /// <summary>
@@ -365,6 +551,44 @@ namespace Touryo.Infrastructure.Public.Dto
             {
                 DTTables dtts = new DTTables();
                 dtts.Load(sr);
+                return dtts;
+            }
+            finally
+            {
+                sr.Close();
+            }
+        }
+
+        /// <summary>
+        /// 汎用DTOのマーシャル処理（JSON）
+        /// </summary>
+        public static string DTTablesToJson(DTTables dtts)
+        {
+            StringBuilder sb = new StringBuilder();
+            StringWriter sw = new StringWriter(sb);
+
+            try
+            {
+                dtts.SaveJson(sw);
+                return sb.ToString();
+            }
+            finally
+            {
+                sw.Close();
+            }
+        }
+
+        /// <summary>
+        /// 汎用DTOのアンマーシャル処理（JSON）
+        /// </summary>
+        public static DTTables JsonToDTTables(string str)
+        {
+            StringReader sr = new StringReader(str);
+
+            try
+            {
+                DTTables dtts = new DTTables();
+                dtts.LoadJson(sr);
                 return dtts;
             }
             finally

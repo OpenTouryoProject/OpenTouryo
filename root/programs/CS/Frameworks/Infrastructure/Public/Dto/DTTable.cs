@@ -35,6 +35,7 @@
 //*                                    ・ToDataTable、FromDataTable
 //*                                    ・ConvertDTTypeToType、ConvertTypeToDTType
 //*  2011/10/09  西野  大介        国際化対応
+//*  2026/08/14  玄人 幸道         ToDataTableで行ステータスを保つようにした（#544）。
 //**********************************************************************************
 
 using System;
@@ -142,11 +143,22 @@ namespace Touryo.Infrastructure.Public.Dto
         /// DTTableをSystem.Data.DataTableに変換する
         /// </summary>
         /// <returns>変換後のSystem.Data.DataTable</returns>
+        /// <remarks>
+        /// 行ステータス（RowState）を保って変換する（#544）。
+        ///
+        /// ＜以前は失われていた＞
+        ///   変換の前後で AcceptChanges を呼んでいたため、全行が Unchanged になり、
+        ///   Deleted の行は消えていた。FromDataTable が行ステータスを復元しているのに、
+        ///   戻すと落ちる、という非対称な状態だった。
+        ///   これでは受け取った側で Added / Modified / Deleted の振り分けができない。
+        ///
+        /// ＜Modified の元の値は復元されない＞
+        ///   DTRow は現在値と行ステータスだけを持ち、変更前の値を持たない。
+        ///   このため DataRowVersion.Original には現在値が入る。
+        ///   区分（Added / Modified / Deleted）の判別を目的とした変換である。
+        /// </remarks>
         public DataTable ToDataTable()
         {
-            // DataTable 変換前に、変更を確定させる
-            this.AcceptChanges();
-
             // テーブル定義
             DataTable dt = new DataTable(this.TableName);
 
@@ -158,11 +170,18 @@ namespace Touryo.Infrastructure.Public.Dto
             }
 
             // 値追加
-            DataRow dr;
+            //
+            // Detached（どの行リストにも属さない）は DataTable では表せないため、
+            // ここでは追加しない。行ステータスを戻すとき、位置がずれないよう
+            // DTRow との対応を控えておく。
+            List<DTRow> added = new List<DTRow>();
+
             foreach (DTRow row in this.Rows)
             {
+                if (row.RowState == DataRowState.Detached) { continue; }
+
                 // 行を新規作成
-                dr = dt.NewRow();
+                DataRow dr = dt.NewRow();
 
                 // 各列ごとに値を追加
                 foreach (DTColumn col in this.Cols)
@@ -172,10 +191,37 @@ namespace Touryo.Infrastructure.Public.Dto
 
                 // 行をテーブルに追加
                 dt.Rows.Add(dr);
+                added.Add(row);
             }
 
-            // 値を確定させておく
+            // いったん確定させ、全行を Unchanged にする。
+            // SetAdded / SetModified は Unchanged の行にしか使えないため、この順である。
             dt.AcceptChanges();
+
+            // 行ステータスを復元する
+            for (int i = 0; i < added.Count; i++)
+            {
+                switch (added[i].RowState)
+                {
+                    case DataRowState.Added:
+                        dt.Rows[i].SetAdded();
+                        break;
+
+                    case DataRowState.Modified:
+                        dt.Rows[i].SetModified();
+                        break;
+
+                    case DataRowState.Deleted:
+                        // Delete しても行は Rows に残る（RowState が Deleted になる）ため、
+                        // 以降の添字はずれない。
+                        dt.Rows[i].Delete();
+                        break;
+
+                    default:
+                        // Unchanged は、AcceptChanges 済みの状態がそのまま当てはまる。
+                        break;
+                }
+            }
 
             // DataTable を返す
             return dt;
