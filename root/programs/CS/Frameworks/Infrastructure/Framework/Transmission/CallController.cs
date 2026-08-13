@@ -69,6 +69,8 @@
 //*                                ・マルチスレッド・クライアントから利用不可。
 //*                                  ・Critical Section内で利用する。
 //*                                  ・Concurrent Collectionでプールを作成する。
+//*  2026/08/13  玄人 幸道         .NET Core版で未対応のprotocolを、nullではなく
+//*                                FrameworkExceptionで返すようにした（#543）。
 //**********************************************************************************
 
 using System;
@@ -389,7 +391,26 @@ namespace Touryo.Infrastructure.Framework.Transmission
 #if (NETSTD || NETCOREAPP)
             else
             {
-                return null; // FxEnumを潰したので、ココには来ない想定
+                // .NET Core 版が実装するのは InProcess だけで、
+                // FxEnum.TmProtocol からも 2 - 5 を落としてある。
+                //
+                // ＜null を返さない理由＞（#543）
+                //   ProtocolNameService は protocol 属性の値を検査せず、
+                //   XML に書かれた文字列をそのまま返す。このため、
+                //   protocol="4" のような定義があれば**ここに到達する**。
+                //   実際、配布している TMProtocolDefinition.xml には
+                //   4 と 5 の定義が含まれている。
+                //
+                //   null を返すと呼び出し側で NullReferenceException になるだけで、
+                //   原因が設定の誤りであることに辿り着けない。
+                //   .NET Framework 版と同じ例外を投げ、どの protocol が
+                //   受け付けられなかったかを示す。
+
+                // エラーをスロー
+                throw new FrameworkException(
+                    FrameworkExceptionMessage.PRT_NAMESERVICE_XML_FORMAT_ERROR[0],
+                    String.Format(FrameworkExceptionMessage.PRT_NAMESERVICE_XML_FORMAT_ERROR[1],
+                        String.Format(FrameworkExceptionMessage.PRT_NAMESERVICE_XML_FORMAT_ERROR_prt2, protocol, serviceName)));
             }
 #else
             else

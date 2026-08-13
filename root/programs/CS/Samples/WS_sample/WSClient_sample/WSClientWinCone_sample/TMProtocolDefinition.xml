@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <!DOCTYPE TMD[
-  <!ELEMENT TMD (Prop*, Url*, Transmission*)>
+  <!ELEMENT TMD (Url*, Prop*, Transmission*)>
   
   <!ELEMENT Url EMPTY>
   <!ELEMENT Prop EMPTY>
@@ -8,11 +8,12 @@
 
   <!ATTLIST Url id ID #REQUIRED value CDATA #REQUIRED>
   <!ATTLIST Prop id ID #REQUIRED value CDATA #REQUIRED>
-  <!ATTLIST Transmission id ID #REQUIRED protocol (1 | 2) #REQUIRED 
+  <!ATTLIST Transmission id ID #REQUIRED protocol (1 | 4 | 5) #REQUIRED 
     url CDATA #IMPLIED url_ref IDREF #IMPLIED timeout CDATA #IMPLIED prop_ref IDREF #IMPLIED>
 ]>
 <!-- idの先頭には、数字を使用できない。 -->
-<!-- protocol：1=InProcess、2=WebService -->
+<!-- protocol：1=InProcess、4=WCF(netTcpBinding)、5=ASP.NET WebAPI -->
+<!-- 2=ASP.NET Webサービス、3=WCF(HTTP) は FxEnum.TmProtocol に実装が残るが、現行の構成では使用しない -->
 <TMD>
   <!-- マスタ データ -->
 
@@ -37,8 +38,8 @@
     <Transmission id="testWebService4" protocol="5" url="https://localhost/WebAPIControllerForFx" />
     
     <!-- サービス（マスタ データを活用）-->
-    <Transmission id="_testWebService" protocol="2" url_ref="url_a" timeout="60" prop_ref="prop_a" />
-    <Transmission id="_testWebService2" protocol="3" url_ref="url_b" />
+    <!--Transmission id="_testWebService" protocol="2" url_ref="url_a" timeout="60" prop_ref="prop_a" /-->
+    <!--Transmission id="_testWebService2" protocol="3" url_ref="url_b" /-->
     <Transmission id="_testWebService3" protocol="4" url_ref="url_c" />
     <Transmission id="_testWebService4" protocol="5" url_ref="url_d" />
 </TMD>
