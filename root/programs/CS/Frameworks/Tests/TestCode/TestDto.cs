@@ -262,14 +262,16 @@ namespace TestCode
             TestDto.OutputDTTable(restored[0]);
         }
 
-        /// <summary>DTTables の JSON 往復のテスト</summary>
+        /// <summary>DataSet との JSON 往復のテスト</summary>
         /// <remarks>
-        /// SaveJson / LoadJson を確認する（#544）。
+        /// SaveJson / LoadJson と、DataSet との相互変換を確認する（#544）。
+        ///
+        ///   DataSet → DTTables → JSON → DTTables → DataSet
         ///
         /// ＜値を型ごとに見る理由＞
-        ///   JSON 上の値は CustomMarshaler が文字列にしたもので、
-        ///   型ごとに書式が違う（DateTime は ISO 8601、ByteArray は Base64）。
-        ///   **列の型は JSON 側に持っているので、読み戻しでそれを使う。**
+        ///   JSON 上の値は DTColumn が文字列にしたもので、型ごとに書式が違う
+        ///   （DateTime は ISO 8601、ByteArray は Base64）。
+        ///   **列の型は JSON 側に持っており、読み戻しでそれを使う。**
         ///   ここが崩れると、値が入っているのに型が変わる、という壊れ方をする。
         ///
         /// ＜Double を「二進で割り切れない値」で見る理由＞
@@ -277,14 +279,73 @@ namespace TestCode
         ///   0.1 + 0.2 が 0.3 になって**元の値に戻らない**（#544）。
         ///   ラウンドトリップ書式を使っているので、両者で同じ文字列になる。
         ///
-        /// ＜改行を含む文字列を入れている＞
-        ///   JSON 側のエスケープに任せている箇所で、崩れると読み戻しで
-        ///   **例外にならずに文字が欠ける**。テキスト版で実際に起きていた（#544）。
+        /// ＜改行を含む文字列と null を入れている＞
+        ///   改行は JSON 側のエスケープに任せており、崩れると読み戻しで
+        ///   **例外にならずに文字が欠ける**（テキスト版で実際に起きていた）。
+        ///   null は JSON でも null になり、読み戻しで値を設定しない経路を通る。
+        ///
+        /// ＜表を 2 つにしている＞
+        ///   DTTables は表のコレクションなので、複数表と表名での取得を通す。
+        ///   2 つ目は、列名を JSON のキー（state / cels）とわざと重ねてある。
         /// </remarks>
         private static void TestDTTablesJson()
         {
-            MyDebug.OutputDebugAndConsole("DTTables（JSON）");
+            MyDebug.OutputDebugAndConsole("DataSet との JSON 往復");
 
+            DataSet ds = new DataSet("TestDataSet");
+            ds.Tables.Add(TestDto.MakeTypedTable());
+            ds.Tables.Add(TestDto.MakeOddTable());
+
+            MyDebug.OutputDebugAndConsole("[元の DataSet]");
+            TestDto.OutputDataSet(ds);
+
+            DTTables dtts = DTTables.FromDataSet(ds);
+
+            // JSON へ
+            string json = DTTables.DTTablesToJson(dtts);
+            MyDebug.OutputDebugAndConsole("[JSON]");
+            MyDebug.OutputDebugAndConsole(json);
+
+            // JSON から
+            DTTables restored = DTTables.JsonToDTTables(json);
+
+            MyDebug.OutputDebugAndConsole("[JSONとの往復（DTTables）]");
+            MyDebug.OutputDebugAndConsole("表の数 : " + restored.Count);
+
+            // 表名でも引けること（インデクサ）
+            MyDebug.OutputDebugAndConsole("表名で取得 : " + restored["TestOdd"].TableName);
+
+            foreach (DTTable dtt in restored)
+            {
+                TestDto.OutputDTTableAll(dtt);
+            }
+
+            // DataSet へ戻す
+            MyDebug.OutputDebugAndConsole("[DataSet へ戻す]");
+            DataSet jsonBack = restored.ToDataSet();
+            TestDto.OutputDataSet(jsonBack);
+
+            // **値の表示だけに頼らない。**
+            // CompareResult.ps1 は 16 文字以上の英数字の並びを <B64URL> に潰すため、
+            // ラウンドトリップ書式の Double（17 桁）は期待値の上で読めなくなる。
+            // 元の DataSet と突き合わせた結果を、明示的に出す。
+            TestDto.OutputRoundTripResult(ds, jsonBack);
+
+            // テキスト版でも同じものが往復すること。
+            //
+            // こちらは改行を「\rrnr:」「\rrnn:」に退避して行を分け、
+            // 読み込み側で連結して戻す。以前は退避が効いておらず、
+            // **改行以降が捨てられていた**（#544）。
+            MyDebug.OutputDebugAndConsole("[テキストとの往復]");
+
+            DataSet textBack = DTTables.StringToDTTables(DTTables.DTTablesToString(dtts)).ToDataSet();
+            TestDto.OutputRoundTripResult(ds, textBack);
+        }
+
+        /// <summary>型ごとの値を持つ DataTable を作る</summary>
+        /// <returns>DataTable</returns>
+        private static DataTable MakeTypedTable()
+        {
             DataTable dt = new DataTable("TestTypes");
             dt.Columns.Add("Id", typeof(int));
             dt.Columns.Add("Name", typeof(string));
@@ -297,7 +358,7 @@ namespace TestCode
             dt.Rows.Add(1, "あいう", 1234.56m, 0.1d + 0.2d,
                 new DateTime(2026, 8, 14, 12, 34, 56, 789), true, new byte[] { 0, 1, 255 });
 
-            // null と空文字を分けて見る（どちらも「値が無い」に見えるため）
+            // 空文字と空のバイト配列（null と見分けられること）
             dt.Rows.Add(2, "", -0.01m, double.MaxValue,
                 new DateTime(1977, 4, 24), false, new byte[0]);
 
@@ -305,56 +366,28 @@ namespace TestCode
             dt.Rows.Add(3, "あ\r\nい", 0m, 0d,
                 new DateTime(2000, 1, 1), false, new byte[] { 1 });
 
-            DTTables dtts = new DTTables();
-            dtts.Add(DTTable.FromDataTable(dt));
+            // すべて null（Id 以外を設定しない）
+            DataRow nullRow = dt.NewRow();
+            nullRow["Id"] = 4;
+            dt.Rows.Add(nullRow);
 
-            // JSON へ
-            string json = DTTables.DTTablesToJson(dtts);
-            MyDebug.OutputDebugAndConsole("[JSON]");
-            MyDebug.OutputDebugAndConsole(json);
+            return dt;
+        }
 
-            // JSON から
-            DTTables restored = DTTables.JsonToDTTables(json);
+        /// <summary>列名を JSON のキーと重ねた DataTable を作る</summary>
+        /// <returns>DataTable</returns>
+        /// <remarks>
+        /// 行ステータスをセルの外に出しているため、
+        /// "state" や "cels" という名前の列があっても衝突しない。
+        /// </remarks>
+        private static DataTable MakeOddTable()
+        {
+            DataTable dt = new DataTable("TestOdd");
+            dt.Columns.Add("state", typeof(string));
+            dt.Columns.Add("cels", typeof(int));
+            dt.Rows.Add("わな", 7);
 
-            MyDebug.OutputDebugAndConsole("[JSONとの往復]");
-            MyDebug.OutputDebugAndConsole("表の数 : " + restored.Count);
-            TestDto.OutputTypedTable(restored[0]);
-
-            // **値の表示だけに頼らない。**
-            // CompareResult.ps1 は 16 文字以上の英数字の並びを <B64URL> に潰すため、
-            // ラウンドトリップ書式の Double（17 桁）は期待値の上で読めなくなる。
-            // 元の DataTable と突き合わせた結果を、明示的に出す。
-            TestDto.OutputRoundTripResult(dt, restored[0]);
-
-            // テキスト版でも同じものが往復すること。
-            //
-            // こちらは改行を「\rrnr:」「\rrnn:」に退避して行を分け、
-            // 読み込み側で連結して戻す。以前は退避が効いておらず、
-            // **改行以降が捨てられていた**（#544）。
-            MyDebug.OutputDebugAndConsole("[テキストとの往復（改行を含む文字列）]");
-
-            DTTables textBack = DTTables.StringToDTTables(DTTables.DTTablesToString(dtts));
-            TestDto.OutputTypedTable(textBack[0]);
-            TestDto.OutputRoundTripResult(dt, textBack[0]);
-
-            // 列名が JSON のキーと重なっても壊れないこと。
-            // 行ステータスをセルの外に出しているため、"state" という列があっても衝突しない。
-            MyDebug.OutputDebugAndConsole("[列名が state / cels でも壊れないこと]");
-
-            DataTable odd = new DataTable("TestOdd");
-            odd.Columns.Add("state", typeof(string));
-            odd.Columns.Add("cels", typeof(int));
-            odd.Rows.Add("わな", 7);
-
-            DTTables oddTbls = new DTTables();
-            oddTbls.Add(DTTable.FromDataTable(odd));
-
-            DTTables oddBack = DTTables.JsonToDTTables(DTTables.DTTablesToJson(oddTbls));
-
-            MyDebug.OutputDebugAndConsole(
-                "state=" + oddBack[0].Rows[0]["state"]
-                + ", cels=" + oddBack[0].Rows[0]["cels"]
-                + ", RowState=" + oddBack[0].Rows[0].RowState);
+            return dt;
         }
 
         /// <summary>行ステータスの往復のテスト</summary>
@@ -461,14 +494,16 @@ namespace TestCode
             }
         }
 
-        /// <summary>型ごとの値を持つ DTTable を出力する</summary>
+        /// <summary>DTTable を全列出力する</summary>
         /// <param name="dtt">DTTable</param>
         /// <remarks>
         /// **カルチャに依存しない書式で出す。**
         /// 既定の ToString は小数点や日付の区切りがカルチャで変わり、
         /// 期待値と一致しなくなる（CI は ja-JP に揃えているが、手元では違い得る）。
+        ///
+        /// 表ごとに列が違うため、列名は決め打ちにせず走査する。
         /// </remarks>
-        private static void OutputTypedTable(DTTable dtt)
+        private static void OutputDTTableAll(DTTable dtt)
         {
             MyDebug.OutputDebugAndConsole("表名 : " + dtt.TableName);
 
@@ -481,20 +516,55 @@ namespace TestCode
 
             foreach (DTRow row in dtt.Rows)
             {
-                MyDebug.OutputDebugAndConsole(
-                    "行   : Id=" + TestDto.Fixed(row["Id"])
-                    + ", Name=" + TestDto.Fixed(row["Name"])
-                    + ", Price=" + TestDto.Fixed(row["Price"])
-                    + ", Rate=" + TestDto.Fixed(row["Rate"])
-                    + ", Ordered=" + TestDto.Fixed(row["Ordered"])
-                    + ", Flag=" + TestDto.Fixed(row["Flag"])
-                    + ", Blob=" + TestDto.Fixed(row["Blob"]));
+                string values = "";
+                foreach (DTColumn col in dtt.Cols)
+                {
+                    values += (values == "" ? "" : ", ")
+                        + col.ColName + "=" + TestDto.Fixed(row[col.ColName]);
+                }
+
+                MyDebug.OutputDebugAndConsole("行   : " + values + ", RowState=" + row.RowState);
+            }
+        }
+
+        /// <summary>DataSet を全表・全列出力する</summary>
+        /// <param name="ds">DataSet</param>
+        private static void OutputDataSet(DataSet ds)
+        {
+            MyDebug.OutputDebugAndConsole("表の数 : " + ds.Tables.Count);
+
+            foreach (DataTable dt in ds.Tables)
+            {
+                MyDebug.OutputDebugAndConsole("表名 : " + dt.TableName);
+
+                string cols = "";
+                foreach (DataColumn col in dt.Columns)
+                {
+                    cols += (cols == "" ? "" : ", ") + col.ColumnName + "(" + col.DataType.Name + ")";
+                }
+                MyDebug.OutputDebugAndConsole("列   : " + cols);
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    // Deleted の行は現在値を読めないため、元の値を出す
+                    DataRowVersion ver = row.RowState == System.Data.DataRowState.Deleted
+                        ? DataRowVersion.Original : DataRowVersion.Current;
+
+                    string values = "";
+                    foreach (DataColumn col in dt.Columns)
+                    {
+                        values += (values == "" ? "" : ", ")
+                            + col.ColumnName + "=" + TestDto.Fixed(row[col.ColumnName, ver]);
+                    }
+
+                    MyDebug.OutputDebugAndConsole("行   : " + values + ", RowState=" + row.RowState);
+                }
             }
         }
 
         /// <summary>往復の前後で値が一致したかを出力する</summary>
-        /// <param name="src">元の DataTable</param>
-        /// <param name="dst">往復後の DTTable</param>
+        /// <param name="src">元の DataSet</param>
+        /// <param name="dst">往復後の DataSet</param>
         /// <remarks>
         /// **値そのものではなく、一致したかどうかを出す。**
         /// 期待値の比較は CompareResult.ps1 が正規化してから行うが、
@@ -502,31 +572,59 @@ namespace TestCode
         /// ラウンドトリップ書式の Double は 17 桁になるため、
         /// 値を出しただけでは**期待値の上で読めない**。
         /// </remarks>
-        private static void OutputRoundTripResult(DataTable src, DTTable dst)
+        private static void OutputRoundTripResult(DataSet src, DataSet dst)
         {
-            if (src.Rows.Count != dst.Rows.Count)
+            if (src.Tables.Count != dst.Tables.Count)
             {
-                MyDebug.OutputDebugAndConsole("往復 : 行数が違う（" + src.Rows.Count + " → " + dst.Rows.Count + "）");
+                MyDebug.OutputDebugAndConsole(
+                    "往復 : 表の数が違う（" + src.Tables.Count + " → " + dst.Tables.Count + "）");
                 return;
             }
 
-            for (int i = 0; i < src.Rows.Count; i++)
+            for (int t = 0; t < src.Tables.Count; t++)
             {
-                string ng = "";
+                DataTable s = src.Tables[t];
+                DataTable d = dst.Tables[t];
 
-                foreach (DataColumn col in src.Columns)
+                if (s.TableName != d.TableName)
                 {
-                    if (!TestDto.SameValue(src.Rows[i][col.ColumnName], dst.Rows[i][col.ColumnName]))
-                    {
-                        ng += (ng == "" ? "" : ", ") + col.ColumnName;
-                    }
+                    MyDebug.OutputDebugAndConsole(
+                        "往復 : 表名が違う（" + s.TableName + " → " + d.TableName + "）");
+                    continue;
                 }
 
-                MyDebug.OutputDebugAndConsole(
-                    "往復 : 行" + (i + 1) + " " + (ng == "" ? "全列一致" : "不一致の列 = " + ng));
+                if (s.Rows.Count != d.Rows.Count)
+                {
+                    MyDebug.OutputDebugAndConsole(
+                        "往復 : " + s.TableName + " の行数が違う（"
+                        + s.Rows.Count + " → " + d.Rows.Count + "）");
+                    continue;
+                }
+
+                for (int i = 0; i < s.Rows.Count; i++)
+                {
+                    string ng = "";
+
+                    foreach (DataColumn col in s.Columns)
+                    {
+                        if (!d.Columns.Contains(col.ColumnName))
+                        {
+                            ng += (ng == "" ? "" : ", ") + col.ColumnName + "(列が無い)";
+                            continue;
+                        }
+
+                        if (!TestDto.SameValue(s.Rows[i][col.ColumnName], d.Rows[i][col.ColumnName]))
+                        {
+                            ng += (ng == "" ? "" : ", ") + col.ColumnName;
+                        }
+                    }
+
+                    MyDebug.OutputDebugAndConsole(
+                        "往復 : " + s.TableName + " 行" + (i + 1) + " "
+                        + (ng == "" ? "全列一致" : "不一致の列 = " + ng));
+                }
             }
         }
-
         /// <summary>2 つの値が同じかを判定する</summary>
         /// <param name="a">値</param>
         /// <param name="b">値</param>

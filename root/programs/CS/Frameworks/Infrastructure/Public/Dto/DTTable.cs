@@ -186,7 +186,14 @@ namespace Touryo.Infrastructure.Public.Dto
                 // 各列ごとに値を追加
                 foreach (DTColumn col in this.Cols)
                 {
-                    dr[col.ColName] = row[col.ColName];
+                    object value = row[col.ColName];
+
+                    // **null は DBNull に置き換える。**（#544）
+                    //   DTRow は値なしを null で持つが、DataRow は null を受け付けず
+                    //   「Column を null に設定できません。DBNull を使用してください。」
+                    //   と ArgumentException を投げる。
+                    //   文字列の列は通ってしまうため、値型の列で初めて落ちる。
+                    dr[col.ColName] = (value == null) ? DBNull.Value : value;
                 }
 
                 // 行をテーブルに追加

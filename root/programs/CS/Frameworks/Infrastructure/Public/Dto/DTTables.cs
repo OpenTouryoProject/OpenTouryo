@@ -34,9 +34,11 @@
 //*  2011/11/21  西野  大介        マーシャリングのサポート メソッドを追加
 //*  2026/08/14  玄人 幸道         SaveJson / LoadJson を追加（#544）。
 //*  2026/08/14  玄人 幸道         値と文字列の相互変換の呼び先をDTColumnに変更（#544）。
+//*  2026/08/14  玄人 幸道         DataSetとの相互変換を追加（#544）。
 //**********************************************************************************
 
 using System;
+using System.Data;
 using System.IO;
 using System.Text;
 using System.Collections;
@@ -137,6 +139,52 @@ namespace Touryo.Infrastructure.Public.Dto
 
         #endregion
 
+        #region DataSetとの相互変換
+
+        // DTTable の ToDataTable / FromDataTable を、表の数だけ回すだけである。
+        // DTTables が DataSet に対応する層なので、ここに置く（#544）。
+        //
+        // ＜移らないもの＞
+        //   ・DataSet の名前（DataSetName）… DTTables は名前を持たない
+        //   ・リレーション（Relations）と制約（Constraints）… 同上
+        //   移すのは「表・列・行・値・行ステータス」だけである。
+
+        /// <summary>System.Data.DataSetをDTTablesに変換する</summary>
+        /// <param name="ds">変換元のSystem.Data.DataSet</param>
+        /// <returns>変換後のDTTables</returns>
+        /// <remarks>
+        /// **同じ名前の表が複数あると例外になる。**
+        /// DTTables は表名でも引けるようにするため、名前の重複を許さない。
+        /// </remarks>
+        public static DTTables FromDataSet(DataSet ds)
+        {
+            DTTables dtts = new DTTables();
+
+            foreach (DataTable dt in ds.Tables)
+            {
+                dtts.Add(DTTable.FromDataTable(dt));
+            }
+
+            return dtts;
+        }
+
+        /// <summary>DTTablesをSystem.Data.DataSetに変換する</summary>
+        /// <returns>変換後のSystem.Data.DataSet</returns>
+        /// <remarks>行ステータス（RowState）は保たれる。詳細は DTTable.ToDataTable。</remarks>
+        public DataSet ToDataSet()
+        {
+            DataSet ds = new DataSet();
+
+            foreach (DTTable dt in this._tbls)
+            {
+                ds.Tables.Add(dt.ToDataTable());
+            }
+
+            return ds;
+        }
+
+        #endregion
+
         #region セーブ＆ロード（テキスト化）
 
         /// <summary>テキストとしてセーブする</summary>
@@ -182,12 +230,23 @@ namespace Touryo.Infrastructure.Public.Dto
                         colNo++;
 
                         string strTemp = DTColumn.StringFromPrimitivetype(o, true);
+
+                        // **null は "null" と書く。**（#544）
+                        //
+                        //   Load 側には元から「celString == "null" なら値を設定しない」
+                        //   という受け口があるのに、こちらが書いていなかった。
+                        //   null は空文字として書かれ、読み込み時に
+                        //   Convert.ToDecimal("") などが FormatException を投げていた。
+                        //
+                        //   ＜値が文字列の "null" だった場合＞
+                        //     読み戻すと null になる。行単位・文字列だけの形式なので、
+                        //     ここは区別できない。値を厳密に往復させたいときは
+                        //     JSON 版（SaveJson / LoadJson）を使うこと。
+                        //     あちらは JSON の null をそのまま使うため、曖昧さが無い。
                         tw.WriteLine(
                                   "cel:"
                                   + tblNo.ToString() + "," + rowNo.ToString() + "," + colNo.ToString() +
-                                  ":" + strTemp);
-
-
+                                  ":" + (strTemp == null ? "null" : strTemp));
                     }
 
                     // 行ステータス
