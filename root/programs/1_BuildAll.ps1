@@ -82,6 +82,9 @@ param(
 # ビルド バッチはそれぞれの直下にあるため、ステップごとにそこへ移動して呼ぶ。
 New-Item -ItemType Directory -Force $OutputDir | Out-Null
 
+# サマリの整形。Format-Table は 5.1 で全角の桁を数えないため、自前で揃える。
+. (Join-Path $PSScriptRoot "SummaryTable.ps1")
+
 # ------------------------------------------------------------------
 # コンソールのコード ページを先に UTF-8 にしておく
 # ------------------------------------------------------------------
@@ -391,7 +394,9 @@ $total.Stop()
 # ------------------------------------------------------------------
 Write-Host ""
 Write-Host "================ サマリ ================"
-$results | Format-Table -AutoSize | Out-String | Write-Host
+Write-Host ""
+Write-SummaryTable $results
+Write-Host ""
 Write-Host ("  所要時間 : {0:N1} 分" -f $total.Elapsed.TotalMinutes)
 Write-Host ("  ログ     : {0}" -f $OutputDir)
 

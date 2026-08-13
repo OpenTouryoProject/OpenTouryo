@@ -105,6 +105,9 @@ $configRoot = if ($Lang -eq "VB") { Join-Path $PSScriptRoot "VB" } else { $csRoo
 
 New-Item -ItemType Directory -Force $OutputDir | Out-Null
 
+# サマリの整形。Format-Table は 5.1 で全角の桁を数えないため、自前で揃える。
+. (Join-Path $PSScriptRoot "SummaryTable.ps1")
+
 # 対象に与える stdin（空）。
 # Start-Process -RedirectStandardInput は実在するファイルを要求するため、先に作る。
 # これが無いと Console.ReadKey() が本当にキー入力を待つ。
@@ -1019,15 +1022,23 @@ if (-not $SkipBuild)
 {
     # ビルドする単位は「フォルダ ＋ バッチ」。同じバッチ名が CS と VB の
     # 両方にあるため（5_Build_Bat_sample.bat 等）、バッチ名だけでは一意化できない。
+    #
+    # 並びは「C# の対象 → VB の前提 → VB の対象」とする。
+    # 前提を先頭に置くと、-Lang Both で VB の準備が C# の対象より先に流れ、
+    # 1_BuildAll.ps1（CS → VB の順）と見た目が揃わない。依存関係は
+    # 「VB の前提が VB の対象より前」だけなので、この並びで足りる。
     $builds = @()
 
-    # VB を含むなら、前提のビルドを先に通す。
-    if (@($selected | Where-Object { $_.Dir -eq "VB" }).Count -gt 0)
-    {
-        $builds += $prerequisitesVB
-    }
+    $builds += @($selected | Where-Object { $_.Dir -ne "VB" } |
+                 ForEach-Object { @{ Dir = $_.Dir; Bat = $_.Bat; Note = "" } })
 
-    $builds += @($selected | ForEach-Object { @{ Dir = $_.Dir; Bat = $_.Bat } })
+    $vb = @($selected | Where-Object { $_.Dir -eq "VB" })
+    if ($vb.Count -gt 0)
+    {
+        $builds += @($prerequisitesVB |
+                     ForEach-Object { @{ Dir = $_.Dir; Bat = $_.Bat; Note = "（VB の前提）" } })
+        $builds += @($vb | ForEach-Object { @{ Dir = $_.Dir; Bat = $_.Bat; Note = "" } })
+    }
 
     $done = @{}
     foreach ($b in $builds)
@@ -1036,7 +1047,7 @@ if (-not $SkipBuild)
         if ($done.ContainsKey($key)) { continue }
         $done[$key] = $true
 
-        Write-Host ("=== ビルド : {0} ===" -f $key) -ForegroundColor Cyan
+        Write-Host ("=== ビルド : {0}{1} ===" -f $key, $b.Note) -ForegroundColor Cyan
         $sw = [Diagnostics.Stopwatch]::StartNew()
         [void](Invoke-BuildBat $b.Dir $b.Bat)
         $sw.Stop()
@@ -1288,7 +1299,9 @@ foreach ($t in $selected)
 # ------------------------------------------------------------------
 Write-Host ""
 Write-Host "================ サマリ ================"
-$results | Format-Table -AutoSize -Wrap | Out-String | Write-Host
+Write-Host ""
+Write-SummaryTable $results
+Write-Host ""
 Write-Host ("  ログ : {0}" -f $OutputDir)
 
 $ng = @($results | Where-Object { $_.結果 -ne "OK" })
