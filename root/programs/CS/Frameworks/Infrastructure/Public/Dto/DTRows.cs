@@ -34,6 +34,7 @@
 //*                                  DeleteFromList、Find、ToDataSource
 //*  2010/11/11  前川 祐介         Silverlight対応（ジェネリック）
 //*  2011/10/09  西野 大介         国際化対応
+//*  2026/08/14  玄人 幸道         DataRowStateをDTRowStateに改名（#544）。
 //**********************************************************************************
 
 using System;
@@ -92,7 +93,7 @@ namespace Touryo.Infrastructure.Public.Dto
                 DTRow dr = new DTRow(this._cols);
 
                 // 行ステータスを "Added"(追加された行) に変更
-                dr.RowState = DataRowState.Added;
+                dr.RowState = DTRowState.Added;
 
                 this._rows.Add(dr);
 
@@ -114,7 +115,7 @@ namespace Touryo.Infrastructure.Public.Dto
                 this._rows.Add(dr);
 
                 // 行ステータスを "Added"(追加された行) に変更
-                dr.RowState = DataRowState.Added;
+                dr.RowState = DTRowState.Added;
 
                 // 行数をインクリメント
                 this._tblStat.RowsCount++;
@@ -133,7 +134,7 @@ namespace Touryo.Infrastructure.Public.Dto
             if (0 < this._rows.Count)
             {
                 // 行ステータスを "Deleted"(削除された行) に変更
-                ((DTRow)this._rows[index]).RowState = DataRowState.Deleted;
+                ((DTRow)this._rows[index]).RowState = DTRowState.Deleted;
 
                 this._tblStat.RowsCount--;
             }
@@ -200,9 +201,9 @@ namespace Touryo.Infrastructure.Public.Dto
         /// <param name="rowState">行ステータス</param>
         /// <returns>指定したステータスの行</returns>
         /// <remarks>行ステータスは論理和演算で複数条件の指定が可能</remarks>
-        public DTRows Find(DataRowState rowState)
+        public DTRows Find(DTRowState rowState)
         {
-            DataRowState workState;     // 行ステータスの退避用
+            DTRowState workState;     // 行ステータスの退避用
 
             // List型として、指定したステータスの行を取得する
 
@@ -253,10 +254,10 @@ namespace Touryo.Infrastructure.Public.Dto
         {
             // 削除された行を除外して返す
             return this.Find(
-                DataRowState.Added
-                | DataRowState.Detached
-                | DataRowState.Modified
-                | DataRowState.Unchanged);
+                DTRowState.Added
+                | DTRowState.Detached
+                | DTRowState.Modified
+                | DTRowState.Unchanged);
         }
 
         #endregion

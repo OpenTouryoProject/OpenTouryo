@@ -35,6 +35,7 @@
 //*  2026/08/14  玄人 幸道         SaveJson / LoadJson を追加（#544）。
 //*  2026/08/14  玄人 幸道         値と文字列の相互変換の呼び先をDTColumnに変更（#544）。
 //*  2026/08/14  玄人 幸道         DataSetとの相互変換を追加（#544）。
+//*  2026/08/14  玄人 幸道         DataRowStateをDTRowStateに改名（#544）。
 //**********************************************************************************
 
 using System;
@@ -316,7 +317,7 @@ namespace Touryo.Infrastructure.Public.Dto
                         case "row:":
 
                             // 行ステータス
-                            row.RowState = (DataRowState)int.Parse(line.Substring(4));
+                            row.RowState = (DTRowState)int.Parse(line.Substring(4));
 
                             break;
 
@@ -449,7 +450,7 @@ namespace Touryo.Infrastructure.Public.Dto
             /// <summary>セル（列と同じ順序。nullはnullのまま）</summary>
             public List<string> cels { get; set; }
 
-            /// <summary>行ステータス（DataRowStateの数値）</summary>
+            /// <summary>行ステータス（DTRowStateの数値）</summary>
             public int state { get; set; }
         }
 
@@ -551,7 +552,7 @@ namespace Touryo.Infrastructure.Public.Dto
                     }
 
                     // 行ステータス（値を設定すると Modified になるため、最後に戻す）
-                    row.RowState = (DataRowState)jRow.state;
+                    row.RowState = (DTRowState)jRow.state;
                 }
             }
         }

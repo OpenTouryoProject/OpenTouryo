@@ -36,6 +36,7 @@
 //*                                    ・ConvertDTTypeToType、ConvertTypeToDTType
 //*  2011/10/09  西野  大介        国際化対応
 //*  2026/08/14  玄人 幸道         ToDataTableで行ステータスを保つようにした（#544）。
+//*  2026/08/14  玄人 幸道         DataRowStateをDTRowStateに改名（#544）。
 //**********************************************************************************
 
 using System;
@@ -178,7 +179,7 @@ namespace Touryo.Infrastructure.Public.Dto
 
             foreach (DTRow row in this.Rows)
             {
-                if (row.RowState == DataRowState.Detached) { continue; }
+                if (row.RowState == DTRowState.Detached) { continue; }
 
                 // 行を新規作成
                 DataRow dr = dt.NewRow();
@@ -210,15 +211,15 @@ namespace Touryo.Infrastructure.Public.Dto
             {
                 switch (added[i].RowState)
                 {
-                    case DataRowState.Added:
+                    case DTRowState.Added:
                         dt.Rows[i].SetAdded();
                         break;
 
-                    case DataRowState.Modified:
+                    case DTRowState.Modified:
                         dt.Rows[i].SetModified();
                         break;
 
-                    case DataRowState.Deleted:
+                    case DTRowState.Deleted:
                         // Delete しても行は Rows に残る（RowState が Deleted になる）ため、
                         // 以降の添字はずれない。
                         dt.Rows[i].Delete();
@@ -275,23 +276,23 @@ namespace Touryo.Infrastructure.Public.Dto
                 // 行ステータスを復元
                 if (row.RowState == System.Data.DataRowState.Detached)
                 {
-                    dr.RowState = DataRowState.Detached;
+                    dr.RowState = DTRowState.Detached;
                 }
                 else if (row.RowState == System.Data.DataRowState.Added)
                 {
-                    dr.RowState = DataRowState.Added;
+                    dr.RowState = DTRowState.Added;
                 }
                 else if (row.RowState == System.Data.DataRowState.Modified)
                 {
-                    dr.RowState = DataRowState.Modified;
+                    dr.RowState = DTRowState.Modified;
                 }
                 else if (row.RowState == System.Data.DataRowState.Deleted)
                 {
-                    dr.RowState = DataRowState.Deleted;
+                    dr.RowState = DTRowState.Deleted;
                 }
                 else
                 {
-                    dr.RowState = DataRowState.Unchanged;
+                    dr.RowState = DTRowState.Unchanged;
                 }
             }
 
@@ -424,9 +425,9 @@ namespace Touryo.Infrastructure.Public.Dto
         public DTRows GetChanges()
         {
             return this._rows.Find(
-                DataRowState.Added
-                | DataRowState.Deleted
-                | DataRowState.Modified);
+                DTRowState.Added
+                | DTRowState.Deleted
+                | DTRowState.Modified);
         }
 
         /// <summary>
@@ -438,7 +439,7 @@ namespace Touryo.Infrastructure.Public.Dto
 
             while (i < this.Rows.Count)
             {
-                if (this.Rows[i].RowState == DataRowState.Deleted)
+                if (this.Rows[i].RowState == DTRowState.Deleted)
                 {
                     // 行リストから明示的に削除する
                     this.Rows.DeleteFromList(i);
@@ -446,7 +447,7 @@ namespace Touryo.Infrastructure.Public.Dto
                 else
                 {
                     // 行ステータスをUnchangedに変え、行の値を確定させる
-                    this.Rows[i].RowState = DataRowState.Unchanged;
+                    this.Rows[i].RowState = DTRowState.Unchanged;
                     i++;
                 }
             }

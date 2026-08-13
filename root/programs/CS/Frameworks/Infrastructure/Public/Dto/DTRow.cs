@@ -34,6 +34,7 @@
 //*  2010/11/30  前川 祐介         Added、Deletedは、Modifiedに変更しない
 //*  2011/09/06  前川 祐介         共通化、同値が設定された場合、RowStateを変更しない
 //*  2011/10/09  西野 大介         国際化対応
+//*  2026/08/14  玄人 幸道         DataRowStateをDTRowStateに改名（#544）。
 //**********************************************************************************
 
 using System;
@@ -55,7 +56,7 @@ namespace Touryo.Infrastructure.Public.Dto
         private List<object> _row = new List<object>();
 
         /// <summary>行ステータス</summary>
-        private DataRowState _rowState;
+        private DTRowState _rowState;
         
         #endregion
 
@@ -79,7 +80,7 @@ namespace Touryo.Infrastructure.Public.Dto
             }
 
             // 行ステータスを初期化する
-            this.RowState = DataRowState.Detached;
+            this.RowState = DTRowState.Detached;
         }
 
         #endregion
@@ -253,14 +254,14 @@ namespace Touryo.Infrastructure.Public.Dto
                 }
 
                 // 行ステータス
-                if (this.RowState == DataRowState.Added || this.RowState == DataRowState.Deleted)
+                if (this.RowState == DTRowState.Added || this.RowState == DTRowState.Deleted)
                 {
                     // 行ステータスが "Added"(追加された行) または "Deleted"(削除された行) の場合は、行ステータスを変更しない
                 }
                 else
                 {
                     // 上記以外の場合は、行ステータスを "Modified"(変更された行) に変更
-                    this.RowState = DataRowState.Modified;
+                    this.RowState = DTRowState.Modified;
                 }
             }
         }
@@ -295,7 +296,7 @@ namespace Touryo.Infrastructure.Public.Dto
         #endregion
 
         /// <summary>行ステータス</summary>
-        public DataRowState RowState
+        public DTRowState RowState
         {
             internal set
             {
