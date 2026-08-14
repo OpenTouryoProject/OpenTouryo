@@ -18,6 +18,7 @@
   <Prop id="prop_auth"   value="UserName=fxuser;Password=fxpass;"/>
   <Prop id="prop_proxy"  value="ProxyUrl=http://127.0.0.1:51091;"/>
   <Prop id="prop_pxauth" value="ProxyUrl=http://127.0.0.1:51091;PUserName=pxuser;PPassword=pxpass;"/>
+  <Prop id="prop_cert"   value="CertFile=TestClient.pfx;CertPassword=pfxpass;"/>
   <Prop id="prop_all"    value="UserAgent=OpenTouryoTestAgent/1.0;Compression=true;UserName=fxuser;Password=fxpass;ProxyUrl=http://127.0.0.1:51091;PUserName=pxuser;PPassword=pxpass;"/>
 
   <Transmission id="testPlain"    protocol="5" url="http://127.0.0.1:51090/api/" timeout="30" prop_ref="prop_plain" />
@@ -26,5 +27,7 @@
   <Transmission id="testAuth"     protocol="5" url="http://127.0.0.1:51090/api/" timeout="30" prop_ref="prop_auth" />
   <Transmission id="testProxy"    protocol="5" url="http://fx-origin.test:51090/api/" timeout="30" prop_ref="prop_proxy" />
   <Transmission id="testProxyAuth" protocol="5" url="http://fx-origin.test:51090/api/" timeout="30" prop_ref="prop_pxauth" />
+  <!-- TLS。宛先が 127.0.0.1 なのは、プロキシを経由しないため（迂回の問題が起きない） -->
+  <Transmission id="testCert"     protocol="5" url="https://127.0.0.1:51092/api/" timeout="30" prop_ref="prop_cert" />
   <Transmission id="testAll"      protocol="5" url="http://fx-origin.test:51090/api/" timeout="30" prop_ref="prop_all" />
 </TMD>

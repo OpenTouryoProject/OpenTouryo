@@ -31,7 +31,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
+using System.Net.Security;
 using System.Net.Sockets;
+using System.Security.Authentication;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 
@@ -59,6 +63,9 @@ namespace TestTransmission
         /// <summary>要求の回数（認証の再送を数えるため）</summary>
         public int Count = 0;
 
+        /// <summary>TLS の握手で受け取ったクライアント証明書のサブジェクト</summary>
+        public string ClientCertSubject = null;
+
         /// <summary>ヘッダの取得（無ければ null）</summary>
         /// <param name="name">ヘッダ名</param>
         /// <returns>値</returns>
@@ -73,6 +80,7 @@ namespace TestTransmission
             this.RequestLine = "";
             this.Headers.Clear();
             this.Count = 0;
+            this.ClientCertSubject = null;
         }
     }
 
@@ -124,9 +132,10 @@ namespace TestTransmission
     ///   TcpListener なら、その手当てなしに動く。
     ///
     /// ＜対象外＞
-    ///   ・CertFile / CertPassword … TLS とクライアント証明書の要求が要る
-    ///   ・Domain / PDomain        … Windows 統合認証が要る（Basic では無視される）
-    ///   ・ConnGroupName           … CallController が読んでいない（未実装）
+    ///   ・Domain / PDomain … Windows 統合認証が要る（Basic 認証では無視される）
+    ///   ・ConnGroupName    … HttpClient へ移って設定する口が無くなった。
+    ///                        目的（接続の仕切り）は、CallController が
+    ///                        サービス名ごとにハンドラをプールすることで満たされている
     /// </remarks>
     class Program
     {
@@ -137,6 +146,18 @@ namespace TestTransmission
 
         /// <summary>プロキシのポート</summary>
         private const int ProxyPort = 51091;
+
+        /// <summary>オリジン（TLS）のポート</summary>
+        private const int TlsPort = 51092;
+
+        /// <summary>クライアント証明書のファイル名（定義 XML の CertFile と合わせる）</summary>
+        private const string ClientCertFile = "TestClient.pfx";
+
+        /// <summary>クライアント証明書のパスワード（定義 XML の CertPassword と合わせる）</summary>
+        private const string ClientCertPassword = "pfxpass";
+
+        /// <summary>クライアント証明書のサブジェクト</summary>
+        private const string ClientCertSubject = "CN=OpenTouryoTestClient";
 
         /// <summary>オリジンが受け取った内容</summary>
         private static readonly Recorded OriginRec = new Recorded();
@@ -160,8 +181,31 @@ namespace TestTransmission
         {
             Console.OutputEncoding = Encoding.UTF8;
 
+            #region TLS の準備（#546 段 4）
+
+            // **自己署名の証明書を、実行のたびに作る。**
+            //   リポジトリに証明書を置くと、期限切れで或る日突然テストが落ちる。
+            //   作るのは一瞬なので、毎回作る方が確実である。
+            X509Certificate2 serverCert = Program.CreateSelfSigned("CN=OpenTouryoTestServer");
+            X509Certificate2 clientCert = Program.CreateSelfSigned(Program.ClientCertSubject);
+
+            // クライアント証明書は、定義 XML の CertFile が指すパスに書き出す。
+            // 実行時に作るので、パスは実行ファイルの隣（相対パス）で固定する。
+            File.WriteAllBytes(Program.ClientCertFile,
+                clientCert.Export(X509ContentType.Pfx, Program.ClientCertPassword));
+
+            // **自己署名なので、クライアント側の検証を通す。**
+            //   CallController は ServerCertificateValidationCallback を公開していないため、
+            //   ServicePointManager 側（プロセス全体）で受け入れる。テスト専用の措置である。
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            ServicePointManager.ServerCertificateValidationCallback =
+                delegate { return true; };
+
+            #endregion
+
             TcpListener origin = Program.StartOrigin();
             TcpListener proxy = Program.StartProxy();
+            TcpListener tls = Program.StartListener(Program.TlsPort, Program.HandleOrigin, serverCert);
 
             try
             {
@@ -173,11 +217,16 @@ namespace TestTransmission
                 Program.Case("プロキシ経由", "testProxy", false, false, null, false, null, true, null);
                 Program.Case("プロキシ認証", "testProxyAuth", false, true, null, false, null, true, "pxuser:pxpass");
                 Program.Case("全オプション", "testAll", true, true, "OpenTouryoTestAgent/1.0", true, "fxuser:fxpass", true, "pxuser:pxpass");
+
+                // クライアント証明書（TLS。プロキシは経由しない）
+                Program.Case("クライアント証明書", "testCert", false, false, null, false, null, false, null,
+                    Program.ClientCertSubject);
             }
             finally
             {
                 origin.Stop();
                 proxy.Stop();
+                tls.Stop();
             }
 
             Console.WriteLine();
@@ -199,7 +248,7 @@ namespace TestTransmission
         private static void Case(
             string title, string serviceName, bool requireAuth, bool requireProxyAuth,
             string expectUserAgent, bool expectGzip, string expectAuth,
-            bool expectProxy, string expectProxyAuth)
+            bool expectProxy, string expectProxyAuth, string expectClientCert = null)
         {
             Program.RequireAuth = requireAuth;
             Program.RequireProxyAuth = requireProxyAuth;
@@ -260,6 +309,12 @@ namespace TestTransmission
                     // 認証は 401 を挟むため、要求は 2 回になる
                     Program.Check("認証の再送", 2, Program.OriginRec.Count);
                     Program.Check("Authorization", expectAuth, Program.Basic(Program.OriginRec.Header("Authorization")));
+                }
+
+                if (expectClientCert != null)
+                {
+                    // TLS の握手でサーバが受け取ったクライアント証明書
+                    Program.Check("クライアント証明書", expectClientCert, Program.OriginRec.ClientCertSubject);
                 }
             }
 
@@ -325,18 +380,60 @@ namespace TestTransmission
 
         #endregion
 
+        #region 証明書
+
+        /// <summary>自己署名の証明書を作る</summary>
+        /// <param name="subject">サブジェクト（例 : CN=Xxx）</param>
+        /// <returns>秘密鍵付きの証明書</returns>
+        /// <remarks>
+        /// **証明書はリポジトリに置かず、実行のたびに作る。**（#546 段 4）
+        ///   置くと期限切れで或る日突然テストが落ちる。
+        ///
+        /// **Exportable で作り直している理由。**
+        ///   CertificateRequest が返す証明書の秘密鍵は、そのままでは
+        ///   SslStream のサーバ認証や PFX への書き出しに使えないことがある。
+        ///   いったん PFX に通して読み直すと、確実に扱える形になる。
+        /// </remarks>
+        private static X509Certificate2 CreateSelfSigned(string subject)
+        {
+            using (RSA rsa = RSA.Create(2048))
+            {
+                CertificateRequest request = new CertificateRequest(
+                    new X500DistinguishedName(subject), rsa,
+                    HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+
+                // サーバ認証とクライアント認証の両方に使えるようにする
+                request.CertificateExtensions.Add(
+                    new X509EnhancedKeyUsageExtension(
+                        new OidCollection
+                        {
+                            new Oid("1.3.6.1.5.5.7.3.1"),   // サーバ認証
+                            new Oid("1.3.6.1.5.5.7.3.2")    // クライアント認証
+                        }, false));
+
+                X509Certificate2 cert = request.CreateSelfSigned(
+                    DateTimeOffset.UtcNow.AddDays(-1), DateTimeOffset.UtcNow.AddDays(1));
+
+                return new X509Certificate2(
+                    cert.Export(X509ContentType.Pfx, "temp"), "temp",
+                    X509KeyStorageFlags.Exportable);
+            }
+        }
+
+        #endregion
+
         #region オリジン
 
         /// <summary>オリジンを起動する</summary>
         /// <returns>TcpListener</returns>
         private static TcpListener StartOrigin()
         {
-            return Program.StartListener(Program.OriginPort, Program.HandleOrigin);
+            return Program.StartListener(Program.OriginPort, Program.HandleOrigin, null);
         }
 
         /// <summary>オリジンの応答</summary>
         /// <param name="ns">NetworkStream</param>
-        private static void HandleOrigin(NetworkStream ns)
+        private static void HandleOrigin(Stream ns)
         {
             string requestLine;
             Dictionary<string, string> headers;
@@ -438,12 +535,12 @@ namespace TestTransmission
         /// <remarks>平文 HTTP の順方向プロキシ。HTTPS を通すには CONNECT の実装が要る。</remarks>
         private static TcpListener StartProxy()
         {
-            return Program.StartListener(Program.ProxyPort, Program.HandleProxy);
+            return Program.StartListener(Program.ProxyPort, Program.HandleProxy, null);
         }
 
         /// <summary>プロキシの中継</summary>
         /// <param name="ns">NetworkStream</param>
-        private static void HandleProxy(NetworkStream ns)
+        private static void HandleProxy(Stream ns)
         {
             string requestLine;
             Dictionary<string, string> headers;
@@ -521,8 +618,14 @@ namespace TestTransmission
         /// <summary>接続を受け付けて処理する</summary>
         /// <param name="port">ポート</param>
         /// <param name="handler">処理</param>
+        /// <param name="serverCert">サーバ証明書（null なら平文）</param>
         /// <returns>TcpListener</returns>
-        private static TcpListener StartListener(int port, Action<NetworkStream> handler)
+        /// <remarks>
+        /// **サーバ証明書を渡すと TLS になる。**（#546 段 4）
+        ///   SslStream を挟むだけなので、`netsh http add sslcert` によるポートへの
+        ///   証明書の紐付け（管理者権限）が要らない。Kestrel も要らない。
+        /// </remarks>
+        private static TcpListener StartListener(int port, Action<Stream> handler, X509Certificate2 serverCert)
         {
             TcpListener listener = new TcpListener(IPAddress.Loopback, port);
             listener.Start();
@@ -544,7 +647,36 @@ namespace TestTransmission
                             using (client)
                             using (NetworkStream ns = client.GetStream())
                             {
-                                handler(ns);
+                                if (serverCert == null)
+                                {
+                                    handler(ns);
+                                }
+                                else
+                                {
+                                    // **クライアント証明書の検証を通す。**
+                                    //   コールバックを渡さないと既定の検証になり、
+                                    //   自己署名のクライアント証明書は
+                                    //   「信頼されていない機関によって発行された」として
+                                    //   握手ごと失敗する。ここで見たいのは
+                                    //   「証明書が送られてきたか」なので、検証はしない。
+                                    using (SslStream ssl = new SslStream(ns, false,
+                                        delegate { return true; }))
+                                    {
+                                        // **クライアント証明書を要求する。**
+                                        // 要求しないと、クライアントが設定していても送られてこない。
+                                        ssl.AuthenticateAsServer(
+                                            serverCert, true, SslProtocols.Tls12, false);
+
+                                        lock (Program.OriginRec)
+                                        {
+                                            X509Certificate remote = ssl.RemoteCertificate;
+                                            Program.OriginRec.ClientCertSubject =
+                                                (remote == null) ? null : remote.Subject;
+                                        }
+
+                                        handler(ssl);
+                                    }
+                                }
                             }
                         }
                         catch (Exception ex)
@@ -565,7 +697,7 @@ namespace TestTransmission
         /// <param name="headers">ヘッダ</param>
         /// <param name="body">本文</param>
         /// <returns>読めたら true</returns>
-        private static bool ReadRequest(NetworkStream ns, out string requestLine,
+        private static bool ReadRequest(Stream ns, out string requestLine,
             out Dictionary<string, string> headers, out byte[] body)
         {
             requestLine = "";
@@ -634,7 +766,7 @@ namespace TestTransmission
         /// <summary>文字列を送る</summary>
         /// <param name="ns">NetworkStream</param>
         /// <param name="text">文字列</param>
-        private static void Write(NetworkStream ns, string text)
+        private static void Write(Stream ns, string text)
         {
             byte[] bytes = Encoding.ASCII.GetBytes(text);
             ns.Write(bytes, 0, bytes.Length);
