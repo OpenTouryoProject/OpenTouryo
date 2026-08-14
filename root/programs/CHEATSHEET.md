@@ -26,7 +26,7 @@ cd root\programs
 |---|---|---|
 | ビルド | 全ステップ OK | [`BUILDING.md`](BUILDING.md) |
 | 単体テスト | 8/8 OK、差分 0 | [`TESTING.md`](TESTING.md) |
-| 疎通 | 22/22 OK | [`SMOKETEST.md`](SMOKETEST.md) |
+| 疎通 | 23/23 OK | [`SMOKETEST.md`](SMOKETEST.md) |
 
 **既定は C# 側。VB 側は `-Lang` で回す**（3 節）。
 

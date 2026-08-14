@@ -549,6 +549,28 @@ namespace Touryo.Infrastructure.Framework.Util
         public const string TRANSMISSION_HTTP_PROP_USER_AGENT = "USERAGENT";
 
         /// <summary>接続グループ</summary>
+        /// <remarks>
+        /// **現在は効果が無い。**（#546）
+        ///
+        /// ＜何のための値だったか＞
+        ///   HttpWebRequest.ConnectionGroupName に渡し、ServicePoint
+        ///   （scheme＋host＋port）の接続プールを、さらに分割するための名前だった。
+        ///   NTLM / Kerberos やクライアント証明書は**接続に対して**認証が確立するため、
+        ///   ユーザ A で認証済みの接続をユーザ B が再利用しないよう仕切る必要があった。
+        ///
+        /// ＜なぜ効かなくなったか＞
+        ///   通信が HttpClient に移り、**設定する口が無くなった**。
+        ///   HttpClientHandler にも WebRequestHandler にも相当するプロパティは無い。
+        ///
+        /// ＜目的は別の形で満たされている＞
+        ///   HttpClient では、接続プールの単位が HttpClientHandler そのものである。
+        ///   CallController は**サービス名ごとにハンドラと HttpClient をプール**しており
+        ///   （_handlerCD / _httpClientCD）、資格情報もサービス名ごとの Prop で決まるため、
+        ///   接続が混ざることはない。
+        ///
+        ///   このため、定数は互換のために残すが、値を書いても読まれない。
+        ///   定義例（root/files/resource/Test/nw）からは外してある。
+        /// </remarks>
         public const string TRANSMISSION_HTTP_PROP_CONNECTION_GROUP_NAME = "CONNGROUPNAME";
 
         #endregion

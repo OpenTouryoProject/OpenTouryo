@@ -217,6 +217,7 @@ sakura -GREPMODE -GKEY="ビルドに" -GFOLDER="." -GFILE="*.log" -GOPT=P -GCODE
 | 同じファイルなのに差分が出る | `Get-Content` の既定エンコードが 5.1 は ANSI、7 は UTF-8 | **`-Encoding UTF8`** を明示する |
 | HTTP が常に失敗（状態コード `-1`） | `-SkipHttpErrorCheck` は **7 以降にしかない** | バージョンを見て付け外しする |
 | 実行中に画面がクリアされ、それまでの結果が消える | 子プロセスの `chcp 65001` はコンソール全体に影響する | スクリプト冒頭で先に切り替える |
+| 表の見出し・罫線・データがずれる | 5.1 の `Format-Table` は**桁数ではなく文字数**で幅を決める（全角は 1 文字で 2 桁） | `SummaryTable.ps1` の `Write-SummaryTable` を使う |
 
 ```powershell
 # 7 専用の引数は、バージョンを見て付け外しする
@@ -230,8 +231,16 @@ if ([Console]::OutputEncoding.CodePage -ne 65001)
 }
 ```
 
+```powershell
+# 集計表は Format-Table ではなく、桁数を自前で数える整形を使う
+. (Join-Path $PSScriptRoot "SummaryTable.ps1")
+Write-SummaryTable $results
+```
+
 - **`.bat` は「非 ASCII を含むときだけ」BOM 付き**（8.4）だが、
   **`.ps1` は非 ASCII を含むなら必ず BOM 付き**。5.1 が既定で ANSI として読むため。
+- **要素 1 個の配列は、返した時点でスカラーに展開される。** そのまま `[0]` を取ると
+  **文字列の 1 文字目**になる。関数の戻り値を添字で使うなら `@()` で受けること。
 - 5.1 の `[Console]::OutputEncoding` は**起動時の値のまま**で、実行中にコード ページが
   変わっても追随しない。同じ画面で 2 回目を実行したときに化ける原因になる。
 - **変更したら 5.1 でも実行して確かめること。**

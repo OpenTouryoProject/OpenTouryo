@@ -27,16 +27,16 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2010/03/xx  西野 大介         新規作成
-//*  2010/11/11  前川 祐介         メソッド追加
+//*  2010/03/xx  西野  大介        新規作成
+//*  2010/11/11  前川  祐介        メソッド追加
 //*                                  一覧更新処理対応
-//*                                  ・AcceptChanges、GetChanges
+//*                                    ・AcceptChanges、GetChanges
 //*                                  Datatable対応
-//*                                  ・ToDataTable、FromDataTable
-//*                                  ・ConvertDTTypeToType、ConvertTypeToDTType
-//*  2011/10/09  西野 大介         国際化対応
-//*  2015/03/05  Supragyan         Created  SavejqGridJson method for saving datatable data to JQGrid.
-//*  2015/06/08  Supragyan         Modified SavejqGridJson method for saving datatable data to JQGrid.
+//*                                    ・ToDataTable、FromDataTable
+//*                                    ・ConvertDTTypeToType、ConvertTypeToDTType
+//*  2011/10/09  西野  大介        国際化対応
+//*  2026/08/14  玄人 幸道         ToDataTableで行ステータスを保つようにした（#544）。
+//*  2026/08/14  玄人 幸道         DataRowStateをDTRowStateに改名（#544）。
 //**********************************************************************************
 
 using System;
@@ -76,7 +76,7 @@ namespace Touryo.Infrastructure.Public.Dto
         /// <remarks>確認専用（変更されないように）</remarks>
         public string TableName
         {
-            get
+            get 
             {
                 return this._tblName;
             }
@@ -116,7 +116,7 @@ namespace Touryo.Infrastructure.Public.Dto
             // コンバートのことを考え棟梁部品は使用しない。）
             Regex rgx = new Regex("^[a-zA-Z0-9_-]+$");
             Match mch = rgx.Match(tblName);
-
+            
             if (mch.Success)
             {
                 // 表名が正しい
@@ -144,11 +144,22 @@ namespace Touryo.Infrastructure.Public.Dto
         /// DTTableをSystem.Data.DataTableに変換する
         /// </summary>
         /// <returns>変換後のSystem.Data.DataTable</returns>
+        /// <remarks>
+        /// 行ステータス（RowState）を保って変換する（#544）。
+        ///
+        /// ＜以前は失われていた＞
+        ///   変換の前後で AcceptChanges を呼んでいたため、全行が Unchanged になり、
+        ///   Deleted の行は消えていた。FromDataTable が行ステータスを復元しているのに、
+        ///   戻すと落ちる、という非対称な状態だった。
+        ///   これでは受け取った側で Added / Modified / Deleted の振り分けができない。
+        ///
+        /// ＜Modified の元の値は復元されない＞
+        ///   DTRow は現在値と行ステータスだけを持ち、変更前の値を持たない。
+        ///   このため DataRowVersion.Original には現在値が入る。
+        ///   区分（Added / Modified / Deleted）の判別を目的とした変換である。
+        /// </remarks>
         public DataTable ToDataTable()
         {
-            // DataTable 変換前に、変更を確定させる
-            this.AcceptChanges();
-
             // テーブル定義
             DataTable dt = new DataTable(this.TableName);
 
@@ -160,24 +171,65 @@ namespace Touryo.Infrastructure.Public.Dto
             }
 
             // 値追加
-            DataRow dr;
+            //
+            // Detached（どの行リストにも属さない）は DataTable では表せないため、
+            // ここでは追加しない。行ステータスを戻すとき、位置がずれないよう
+            // DTRow との対応を控えておく。
+            List<DTRow> added = new List<DTRow>();
+
             foreach (DTRow row in this.Rows)
             {
+                if (row.RowState == DTRowState.Detached) { continue; }
+
                 // 行を新規作成
-                dr = dt.NewRow();
+                DataRow dr = dt.NewRow();
 
                 // 各列ごとに値を追加
                 foreach (DTColumn col in this.Cols)
                 {
-                    dr[col.ColName] = row[col.ColName];
+                    object value = row[col.ColName];
+
+                    // **null は DBNull に置き換える。**（#544）
+                    //   DTRow は値なしを null で持つが、DataRow は null を受け付けず
+                    //   「Column を null に設定できません。DBNull を使用してください。」
+                    //   と ArgumentException を投げる。
+                    //   文字列の列は通ってしまうため、値型の列で初めて落ちる。
+                    dr[col.ColName] = (value == null) ? DBNull.Value : value;
                 }
 
                 // 行をテーブルに追加
                 dt.Rows.Add(dr);
+                added.Add(row);
             }
 
-            // 値を確定させておく
+            // いったん確定させ、全行を Unchanged にする。
+            // SetAdded / SetModified は Unchanged の行にしか使えないため、この順である。
             dt.AcceptChanges();
+
+            // 行ステータスを復元する
+            for (int i = 0; i < added.Count; i++)
+            {
+                switch (added[i].RowState)
+                {
+                    case DTRowState.Added:
+                        dt.Rows[i].SetAdded();
+                        break;
+
+                    case DTRowState.Modified:
+                        dt.Rows[i].SetModified();
+                        break;
+
+                    case DTRowState.Deleted:
+                        // Delete しても行は Rows に残る（RowState が Deleted になる）ため、
+                        // 以降の添字はずれない。
+                        dt.Rows[i].Delete();
+                        break;
+
+                    default:
+                        // Unchanged は、AcceptChanges 済みの状態がそのまま当てはまる。
+                        break;
+                }
+            }
 
             // DataTable を返す
             return dt;
@@ -224,23 +276,23 @@ namespace Touryo.Infrastructure.Public.Dto
                 // 行ステータスを復元
                 if (row.RowState == System.Data.DataRowState.Detached)
                 {
-                    dr.RowState = DataRowState.Detached;
+                    dr.RowState = DTRowState.Detached;
                 }
                 else if (row.RowState == System.Data.DataRowState.Added)
                 {
-                    dr.RowState = DataRowState.Added;
+                    dr.RowState = DTRowState.Added;
                 }
                 else if (row.RowState == System.Data.DataRowState.Modified)
                 {
-                    dr.RowState = DataRowState.Modified;
+                    dr.RowState = DTRowState.Modified;
                 }
                 else if (row.RowState == System.Data.DataRowState.Deleted)
                 {
-                    dr.RowState = DataRowState.Deleted;
+                    dr.RowState = DTRowState.Deleted;
                 }
                 else
                 {
-                    dr.RowState = DataRowState.Unchanged;
+                    dr.RowState = DTRowState.Unchanged;
                 }
             }
 
@@ -373,9 +425,9 @@ namespace Touryo.Infrastructure.Public.Dto
         public DTRows GetChanges()
         {
             return this._rows.Find(
-                DataRowState.Added
-                | DataRowState.Deleted
-                | DataRowState.Modified);
+                DTRowState.Added
+                | DTRowState.Deleted
+                | DTRowState.Modified);
         }
 
         /// <summary>
@@ -387,7 +439,7 @@ namespace Touryo.Infrastructure.Public.Dto
 
             while (i < this.Rows.Count)
             {
-                if (this.Rows[i].RowState == DataRowState.Deleted)
+                if (this.Rows[i].RowState == DTRowState.Deleted)
                 {
                     // 行リストから明示的に削除する
                     this.Rows.DeleteFromList(i);
@@ -395,94 +447,10 @@ namespace Touryo.Infrastructure.Public.Dto
                 else
                 {
                     // 行ステータスをUnchangedに変え、行の値を確定させる
-                    this.Rows[i].RowState = DataRowState.Unchanged;
+                    this.Rows[i].RowState = DTRowState.Unchanged;
                     i++;
                 }
             }
-        }
-
-
-        /// <summary>
-        /// SavejqGridJson method for converting datatable data to JQGrid data by passing total count,rows of current page.
-        /// </summary>
-        /// <param name="data">DataTable data</param>
-        /// <param name="totalCount">Total count</param>
-        /// <param name="page">current page number</param>
-        /// <param name="rows">Rows count</param>
-        /// <returns>returns JQGrid data</returns>
-        public JQGridDataClass SavejqGridJson(DataTable data, int totalCount, string page, string rows)
-        {
-            int intRows = Math.Min(int.Parse(rows), totalCount);
-            int intPage = int.Parse(page);
-
-            // jqGrid に渡すデータを格納
-            JQGridDataClass jqGridData = new JQGridDataClass();
-            jqGridData.page = page;
-            jqGridData.total = (int)Math.Ceiling((double)totalCount / (double)intRows);
-
-            // jqGrid の各セルに表示するデータを格納
-            jqGridData.rows = new List<JQGridDataRowClass>();
-            for (int rIndex = 0; rIndex < intRows; rIndex++)
-            {
-                // ページなどを考慮し、DataTable から取得する行インデックスを取得           
-                if ((rIndex + 1) > data.Rows.Count)
-                {
-                    // 行インデックスが、実際の行数を超えた場合は、ループを抜ける
-                    // (最終ページの行数が端数の場合)
-                    break;
-                }
-
-                // jqGrid に表示する、1 行分のデータを格納
-                JQGridDataRowClass subData = new JQGridDataRowClass();
-                subData.id = data.Rows[rIndex][0].ToString();
-                subData.cell = new List<string>();
-
-                for (int cIndex = 0; cIndex < data.Columns.Count; cIndex++)
-                {
-                    // 列のデータを、DataTable から取得
-                    subData.cell.Add(data.Rows[rIndex][cIndex].ToString());
-                }
-                jqGridData.rows.Add(subData);
-            }
-            // jqGrid にデータを返す
-            return jqGridData;
-        }
-
-        /// <summary>
-        /// jqGrid に渡すデータを格納するクラス
-        /// </summary>
-        public class JQGridDataClass
-        {
-            /// <summary>
-            /// クエリの現在のページ
-            /// </summary>
-            public string page;
-
-            /// <summary>
-            /// クエリの総ページ数
-            /// </summary>
-            public int total;
-
-            /// <summary>
-            /// 実際のデータを含むリスト
-            /// </summary>
-            public List<JQGridDataRowClass> rows;
-        }
-
-        /// <summary>
-        /// jqGrid に表示する、1 行分のデータを格納するクラス
-        /// </summary>
-        public class JQGridDataRowClass
-        {
-            /// <summary>
-            /// 列の固有 ID
-            /// </summary>
-            public string id;
-
-            /// <summary>
-            /// 列のデータを含むリスト
-            /// </summary>
-            public List<string> cell;
         }
     }
 }

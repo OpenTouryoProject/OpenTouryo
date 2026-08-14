@@ -30,6 +30,8 @@
 //*  2010/11/19  西野 大介         新規作成
 //*  2015/01/15	 Supragyan         Added StringFromPrimitivetype method to convert premitive data to string.
 //*  2015/01/15	 Supragyan         Added PrimitivetypeFromString method to convert string to premitive data.
+//*  2026/08/14  玄人 幸道         StringFromPrimitivetype / PrimitivetypeFromString を
+//*                                DTColumn へ移動し、ここには転送のみ残した（#544）。
 //**********************************************************************************
 
 using System;
@@ -209,7 +211,23 @@ namespace Touryo.Infrastructure.Public.Util
 
         #endregion
 
-        #region StringFromPrimitivetype
+        #region 値と文字列の相互変換（DTColumnへ移動）
+
+        // ＜なぜ移したか＞（#544）
+        //   本クラスの本体はアンマネージ構造体の相互運用（Marshal クラス）で、
+        //   DTType の変換とは責務が違う。同じ「マーシャリング」という語が
+        //   2 つの意味で使われていたため、同居していた。
+        //
+        //   また、この 2 メソッドのためだけに Util から Dto を参照しており、
+        //   Dto → Util の参照と合わせて循環していた。
+        //
+        //   対になる DTColumn.AutoCast / CheckType / EnumToString は
+        //   もともと Dto 側にあるため、そちらへ集約した。
+        //
+        // ＜ここに残してある理由＞
+        //   公開している API のため、いきなり消すと利用者のビルドが壊れる。
+        //   当面は転送するだけのメソッドを残す。
+        //   これを削除すると、Util から Dto への参照も無くなる。
 
         /// <summary>
         /// To converts all premitive data to string data.
@@ -217,54 +235,11 @@ namespace Touryo.Infrastructure.Public.Util
         /// <param name="primitiveType">Column data type</param>
         /// <param name="checkType">Check sting Type data</param>
         /// <returns>returns String data</returns>
+        [Obsolete("DTColumn.StringFromPrimitivetype へ移動しました。")]
         public static string StringFromPrimitivetype(object primitiveType, bool checkType)
         {
-            string convertedString = null;
-
-            if (primitiveType != null)
-            {
-                if (DTColumn.CheckType(primitiveType, DTType.DateTime))
-                {
-                    DateTime dateTime = (DateTime)primitiveType;
-                    convertedString += dateTime.Year + "/";
-                    convertedString += dateTime.Month + "/";
-                    convertedString += dateTime.Day + "-";
-
-                    convertedString += dateTime.Hour + ":";
-                    convertedString += dateTime.Minute + ":";
-                    convertedString += dateTime.Second + ".";
-                    convertedString += dateTime.Millisecond;
-                }
-                else if (DTColumn.CheckType(primitiveType, DTType.ByteArray))
-                {
-                    convertedString = Convert.ToBase64String((byte[])primitiveType);
-                }
-                else if (DTColumn.CheckType(primitiveType, DTType.String))
-                {
-                    if (checkType == true)
-                    {
-                        convertedString = primitiveType.ToString().Replace("\r", "\rrnr:");
-                        convertedString = primitiveType.ToString().Replace("\n", "\rrnn:");
-
-                        convertedString = primitiveType.ToString().Replace("\r", "\r\n");
-                    }
-                    else
-                    {
-                        convertedString = primitiveType.ToString();
-                    }
-                }
-                else
-                {
-                    convertedString = primitiveType.ToString();
-                }
-
-            }
-            return convertedString;
+            return DTColumn.StringFromPrimitivetype(primitiveType, checkType);
         }
-
-        #endregion
-
-        #region PrimitivetypeFromString
 
         /// <summary>
         /// To converts all string data to premitive Type by colType and cellString.
@@ -272,43 +247,11 @@ namespace Touryo.Infrastructure.Public.Util
         /// <param name="colType">Column data type</param>
         /// <param name="cellString">Cell data</param>
         /// <returns>return Premitive type object</returns>
+        [Obsolete("DTColumn.PrimitivetypeFromString へ移動しました。")]
         public static object PrimitivetypeFromString(DTType colType, string cellString)
         {
-            object convertedPrimitiveType = null;
-            if (cellString != null)
-            {
-                // ByteArray
-                if (colType == DTType.ByteArray)
-                {
-                    byte[] cellByte = Convert.FromBase64String(cellString);
-                    convertedPrimitiveType = cellByte;
-                }
-                // DateTime
-                else if (colType == DTType.DateTime)
-                {
-                    string ymd = cellString.Split('-')[0];
-                    string hmsf = cellString.Split('-')[1];
-
-                    DateTime cellDttm = new DateTime(
-                        int.Parse(ymd.Split('/')[0]),
-                        int.Parse(ymd.Split('/')[1]),
-                        int.Parse(ymd.Split('/')[2]),
-                        int.Parse(hmsf.Split(':')[0]),
-                        int.Parse(hmsf.Split(':')[1]),
-                        int.Parse(hmsf.Split(':')[2].Split('.')[0]),
-                        int.Parse(hmsf.Split(':')[2].Split('.')[1]));
-
-                    convertedPrimitiveType = cellDttm;
-                }
-                else
-                {
-                    convertedPrimitiveType = DTColumn.AutoCast(colType, cellString.ToString());
-                }
-            }
-
-            return convertedPrimitiveType;
+            return DTColumn.PrimitivetypeFromString(colType, cellString);
         }
-
         #endregion
 
     }

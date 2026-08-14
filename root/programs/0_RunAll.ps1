@@ -13,6 +13,10 @@ param(
 # UseLang = $true のものにだけ -Lang を渡す。
 # 2_RunAllTests.ps1 に渡さないのは、VB 側にテスト プロジェクトが無く（#542）、
 # 単体テストが CS の Frameworks\Tests に集約されているため。
+
+# まとめの整形。Format-Table は 5.1 で全角の桁を数えないため、自前で揃える。
+. (Join-Path $PSScriptRoot "SummaryTable.ps1")
+
 $scripts = @(
     @{ Name = "1_BuildAll.ps1";    UseLang = $true }
     @{ Name = "2_RunAllTests.ps1"; UseLang = $false }
@@ -41,7 +45,9 @@ foreach ($s in $scripts)
 # --- 結果のまとめ ---
 Write-Host ""
 Write-Host "================ 全体のまとめ ================"
-$results | Format-Table -AutoSize | Out-String | Write-Host
+Write-Host ""
+Write-SummaryTable $results
+Write-Host ""
 
 # 1_BuildAll.ps1 は既知の署名エラー（MSB3482）で 1 になることがある。
 # 終了コードだけで判断せず、エラー一覧の内容を確認すること（RELEASE.md 3 節）。

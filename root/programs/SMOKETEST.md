@@ -50,7 +50,7 @@ cd root\programs
 
 ---
 
-## 3. 対象（22 件）
+## 3. 対象（23 件）
 
 ### バッチ（8 件）
 
@@ -224,6 +224,104 @@ Web アプリと違い**対象は EXE** なので、本文側の Web ホスト�
 `/ZIPGEN` を実装した直後、`.NET 10` 側を建て直さずに回して実際に踏んだ。
 **片方のビルドだけを更新しない**こと。
 
+### 通信制御の接続オプション（1 件）
+
+`CallController` の接続オプション（`TMProtocolDefinition.xml` の `Prop`）が、
+実際の HTTP 要求に反映されているかを見る（#546）。
+
+| 対象 | 判定 |
+|---|---|
+| `TestTransmission` (net48) | 対象側が出す `NG : 0 件` |
+
+対象は **`Frameworks/Tests/TestTransmission`** の net48 コンソールで、
+**オリジンとプロキシを自前で立て、そこへ `CallController` から呼ぶ**。
+判定は対象側が行い、項目ごとに `OK` / `NG` を出して末尾に件数を出す。
+
+```
+=== プロキシ認証（testProxyAuth）===
+  [OK] 戻り値                 : サーバからの戻り値
+  [OK] プロキシ経由              : True
+  [OK] 要求行が絶対 URI          : True
+  [OK] Proxy-Authorization : pxuser:pxpass
+
+NG : 0 件
+```
+
+#### 見ているオプション（9 つ）
+
+| オプション | 見ていること |
+|---|---|
+| `ProxyUrl` | プロキシに要求が届き、**要求行が絶対 URI** になっている |
+| `PUserName` / `PPassword` | **407 → Basic で再送**され、値が届いている |
+| `UserName` / `Password` | **401 → Basic で再送**され、値が届いている |
+| `UserAgent` | オリジンに届いた `User-Agent` の値 |
+| `Compression` | `Accept-Encoding` に gzip が付き、**gzip の応答を復号できている** |
+| `CertFile` / `CertPassword` | **TLS の握手でサーバが受け取ったクライアント証明書**のサブジェクト |
+
+**オプションはクライアント側の設定なので、サーバが受け取った内容を記録して
+突き合わせないと、効いたかどうかを判定できない。** このため、値を返すだけの
+オリジンではなく、**受け取ったヘッダを記録するオリジン**を用意している。
+
+#### 外部環境が要らない
+
+オリジンもプロキシも `TcpListener` で立て、**1 プロセスに閉じている**。
+
+- **`HttpListener` を使わない。** URL の予約（`netsh http add urlacl`）が要る場合があり、
+  `TcpListener` ならその手当てなしに動く
+- **プロセスを分けない。** 起動順と後始末が要らず、`BinaryFormatter` の型解決も確実になる
+- 使うポートは **51090（オリジン）／ 51091（プロキシ）／ 51092（オリジン・TLS）**
+
+#### クライアント証明書は TLS で確認する
+
+`CertFile` だけは平文では確かめられないため、**`SslStream` を挟んだオリジン**（51092）を
+別に立てる。`AuthenticateAsServer(cert, clientCertificateRequired: true, …)` で
+**クライアント証明書を要求**し、握手後の `RemoteCertificate` を記録する。
+
+- **`netsh http add sslcert` が要らない。** ポートへの証明書の紐付け（管理者権限）は
+  `HttpListener` の話であって、`SslStream` には無関係
+- **Kestrel も要らない。** テストは net48 なので、別プロセスを立てずに済む
+- **証明書はリポジトリに置かず、実行のたびに作る**（`CertificateRequest`）。
+  置くと期限切れで或る日突然テストが落ちる
+- 自己署名なので、**両側で検証を通す**。サーバ側は `SslStream` のコールバック、
+  クライアント側は `ServicePointManager.ServerCertificateValidationCallback`
+  （`CallController` は検証のコールバックを公開していないため）
+
+> **サーバ側にコールバックを渡さないと握手ごと失敗する。** 既定の検証が働き、
+> 自己署名のクライアント証明書は「信頼されていない機関によって発行された」として弾かれる。
+
+**このケースはプロキシを経由しない。** 平文 HTTP のプロキシで HTTPS を通すには
+`CONNECT` の実装が要るため、宛先は `127.0.0.1` のままでよい（下記の迂回の問題が起きない）。
+
+#### **宛先に実在しないホスト名を使っている理由**
+
+**.NET Framework の `WebProxy.IsBypassed` は、ループバック宛を常に迂回する。**
+
+```
+net48   : http://127.0.0.1:51090/  IsBypassed=True    ← プロキシを使わない
+.NET 10 : 同上                     IsBypassed=False   ← 使う
+```
+
+`127.0.0.1` や `localhost` を宛先にすると、**プロキシを設定していても直接オリジンへ行き、
+プロキシの検証にならない**（実際、最初の実行は「プロキシ 0 回」だった）。
+
+このため、プロキシを使うケースの宛先を **`http://fx-origin.test:51090/`** とし、
+**テスト用プロキシが名前を解決せず、必ずオリジンへ繋ぎ替える**ようにしてある。
+`hosts` ファイルの編集（管理者権限）も、ファイアウォールへの露出も要らない。
+
+#### 対象外のオプション
+
+| | 理由 |
+|---|---|
+| `Domain` / `PDomain` | Windows 統合認証が前提。Basic 認証では無視される |
+| `ConnGroupName` | **効果が無い。** HttpWebRequest の接続プールを分割する名前だったが、HttpClient へ移って**設定する口が無くなった**。目的（接続の仕切り）は、CallController が**サービス名ごとにハンドラをプールする**ことで満たされている。定数は互換のため残し、定義例からは外した |
+
+#### net48 だけである理由
+
+ASP.NET WebAPI の経路（`protocol="5"`）は **.NET Framework 限定**である。
+引数と戻り値の受け渡しに `BinarySerialize` を使っており、
+.NET Core 版では `FxEnum.TmProtocol` ごと落とされている
+（[`CS/Frameworks/ANALYSIS.md`](CS/Frameworks/ANALYSIS.md) と #543）。
+
 ### Web アプリ（3 件）
 
 | 対象 | ホスト | 認証の実装 | 判定 |
@@ -281,6 +379,11 @@ WinForms / WPF 系は、リリース チェックリスト（段階 4）の**手
     `ConnectionString_SQL` を読む。ここで別途ハードコードすると追随できなくなるため
 - **IIS Express** がインストールされていること（net48 の Web アプリ）
 - **ASP.NET 状態サービスが開始されている**こと（net48 の Web アプリ）
+- **ポート 51081 - 51086、51090 - 51092 が空いている**こと
+  - 51081 - 51083 … Web アプリ（net48 の 2 つと net10.0）
+  - 51084 … `DeployZipPackWithHTTP` の配信
+  - 51085 - 51086 … VB 側の Web アプリ（`-Lang VB`。10 節）
+  - **51090 - 51092 … 通信制御のオリジン・プロキシ・オリジン（TLS）（3 節）**
 
 > **GitHub Actions でも実行している。** 前提の揃え方（SQL Server の導入と Northwind の
 > ロード、`C:\root`、ロケール、`aspnet_state` の開始）は
@@ -452,6 +555,7 @@ DeployZip /MFTGEN (net48)         OK   マニュフェスト ファイルを生�
 DeployZip 配置 (net48)            OK   履歴に新規追加しました。
 DeployZip /MFTGEN (net10.0)       OK   マニュフェスト ファイルを生成しました。
 DeployZip 配置 (net10.0)          OK   履歴に新規追加しました。
+TestTransmission (net48)          OK   NG : 0 件
 MVC_Sample (net48)                OK   ログイン後 /Crud1/Index = 200
 WebForms_Sample (net48)           OK   ログイン後 menu.aspx = 200
 MVC_Sample (net10.0)              OK   ログイン後 /Crud1/Index = 200
@@ -459,7 +563,7 @@ MVC_Sample (net10.0)              OK   ログイン後 /Crud1/Index = 200
   全対象 OK
 ```
 
-全 22 件（ビルド 7 バッチ ＋ 疎通 22 件）で **約 2.3 分**。
+全 23 件（ビルド 8 バッチ ＋ 疎通 23 件）で **約 4 分**。
 
 ### リダイレクトの扱い
 
@@ -561,7 +665,7 @@ $client.Connect("localhost", $port)
 
 ```powershell
 .\3_SmokeTest.ps1 -Lang VB     # VB のみ（6 件）
-.\3_SmokeTest.ps1 -Lang Both   # C# 22 件 ＋ VB 6 件
+.\3_SmokeTest.ps1 -Lang Both   # C# 23 件 ＋ VB 6 件
 ```
 
 **既定に VB を含めない。** リリース時の検証（[`RELEASE.md`](RELEASE.md) 3 節）は
@@ -578,6 +682,7 @@ C# 側が対象で、VB を含めると毎回 VB のビルドが乗るためで�
 | `DeployZipPackWithHTTP` | 4 | 同上 |
 | `MVC` / `WebForms` (net48) | 2 | **あり** |
 | `MVC` (net10.0) | 1 | 無し |
+| 通信制御の接続オプション | 1 | 無し（net48 の C# 側だけ） |
 
 ### 判定は C# 版と共有している
 

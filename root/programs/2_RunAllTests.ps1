@@ -83,6 +83,9 @@ $testsRoot = Join-Path $csRoot "Frameworks\Tests"
 $repoRoot  = (& git -C $testsRoot rev-parse --show-toplevel)
 New-Item -ItemType Directory -Force $OutputDir | Out-Null
 
+# サマリの整形。Format-Table は 5.1 で全角の桁を数えないため、自前で揃える。
+. (Join-Path $PSScriptRoot "SummaryTable.ps1")
+
 # ------------------------------------------------------------------
 # コンソールのコード ページを先に UTF-8 にしておく
 # ------------------------------------------------------------------
@@ -314,7 +317,9 @@ foreach ($t in $tests)
 # ------------------------------------------------------------------
 Write-Host ""
 Write-Host "================ サマリ ================"
-$results | Format-Table -AutoSize | Out-String | Write-Host
+Write-Host ""
+Write-SummaryTable $results
+Write-Host ""
 Write-Host ("  期待値・ログ : {0}" -f $OutputDir)
 Write-Host  "  実測値       : ワーキング ツリーの Result*.txt（git diff で確認できます）"
 
