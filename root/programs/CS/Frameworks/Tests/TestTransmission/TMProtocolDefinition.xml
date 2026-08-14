@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE TMD[
+  <!ELEMENT TMD (Url*, Prop*, Transmission*)>
+
+  <!ELEMENT Url EMPTY>
+  <!ELEMENT Prop EMPTY>
+  <!ELEMENT Transmission EMPTY>
+
+  <!ATTLIST Url id ID #REQUIRED value CDATA #REQUIRED>
+  <!ATTLIST Prop id ID #REQUIRED value CDATA #REQUIRED>
+  <!ATTLIST Transmission id ID #REQUIRED protocol (1 | 4 | 5) #REQUIRED
+    url CDATA #IMPLIED url_ref IDREF #IMPLIED timeout CDATA #IMPLIED prop_ref IDREF #IMPLIED>
+]>
+<TMD>
+  <Prop id="prop_plain"  value=""/>
+  <Prop id="prop_ua"     value="UserAgent=OpenTouryoTestAgent/1.0;"/>
+  <Prop id="prop_gzip"   value="Compression=true;"/>
+  <Prop id="prop_auth"   value="UserName=fxuser;Password=fxpass;"/>
+  <Prop id="prop_proxy"  value="ProxyUrl=http://127.0.0.1:51091;"/>
+  <Prop id="prop_pxauth" value="ProxyUrl=http://127.0.0.1:51091;PUserName=pxuser;PPassword=pxpass;"/>
+  <Prop id="prop_all"    value="UserAgent=OpenTouryoTestAgent/1.0;Compression=true;UserName=fxuser;Password=fxpass;ProxyUrl=http://127.0.0.1:51091;PUserName=pxuser;PPassword=pxpass;"/>
+
+  <Transmission id="testPlain"    protocol="5" url="http://127.0.0.1:51090/api/" timeout="30" prop_ref="prop_plain" />
+  <Transmission id="testUA"       protocol="5" url="http://127.0.0.1:51090/api/" timeout="30" prop_ref="prop_ua" />
+  <Transmission id="testGzip"     protocol="5" url="http://127.0.0.1:51090/api/" timeout="30" prop_ref="prop_gzip" />
+  <Transmission id="testAuth"     protocol="5" url="http://127.0.0.1:51090/api/" timeout="30" prop_ref="prop_auth" />
+  <Transmission id="testProxy"    protocol="5" url="http://fx-origin.test:51090/api/" timeout="30" prop_ref="prop_proxy" />
+  <Transmission id="testProxyAuth" protocol="5" url="http://fx-origin.test:51090/api/" timeout="30" prop_ref="prop_pxauth" />
+  <Transmission id="testAll"      protocol="5" url="http://fx-origin.test:51090/api/" timeout="30" prop_ref="prop_all" />
+</TMD>

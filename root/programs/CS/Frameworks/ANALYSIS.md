@@ -62,6 +62,7 @@
 | `TestDataAccess` | データ アクセスのテスト（#520）。`TestCode` と同じ構成だが**DB に接続する**。`/MODE` で対象 DBMS を切り替える（既定は SQL Server のみ） | [`README.md`](Tests/TestDataAccess/README.md) |
 | `TestLog` | ログ出力確認（log4net/NLog、1〜3） | — |
 | `TestBatch` | バッチ起動確認 | — |
+| `TestTransmission` | 通信制御の接続オプション（#546）。**オリジンとプロキシを自前で立て**、`CallController` から呼んで、要求に反映されているかを見る。**期待値ファイルを持たず、自分で合否を出す**（疎通テストから呼ばれる） | [`SMOKETEST.md`](../../SMOKETEST.md) 3 節 |
 | `EncAndDecUtil` / `EncAndDecUtilCUI` | 暗号・署名ユーティリティの GUI/CUI 確認 | — |
 
 **`TestCode` と `TestDataAccess` は専用の `README.md` を持つ。**

@@ -821,6 +821,26 @@ $targetsCS = @(
         Pre = $startDeployWebCore;  Verify = $verifyDeployCore
     }
 
+    # --- 通信制御の接続オプション（#546） ---
+    #
+    # CallController の接続オプション（ProxyUrl / UserName / UserAgent / Compression 等）が、
+    # 実際の HTTP 要求に反映されているかを見る。
+    #
+    # ＜外部環境が要らない＞
+    #   オリジンとプロキシを、テスト側が TcpListener で自前に立てる。
+    #   1 プロセスに閉じているので、起動・停止の面倒を見る必要がない。
+    #
+    # ＜net48 だけ＞
+    #   ASP.NET WebAPI の経路が .NET Framework 限定である（BinarySerialize を使うため）。
+    #
+    # ＜判定＞
+    #   対象側が項目ごとに OK / NG を出し、末尾に件数を出す。
+    @{
+        Name = "TestTransmission (net48)";  Bat = "y_Build_TestTransmission.bat"
+        Exe  = "Frameworks\Tests\TestTransmission\net48\bin\Debug\TestTransmissionFx.exe"
+        Expect = 'NG : 0 件'
+    }
+
     # --- Web アプリ ---
     @{
         Name = "MVC_Sample (net48)";      Bat = "10_Build_WebApp_sample.bat"
