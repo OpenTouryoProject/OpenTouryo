@@ -1,4 +1,4 @@
-﻿# Configuration.md — 設定ファイルの扱い
+﻿# CONFIGURATION.md — 設定ファイルの扱い
 
 対象: `root/programs` 配下（CS / VB、net48 / net10.0）
 配置: `root/programs`
