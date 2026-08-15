@@ -240,10 +240,25 @@ csproj の `CopyToOutputDirectory` で出力フォルダへ配る前提なので
 
 対処は 2 通りある。
 
-| 方針 | 手段（net10.0） | 手段（net48） | 実測 |
-|---|---|---|---|
-| **検知**（実態を知らせる） | `UseForwardedHeaders` | IIS の URL Rewrite で `HTTPS` を立てる | 4 件中 **3 件**に `secure` |
-| **宣言**（そう決め打つ） | `CookieSecurePolicy=always` | `forms` の `requireSSL="true"` | 4 件中 **4 件** |
+| 方針 | 手段（net10.0） | 手段（net48） |
+|---|---|---|
+| **検知**（実態を知らせる） | `UseForwardedHeaders` | IIS の URL Rewrite で `HTTPS` を立てる |
+| **宣言**（そう決め打つ） | `CookieSecurePolicy=always` | `forms` の `requireSSL="true"` |
+
+**どちらも実測してある**（`X-Forwarded-Proto: https` を付けた要求で `Set-Cookie` を見る）。
+
+| | 検知 | 宣言 |
+|---|---|---|
+| net10.0 | 4 件中 **3 件** | 4 件中 **4 件** |
+| net48 | 6 件中 **2 件**（＝フレームワークが立てる `SessionTimeOut` の生成・削除の両方） | — |
+
+net10.0 の検知が 3 件止まりなのは、**削除用 Cookie が
+`CookieExtensions.Delete(key)`（オプション無し）を通る**ため。
+net48 側は削除も `newCookie.Secure` を明示しているので、両方に付く。
+
+> **net48 では `allowedServerVariables` への登録も要る。**
+> `Web.config` からは設定できず（`overrideModeDefault="Deny"`）、
+> `applicationHost.config` に書く。**忘れると要求ごとに HTTP 500.50 になる。**
 
 **宣言の方が依存が少なく確実。** `CookiePolicy` はすべての `Set-Cookie` を後段で
 上書きするため、個々の箇所が何を判断しているかに依存しない。
@@ -286,6 +301,97 @@ Antiforgery の Cookie が返らず**ログインの POST が 400** になる（
 |---|---|
 | 検知 | **静かに効かない。** 画面は動き、`Secure` だけが付かない |
 | 宣言 | **はっきり壊れる。** すぐ気付いて直せる |
+
+---
+
+### net48 で「検知」する — IIS の URL Rewrite
+
+**`Request.IsSecureConnection` はコードから変えられない**（読み取り専用）。
+IIS 側で `HTTPS` サーバ変数を立てる。
+
+**MVC でも Web Forms でも同じ**である。設定するのは IIS であって、アプリの実装ではない。
+
+#### ① `Web.config` に受信規則を書く
+
+```xml
+<system.webServer>
+  <rewrite>
+    <rules>
+      <rule name="ForwardedProto">
+        <match url=".*" />
+        <conditions>
+          <add input="{HTTP_X_FORWARDED_PROTO}" pattern="^https$" />
+        </conditions>
+        <serverVariables>
+          <set name="HTTPS" value="on" />
+        </serverVariables>
+        <action type="None" />
+      </rule>
+    </rules>
+  </rewrite>
+</system.webServer>
+```
+
+`action type="None"` は「書き換えも転送もしない」。**サーバ変数を立てるためだけの規則**である。
+
+#### ② `applicationHost.config` に `HTTPS` を登録する
+
+**これを忘れると、すべての要求が HTTP 500.50 になる。**
+
+```
+HTTP Error 500.50 - URL Rewrite Module Error.
+The server variable "HTTPS" is not allowed to be set.
+Add the server variable name to the allowed server variable list.
+```
+
+```xml
+<rewrite>
+  <allowedServerVariables>
+    <add name="HTTPS" />
+  </allowedServerVariables>
+</rewrite>
+```
+
+**`Web.config` からは設定できない。** `allowedServerVariables` は
+`overrideModeDefault="Deny"` で、`applicationHost.config` にしか書けない。
+アプリが勝手にサーバ変数を書き換えられないための関門である。
+
+#### 実測（IIS Express、`Samples/WebApp_sample/MVC_Sample`）
+
+| 送ったヘッダ | `secure` が付いた Cookie |
+|---|---|
+| `X-Forwarded-Proto: https` | **6 件中 2 件**（`SessionTimeOut` の生成・削除の両方） |
+| （ヘッダ無し） | 0 件 |
+| `X-Forwarded-Proto: http` | 0 件（条件の `^https$` が弾く） |
+
+`SessionTimeOut` は `FxCmnFunction` が立てる Cookie なので、
+`IsSecureConnection` が true になったことの直接の確認になる。
+
+> **ARR は要らない。** ARR は IIS 自身を**リバース プロキシにする**機能で、
+> ここで要るのは URL Rewrite だけ。前段が既にある構成なら ARR は無関係。
+
+> **IIS Express で試すときの注意。**
+> `/path:` 起動は `%ProgramFiles%\IIS Express\AppServer\applicationhost.config` を読む
+> （`%USERPROFILE%\Documents\IISExpress\config\...` ではない）。
+> `/config:` は `/path:` と併用できず、`/site:` が要る。
+
+### net48 で鍵を揃える — `machineKey`
+
+**Web サーバを複数台にするなら要る。** セッションを StateServer や SQLServer へ
+外出ししても、それだけでは足りない。
+
+**認証 Cookie（`forms`）と ViewState は `machineKey` で保護されている。**
+指定しないと**サーバごとに別の鍵が自動生成される**ため、台数を増やした途端、
+片方が発行したものをもう片方が復号できず、
+ログインし直しや「ビューステートの検証に失敗しました」になる。
+
+```xml
+<machineKey validationKey="＜同じ値＞" decryptionKey="＜同じ値＞"
+            validation="HMACSHA256" decryption="AES" />
+```
+
+**ViewState を使う Web Forms では、より当たりやすい。**
+netcore 側の対応物は DataProtection（10 節）。
 
 ---
 
