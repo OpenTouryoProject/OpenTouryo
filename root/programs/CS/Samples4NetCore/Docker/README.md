@@ -212,12 +212,21 @@ Kubernetes の Secret もファイル マウントなので、そのまま移行
 | `Dockerfile` | **ほぼそのまま** |
 | 証明書のマウント・8081 の公開・`Kestrel__Certificates__*` | **消える**（TLS は前段で終端） |
 | `UseHttpsRedirection` | `on` → **`off`**（前段で終端するなら、on にすると無限リダイレクト） |
-| `CookieSecurePolicy` | **`always` のまま。** 前段で終端する構成では、これが実質必須になる |
+| `CookieSecurePolicy` | **`always` のまま** |
+| `UseForwardedHeaders` | `off` → **`on`**（前段の `X-Forwarded-Proto` を取り込む） |
 | 接続文字列・リソースの場所 | 環境ごとに差し替え |
 
-`CookieSecurePolicy` を `always` のままにする理由は、リバース プロキシ配下では
-`Request.IsHttps` が false になり、**フレームワーク側の自動判定（#536）が効かない**ため。
-`X-Forwarded-Proto` を見ていない件は **#549** で扱う。
+**前段で TLS を終端すると、アプリから見た接続は HTTP になる。**
+`Request.IsHttps` が false のままなので、そのままでは
+**フレームワーク側の `Secure` 自動判定（#536）が効かない。**
+
+`UseForwardedHeaders=on` にすると `X-Forwarded-Proto` を取り込み、`IsHttps` が正しくなる（#549）。
+**`ForwardedHeadersKnownProxies` も併せて確認すること。**
+既定ではループバックからの転送しか信用しないため、
+前段が別アドレス（コンテナや Kubernetes では通常そうなる）だと**黙って無視される。**
+
+`CookieSecurePolicy=always` は、その保険として残しておく。
+こちらは `IsHttps` を見ずに明示的に立てるため、転送ヘッダの設定を誤っても効く。
 
 ---
 

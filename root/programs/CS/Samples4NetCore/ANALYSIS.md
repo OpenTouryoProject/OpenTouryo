@@ -289,6 +289,8 @@ connectionStrings__ConnectionString_SQL=Data Source=db;...
 | `UseHttpsRedirection` | `off` | `on` で `app.UseHttpsRedirection()` を挟む |
 | `CookieSecurePolicy` | (空) | `always` で Cookie に `Secure` を必ず付ける |
 | `DataProtectionKeyPath` | (空) | データ保護の鍵を、指定フォルダへ永続化する |
+| `UseForwardedHeaders` | `off` | `X-Forwarded-Proto` / `-For` を取り込む（#549） |
+| `ForwardedHeadersKnownProxies` | (空) | 信用する前段のアドレス（空＝範囲を制限しない） |
 
 ### 5-2. この 3 つで踏むこと（実測）
 
@@ -334,6 +336,33 @@ services.AddDataProtection()
 
 net48 側の対応物は `machineKey` である（`Samples/WebApp_sample/MVC_Sample` の
 `Web.config` にコメントで記載）。
+
+**④ リバース プロキシで TLS を終端するなら `UseForwardedHeaders` が要る（#549）。**
+
+前段で終端すると、アプリから見た接続は HTTP になる。`Request.IsHttps` が false のままなので、
+**ブラウザは HTTPS で繋いでいるのに `Secure` 属性が付かない**
+（`#536` でフレームワークが立てるようにした分が効かない）。
+
+実測（`X-Forwarded-Proto: https` を付けて、平文 HTTP でログインしたときの `Set-Cookie`）。
+
+| 設定 | `secure` が付いた Cookie |
+|---|---|
+| 既定（`off`） | **0 / 1 件** |
+| `UseForwardedHeaders=on` | **3 / 4 件**（`SessionTimeOut` / `.AspNetCore.Cookies` / `mvc_session`） |
+| `on` ＋ `ForwardedHeadersKnownProxies=10.0.0.1` | **0 / 1 件**（前段の範囲外なので捨てられる） |
+| `on` ＋ ヘッダ無し | **0 / 1 件**（素の HTTP のまま。正しい） |
+
+> **`KnownIPNetworks` / `KnownProxies` を設定しないと黙って無視される。**
+> 既定ではループバックからの転送しか信用しない。コンテナや Kubernetes では
+> 前段が別アドレスになるため、**指定しないと何も起きない。**
+> 「on にしたのに直らない」の原因はほぼこれ。
+>
+> 逆に無条件に信用すると、**クライアントがヘッダを詐称できる**。
+> 前段だけが到達できるネットワークに閉じてから使うこと。
+
+net48 側はコードから変えられない（`Request.IsSecureConnection` は読み取り専用）ため、
+**IIS + ARR の URL Rewrite で `HTTPS` サーバ変数を立てる**
+（`Samples/WebApp_sample/MVC_Sample` の `Web.config` にコメントで記載）。
 
 ### 5-3. コンテナで動かす場合は `Docker/` を見る（#548）
 

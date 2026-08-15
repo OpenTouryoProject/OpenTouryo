@@ -18,6 +18,9 @@
 //*  2026/08/15  玄人 幸道         環境を移しても動くように整理（#541）。
 //*                                本番向けの設定を、コメントアウトではなく
 //*                                appsettings.json の値で切り替える形にした。
+//*  2026/08/16  玄人 幸道         転送ヘッダ（X-Forwarded-Proto）を取り込めるようにした（#549）。
+//*                                リバース プロキシで TLS を終端する構成で、
+//*                                Request.IsHttps が false のままになるのを解消する。
 //**********************************************************************************
 
 // ＜設定で切り替えるもの＞（#541）
@@ -26,11 +29,13 @@
 //   環境を移すときにソースを書き換えることになる。
 //   appsettings.json（および環境変数）で切り替えられるようにしてある。
 //
-//   | キー（appSettings）      | 既定   | on にすると |
-//   |--------------------------|--------|-------------|
-//   | UseHttpsRedirection      | off    | HTTP を HTTPS へリダイレクトする |
-//   | CookieSecurePolicy       | (空)   | always で Cookie に Secure 属性を必ず付ける |
-//   | DataProtectionKeyPath    | (空)   | データ保護の鍵を、指定フォルダに永続化する |
+//   | キー（appSettings）              | 既定   | on にすると |
+//   |----------------------------------|--------|-------------|
+//   | UseHttpsRedirection              | off    | HTTP を HTTPS へリダイレクトする |
+//   | CookieSecurePolicy               | (空)   | always で Cookie に Secure 属性を必ず付ける |
+//   | DataProtectionKeyPath            | (空)   | データ保護の鍵を、指定フォルダに永続化する |
+//   | UseForwardedHeaders              | off    | X-Forwarded-Proto / -For を取り込む（#549） |
+//   | ForwardedHeadersKnownProxies     | (空)   | 信用する前段のアドレス（空＝範囲を制限しない） |
 //
 //   **既定値は、いずれも従来どおりの動作**である。
 //
@@ -48,10 +53,12 @@
 
 using System;
 using System.IO;
+using System.Net;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.AspNetCore.Authentication;
@@ -109,7 +116,70 @@ namespace MVC_Sample
         /// </summary>
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            
+            // 転送ヘッダの取り込み（#549）
+            //
+            //   **リバース プロキシで TLS を終端すると、アプリから見た接続は HTTP になる。**
+            //   利用者のブラウザは HTTPS で繋いでいるのに Request.IsHttps は false のままで、
+            //   Secure 属性が付かない（#536 でフレームワークが立てるようにした分が効かない）。
+            //
+            //   前段が付ける X-Forwarded-Proto を取り込むと、IsHttps が正しくなる。
+            //
+            //   **必ずパイプラインの先頭に置く。**
+            //   後ろに置くと、それより前のミドルウェア（UseHttpsRedirection など）が
+            //   取り込み前のスキームを見てしまう。
+            //
+            //   既定は off。素の HTTP で動かす開発環境では、転送ヘッダを
+            //   誰でも付けられる（＝クライアントが詐称できる）ため。
+            if (Startup.IsOn("UseForwardedHeaders"))
+            {
+                ForwardedHeadersOptions options = new ForwardedHeadersOptions()
+                {
+                    ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedFor
+                };
+
+                // 信用する前段を指定する。
+                //
+                //   **既定ではループバックからの転送しか信用しない。**
+                //   コンテナや Kubernetes では前段が別アドレスになるため、
+                //   **指定しないとヘッダが黙って捨てられ、何も起きない。**
+                //   「on にしたのに直らない」の原因はほぼこれである。
+                //
+                //   ForwardedHeadersKnownProxies に、前段のアドレスをカンマ区切りで書く。
+                string knownProxies = Startup.GetValue("ForwardedHeadersKnownProxies");
+
+                if (string.IsNullOrEmpty(knownProxies))
+                {
+                    // **前段を特定できない場合（コンテナ等）は、範囲の制限を外す。**
+                    //   KnownIPNetworks / KnownProxies を空にすると、
+                    //   「どこからの転送でも信用する」という意味になる。
+                    //   （KnownNetworks は .NET 10 で非推奨。KnownIPNetworks を使う）
+                    //
+                    //   **アプリが前段を経由せず直接叩ける状態では使わないこと。**
+                    //   クライアントが X-Forwarded-Proto を詐称でき、
+                    //   HTTP で来ているのに HTTPS だと判断させられる。
+                    //   前段だけが到達できるネットワークに閉じてから使う。
+                    options.KnownIPNetworks.Clear();
+                    options.KnownProxies.Clear();
+                }
+                else
+                {
+                    options.KnownIPNetworks.Clear();
+                    options.KnownProxies.Clear();
+
+                    foreach (string ip in knownProxies.Split(','))
+                    {
+                        string trimmed = ip.Trim();
+
+                        if (!string.IsNullOrEmpty(trimmed))
+                        {
+                            options.KnownProxies.Add(IPAddress.Parse(trimmed));
+                        }
+                    }
+                }
+
+                app.UseForwardedHeaders(options);
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
