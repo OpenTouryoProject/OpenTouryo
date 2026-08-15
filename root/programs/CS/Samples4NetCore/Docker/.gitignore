@@ -1,0 +1,6 @@
+# dotnet publish の成果物（1_PublishAndUp.bat が作る）
+publish/
+
+# HTTPS の開発用証明書と秘密鍵（0_SetupCert.ps1 が作る）
+# **秘密鍵をリポジトリに入れない。**
+https/

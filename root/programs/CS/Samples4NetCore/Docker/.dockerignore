@@ -1,0 +1,12 @@
+# ビルド コンテキストから除くもの（#548）
+#
+# **https/ は必ず除く。** 秘密鍵をイメージに焼かないため。
+# 証明書は実行時にボリュームでマウントする（docker-compose.yml）。
+https/
+
+# 手順・スクリプトはイメージに要らない
+README.md
+*.bat
+*.ps1
+.gitignore
+.dockerignore
