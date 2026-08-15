@@ -262,6 +262,78 @@ net48 の `app.config` → Core は `appsettings.json`。**`appSettings` / `conn
   **定義ファイルを追加したら csproj にもコピー指定を足す**必要がある。
 - `Backend/MVC_Sample` は Web SDK なので `appsettings.json` は自動でコピーされる。
 
+### 5-1. 環境を移すときに変える値（#541）
+
+**`appsettings.json` の値は、環境変数でそのまま上書きできる。** 区切りは `__`（下線 2 つ）。
+
+```
+appSettings__FxXMLSPDefinition=/app/files/resource/XML/SPDefinition.xml
+connectionStrings__ConnectionString_SQL=Data Source=db;...
+```
+
+`Backend/MVC_Sample` は `Host.CreateDefaultBuilder` を使っており、これが環境変数を
+構成に含める。`Startup` はその `IConfiguration` を
+`GetConfigParameter.InitConfiguration` へ渡すので、**フレームワーク側から読む値にも効く。**
+
+> **`FxContainerization` は要らない。**
+> あちらは ON のとき「接頭辞なしのキー名」で環境変数を読む別の仕組みである。
+> 上の `appSettings__` 方式とは経路が違うので、混同しないこと。
+
+`Backend/MVC_Sample` には、環境ごとに変えたい設定を `appSettings` のキーで
+切り替える口を用意してある。**既定値はいずれも従来どおりの動作**（サンプルは
+平文 HTTP で動かすため）。
+
+| キー | 既定 | 効果 |
+|---|---|---|
+| `UseHttpsRedirection` | `off` | `on` で `app.UseHttpsRedirection()` を挟む |
+| `CookieSecurePolicy` | (空) | `always` で Cookie に `Secure` を必ず付ける |
+| `DataProtectionKeyPath` | (空) | データ保護の鍵を、指定フォルダへ永続化する |
+
+### 5-2. この 3 つで踏むこと（実測）
+
+**① `UseHttpsRedirection` は、on にしただけでは何もしない。**
+
+リダイレクト先のポートが決まらないと、警告を 1 行出して素通りする。
+**有効にしたのに HTTP のまま 200 が返る**ので、気付きにくい。
+
+```
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+```
+
+ポートは、https の URL をバインドするか、次の環境変数で与える。
+
+| 環境変数 | 結果（実測） |
+|---|---|
+| `ASPNETCORE_HTTPS_PORT=44399`（**単数**） | 307 `Location: https://localhost:44399/...` |
+| `HTTPS_PORT=44399` | 307（同上） |
+| `ASPNETCORE_HTTPS_PORTS=44399`（**複数**） | **効かない**（200 のまま） |
+
+複数形は Kestrel が待ち受けるポートを決めるもので、**このミドルウェアが読むのは単数形。**
+
+**② `CookieSecurePolicy=always` を平文 HTTP でやると、ログインできなくなる。**
+
+Antiforgery の Cookie も返らなくなるため、症状は
+**「ログイン画面は出るが、POST が 400」**になる（実測）。
+
+**③ データ保護は `AddCookie` ではなくアプリ全体に設定する。**
+
+`AddCookie` の `options.DataProtectionProvider` は**認証 Cookie にしか効かない。**
+セッションと Antiforgery も同じ鍵を使うので、`services.AddDataProtection()` 側に置く。
+
+```csharp
+services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(keyPath))
+    .SetApplicationName("MVC_Sample");   // 既定はコンテンツ ルートのパス由来
+```
+
+**`SetApplicationName` も要る。** 既定のアプリケーション名はコンテンツ ルートのパスから
+決まるため、鍵を共有していても**配置先のパスが違うと復号できない**
+（Windows の `C:\...` とコンテナの `/app` など）。
+
+net48 側の対応物は `machineKey` である（`Samples/WebApp_sample/MVC_Sample` の
+`Web.config` にコメントで記載）。
+
 ---
 
 ## 6. ビルド
