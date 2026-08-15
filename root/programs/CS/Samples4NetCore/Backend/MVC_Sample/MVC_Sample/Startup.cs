@@ -40,7 +40,7 @@
 //   appsettings.json の値は環境変数で上書きできる。区切りは「__」（下線 2 つ）。
 //
 //     appSettings__UseHttpsRedirection=on
-//     appSettings__FxXMLSPDefinition=/app/files/resource/XML/SPDefinition.xml
+//     appSettings__FxXMLSPDefinition=/app/files/resource/Xml/SPDefinition.xml
 //     connectionStrings__ConnectionString_SQL=...
 //
 //   **FxContainerization は要らない。** あちらは「接頭辞なしのキー名」で

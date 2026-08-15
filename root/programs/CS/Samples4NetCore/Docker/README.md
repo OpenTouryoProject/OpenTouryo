@@ -99,11 +99,14 @@ OS の機能ではない。`ResourceLoader.ResolveFilePath` が
 `WORKDIR /app` を置かないと、**設定ファイルが一切読まれないまま起動する**
 （それでも画面は出るので気付きにくい）。
 
-### フォルダ名は `Xml`。`XML` ではない
+### フォルダ名の大文字小文字は合わせる
 
-`appsettings.json` は `C:/root/files/resource/XML/...` と書いているが、実フォルダは `Xml`。
-Windows は大文字小文字を区別しないので通るが、**Linux では開けない。**
-`appsettings.Container.json` では `Xml` に直してある。
+実フォルダは `Xml`（`XML` ではない）。**Windows は大文字小文字を区別しないので
+間違っていても通るが、Linux では開けない。**
+
+`appsettings.json` はもともと `resource/XML/...` と書いており、
+このサンプルを作る過程で見つかった。**#550 で本体側を `Xml` に直してある。**
+`resource` 配下の他のフォルダ（`Log` / `Sql` / `Test` / `X509`）も同様。
 
 ### `Data Source` は `localhost` ではなく `sqlserver`
 

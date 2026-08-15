@@ -51,7 +51,7 @@ dotnet build ../Frameworks/Infrastructure/Business_netcore100.sln
 `Backend/MVC_Sample` と `Legacy/*` の設定は `C:/root/files/resource/...` を直書きしている。
 
 ```json
-"FxXMLSPDefinition": "C:/root/files/resource/XML/SPDefinition.xml",
+"FxXMLSPDefinition": "C:/root/files/resource/Xml/SPDefinition.xml",
 "SqlTextFilePath":   "C:/root/files/resource/Sql"
 ```
 
@@ -247,7 +247,7 @@ net48 の `app.config` → Core は `appsettings.json`。**`appSettings` / `conn
     "ConnectionString_NPS": "HOST=localhost;DATABASE=postgres;..."
   },
   "appSettings": {
-    "FxXMLSPDefinition": "C:/root/files/resource/XML/SPDefinition.xml",
+    "FxXMLSPDefinition": "C:/root/files/resource/Xml/SPDefinition.xml",
     "FxLog4NetConfFile": "C:/root/files/resource/Log/SampleLogConf.xml",
     "FxSqlTraceLog": "on",
     "SqlTextFilePath": "C:/root/files/resource/Sql"
@@ -268,7 +268,7 @@ net48 の `app.config` → Core は `appsettings.json`。**`appSettings` / `conn
 **`appsettings.json` の値は、環境変数でそのまま上書きできる。** 区切りは `__`（下線 2 つ）。
 
 ```
-appSettings__FxXMLSPDefinition=/app/files/resource/XML/SPDefinition.xml
+appSettings__FxXMLSPDefinition=/app/files/resource/Xml/SPDefinition.xml
 connectionStrings__ConnectionString_SQL=Data Source=db;...
 ```
 
