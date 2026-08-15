@@ -144,9 +144,15 @@ gh auth switch --user OsscJpDevInfra  # 異なる場合は切り替え
 | 内容 | 読む文書 |
 |---|---|
 | **コーディング規約（全領域共通）** | [`CODING.md`](root/programs/CODING.md) |
+| **設定ファイルの扱い（全領域共通）** | [`Configuration.md`](root/programs/Configuration.md) |
 | `root/programs/CS/Frameworks/` の分析 | [`Frameworks/ANALYSIS.md`](root/programs/CS/Frameworks/ANALYSIS.md) |
 | `root/programs/CS/Samples/` の分析 | [`Samples/ANALYSIS.md`](root/programs/CS/Samples/ANALYSIS.md) |
 | `root/programs/CS/Samples4NetCore/` の分析 | [`Samples4NetCore/ANALYSIS.md`](root/programs/CS/Samples4NetCore/ANALYSIS.md) |
+
+**設定ファイルに「仕組み」を書き足したくなったら、[`Configuration.md`](root/programs/Configuration.md)
+に書く。** 設定ファイルは 86 個あり、一部にだけ詳しい説明があると、
+**書かれていないファイルを「該当しない」と誤読させる。**
+値の隣に書くのは「そのキーが何か」までにする（分担は同書 0 節）。
 
 **コードを変更する前に、[`CODING.md`](root/programs/CODING.md) と、
 作業対象を所管する `ANALYSIS.md` の両方を読むこと。**

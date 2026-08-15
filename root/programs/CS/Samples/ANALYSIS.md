@@ -30,7 +30,7 @@ Open棟梁フレームワークの **使い方を示すサンプル兼テンプ�
 **サンプルの設定ファイルは `C:\root\files\resource\...` という絶対パスを直書きしている。**
 
 ```xml
-<add key="FxXMLSPDefinition" value="C:\root\files\resource\XML\SPDefinition.xml" />
+<add key="FxXMLSPDefinition" value="C:\root\files\resource\Xml\SPDefinition.xml" />
 <add key="SqlTextFilePath"   value="C:\root\files\resource\Sql" />
 ```
 

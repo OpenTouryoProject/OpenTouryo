@@ -70,6 +70,8 @@
      2026/08/01  玄人 幸道         新規作成（リリース ワークのエージェント化）
      2026/08/07  玄人 幸道         Orders2が無ければ作成するようにした
      2026/08/13  玄人 幸道         Lang を追加（VB 版の疎通に対応）
+     2026/08/15  玄人 幸道         Args を持たない対象が PowerShell 5.1 で起動できず、
+                                   しかも前回の出力で OK と判定されていたのを修正
 #>
 [CmdletBinding()]
 param(
@@ -1186,6 +1188,13 @@ foreach ($t in $selected)
     #   Start-Process でファイルへ直接リダイレクトすれば、どちらも起きない。
     #   出力は生のまま残り、環境による差も出ない。
     $err = "$out.err"
+
+    # **前回の出力を必ず消してから実行する。**
+    #   $out / $err は対象ごとの固定名で、$OutputDir（既定は %TEMP%）に残る。
+    #   消さずに実行すると、**起動に失敗しても前回の出力が判定に使われ、
+    #   実行していないのに OK になる**（所要時間が 0.0 秒になるのが兆候）。
+    Remove-Item $out, $err -Force -ErrorAction SilentlyContinue
+
     Write-Host "  実行中 ..."
     $sw = [Diagnostics.Stopwatch]::StartNew()
 
@@ -1199,7 +1208,7 @@ foreach ($t in $selected)
 
         $argList = @("`"$exe`"")
         if ($needSep) { $argList += "--" }
-        $argList += @($t.Args)
+        $argList += @($t.Args | Where-Object { $null -ne $_ })
 
         Start-Process "dotnet" -ArgumentList $argList -NoNewWindow -Wait `
             -WorkingDirectory (Split-Path $exe) `
@@ -1207,7 +1216,17 @@ foreach ($t in $selected)
     }
     else
     {
-        $argList = @($t.Args)
+        # **null 要素を落としてから数える。**
+        #   Args を持たない対象では $t.Args が $null になり、@($null) は
+        #   「要素数 1・中身 null」の配列になる。**Count は 0 にならない**ので、
+        #   下のガードをすり抜けて -ArgumentList に null 入りの配列が渡る。
+        #   これを Windows PowerShell 5.1 は拒否する（PS 7 は空文字に変換して通す）。
+        #
+        #     PS 5.1 : Start-Process : パラメーター 'ArgumentList の引数を確認できません。…
+        #     PS 7   : そのまま動く
+        #
+        #   5.1 でだけ落ちるため、7 で検証していると気付けない。
+        $argList = @($t.Args | Where-Object { $null -ne $_ })
 
         if ($argList.Count -eq 0)
         {

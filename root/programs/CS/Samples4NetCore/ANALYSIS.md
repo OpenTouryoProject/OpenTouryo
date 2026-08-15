@@ -10,13 +10,14 @@
 
 ## 1. これは何か
 
-Open棟梁の **.NET (Core) 系サンプル**。3 つの区画に分かれており、性格がまったく違う。
+Open棟梁の **.NET (Core) 系サンプル**。4 つの区画に分かれており、性格がまったく違う。
 
 | 区画 | 中身 | 性格 |
 |---|---|---|
 | **`Backend/`** | `MVC_Sample`（ASP.NET Core MVC） | **現行の推奨サンプル。** ここが本命 |
 | **`Frontend/`** | README のみ | 別リポジトリ `FrontendTemplates` へ移動済み |
 | **`Legacy/`** | `2CS_sample` / `Bat_sample` / `CLI_sample` / `WS_sample` | `../Samples`（net48）を .NET へ移植した**独立コピー**。名前どおり「レガシー」扱い |
+| **`Docker/`** | `Backend/MVC_Sample` を Linux コンテナで動かす一式 | サンプルのコードは持たない。**手順と設計は [`Docker/README.md`](Docker/README.md)**（#548） |
 
 **全プロジェクトが SDK 形式 csproj / `net10.0`（GUI は `net10.0-windows7.0`）。**
 
@@ -50,7 +51,7 @@ dotnet build ../Frameworks/Infrastructure/Business_netcore100.sln
 `Backend/MVC_Sample` と `Legacy/*` の設定は `C:/root/files/resource/...` を直書きしている。
 
 ```json
-"FxXMLSPDefinition": "C:/root/files/resource/XML/SPDefinition.xml",
+"FxXMLSPDefinition": "C:/root/files/resource/Xml/SPDefinition.xml",
 "SqlTextFilePath":   "C:/root/files/resource/Sql"
 ```
 
@@ -246,7 +247,7 @@ net48 の `app.config` → Core は `appsettings.json`。**`appSettings` / `conn
     "ConnectionString_NPS": "HOST=localhost;DATABASE=postgres;..."
   },
   "appSettings": {
-    "FxXMLSPDefinition": "C:/root/files/resource/XML/SPDefinition.xml",
+    "FxXMLSPDefinition": "C:/root/files/resource/Xml/SPDefinition.xml",
     "FxLog4NetConfFile": "C:/root/files/resource/Log/SampleLogConf.xml",
     "FxSqlTraceLog": "on",
     "SqlTextFilePath": "C:/root/files/resource/Sql"
@@ -261,6 +262,116 @@ net48 の `app.config` → Core は `appsettings.json`。**`appSettings` / `conn
   `appsettings.json` / `MSGDefinition.xml` / `SPDefinition.xml` / `SampleLogConf2CS.xml` に指定している。
   **定義ファイルを追加したら csproj にもコピー指定を足す**必要がある。
 - `Backend/MVC_Sample` は Web SDK なので `appsettings.json` は自動でコピーされる。
+
+### 5-1. 環境を移すときに変える値（#541）
+
+**`appsettings.json` の値は、環境変数でそのまま上書きできる。** 区切りは `__`（下線 2 つ）。
+
+```
+appSettings__FxXMLSPDefinition=/app/files/resource/Xml/SPDefinition.xml
+connectionStrings__ConnectionString_SQL=Data Source=db;...
+```
+
+`Backend/MVC_Sample` は `Host.CreateDefaultBuilder` を使っており、これが環境変数を
+構成に含める。`Startup` はその `IConfiguration` を
+`GetConfigParameter.InitConfiguration` へ渡すので、**フレームワーク側から読む値にも効く。**
+
+> **`FxContainerization` は要らない。**
+> あちらは ON のとき「接頭辞なしのキー名」で環境変数を読む別の仕組みである。
+> 上の `appSettings__` 方式とは経路が違うので、混同しないこと。
+
+`Backend/MVC_Sample` には、環境ごとに変えたい設定を `appSettings` のキーで
+切り替える口を用意してある。**既定値はいずれも従来どおりの動作**（サンプルは
+平文 HTTP で動かすため）。
+
+| キー | 既定 | 効果 |
+|---|---|---|
+| `UseHttpsRedirection` | `off` | `on` で `app.UseHttpsRedirection()` を挟む |
+| `CookieSecurePolicy` | (空) | `always` で Cookie に `Secure` を必ず付ける |
+| `DataProtectionKeyPath` | (空) | データ保護の鍵を、指定フォルダへ永続化する |
+| `UseForwardedHeaders` | `off` | `X-Forwarded-Proto` / `-For` を取り込む（#549） |
+| `ForwardedHeadersKnownProxies` | (空) | 信用する前段のアドレス（空＝範囲を制限しない） |
+
+### 5-2. この 3 つで踏むこと（実測）
+
+**① `UseHttpsRedirection` は、on にしただけでは何もしない。**
+
+リダイレクト先のポートが決まらないと、警告を 1 行出して素通りする。
+**有効にしたのに HTTP のまま 200 が返る**ので、気付きにくい。
+
+```
+warn: Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware[3]
+      Failed to determine the https port for redirect.
+```
+
+ポートは、https の URL をバインドするか、次の環境変数で与える。
+
+| 環境変数 | 結果（実測） |
+|---|---|
+| `ASPNETCORE_HTTPS_PORT=44399`（**単数**） | 307 `Location: https://localhost:44399/...` |
+| `HTTPS_PORT=44399` | 307（同上） |
+| `ASPNETCORE_HTTPS_PORTS=44399`（**複数**） | **効かない**（200 のまま） |
+
+複数形は Kestrel が待ち受けるポートを決めるもので、**このミドルウェアが読むのは単数形。**
+
+**② `CookieSecurePolicy=always` を平文 HTTP でやると、ログインできなくなる。**
+
+Antiforgery の Cookie も返らなくなるため、症状は
+**「ログイン画面は出るが、POST が 400」**になる（実測）。
+
+**③ データ保護は `AddCookie` ではなくアプリ全体に設定する。**
+
+`AddCookie` の `options.DataProtectionProvider` は**認証 Cookie にしか効かない。**
+セッションと Antiforgery も同じ鍵を使うので、`services.AddDataProtection()` 側に置く。
+
+```csharp
+services.AddDataProtection()
+    .PersistKeysToFileSystem(new DirectoryInfo(keyPath))
+    .SetApplicationName("MVC_Sample");   // 既定はコンテンツ ルートのパス由来
+```
+
+**`SetApplicationName` も要る。** 既定のアプリケーション名はコンテンツ ルートのパスから
+決まるため、鍵を共有していても**配置先のパスが違うと復号できない**
+（Windows の `C:\...` とコンテナの `/app` など）。
+
+net48 側の対応物は `machineKey` である（`Samples/WebApp_sample/MVC_Sample` の
+`Web.config` にコメントで記載）。
+
+**④ リバース プロキシで TLS を終端するなら `UseForwardedHeaders` が要る（#549）。**
+
+前段で終端すると、アプリから見た接続は HTTP になる。`Request.IsHttps` が false のままなので、
+**ブラウザは HTTPS で繋いでいるのに `Secure` 属性が付かない**
+（`#536` でフレームワークが立てるようにした分が効かない）。
+
+実測（`X-Forwarded-Proto: https` を付けて、平文 HTTP でログインしたときの `Set-Cookie`）。
+
+| 設定 | `secure` が付いた Cookie |
+|---|---|
+| 既定（`off`） | **0 / 1 件** |
+| `UseForwardedHeaders=on` | **3 / 4 件**（`SessionTimeOut` / `.AspNetCore.Cookies` / `mvc_session`） |
+| `on` ＋ `ForwardedHeadersKnownProxies=10.0.0.1` | **0 / 1 件**（前段の範囲外なので捨てられる） |
+| `on` ＋ ヘッダ無し | **0 / 1 件**（素の HTTP のまま。正しい） |
+
+> **`KnownIPNetworks` / `KnownProxies` を設定しないと黙って無視される。**
+> 既定ではループバックからの転送しか信用しない。コンテナや Kubernetes では
+> 前段が別アドレスになるため、**指定しないと何も起きない。**
+> 「on にしたのに直らない」の原因はほぼこれ。
+>
+> 逆に無条件に信用すると、**クライアントがヘッダを詐称できる**。
+> 前段だけが到達できるネットワークに閉じてから使うこと。
+
+net48 側はコードから変えられない（`Request.IsSecureConnection` は読み取り専用）ため、
+**IIS + ARR の URL Rewrite で `HTTPS` サーバ変数を立てる**
+（`Samples/WebApp_sample/MVC_Sample` の `Web.config` にコメントで記載）。
+
+### 5-3. コンテナで動かす場合は `Docker/` を見る（#548）
+
+`Backend/MVC_Sample` を Linux コンテナで動かす一式が `Docker/` にある。
+**手順・設計・落とし穴は [`Docker/README.md`](Docker/README.md) が一次情報**で、ここには書かない。
+
+上の 5-1 / 5-2 で書いた `%OT_RESOURCE_ROOT%` と 3 つの切り替えを、実際に使っている
+（`appsettings.Container.json` ＋ `docker-compose.yml` の環境変数）。
+`appsettings.{環境名}.json` が**キー単位のオーバーライド**である点も、あちらに書いてある。
 
 ---
 

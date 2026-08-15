@@ -56,6 +56,8 @@
 //*  2018/03/29  西野 大介         .NET Standard対応で、削除機能に関連するメソッドを削除
 //*  2018/03/29  西野 大介         .NET Standard対応で、HttpCookieのポーティング
 //*  2026/08/10  玄人 幸道         Cookie に Secure 属性を設定（HTTPS のときのみ。CodeQL 対応）
+//*  2026/08/16  玄人 幸道         リバース プロキシで TLS を終端すると上記が効かないため、
+//*                                その旨と対処をコメントに追記（#549。挙動は変えていない）
 //**********************************************************************************
 
 using Touryo.Infrastructure.Framework.Exceptions;
@@ -968,6 +970,13 @@ namespace Touryo.Infrastructure.Framework.Util
             // Secure属性を設定（CodeQL: Cookie 'Secure' attribute is not set to true）
             // HTTPSのときだけ立てる。無条件にtrueにすると、HTTPで動かす
             // 開発環境やサンプルでブラウザがCookieを保存しなくなるため。
+            //
+            // **リバース プロキシでTLSを終端すると、ここはfalseになる。**（#549）
+            //   利用者のブラウザはHTTPSでも、アプリから見た接続はHTTPのため。
+            //   アプリ側でUseForwardedHeadersを設定し、X-Forwarded-Protoを
+            //   取り込むこと（Samples4NetCoreのStartup.csに例がある）。
+            //   確実に立てたいなら、CookiePolicyのCookieSecurePolicy.Alwaysを使う。
+            //   あちらは全てのSet-Cookieを後段で上書きするため、ここの判断に依存しない。
             cookieOptions.Secure = MyHttpContext.Current.Request.IsHttps;
 
             // 設定
@@ -1007,6 +1016,13 @@ namespace Touryo.Infrastructure.Framework.Util
             // Secure属性を設定（CodeQL: Cookie 'Secure' attribute is not set to true）
             // HTTPSのときだけ立てる。無条件にtrueにすると、HTTPで動かす
             // 開発環境やサンプルでブラウザがCookieを保存しなくなるため。
+            //
+            // **リバース プロキシでTLSを終端すると、ここはfalseになる。**（#549）
+            //   利用者のブラウザはHTTPSでも、アプリから見た接続はHTTPのため。
+            //   アプリ側でUseForwardedHeadersを設定し、X-Forwarded-Protoを
+            //   取り込むこと（Samples4NetCoreのStartup.csに例がある）。
+            //   確実に立てたいなら、CookiePolicyのCookieSecurePolicy.Alwaysを使う。
+            //   あちらは全てのSet-Cookieを後段で上書きするため、ここの判断に依存しない。
             cookieOptions.Secure = MyHttpContext.Current.Request.IsHttps;
 
             // 設定
@@ -1046,6 +1062,13 @@ namespace Touryo.Infrastructure.Framework.Util
             // Secure属性を設定（CodeQL: Cookie 'Secure' attribute is not set to true）
             // HTTPSのときだけ立てる。無条件にtrueにすると、HTTPで動かす
             // 開発環境やサンプルでブラウザがCookieを保存しなくなるため。
+            //
+            // **リバース プロキシでTLSを終端すると、ここはfalseになる。**（#549）
+            //   利用者のブラウザはHTTPSでも、IISから見た接続はHTTPのため。
+            //   IsSecureConnectionはコードから変えられないので、IIS側で
+            //   X-Forwarded-Protoを見てHTTPSサーバ変数を立てる
+            //   （Samples/WebApp_sample/MVC_SampleのWeb.configに例がある）。
+            //   確実に立てたいなら、forms要素のrequireSSL="true"を使う。
             newCookie.Secure = HttpContext.Current.Request.IsSecureConnection;
 
             // セッションタイムアウト検出用Cookie（データ有）
@@ -1085,6 +1108,13 @@ namespace Touryo.Infrastructure.Framework.Util
             // Secure属性を設定（CodeQL: Cookie 'Secure' attribute is not set to true）
             // HTTPSのときだけ立てる。無条件にtrueにすると、HTTPで動かす
             // 開発環境やサンプルでブラウザがCookieを保存しなくなるため。
+            //
+            // **リバース プロキシでTLSを終端すると、ここはfalseになる。**（#549）
+            //   利用者のブラウザはHTTPSでも、IISから見た接続はHTTPのため。
+            //   IsSecureConnectionはコードから変えられないので、IIS側で
+            //   X-Forwarded-Protoを見てHTTPSサーバ変数を立てる
+            //   （Samples/WebApp_sample/MVC_SampleのWeb.configに例がある）。
+            //   確実に立てたいなら、forms要素のrequireSSL="true"を使う。
             newCookie.Secure = HttpContext.Current.Request.IsSecureConnection;
 
             // セッションタイムアウト検出用Cookie（データ空）
