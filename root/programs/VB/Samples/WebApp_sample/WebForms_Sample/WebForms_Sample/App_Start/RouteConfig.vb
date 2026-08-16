@@ -18,15 +18,13 @@
 '**********************************************************************************
 
 Imports System.Web.Routing
-'Imports Microsoft.AspNet.FriendlyUrls
 
 Public Module RouteConfig
     Sub New()
     End Sub
     Sub RegisterRoutes(ByVal routes As RouteCollection)
-        'Dim settings As FriendlyUrlSettings = New FriendlyUrlSettings() With {
-        '    .AutoRedirectMode = RedirectMode.Permanent
-        '}
-        'routes.EnableFriendlyUrls(settings)
+        ' ルート定義はここに書く。
+        ' FriendlyUrls（拡張子なし URL）の例は、参照ごと外した（#554）。
+        ' 使っていないパッケージを残すと、参照だけが増えていくため。
     End Sub
 End Module
