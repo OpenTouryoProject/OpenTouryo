@@ -433,7 +433,88 @@ dotnet dev-certs https --format Pem -ep ./https/aspnetapp.pem -np
 
 ---
 
-## 11. 実例はどこにあるか
+## 11. CS 版と VB 版で、どこが違ってよいか（#553）
+
+**`Samples` の設定ファイルは CS / VB でほぼ同じだが、完全には同じでない。**
+**「同じはずだから」とコピーすると、VB 固有の記述が消える。**（実際に消した。#549 の作業中）
+
+### 突き合わせの結果（実測）
+
+対応する設定ファイル **25 組**を、XML の要素・属性で比較した
+（コメント・空白・改行・BOM の差は無視）。
+
+| | 組数 |
+|---|---|
+| 完全一致 | **8** |
+| 差分あり | **17** |
+
+差分の種類は次のとおり（1 組が複数に該当することがある）。
+
+| 種類 | 組数 | 判断 |
+|---|---|---|
+| `startup` / `supportedRuntime`（**VB のみ**） | 10 | **違ってよい**（VS が VB プロジェクトに自動で入れる） |
+| `runtime/assemblyBinding` の `bindingRedirect` | 8 | **違ってよい**（NuGet が生成。参照するパッケージの版で変わる） |
+| `packages.config` の構成 | 2 | **要確認**（CS だけが `Microsoft.AspNet.WebApi` / `Microsoft.AspNet.FriendlyUrls` を持つ） |
+| `ClientSettingsProvider.ServiceUri`（VB のみ） | 1 | **違ってよい**（VS のテンプレート由来） |
+| `SqlTextFilePath` の値 | 1 | **違わないといけない**（下記） |
+| `compilation/assemblies`（VB のみ） | 1 | **違ってよい**（VB は明示参照が要ることがある） |
+| 接続文字列の末尾の `;` | 1 | **要確認**（`ConnectionString_MCN`。CS だけ `;` が付く） |
+| 要素の順序だけ | 1 | 無視してよい（`MVC_Sample/app.config`） |
+
+### **違わないといけない**もの — 埋め込みリソースの名前
+
+`Samples/2CS_sample/GenDaoAndBatUpd_sample/app.config`
+
+```
+CS : <add key="SqlTextFilePath" value="GenDaoAndBatUpd_sample.Dao" />
+VB : <add key="SqlTextFilePath" value="GenDaoAndBatUpd_sample" />
+```
+
+**同じにすると壊れる。** 埋め込みリソースの名前の作られ方が、言語で違うため。
+
+| | マニフェスト名 |
+|---|---|
+| C# | `＜RootNamespace＞.＜フォルダ＞.＜ファイル名＞` |
+| **VB** | `＜RootNamespace＞.＜ファイル名＞`（**フォルダ名が入らない**） |
+
+`RootNamespace` はどちらも `GenDaoAndBatUpd_sample`、`EmbeddedResource Include="Dao\..."` も
+同じである。**違うのはコンパイラの規則の方**なので、設定値で吸収するしかない。
+
+> `SqlTextFilePath` は「埋め込みリソースなら名前空間、通常のファイルならフォルダのパス」
+> という二役を持つ（`MyBaseDao.SetSqlByFile2`）。5 節・7-3 節も参照。
+
+### 揃えるときの原則
+
+**丸ごとコピーしない。** 上のとおり、丸ごと同じにしてよいファイルは 25 組中 8 組しかない。
+
+**差分の行数を必ず見る。** コメントを 16 行足したはずが `+23/−53` になっていたことで、
+実際に事故に気付けた。
+
+```
+git diff --numstat
+```
+
+**値が変わっていないことは、機械的に確かめられる。**
+[`CompareConfig.ps1`](CompareConfig.ps1) が、XML の要素・属性だけを取り出して突き合わせる。
+コメント・空白・改行・BOM の差は落ちるので、**値の差だけが残る。**
+
+```powershell
+cd root\programs
+.\CompareConfig.ps1                              # 一覧
+.\CompareConfig.ps1 -Detail -Only "WebApp_sample" # 内訳
+```
+
+`compilation/assemblies` の欠落と接続文字列の `;` は、この方法で見つけた。
+
+> **CI は代わりにならない。**
+> VB の疎通テストは 6 対象しか動かさないため、**差分のあるファイルの半分以上は
+> 一度も実行されない。** 実行される分でも `compilation/assemblies` の欠落は
+> `0_RunAll.ps1 -Lang Both` を通過した（実測）。
+> **CI は「壊れていないこと」の証拠にはなるが、「意図どおり」の証拠にはならない。**
+
+---
+
+## 12. 実例はどこにあるか
 
 | 見たいもの | 場所 |
 |---|---|
