@@ -16,7 +16,8 @@ param(
     [string[]]$IgnoreErrors = @('error MSB(3482|3325|3321):.*WSClientWinCone_sample\.csproj')
 )
 
-# --- 処理部：他のps1ファイルを順次実行 ---
+# --- 処理部 ---
+# 1 → 2 → 3 を順に実行する。**その前に、設定ファイルの突き合わせを警告として行う**（#553）。
 # ※ ダブル クリック起動でもカレント ディレクトリに依存しないよう $PSScriptRoot を使う。
 # ※ 順序は固定（RELEASE.md 3 節）。1 のクリーンとアセンブリ配置が 2・3 の前提になる。
 #
@@ -36,6 +37,30 @@ $scripts = @(
     @{ Name = "3_SmokeTest.ps1";   UseLang = $true;  UseIgnore = $false }
 )
 $results = @()
+
+# --- 設定ファイルの突き合わせ（警告のみ）---（#553）
+#
+# **合否には影響させない。** CS / VB の設定の差は、ビルドや疎通とは別の観点である。
+# ここで終了コードを汚すと、0_RunAll.ps1 の結果をそのまま合否として読めなくなる（#555）。
+#
+# 一覧は出さない（25 行が毎回流れると、本来の検証ログが読みにくくなる）。
+# **異常があったときだけ「見に行け」と伝える。**
+#
+# -Lang に関わらず常に行う。比較は本質的に CS ↔ VB であり、片方だけを回すときにも意味がある。
+function Test-ConfigSync
+{
+    & (Join-Path $PSScriptRoot "CompareConfig.ps1") -Check | Out-Null
+    return ($LASTEXITCODE -eq 0)
+}
+
+$configOk = Test-ConfigSync
+if (-not $configOk)
+{
+    Write-Host ""
+    Write-Host "【警告】設定ファイルに想定外の差分があります。" -ForegroundColor Yellow
+    Write-Host "        .\CompareConfig.ps1 -Check で内容を確認してください。"
+    Write-Host ""
+}
 
 foreach ($s in $scripts)
 {
@@ -77,6 +102,15 @@ if ($ng.Count -eq 0)
 else
 {
     Write-Host ("{0} 本が 0 以外で終了しました。上のログを確認してください。" -f $ng.Count) -ForegroundColor Yellow
+}
+
+# 設定ファイルの警告は、ここにも出す。
+# **通しは長い。途中の警告は流れて見落とされる。**
+if (-not $configOk)
+{
+    Write-Host ""
+    Write-Host "【警告】設定ファイルに想定外の差分があります（CompareConfig.ps1 -Check）。" -ForegroundColor Yellow
+    Write-Host "        合否には数えていません。CONFIGURATION.md 11 節を参照。"
 }
 
 # --- 画面を残すための処理 ---
