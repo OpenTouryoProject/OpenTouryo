@@ -79,6 +79,25 @@ foreach ($s in $scripts)
 
     & (Join-Path $PSScriptRoot $s.Name) @splat
     $results += [pscustomobject]@{ スクリプト = $s.Name; 終了コード = $LASTEXITCODE }
+
+    # --- bindingRedirect の突き合わせ（警告のみ）---（#556）
+    #
+    # **ビルドの直後に行う。** 見るのは「そのプロジェクトが配布するアセンブリ」なので、
+    # ビルド前だと材料が無く「判定不能」ばかりになる。
+    # 設定ファイルどうしを比べる CompareConfig.ps1（先頭で実行）とは、そこが違う。
+    if ($s.Name -eq "1_BuildAll.ps1")
+    {
+        & (Join-Path $PSScriptRoot "CompareRedirect.ps1") -Check | Out-Null
+        $redirectOk = ($LASTEXITCODE -eq 0)
+
+        if (-not $redirectOk)
+        {
+            Write-Host ""
+            Write-Host "【警告】bindingRedirect が、配布されないアセンブリの版を指しています。" -ForegroundColor Yellow
+            Write-Host "        .\CompareRedirect.ps1 -Check で内容を確認してください。"
+            Write-Host ""
+        }
+    }
 }
 
 # --- 結果のまとめ ---
@@ -104,13 +123,20 @@ else
     Write-Host ("{0} 本が 0 以外で終了しました。上のログを確認してください。" -f $ng.Count) -ForegroundColor Yellow
 }
 
-# 設定ファイルの警告は、ここにも出す。
+# 警告は、ここにも出す。
 # **通しは長い。途中の警告は流れて見落とされる。**
 if (-not $configOk)
 {
     Write-Host ""
     Write-Host "【警告】設定ファイルに想定外の差分があります（CompareConfig.ps1 -Check）。" -ForegroundColor Yellow
     Write-Host "        合否には数えていません。CONFIGURATION.md 11 節を参照。"
+}
+
+if ($null -ne $redirectOk -and -not $redirectOk)
+{
+    Write-Host ""
+    Write-Host "【警告】bindingRedirect が、配布されないアセンブリの版を指しています" -ForegroundColor Yellow
+    Write-Host "        （CompareRedirect.ps1 -Check）。合否には数えていません。"
 }
 
 # --- 画面を残すための処理 ---
