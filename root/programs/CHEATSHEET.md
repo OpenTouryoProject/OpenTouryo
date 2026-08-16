@@ -30,10 +30,11 @@ cd root\programs
 
 **既定は C# 側。VB 側は `-Lang` で回す**（3 節）。
 
-- **`-IgnoreErrors` を付けないと `MSB3482` で NG になる。** ClickOnce の署名で、
-  証明書が無い環境では必ず出る（[`BUILDING.md`](BUILDING.md) 4 節）。
-  **`0_RunAll.ps1` はこれを渡さない**ので、`1_BuildAll.ps1` が `1` を返すことがある。
-  終了コードだけで判断せず、エラー一覧の内容を見ること
+- **`1_BuildAll.ps1` を単体で回すときは `-IgnoreErrors` を付ける。**
+  ClickOnce の署名（`MSB3482`）で、証明書が無い環境では必ず出る
+  （[`BUILDING.md`](BUILDING.md) 4 節）。
+  **`0_RunAll.ps1` は既定でこれを渡すので、付けなくてよい**（#555）。
+  除外した内容は件数つきで別枠に出るため、そちらは目を通すこと
 - `2_RunAllTests.ps1` は `Result*.txt` を書き換える。**差分 0 なら中身は同じ**
 - 前提（DB・サービス・IIS Express）は [`RELEASE.md`](RELEASE.md) 2 節
 
