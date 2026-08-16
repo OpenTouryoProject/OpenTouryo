@@ -38,6 +38,18 @@
       **「判定不能」は「問題なし」ではない。** 材料が無いだけである。
       不一致には数えないが、件数は必ず出す。
 
+    ＜対象外＞
+
+      **CS/NuGet/proj 配下は見ない。** NuGet パッケージの検証用で、
+      1_BuildAll.ps1 が建てないため、**必ず「判定不能」になる**（39 件）。
+      常に出続ける「判定不能」は、見るべきものを埋もれさせる。
+      個別に見るときは、そのプロジェクトを建ててから -Only を使う。
+
+      **クラス ライブラリの app.config は、そもそも実行時に読まれない。**
+      bindingRedirect が効くのはアプリケーションの構成ファイルだけで、
+      Foo.dll.config は参照されない。基盤ライブラリの分（11 件）が
+      「判定不能」で残るのは、その意味では正しい。
+
 .PARAMETER Detail
     「判定不能」の内訳も表示する。
 
@@ -129,6 +141,14 @@ foreach ($t in $tracked)
 {
     if ($t -notmatch '\.config$') { continue }
     if ($t -match '/packages/')   { continue }
+
+    # **通しビルドの対象外は見ない。**（#557）
+    #   CS/NuGet/proj は NuGet パッケージの検証用で、1_BuildAll.ps1 が建てない。
+    #   建てていないものは配下に実体が無く、**必ず「判定不能」になる。**
+    #   常に出続ける「判定不能」は、見るべきものを埋もれさせる。
+    #   検証するときは、そのプロジェクトを建ててから -Only で個別に見ればよい。
+    if ($t -match '/NuGet/proj/') { continue }
+
     if ($Only -and ($t -notlike "*$Only*")) { continue }
 
     $full = Join-Path $root ($t -replace '/', '\')

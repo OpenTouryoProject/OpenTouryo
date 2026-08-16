@@ -49,7 +49,9 @@ $results = @()
 # -Lang に関わらず常に行う。比較は本質的に CS ↔ VB であり、片方だけを回すときにも意味がある。
 function Test-ConfigSync
 {
-    & (Join-Path $PSScriptRoot "CompareConfig.ps1") -Check | Out-Null
+    # **6>$null が要る。** Write-Host はパイプラインに流れないので、
+    # | Out-Null では一覧を抑止できない（PowerShell 5.0 以降は情報ストリーム）。
+    & (Join-Path $PSScriptRoot "CompareConfig.ps1") -Check 6>$null | Out-Null
     return ($LASTEXITCODE -eq 0)
 }
 
@@ -87,7 +89,8 @@ foreach ($s in $scripts)
     # 設定ファイルどうしを比べる CompareConfig.ps1（先頭で実行）とは、そこが違う。
     if ($s.Name -eq "1_BuildAll.ps1")
     {
-        & (Join-Path $PSScriptRoot "CompareRedirect.ps1") -Check | Out-Null
+        # 6>$null で一覧を抑止する（上と同じ理由）。
+        & (Join-Path $PSScriptRoot "CompareRedirect.ps1") -Check 6>$null | Out-Null
         $redirectOk = ($LASTEXITCODE -eq 0)
 
         if (-not $redirectOk)
