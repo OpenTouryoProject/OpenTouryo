@@ -33,11 +33,30 @@
 .PARAMETER Max
     -Detail のときに、1 組あたり表示する件数の上限。既定は 20。
 
+.PARAMETER Check
+    **合否を返す。** 差分を「違ってよい種類」（下記）と突き合わせ、
+    そこに当てはまらない差分が 1 件でもあれば終了コード 1 を返す。
+
+    ＜違ってよい種類＞
+
+      /configuration/startup 配下              VS が VB プロジェクトに自動で入れる
+      /configuration/runtime 配下              NuGet が生成する bindingRedirect
+      system.web/compilation/assemblies 配下   VB は明示参照が要ることがある
+      appSettings の SqlTextFilePath           **同じにすると壊れる**（言語で
+                                               　埋め込みリソース名の規則が違う）
+      appSettings の ClientSettingsProvider.*  VS のテンプレート由来
+
+    **この一覧は「今そうなっている」ではなく「そうであってよい」を表す。**
+    増やすときは、なぜ違ってよいのかを CONFIGURATION.md 11 節にも書くこと。
+
 .EXAMPLE
     .\CompareConfig.ps1
 
 .EXAMPLE
     .\CompareConfig.ps1 -Detail -Only "WebApp_sample"
+
+.EXAMPLE
+    .\CompareConfig.ps1 -Check
 
 .NOTES
     作成者          ：玄人 幸道
@@ -45,15 +64,29 @@
      日時        更新者            内容
      ----------  ----------------  -------------------------------------------------
      2026/08/16  玄人 幸道         新規作成（#553）
+     2026/08/16  玄人 幸道         -Check を追加（#553）
 
-    終了コードは常に 0。**差分があること自体は異常ではない**ため、
-    合否ではなく一覧として使う。
+    -Check を付けない限り、終了コードは常に 0。
+    **差分があること自体は異常ではない**ため、既定は一覧として使う。
 #>
 [CmdletBinding()]
 param(
     [switch]$Detail,
     [string]$Only,
-    [int]$Max = 20
+    [int]$Max = 20,
+    [switch]$Check
+)
+
+# ------------------------------------------------------------------
+# 違ってよい差分（-Check のときだけ使う）
+# ------------------------------------------------------------------
+#   要素のパスと属性に対する正規表現。**当てはまるものは「想定内」**とみなす。
+$allowed = @(
+    '^/configuration/startup'
+    '^/configuration/runtime'
+    '^/configuration/system\.web/compilation/assemblies'
+    '^/configuration/appSettings/add \[key=SqlTextFilePath'
+    '^/configuration/appSettings/add \[key=ClientSettingsProvider\.'
 )
 
 $ErrorActionPreference = "Continue"
@@ -216,6 +249,51 @@ Write-Host ""
 Write-Host ("  対象 {0} 組 : 同一 {1} / 差分 {2} / 読めない {3}" -f $pairs.Count, $same, $diff, $skipped)
 Write-Host "  違ってよい差分の判断は CONFIGURATION.md 11 節。"
 
+# ------------------------------------------------------------------
+# 合否（-Check）
+# ------------------------------------------------------------------
+$unexpected = @()
+
+if ($Check)
+{
+    foreach ($d in $details)
+    {
+        foreach ($x in (@($d.OnlyCS) + @($d.OnlyVB)))
+        {
+            $ok = $false
+            foreach ($pat in $allowed)
+            {
+                if ($x -match $pat) { $ok = $true; break }
+            }
+            if (-not $ok)
+            {
+                $unexpected += [PSCustomObject]@{ Rel = $d.Rel; Item = $x }
+            }
+        }
+    }
+
+    Write-Host ""
+    Write-Host "================ 判定 ================"
+
+    if ($unexpected.Count -eq 0)
+    {
+        Write-Host "  想定外の差分なし。" -ForegroundColor Green
+    }
+    else
+    {
+        Write-Host ("  **想定外の差分 {0} 件**" -f $unexpected.Count) -ForegroundColor Red
+        Write-Host ""
+        foreach ($u in $unexpected)
+        {
+            Write-Host ("  " + $u.Rel)
+            Write-Host ("    " + $u.Item)
+        }
+        Write-Host ""
+        Write-Host "  意図した差分なら CompareConfig.ps1 の `$allowed に足し、"
+        Write-Host "  **なぜ違ってよいのかを CONFIGURATION.md 11 節にも書くこと。**"
+    }
+}
+
 if ($Detail -and $details.Count -gt 0)
 {
     foreach ($d in $details)
@@ -230,4 +308,6 @@ if ($Detail -and $details.Count -gt 0)
 }
 
 Write-Host ""
+
+if ($Check -and $unexpected.Count -gt 0) { exit 1 }
 exit 0

@@ -500,9 +500,25 @@ git diff --numstat
 
 ```powershell
 cd root\programs
-.\CompareConfig.ps1                              # 一覧
+.\CompareConfig.ps1                               # 一覧
 .\CompareConfig.ps1 -Detail -Only "WebApp_sample" # 内訳
+.\CompareConfig.ps1 -Check                        # 合否（想定外の差分があれば 1）
 ```
+
+**`-Check` は「差分の有無」ではなく「想定外の差分の有無」を見る。**
+上の表で「違ってよい」とした種類（`startup` / `runtime` / `compilation/assemblies` /
+`SqlTextFilePath` / `ClientSettingsProvider.*`）は、当てはまれば想定内として扱う。
+
+```
+================ 判定 ================
+  **想定外の差分 2 件**
+
+  Samples\WebApp_sample\WebForms_Sample\WebForms_Sample\Web.config
+    /configuration/connectionStrings/... [connectionString=...Database=test2;...]
+```
+
+**許容する種類を増やすときは、なぜ違ってよいのかをこの節にも書くこと。**
+スクリプトの `$allowed` だけに足すと、**理由が残らない。**
 
 `compilation/assemblies` の欠落と接続文字列の `;` は、この方法で見つけた。
 
