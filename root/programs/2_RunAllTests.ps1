@@ -53,6 +53,7 @@
      日時        更新者            内容
      ----------  ----------------  -------------------------------------------------
      2026/08/01  玄人 幸道         新規作成（リリース ワークのエージェント化）
+     2026/08/17  玄人 幸道         テストごとに Base64 の正規化を選べるようにした（#562）
 #>
 [CmdletBinding()]
 param(
@@ -166,38 +167,42 @@ function Copy-TestCertificates
 #               ＝ 期待値でもある（HEAD 版と比較する）
 # Bat         : ビルドとテスト実行を行うバッチ（root\programs\CS 配下）
 # SkipLog4net : log4net の内部トレースを比較対象から外すか
+# NormBase64  : Base64 らしき長い値を伏せるか（#562）
+#               **伏せると、その範囲の変化は差分に出ない。**
+#               識別子（IsHankaku/IsZenkaku など）にも当たるため、
+#               **実行のたびに値が変わるテストだけ $true にする。**
 $tests = @(
     @{
         Name = "TestCode (net48)";           Bat = "y_Build_TestCode_Public.bat"
-        Result = "TestCode\Result48.txt";            SkipLog4net = $false
+        Result = "TestCode\Result48.txt";            SkipLog4net = $false; NormBase64 = $false
     }
     @{
         Name = "TestCode (net10.0)";         Bat = "y_Build_TestCode_Public.bat"
-        Result = "TestCode\ResultCore100.txt";       SkipLog4net = $false
+        Result = "TestCode\ResultCore100.txt";       SkipLog4net = $false; NormBase64 = $false
     }
     @{
         Name = "TestDataAccess (net48)";     Bat = "y_Build_TestCode_DataAccess.bat"
-        Result = "TestDataAccess\Result48.txt";      SkipLog4net = $false
+        Result = "TestDataAccess\Result48.txt";      SkipLog4net = $false; NormBase64 = $false
     }
     @{
         Name = "TestDataAccess (net10.0)";   Bat = "y_Build_TestCode_DataAccess.bat"
-        Result = "TestDataAccess\ResultCore100.txt"; SkipLog4net = $false
+        Result = "TestDataAccess\ResultCore100.txt"; SkipLog4net = $false; NormBase64 = $false
     }
     @{
         Name = "SimpleBatch (net48)";        Bat = "y_Build_TestCode_Batch.bat"
-        Result = "TestBatch\ResultSimpleBatch48.txt";     SkipLog4net = $true
+        Result = "TestBatch\ResultSimpleBatch48.txt";     SkipLog4net = $true; NormBase64 = $false
     }
     @{
         Name = "SimpleBatch (net10.0)";      Bat = "y_Build_TestCode_Batch.bat"
-        Result = "TestBatch\ResultSimpleBatchCore100.txt"; SkipLog4net = $true
+        Result = "TestBatch\ResultSimpleBatchCore100.txt"; SkipLog4net = $true; NormBase64 = $false
     }
     @{
         Name = "EncAndDecUtilCUI (net48)";   Bat = "y_Build_TestCode_SecCUI.bat"
-        Result = "EncAndDecUtilCUI\Result48.txt";        SkipLog4net = $false
+        Result = "EncAndDecUtilCUI\Result48.txt";        SkipLog4net = $false; NormBase64 = $true
     }
     @{
         Name = "EncAndDecUtilCUI (net10.0)"; Bat = "y_Build_TestCode_SecCUI.bat"
-        Result = "EncAndDecUtilCUI\ResultCore100.txt";   SkipLog4net = $false
+        Result = "EncAndDecUtilCUI\ResultCore100.txt";   SkipLog4net = $false; NormBase64 = $true
     }
 )
 
@@ -296,14 +301,19 @@ foreach ($t in $tests)
 
     # CompareResult.ps1 は画面表示に Write-Host を使うため、
     # 件数は -PassThru のオブジェクトで受け取る。
-    if ($t.SkipLog4net)
-    {
-        $cmpResult = & $cmp -Expected $expectedOf[$t.Name] -Actual $actual -SkipLog4netTrace -PassThru
+    #
+    # **スイッチはスプラッティングで渡す。**（#562）
+    #   if で組み合わせを書き分けると、スイッチが増えるたびに分岐が倍になる。
+    $cmpArgs = @{
+        Expected = $expectedOf[$t.Name]
+        Actual   = $actual
+        PassThru = $true
     }
-    else
-    {
-        $cmpResult = & $cmp -Expected $expectedOf[$t.Name] -Actual $actual -PassThru
-    }
+
+    if ($t.SkipLog4net) { $cmpArgs["SkipLog4netTrace"] = $true }
+    if ($t.NormBase64)  { $cmpArgs["NormalizeBase64"]  = $true }
+
+    $cmpResult = & $cmp @cmpArgs
 
     $results += [pscustomobject]@{
         テスト = $t.Name

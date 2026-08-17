@@ -24,6 +24,26 @@
     log4net の内部トレース（"log4net: " で始まる行）を比較対象から除外する。
     設定内容の確認が目的でなければ、除外した方が判定が読みやすい。
 
+.PARAMETER NormalizeBase64
+    Base64 らしき長い文字列（16 文字以上の英数字の並び）を伏せる。**既定は off。**
+
+    ＜伏せると退行を隠す＞
+
+      パターンは識別子にも当たる。実際、次のように伏せられていた。
+
+        StringChecker.IsHankaku/IsZenkaku    → StringChecker.<B64>
+        FormatConverter.AddZerosAfterDecimal → FormatConverter.<B64URL>
+        --------------------------------------------------  → <B64URL>
+
+      **伏せた範囲の変化は、差分として現れない。**
+
+    ＜それでも必要なテストがある＞
+
+      EncAndDecUtilCUI は鍵・署名・IV を出力し、**実行のたびに値が変わる。**
+      しかも 32 文字未満のものが 94 種あるため、閾値を上げても避けられない。
+
+      **だから、要るテストだけ on にする。**（#562）
+
 .PARAMETER ShowAll
     差分の全件を表示する（既定は先頭 20 件）。
 
@@ -43,12 +63,18 @@
      2026/08/05  玄人 幸道         OSメッセージの正規化を追加（CI の英語環境への対応）
      2026/08/17  玄人 幸道         -SyncWindow 20 をやめた（#552）。20 行を超える
      　　　　　　　　　　　　　　　 挿入で再同期できず、以降が全部差分になっていた。
+     2026/08/17  玄人 幸道         Base64の正規化を -NormalizeBase64 で選べるようにし、
+     　　　　　　　　　　　　　　　 既定を off にした（#562）。識別子まで伏せていた。
 #>
 [CmdletBinding()]
 param(
     [Parameter(Mandatory = $true)][string]$Expected,
     [Parameter(Mandatory = $true)][string]$Actual,
     [switch]$SkipLog4netTrace,
+    # Base64 らしき長い文字列を伏せる（既定は off）。
+    # **伏せると、その範囲の変化は差分として現れない。**
+    # 実行のたびに変わる値（鍵・署名・IV 等）が出るテストでだけ指定すること。
+    [switch]$NormalizeBase64,
     [switch]$ShowAll,
     # 判定結果をオブジェクトとして出力する（呼び出し元での集計用）。
     # 画面表示は Write-Host で行っておりパイプラインに乗らないため、
@@ -88,12 +114,40 @@ $normalizers = @(
     # ※ 値そのものは Base64 だが、実行のたびに変わるうえ改行を含まないため
     #    汎用の Base64 パターンより先に処理する。
     @{ Name = 'XML署名値';      Pattern = '<(SignatureValue|DigestValue|Modulus|Exponent)>[^<]*</\1>'; Replace = '<$1><XMLSIG></$1>' }
+    # スレッド ID（実行ごとに変わり得る）
+    @{ Name = 'スレッドID';     Pattern = '(?<=\],)\[\d+\](?=,)';                      Replace = '[<TID>]' }
+)
+
+# ------------------------------------------------------------------
+# Base64 の正規化（-NormalizeBase64 のときだけ使う）
+# ------------------------------------------------------------------
+#   **既定では使わない。**（#562）
+#
+#   ＜なぜ既定を off にしたか＞
+#
+#     パターンは「16 文字以上の英数字の並び」で、**識別子にも当たる。**
+#       StringChecker.IsHankaku/IsZenkaku    → StringChecker.<B64>
+#       FormatConverter.AddZerosAfterDecimal → FormatConverter.<B64URL>
+#       -------------------------------------------------- （区切り線）→ <B64URL>
+#
+#     伏せた範囲の変化は**差分として現れない。**
+#     つまり **退行を隠す。**
+#
+#   ＜閾値では直せない＞
+#
+#     EncAndDecUtilCUI には **32 文字未満の本物の Base64 が 94 種**ある
+#     （163HYybmVTXys2wJbcU など）。実行のたびに変わるので、伏せないと常に NG になる。
+#     16 という閾値は、そのために要る。
+#
+#   ＜だから、要るテストだけ on にする＞
+#
+#     伏せるのは「毎回変わる値が出る」という**例外的な事情がある場合だけ**でよい。
+#     TestCode では 16 文字以上の一致 206 件のうち、**伏せる必要のあるものが無い。**
+$base64Normalizers = @(
     # Base64URL の長い値（JWT・署名・鍵・IV・認証タグ等）
     @{ Name = 'Base64URL';      Pattern = '[A-Za-z0-9_\-]{16,}';                       Replace = '<B64URL>' }
     # Base64 の長い値（鍵・ハッシュ等）
     @{ Name = 'Base64';         Pattern = '[A-Za-z0-9+/]{16,}={0,2}';                  Replace = '<B64>' }
-    # スレッド ID（実行ごとに変わり得る）
-    @{ Name = 'スレッドID';     Pattern = '(?<=\],)\[\d+\](?=,)';                      Replace = '[<TID>]' }
 )
 
 function Normalize([string[]]$lines)
@@ -130,6 +184,17 @@ function Normalize([string[]]$lines)
         foreach ($n in $normalizers)
         {
             $s = [regex]::Replace($s, $n.Pattern, $n.Replace)
+        }
+
+        # **Base64 は最後に処理する。**（#562）
+        #   「XML署名値」が要素ごと潰したあとでないと、
+        #   中身の Base64 が先に伏せられて要素の対応が取れなくなる。
+        if ($NormalizeBase64)
+        {
+            foreach ($n in $base64Normalizers)
+            {
+                $s = [regex]::Replace($s, $n.Pattern, $n.Replace)
+            }
         }
 
         $result.Add($s.TrimEnd())
