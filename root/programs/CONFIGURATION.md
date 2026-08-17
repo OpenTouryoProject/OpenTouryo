@@ -438,7 +438,7 @@ dotnet dev-certs https --format Pem -ep ./https/aspnetapp.pem -np
 **`Samples` の設定ファイルは CS / VB でほぼ同じだが、完全には同じでない。**
 **「同じはずだから」とコピーすると、VB 固有の記述が消える。**（実際に消した。#549 の作業中）
 
-### 突き合わせの結果（実測）
+### 突き合わせの結果（#553 時点の実測）
 
 対応する設定ファイル **25 組**を、XML の要素・属性で比較した
 （コメント・空白・改行・BOM の差は無視）。
@@ -448,13 +448,21 @@ dotnet dev-certs https --format Pem -ep ./https/aspnetapp.pem -np
 | 完全一致 | **8** |
 | 差分あり | **17** |
 
+> **その後 30 組になった。**（#558）
+> `ASPNETWebService` は **VB 側のディレクトリが 1 段深く、対応づけに乗っていなかった。**
+> `Web.config` も `app.config` も `packages.config` も、**一度も突き合わされていない。**
+> VB の構造を CS に揃えて解消した（現在 : 同一 15 / 差分 15 / **想定外 0**）。
+>
+> **「差分 0 件」と「対象に入っていない」は、出力の上では区別がつかない。**
+> 組数が減っていないかを見ること。
+
 差分の種類は次のとおり（1 組が複数に該当することがある）。
 
 | 種類 | 組数 | 判断 |
 |---|---|---|
 | `startup` / `supportedRuntime`（**VB のみ**） | 10 | **違ってよい**（VS が VB プロジェクトに自動で入れる） |
 | `runtime/assemblyBinding` の `bindingRedirect` | 8 | **違ってよい**（NuGet が生成。参照するパッケージの版で変わる） |
-| `packages.config` の構成 | 2 | **要確認**（CS だけが `Microsoft.AspNet.WebApi` / `Microsoft.AspNet.FriendlyUrls` を持つ） |
+| `packages.config` の構成 | 2 | **解消済み**（#554 / #558。下記） |
 | `ClientSettingsProvider.ServiceUri`（VB のみ） | 1 | **違ってよい**（VS のテンプレート由来） |
 | `SqlTextFilePath` の値 | 1 | **違わないといけない**（下記） |
 | `compilation/assemblies`（VB のみ） | 1 | **違ってよい**（VB は明示参照が要ることがある） |
@@ -483,6 +491,34 @@ VB : <add key="SqlTextFilePath" value="GenDaoAndBatUpd_sample" />
 > `SqlTextFilePath` は「埋め込みリソースなら名前空間、通常のファイルならフォルダのパス」
 > という二役を持つ（`MyBaseDao.SetSqlByFile2`）。5 節・7-3 節も参照。
 
+### **違ってよい**もの — 起動の仕組み（#558）
+
+`Frameworks/Infrastructure/ServiceInterface/ASPNETWebService`
+
+| | 起動 | `packages.config` |
+|---|---|---|
+| CS | `Global.asax` の `Application_Start` | OWIN は入らない |
+| **VB** | **`Startup.vb` の `<Assembly: OwinStartup(...)>`** | `Owin` / `Microsoft.Owin` / `Microsoft.Owin.Host.SystemWeb` |
+
+**揃えると VB が起動しなくなる。** 実装方式そのものが違うので、この 3 件は差のままにする。
+
+### `packages.config` も突き合わせの対象である（#558）
+
+拡張子が `.config` なので元から対象に入っている。**`$allowed` には入れていない。**
+
+**パッケージ構成のずれは、ビルドが通ってしまうため他に気付く手段が無い。**
+実際に `ASPNETWebService` で次が見つかった。
+
+| 見つかったもの | 内容 |
+|---|---|
+| **陳腐化した宣言** 4 件 | `packages.config` にしか出てこない（VB の `FriendlyUrls.Core` / `.ja` / `Optimization.WebForms`、CS の `Modernizr`）。VB に `.aspx` は無く、CS に `Scripts` フォルダも無い |
+| **`targetFramework` の残留** 5 件 | プロジェクトは `v4.8` なのに、VB 側の宣言が `net46` のまま。`net46` 時代に入れたきり再インストールされていない |
+
+**どちらもビルドは通る。** だから検査でしか見つからない。
+
+> `packages.config` の見方（サテライト・コンテンツ・メタ パッケージの区別）は
+> [`BUILDING.md`](BUILDING.md) 11 節。**「参照が無い＝不要」ではない。**
+
 ### 揃えるときの原則
 
 **丸ごとコピーしない。** 上のとおり、丸ごと同じにしてよいファイルは 25 組中 8 組しかない。
@@ -507,7 +543,8 @@ cd root\programs
 
 **`-Check` は「差分の有無」ではなく「想定外の差分の有無」を見る。**
 上の表で「違ってよい」とした種類（`startup` / `runtime` / `compilation/assemblies` /
-`SqlTextFilePath` / `ClientSettingsProvider.*`）は、当てはまれば想定内として扱う。
+`SqlTextFilePath` / `ClientSettingsProvider.*` / **OWIN の 3 パッケージ**）は、
+当てはまれば想定内として扱う。
 
 ```
 ================ 判定 ================

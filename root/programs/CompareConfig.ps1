@@ -19,10 +19,21 @@
 
     ＜違ってよい差分がある＞
 
-      自動生成（`startup` / `bindingRedirect` / `packages.config`）は、
-      そもそも同期の対象ではない。
+      自動生成（`startup` / `bindingRedirect`）は、そもそも同期の対象ではない。
       **同じにすると壊れる差分**もある（埋め込みリソース名。CS はフォルダ名を含み、
       VB は含まない）。判断の材料は [`CONFIGURATION.md`](CONFIGURATION.md) 11 節。
+
+      **`packages.config` は対象である。**（#558 で説明を訂正）
+      拡張子が `.config` なので元から突き合わせており、`$allowed` にも入れていない。
+      パッケージ構成のずれ（片側だけ更新した、陳腐化した宣言が残っている）は、
+      **ビルドが通ってしまうため、これ以外に気付く手段が無い。**
+
+    ＜対応づけは相対パスで、見つからなければ探す＞
+
+      CS からの相対パスを VB に当てるのが基本だが、**階層が一致しないことがある。**
+      `ASPNETWebService` は VB 側が 1 段深く、**5 ファイルとも一度も
+      突き合わされていなかった**（#558 で構造を CS に揃えて解消）。
+      同じことが起きていないかは、対象の組数で分かる。
 
 .PARAMETER Detail
     差分の内訳（どの要素・属性が増減したか）を表示する。
@@ -45,6 +56,8 @@
       appSettings の SqlTextFilePath           **同じにすると壊れる**（言語で
                                                　埋め込みリソース名の規則が違う）
       appSettings の ClientSettingsProvider.*  VS のテンプレート由来
+      packages の Owin / Microsoft.Owin.*      **起動の仕組みが違う**（VB は OWIN
+      　　　　　　　　　　　　　　　　　　　　  Startup、CS は Global.asax）
 
     **この一覧は「今そうなっている」ではなく「そうであってよい」を表す。**
     増やすときは、なぜ違ってよいのかを CONFIGURATION.md 11 節にも書くこと。
@@ -65,6 +78,7 @@
      ----------  ----------------  -------------------------------------------------
      2026/08/16  玄人 幸道         新規作成（#553）
      2026/08/16  玄人 幸道         -Check を追加（#553）
+     2026/08/17  玄人 幸道         OWIN を $allowed に追加、説明を訂正（#558）
 
     -Check を付けない限り、終了コードは常に 0。
     **差分があること自体は異常ではない**ため、既定は一覧として使う。
@@ -87,6 +101,12 @@ $allowed = @(
     '^/configuration/system\.web/compilation/assemblies'
     '^/configuration/appSettings/add \[key=SqlTextFilePath'
     '^/configuration/appSettings/add \[key=ClientSettingsProvider\.'
+
+    # **ASPNETWebService は起動の仕組みが CS と VB で違う。**（#558）
+    #   VB は Startup.vb の OWIN 方式、CS は Global.asax 方式。
+    #   **揃えると VB が起動しなくなる**ため、OWIN の 3 パッケージは差のままにする。
+    '^/packages/package \[id=Owin;'
+    '^/packages/package \[id=Microsoft\.Owin(\.|;)'
 )
 
 $ErrorActionPreference = "Continue"
