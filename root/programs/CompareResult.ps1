@@ -41,6 +41,8 @@
      ----------  ----------------  -------------------------------------------------
      2026/08/01  玄人 幸道         新規作成（リリース ワークのエージェント化）
      2026/08/05  玄人 幸道         OSメッセージの正規化を追加（CI の英語環境への対応）
+     2026/08/17  玄人 幸道         -SyncWindow 20 をやめた（#552）。20 行を超える
+     　　　　　　　　　　　　　　　 挿入で再同期できず、以降が全部差分になっていた。
 #>
 [CmdletBinding()]
 param(
@@ -151,7 +153,17 @@ if (-not (Test-Path $Actual))   { Write-Error "実行結果ファイルが見つ
 $expLines = Normalize (Get-Content $Expected -Encoding UTF8)
 $actLines = Normalize (Get-Content $Actual   -Encoding UTF8)
 
-$diff = @(Compare-Object $expLines $actLines -SyncWindow 20)
+# **同期窓を狭めない。**（#552）
+#   -SyncWindow 20 では「20 行を超える挿入」で再同期できず、
+#   **挿入位置より後ろが全部差分になる。**
+#   テストケースを 36 行足しただけで 532 件と報告された（実測）。
+#
+#   広げると、正確になるうえに速い（結果の集合が小さくなるため）。
+#     窓 20    : 532 件 / 112 ms
+#     窓 100〜 :  46 件 /   8 ms   ← git diff の +41/-5 と一致する
+#
+#   既定（[Int32]::MaxValue）で 39 ms なので、狭める理由が無い。
+$diff = @(Compare-Object $expLines $actLines)
 
 Write-Host ""
 Write-Host "=== 比較結果 ==="
