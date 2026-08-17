@@ -94,10 +94,19 @@ namespace TestCode
             MyDebug.OutputDebugAndConsole(
                 "XmlLib.GetAttributeByTagName - item/name: [" + XmlLib.GetAttributeByTagName(doc, "item", "name") + "]");
 
-            // **タグが複数あっても、先頭しか見ない。** index を渡しても変わらない。
+            // **index で何番目かを選べる。**（#563 で実装された）
             MyDebug.OutputDebugAndConsole(
                 "XmlLib.GetAttributeByTagName - item/name(index=1): ["
                 + XmlLib.GetAttributeByTagName(doc, "item", "name", 1) + "]");
+
+            // **範囲外は空文字列。** 例外にはならない。
+            MyDebug.OutputDebugAndConsole(
+                "XmlLib.GetAttributeByTagName - item/name(index=9): ["
+                + XmlLib.GetAttributeByTagName(doc, "item", "name", 9) + "]");
+
+            MyDebug.OutputDebugAndConsole(
+                "XmlLib.GetAttributeByTagName - item/name(index=-1): ["
+                + XmlLib.GetAttributeByTagName(doc, "item", "name", -1) + "]");
 
             // 属性が無い要素
             MyDebug.OutputDebugAndConsole(
@@ -116,9 +125,18 @@ namespace TestCode
                 "XmlLib.GetAttributeByXPath - //item[@id='i2']/name: ["
                 + XmlLib.GetAttributeByXPath(doc, "//item[@id='i2']", "name") + "]");
 
-            // XPath が当たらない（SelectSingleNode が null）
+            // XPath が当たらない
             MyDebug.OutputDebugAndConsole(
                 "XmlLib.GetAttributeByXPath - //none: [" + XmlLib.GetAttributeByXPath(doc, "//none", "name") + "]");
+
+            // **複数当たる XPath で index を効かせる。**（#563 で実装された）
+            //   index=0 の結果は、SelectSingleNode を使っていた頃と同じであること。
+            for (int i = 0; i <= 2; i++)
+            {
+                MyDebug.OutputDebugAndConsole(
+                    "XmlLib.GetAttributeByXPath - //item(index=" + i.ToString() + "): ["
+                    + XmlLib.GetAttributeByXPath(doc, "//item", "name", null, i) + "]");
+            }
 
             // XmlNode から直接
             XmlNode node = doc.SelectSingleNode("//item[@id='i1']");

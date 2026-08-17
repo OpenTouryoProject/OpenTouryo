@@ -28,6 +28,10 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/05/29  西野 大介         新規作成（分割
+//*  2026/08/18  玄人 幸道         index引数が使われていなかったので実装した（#563）。
+//*                                GetAttributeFromXmlNodeのindexは、属性名が一意で
+//*                                意味を持たないため、引数なしのオーバーロードを
+//*                                追加し、引数ありをObsoleteとした。
 //**********************************************************************************
 
 using System;
@@ -53,35 +57,52 @@ namespace Touryo.Infrastructure.Public.Xml
         /// <param name="xPath">string</param>
         /// <param name="attrName">string</param>
         /// <param name="xmlnsManager">XmlNamespaceManager</param>
-        /// <param name="index">string</param>
+        /// <param name="index">
+        /// XPath に一致するノードのうち、何番目を見るか（0 始まり、既定は 0）
+        /// </param>
         /// <returns>attr string</returns>
+        /// <remarks>
+        /// 見つからない場合は空文字列を返します（例外にはなりません）。
+        /// index が一致件数の範囲外の場合も同様です。
+        ///
+        /// index を効かせるため SelectNodes を使っていますが、
+        /// index が 0（既定）のときの結果は SelectSingleNode と同じです。
+        /// </remarks>
         public static string GetAttributeByXPath(
             XmlDocument xmlDoc, string xPath, string attrName,
             XmlNamespaceManager xmlnsManager = null, int index = 0)
         {
-            return XmlLib.GetAttributeFromXmlNode(
-                xmlDoc.SelectSingleNode(xPath, xmlnsManager), attrName, index);
+            XmlNodeList xmlNodeList = xmlDoc.SelectNodes(xPath, xmlnsManager);
+
+            // 範囲外は「見つからない」として扱う（例外にしない）。
+            if (xmlNodeList != null && 0 <= index && index < xmlNodeList.Count)
+            {
+                return XmlLib.GetAttributeFromXmlNode(xmlNodeList[index], attrName);
+            }
+
+            return "";
         }
 
         /// <summary>GetAttributeByTagName</summary>
         /// <param name="xmlDoc">XmlDocument</param>
         /// <param name="tagName">string</param>
         /// <param name="attrName">string</param>
-        /// <param name="index">string</param>
+        /// <param name="index">
+        /// タグ名が一致する要素のうち、何番目を見るか（0 始まり、既定は 0）
+        /// </param>
         /// <returns>attr string</returns>
+        /// <remarks>
+        /// 見つからない場合は空文字列を返します（例外にはなりません）。
+        /// index が要素数の範囲外の場合も同様です。
+        /// </remarks>
         public static string GetAttributeByTagName(XmlDocument xmlDoc, string tagName, string attrName, int index = 0)
         {
             XmlNodeList xmlNodeList = xmlDoc.GetElementsByTagName(tagName);
 
-            if (xmlNodeList.Count != 0)
+            // 範囲外は「見つからない」として扱う（例外にしない）。
+            if (0 <= index && index < xmlNodeList.Count)
             {
-                if (xmlNodeList[0].Attributes != null)
-                {
-                    if (xmlNodeList[0].Attributes[attrName] != null)
-                    {
-                        return xmlNodeList[0].Attributes[attrName].Value;
-                    }
-                }
+                return XmlLib.GetAttributeFromXmlNode(xmlNodeList[index], attrName);
             }
 
             return "";
@@ -127,10 +148,34 @@ namespace Touryo.Infrastructure.Public.Xml
         /// <summary>GetAttributeFromXmlNode</summary>
         /// <param name="xmlNode">XmlNode</param>
         /// <param name="attrName">string</param>
-        /// <param name="index">int</param>
+        /// <param name="index">使用しません。</param>
         /// <returns>attrValue</returns>
+        /// <remarks>
+        /// ＜index を使わない理由＞
+        ///   １つの XmlNode の中で属性名は一意なので、
+        ///   「何番目の属性か」という指定が成り立ちません。
+        ///   「何番目のノードか」を指定したい場合は、
+        ///   GetAttributeByTagName / GetAttributeByXPath の index を使ってください。
+        ///
+        ///   長らく未使用のまま公開されていたため、
+        ///   引数の無いオーバーロードへ移行してください（#563）。
+        /// </remarks>
+        [Obsolete("This method is deprecated, please use another overload instead.")]
         public static string GetAttributeFromXmlNode(
-            XmlNode xmlNode, string attrName, int index = 0)
+            XmlNode xmlNode, string attrName, int index)
+        {
+            return XmlLib.GetAttributeFromXmlNode(xmlNode, attrName);
+        }
+
+        /// <summary>GetAttributeFromXmlNode</summary>
+        /// <param name="xmlNode">XmlNode</param>
+        /// <param name="attrName">string</param>
+        /// <returns>attrValue</returns>
+        /// <remarks>
+        /// 見つからない場合は空文字列を返します（xmlNode が null でも例外になりません）。
+        /// </remarks>
+        public static string GetAttributeFromXmlNode(
+            XmlNode xmlNode, string attrName)
         {
             if (xmlNode != null)
             {
