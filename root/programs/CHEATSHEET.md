@@ -187,6 +187,7 @@ powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.
 | `'xxx' is not recognized` が大量に出る | bat の非 ASCII とコード ページ | ASCII 化。[`CODING.md`](CODING.md) 4 節 |
 | `MSB4226`（`Microsoft.WebApplication.targets`） | nuget が別製品の MSBuild を拾った | `nuget.exe restore ... %NUGET_MSBUILD%` |
 | ビルドは通るのに `DllNotFoundException`（`...SNI...`） | `nuget restore` を呼んでおらず、ネイティブ DLL が出力に入らない | 該当 sln に restore を足す。[`BUILDING.md`](BUILDING.md) 10 節 |
+| `packages.config` の id が `csproj` に無い＝不要に見える | サテライト（`.ja`）とコンテンツ パッケージは**出なくて正常**（48 件中 44 件） | 消す前に [`BUILDING.md`](BUILDING.md) 11 節 |
 
 **NuGet パッケージ作成の落とし穴は
 [`CS/NuGet/README.md`](CS/NuGet/README.md) 9 節**にまとめてある。
