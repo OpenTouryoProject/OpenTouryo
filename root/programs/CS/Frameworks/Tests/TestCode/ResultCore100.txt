@@ -70,11 +70,87 @@ log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.Level
 log4net: Created Appender [OPERATION2]
 log4net: Adding appender named [OPERATION2] to logger [OPERATION].
 log4net: Hierarchy Threshold []
-[2026/08/17 17:21:06,781],[DEBUG],[2],LogIF.DebugLog("ACCESS");
-[2026/08/17 17:21:06,789],[INFO ],[2],LogIF.InfoLog("ACCESS");
-[2026/08/17 17:21:06,789],[WARN ],[2],LogIF.WarnLog("ACCESS");
-[2026/08/17 17:21:06,790],[ERROR],[2],LogIF.ErrorLog("ACCESS");
-[2026/08/17 17:21:06,790],[FATAL],[2],LogIF.FatalLog("ACCESS");
+[2026/08/17 22:30:46,582],[DEBUG],[2],LogIF.DebugLog("ACCESS");
+[2026/08/17 22:30:46,619],[INFO ],[2],LogIF.InfoLog("ACCESS");
+[2026/08/17 22:30:46,623],[WARN ],[2],LogIF.WarnLog("ACCESS");
+[2026/08/17 22:30:46,624],[ERROR],[2],LogIF.ErrorLog("ACCESS");
+[2026/08/17 22:30:46,625],[FATAL],[2],LogIF.FatalLog("ACCESS");
+LogIF.Is*Enabled - ACCESS : Debug True / Info True / Warn True / Error True / Fatal True
+log4net: configuring repository [log4net-default-repository] using stream
+log4net: loading XML configuration
+log4net: Configuring Repository [log4net-default-repository]
+log4net: Configuration update mode [Merge].
+log4net: Retrieving an instance of log4net.Repository.Logger for logger [ACCESS].
+log4net: Setting [ACCESS] additivity to [True].
+log4net: Logger [ACCESS] Level string is [All].
+log4net: Logger [ACCESS] level set to [name="ALL",value=-2147483648].
+log4net: Loading Appender [ACCESS2] type: [log4net.Appender.ConsoleAppender]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [ConversionPattern] to String value [[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline]
+log4net: Converter [literal] Option [[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [date] Option [yyyy/MM/dd HH:mm:ss,fff] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [level] Option [] Format [min=5,max=2147483647,leftAlign=True]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [thread] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [Layout] to object [log4net.Layout.PatternLayout]
+log4net: Setting Property [LevelMin] to Level value [DEBUG]
+log4net: Setting Property [LevelMax] to Level value [FATAL]
+log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.LevelRangeFilter]
+log4net: Created Appender [ACCESS2]
+log4net: Adding appender named [ACCESS2] to logger [ACCESS].
+log4net: Retrieving an instance of log4net.Repository.Logger for logger [SQLTRACE].
+log4net: Setting [SQLTRACE] additivity to [True].
+log4net: Logger [SQLTRACE] Level string is [All].
+log4net: Logger [SQLTRACE] level set to [name="ALL",value=-2147483648].
+log4net: Loading Appender [SQLTRACE2] type: [log4net.Appender.ConsoleAppender]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [ConversionPattern] to String value [[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline]
+log4net: Converter [literal] Option [[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [date] Option [yyyy/MM/dd HH:mm:ss,fff] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [level] Option [] Format [min=5,max=2147483647,leftAlign=True]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [thread] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [Layout] to object [log4net.Layout.PatternLayout]
+log4net: Setting Property [LevelMin] to Level value [DEBUG]
+log4net: Setting Property [LevelMax] to Level value [FATAL]
+log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.LevelRangeFilter]
+log4net: Created Appender [SQLTRACE2]
+log4net: Adding appender named [SQLTRACE2] to logger [SQLTRACE].
+log4net: Retrieving an instance of log4net.Repository.Logger for logger [OPERATION].
+log4net: Setting [OPERATION] additivity to [True].
+log4net: Logger [OPERATION] Level string is [All].
+log4net: Logger [OPERATION] level set to [name="ALL",value=-2147483648].
+log4net: Loading Appender [OPERATION2] type: [log4net.Appender.ConsoleAppender]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [ConversionPattern] to String value [[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline]
+log4net: Converter [literal] Option [[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [date] Option [yyyy/MM/dd HH:mm:ss,fff] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [level] Option [] Format [min=5,max=2147483647,leftAlign=True]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [thread] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [Layout] to object [log4net.Layout.PatternLayout]
+log4net: Setting Property [LevelMin] to Level value [DEBUG]
+log4net: Setting Property [LevelMax] to Level value [FATAL]
+log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.LevelRangeFilter]
+log4net: Created Appender [OPERATION2]
+log4net: Adding appender named [OPERATION2] to logger [OPERATION].
+log4net: Hierarchy Threshold []
+LogIF.Is*Enabled - UNDEFINED : Debug True / Info True / Warn True / Error True / Fatal True
 ----------------------------------------------------------------------------------------------------
 GetMessage: ～メッセージID:I0001に対応する記述（正常系）～
 GetMessage: ～メッセージID:E0001に対応する記述（異常系）～
@@ -2303,6 +2379,26 @@ GetConfigValue(FxBusinessMessageCulture) : ja-JP
 EnvInfo.MachineName が取れる       : True
 EnvInfo.OsVersionString が取れる   : True
 EnvInfo.ProcessBit が 32 または 64 : True
+GetConfigParameter
+GetAnyConfigValue(appSettings:FxBusinessMessageCulture) : ja-JP
+GetAnyConfigValue（無いキー） : null または空
+GetAnyConfigSection(appSettings) が取れる : True
+GetConnectionString（定義が無い名前。例外にならず空が返る） : null または空
+PubCmnFunction.GetPropsFromPropString
+  [a=1;b=2;] → 2 件 : A=[1], B=[2]
+  [UserName=fxuser;Password=fxpass;] → 2 件 : USERNAME=[fxuser], PASSWORD=[fxpass]
+  [a=1] → 1 件 : A=[1]
+  [] → 0 件 : 
+  [a=;b=2;] → 2 件 : A=[], B=[2]
+PubCmnFunction.BuiltStringIntoEnvironmentVariable
+  [%OT_TEST_VAR%] → [展開後]
+  [前%OT_TEST_VAR%後] → [前展開後後]
+  [C:\%OT_TEST_VAR%\end] → [C:\展開後\end]
+  [%OT_TEST_NOT_EXIST%] → []
+  [変数なし] → [変数なし]
+PubCmnFunction.GetCommandArgs
+  prefix='/' : 名前付き 0 件 / 値のみ 0 件
+  prefix='-' : 名前付き 0 件 / 値のみ 0 件
 ----------------------------------------------------------------------------------------------------
 StringConverter.ToHankaku - アアア: アアア
 StringConverter.ToZenkaku - アアア: アアア
@@ -2583,6 +2679,9 @@ EmbeddedResourceLoader
 読み込み              : 埋め込まれたリソースの内容 / embedded resource
 存在しない            : False
 存在しない（例外）    : System.ArgumentException
+LoadAsStream          : 埋め込まれたリソースの内容 / embedded resource
+LoadXMLAsString       : 長さ 292 / ルート要素 bookstore
+LoadXMLAsString       : XML宣言が残るか True
 ----------------------------------------------------------------------------------------------------
 ZipperV2 → UnZipperV2（往復）
 解凍した件数 : 4
@@ -2724,6 +2823,24 @@ DataSet との JSON 往復
 行   : Id=2, Note="変更後", RowState=Modified
 行   : Id=3, Note="削除される", RowState=Deleted
 行   : Id=4, Note="追加", RowState=Added
+----------------------------------------------------------------------------------------------------
+DTTables の中間生成物（JsonTables）との往復
+[中間生成物] 表の数 : 2
+  表名 TestTypes / 列 7 / 行 4
+    列 : Id:Int32, Name:String, Price:Decimal, Rate:Double, Ordered:DateTime, Flag:Boolean, Blob:ByteArray
+  表名 TestOdd / 列 2 / 行 1
+    列 : state:String, cels:Int32
+[戻した DTTables]
+表名 : TestTypes
+列   : Id(Int32), Name(String), Price(Decimal), Rate(Double), Ordered(DateTime), Flag(Boolean), Blob(ByteArray)
+行   : Id=1, Name="あいう", Price=1234.56, Rate=0.30000000000000004, Ordered=2026-08-14T12:34:56.7890000, Flag=True, Blob=byte[3]:00-01-FF, RowState=Added
+行   : Id=2, Name="", Price=-0.01, Rate=1.7976931348623157E+308, Ordered=1977-04-24T00:00:00.0000000, Flag=False, Blob=byte[0]:, RowState=Added
+行   : Id=3, Name="あ\r\nい", Price=0, Rate=0, Ordered=2000-01-01T00:00:00.0000000, Flag=False, Blob=byte[1]:01, RowState=Added
+行   : Id=4, Name=(null), Price=(null), Rate=(null), Ordered=(null), Flag=(null), Blob=(null), RowState=Added
+表名 : TestOdd
+列   : state(String), cels(Int32)
+行   : state="わな", cels=7, RowState=Added
+[空の DTTables] 列挙の回数 : 0
 ----------------------------------------------------------------------------------------------------
 ObjectInspector.Inspect : 基本の型
 [null]

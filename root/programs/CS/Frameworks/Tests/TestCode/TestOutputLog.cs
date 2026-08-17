@@ -47,7 +47,33 @@ namespace TestCode
             LogIF.WarnLog("ACCESS", "LogIF.WarnLog(\"ACCESS\");");
             LogIF.ErrorLog("ACCESS", "LogIF.ErrorLog(\"ACCESS\");");
             LogIF.FatalLog("ACCESS", "LogIF.FatalLog(\"ACCESS\");");
+
+            TestOutputLog.IsEnabledTest();
         }
+        #endregion
+
+        #region private
+
+        /// <summary>ログ レベルの有効・無効（IsDebugEnabled ほか）</summary>
+        /// <remarks>
+        /// **ロガー名ごとに設定が違う。**
+        /// SampleLogConf.xml で ACCESS は ALL、他は既定になっているので、
+        /// **設定に無いロガー名も渡して差を見る。**
+        /// </remarks>
+        private static void IsEnabledTest()
+        {
+            foreach (string logger in new string[] { "ACCESS", "UNDEFINED" })
+            {
+                MyDebug.OutputDebugAndConsole(
+                    "LogIF.Is*Enabled - " + logger + " : "
+                    + "Debug " + LogIF.IsDebugEnabled(logger)
+                    + " / Info " + LogIF.IsInfoEnabled(logger)
+                    + " / Warn " + LogIF.IsWarnEnabled(logger)
+                    + " / Error " + LogIF.IsErrorEnabled(logger)
+                    + " / Fatal " + LogIF.IsFatalEnabled(logger));
+            }
+        }
+
         #endregion
     }
 }

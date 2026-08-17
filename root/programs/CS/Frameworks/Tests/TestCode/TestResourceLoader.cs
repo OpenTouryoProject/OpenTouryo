@@ -192,6 +192,35 @@ namespace TestCode
             {
                 MyDebug.OutputDebugAndConsole("存在しない（例外）    : " + ex.GetType().FullName);
             }
+
+            // **ストリームで読む。** LoadAsString と同じ中身が返るはず。
+            using (Stream st = EmbeddedResourceLoader.LoadAsStream(TestResourceLoader.EmbeddedName))
+            {
+                if (st == null)
+                {
+                    MyDebug.OutputDebugAndConsole("LoadAsStream          : (null)");
+                }
+                else
+                {
+                    using (StreamReader sr = new StreamReader(st, Encoding.UTF8))
+                    {
+                        MyDebug.OutputDebugAndConsole("LoadAsStream          : " + sr.ReadToEnd().Trim());
+                    }
+                }
+            }
+
+            // **XML として読む。** 埋め込みの TestXml.xml は OpenTouryo.Public 側にある。
+            string xml = EmbeddedResourceLoader.LoadXMLAsString(
+                "OpenTouryo.Public", "Touryo.Infrastructure.Public.Xml.TestXml.xml");
+
+            MyDebug.OutputDebugAndConsole(
+                "LoadXMLAsString       : 長さ " + xml.Length.ToString()
+                + " / ルート要素 " + (xml.Contains("<bookstore") ? "bookstore" : "(不明)"));
+
+            // **XML 宣言の encoding は、読み込み時に落ちる。**
+            //   文字列にした時点で .NET の string なので、宣言を残すと矛盾するため。
+            MyDebug.OutputDebugAndConsole(
+                "LoadXMLAsString       : XML宣言が残るか " + xml.TrimStart().StartsWith("<?xml"));
         }
 
         #endregion
