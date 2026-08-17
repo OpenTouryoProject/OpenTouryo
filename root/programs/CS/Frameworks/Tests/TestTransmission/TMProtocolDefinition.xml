@@ -30,4 +30,6 @@
   <!-- TLS。宛先が 127.0.0.1 なのは、プロキシを経由しないため（迂回の問題が起きない） -->
   <Transmission id="testCert"     protocol="5" url="https://127.0.0.1:51092/api/" timeout="30" prop_ref="prop_cert" />
   <Transmission id="testAll"      protocol="5" url="http://fx-origin.test:51090/api/" timeout="30" prop_ref="prop_all" />
+  <!-- WCF TCP/IP（protocol="4"）。ホストはテストが自前で立てる（#561） -->
+  <Transmission id="testWcfTcp"   protocol="4" url="net.tcp://127.0.0.1:51093/TestTransmission/WCFTCPSvcForFx/" timeout="30" prop_ref="prop_plain" />
 </TMD>
