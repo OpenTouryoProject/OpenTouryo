@@ -15,42 +15,25 @@
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+'*  2026/08/17  玄人 幸道         C#版に合わせた（#558）。C#版は #495 の
+'*                                テンプレート差し替えで、この形になっている。
 '**********************************************************************************
 
 Imports System.Web.Http
-'using Microsoft.Owin.Security.OAuth;
-
-Imports Newtonsoft.Json.Serialization
 
 Namespace ASPNETWebService
     Public NotInheritable Class WebApiConfig
         Private Sub New()
         End Sub
         Public Shared Sub Register(config As HttpConfiguration)
-            '/ Web API configuration and services
-            '/ 「Bearer Token」認証のみを使用するように、Web API を設定。
-            'config.SuppressDefaultHostAuthentication();
-            'config.Filters.Add(new HostAuthenticationFilter(OAuthDefaults.AuthenticationType));
+            ' Web API の設定およびサービス
 
-            ' JSON データにはDefaultを使用 (JSON.NET)
-            config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = New DefaultContractResolver()
-
-            ' CORS (Cross-Origin Resource Sharing)の有効化
-            ' 別ドメイン上で動作する Web アプリからアクセス可能に設定。
-            config.EnableCors()
-
-            ' Web API routes を設定する。
-
-            ' Attribute Routing
+            ' Web API ルート
             config.MapHttpAttributeRoutes()
 
-            ' MapHttpRoute
-            config.Routes.MapHttpRoute(name:="DefaultApi", routeTemplate:="api/{controller}/{action}/{id}", defaults:=New With {
+            config.Routes.MapHttpRoute(name:="DefaultApi", routeTemplate:="api/{controller}/{id}", defaults:=New With {
                 Key .id = RouteParameter.[Optional]
             })
-
-            '/ トレース機能を有効化します。
-            'TraceConfig.Register(config);
         End Sub
     End Class
 End Namespace

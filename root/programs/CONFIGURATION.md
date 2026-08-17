@@ -448,13 +448,10 @@ dotnet dev-certs https --format Pem -ep ./https/aspnetapp.pem -np
 | 完全一致 | **8** |
 | 差分あり | **17** |
 
-> **その後 30 組になった。**（#558）
-> `ASPNETWebService` は **VB 側のディレクトリが 1 段深く、対応づけに乗っていなかった。**
-> `Web.config` も `app.config` も `packages.config` も、**一度も突き合わされていない。**
-> VB の構造を CS に揃えて解消した（現在 : 同一 15 / 差分 15 / **想定外 0**）。
->
+> **組数は必ず見ること。**
+> 対応づけは「CS からの相対パスを VB に当てる」方式なので、
+> **階層が一致しないプロジェクトは 1 組も対象に入らない。**
 > **「差分 0 件」と「対象に入っていない」は、出力の上では区別がつかない。**
-> 組数が減っていないかを見ること。
 
 差分の種類は次のとおり（1 組が複数に該当することがある）。
 
@@ -462,7 +459,7 @@ dotnet dev-certs https --format Pem -ep ./https/aspnetapp.pem -np
 |---|---|---|
 | `startup` / `supportedRuntime`（**VB のみ**） | 10 | **違ってよい**（VS が VB プロジェクトに自動で入れる） |
 | `runtime/assemblyBinding` の `bindingRedirect` | 8 | **違ってよい**（NuGet が生成。参照するパッケージの版で変わる） |
-| `packages.config` の構成 | 2 | **解消済み**（#554 / #558。下記） |
+| `packages.config` の構成 | 2 | **揃える**（下記） |
 | `ClientSettingsProvider.ServiceUri`（VB のみ） | 1 | **違ってよい**（VS のテンプレート由来） |
 | `SqlTextFilePath` の値 | 1 | **違わないといけない**（下記） |
 | `compilation/assemblies`（VB のみ） | 1 | **違ってよい**（VB は明示参照が要ることがある） |
@@ -491,28 +488,12 @@ VB : <add key="SqlTextFilePath" value="GenDaoAndBatUpd_sample" />
 > `SqlTextFilePath` は「埋め込みリソースなら名前空間、通常のファイルならフォルダのパス」
 > という二役を持つ（`MyBaseDao.SetSqlByFile2`）。5 節・7-3 節も参照。
 
-### **違ってよい**もの — 起動の仕組み（#558）
-
-`Frameworks/Infrastructure/ServiceInterface/ASPNETWebService`
-
-| | 起動 | `packages.config` |
-|---|---|---|
-| CS | `Global.asax` の `Application_Start` | OWIN は入らない |
-| **VB** | **`Startup.vb` の `<Assembly: OwinStartup(...)>`** | `Owin` / `Microsoft.Owin` / `Microsoft.Owin.Host.SystemWeb` |
-
-**揃えると VB が起動しなくなる。** 実装方式そのものが違うので、この 3 件は差のままにする。
-
-### `packages.config` も突き合わせの対象である（#558）
+### `packages.config` も突き合わせの対象である
 
 拡張子が `.config` なので元から対象に入っている。**`$allowed` には入れていない。**
 
-**パッケージ構成のずれは、ビルドが通ってしまうため他に気付く手段が無い。**
-実際に `ASPNETWebService` で次が見つかった。
-
-| 見つかったもの | 内容 |
-|---|---|
-| **陳腐化した宣言** 4 件 | `packages.config` にしか出てこない（VB の `FriendlyUrls.Core` / `.ja` / `Optimization.WebForms`、CS の `Modernizr`）。VB に `.aspx` は無く、CS に `Scripts` フォルダも無い |
-| **`targetFramework` の残留** 5 件 | プロジェクトは `v4.8` なのに、VB 側の宣言が `net46` のまま。`net46` 時代に入れたきり再インストールされていない |
+見るのは、**陳腐化した宣言**（`packages.config` にしか出てこないパッケージ）と
+**`targetFramework` の残留**（プロジェクトの `TargetFrameworkVersion` と食い違う宣言）である。
 
 **どちらもビルドは通る。** だから検査でしか見つからない。
 
@@ -543,8 +524,7 @@ cd root\programs
 
 **`-Check` は「差分の有無」ではなく「想定外の差分の有無」を見る。**
 上の表で「違ってよい」とした種類（`startup` / `runtime` / `compilation/assemblies` /
-`SqlTextFilePath` / `ClientSettingsProvider.*` / **OWIN の 3 パッケージ**）は、
-当てはまれば想定内として扱う。
+`SqlTextFilePath` / `ClientSettingsProvider.*`）は、当てはまれば想定内として扱う。
 
 ```
 ================ 判定 ================
@@ -556,6 +536,11 @@ cd root\programs
 
 **許容する種類を増やすときは、なぜ違ってよいのかをこの節にも書くこと。**
 スクリプトの `$allowed` だけに足すと、**理由が残らない。**
+
+**そして、足す前に「なぜ違うのか」を履歴で確かめること。**
+**「差がある」ことと「違ってよい」ことは別である。**
+理由が「片側だけ作業が済んでいない」なら、**許容ではなく、作業を終わらせるのが答え**になる。
+`$allowed` に入れてしまうと、**やり残しが「仕様」として固定される。**
 
 `compilation/assemblies` の欠落と接続文字列の `;` は、この方法で見つけた。
 
