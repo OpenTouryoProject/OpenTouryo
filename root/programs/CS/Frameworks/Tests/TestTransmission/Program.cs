@@ -24,6 +24,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/08/14  玄人 幸道         新規作成（#546）
+//*  2026/08/17  玄人 幸道         WCF TCP/IPのケースを追加（#561）。全ケースが
+//*                                ASP.NET WebAPIで、WCFを一度も通っていなかった。
 //**********************************************************************************
 
 using System;
@@ -36,6 +38,7 @@ using System.Net.Sockets;
 using System.Security.Authentication;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.ServiceModel;
 using System.Text;
 using System.Threading;
 
@@ -111,6 +114,66 @@ namespace TestTransmission
         public string Text = "";
     }
 
+    /// <summary>
+    /// WCF TCP/IP のサービス スタブ（#561）
+    /// </summary>
+    /// <remarks>
+    /// **HTTP 側の HandleOrigin / BuildResponse に相当する。**
+    /// 応答の作り方も揃えてある（エラー情報は空、戻り値は TestReturn）。
+    ///
+    /// 受け取った内容を静的フィールドに記録する。
+    /// **サーバが何を受け取ったかを見ないと、届いたかどうかを判定できない**ためで、
+    /// これも HTTP 側（Recorded）と同じ考え方である。
+    /// </remarks>
+    public class WcfTcpStub : IWCFTCPSvcForFx
+    {
+        /// <summary>受け取ったサービス名</summary>
+        public static string ServiceName = null;
+
+        /// <summary>受け取った引数の本文</summary>
+        public static string ParamText = null;
+
+        /// <summary>受け取った回数</summary>
+        public static int Count = 0;
+
+        /// <summary>記録を消す</summary>
+        public static void Clear()
+        {
+            WcfTcpStub.ServiceName = null;
+            WcfTcpStub.ParamText = null;
+            WcfTcpStub.Count = 0;
+        }
+
+        /// <summary>サービス インターフェイス基盤（.NETオンライン）</summary>
+        /// <param name="serviceName">サービス名</param>
+        /// <param name="contextObject">コンテキスト</param>
+        /// <param name="parameterValueObject">引数</param>
+        /// <param name="returnValueObject">戻り値</param>
+        /// <returns>エラー情報のバイト配列</returns>
+        public byte[] DotNETOnlineTCP(
+            string serviceName, ref byte[] contextObject,
+            byte[] parameterValueObject, out byte[] returnValueObject)
+        {
+            TestParam param = (TestParam)BinarySerialize.BytesToObject(parameterValueObject);
+
+            lock (typeof(WcfTcpStub))
+            {
+                WcfTcpStub.ServiceName = serviceName;
+                WcfTcpStub.ParamText = param.Text;
+                WcfTcpStub.Count++;
+            }
+
+            TestReturn ret = new TestReturn();
+            ret.Text = "サーバからの戻り値";
+            returnValueObject = BinarySerialize.ObjectToBytes(ret);
+
+            // 受け取ったコンテキストは、そのまま返す（contextObject には触らない）
+
+            // エラー情報：無し（空文字。Invoke 側がこれを「正常」と判定する）
+            return BinarySerialize.ObjectToBytes("");
+        }
+    }
+
     #endregion
 
     /// <summary>
@@ -149,6 +212,13 @@ namespace TestTransmission
 
         /// <summary>オリジン（TLS）のポート</summary>
         private const int TlsPort = 51092;
+
+        /// <summary>WCF TCP/IP のアドレス（定義 XML の url と合わせる）（#561）</summary>
+        /// <remarks>
+        /// **net.tcp の自己ホストは URL ACL を要求しない**ので、管理者権限は要らない。
+        /// （HttpListener を避けた理由は上の「HttpListener を使わない理由」を参照）
+        /// </remarks>
+        private const string WcfTcpUrl = "net.tcp://127.0.0.1:51093/TestTransmission/WCFTCPSvcForFx/";
 
         /// <summary>クライアント証明書のファイル名（定義 XML の CertFile と合わせる）</summary>
         private const string ClientCertFile = "TestClient.pfx";
@@ -206,6 +276,7 @@ namespace TestTransmission
             TcpListener origin = Program.StartOrigin();
             TcpListener proxy = Program.StartProxy();
             TcpListener tls = Program.StartListener(Program.TlsPort, Program.HandleOrigin, serverCert);
+            ServiceHost wcf = Program.StartWcfTcp();
 
             try
             {
@@ -221,12 +292,21 @@ namespace TestTransmission
                 // クライアント証明書（TLS。プロキシは経由しない）
                 Program.Case("クライアント証明書", "testCert", false, false, null, false, null, false, null,
                     Program.ClientCertSubject);
+
+                // WCF TCP/IP（#561）
+                Program.CaseWcfTcp("WCF TCP/IP", "testWcfTcp");
             }
             finally
             {
                 origin.Stop();
                 proxy.Stop();
                 tls.Stop();
+
+                if (wcf != null)
+                {
+                    try { wcf.Close(); }
+                    catch { wcf.Abort(); }
+                }
             }
 
             Console.WriteLine();
@@ -339,6 +419,57 @@ namespace TestTransmission
             #endregion
         }
 
+        /// <summary>WCF TCP/IP の 1 ケースを実行して判定する（#561）</summary>
+        /// <param name="title">表題</param>
+        /// <param name="serviceName">サービス名（TMProtocolDefinition.xml の Transmission）</param>
+        /// <remarks>
+        /// **HTTP 側の Case とは見る対象が違う**ので、別の関数にしてある。
+        /// 接続オプション（UserAgent・gzip・プロキシ）は HTTP のもので、WCF には無い。
+        ///
+        /// ここで見たいのは「**呼び出しがサービスまで届き、戻り値が返るか**」である。
+        /// これが通らなくなったのが #561 で、呼び出しが空だったため
+        /// returnValueObject が null のまま例外になっていた。
+        /// </remarks>
+        private static void CaseWcfTcp(string title, string serviceName)
+        {
+            Console.WriteLine();
+            Console.WriteLine("=== {0}（{1}）===", title, serviceName);
+
+            WcfTcpStub.Clear();
+
+            string returned = null;
+
+            try
+            {
+                TestParam param = new TestParam();
+                param.Text = "こんにちは";
+
+                CallController cc = new CallController(new TestContext());
+                TestReturn ret = (TestReturn)cc.Invoke(serviceName, param);
+
+                returned = (ret == null) ? null : ret.Text;
+            }
+            catch (Exception ex)
+            {
+                Exception e = ex;
+                while (e.InnerException != null) { e = e.InnerException; }
+                Console.WriteLine("  [NG] 例外 : {0} : {1}", e.GetType().Name, e.Message);
+                Program.NG++;
+                return;
+            }
+
+            Program.Check("戻り値", "サーバからの戻り値", returned);
+
+            lock (typeof(WcfTcpStub))
+            {
+                // **サービスに届いたか。** 届かずに戻り値だけ合う、ということは起きないが、
+                // 「呼び出しが空」の状態を確実に捕まえるために、受信側でも見る。
+                Program.Check("サービスへ到達", 1, WcfTcpStub.Count);
+                Program.Check("サービス名", serviceName, WcfTcpStub.ServiceName);
+                Program.Check("引数", "こんにちは", WcfTcpStub.ParamText);
+            }
+        }
+
         /// <summary>期待値と突き合わせて出力する</summary>
         /// <param name="name">項目名</param>
         /// <param name="expected">期待値</param>
@@ -418,6 +549,29 @@ namespace TestTransmission
                     cert.Export(X509ContentType.Pfx, "temp"), "temp",
                     X509KeyStorageFlags.Exportable);
             }
+        }
+
+        #endregion
+
+        #region WCF TCP/IP のホスト（#561）
+
+        /// <summary>WCF TCP/IP のサービスを自己ホストで起動する</summary>
+        /// <returns>ServiceHost</returns>
+        /// <remarks>
+        /// **セキュリティは None にする。** 既定の netTcpBinding は Transport
+        /// （Windows 資格情報）で、クライアント側（App.config）と揃える必要がある。
+        /// ここで見たいのは通信そのものなので、両側とも None に揃えてある。
+        /// </remarks>
+        private static ServiceHost StartWcfTcp()
+        {
+            ServiceHost host = new ServiceHost(typeof(WcfTcpStub), new Uri(Program.WcfTcpUrl));
+
+            host.AddServiceEndpoint(
+                typeof(IWCFTCPSvcForFx), new NetTcpBinding(SecurityMode.None), "");
+
+            host.Open();
+
+            return host;
         }
 
         #endregion

@@ -71,6 +71,9 @@
 //*                                  ・Concurrent Collectionでプールを作成する。
 //*  2026/08/13  玄人 幸道         .NET Core版で未対応のprotocolを、nullではなく
 //*                                FrameworkExceptionで返すようにした（#543）。
+//*  2021/08/14  西野 大介         デッドコードの整理、メソッド切り出しなど（#546）
+//*  2026/08/17  玄人 幸道         WCF_TCPIPの呼び出しを戻した（#561）。#546で実装を
+//*                                メソッドに切り出した際、呼び出しが欠落していた。
 //**********************************************************************************
 
 using System;
@@ -395,7 +398,10 @@ namespace Touryo.Infrastructure.Framework.Transmission
                 if (protocol == ((int)FxEnum.TmProtocol.WCF_TCPIP).ToString())
                 {
                     #region WCF : netTCPBinding
-                                       
+
+                    // WCF TCP/IP (netTcpBinding)
+                    ret = this.WCF_TCPIP(serviceName, url, timeout, props,
+                        contextObject, parameterValueObject, out returnValueObject);
 
                     #endregion
                 }

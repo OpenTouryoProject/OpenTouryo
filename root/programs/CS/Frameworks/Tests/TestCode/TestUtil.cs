@@ -27,8 +27,10 @@
 //**********************************************************************************
 
 using System;
+using System.Collections.Generic;
 
 using Touryo.Infrastructure.Public.Diagnostics;
+using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 
 namespace TestCode
@@ -218,6 +220,128 @@ namespace TestCode
             MyDebug.OutputDebugAndConsole(
                 "EnvInfo.ProcessBit が 32 または 64 : "
                 + (EnvInfo.ProcessBit == 32 || EnvInfo.ProcessBit == 64));
+
+            TestUtil.TestGetConfigParameter();
+            TestUtil.TestPropStringAndEnvVariable();
+            TestUtil.TestGetCommandArgs();
+        }
+
+        /// <summary>設定の取得（GetAnyConfigValue、GetAnyConfigSection、GetConnectionString）</summary>
+        /// <remarks>
+        /// **InitConfiguration は呼ばない。**
+        /// 静的な構成を差し替える副作用があり、後続のテストを巻き込む。
+        /// （TestCode の Program.Main が起動時に 1 度だけ呼んでいる）
+        /// </remarks>
+        private static void TestGetConfigParameter()
+        {
+            MyDebug.OutputDebugAndConsole("GetConfigParameter");
+
+#if (NETSTD || NETCOREAPP)
+            // **GetAnyConfigValue / GetAnyConfigSection は .NET Core 側にしか無い。**
+            //   net48 では appSettings 以外のセクションを引く口が無いため、
+            //   条件コンパイルで分けられている。出力も net48 と core で変わる。
+
+            // appSettings 配下のキー（GetConfigValue と同じ値になるはず）
+            MyDebug.OutputDebugAndConsole(
+                "GetAnyConfigValue(appSettings:FxBusinessMessageCulture) : "
+                + GetConfigParameter.GetAnyConfigValue("appSettings:FxBusinessMessageCulture"));
+
+            // 無いキー
+            string v = GetConfigParameter.GetAnyConfigValue("appSettings:OpenTouryo_NotExistKey");
+            MyDebug.OutputDebugAndConsole(
+                "GetAnyConfigValue（無いキー） : " + (string.IsNullOrEmpty(v) ? "null または空" : "値あり"));
+
+            // **セクションそのものが取れるか。** 中身は環境で変わりうるので、取得の可否だけを見る。
+            MyDebug.OutputDebugAndConsole(
+                "GetAnyConfigSection(appSettings) が取れる : "
+                + (GetConfigParameter.GetAnyConfigSection("appSettings") != null));
+#else
+            MyDebug.OutputDebugAndConsole(
+                "GetAnyConfigValue / GetAnyConfigSection : .NET Core 側のみのため対象外");
+#endif
+
+            // **TestCode の設定には connectionStrings が無い。**
+            //   よって「取れない」側しか通せない。値そのものは、あっても出さない
+            //   （サーバ名などが環境で変わり、Result*.txt と突き合わせられなくなる）。
+            //   接続文字列を実際に使う経路は TestDataAccess が見ている。
+            MyDebug.OutputDebugAndConsole(
+                "GetConnectionString（定義が無い名前。例外にならず空が返る） : "
+                + (string.IsNullOrEmpty(GetConfigParameter.GetConnectionString("OpenTouryo_NotExist"))
+                   ? "null または空" : "値あり"));
+        }
+
+        /// <summary>プロパティ文字列と環境変数（GetPropsFromPropString、BuiltStringIntoEnvironmentVariable）</summary>
+        private static void TestPropStringAndEnvVariable()
+        {
+            MyDebug.OutputDebugAndConsole("PubCmnFunction.GetPropsFromPropString");
+
+            string[] props = new string[]
+            {
+                "a=1;b=2;",
+                "UserName=fxuser;Password=fxpass;",
+                "a=1",          // 末尾の ; が無い
+                "",             // 空文字列
+                "a=;b=2;"       // 値が空
+            };
+
+            foreach (string p in props)
+            {
+                Dictionary<string, string> dic = PubCmnFunction.GetPropsFromPropString(p);
+
+                string ret = "";
+                foreach (string k in dic.Keys)
+                {
+                    ret += (ret == "" ? "" : ", ") + k + "=[" + dic[k] + "]";
+                }
+
+                MyDebug.OutputDebugAndConsole("  [" + p + "] → " + dic.Count.ToString() + " 件 : " + ret);
+            }
+
+            MyDebug.OutputDebugAndConsole("PubCmnFunction.BuiltStringIntoEnvironmentVariable");
+
+            // **テストの中で環境変数を設定してから呼ぶ。**
+            //   既存の環境変数を使うと、実行環境で結果が変わってしまう。
+            Environment.SetEnvironmentVariable("OT_TEST_VAR", "展開後");
+
+            string[] inputs = new string[]
+            {
+                @"%OT_TEST_VAR%",
+                @"前%OT_TEST_VAR%後",
+                @"C:\%OT_TEST_VAR%\end",
+                @"%OT_TEST_NOT_EXIST%",   // 無い変数
+                @"変数なし"
+            };
+
+            foreach (string s in inputs)
+            {
+                MyDebug.OutputDebugAndConsole(
+                    "  [" + s + "] → [" + PubCmnFunction.BuiltStringIntoEnvironmentVariable(s) + "]");
+            }
+        }
+
+        /// <summary>コマンドライン引数の解析（GetCommandArgs）</summary>
+        /// <remarks>
+        /// **このテストは引数なしで起動される**ため、結果は空になる。
+        /// 値そのものより「例外なく呼べて、空が返る」ことを見る。
+        /// </remarks>
+        private static void TestGetCommandArgs()
+        {
+            MyDebug.OutputDebugAndConsole("PubCmnFunction.GetCommandArgs");
+
+            Dictionary<string, string> argsDic;
+            List<string> valsLst;
+
+            PubCmnFunction.GetCommandArgs('/', out argsDic, out valsLst);
+
+            MyDebug.OutputDebugAndConsole(
+                "  prefix='/' : 名前付き " + argsDic.Count.ToString()
+                + " 件 / 値のみ " + valsLst.Count.ToString() + " 件");
+
+            StringVariableOperator.GetCommandArgs('-', out argsDic, out valsLst);
+
+            MyDebug.OutputDebugAndConsole(
+                "  prefix='-' : 名前付き " + argsDic.Count.ToString()
+                + " 件 / 値のみ " + valsLst.Count.ToString() + " 件");
         }
 
         #endregion

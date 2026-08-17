@@ -70,11 +70,87 @@ log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.Level
 log4net: Created Appender [OPERATION2]
 log4net: Adding appender named [OPERATION2] to logger [OPERATION].
 log4net: Hierarchy Threshold []
-[2026/08/16 21:23:48,945],[DEBUG],[2],LogIF.DebugLog("ACCESS");
-[2026/08/16 21:23:48,975],[INFO ],[2],LogIF.InfoLog("ACCESS");
-[2026/08/16 21:23:48,976],[WARN ],[2],LogIF.WarnLog("ACCESS");
-[2026/08/16 21:23:48,977],[ERROR],[2],LogIF.ErrorLog("ACCESS");
-[2026/08/16 21:23:48,978],[FATAL],[2],LogIF.FatalLog("ACCESS");
+[2026/08/18 02:24:41,605],[DEBUG],[2],LogIF.DebugLog("ACCESS");
+[2026/08/18 02:24:41,619],[INFO ],[2],LogIF.InfoLog("ACCESS");
+[2026/08/18 02:24:41,620],[WARN ],[2],LogIF.WarnLog("ACCESS");
+[2026/08/18 02:24:41,620],[ERROR],[2],LogIF.ErrorLog("ACCESS");
+[2026/08/18 02:24:41,621],[FATAL],[2],LogIF.FatalLog("ACCESS");
+LogIF.Is*Enabled - ACCESS : Debug True / Info True / Warn True / Error True / Fatal True
+log4net: configuring repository [log4net-default-repository] using stream
+log4net: loading XML configuration
+log4net: Configuring Repository [log4net-default-repository]
+log4net: Configuration update mode [Merge].
+log4net: Retrieving an instance of log4net.Repository.Logger for logger [ACCESS].
+log4net: Setting [ACCESS] additivity to [True].
+log4net: Logger [ACCESS] Level string is [All].
+log4net: Logger [ACCESS] level set to [name="ALL",value=-2147483648].
+log4net: Loading Appender [ACCESS2] type: [log4net.Appender.ConsoleAppender]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [ConversionPattern] to String value [[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline]
+log4net: Converter [literal] Option [[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [date] Option [yyyy/MM/dd HH:mm:ss,fff] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [level] Option [] Format [min=5,max=2147483647,leftAlign=True]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [thread] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [Layout] to object [log4net.Layout.PatternLayout]
+log4net: Setting Property [LevelMin] to Level value [DEBUG]
+log4net: Setting Property [LevelMax] to Level value [FATAL]
+log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.LevelRangeFilter]
+log4net: Created Appender [ACCESS2]
+log4net: Adding appender named [ACCESS2] to logger [ACCESS].
+log4net: Retrieving an instance of log4net.Repository.Logger for logger [SQLTRACE].
+log4net: Setting [SQLTRACE] additivity to [True].
+log4net: Logger [SQLTRACE] Level string is [All].
+log4net: Logger [SQLTRACE] level set to [name="ALL",value=-2147483648].
+log4net: Loading Appender [SQLTRACE2] type: [log4net.Appender.ConsoleAppender]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [ConversionPattern] to String value [[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline]
+log4net: Converter [literal] Option [[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [date] Option [yyyy/MM/dd HH:mm:ss,fff] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [level] Option [] Format [min=5,max=2147483647,leftAlign=True]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [thread] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [Layout] to object [log4net.Layout.PatternLayout]
+log4net: Setting Property [LevelMin] to Level value [DEBUG]
+log4net: Setting Property [LevelMax] to Level value [FATAL]
+log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.LevelRangeFilter]
+log4net: Created Appender [SQLTRACE2]
+log4net: Adding appender named [SQLTRACE2] to logger [SQLTRACE].
+log4net: Retrieving an instance of log4net.Repository.Logger for logger [OPERATION].
+log4net: Setting [OPERATION] additivity to [True].
+log4net: Logger [OPERATION] Level string is [All].
+log4net: Logger [OPERATION] level set to [name="ALL",value=-2147483648].
+log4net: Loading Appender [OPERATION2] type: [log4net.Appender.ConsoleAppender]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [ConversionPattern] to String value [[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline]
+log4net: Converter [literal] Option [[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [date] Option [yyyy/MM/dd HH:mm:ss,fff] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [level] Option [] Format [min=5,max=2147483647,leftAlign=True]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [thread] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [Layout] to object [log4net.Layout.PatternLayout]
+log4net: Setting Property [LevelMin] to Level value [DEBUG]
+log4net: Setting Property [LevelMax] to Level value [FATAL]
+log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.LevelRangeFilter]
+log4net: Created Appender [OPERATION2]
+log4net: Adding appender named [OPERATION2] to logger [OPERATION].
+log4net: Hierarchy Threshold []
+LogIF.Is*Enabled - UNDEFINED : Debug True / Info True / Warn True / Error True / Fatal True
 ----------------------------------------------------------------------------------------------------
 GetMessage: ～メッセージID:I0001に対応する記述（正常系）～
 GetMessage: ～メッセージID:E0001に対応する記述（異常系）～
@@ -115,6 +191,41 @@ StringChecker.IsShift_Jis_Zenkaku - aaaaaa: False
 StringChecker.IsShift_Jis_Zenkaku - 亜亜亜: True
 StringChecker.IsShift_Jis_Hankaku - ａａａ: False
 StringChecker.IsShift_Jis_Hankaku - aaaaaa: True
+--------------------------------------------------
+StringChecker.IsHankaku/IsZenkaku - [abc123]: True / False
+StringChecker.IsHankaku/IsZenkaku - [ｱｲｳ]: True / False
+StringChecker.IsHankaku/IsZenkaku - [あいう]: False / True
+StringChecker.IsHankaku/IsZenkaku - [ａｂｃ]: False / True
+StringChecker.IsHankaku/IsZenkaku - [abcあ]: False / False
+StringChecker.IsHankaku/IsZenkaku - [ ]: True / False
+StringChecker.IsHankaku/IsZenkaku - [～]: False / True
+StringChecker.IsHankaku/IsZenkaku - []: True / True
+StringChecker.IsNumeric - [123]: True（IsNumbers: True）
+StringChecker.IsNumeric - [-123]: True（IsNumbers: False）
+StringChecker.IsNumeric - [1.5]: True（IsNumbers: False）
+StringChecker.IsNumeric - [+1]: True（IsNumbers: False）
+StringChecker.IsNumeric - [1e3]: True（IsNumbers: False）
+StringChecker.IsNumeric - [１２３]: True（IsNumbers: True）
+StringChecker.IsNumeric - [１．５]: True（IsNumbers: False）
+StringChecker.IsNumeric - [12 3]: False（IsNumbers: False）
+StringChecker.IsNumeric - [abc]: False（IsNumbers: False）
+StringChecker.IsNumeric - []: False（IsNumbers: True）
+StringChecker.IsNumeric - [ ]: False（IsNumbers: False）
+StringChecker.IsInCodePage - [abc]: shift_jis True / us_ascii True / utf_8 True
+StringChecker.IsInCodePage - [あいう]: shift_jis True / us_ascii False / utf_8 True
+StringChecker.IsInCodePage - [①]: shift_jis True / us_ascii False / utf_8 True
+StringChecker.IsInCodePage - [𩸽]: shift_jis False / us_ascii False / utf_8 True
+StringChecker.IsInCodePage - []: shift_jis True / us_ascii True / utf_8 True
+StringChecker.Match - [abc123] [0-9]+ : True
+StringChecker.Match - [abc123] ^[0-9]+$ : False
+StringChecker.Match - [abc] [0-9]+ : False
+StringChecker.Match - [ABC] ^abc$ : False
+StringChecker.Match - [ABC] ^abc$ (IgnoreCase) : True
+StringChecker.Matches - [a1b22c333] [0-9]+ : 3 件
+  位置 1 : 1
+  位置 3 : 22
+  位置 6 : 333
+StringChecker.Matches - [abc] [0-9]+ : 0 件
 ----------------------------------------------------------------------------------------------------
 TestFormatChecker.IsJpZipCode
 JpZipCode_Hyphen
@@ -2268,11 +2379,46 @@ GetConfigValue(FxBusinessMessageCulture) : ja-JP
 EnvInfo.MachineName が取れる       : True
 EnvInfo.OsVersionString が取れる   : True
 EnvInfo.ProcessBit が 32 または 64 : True
+GetConfigParameter
+GetAnyConfigValue(appSettings:FxBusinessMessageCulture) : ja-JP
+GetAnyConfigValue（無いキー） : null または空
+GetAnyConfigSection(appSettings) が取れる : True
+GetConnectionString（定義が無い名前。例外にならず空が返る） : null または空
+PubCmnFunction.GetPropsFromPropString
+  [a=1;b=2;] → 2 件 : A=[1], B=[2]
+  [UserName=fxuser;Password=fxpass;] → 2 件 : USERNAME=[fxuser], PASSWORD=[fxpass]
+  [a=1] → 1 件 : A=[1]
+  [] → 0 件 : 
+  [a=;b=2;] → 2 件 : A=[], B=[2]
+PubCmnFunction.BuiltStringIntoEnvironmentVariable
+  [%OT_TEST_VAR%] → [展開後]
+  [前%OT_TEST_VAR%後] → [前展開後後]
+  [C:\%OT_TEST_VAR%\end] → [C:\展開後\end]
+  [%OT_TEST_NOT_EXIST%] → []
+  [変数なし] → [変数なし]
+PubCmnFunction.GetCommandArgs
+  prefix='/' : 名前付き 0 件 / 値のみ 0 件
+  prefix='-' : 名前付き 0 件 / 値のみ 0 件
 ----------------------------------------------------------------------------------------------------
 StringConverter.ToHankaku - アアア: アアア
 StringConverter.ToZenkaku - アアア: アアア
 StringConverter.ToHiragana - アアア: あああ
 StringConverter.ToKatakana - あああ: アアア
+--------------------------------------------------
+StringConverter.EditYYYYMMDDString - [20200102]: False → [20200102]
+StringConverter.EditYYYYMMDDString - [2020115]: True → [20201105]
+StringConverter.EditYYYYMMDDString - [2020155]: True → [20200155]
+StringConverter.EditYYYYMMDDString - [202012]: True → [20200102]
+StringConverter.EditYYYYMMDDString - [2020]: False → [2020]
+StringConverter.EditYYYYMMDDString - [20201a02]: False → [20201a02]
+StringConverter.EditYYYYMMDDString - []: False → []
+StringConverter.FormattingForOneLineLog - [SELECT  *   FROM  Orders]: [SELECT * FROM Orders]
+StringConverter.FormattingForOneLineLog - [SELECT * FROM T WHERE C = 'a   b']: [SELECT * FROM T WHERE C = 'a   b']
+StringConverter.FormattingForOneLineLog - [a\r\nb\rc\nd]: [a b c d]
+StringConverter.FormattingForOneLineLog - [A & B]: [A & B]
+StringConverter.FormattingForOneLineLog - [WHERE C = 'It''s']: [WHERE C = 'It''s']
+StringConverter.FormattingForOneLineLog - []: []
+StringConverter.FormattingForOneLineLog - [   ]: [ ]
 ----------------------------------------------------------------------------------------------------
 FormatConverter.SeirekiToWareki
 1977/4/24, ggy年M月d日（ddd）: 昭和52年4月24日（日）
@@ -2343,12 +2489,93 @@ FormatConverter.Suppress
 "123456789", 10, '＠': ＠＠＠abcdefg
 "123456789", 11, '＠': ＠＠＠＠abcdefg
 "123456789", 20, '＠': ＠＠＠＠＠＠＠＠＠＠＠＠＠abcdefg
+--------------------------------------------------
+FormatConverter.Round_4sya5nyu / Round_Banker
+  0.5 → 四捨五入 1 / 銀行家 0
+  1.5 → 四捨五入 2 / 銀行家 2
+  2.5 → 四捨五入 3 / 銀行家 2
+  3.5 → 四捨五入 4 / 銀行家 4
+  -0.5 → 四捨五入 -1 / 銀行家 0
+  -2.5 → 四捨五入 -3 / 銀行家 -2
+  2.4 → 四捨五入 2 / 銀行家 2
+  2.6 → 四捨五入 3 / 銀行家 3
+  1.005(2桁) → 四捨五入 1.01 / 銀行家 1.00
+  "abc" → 四捨五入 0 / 銀行家 0
+  "2.5"(文字列) → 四捨五入 3
+--------------------------------------------------
+FormatConverter.Floor / Ceiling
+  Floor 1.567(2桁) : 既定 1.56 / RZ(0方向) 1.56 / RM(負の無限大) 1.56
+  Ceiling 1.567(2桁) : 既定 1.57 / RI(絶対値) 1.57 / RP(正の無限大) 1.57
+  Floor -1.567(2桁) : 既定 -1.57 / RZ(0方向) -1.56 / RM(負の無限大) -1.57
+  Ceiling -1.567(2桁) : 既定 -1.56 / RI(絶対値) -1.56 / RP(正の無限大) -1.56
+  Floor 1.9(0桁) : 1 / Ceiling 1.1(0桁) : 2
+  "abc" : Floor 0 / Ceiling 0
+--------------------------------------------------
+FormatConverter.AddFigureX
+  1234567.891 を 2桁区切り : 1,23,45,67.891
+  1234567.891 を 3桁区切り : 1,234,567.891
+  1234567.891 を 4桁区切り : 123,4567.891
+  -1234567.891 を 3桁区切り : -1,234,567.891
+  "abc" を 3桁区切り : 0
+FormatConverter.AddZerosAfterDecimal
+  123(3桁) : 123.000
+  123.4(3桁) : 123.400
+  123.456(2桁) : 123.456
+  123(0桁) : 123
+  -1.2(3桁) : -1.200
+--------------------------------------------------
+FormatConverter.ToUnixTime / FromUnixTime
+  1970/01/01 00:00:00 → 0 → 1970/01/01 00:00:00（Kind=Utc）
+  2000/01/01 00:00:00 → 946684800 → 2000/01/01 00:00:00（Kind=Utc）
+  2038/01/19 03:14:07 → 2147483647 → 2038/01/19 03:14:07（Kind=Utc）
+  1960/01/01 00:00:00 → -315619200 → 1960/01/01 00:00:00（Kind=Utc）
+  秒未満 : 0
+FormatConverter.ToW3cTimestamp / FromW3cTimestamp
+  既定の書式 : 2020-05-06T07:08:09Z
+  書式を指定 : 2020-05-06 07:08:09Z
+  戻り : 2020/05/06 07:08:09（Kind=Unspecified）
 ----------------------------------------------------------------------------------------------------
 CustomEncode.HtmlEncode: &quot; id=&quot;txtXXXXX&quot; /&gt;&lt;script type=&quot;text/javascript&quot;&gt;alert(&quot;XSS!!!&quot;)&lt;/script&gt;&lt;input name=&quot;txtXXXXX&quot; type=&quot;text&quot; value=&quot;
 ----------------------------------------------------------------------------------------------------
 CustomEncode.UrlEncode: http://www.google.co.jp/search?hl=ja&q=%26
 CustomEncode.UrlEncode2: http%3A%2F%2Fwww.google.co.jp%2Fsearch%3Fhl%3Dja%26q%3D%26
 CustomEncode.UrlEncode2: http%3A%2F%2Fwww.google.co.jp%2Fsearch%3Fhl%3Dja%26q%3D%3C%3E
+----------------------------------------------------------------------------------------------------
+CustomEncode.HtmlDecode: <a href="x">&amp;</a>
+CustomEncode.HtmlDecode: <p>"'& 
+CustomEncode.UrlEncode: %E3%81%82%26%3D%3F%2F%20%2B
+CustomEncode.UrlDecode: あ&=?/ +
+CustomEncode.UrlDecode: [a b c]
+CustomEncode.StringToByte(65001): E3 81 82 E3 81 84 E3 81 86 41 42 31
+CustomEncode.ByteToString(65001): あいうAB1
+CustomEncode.StringToByte(932): 82 A0 82 A2 82 A4 41 42 31
+CustomEncode.ByteToString(932): あいうAB1
+CustomEncode.StringToByte(51932): A4 A2 A4 A4 A4 A6 41 42 31
+CustomEncode.ByteToString(51932): あいうAB1
+CustomEncode.StringToByte(empty): []
+CustomEncode.ByteToString(sjis as utf8): EF BF BD EF BF BD
+CustomEncode.ToHexString: [00 0F 10 FF]
+CustomEncode.FormHexString: [00 0F 10 FF]
+CustomEncode.ToHexString(empty): []
+CustomEncode.FormHexString(lower): [0A BC]
+CustomEncode.FormHexString(invalid): FormatException
+CustomEncode.ToBase64String: 44GT44KT44Gr44Gh44Gv
+CustomEncode.FromBase64String: こんにちは
+CustomEncode.ToBase64String(empty): []
+CustomEncode.FromBase64String(invalid): FormatException
+CustomEncode.ToBase64String   : /++/
+CustomEncode.ToBase64UrlString: _--_
+CustomEncode.ToBase64UrlString(1byte): [_w] 長さ%4=2
+CustomEncode.FromBase64UrlString(1byte): [FF]
+CustomEncode.ToBase64UrlString(2byte): [__4] 長さ%4=3
+CustomEncode.FromBase64UrlString(2byte): [FF FE]
+CustomEncode.ToBase64UrlString(3byte): [__79] 長さ%4=0
+CustomEncode.FromBase64UrlString(3byte): [FF FE FD]
+CustomEncode.FromBase64UrlString(invalid): Exception : Illegal base64url string!
+CustomEncode.GetEncodings: 行数 141
+CustomEncode.GetEncodings: 列 key, value
+CustomEncode.GetEncodings[0]: 0 = shift_jis
+CustomEncode.GetEncodings[last]: 65001 = utf-8
 ----------------------------------------------------------------------------------------------------
 jis2k4.GetStringInfo - あああ: 
 Char長:3; 
@@ -2413,6 +2640,28 @@ Three > Three
 Four > Four
 ----------------------------------------------------------------------------------------------------
 XmlLib > is working properly.
+--------------------------------------------------
+XmlLib.GetAttributeByTagName - item/name: [一つ目]
+XmlLib.GetAttributeByTagName - item/name(index=1): [二つ目]
+XmlLib.GetAttributeByTagName - item/name(index=9): []
+XmlLib.GetAttributeByTagName - item/name(index=-1): []
+XmlLib.GetAttributeByTagName - empty/name: []
+XmlLib.GetAttributeByTagName - none/name: []
+XmlLib.GetAttributeByTagName - item/none: []
+XmlLib.GetAttributeByXPath - //item[@id='i2']/name: [二つ目]
+XmlLib.GetAttributeByXPath - //none: []
+XmlLib.GetAttributeByXPath - //item(index=0): [一つ目]
+XmlLib.GetAttributeByXPath - //item(index=1): [二つ目]
+XmlLib.GetAttributeByXPath - //item(index=2): []
+XmlLib.GetAttributeFromXmlNode - name: [一つ目]
+XmlLib.GetAttributeFromXmlNode - null: []
+XmlLib.GetXmlNodeById - item: item id=i1
+XmlLib.GetXmlNodeById - r1: root id=r1
+XmlLib.GetXmlNodeById - i1: (null)
+XmlLib.GetEncodingFromXmlDeclaration - <?xml version="1.0" encoding="utf-8" ?> : utf-8
+XmlLib.GetEncodingFromXmlDeclaration - <?xml version="1.0" encoding="shift_jis" ?> : shift_jis
+XmlLib.GetEncodingFromXmlDeclaration - <?xml version="1.0" ?> : ArgumentException
+XmlLib.GetEncodingFromXmlDeclaration - <?xml version="1.0" encoding="xxx" ?> : ArgumentException
 ----------------------------------------------------------------------------------------------------
 DeflateCompression(FileStream)-1 > is working properly.
 DeflateCompression(FileStream)-2 > is working properly.
@@ -2435,6 +2684,9 @@ EmbeddedResourceLoader
 読み込み              : 埋め込まれたリソースの内容 / embedded resource
 存在しない            : False
 存在しない（例外）    : System.ArgumentException
+LoadAsStream          : 埋め込まれたリソースの内容 / embedded resource
+LoadXMLAsString       : 長さ 292 / ルート要素 bookstore
+LoadXMLAsString       : XML宣言が残るか True
 ----------------------------------------------------------------------------------------------------
 ZipperV2 → UnZipperV2（往復）
 解凍した件数 : 4
@@ -2576,6 +2828,24 @@ DataSet との JSON 往復
 行   : Id=2, Note="変更後", RowState=Modified
 行   : Id=3, Note="削除される", RowState=Deleted
 行   : Id=4, Note="追加", RowState=Added
+----------------------------------------------------------------------------------------------------
+DTTables の中間生成物（JsonTables）との往復
+[中間生成物] 表の数 : 2
+  表名 TestTypes / 列 7 / 行 4
+    列 : Id:Int32, Name:String, Price:Decimal, Rate:Double, Ordered:DateTime, Flag:Boolean, Blob:ByteArray
+  表名 TestOdd / 列 2 / 行 1
+    列 : state:String, cels:Int32
+[戻した DTTables]
+表名 : TestTypes
+列   : Id(Int32), Name(String), Price(Decimal), Rate(Double), Ordered(DateTime), Flag(Boolean), Blob(ByteArray)
+行   : Id=1, Name="あいう", Price=1234.56, Rate=0.30000000000000004, Ordered=2026-08-14T12:34:56.7890000, Flag=True, Blob=byte[3]:00-01-FF, RowState=Added
+行   : Id=2, Name="", Price=-0.01, Rate=1.7976931348623157E+308, Ordered=1977-04-24T00:00:00.0000000, Flag=False, Blob=byte[0]:, RowState=Added
+行   : Id=3, Name="あ\r\nい", Price=0, Rate=0, Ordered=2000-01-01T00:00:00.0000000, Flag=False, Blob=byte[1]:01, RowState=Added
+行   : Id=4, Name=(null), Price=(null), Rate=(null), Ordered=(null), Flag=(null), Blob=(null), RowState=Added
+表名 : TestOdd
+列   : state(String), cels(Int32)
+行   : state="わな", cels=7, RowState=Added
+[空の DTTables] 列挙の回数 : 0
 ----------------------------------------------------------------------------------------------------
 ObjectInspector.Inspect : 基本の型
 [null]

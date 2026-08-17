@@ -53,6 +53,7 @@
      日時        更新者            内容
      ----------  ----------------  -------------------------------------------------
      2026/08/01  玄人 幸道         新規作成（リリース ワークのエージェント化）
+     2026/08/17  玄人 幸道         テストごとに Base64 の正規化を選べるようにした（#562）
 #>
 [CmdletBinding()]
 param(
@@ -166,38 +167,42 @@ function Copy-TestCertificates
 #               ＝ 期待値でもある（HEAD 版と比較する）
 # Bat         : ビルドとテスト実行を行うバッチ（root\programs\CS 配下）
 # SkipLog4net : log4net の内部トレースを比較対象から外すか
+# NormBase64  : Base64 らしき長い値を伏せるか（#562）
+#               **伏せると、その範囲の変化は差分に出ない。**
+#               識別子（IsHankaku/IsZenkaku など）にも当たるため、
+#               **実行のたびに値が変わるテストだけ $true にする。**
 $tests = @(
     @{
         Name = "TestCode (net48)";           Bat = "y_Build_TestCode_Public.bat"
-        Result = "TestCode\Result48.txt";            SkipLog4net = $false
+        Result = "TestCode\Result48.txt";            SkipLog4net = $false; NormBase64 = $false
     }
     @{
         Name = "TestCode (net10.0)";         Bat = "y_Build_TestCode_Public.bat"
-        Result = "TestCode\ResultCore100.txt";       SkipLog4net = $false
+        Result = "TestCode\ResultCore100.txt";       SkipLog4net = $false; NormBase64 = $false
     }
     @{
         Name = "TestDataAccess (net48)";     Bat = "y_Build_TestCode_DataAccess.bat"
-        Result = "TestDataAccess\Result48.txt";      SkipLog4net = $false
+        Result = "TestDataAccess\Result48.txt";      SkipLog4net = $false; NormBase64 = $false
     }
     @{
         Name = "TestDataAccess (net10.0)";   Bat = "y_Build_TestCode_DataAccess.bat"
-        Result = "TestDataAccess\ResultCore100.txt"; SkipLog4net = $false
+        Result = "TestDataAccess\ResultCore100.txt"; SkipLog4net = $false; NormBase64 = $false
     }
     @{
         Name = "SimpleBatch (net48)";        Bat = "y_Build_TestCode_Batch.bat"
-        Result = "TestBatch\ResultSimpleBatch48.txt";     SkipLog4net = $true
+        Result = "TestBatch\ResultSimpleBatch48.txt";     SkipLog4net = $true; NormBase64 = $false
     }
     @{
         Name = "SimpleBatch (net10.0)";      Bat = "y_Build_TestCode_Batch.bat"
-        Result = "TestBatch\ResultSimpleBatchCore100.txt"; SkipLog4net = $true
+        Result = "TestBatch\ResultSimpleBatchCore100.txt"; SkipLog4net = $true; NormBase64 = $false
     }
     @{
         Name = "EncAndDecUtilCUI (net48)";   Bat = "y_Build_TestCode_SecCUI.bat"
-        Result = "EncAndDecUtilCUI\Result48.txt";        SkipLog4net = $false
+        Result = "EncAndDecUtilCUI\Result48.txt";        SkipLog4net = $false; NormBase64 = $true
     }
     @{
         Name = "EncAndDecUtilCUI (net10.0)"; Bat = "y_Build_TestCode_SecCUI.bat"
-        Result = "EncAndDecUtilCUI\ResultCore100.txt";   SkipLog4net = $false
+        Result = "EncAndDecUtilCUI\ResultCore100.txt";   SkipLog4net = $false; NormBase64 = $true
     }
 )
 
@@ -241,6 +246,11 @@ Write-Host ("  期待値（HEAD 版）を {0} 件退避しました。" -f $expe
 # ------------------------------------------------------------------
 # 1 本のバッチが net48 版と .NET (Core) 版の両方をビルド・実行するため、
 # 同一バッチは 1 回だけ実行する。
+# **ビルドが失敗したバッチ名を覚えておく。**（#564）
+#   失敗しても前回の実行ファイルが動くため、
+#   結果は期待値と一致し「OK」になってしまう。
+$buildFailed = @{}
+
 if (-not $SkipBuild)
 {
     foreach ($bat in ($tests | ForEach-Object { $_.Bat } | Select-Object -Unique))
@@ -252,6 +262,7 @@ if (-not $SkipBuild)
         if (-not (Test-Path $path))
         {
             Write-Host "  バッチが見つかりません" -ForegroundColor Red
+            $buildFailed[$bat] = @("バッチが見つかりません : $path")
             continue
         }
 
@@ -264,7 +275,48 @@ if (-not $SkipBuild)
         Pop-Location
 
         $sw.Stop()
-        Write-Host ("  完了 ({0:N1} 秒)  ログ : {1}" -f $sw.Elapsed.TotalSeconds, $log)
+
+        # ------------------------------------------------------------------
+        # **ログからビルド エラーを拾う。**（#564）
+        # ------------------------------------------------------------------
+        #   ＜終了コードを見ない理由＞
+        #     バッチは msbuild を 2 回、テストの実行を 2 回、最後に pause を呼ぶ。
+        #     $LASTEXITCODE は**最後のものしか返らない**ので、
+        #     ビルドの成否を表さない。
+        #
+        #   ＜1_BuildAll.ps1 と同じ見方にする＞
+        #     コード部分はロケールによらないため、これを拾う。
+        #     "ビルドに失敗しました" 等のサマリ文言は日本語環境でしか出ない。
+        #     コードを伴わない「: error :」形式（NuGet の restore 失敗）もあるため、
+        #     コード部分は省略可能として扱う。
+        $buildErrors = @(
+            Get-Content $log -Encoding UTF8 -EA SilentlyContinue |
+            Where-Object { $_ -match ':\s*error(\s+[A-Za-z]+\d+)?\s*:' -or $_ -match '^\s*\[ERROR\]' } |
+            ForEach-Object { $_.Trim() } |
+            Select-Object -Unique)
+
+        if ($buildErrors.Count -eq 0)
+        {
+            Write-Host ("  完了 ({0:N1} 秒)  ログ : {1}" -f $sw.Elapsed.TotalSeconds, $log)
+        }
+        else
+        {
+            $buildFailed[$bat] = $buildErrors
+
+            Write-Host ("  **ビルド エラー {0} 件** ({1:N1} 秒)  ログ : {2}" -f `
+                $buildErrors.Count, $sw.Elapsed.TotalSeconds, $log) -ForegroundColor Red
+
+            foreach ($e in ($buildErrors | Select-Object -First 5))
+            {
+                Write-Host ("    " + $e) -ForegroundColor Red
+            }
+            if ($buildErrors.Count -gt 5)
+            {
+                Write-Host ("    ... 他 {0} 件（ログを参照）" -f ($buildErrors.Count - 5)) -ForegroundColor Red
+            }
+
+            Write-Host "  **前回の実行ファイルが動くため、比較は当てになりません。**" -ForegroundColor Red
+        }
     }
 }
 
@@ -281,6 +333,20 @@ foreach ($t in $tests)
 
     $actual = Join-Path $testsRoot $t.Result
 
+    # **ビルドが失敗していたら、比較しても意味が無い。**（#564）
+    #   前回の実行ファイルが動いているため、結果は期待値と一致し「OK」になる。
+    #   比較を省いて、ビルド失敗として報告する。
+    if ($buildFailed.ContainsKey($t.Bat))
+    {
+        Write-Host "  **ビルドに失敗しているため、比較しません。**" -ForegroundColor Red
+        Write-Host ("  （{0} のエラー {1} 件）" -f $t.Bat, $buildFailed[$t.Bat].Count) -ForegroundColor Red
+
+        $results += [pscustomobject]@{
+            テスト = $t.Name; 結果 = "ビルド失敗"; 差分 = "-"
+        }
+        continue
+    }
+
     if (-not $expectedOf.ContainsKey($t.Name))
     {
         Write-Host "  期待値（HEAD 版）が無いため比較できません" -ForegroundColor Red
@@ -296,14 +362,19 @@ foreach ($t in $tests)
 
     # CompareResult.ps1 は画面表示に Write-Host を使うため、
     # 件数は -PassThru のオブジェクトで受け取る。
-    if ($t.SkipLog4net)
-    {
-        $cmpResult = & $cmp -Expected $expectedOf[$t.Name] -Actual $actual -SkipLog4netTrace -PassThru
+    #
+    # **スイッチはスプラッティングで渡す。**（#562）
+    #   if で組み合わせを書き分けると、スイッチが増えるたびに分岐が倍になる。
+    $cmpArgs = @{
+        Expected = $expectedOf[$t.Name]
+        Actual   = $actual
+        PassThru = $true
     }
-    else
-    {
-        $cmpResult = & $cmp -Expected $expectedOf[$t.Name] -Actual $actual -PassThru
-    }
+
+    if ($t.SkipLog4net) { $cmpArgs["SkipLog4netTrace"] = $true }
+    if ($t.NormBase64)  { $cmpArgs["NormalizeBase64"]  = $true }
+
+    $cmpResult = & $cmp @cmpArgs
 
     $results += [pscustomobject]@{
         テスト = $t.Name
@@ -322,6 +393,22 @@ Write-SummaryTable $results
 Write-Host ""
 Write-Host ("  期待値・ログ : {0}" -f $OutputDir)
 Write-Host  "  実測値       : ワーキング ツリーの Result*.txt（git diff で確認できます）"
+
+# **ビルド失敗は、差分より先に伝える。**（#564）
+#   放っておくと前回の実行ファイルの結果を見ることになり、
+#   「OK」の意味が変わってしまう。
+if ($buildFailed.Count -gt 0)
+{
+    Write-Host ""
+    Write-Host ("  **ビルドに失敗したバッチが {0} 本あります。**" -f $buildFailed.Count) -ForegroundColor Red
+
+    foreach ($bat in ($buildFailed.Keys | Sort-Object))
+    {
+        Write-Host ("    {0} : エラー {1} 件" -f $bat, $buildFailed[$bat].Count) -ForegroundColor Red
+    }
+
+    Write-Host "  **直さない限り、テストは前回の実行ファイルで動きます。**" -ForegroundColor Red
+}
 
 $ng = @($results | Where-Object { $_.結果 -ne "OK" })
 if ($ng.Count -eq 0)

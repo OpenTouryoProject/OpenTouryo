@@ -77,6 +77,73 @@ namespace TestCode
             MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
 
             TestDto.TestRowState();
+
+            MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+
+            TestDto.TestDTTablesIntermediate();
+        }
+
+        #endregion
+
+        #region 中間生成物と列挙
+
+        /// <summary>中間生成物との往復と列挙（ToJsonObject、FromJsonObject、GetEnumerator）</summary>
+        /// <remarks>
+        /// **JSON 文字列を経由しない経路。**
+        /// `DTTablesToJson` / `JsonToDTTables` は内部でこれを使うが、
+        /// **中間生成物（JsonTables）を直接触る口も公開されている。**
+        /// 文字列を挟まないので、シリアライザの都合と切り分けて確かめられる。
+        /// </remarks>
+        private static void TestDTTablesIntermediate()
+        {
+            MyDebug.OutputDebugAndConsole("DTTables の中間生成物（JsonTables）との往復");
+
+            DTTables dtts = new DTTables();
+            dtts.Add(DTTable.FromDataTable(TestDto.MakeTypedTable()));
+            dtts.Add(DTTable.FromDataTable(TestDto.MakeOddTable()));
+
+            // 中間生成物へ
+            DTTables.JsonTables jTbls = dtts.ToJsonObject();
+
+            MyDebug.OutputDebugAndConsole(
+                "[中間生成物] 表の数 : " + jTbls.tbls.Count.ToString());
+
+            foreach (DTTables.JsonTable jTbl in jTbls.tbls)
+            {
+                MyDebug.OutputDebugAndConsole(
+                    "  表名 " + jTbl.tbl + " / 列 " + jTbl.cols.Count.ToString()
+                    + " / 行 " + jTbl.rows.Count.ToString());
+
+                // **列は順序に意味がある。** 名前と型を順に出す。
+                string cols = "";
+                foreach (DTTables.JsonColumn c in jTbl.cols)
+                {
+                    cols += (cols == "" ? "" : ", ") + c.name + ":" + c.type;
+                }
+                MyDebug.OutputDebugAndConsole("    列 : " + cols);
+            }
+
+            // 中間生成物から戻す
+            DTTables restored = new DTTables();
+            restored.FromJsonObject(jTbls);
+
+            MyDebug.OutputDebugAndConsole("[戻した DTTables]");
+            foreach (DTTable dtt in restored)
+            {
+                // **foreach が回るかを見ている。** これが GetEnumerator の確認になる。
+                //
+                // **OutputDTTable は使えない。** あちらは row["OrderID"] のように
+                // 列名を決め打ちしており、別の表を渡すと例外になる。
+                // 列を走査する OutputDTTableAll を使う。
+                TestDto.OutputDTTableAll(dtt);
+            }
+
+            // **空でも列挙できるか。** 1 度も回らずに抜けること。
+            DTTables empty = new DTTables();
+            int count = 0;
+            foreach (DTTable dtt in empty) { count++; }
+
+            MyDebug.OutputDebugAndConsole("[空の DTTables] 列挙の回数 : " + count.ToString());
         }
 
         #endregion
