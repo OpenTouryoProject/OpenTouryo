@@ -240,10 +240,25 @@ csproj の `CopyToOutputDirectory` で出力フォルダへ配る前提なので
 
 対処は 2 通りある。
 
-| 方針 | 手段（net10.0） | 手段（net48） | 実測 |
-|---|---|---|---|
-| **検知**（実態を知らせる） | `UseForwardedHeaders` | IIS の URL Rewrite で `HTTPS` を立てる | 4 件中 **3 件**に `secure` |
-| **宣言**（そう決め打つ） | `CookieSecurePolicy=always` | `forms` の `requireSSL="true"` | 4 件中 **4 件** |
+| 方針 | 手段（net10.0） | 手段（net48） |
+|---|---|---|
+| **検知**（実態を知らせる） | `UseForwardedHeaders` | IIS の URL Rewrite で `HTTPS` を立てる |
+| **宣言**（そう決め打つ） | `CookieSecurePolicy=always` | `forms` の `requireSSL="true"` |
+
+**どちらも実測してある**（`X-Forwarded-Proto: https` を付けた要求で `Set-Cookie` を見る）。
+
+| | 検知 | 宣言 |
+|---|---|---|
+| net10.0 | 4 件中 **3 件** | 4 件中 **4 件** |
+| net48 | 6 件中 **2 件**（＝フレームワークが立てる `SessionTimeOut` の生成・削除の両方） | — |
+
+net10.0 の検知が 3 件止まりなのは、**削除用 Cookie が
+`CookieExtensions.Delete(key)`（オプション無し）を通る**ため。
+net48 側は削除も `newCookie.Secure` を明示しているので、両方に付く。
+
+> **net48 では `allowedServerVariables` への登録も要る。**
+> `Web.config` からは設定できず（`overrideModeDefault="Deny"`）、
+> `applicationHost.config` に書く。**忘れると要求ごとに HTTP 500.50 になる。**
 
 **宣言の方が依存が少なく確実。** `CookiePolicy` はすべての `Set-Cookie` を後段で
 上書きするため、個々の箇所が何を判断しているかに依存しない。
@@ -289,6 +304,97 @@ Antiforgery の Cookie が返らず**ログインの POST が 400** になる（
 
 ---
 
+### net48 で「検知」する — IIS の URL Rewrite
+
+**`Request.IsSecureConnection` はコードから変えられない**（読み取り専用）。
+IIS 側で `HTTPS` サーバ変数を立てる。
+
+**MVC でも Web Forms でも同じ**である。設定するのは IIS であって、アプリの実装ではない。
+
+#### ① `Web.config` に受信規則を書く
+
+```xml
+<system.webServer>
+  <rewrite>
+    <rules>
+      <rule name="ForwardedProto">
+        <match url=".*" />
+        <conditions>
+          <add input="{HTTP_X_FORWARDED_PROTO}" pattern="^https$" />
+        </conditions>
+        <serverVariables>
+          <set name="HTTPS" value="on" />
+        </serverVariables>
+        <action type="None" />
+      </rule>
+    </rules>
+  </rewrite>
+</system.webServer>
+```
+
+`action type="None"` は「書き換えも転送もしない」。**サーバ変数を立てるためだけの規則**である。
+
+#### ② `applicationHost.config` に `HTTPS` を登録する
+
+**これを忘れると、すべての要求が HTTP 500.50 になる。**
+
+```
+HTTP Error 500.50 - URL Rewrite Module Error.
+The server variable "HTTPS" is not allowed to be set.
+Add the server variable name to the allowed server variable list.
+```
+
+```xml
+<rewrite>
+  <allowedServerVariables>
+    <add name="HTTPS" />
+  </allowedServerVariables>
+</rewrite>
+```
+
+**`Web.config` からは設定できない。** `allowedServerVariables` は
+`overrideModeDefault="Deny"` で、`applicationHost.config` にしか書けない。
+アプリが勝手にサーバ変数を書き換えられないための関門である。
+
+#### 実測（IIS Express、`Samples/WebApp_sample/MVC_Sample`）
+
+| 送ったヘッダ | `secure` が付いた Cookie |
+|---|---|
+| `X-Forwarded-Proto: https` | **6 件中 2 件**（`SessionTimeOut` の生成・削除の両方） |
+| （ヘッダ無し） | 0 件 |
+| `X-Forwarded-Proto: http` | 0 件（条件の `^https$` が弾く） |
+
+`SessionTimeOut` は `FxCmnFunction` が立てる Cookie なので、
+`IsSecureConnection` が true になったことの直接の確認になる。
+
+> **ARR は要らない。** ARR は IIS 自身を**リバース プロキシにする**機能で、
+> ここで要るのは URL Rewrite だけ。前段が既にある構成なら ARR は無関係。
+
+> **IIS Express で試すときの注意。**
+> `/path:` 起動は `%ProgramFiles%\IIS Express\AppServer\applicationhost.config` を読む
+> （`%USERPROFILE%\Documents\IISExpress\config\...` ではない）。
+> `/config:` は `/path:` と併用できず、`/site:` が要る。
+
+### net48 で鍵を揃える — `machineKey`
+
+**Web サーバを複数台にするなら要る。** セッションを StateServer や SQLServer へ
+外出ししても、それだけでは足りない。
+
+**認証 Cookie（`forms`）と ViewState は `machineKey` で保護されている。**
+指定しないと**サーバごとに別の鍵が自動生成される**ため、台数を増やした途端、
+片方が発行したものをもう片方が復号できず、
+ログインし直しや「ビューステートの検証に失敗しました」になる。
+
+```xml
+<machineKey validationKey="＜同じ値＞" decryptionKey="＜同じ値＞"
+            validation="HMACSHA256" decryption="AES" />
+```
+
+**ViewState を使う Web Forms では、より当たりやすい。**
+netcore 側の対応物は DataProtection（10 節）。
+
+---
+
 ## 9. 秘密の扱い
 
 サンプルは**パスワードを直書きしている**（すぐ動かせることを優先しているため）。
@@ -327,7 +433,126 @@ dotnet dev-certs https --format Pem -ep ./https/aspnetapp.pem -np
 
 ---
 
-## 11. 実例はどこにあるか
+## 11. CS 版と VB 版で、どこが違ってよいか（#553）
+
+**`Samples` の設定ファイルは CS / VB でほぼ同じだが、完全には同じでない。**
+**「同じはずだから」とコピーすると、VB 固有の記述が消える。**（実際に消した。#549 の作業中）
+
+### 突き合わせの結果（#553 時点の実測）
+
+対応する設定ファイル **25 組**を、XML の要素・属性で比較した
+（コメント・空白・改行・BOM の差は無視）。
+
+| | 組数 |
+|---|---|
+| 完全一致 | **8** |
+| 差分あり | **17** |
+
+> **組数は必ず見ること。**
+> 対応づけは「CS からの相対パスを VB に当てる」方式なので、
+> **階層が一致しないプロジェクトは 1 組も対象に入らない。**
+> **「差分 0 件」と「対象に入っていない」は、出力の上では区別がつかない。**
+
+差分の種類は次のとおり（1 組が複数に該当することがある）。
+
+| 種類 | 組数 | 判断 |
+|---|---|---|
+| `startup` / `supportedRuntime`（**VB のみ**） | 10 | **違ってよい**（VS が VB プロジェクトに自動で入れる） |
+| `runtime/assemblyBinding` の `bindingRedirect` | 8 | **違ってよい**（NuGet が生成。参照するパッケージの版で変わる） |
+| `packages.config` の構成 | 2 | **揃える**（下記） |
+| `ClientSettingsProvider.ServiceUri`（VB のみ） | 1 | **違ってよい**（VS のテンプレート由来） |
+| `SqlTextFilePath` の値 | 1 | **違わないといけない**（下記） |
+| `compilation/assemblies`（VB のみ） | 1 | **違ってよい**（VB は明示参照が要ることがある） |
+| 接続文字列の末尾の `;` | 1 | **要確認**（`ConnectionString_MCN`。CS だけ `;` が付く） |
+| 要素の順序だけ | 1 | 無視してよい（`MVC_Sample/app.config`） |
+
+### **違わないといけない**もの — 埋め込みリソースの名前
+
+`Samples/2CS_sample/GenDaoAndBatUpd_sample/app.config`
+
+```
+CS : <add key="SqlTextFilePath" value="GenDaoAndBatUpd_sample.Dao" />
+VB : <add key="SqlTextFilePath" value="GenDaoAndBatUpd_sample" />
+```
+
+**同じにすると壊れる。** 埋め込みリソースの名前の作られ方が、言語で違うため。
+
+| | マニフェスト名 |
+|---|---|
+| C# | `＜RootNamespace＞.＜フォルダ＞.＜ファイル名＞` |
+| **VB** | `＜RootNamespace＞.＜ファイル名＞`（**フォルダ名が入らない**） |
+
+`RootNamespace` はどちらも `GenDaoAndBatUpd_sample`、`EmbeddedResource Include="Dao\..."` も
+同じである。**違うのはコンパイラの規則の方**なので、設定値で吸収するしかない。
+
+> `SqlTextFilePath` は「埋め込みリソースなら名前空間、通常のファイルならフォルダのパス」
+> という二役を持つ（`MyBaseDao.SetSqlByFile2`）。5 節・7-3 節も参照。
+
+### `packages.config` も突き合わせの対象である
+
+拡張子が `.config` なので元から対象に入っている。**`$allowed` には入れていない。**
+
+見るのは、**陳腐化した宣言**（`packages.config` にしか出てこないパッケージ）と
+**`targetFramework` の残留**（プロジェクトの `TargetFrameworkVersion` と食い違う宣言）である。
+
+**どちらもビルドは通る。** だから検査でしか見つからない。
+
+> `packages.config` の見方（サテライト・コンテンツ・メタ パッケージの区別）は
+> [`BUILDING.md`](BUILDING.md) 11 節。**「参照が無い＝不要」ではない。**
+
+### 揃えるときの原則
+
+**丸ごとコピーしない。** 上のとおり、丸ごと同じにしてよいファイルは 25 組中 8 組しかない。
+
+**差分の行数を必ず見る。** コメントを 16 行足したはずが `+23/−53` になっていたことで、
+実際に事故に気付けた。
+
+```
+git diff --numstat
+```
+
+**値が変わっていないことは、機械的に確かめられる。**
+[`CompareConfig.ps1`](CompareConfig.ps1) が、XML の要素・属性だけを取り出して突き合わせる。
+コメント・空白・改行・BOM の差は落ちるので、**値の差だけが残る。**
+
+```powershell
+cd root\programs
+.\CompareConfig.ps1                               # 一覧
+.\CompareConfig.ps1 -Detail -Only "WebApp_sample" # 内訳
+.\CompareConfig.ps1 -Check                        # 合否（想定外の差分があれば 1）
+```
+
+**`-Check` は「差分の有無」ではなく「想定外の差分の有無」を見る。**
+上の表で「違ってよい」とした種類（`startup` / `runtime` / `compilation/assemblies` /
+`SqlTextFilePath` / `ClientSettingsProvider.*`）は、当てはまれば想定内として扱う。
+
+```
+================ 判定 ================
+  **想定外の差分 2 件**
+
+  Samples\WebApp_sample\WebForms_Sample\WebForms_Sample\Web.config
+    /configuration/connectionStrings/... [connectionString=...Database=test2;...]
+```
+
+**許容する種類を増やすときは、なぜ違ってよいのかをこの節にも書くこと。**
+スクリプトの `$allowed` だけに足すと、**理由が残らない。**
+
+**そして、足す前に「なぜ違うのか」を履歴で確かめること。**
+**「差がある」ことと「違ってよい」ことは別である。**
+理由が「片側だけ作業が済んでいない」なら、**許容ではなく、作業を終わらせるのが答え**になる。
+`$allowed` に入れてしまうと、**やり残しが「仕様」として固定される。**
+
+`compilation/assemblies` の欠落と接続文字列の `;` は、この方法で見つけた。
+
+> **CI は代わりにならない。**
+> VB の疎通テストは 6 対象しか動かさないため、**差分のあるファイルの半分以上は
+> 一度も実行されない。** 実行される分でも `compilation/assemblies` の欠落は
+> `0_RunAll.ps1 -Lang Both` を通過した（実測）。
+> **CI は「壊れていないこと」の証拠にはなるが、「意図どおり」の証拠にはならない。**
+
+---
+
+## 12. 実例はどこにあるか
 
 | 見たいもの | 場所 |
 |---|---|

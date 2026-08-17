@@ -18,7 +18,6 @@
 //**********************************************************************************
 
 using System.Web.Routing;
-//using Microsoft.AspNet.FriendlyUrls;
 
 namespace WebForms_Sample
 {
@@ -26,9 +25,9 @@ namespace WebForms_Sample
     {
         public static void RegisterRoutes(RouteCollection routes)
         {
-            //var settings = new FriendlyUrlSettings();
-            //settings.AutoRedirectMode = RedirectMode.Permanent;
-            //routes.EnableFriendlyUrls(settings);
+            // ルート定義はここに書く。
+            // FriendlyUrls（拡張子なし URL）の例は、参照ごと外した（#554）。
+            // 使っていないパッケージを残すと、参照だけが増えていくため。
         }
     }
 }

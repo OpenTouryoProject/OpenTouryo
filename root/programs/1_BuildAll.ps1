@@ -125,15 +125,15 @@ if ([Console]::OutputEncoding.CodePage -ne 65001)
 # SkipIfDone : 同じ実行内で同じバッチが既に走っていれば飛ばす（-Lang Both 用）
 $stepsCS = @(
     # --- net48 : 基盤 ---
-    @{ Name = "Clean (net48 基盤)";            Bat = "1_DeleteDir.bat";                        Clean = $true }
-    @{ Name = "Clean files (net48 基盤)";      Bat = "1_DeleteFile.bat";                       Clean = $true }
+    @{ Name = "Clean (net48 基盤)";            Bat = "1_DeleteDir.bat";                        Clean = $true; SkipIfDone = $true }
+    @{ Name = "Clean files (net48 基盤)";      Bat = "1_DeleteFile.bat";                       Clean = $true; SkipIfDone = $true }
     @{ Name = "NuGet (net48)";                 Bat = "2_Build_NuGet_net48.bat" }
     @{ Name = "Business (net48)";              Bat = "3_Build_Business_net48.bat" }
     @{ Name = "Business.RichClient (net48)";   Bat = "3_Build_BusinessRichClient_net48.bat" }
 
     # --- netcore100 : 基盤 ---
-    @{ Name = "Clean (core 基盤)";             Bat = "1_DeleteDir.bat";                        Clean = $true }
-    @{ Name = "Clean files (core 基盤)";       Bat = "1_DeleteFile.bat";                       Clean = $true }
+    @{ Name = "Clean (core 基盤)";             Bat = "1_DeleteDir.bat";                        Clean = $true; SkipIfDone = $true }
+    @{ Name = "Clean files (core 基盤)";       Bat = "1_DeleteFile.bat";                       Clean = $true; SkipIfDone = $true }
     @{ Name = "NuGet (netcore100)";            Bat = "2_Build_NuGet_netcore100.bat" }
     @{ Name = "Business (netcore100)";         Bat = "3_Build_Business_netcore100.bat" }
     @{ Name = "Business.RichClient (core)";    Bat = "3_Build_BusinessRichClient_netcore100.bat" }
@@ -142,8 +142,8 @@ $stepsCS = @(
     @{ Name = "CopyAssemblies";                Bat = "4_Build_CopyAssemblies.bat" }
 
     # --- net48 : ツールとサンプル ---
-    @{ Name = "Clean (net48 サンプル)";        Bat = "1_DeleteDir.bat";                        Clean = $true }
-    @{ Name = "Clean files (net48 サンプル)";  Bat = "1_DeleteFile.bat";                       Clean = $true }
+    @{ Name = "Clean (net48 サンプル)";        Bat = "1_DeleteDir.bat";                        Clean = $true; SkipIfDone = $true }
+    @{ Name = "Clean files (net48 サンプル)";  Bat = "1_DeleteFile.bat";                       Clean = $true; SkipIfDone = $true }
     @{ Name = "Framework_Tool (net48)";        Bat = "4_Build_Framework_Tool.bat" }
     @{ Name = "2CS_sample (net48)";            Bat = "5_Build_2CS_sample.bat" }
     @{ Name = "Bat_sample (net48)";            Bat = "5_Build_Bat_sample.bat" }
@@ -154,8 +154,8 @@ $stepsCS = @(
     @{ Name = "WebApp_sample (net48)";         Bat = "10_Build_WebApp_sample.bat" }
 
     # --- netcore100 : ツールとサンプル ---
-    @{ Name = "Clean (core サンプル)";         Bat = "1_DeleteDir.bat";                        Clean = $true }
-    @{ Name = "Clean files (core サンプル)";   Bat = "1_DeleteFile.bat";                       Clean = $true }
+    @{ Name = "Clean (core サンプル)";         Bat = "1_DeleteDir.bat";                        Clean = $true; SkipIfDone = $true }
+    @{ Name = "Clean files (core サンプル)";   Bat = "1_DeleteFile.bat";                       Clean = $true; SkipIfDone = $true }
     @{ Name = "Framework_ToolCore";            Bat = "4_Build_Framework_ToolCore.bat" }
     @{ Name = "2CSCore_sample";                Bat = "5_Build_2CSCore_sample.bat" }
     @{ Name = "BatCore_sample";                Bat = "5_Build_BatCore_sample.bat" }
@@ -296,8 +296,13 @@ $allKnown  = New-Object System.Collections.Generic.List[string]
 $total = [Diagnostics.Stopwatch]::StartNew()
 
 # 実行済みのバッチ（"フォルダ\バッチ名"）。SkipIfDone の判定に使う。
-# ※ 1_DeleteDir.bat のように意図して繰り返すステップがあるため、
-# 　 一律の重複排除はしない。SkipIfDone を付けたものだけを対象にする。
+# ※ 一律の重複排除はしない。SkipIfDone を付けたものだけを対象にする。
+#
+# **Clean は区画ごとに置いてあるが、実際に走るのは最初の 1 回だけ。**（#557）
+#   1_DeleteDir.bat は bin を含めてカレント配下から再帰的に消すため、
+#   2 回目以降は**直前の区画でビルドした成果物を消してしまう。**
+#   通しは元々クリーン ビルドなので、最初の 1 回で足りる。
+#   区画の区切りとしての表示は「実行済み」として残す（黙って消さない）。
 $executed = @{}
 
 foreach ($s in $steps)

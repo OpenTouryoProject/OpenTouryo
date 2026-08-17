@@ -30,10 +30,11 @@ cd root\programs
 
 **既定は C# 側。VB 側は `-Lang` で回す**（3 節）。
 
-- **`-IgnoreErrors` を付けないと `MSB3482` で NG になる。** ClickOnce の署名で、
-  証明書が無い環境では必ず出る（[`BUILDING.md`](BUILDING.md) 4 節）。
-  **`0_RunAll.ps1` はこれを渡さない**ので、`1_BuildAll.ps1` が `1` を返すことがある。
-  終了コードだけで判断せず、エラー一覧の内容を見ること
+- **`1_BuildAll.ps1` を単体で回すときは `-IgnoreErrors` を付ける。**
+  ClickOnce の署名（`MSB3482`）で、証明書が無い環境では必ず出る
+  （[`BUILDING.md`](BUILDING.md) 4 節）。
+  **`0_RunAll.ps1` は既定でこれを渡すので、付けなくてよい**（#555）。
+  除外した内容は件数つきで別枠に出るため、そちらは目を通すこと
 - `2_RunAllTests.ps1` は `Result*.txt` を書き換える。**差分 0 なら中身は同じ**
 - 前提（DB・サービス・IIS Express）は [`RELEASE.md`](RELEASE.md) 2 節
 
@@ -186,6 +187,7 @@ powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.
 | `'xxx' is not recognized` が大量に出る | bat の非 ASCII とコード ページ | ASCII 化。[`CODING.md`](CODING.md) 4 節 |
 | `MSB4226`（`Microsoft.WebApplication.targets`） | nuget が別製品の MSBuild を拾った | `nuget.exe restore ... %NUGET_MSBUILD%` |
 | ビルドは通るのに `DllNotFoundException`（`...SNI...`） | `nuget restore` を呼んでおらず、ネイティブ DLL が出力に入らない | 該当 sln に restore を足す。[`BUILDING.md`](BUILDING.md) 10 節 |
+| `packages.config` の id が `csproj` に無い＝不要に見える | サテライト（`.ja`）とコンテンツ パッケージは**出なくて正常**（48 件中 44 件） | 消す前に [`BUILDING.md`](BUILDING.md) 11 節 |
 
 **NuGet パッケージ作成の落とし穴は
 [`CS/NuGet/README.md`](CS/NuGet/README.md) 9 節**にまとめてある。

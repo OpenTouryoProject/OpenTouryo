@@ -81,12 +81,6 @@
     <Reference Include="System.Security" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="WSIFType_sample">
-      <HintPath>..\..\Build\WSIFType_sample.dll</HintPath>
-    </Reference>
-    <Reference Include="WSServer_sample">
-      <HintPath>..\..\Build\WSServer_sample.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -177,6 +171,16 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\WSIFType_sample\WSIFType_sample.vbproj">
+      <Project>{f6e2bd99-672a-4f69-82e3-eee5d9b639df}</Project>
+      <Name>WSIFType_sample</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\WSServer_sample\WSServer_sample.vbproj">
+      <Project>{15f78db3-7ab0-4adf-adca-48afbd54c31e}</Project>
+      <Name>WSServer_sample</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

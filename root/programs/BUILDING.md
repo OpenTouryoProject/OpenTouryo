@@ -850,3 +850,74 @@ VB の `.vbproj` は `Microsoft.Data.SqlClient` などを `PackageReference` で
 
 **ビルドの成否では気付けない。** 疎通確認（`3_SmokeTest.ps1 -Lang VB`）で初めて分かる。
 実際、#533 で「VB の全ビルドが通る」ことを確認した後も、この不具合は残っていた。
+
+---
+
+## 11. 参照とパッケージを洗うとき（#554）
+
+`packages.config` と `<Reference>` は**ビルドの入力**である。
+実行時の設定（`app.config` / `appsettings.json`）とは別なので、本書で扱う。
+
+### 「参照が無い＝不要」ではない
+
+`packages.config` の id を `csproj` の `<Reference>` と突き合わせると、
+**8 プロジェクトで 48 件が「未参照」に見える。うち 44 件は消してはいけない。**
+
+| 種類 | 件数 | csproj に出るか |
+|---|---|---|
+| **サテライト**（`Xxx.ja`） | 25 | **出なくて正常**。`bin\ja\` に置かれるだけで、参照は本体が持つ |
+| **コンテンツ**（bootstrap / jQuery / Modernizr 等） | 19 | **出なくて正常**。`Scripts\` `Content\` に展開されるだけ |
+| **アセンブリで、どこからも参照されない** | 4 | 不要 |
+
+判定のしかたは次の通り。
+
+- サテライト : **`.ja` を取った id が、同じ `packages.config` に在るか**
+- コンテンツ : **展開物が実在するか**（`Content/bootstrap.css` `Scripts/jquery-*.js` 等）
+- **メタ パッケージ**（`Microsoft.AspNet.WebApi` 等）は `packages\<id>.<ver>\` に
+  `lib` を持たない。**中身が nupkg と EULA だけなら、それはメタである**
+
+### アセンブリ名がソースに出てこなくても、使われている
+
+`<Reference>` 側も同じで、**アセンブリ名で grep しても当たらないが必要**なものがある。
+
+| アセンブリ | 実際は | どこで分かるか |
+|---|---|---|
+| `System.Web.Http.WebHost` | `GlobalConfiguration` を提供する | `Global.asax.cs` の `GlobalConfiguration.Configuration` |
+| `Microsoft.ScriptManager.MSAjax` / `.WebForms` | `<asp:ScriptManager>` が使う | `.master` / `.aspx` |
+| `System.Web.Razor` ほか 18 件 | **他のパッケージが要求する間接依存** | `.nuspec` の `<dependency>` |
+
+**名前空間とアセンブリ名は一致しない。** `System.Web.Http.WebHost` が提供する型は
+`System.Web.Http.GlobalConfiguration` で、ソースには `System.Web.Http` としか出ない。
+
+> **`.nuspec` は展開されない。**
+> `packages\<id>.<ver>\` に在るのは `.nupkg`（ZIP）だけで、`.nuspec` はその中にしか無い。
+> 間接依存を調べるなら ZIP を開くこと。
+>
+> **`packages` フォルダはプロジェクト直下とは限らない。**
+> ソリューション階層に在ることが多く、`HintPath` が `..\packages\...` になっている。
+
+### 通しビルドの対象外は、消してはいけない
+
+**消せるかどうかは「壊れていないことを確かめられるか」で決まる。**
+
+`DamDB2` の `IBM.Data.DB2.Entity` は、Entity Framework の痕跡が無く候補に見える。
+だが **`DamDB2` はどの `.sln` にも、どの `.bat` にも入っていない。**
+消しても `0_RunAll.ps1` は何も言わないので、**判断の材料が得られない。**
+
+`CS/NuGet/proj` 配下を `CompareRedirect.ps1` の対象から外したのと同じ理屈である（#557）。
+
+### 手順
+
+```powershell
+# 1. 参照の実体を確かめる（packages が復元されている必要がある）
+.\1_BuildAll.ps1
+
+# 2. 消す。csproj / vbproj には触らず、packages.config の行だけを消す
+#    メタ パッケージは lib を持たないので、読まれるアセンブリは変わらない
+
+# 3. 差分の行数を必ず見る。設定ファイルの編集は壊しやすい
+git diff --numstat
+
+# 4. 検証する
+.\0_RunAll.ps1 -Lang Both
+```
