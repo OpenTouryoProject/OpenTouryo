@@ -38,6 +38,8 @@
 //*  2013/08/30  西野 大介         IsInCodePageメソッドを追加
 //*  2018/03/28  西野 大介         .NET Standard対応で、Microsoft.VisualBasicのサポート無し。
 //*  2019/10/28  西野 大介         VisualBasic → Zipanguで、IsNumericを復帰
+//*  2026/08/17  玄人 幸道         IsNumericとIsNumbersで、空文字列の結果が逆になる
+//*                                理由をコメントに追記（#552）。挙動は変えていない。
 //**********************************************************************************
 
 using System.Text;
@@ -70,6 +72,15 @@ namespace Touryo.Infrastructure.Public.Str
         /// double.TryParseでの実装。
         /// http://support.microsoft.com/kb/329488/ja
         /// 全角文字もチェック可能（半角変換後にチェック）。
+        ///
+        /// 空文字列が指定された場合は、falseが返ります。
+        /// 「入力が単体の"数値（Number）"として評価・変換できるか」を見るメソッドであり、
+        /// 空文字列は数値として評価できないためです。
+        ///
+        /// IsNumbersとは、空文字列に対する結果が逆になります（あちらはtrue）。
+        /// あちらは「すべての文字が"数字（Digits）"か」を見るので、
+        /// 文字が１つも無ければ条件に反する文字も無く、trueになります。
+        /// 名前が似ていますが問いが違うので、用途に合う方を選んでください。
         /// </remarks>
         public static bool IsNumeric(string input)
         {
@@ -94,7 +105,15 @@ namespace Touryo.Infrastructure.Public.Str
         /// <remarks>
         /// 数値チェックという意味ではParse、TryParse
         /// メソッドを使用すべきかどうかも検討下さい。
+        ///
         /// 空文字列が指定された場合は、trueが返ります。
+        /// 「すべての文字が"数字（Digits）"か」を見るメソッドなので、
+        /// 文字が１つも無ければ条件に反する文字も無く、trueになるためです。
+        /// （連続一致が０回以上（*）なのも、必須入力チェックと被らせないためです）
+        ///
+        /// IsNumericとは、空文字列に対する結果が逆になります（あちらはfalse）。
+        /// あちらは「単体の"数値（Number）"として評価・変換できるか」を見ます。
+        /// 名前が似ていますが問いが違うので、用途に合う方を選んでください。
         /// </remarks>
         public static bool IsNumbers(string input)
         {
