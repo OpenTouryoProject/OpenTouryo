@@ -30,6 +30,7 @@
 //*  2010/03/xx  西野 大介         新規作成
 //*  2010/11/11  前川 祐介         Silverlight対応（ジェネリック）
 //*  2011/10/09  西野 大介         国際化対応
+//*  2026/08/18  玄人 幸道         変更前の値（Original）の保持に対応（#567）
 //**********************************************************************************
 
 using System;
@@ -145,6 +146,16 @@ namespace Touryo.Infrastructure.Public.Dto
 
         /// <summary>列を保持するList</summary>
         /// <remarks>変更させないため、外部に公開しない。</remarks>
+        /// <summary>変更前の値（Original）を保持するか</summary>
+        /// <remarks>DTRow から参照する。設定は DTTable.KeepOriginal で行う。</remarks>
+        internal bool KeepOriginal
+        {
+            get
+            {
+                return this._tblStat.KeepOriginal;
+            }
+        }
+
         internal List<DTColumn> ColsInfo
         {
             get

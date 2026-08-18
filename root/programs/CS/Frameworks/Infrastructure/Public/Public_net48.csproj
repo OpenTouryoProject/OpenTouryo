@@ -86,6 +86,7 @@
     <Compile Include="Diagnostics\MyDebug.cs" />
     <Compile Include="Diagnostics\ObjectInspector.cs" />
     <Compile Include="Dto\DTRowState.cs" />
+    <Compile Include="Dto\DTRowVersion.cs" />
     <Compile Include="Dto\DataToPoco.cs" />
     <Compile Include="Dto\DataToDictionary.cs" />
     <Compile Include="Dto\PocoToPoco.cs" />

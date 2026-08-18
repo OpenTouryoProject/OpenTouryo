@@ -70,11 +70,11 @@ log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.Level
 log4net: Created Appender [OPERATION2]
 log4net: Adding appender named [OPERATION2] to logger [OPERATION].
 log4net: Hierarchy Threshold []
-[2026/08/18 02:24:41,605],[DEBUG],[2],LogIF.DebugLog("ACCESS");
-[2026/08/18 02:24:41,619],[INFO ],[2],LogIF.InfoLog("ACCESS");
-[2026/08/18 02:24:41,620],[WARN ],[2],LogIF.WarnLog("ACCESS");
-[2026/08/18 02:24:41,620],[ERROR],[2],LogIF.ErrorLog("ACCESS");
-[2026/08/18 02:24:41,621],[FATAL],[2],LogIF.FatalLog("ACCESS");
+[2026/08/18 18:51:58,190],[DEBUG],[2],LogIF.DebugLog("ACCESS");
+[2026/08/18 18:51:58,204],[INFO ],[2],LogIF.InfoLog("ACCESS");
+[2026/08/18 18:51:58,205],[WARN ],[2],LogIF.WarnLog("ACCESS");
+[2026/08/18 18:51:58,206],[ERROR],[2],LogIF.ErrorLog("ACCESS");
+[2026/08/18 18:51:58,206],[FATAL],[2],LogIF.FatalLog("ACCESS");
 LogIF.Is*Enabled - ACCESS : Debug True / Info True / Warn True / Error True / Fatal True
 log4net: configuring repository [log4net-default-repository] using stream
 log4net: loading XML configuration
@@ -2774,7 +2774,7 @@ DataSet との JSON 往復
 列   : state(String), cels(Int32)
 行   : state="わな", cels=7, RowState=Added
 [JSON]
-{"tbls":[{"tbl":"TestTypes","cols":[{"name":"Id","type":"Int32"},{"name":"Name","type":"String"},{"name":"Price","type":"Decimal"},{"name":"Rate","type":"Double"},{"name":"Ordered","type":"DateTime"},{"name":"Flag","type":"Boolean"},{"name":"Blob","type":"ByteArray"}],"rows":[{"cels":["1","あいう","1234.56","0.30000000000000004","2026-08-14T12:34:56.7890000","True","AAH/"],"state":2},{"cels":["2","","-0.01","1.7976931348623157E+308","1977-04-24T00:00:00.0000000","False",""],"state":2},{"cels":["3","あ\r\nい","0","0","2000-01-01T00:00:00.0000000","False","AQ=="],"state":2},{"cels":["4",null,null,null,null,null,null],"state":2}]},{"tbl":"TestOdd","cols":[{"name":"state","type":"String"},{"name":"cels","type":"Int32"}],"rows":[{"cels":["わな","7"],"state":2}]}]}
+{"tbls":[{"tbl":"TestTypes","korg":false,"cols":[{"name":"Id","type":"Int32"},{"name":"Name","type":"String"},{"name":"Price","type":"Decimal"},{"name":"Rate","type":"Double"},{"name":"Ordered","type":"DateTime"},{"name":"Flag","type":"Boolean"},{"name":"Blob","type":"ByteArray"}],"rows":[{"cels":["1","あいう","1234.56","0.30000000000000004","2026-08-14T12:34:56.7890000","True","AAH/"],"ocels":null,"state":2},{"cels":["2","","-0.01","1.7976931348623157E+308","1977-04-24T00:00:00.0000000","False",""],"ocels":null,"state":2},{"cels":["3","あ\r\nい","0","0","2000-01-01T00:00:00.0000000","False","AQ=="],"ocels":null,"state":2},{"cels":["4",null,null,null,null,null,null],"ocels":null,"state":2}]},{"tbl":"TestOdd","korg":false,"cols":[{"name":"state","type":"String"},{"name":"cels","type":"Int32"}],"rows":[{"cels":["わな","7"],"ocels":null,"state":2}]}]}
 [JSONとの往復（DTTables）]
 表の数 : 2
 表名で取得 : TestOdd
@@ -2846,6 +2846,54 @@ DTTables の中間生成物（JsonTables）との往復
 列   : state(String), cels(Int32)
 行   : state="わな", cels=7, RowState=Added
 [空の DTTables] 列挙の回数 : 0
+----------------------------------------------------------------------------------------------------
+KeepOriginal = False
+  変更直後 : RowState=Modified / HasOriginal=False
+  変更直後 : Name 現在=["変更後"] 変更前=["変更後"]
+  JSON 往復後 : KeepOriginal=False / RowState=Modified / HasOriginal=False
+  JSON 往復後 : Name 現在=["変更後"] 変更前=["変更後"]
+  DataTable 復元後 : RowState=Modified
+  DataTable 復元後 : Name 現在=["変更後"] Original=["変更後"]
+  DataTable 復元後 : Price 現在=[9999] Original=[9999]
+  DataTable 復元後 : Id Original=[1]
+
+KeepOriginal = True
+  変更直後 : RowState=Modified / HasOriginal=True
+  変更直後 : Name 現在=["変更後"] 変更前=["あいう"]
+  JSON 往復後 : KeepOriginal=True / RowState=Modified / HasOriginal=True
+  JSON 往復後 : Name 現在=["変更後"] 変更前=["あいう"]
+  DataTable 復元後 : RowState=Modified
+  DataTable 復元後 : Name 現在=["変更後"] Original=["あいう"]
+  DataTable 復元後 : Price 現在=[9999] Original=[1234.56]
+  DataTable 復元後 : Id Original=[1]
+
+AcceptChanges / RejectChanges
+  AcceptChanges 前 : HasOriginal=True / 変更前=["あいう"]
+  AcceptChanges 後 : RowState=Unchanged / HasOriginal=False / 変更前=["変更後"]
+  再変更後 : 現在=["さらに変更"] 変更前=["変更後"]
+  RejectChanges 後 : 行数 4 → 5 → 4 / RowState=Unchanged / Name=["あいう"]
+  保持なしで RejectChanges : RowState=Unchanged / Name=["変更後"]（値は戻らない）
+----------------------------------------------------------------------------------------------------
+バッチ更新への適用 : KeepOriginal = False
+  対象外（Unchanged） : Id=1, Note="そのまま", Qty=10
+  UPDATE SET   : Id=2, Note="変更後", Qty=99
+  UPDATE WHERE : Id=2, Note="変更後", Qty=99
+  DELETE WHERE : Id=3, Note="削除される", Qty=30
+  INSERT : Id=4, Note="追加", Qty=40
+  GetChanges(Added) : 1 行
+  GetChanges(Modified) : 1 行
+  GetChanges(Deleted) : 1 行
+
+バッチ更新への適用 : KeepOriginal = True
+  対象外（Unchanged） : Id=1, Note="そのまま", Qty=10
+  UPDATE SET   : Id=2, Note="変更後", Qty=99
+  UPDATE WHERE : Id=2, Note="変更前", Qty=20
+  DELETE WHERE : Id=3, Note="削除される", Qty=30
+  INSERT : Id=4, Note="追加", Qty=40
+  GetChanges(Added) : 1 行
+  GetChanges(Modified) : 1 行
+  GetChanges(Deleted) : 1 行
+
 ----------------------------------------------------------------------------------------------------
 ObjectInspector.Inspect : 基本の型
 [null]
