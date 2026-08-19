@@ -185,7 +185,6 @@ C:\root\programs\CS\Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSC
 
 #### Infrastructure:
 - C:\root\programs\CS\Frameworks\Infrastructure
-- C:\root\programs\CS\Frameworks\Infrastructure\ServiceInterface\ASPNETWebServiceCore
 
 #### Tools:
 - C:\root\programs\CS\Frameworks\Tools

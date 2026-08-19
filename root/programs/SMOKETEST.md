@@ -81,7 +81,7 @@ cd root\programs
 
 ---
 
-## 3. 対象（23 件）
+## 3. 対象（25 件）
 
 ### バッチ（8 件）
 
@@ -387,18 +387,53 @@ ASP.NET WebAPI の経路（`protocol="5"`）は **.NET Framework 限定**であ�
 そのまま返す必要があり、コントロール名はマスタ ページ配下のため
 `ctl00$ContentPlaceHolder_A$` が付く。
 
+### ResourceServer（2 件）
+
+**画面を持たない WebAPI** なので、上の Web アプリとは確認のしかたが変わる。
+
+| 対象 | ポート | ホスト |
+|---|---|---|
+| `Samples/WS_sample/ASPNETWebService` | 51087 | IIS Express |
+| `Samples4NetCore/Backend/ASPNETWebService` | 51088 | Kestrel |
+
+`JsonController` は `MVC_Sample` の `Crud1Controller` と同じ処理を公開している
+（Ｂ層は同じ `WSServer_sample.Business.LayerB`）。
+**CRUD を一巡させ、件数が元に戻るところまで**見る。
+
+```
+GET  /api/json/test          疎通（DB を使わない）
+POST /api/json/SelectCount   件数（Ｂ層・Ｄ層・DB まで到達）
+POST /api/json/Insert        1 行足す
+POST /api/json/SelectAll_DT  一覧から採番された ShipperID を拾う
+POST /api/json/Select        取得して内容を確認
+POST /api/json/Update        更新
+POST /api/json/Delete        削除（後片付けを兼ねる）
+POST /api/json/SelectCount   件数が戻ったか（消し残しの検知）
+```
+
+**認証は要らない。**
+`[MyBaseAsyncApiController(httpAuthHeader: EnumHttpAuthHeader.None | Bearer)]` のため、
+トークンが無くても通る。
+
+**要求の形が 2 通りある。**
+net10.0 側は `SelectXxx` が `[FromForm]`、`Select` / `Insert` / `Update` / `Delete` が JSON。
+net48 側はどちらも受け付けるので、**net10.0 に合わせると 1 つの手順で両方に使える。**
+
+> **ここは #566 で引き戻したもの。**
+> 組み込んだ結果、**ビルドは通るのに実行時に落ちる**状態だったことが分かった
+> （`bindingRedirect` が、配布されない版を指していた）。
+> **ビルドが通っただけでは、実際に読み込めるかは分からない。**
+
 ### 対象外
 
 | 対象 | 理由 |
 |---|---|
 | `2CS_sample` 系（11 本） | WinForms / WPF。UI Automation が必要で、画面変更に弱く維持費が高い |
 | `WSClient_sample` 系（7 本） | 同上 |
-| Web サービス（`ASPNETWebService`） | **別リポジトリへ移設済み**。本リポジトリにホストが無い |
 
 `CS/Samples/WS_sample/WSServer_sample` はクラス ライブラリ（B層・D層）で、
-これを載せる Web サービスは
-[`OpenTouryoProject/ResourceServerTemplates`](https://github.com/OpenTouryoProject/ResourceServerTemplates)
-へ移設されている。このため本リポジトリだけでは HTTP 疎通ができない。
+**これを載せる Web サービスは `ASPNETWebService`**（上記 ResourceServer）である。
+一度 `OpenTouryoProject/ResourceServerTemplates` へ移設したが、**#566 で引き戻した。**
 
 WinForms / WPF 系は、リリース チェックリスト（段階 4）の**手作業項目**として残す。
 
@@ -595,7 +630,7 @@ MVC_Sample (net10.0)              OK   ログイン後 /Crud1/Index = 200
   全対象 OK
 ```
 
-全 23 件（ビルド 8 バッチ ＋ 疎通 23 件）で **約 4 分**。
+全 25 件（ビルド 10 バッチ ＋ 疎通 25 件）で **約 9 分**。
 
 ### リダイレクトの扱い
 
@@ -697,7 +732,7 @@ $client.Connect("localhost", $port)
 
 ```powershell
 .\3_SmokeTest.ps1 -Lang VB     # VB のみ（6 件）
-.\3_SmokeTest.ps1 -Lang Both   # C# 23 件 ＋ VB 6 件
+.\3_SmokeTest.ps1 -Lang Both   # C# 25 件 ＋ VB 6 件
 ```
 
 **既定に VB を含めない。** リリース時の検証（[`RELEASE.md`](RELEASE.md) 3 節）は

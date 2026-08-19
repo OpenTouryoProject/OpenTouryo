@@ -436,7 +436,10 @@ bat を経由せず **`dotnet build <sln>` を直接叩いてよい**（Core 側
 10. **`Legacy/WS_sample/Build/` `Temp/` はビルド生成物**（`Build/` は `.gitignore` 済み）。
 11. **`ReturnValue` を設定し忘れると戻り値が null**（フレームワーク仕様。`../Frameworks/ANALYSIS.md` 3.2 節）。
 12. **`Frontend/` に実体は無い。** `OpenTouryoProject/FrontendTemplates` を見ること。
-13. **`Backend/ASPNETWebService/` にも実体は無い。** `OpenTouryoProject/ResourceServerTemplates` へ移動済み。
+13. **`Backend/ASPNETWebService/` は実体がある（#566 で引き戻した）。**
+    ResourceServer（画面を持たない WebAPI）で、`6_Build_WSSrvCore_sample.bat` で建ち、
+    `3_SmokeTest.ps1` が CRUD を一巡させる。
+    **`Frontend/` に実体が無いのとは事情が違う**ので、混同しないこと。
 
 ---
 

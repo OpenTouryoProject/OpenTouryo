@@ -88,7 +88,7 @@ CS/VB 合わせて **42 プロジェクト**がこの `Build\` を参照して�
 | `WS_sample/WSServer_sample` | Library | **サービス側の B/D 層**。ServiceInterface からレイトバインドされる |
 | `WS_sample/WSIFType_sample` | Library | WS の I/F 型（引数・戻り値クラス）を**サーバ／クライアント共有**するためのアセンブリ |
 | `WS_sample/WSClient_sample/*` | WinForms/WPF | **3層型クライアント**。`CallController` 経由で B層を呼ぶ（4 種） |
-| `WS_sample/ASPNETWebService` | — | **README のみ**。実体は別リポジトリ `ResourceServerTemplates` へ移動済み |
+| `WS_sample/ASPNETWebService` | ASP.NET WebAPI | **ResourceServer**。`JsonController` が `MVC_Sample` の `Crud1Controller` と同じ CRUD を公開する（#566） |
 | `WebApp_sample/WebForms_Sample` | ASP.NET Web Forms | **最大のサンプル（.aspx 38 画面）**。P層機能の網羅テスト |
 | `WebApp_sample/MVC_Sample` | ASP.NET MVC5 | MVC5 + WebAPI 版 |
 | `CLI_sample/*` | — | **README のみ（3 件）**。net48 版はドロップ済み（後述） |
@@ -98,7 +98,9 @@ CS/VB 合わせて **42 プロジェクト**がこの `Build\` を参照して�
 - **`CLI_sample` の実体は無い。** `Simple_CLI` は Sharprompt が .NET Framework サポートを終了したため net48 版をドロップ。
   `DAG_Login_CLI` / `LIR_Login_CLI` は `System.CommandLine` の beta 解除待ちで移植保留。
   → **実装は `../Samples4NetCore/Legacy/CLI_sample/` にのみ存在する。**
-- **`WS_sample/ASPNETWebService`** は `OpenTouryoProject/ResourceServerTemplates` へ移動。
+- **`WS_sample/ASPNETWebService` は戻ってきた（#566）。**
+  一度 `OpenTouryoProject/ResourceServerTemplates` へ移したが、共通基盤の上に乗せるため引き戻した。
+  ビルド（`6_Build_WSSrv_sample.bat`）と疎通（`3_SmokeTest.ps1`）に組み込み済み。
 
 ---
 
