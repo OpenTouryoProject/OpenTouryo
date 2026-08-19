@@ -33,7 +33,7 @@ xcopy /E /Y "Samples\WS_sample\Temp\%BUILD_CONFIG%" "Samples\WS_sample\Build\"
 @rem --------------------------------------------------
 @rem Batch build of ASPNETWebService(ResourceServer).
 @rem --------------------------------------------------
-@rem **Build\ へは配らない。** 他から参照されないため、建てるだけでよい。
+@rem Not copied to Build\ : nothing else references it, so just build it.
 ..\nuget.exe restore "Samples\WS_sample\ASPNETWebService\ASPNETWebService.sln" %NUGET_MSBUILD%
 %BUILDFILEPATH% %COMMANDLINE% "Samples\WS_sample\ASPNETWebService\ASPNETWebService.sln"
 

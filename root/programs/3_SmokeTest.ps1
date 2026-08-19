@@ -963,9 +963,9 @@ $targetsCS = @(
         Flow = $webApiCrudFlow
     }
     @{
-        Name = "ASPNETWebServiceCore (net10.0)"; Bat = "6_Build_WSSrvCore_sample.bat"
+        Name = "ASPNETWebService (net10.0)"; Bat = "6_Build_WSSrvCore_sample.bat"
         Kind = "Web";  WebHost = "Kestrel";  Port = 51088
-        Exe  = "Samples4NetCore\Backend\ASPNETWebServiceCore\ASPNETWebServiceCore\bin\Debug\net10.0\ASPNETWebServiceCore.dll"
+        Exe  = "Samples4NetCore\Backend\ASPNETWebService\ASPNETWebService\bin\Debug\net10.0\ASPNETWebService.dll"
         Flow = $webApiCrudFlow
     }
 )
