@@ -24,7 +24,7 @@ using Microsoft.Extensions.Hosting;
 
 using Touryo.Infrastructure.Framework.Authentication;
 
-namespace ASPNETWebServiceCore
+namespace ASPNETWebService
 {
     /// <summary>Program</summary>
     public class Program

@@ -23,7 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ASPNETWebServiceCore.Controllers
+namespace ASPNETWebService.Controllers
 {
     [EnableCors]
     [ApiController]

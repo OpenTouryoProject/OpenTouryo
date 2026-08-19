@@ -62,7 +62,7 @@ using Touryo.Infrastructure.Public.Diagnostics;
 using WSIFType_sample;
 using WSServer_sample.Common;
 
-namespace ASPNETWebServiceCore.Controllers
+namespace ASPNETWebService.Controllers
 {
     /// <summary>
     /// ASP.NET WebAPI JSON-RPCの個別Webメソッドを公開するサービス インターフェイス基盤。

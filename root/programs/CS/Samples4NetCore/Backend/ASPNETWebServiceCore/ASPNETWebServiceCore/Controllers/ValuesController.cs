@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Cors;
 
-namespace ASPNETWebServiceCore.Controllers
+namespace ASPNETWebService.Controllers
 {
     [EnableCors]
     [ApiController]

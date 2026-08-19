@@ -32,7 +32,7 @@ using Microsoft.Extensions.Options;
 using Touryo.Infrastructure.Framework.StdMigration;
 using Touryo.Infrastructure.Public.Util;
 
-namespace ASPNETWebServiceCore
+namespace ASPNETWebService
 {
     /// <summary>
     /// Startup
