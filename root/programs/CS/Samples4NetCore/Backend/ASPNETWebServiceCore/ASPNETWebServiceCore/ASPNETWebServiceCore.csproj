@@ -7,37 +7,37 @@
   <ItemGroup>
     <PackageReference Include="log4net" Version="3.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.5" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
     <Reference Include="OpenTouryo.Business">
-      <HintPath>..\..\OpenTouryoAssemblies\Build_netcore100\net10.0\OpenTouryo.Business.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Business.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.DamManagedOdp">
-      <HintPath>..\..\OpenTouryoAssemblies\Build_netcore100\net10.0\OpenTouryo.DamManagedOdp.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0\OpenTouryo.DamManagedOdp.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.DamMySQL">
-      <HintPath>..\..\OpenTouryoAssemblies\Build_netcore100\net10.0\OpenTouryo.DamMySQL.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0\OpenTouryo.DamMySQL.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.DamPstGrS">
-      <HintPath>..\..\OpenTouryoAssemblies\Build_netcore100\net10.0\OpenTouryo.DamPstGrS.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0\OpenTouryo.DamPstGrS.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Framework">
-      <HintPath>..\..\OpenTouryoAssemblies\Build_netcore100\net10.0\OpenTouryo.Framework.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public">
-      <HintPath>..\..\OpenTouryoAssemblies\Build_netcore100\net10.0\OpenTouryo.Public.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public.Security">
-      <HintPath>..\..\OpenTouryoAssemblies\Build_netcore100\net10.0\OpenTouryo.Public.Security.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.Security.dll</HintPath>
     </Reference>
     <Reference Include="WSIFType_sample">
-      <HintPath>..\..\OpenTouryoAssemblies\Build_netcore100\net10.0\WSIFType_sample.dll</HintPath>
+      <HintPath>..\..\..\Legacy\WS_sample\Build\net10.0\WSIFType_sample.dll</HintPath>
     </Reference>
     <Reference Include="WSServer_sample">
-      <HintPath>..\..\OpenTouryoAssemblies\Build_netcore100\net10.0\WSServer_sample.dll</HintPath>
+      <HintPath>..\..\..\Legacy\WS_sample\Build\net10.0\WSServer_sample.dll</HintPath>
     </Reference>
   </ItemGroup>
 

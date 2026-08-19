@@ -35,8 +35,24 @@
       配布物を見るため、**ビルドしていないと「判定不能」ばかりになる。**
       0_RunAll.ps1 に組み込むなら 1_BuildAll.ps1 の後。
 
-      **「判定不能」は「問題なし」ではない。** 材料が無いだけである。
+      **「判定不能」は「問題なし」ではない。**
       不一致には数えないが、件数は必ず出す。
+
+      ＜「判定不能」の原因は 1 つではない＞
+
+        **ビルドしていない、とは限らない。**（#566 で踏んだ）
+        ビルド済みでも、**参照そのものが落ちていれば bin に配られない。**
+
+        csproj の `<Reference Include="..., Version=X">` に強い名前を書くと、
+        SpecificVersion は既定で true になる。宣言と実体の版がずれると、
+        MSBuild は**警告だけ出して参照を落とす**（ビルドは成功する）。
+
+        このとき本スクリプトは「判定不能」と答えるが、実態は
+        **「宣言した版が配布されていない」そのもの**であり、不一致より悪い。
+
+        **建てたはずのものが「判定不能」なら、まず bin を見ること。**
+        DLL が無ければ、packages.config・csproj のパス表記・Reference の
+        Version の 3 つが揃っているかを疑う。
 
     ＜対象外＞
 
@@ -230,8 +246,10 @@ Write-Host ("  宣言 {0} 件 : 一致 {1} / **不一致 {2}** / 判定不能 {3
 
 if ($unknown.Count -gt 0)
 {
-    Write-Host "  **判定不能は「問題なし」ではない。** そのプロジェクトの配下に実体が無いだけで、"
-    Write-Host "  ビルドしてから測り直せば判定できる（-Detail で内訳）。"
+    Write-Host "  **判定不能は「問題なし」ではない。** そのプロジェクトの配下に実体が無い、という意味である。"
+    Write-Host "  建てていないなら、ビルドしてから測り直す（-Detail で内訳）。"
+    Write-Host "  **建てたはずなら、参照が落ちて配られていない可能性がある。**"
+    Write-Host "  その場合は bin を見て、csproj の Reference の Version が実体と合っているかを疑う。"
 }
 
 if ($mismatch.Count -gt 0)
@@ -248,7 +266,7 @@ if ($mismatch.Count -gt 0)
 if ($Detail -and $unknown.Count -gt 0)
 {
     Write-Host ""
-    Write-Host "=== 判定不能（配下に実体が無い。ビルドしていない可能性）==="
+    Write-Host "=== 判定不能（配下に実体が無い。未ビルド、または参照が落ちている）==="
     foreach ($u in ($unknown | Sort-Object Config, Name))
     {
         Write-Host ("  {0} : {1} → {2}" -f $u.Config, $u.Name, $u.New)

@@ -590,7 +590,10 @@ function Invoke-Http
         [string]$Uri,
         [string]$Method = "GET",
         $Body,
-        $Session
+        $Session,
+        # JSON を送る先（WebAPI）で使う。省略すると Invoke-WebRequest の既定
+        # （ハッシュテーブルなら application/x-www-form-urlencoded）になる。
+        [string]$ContentType
     )
 
     $p = @{
@@ -605,6 +608,7 @@ function Invoke-Http
     # （5.1 では 4xx/5xx が例外になるが、下の catch で状態コードを取り出す）
     if ($PSVersionTable.PSVersion.Major -ge 6) { $p.SkipHttpErrorCheck = $true }
     if ($Body) { $p.Body = $Body }
+    if ($ContentType) { $p.ContentType = $ContentType }
 
     try
     {
@@ -700,6 +704,90 @@ $webFormsFlow = {
 
     return @{ Ok = $true; Detail = "ログイン後 menu.aspx = 200" }
 }
+
+# ASPNETWebService（ResourceServer）: 画面を持たない WebAPI のため、上の 2 つとは確認の形が違う。
+#
+# ＜何を確認するか＞
+#   JsonController は MVC_Sample の Crud1Controller と同じ処理を公開している
+#   （Ｂ層は同じ WSServer_sample.Business.LayerB）。
+#   **CRUD を一巡させ、件数が元に戻るところまで**見る。
+#   ここまで通れば、ホスティング・ルーティング・Ｂ層・Ｄ層・DB が繋がっている。
+#
+# ＜認証は要らない＞
+#   [MyBaseAsyncApiController(httpAuthHeader: EnumHttpAuthHeader.None | Bearer)] のため、
+#   トークンが無くても通る。認証まで見たいなら別途 MultiPurposeAuthSite が要る。
+#
+# ＜要求の形が 2 通りある＞
+#   **net10.0 側は SelectXxx が [FromForm] で、Select/Insert/Update/Delete が JSON。**
+#   net48 側はどちらも受け付けるので、**net10.0 に合わせれば 1 つの手順で両方に使える。**
+#
+# ＜後片付け＞
+#   Shippers に 1 行足して消す。**最後に件数が元に戻ることを確認**しており、
+#   ここが合わなければ NG になるので、消し残しは検知できる。
+$webApiCrudFlow = {
+    param($base)
+
+    $ddl = @{ ddlDap = "SQL"; ddlMode1 = "individual"; ddlMode2 = "static"; ddlExRollback = "-" }
+
+    function Invoke-Api($act, $body, $json)
+    {
+        if ($json) {
+            return Invoke-Http "$base/api/json/$act" -Method POST `
+                -Body ($body | ConvertTo-Json) -ContentType "application/json"
+        }
+        return Invoke-Http "$base/api/json/$act" -Method POST -Body $body
+    }
+
+    # 疎通（DB を使わない。ここが通らなければ配置か構成の問題）
+    $r = Invoke-Http "$base/api/json/test"
+    if ($r.Status -ne 200) { return @{ Ok = $false; Detail = "GET /api/json/test = $($r.Status)" } }
+
+    # 件数（Ｂ層・Ｄ層・DB まで到達する最初の要求）
+    $r = Invoke-Api "SelectCount" $ddl $false
+    if ($r.Status -ne 200) { return @{ Ok = $false; Detail = "SelectCount = $($r.Status)" } }
+    $m = [regex]::Match($r.Content, '(\d+)件のデータがあります')
+    if (-not $m.Success) { return @{ Ok = $false; Detail = "SelectCount の応答が想定外 : $($r.Content)" } }
+    $before = [int]$m.Groups[1].Value
+
+    # 追加（消し忘れても次回に拾えるよう、名前を毎回変える）
+    $name = "smoke-" + (Get-Random -Maximum 99999)
+    $ins = $ddl.Clone(); $ins.Shipper = @{ ShipperID = 0; CompanyName = $name; Phone = "000-0000" }
+    $r = Invoke-Api "Insert" $ins $true
+    if ($r.Status -ne 200 -or $r.Content -notmatch '件追加') { return @{ Ok = $false; Detail = "Insert = $($r.Status) : $($r.Content)" } }
+
+    # 一覧から、今入れた行の ShipperID を拾う（Insert は採番結果を返さない）
+    $r = Invoke-Api "SelectAll_DT" $ddl $false
+    if ($r.Status -ne 200) { return @{ Ok = $false; Detail = "SelectAll_DT = $($r.Status)" } }
+    $row = ($r.Content | ConvertFrom-Json).result | Where-Object { $_.companyName -eq $name }
+    if (-not $row) { return @{ Ok = $false; Detail = "追加した行が一覧に出てこない（$name）" } }
+    $id = [int]$row.shipperID
+
+    # 取得
+    $sel = $ddl.Clone(); $sel.Shipper = @{ ShipperID = $id }
+    $r = Invoke-Api "Select" $sel $true
+    if ($r.Status -ne 200 -or $r.Content -notmatch [regex]::Escape($name)) { return @{ Ok = $false; Detail = "Select = $($r.Status) : $($r.Content)" } }
+
+    # 更新
+    $upd = $ddl.Clone(); $upd.Shipper = @{ ShipperID = $id; CompanyName = "$name-upd"; Phone = "111-1111" }
+    $r = Invoke-Api "Update" $upd $true
+    if ($r.Status -ne 200 -or $r.Content -notmatch '件更新') { return @{ Ok = $false; Detail = "Update = $($r.Status) : $($r.Content)" } }
+
+    # 削除（後片付けも兼ねる）
+    $del = $ddl.Clone(); $del.Shipper = @{ ShipperID = $id }
+    $r = Invoke-Api "Delete" $del $true
+    if ($r.Status -ne 200 -or $r.Content -notmatch '件削除') { return @{ Ok = $false; Detail = "Delete = $($r.Status) : $($r.Content)" } }
+
+    # 件数が元に戻ったか（消し残しの検知）
+    $r = Invoke-Api "SelectCount" $ddl $false
+    $m = [regex]::Match($r.Content, '(\d+)件のデータがあります')
+    if (-not $m.Success -or [int]$m.Groups[1].Value -ne $before)
+    {
+        return @{ Ok = $false; Detail = "件数が戻らない（前 $before → 後 $($r.Content)）" }
+    }
+
+    return @{ Ok = $true; Detail = "CRUD 一巡 OK（ShipperID=$id、件数 $before で復帰）" }
+}
+
 
 $targetsCS = @(
     # --- バッチ (net48) ---
@@ -863,6 +951,22 @@ $targetsCS = @(
         Kind = "Web";  WebHost = "Kestrel";  Port = 51083
         Exe  = "Samples4NetCore\Backend\MVC_Sample\MVC_Sample\bin\Debug\net10.0\MVC_Sample.dll"
         Flow = $mvcLoginFlow
+    }
+
+    # --- ResourceServer（画面を持たない WebAPI。#566 で引き戻した） ---
+    #
+    # ＜ポート＞ 51081-51086 は上と VB 版で使っている。51087 / 51088 を割り当てる。
+    @{
+        Name = "ASPNETWebService (net48)";       Bat = "6_Build_WSSrv_sample.bat"
+        Kind = "Web";  WebHost = "IISExpress";  Port = 51087
+        Site = "Samples\WS_sample\ASPNETWebService\ASPNETWebService"
+        Flow = $webApiCrudFlow
+    }
+    @{
+        Name = "ASPNETWebServiceCore (net10.0)"; Bat = "6_Build_WSSrvCore_sample.bat"
+        Kind = "Web";  WebHost = "Kestrel";  Port = 51088
+        Exe  = "Samples4NetCore\Backend\ASPNETWebServiceCore\ASPNETWebServiceCore\bin\Debug\net10.0\ASPNETWebServiceCore.dll"
+        Flow = $webApiCrudFlow
     }
 )
 
