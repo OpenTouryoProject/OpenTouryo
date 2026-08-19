@@ -38,6 +38,15 @@ cd root\programs
 - `2_RunAllTests.ps1` は `Result*.txt` を書き換える。**差分 0 なら中身は同じ**
 - 前提（DB・サービス・IIS Express）は [`RELEASE.md`](RELEASE.md) 2 節
 
+**パッケージの版を触ったら、次の 2 本も見る**（`0_RunAll.ps1` は自動で回して警告する）。
+
+```powershell
+.\ComparePackage.ps1 -Check     # packages.config と csproj の版（#569）
+.\CompareRedirect.ps1 -Check    # bindingRedirect と配布物の版（#556）
+```
+
+**どちらもビルドの後に回す。** 復元された DLL を読むため。
+
 ---
 
 ## 2. リリース（NuGet 公開）
@@ -188,6 +197,7 @@ powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.
 | `MSB4226`（`Microsoft.WebApplication.targets`） | nuget が別製品の MSBuild を拾った | `nuget.exe restore ... %NUGET_MSBUILD%` |
 | ビルドは通るのに `DllNotFoundException`（`...SNI...`） | `nuget restore` を呼んでおらず、ネイティブ DLL が出力に入らない | 該当 sln に restore を足す。[`BUILDING.md`](BUILDING.md) 10 節 |
 | `packages.config` の id が `csproj` に無い＝不要に見える | サテライト（`.ja`）とコンテンツ パッケージは**出なくて正常**（48 件中 44 件） | 消す前に [`BUILDING.md`](BUILDING.md) 11 節 |
+| ビルドは通るのに実行時 `FileNotFoundException` | **版は 4 か所に散らばる。** `<Reference>` の `Version=` がずれると、警告だけ出て参照が落ちる | `.\ComparePackage.ps1 -Check`。[`BUILDING.md`](BUILDING.md) 12 節 |
 
 **NuGet パッケージ作成の落とし穴は
 [`CS/NuGet/README.md`](CS/NuGet/README.md) 9 節**にまとめてある。

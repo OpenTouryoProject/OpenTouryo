@@ -921,3 +921,93 @@ git diff --numstat
 # 4. 検証する
 .\0_RunAll.ps1 -Lang Both
 ```
+
+## 12. パッケージの版を変えるとき（#566 / #568 / #569）
+
+**版は 4 か所に散らばっている。** 片方だけ直しても**ビルドは通る**。
+
+| | 場所 | ずれると | 検査 |
+|---|---|---|---|
+| ① | `packages.config` の `version=` | 復元される版が変わらない | `ComparePackage.ps1`（基準） |
+| ② | csproj の `packages\X.Y\` パス | **復元済みでも「パッケージが無い」** | `ComparePackage.ps1` |
+| ③ | csproj の `<Reference Include="…, Version=">` | **参照が落ちて bin に配られない** | `ComparePackage.ps1` |
+| ④ | `*.config` の `bindingRedirect` | 実行時に転送先が無い | `CompareRedirect.ps1`（#556） |
+
+`PackageReference`（net10.0）は①だけで済む。**②③④は net48 の話。**
+
+### ③がずれても、ビルドは成功する
+
+`<Reference Include>` に強い名前（`, Version=…`）を書くと、
+**`SpecificVersion` は既定で true** になる。宣言と実体がずれると、
+MSBuild は**警告だけ出して参照を落とす。**
+
+#566 では `Microsoft.Data.SqlClient.dll` が bin に配られず、
+**`1_BuildAll.ps1` は終了コード 0 のまま**、実行時に `FileNotFoundException` になった。
+
+### ③④は「パッケージの版」ではない
+
+**アセンブリの版である。計算で導いてはいけない。**
+
+```
+パッケージ 10.0.5  → アセンブリ 10.0.0.5
+パッケージ 8.17.0  → アセンブリ 8.17.0.0
+パッケージ 13.0.4  → アセンブリ 13.0.0.0   ← 版が変わっても、ここは動かない
+```
+
+**復元してから、`HintPath` が指す DLL を読んで測る。**
+
+測るのは**そのプロジェクトの `HintPath`** だけにする。
+リポジトリ全体から名前で引くと、`Microsoft.Owin` のように
+**同名で版が割れている**もので、どちらが正か決められない。
+
+### ②は `HintPath` だけではない
+
+`Import Project` と `Error Condition` にも版が入る。
+
+```xml
+<HintPath>..\packages\System.ValueTuple.4.6.2\lib\...</HintPath>
+<Import Project="..\packages\System.ValueTuple.4.6.2\build\..." />
+<Error Condition="!Exists('..\packages\System.ValueTuple.4.6.2\...')" />
+```
+
+`packages\<フォルダ>\` を**全部拾って**突き合わせること。
+
+### 名前が似ているだけの別物に注意
+
+**前方一致で拾うと巻き込む。** 版番号の系列が違う。
+
+```
+Microsoft.Extensions.PlatformAbstractions   1.1.0   （Extensions 10.x とは無関係）
+Newtonsoft.Json.Bson                        1.0.3   （Newtonsoft.Json 13.x とは無関係）
+Microsoft.Data.SqlClient.SNI                6.0.2   （SqlClient 7.0.0 でも据え置き）
+```
+
+**「そのパッケージであること」と「今の版がその系列に居ること」の両方**を条件にする。
+
+### 依存の集合が変わることがある
+
+`packages.config` は**依存を自動解決しない。** 追加・削除は手で書く。
+
+`Microsoft.Data.SqlClient` 6.0.2 → 7.0.0 では、`Azure.Identity` 由来の 10 個が落ち、
+`Extensions.Abstractions` / `Internal.Logging` ほかが要る（#568）。
+
+**`.nuspec` を見て確かめること。**`.nupkg`（ZIP）の中にしか無い。
+
+### 手順
+
+```powershell
+# 1. 版を書き換える（①②）。net10.0 → net48 の順に分けると、切り分けやすい
+# 2. 復元する
+.\1_BuildAll.ps1
+
+# 3. ③④を、復元された DLL の実体版に合わせる
+# 4. 検査する（不一致 0 であること）
+.\ComparePackage.ps1 -Check     # ②③
+.\CompareRedirect.ps1 -Check    # ④
+
+# 5. 検証する。**VB 側にも packages.config がある**ので Both で回す
+.\0_RunAll.ps1 -Lang Both
+```
+
+**ビルドが通っただけでは、実際に読み込めるかは分からない。**
+`3_SmokeTest.ps1` まで見ること。
