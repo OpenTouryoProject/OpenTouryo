@@ -280,10 +280,23 @@ cd root\programs
 - [ ] 2 層 C/S 系（net48 6 本 / net10.0 5 本）が起動し、CRUD 画面が操作できる
 - [ ] WS クライアント系（net48 4 本 / net10.0 3 本）が起動する
 
-> **WS クライアントの疎通には別リポジトリが要る。**
-> 呼び先の Web サービスは
-> [`OpenTouryoProject/ResourceServerTemplates`](https://github.com/OpenTouryoProject/ResourceServerTemplates)
-> へ移設済みで、本リポジトリだけでは接続先が無い。
+> **WS クライアントの呼び先は、本リポジトリにある。**
+> `TMProtocolDefinition.xml` で生きているのは次の 3 つで、
+> **ASMX（`protocol="2"`）と WCF-HTTP（`protocol="3"`）はコメントアウト済み**（呼ばれない）。
+>
+> | 定義 | 接続先 | 用意するもの |
+> |---|---|---|
+> | `testInProcess`（1） | インプロセス | **不要** |
+> | `testWebService3`（4） | `net.tcp://localhost:7777/WCFService/WCFTCPSvcForFx/` | `ServiceInterface\WCFService`（自己ホストの exe）を起動 |
+> | `testWebService4`（5） | `https://localhost/WebAPIControllerForFx` | `ServiceInterface\ASPNETWebService` を `https://localhost/` で公開 |
+>
+> **どちらも `1_BuildAll.ps1` の `Framework_WS` 段が建てている**（`7_Build_Framework_WS.bat`）。
+> `WCFService\App.config` の待ち受けは、クライアントの定義と一致している。
+>
+> **要るのは別リポジトリではなく、上記のホスティングである。**
+> `3_SmokeTest.ps1` が WS クライアントを対象外にしているのは、
+> **WinForms / WPF で UI Automation が要るため**であって、接続先が無いからではない
+> （プロトコル自体は `TestTransmission` が自前のスタブで確認している。#546 / #561）。
 
 ### フレームワーク付属ツール
 
@@ -375,7 +388,7 @@ cd root\programs
 | Web アプリ（3 件） | 済 | ログインまで通せば認証・セッションまで確認できる |
 | **UI 系サンプル（18 本）** | **見送り** | UI Automation が必要。画面定義の変更で壊れやすく維持費が高い。<br>通す B 層／D 層は Web 系・バッチ系と重複し、回帰検出力の増分が小さい |
 | **GUI ツール（4 本）** | **見送り** | 同上。`DaoGen_Tool` は生成ロジックを CUI 側で確認済みのため、<br>手作業で見るのは GUI が起動することだけでよい。<br>`DeployZipPackWithHTTP` は ZIP の圧縮・解凍まで見る（CUI が無いため） |
-| **Web サービス** | **不可** | 本リポジトリにホストが無い（別リポジトリへ移設済み） |
+| Web サービス（ResourceServer 2 件） | 済 | #566 で引き戻した。**画面が無いので CRUD を一巡させ、件数が戻ることで見る** |
 
 **自動化した対象が「起動する」ことは、手作業側の確認範囲を狭める。**
 `DaoGen_Tool` は CUI で生成ロジックまで確認できるようになったため、
