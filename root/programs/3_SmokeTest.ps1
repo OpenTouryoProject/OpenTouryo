@@ -176,6 +176,21 @@ function Invoke-Sql([string]$sql)
 }
 
 # ------------------------------------------------------------------
+# ログの初期化（#571）
+# ------------------------------------------------------------------
+# **使う前に必ず消す。**
+#   補助ログ（Web ホスト・ZIP 生成など）は対象ごとの固定名で $OutputDir に残る。
+#   消さずに使うと、**前回の内容が残ったまま読まれる**ことがある
+#   （「二重に出力される」という症状は、これで説明が付く）。
+#
+#   対象の実行（$out / $err）側は既に同じことをしている。作法を揃える。
+function Reset-Log([string]$path)
+{
+    Remove-Item $path, "$path.err" -Force -ErrorAction SilentlyContinue
+    return $path
+}
+
+# ------------------------------------------------------------------
 # 対象の定義
 # ------------------------------------------------------------------
 # Name    : 表示名（ログのファイル名にもなるため、言語をまたいで重複させない）
@@ -387,7 +402,7 @@ function New-DeployWeb([string]$tag, [string]$exe)
             $a = @("/ZIPGEN", "/SRCDIR", "$src/$name", "/ZIPFILE", $out, "/ROOTINZIP", $name)
         }
 
-        $log = Join-Path $OutputDir "deploy_zipgen_$tag`_$name.log"
+        $log = Reset-Log (Join-Path $OutputDir "deploy_zipgen_$tag`_$name.log")
         Start-Process $exe -ArgumentList $a -NoNewWindow -Wait `
             -WorkingDirectory (Split-Path $exe) -RedirectStandardOutput $log
 
@@ -515,7 +530,7 @@ function Start-DeployWeb([string]$tag)
     Stop-DeployWeb
 
     $web = Join-Path (Get-DeployWork $tag) "web"
-    $log = Join-Path $OutputDir "deploy_web_$tag.log"
+    $log = Reset-Log (Join-Path $OutputDir "deploy_web_$tag.log")
 
     $script:deployWebProc = Start-Process $iis `
         -ArgumentList "/path:`"$web`"", "/port:$deployWebPort", "/systray:false" `
@@ -594,7 +609,7 @@ function Start-ApiWeb([string]$kind, [int]$port)
     # **前回の残りを先に止める。**（Start-DeployWeb と同じ理由）
     Stop-ApiWeb
 
-    $log = Join-Path $OutputDir "api_web_$kind.log"
+    $log = Reset-Log (Join-Path $OutputDir "api_web_$kind.log")
 
     if ($kind -eq "net48")
     {
@@ -1210,6 +1225,10 @@ foreach ($t in $selected)
         }
 
         $sw = [Diagnostics.Stopwatch]::StartNew()
+        # **使う前に消す。**（#571）
+        #   残っていると、起動に失敗しても前回のログが読まれる。
+        $null = Reset-Log $out
+
         $proc = Start-WebHost $t $out
 
         if (-not $proc)
