@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
@@ -63,6 +63,16 @@
     <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.3.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.5" />
+    <!--**版の混在を止めるために明示する（#574）。**
+
+        Microsoft.AspNetCore.* 2.3.0（ASP.NET Core 2.x 系）が、
+        DataProtection / Logging.Abstractions / Cors などを経由して
+        DependencyInjection.Abstractions 8.0.2 を広範に引いている。
+        一方 OpenTouryo.Framework（net10.0）は 10.0.0.0 を要求するため、
+        **MSBuild は警告（MSB3277）のまま古い 8.0.0.0 を選んでいた。**
+
+        版は他所と揃えている（#568）。**動かすときは一緒に動かすこと。**-->
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.5" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.18" />
   </ItemGroup>
