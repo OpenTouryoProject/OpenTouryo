@@ -71,7 +71,7 @@ foreach ($s in $scripts)
     if ($Lang -eq "VB" -and -not $s.UseLang)
     {
         Write-Host ("{0} は VB 版の対象外のため飛ばします。" -f $s.Name) -ForegroundColor Yellow
-        $results += [pscustomobject]@{ スクリプト = $s.Name; 終了コード = "対象外" }
+        $results += [pscustomobject]@{ スクリプト = $s.Name; 終了コード = "対象外"; 秒 = "-" }
         continue
     }
 
@@ -79,8 +79,20 @@ foreach ($s in $scripts)
     if ($s.UseLang)   { $splat.Lang = $Lang }
     if ($s.UseIgnore) { $splat.IgnoreErrors = $IgnoreErrors }
 
+    # **実行時間を測る。**（#571）
+    #   通しは長い。合計だけ見ても、どこを短くすればよいかが分からない。
+    $sw = [Diagnostics.Stopwatch]::StartNew()
+
     & (Join-Path $PSScriptRoot $s.Name) @splat
-    $results += [pscustomobject]@{ スクリプト = $s.Name; 終了コード = $LASTEXITCODE }
+    $code = $LASTEXITCODE
+
+    $sw.Stop()
+
+    $results += [pscustomobject]@{
+        スクリプト = $s.Name
+        終了コード = $code
+        秒         = ("{0:N1}" -f $sw.Elapsed.TotalSeconds)
+    }
 
     # --- bindingRedirect の突き合わせ（警告のみ）---（#556）
     #
@@ -127,6 +139,12 @@ Write-Host ""
 Write-Host "================ 全体のまとめ ================"
 Write-Host ""
 Write-SummaryTable $results
+Write-Host ""
+
+# **合計も出す。** 1 本ずつの秒を足す手間を省く。
+$totalSec = ($results | Where-Object { $_.秒 -ne "-" } |
+             ForEach-Object { [double]$_.秒 } | Measure-Object -Sum).Sum
+Write-Host ("  合計 : {0:N1} 秒（{1:N1} 分）" -f $totalSec, ($totalSec / 60))
 Write-Host ""
 
 # **終了コードをそのまま合否として読んでよい。**（#555）

@@ -74,6 +74,7 @@ param(
     [string]$Lang = "CS",
     [string]$Only,
     [switch]$SkipClean,
+    [switch]$WarnDetail,
     [string]$OutputDir = (Join-Path $env:TEMP "OpenTouryoBuildLogs"),
     [string[]]$IgnoreErrors = @()
 )
@@ -388,6 +389,7 @@ foreach ($s in $steps)
         エラー   = $stepErrors.Count
         既知     = $stepKnown.Count
         警告     = $diag.Warnings.Count
+        警告詳細 = $diag.Warnings
         秒       = [Math]::Round($sw.Elapsed.TotalSeconds, 1)
     }
 }
@@ -400,7 +402,55 @@ $total.Stop()
 Write-Host ""
 Write-Host "================ サマリ ================"
 Write-Host ""
-Write-SummaryTable $results
+# **警告詳細は列にしない。** 表が壊れるので、集計にだけ使う。
+Write-SummaryTable ($results | Select-Object * -ExcludeProperty 警告詳細)
+
+# --- 警告の内訳（#571）---
+#
+# **件数だけでは何を直せばよいか分からない。** 種類ごとにまとめる。
+# 既定では出さない。毎回出ると本題（エラー）が埋もれるため。
+if ($WarnDetail)
+{
+    $withWarn = @($results | Where-Object { $_.警告詳細 -and $_.警告詳細.Count -gt 0 })
+
+    if ($withWarn.Count -eq 0)
+    {
+        Write-Host ""
+        Write-Host "  警告はありません。"
+    }
+    else
+    {
+        Write-Host ""
+        Write-Host "================ 警告の内訳 ================"
+
+        foreach ($r in ($withWarn | Sort-Object { -$_.警告詳細.Count }))
+        {
+            Write-Host ""
+            Write-Host ("  {0}（{1} 件）" -f $r.ステップ, $r.警告詳細.Count)
+
+            # 「: warning XXnnnn :」から種類を取り出す。取れないものは (種類不明) にまとめる。
+            $byCode = $r.警告詳細 | ForEach-Object {
+                $m = [regex]::Match($_, ':\s*warning\s+([A-Za-z]+\d+)\s*:')
+                if ($m.Success) { $m.Groups[1].Value } else { "(種類不明)" }
+            } | Group-Object | Sort-Object Count -Descending
+
+            foreach ($g in $byCode)
+            {
+                # 代表を 1 つ出す。**同じ種類でも中身が違うことがある**ので、目印になる。
+                $sample = @($r.警告詳細 | Where-Object { $_ -match [regex]::Escape($g.Name) })[0]
+                if ($null -eq $sample) { $sample = "" }
+                $sample = ($sample -replace '\s+', ' ')
+                if ($sample.Length -gt 96) { $sample = $sample.Substring(0, 96) + " …" }
+
+                Write-Host ("      {0,4}  {1,-12} {2}" -f $g.Count, $g.Name, $sample)
+            }
+        }
+
+        Write-Host ""
+        Write-Host "  **同じ種類は、たいてい 1 か所の対処でまとめて消える。**"
+        Write-Host "  MSB3277 は版の混在（CompareRedirect.ps1 / ComparePackage.ps1 も参照）。"
+    }
+}
 Write-Host ""
 Write-Host ("  所要時間 : {0:N1} 分" -f $total.Elapsed.TotalMinutes)
 Write-Host ("  ログ     : {0}" -f $OutputDir)
