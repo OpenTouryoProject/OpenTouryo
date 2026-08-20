@@ -26,7 +26,7 @@ cd root\programs
 |---|---|---|
 | ビルド | 全ステップ OK | [`BUILDING.md`](BUILDING.md) |
 | 単体テスト | 8/8 OK、差分 0 | [`TESTING.md`](TESTING.md) |
-| 疎通 | 23/23 OK | [`SMOKETEST.md`](SMOKETEST.md) |
+| 疎通 | 25/25 OK | [`SMOKETEST.md`](SMOKETEST.md) |
 
 **既定は C# 側。VB 側は `-Lang` で回す**（3 節）。
 
@@ -37,6 +37,30 @@ cd root\programs
   除外した内容は件数つきで別枠に出るため、そちらは目を通すこと
 - `2_RunAllTests.ps1` は `Result*.txt` を書き換える。**差分 0 なら中身は同じ**
 - 前提（DB・サービス・IIS Express）は [`RELEASE.md`](RELEASE.md) 2 節
+- **`0_RunAll.ps1` は 1・2・3 の実行時間を出す**（#571）
+
+### 通しは長い。反復では絞り込む（#571）
+
+実測（`-Lang Both`）は **合計 21.7 分**で、内訳はこうなっている。
+
+```
+1_BuildAll.ps1     12.6 分  ← 58%。ここが主因
+2_RunAllTests.ps1   1.7 分
+3_SmokeTest.ps1     7.4 分
+```
+
+**変更した箇所だけを回す。** 通しは最後に 1 回でよい。
+
+```powershell
+.\1_BuildAll.ps1 -Only "WSSrv" -SkipClean    # Clean を挟まない分だけ速い
+.\3_SmokeTest.ps1 -Only "MVC_Sample" -SkipBuild
+```
+
+**警告が多いステップの内訳を見る。**
+
+```powershell
+.\1_BuildAll.ps1 -Only "Framework_Tool" -SkipClean -WarnDetail
+```
 
 **パッケージの版を触ったら、次の 2 本も見る**（`0_RunAll.ps1` は自動で回して警告する）。
 
