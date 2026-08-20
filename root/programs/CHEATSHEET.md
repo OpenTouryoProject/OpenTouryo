@@ -62,6 +62,19 @@ cd root\programs
 .\1_BuildAll.ps1 -Only "Framework_Tool" -SkipClean -WarnDetail
 ```
 
+> **`-Only` ＋ `-SkipClean` は万能ではない。**（#574 で踏んだ）
+> **前段が用意する状態に依存するステップは、飛ばすと落ちる。**
+>
+> ```
+> 通し（Clean あり）             エラー 0 件
+> -Only "Business" -SkipClean    Business.RichClient_net48 で
+>                                「does not reference .NETFramework,Version=v4.8」
+> ```
+>
+> **変更と無関係なエラーに見えるため、切り分けで時間を失う。**
+> 絞り込みで妙なエラーが出たら、**まず通しで再現するかを見ること。**
+> 再現しなければ、それは絞り込みの制約であって不具合ではない。
+
 **パッケージの版を触ったら、次の 2 本も見る**（`0_RunAll.ps1` は自動で回して警告する）。
 
 ```powershell

@@ -179,6 +179,25 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
     </PackageReference>
+    <!--**版の混在を止めるために明示する（#574）。**
+
+        SharpZipLib 1.4.2 は net4x 向けの lib を持たない（netstandard2.0 が選ばれる）。
+        その依存が System.Memory 4.5.4 / System.Threading.Tasks.Extensions 4.5.2 を引き、
+        それらが要求する Unsafe 6.0.0.0 と、直接解決される Unsafe 4.0.4.1 がぶつかっていた。
+
+        **MSBuild は警告（MSB3277）のまま古いほうを選んで進む。**
+        選ばれなかった版を要求する経路があると、ビルドは通るのに実行時に落ちる（#566）。
+
+        版はリポジトリの他所と揃えている（#568）。**動かすときは一緒に動かすこと。**-->
+    <PackageReference Include="System.Memory">
+      <Version>4.6.3</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe">
+      <Version>6.1.2</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading.Tasks.Extensions">
+      <Version>4.6.3</Version>
+    </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
