@@ -73,8 +73,18 @@ namespace TestWebAPIClient
         /// <summary>NG の件数</summary>
         private static int NG = 0;
 
-        /// <summary>接続先</summary>
-        private static string BaseUrl = "http://localhost:51087/api/batchupdate";
+        /// <summary>接続先（サイト ルート）</summary>
+        /// <remarks>
+        /// **ルートを受け取る。** 1 本のクライアントから
+        /// api/json（CRUD 一巡）と api/batchupdate（DTO 往復）の両方を叩くため。
+        /// </remarks>
+        private static string BaseUrl = "http://localhost:51087";
+
+        /// <summary>バッチ更新の口</summary>
+        private static string Api { get { return Program.BaseUrl + "/api/batchupdate"; } }
+
+        /// <summary>JSON-RPC の口</summary>
+        private static string Json { get { return Program.BaseUrl + "/api/json"; } }
 
         #region エントリ ポイント
 
@@ -94,6 +104,7 @@ namespace TestWebAPIClient
             try
             {
                 Program.CaseConnect();
+                Program.CaseJsonCrud();
                 Program.CaseRoundTrip();
                 Program.CaseOptimisticLock();
             }
@@ -122,15 +133,130 @@ namespace TestWebAPIClient
             Console.WriteLine("=== 疎通 ===");
 
             // net48 は JSON なので "test"、net10.0 は素の text なので test で返る。
-            Res res = Program.Get("/test");
+            Res res = Program.Get(Program.Api + "/test");
             Program.Check("GET /test",
                 res.Status == 200 && Program.Unquote(res.Body) == "test", res);
 
-            res = Program.Post("/SelectCount", "");
+            res = Program.Post(Program.Api + "/SelectCount", "");
             Program.Check("POST /SelectCount",
                 res.Status == 200 && Program.Match(res.Body, "\"count\"\\s*:\\s*\\d+"), res);
 
             Console.WriteLine();
+        }
+
+        #endregion
+
+        #region CRUD 一巡（JsonController）
+
+        /// <summary>JsonController で CRUD を一巡し、件数が元に戻ること</summary>
+        /// <remarks>
+        /// **元は 3_SmokeTest.ps1 の Flow だった**（#566）。
+        /// 同じ WebAPI が相手なので、こちらへ寄せて対象を 4 → 2 に減らした（#571）。
+        ///
+        /// ここまで通れば、ホスティング・ルーティング・Ｂ層・Ｄ層・DB が繋がっている。
+        /// </remarks>
+        private static void CaseJsonCrud()
+        {
+            Console.WriteLine("=== CRUD 一巡（JsonController）===");
+
+            // 疎通（DB を使わない。ここが通らなければ配置か構成の問題）
+            Res res = Program.Get(Program.Json + "/test");
+            Program.Check("GET /api/json/test",
+                res.Status == 200 && Program.Unquote(res.Body) == "test", res);
+            if (res.Status != 200) { Console.WriteLine(); return; }
+
+            // 件数（Ｂ層・Ｄ層・DB まで到達する最初の要求）
+            int before = Program.SelectCountOfShippers(out res);
+            Program.Check("SelectCount", before >= 0, res);
+            if (before < 0) { Console.WriteLine(); return; }
+
+            // 追加（消し忘れても次回に拾えるよう、名前を毎回変える）
+            string name = "smoke-" + DateTime.Now.ToString("HHmmss");
+            res = Program.Post(Program.Json + "/Insert",
+                Program.ShipperBody(0, name, "000-0000"));
+            Program.Check("Insert", res.Status == 200 && Program.Match(res.Body, "件追加"), res);
+
+            // 一覧から、今入れた行の ShipperID を拾う（Insert は採番結果を返さない）
+            res = Program.PostForm(Program.Json + "/SelectAll_DT", Program.DdlForm());
+            int id = Program.FindShipperId(res.Body, name);
+            Program.Check("SelectAll_DT で採番を拾う", res.Status == 200 && id > 0,
+                res.Status == 200 ? "ShipperID=" + id : Program.Trim(res.Body));
+
+            if (id > 0)
+            {
+                // 取得
+                res = Program.Post(Program.Json + "/Select", Program.ShipperBody(id, null, null));
+                Program.Check("Select",
+                    res.Status == 200 && res.Body.IndexOf(name, StringComparison.Ordinal) >= 0, res);
+
+                // 更新
+                res = Program.Post(Program.Json + "/Update",
+                    Program.ShipperBody(id, name + "-upd", "111-1111"));
+                Program.Check("Update", res.Status == 200 && Program.Match(res.Body, "件更新"), res);
+
+                // 削除（後片付けを兼ねる）
+                res = Program.Post(Program.Json + "/Delete", Program.ShipperBody(id, null, null));
+                Program.Check("Delete", res.Status == 200 && Program.Match(res.Body, "件削除"), res);
+            }
+
+            // 件数が元に戻ったか（消し残しの検知）
+            int after = Program.SelectCountOfShippers(out res);
+            Program.Check("件数が戻る", after == before,
+                "前 " + before + " → 後 " + after);
+
+            Console.WriteLine();
+        }
+
+        /// <summary>Shippers の件数を取る</summary>
+        /// <param name="res">応答</param>
+        /// <returns>件数（取れなければ -1）</returns>
+        private static int SelectCountOfShippers(out Res res)
+        {
+            res = Program.PostForm(Program.Json + "/SelectCount", Program.DdlForm());
+            if (res.Status != 200) { return -1; }
+
+            Match m = Regex.Match(res.Body, @"(\d+)件のデータがあります");
+            return m.Success ? int.Parse(m.Groups[1].Value) : -1;
+        }
+
+        /// <summary>一覧から、指定した名前の ShipperID を拾う</summary>
+        /// <param name="body">応答</param>
+        /// <param name="name">CompanyName</param>
+        /// <returns>ShipperID（見つからなければ -1）</returns>
+        private static int FindShipperId(string body, string name)
+        {
+            if (body == null) { return -1; }
+
+            // {"shipperID":"4","companyName":"smoke-…","phone":"…"}
+            Match m = Regex.Match(body,
+                "\"shipperID\"\\s*:\\s*\"(\\d+)\"[^}]*?" + Regex.Escape(name));
+            return m.Success ? int.Parse(m.Groups[1].Value) : -1;
+        }
+
+        /// <summary>WebApiParams のフォーム（データアクセスの指定）</summary>
+        /// <returns>フォーム</returns>
+        private static string DdlForm()
+        {
+            return "ddlDap=SQL&ddlMode1=individual&ddlMode2=static&ddlExRollback=-";
+        }
+
+        /// <summary>WebApiParams の JSON（Shipper 付き）</summary>
+        /// <param name="id">ShipperID（0 なら採番させる）</param>
+        /// <param name="company">CompanyName（不要なら null）</param>
+        /// <param name="phone">Phone（不要なら null）</param>
+        /// <returns>JSON</returns>
+        private static string ShipperBody(int id, string company, string phone)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("{\"ddlDap\":\"SQL\",\"ddlMode1\":\"individual\"");
+            sb.Append(",\"ddlMode2\":\"static\",\"ddlExRollback\":\"-\"");
+            sb.Append(",\"Shipper\":{\"ShipperID\":").Append(id);
+
+            if (company != null) { sb.Append(",\"CompanyName\":").Append(Program.Quote(company)); }
+            if (phone != null) { sb.Append(",\"Phone\":").Append(Program.Quote(phone)); }
+
+            sb.Append("}}");
+            return sb.ToString();
         }
 
         #endregion
@@ -264,7 +390,7 @@ namespace TestWebAPIClient
         /// <returns>DataTable（取れなければ null）</returns>
         private static DataTable SelectAll()
         {
-            Res res = Program.Post("/SelectAll", "");
+            Res res = Program.Post(Program.Api + "/SelectAll", "");
             if (res.Status != 200) { return null; }
 
             string json = Program.ExtractJsonString(res.Body, "Suppliers");
@@ -284,7 +410,7 @@ namespace TestWebAPIClient
             string json = DTTables.DTTablesToJson(dtts);
 
             // JSON の中に JSON を入れるので、文字列としてエスケープする。
-            return Program.Post("/BatchUpdate", "{\"Suppliers\":" + Program.Quote(json) + "}");
+            return Program.Post(Program.Api + "/BatchUpdate", "{\"Suppliers\":" + Program.Quote(json) + "}");
         }
 
         #endregion
@@ -294,9 +420,9 @@ namespace TestWebAPIClient
         /// <summary>GET</summary>
         /// <param name="path">パス</param>
         /// <returns>応答</returns>
-        private static Res Get(string path)
+        private static Res Get(string url)
         {
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(Program.BaseUrl + path);
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
             req.Method = "GET";
             return Program.ReadResponse(req);
         }
@@ -305,11 +431,34 @@ namespace TestWebAPIClient
         /// <param name="path">パス</param>
         /// <param name="body">本文</param>
         /// <returns>応答</returns>
-        private static Res Post(string path, string body)
+        private static Res Post(string url, string body)
         {
-            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(Program.BaseUrl + path);
+            return Program.Post(url, body, "application/json");
+        }
+
+        /// <summary>POST（form）</summary>
+        /// <param name="url">URL</param>
+        /// <param name="form">本文</param>
+        /// <returns>応答</returns>
+        /// <remarks>
+        /// **net10.0 の JsonController は SelectXxx が [FromForm]。**
+        /// net48 はどちらも受け付けるので、net10.0 に合わせる。
+        /// </remarks>
+        private static Res PostForm(string url, string form)
+        {
+            return Program.Post(url, form, "application/x-www-form-urlencoded");
+        }
+
+        /// <summary>POST</summary>
+        /// <param name="url">URL</param>
+        /// <param name="body">本文</param>
+        /// <param name="contentType">Content-Type</param>
+        /// <returns>応答</returns>
+        private static Res Post(string url, string body, string contentType)
+        {
+            HttpWebRequest req = (HttpWebRequest)WebRequest.Create(url);
             req.Method = "POST";
-            req.ContentType = "application/json";
+            req.ContentType = contentType;
 
             byte[] bytes = Encoding.UTF8.GetBytes(body ?? "");
             req.ContentLength = bytes.Length;

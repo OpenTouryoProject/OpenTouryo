@@ -772,145 +772,8 @@ $webFormsFlow = {
     return @{ Ok = $true; Detail = "ログイン後 menu.aspx = 200" }
 }
 
-# ASPNETWebService（ResourceServer）: 画面を持たない WebAPI のため、上の 2 つとは確認の形が違う。
-#
-# ＜何を確認するか＞
-#   JsonController は MVC_Sample の Crud1Controller と同じ処理を公開している
-#   （Ｂ層は同じ WSServer_sample.Business.LayerB）。
-#   **CRUD を一巡させ、件数が元に戻るところまで**見る。
-#   ここまで通れば、ホスティング・ルーティング・Ｂ層・Ｄ層・DB が繋がっている。
-#
-# ＜認証は要らない＞
-#   [MyBaseAsyncApiController(httpAuthHeader: EnumHttpAuthHeader.None | Bearer)] のため、
-#   トークンが無くても通る。認証まで見たいなら別途 MultiPurposeAuthSite が要る。
-#
-# ＜要求の形が 2 通りある＞
-#   **net10.0 側は SelectXxx が [FromForm] で、Select/Insert/Update/Delete が JSON。**
-#   net48 側はどちらも受け付けるので、**net10.0 に合わせれば 1 つの手順で両方に使える。**
-#
-# ＜後片付け＞
-#   Shippers に 1 行足して消す。**最後に件数が元に戻ることを確認**しており、
-#   ここが合わなければ NG になるので、消し残しは検知できる。
-$webApiCrudFlow = {
-    param($base)
-
-    $ddl = @{ ddlDap = "SQL"; ddlMode1 = "individual"; ddlMode2 = "static"; ddlExRollback = "-" }
-
-    function Invoke-Api($act, $body, $json)
-    {
-        if ($json) {
-            return Invoke-Http "$base/api/json/$act" -Method POST `
-                -Body ($body | ConvertTo-Json) -ContentType "application/json"
-        }
-        return Invoke-Http "$base/api/json/$act" -Method POST -Body $body
-    }
-
-    # 疎通（DB を使わない。ここが通らなければ配置か構成の問題）
-    $r = Invoke-Http "$base/api/json/test"
-    if ($r.Status -ne 200) { return @{ Ok = $false; Detail = "GET /api/json/test = $($r.Status)" } }
-
-    # 件数（Ｂ層・Ｄ層・DB まで到達する最初の要求）
-    $r = Invoke-Api "SelectCount" $ddl $false
-    if ($r.Status -ne 200) { return @{ Ok = $false; Detail = "SelectCount = $($r.Status)" } }
-    $m = [regex]::Match($r.Content, '(\d+)件のデータがあります')
-    if (-not $m.Success) { return @{ Ok = $false; Detail = "SelectCount の応答が想定外 : $($r.Content)" } }
-    $before = [int]$m.Groups[1].Value
-
-    # 追加（消し忘れても次回に拾えるよう、名前を毎回変える）
-    $name = "smoke-" + (Get-Random -Maximum 99999)
-    $ins = $ddl.Clone(); $ins.Shipper = @{ ShipperID = 0; CompanyName = $name; Phone = "000-0000" }
-    $r = Invoke-Api "Insert" $ins $true
-    if ($r.Status -ne 200 -or $r.Content -notmatch '件追加') { return @{ Ok = $false; Detail = "Insert = $($r.Status) : $($r.Content)" } }
-
-    # 一覧から、今入れた行の ShipperID を拾う（Insert は採番結果を返さない）
-    $r = Invoke-Api "SelectAll_DT" $ddl $false
-    if ($r.Status -ne 200) { return @{ Ok = $false; Detail = "SelectAll_DT = $($r.Status)" } }
-    $row = ($r.Content | ConvertFrom-Json).result | Where-Object { $_.companyName -eq $name }
-    if (-not $row) { return @{ Ok = $false; Detail = "追加した行が一覧に出てこない（$name）" } }
-    $id = [int]$row.shipperID
-
-    # 取得
-    $sel = $ddl.Clone(); $sel.Shipper = @{ ShipperID = $id }
-    $r = Invoke-Api "Select" $sel $true
-    if ($r.Status -ne 200 -or $r.Content -notmatch [regex]::Escape($name)) { return @{ Ok = $false; Detail = "Select = $($r.Status) : $($r.Content)" } }
-
-    # 更新
-    $upd = $ddl.Clone(); $upd.Shipper = @{ ShipperID = $id; CompanyName = "$name-upd"; Phone = "111-1111" }
-    $r = Invoke-Api "Update" $upd $true
-    if ($r.Status -ne 200 -or $r.Content -notmatch '件更新') { return @{ Ok = $false; Detail = "Update = $($r.Status) : $($r.Content)" } }
-
-    # 削除（後片付けも兼ねる）
-    $del = $ddl.Clone(); $del.Shipper = @{ ShipperID = $id }
-    $r = Invoke-Api "Delete" $del $true
-    if ($r.Status -ne 200 -or $r.Content -notmatch '件削除') { return @{ Ok = $false; Detail = "Delete = $($r.Status) : $($r.Content)" } }
-
-    # 件数が元に戻ったか（消し残しの検知）
-    $r = Invoke-Api "SelectCount" $ddl $false
-    $m = [regex]::Match($r.Content, '(\d+)件のデータがあります')
-    if (-not $m.Success -or [int]$m.Groups[1].Value -ne $before)
-    {
-        return @{ Ok = $false; Detail = "件数が戻らない（前 $before → 後 $($r.Content)）" }
-    }
-
-    return @{ Ok = $true; Detail = "CRUD 一巡 OK（ShipperID=$id、件数 $before で復帰）" }
-}
-
 
 $targetsCS = @(
-    # --- バッチ (net48) ---
-    @{
-        Name = "SimpleBatch_sample (net48)";      Bat = "5_Build_Bat_sample.bat"
-        Exe  = "Samples\Bat_sample\SimpleBatch_sample\bin\Debug\SimpleBatch_sample.exe"
-        Args = $batchArgs;  Expect = '\d+件のデータがあります'
-    }
-    @{
-        Name = "RerunnableBatch_sample (net48)";  Bat = "5_Build_Bat_sample.bat"
-        Exe  = "Samples\Bat_sample\RerunnableBatch_sample\bin\Debug\RerunnableBatch_sample.exe"
-        Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
-    }
-    @{
-        Name = "RerunnableBatch_sample2 (net48)"; Bat = "5_Build_Bat_sample.bat"
-        Exe  = "Samples\Bat_sample\RerunnableBatch_sample2\bin\Debug\RerunnableBatch_sample2.exe"
-        Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
-    }
-    @{
-        Name = "RerunnableBatch_sample3 (net48)"; Bat = "5_Build_Bat_sample.bat"
-        Exe  = "Samples\Bat_sample\RerunnableBatch_sample3\bin\Debug\RerunnableBatch_sample3.exe"
-        Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
-    }
-
-    # --- バッチ (net10.0) ---
-    @{
-        Name = "SimpleBatch_sample (net10.0)";      Bat = "5_Build_BatCore_sample.bat"
-        Exe  = "Samples4NetCore\Legacy\Bat_sample\SimpleBatch_sample\bin\Debug\net10.0\SimpleBatch_sample.dll"
-        Args = $batchArgs;  Expect = '\d+件のデータがあります'
-    }
-    @{
-        Name = "RerunnableBatch_sample (net10.0)";  Bat = "5_Build_BatCore_sample.bat"
-        Exe  = "Samples4NetCore\Legacy\Bat_sample\RerunnableBatch_sample\bin\Debug\net10.0\RerunnableBatch_sample.dll"
-        Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
-    }
-    @{
-        Name = "RerunnableBatch_sample2 (net10.0)"; Bat = "5_Build_BatCore_sample.bat"
-        Exe  = "Samples4NetCore\Legacy\Bat_sample\RerunnableBatch_sample2\bin\Debug\net10.0\RerunnableBatch_sample2.dll"
-        Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
-    }
-    @{
-        Name = "RerunnableBatch_sample3 (net10.0)"; Bat = "5_Build_BatCore_sample.bat"
-        Exe  = "Samples4NetCore\Legacy\Bat_sample\RerunnableBatch_sample3\bin\Debug\net10.0\RerunnableBatch_sample3.dll"
-        Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
-    }
-
-    # --- CLI (net10.0) ---
-    # net48 版は System.CommandLine / Sharprompt の .NET Fx サポート終了により
-    # ドロップされている（5_Build_CLI_sample.bat 参照）。
-    # interactive サブコマンドは Prompt を使うため対象外とし、非対話のものを使う。
-    @{
-        Name = "Simple_CLI (net10.0)";              Bat = "5_Build_CLICore_sample.bat"
-        Exe  = "Samples4NetCore\Legacy\CLI_sample\Simple_CLI\Simple_CLI\bin\Debug\net10.0\Simple_CLI.dll"
-        Args = @("cmd1", "--an-int", "123");  Expect = 'Sub command cmd1: 123'
-    }
-
     # --- DaoGen_Tool（墨壺）の CUI モード ---
     # #508 で追加された /HELP と /CUI。GUI 側の確認は手作業に残る。
     # DAODEFGEN → DAOSQLGEN の順に実行し、前段の出力を後段の入力に使う。
@@ -998,6 +861,60 @@ $targetsCS = @(
         Expect = 'NG : 0 件'
     }
 
+    # --- バッチ (net48) ---
+    @{
+        Name = "SimpleBatch_sample (net48)";      Bat = "5_Build_Bat_sample.bat"
+        Exe  = "Samples\Bat_sample\SimpleBatch_sample\bin\Debug\SimpleBatch_sample.exe"
+        Args = $batchArgs;  Expect = '\d+件のデータがあります'
+    }
+    @{
+        Name = "RerunnableBatch_sample (net48)";  Bat = "5_Build_Bat_sample.bat"
+        Exe  = "Samples\Bat_sample\RerunnableBatch_sample\bin\Debug\RerunnableBatch_sample.exe"
+        Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
+    }
+    @{
+        Name = "RerunnableBatch_sample2 (net48)"; Bat = "5_Build_Bat_sample.bat"
+        Exe  = "Samples\Bat_sample\RerunnableBatch_sample2\bin\Debug\RerunnableBatch_sample2.exe"
+        Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
+    }
+    @{
+        Name = "RerunnableBatch_sample3 (net48)"; Bat = "5_Build_Bat_sample.bat"
+        Exe  = "Samples\Bat_sample\RerunnableBatch_sample3\bin\Debug\RerunnableBatch_sample3.exe"
+        Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
+    }
+
+    # --- バッチ (net10.0) ---
+    @{
+        Name = "SimpleBatch_sample (net10.0)";      Bat = "5_Build_BatCore_sample.bat"
+        Exe  = "Samples4NetCore\Legacy\Bat_sample\SimpleBatch_sample\bin\Debug\net10.0\SimpleBatch_sample.dll"
+        Args = $batchArgs;  Expect = '\d+件のデータがあります'
+    }
+    @{
+        Name = "RerunnableBatch_sample (net10.0)";  Bat = "5_Build_BatCore_sample.bat"
+        Exe  = "Samples4NetCore\Legacy\Bat_sample\RerunnableBatch_sample\bin\Debug\net10.0\RerunnableBatch_sample.dll"
+        Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
+    }
+    @{
+        Name = "RerunnableBatch_sample2 (net10.0)"; Bat = "5_Build_BatCore_sample.bat"
+        Exe  = "Samples4NetCore\Legacy\Bat_sample\RerunnableBatch_sample2\bin\Debug\net10.0\RerunnableBatch_sample2.dll"
+        Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
+    }
+    @{
+        Name = "RerunnableBatch_sample3 (net10.0)"; Bat = "5_Build_BatCore_sample.bat"
+        Exe  = "Samples4NetCore\Legacy\Bat_sample\RerunnableBatch_sample3\bin\Debug\net10.0\RerunnableBatch_sample3.dll"
+        Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
+    }
+
+    # --- CLI (net10.0) ---
+    # net48 版は System.CommandLine / Sharprompt の .NET Fx サポート終了により
+    # ドロップされている（5_Build_CLI_sample.bat 参照）。
+    # interactive サブコマンドは Prompt を使うため対象外とし、非対話のものを使う。
+    @{
+        Name = "Simple_CLI (net10.0)";              Bat = "5_Build_CLICore_sample.bat"
+        Exe  = "Samples4NetCore\Legacy\CLI_sample\Simple_CLI\Simple_CLI\bin\Debug\net10.0\Simple_CLI.dll"
+        Args = @("cmd1", "--an-int", "123");  Expect = 'Sub command cmd1: 123'
+    }
+
     # --- DTO を使用したバッチ更新（WebAPI Client）（#570） ---
     #
     # **DataTable を DTTables 経由で JSON にして往復させ、
@@ -1013,29 +930,22 @@ $targetsCS = @(
     #   対象側が項目ごとに OK / NG を出し、末尾に件数を出す。
     @{
         Name = "TestWebAPIClient (net48)";   Bat = "y_Build_TestWebAPIClient.bat"
-        Exe  = "Frameworks\\Tests\\TestWebAPIClient\\net48\\bin\\Debug\\TestWebAPIClientFx.exe"
-        Args = @("http://localhost:51087/api/batchupdate")
+        Exe  = "Frameworks\Tests\TestWebAPIClient\net48\bin\Debug\TestWebAPIClientFx.exe"
+        Args = @("http://localhost:51087")
         Expect = 'NG : 0 件'
         Pre = { if (-not (Start-ApiWeb "net48" 51087)) { throw "WebAPI のホストを起動できません（port 51087）" } }
         Verify = { Stop-ApiWeb; return $true }
     }
     @{
         Name = "TestWebAPIClient (net10.0)"; Bat = "y_Build_TestWebAPIClient.bat"
-        Exe  = "Frameworks\\Tests\\TestWebAPIClient\\net48\\bin\\Debug\\TestWebAPIClientFx.exe"
-        Args = @("http://localhost:51088/api/batchupdate")
+        Exe  = "Frameworks\Tests\TestWebAPIClient\net48\bin\Debug\TestWebAPIClientFx.exe"
+        Args = @("http://localhost:51088")
         Expect = 'NG : 0 件'
         Pre = { if (-not (Start-ApiWeb "net10.0" 51088)) { throw "WebAPI のホストを起動できません（port 51088）" } }
         Verify = { Stop-ApiWeb; return $true }
     }
 
     # --- Web アプリ ---
-    @{
-        Name = "MVC_Sample (net48)";      Bat = "10_Build_WebApp_sample.bat"
-        Kind = "Web";  WebHost = "IISExpress";  Port = 51081
-        Site = "Samples\WebApp_sample\MVC_Sample\MVC_Sample"
-        Need = "aspnet_state"
-        Flow = $mvcLoginFlow
-    }
     @{
         Name = "WebForms_Sample (net48)"; Bat = "10_Build_WebApp_sample.bat"
         Kind = "Web";  WebHost = "IISExpress";  Port = 51082
@@ -1044,26 +954,17 @@ $targetsCS = @(
         Flow = $webFormsFlow
     }
     @{
+        Name = "MVC_Sample (net48)";      Bat = "10_Build_WebApp_sample.bat"
+        Kind = "Web";  WebHost = "IISExpress";  Port = 51081
+        Site = "Samples\WebApp_sample\MVC_Sample\MVC_Sample"
+        Need = "aspnet_state"
+        Flow = $mvcLoginFlow
+    }
+    @{
         Name = "MVC_Sample (net10.0)";    Bat = "10_Build_WebAppCore_sample.bat"
         Kind = "Web";  WebHost = "Kestrel";  Port = 51083
         Exe  = "Samples4NetCore\Backend\MVC_Sample\MVC_Sample\bin\Debug\net10.0\MVC_Sample.dll"
         Flow = $mvcLoginFlow
-    }
-
-    # --- ResourceServer（画面を持たない WebAPI。#566 で引き戻した） ---
-    #
-    # ＜ポート＞ 51081-51086 は上と VB 版で使っている。51087 / 51088 を割り当てる。
-    @{
-        Name = "ASPNETWebService (net48)";       Bat = "6_Build_WSSrv_sample.bat"
-        Kind = "Web";  WebHost = "IISExpress";  Port = 51087
-        Site = "Samples\WS_sample\ASPNETWebService\ASPNETWebService"
-        Flow = $webApiCrudFlow
-    }
-    @{
-        Name = "ASPNETWebService (net10.0)"; Bat = "6_Build_WSSrvCore_sample.bat"
-        Kind = "Web";  WebHost = "Kestrel";  Port = 51088
-        Exe  = "Samples4NetCore\Backend\ASPNETWebService\ASPNETWebService\bin\Debug\net10.0\ASPNETWebService.dll"
-        Flow = $webApiCrudFlow
     }
 )
 
