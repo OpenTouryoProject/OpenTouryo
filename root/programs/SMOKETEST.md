@@ -81,7 +81,7 @@ cd root\programs
 
 ---
 
-## 3. 対象（25 件）
+## 3. 対象（27 件）
 
 ### バッチ（8 件）
 
@@ -387,6 +387,38 @@ ASP.NET WebAPI の経路（`protocol="5"`）は **.NET Framework 限定**であ�
 そのまま返す必要があり、コントロール名はマスタ ページ配下のため
 `ctl00$ContentPlaceHolder_A$` が付く。
 
+### DTO を使用したバッチ更新（WebAPI Client）（2 件）
+
+**対象は EXE だが、相手に WebAPI が要る。**（#570）
+`Kind = "Web"` は対象自身が Web アプリのときの仕組みなので使えない。
+`Pre` で起動し、`Verify` の最後で止める（`DeployZipPackWithHTTP` と同じ形）。
+
+| 対象 | 相手 | ポート |
+|---|---|---|
+| `TestWebAPIClient (net48)` | `Samples/WS_sample/ASPNETWebService` | 51087 |
+| `TestWebAPIClient (net10.0)` | `Samples4NetCore/Backend/ASPNETWebService` | 51088 |
+
+**クライアントは 1 本。** 接続先を引数で切り替えるだけで両方に使える。
+
+＜何を確かめるか＞
+
+  `DataTable` を `DTTables` 経由で JSON にして往復させたとき、
+  **`RowState` と `Original` が保たれ、バッチ更新に使える**こと（#567 / #570）。
+
+```
+往復後も RowState が残る    Added=1 / Modified=1
+往復後も Original が残る    Original=Exotic Liquids / Current=smoke-103919
+他者の更新が通る            {"updateCount":1}
+古い版の更新が弾かれる      {"errorMessageID":"W0002"}
+```
+
+**サーバ側だけでは検証にならない。** 同一プロセス内の `DataTable` を触ってしまい、
+JSON をまたいだことにならないため、HTTP 越しに送って戻すところまでやる。
+
+> **判定は状態コードと JSON の形で行う。**
+> 部分一致にしていたところ、**IIS Express の 500.19 が返す HTML に "test" が含まれ、
+> 疎通が OK と表示された。**「通ったこと」は正しさの証拠にならない。
+
 ### ResourceServer（2 件）
 
 **画面を持たない WebAPI** なので、上の Web アプリとは確認のしかたが変わる。
@@ -630,7 +662,7 @@ MVC_Sample (net10.0)              OK   ログイン後 /Crud1/Index = 200
   全対象 OK
 ```
 
-全 25 件（ビルド 10 バッチ ＋ 疎通 25 件）で **約 9 分**。
+全 27 件（ビルド 12 バッチ ＋ 疎通 27 件）で **約 14 分**。
 
 ### リダイレクトの扱い
 
@@ -732,7 +764,7 @@ $client.Connect("localhost", $port)
 
 ```powershell
 .\3_SmokeTest.ps1 -Lang VB     # VB のみ（6 件）
-.\3_SmokeTest.ps1 -Lang Both   # C# 25 件 ＋ VB 6 件
+.\3_SmokeTest.ps1 -Lang Both   # C# 27 件 ＋ VB 6 件
 ```
 
 **既定に VB を含めない。** リリース時の検証（[`RELEASE.md`](RELEASE.md) 3 節）は

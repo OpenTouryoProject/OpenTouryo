@@ -572,6 +572,73 @@ $verifyDeploy48    = { $r = Test-Deploy "net48"; Stop-DeployWeb; return $r }
 $verifyDeployCore  = { $r = Test-Deploy "core";  Stop-DeployWeb; return $r }
 
 # ------------------------------------------------------------------
+# WebAPI（バッチ更新）のホスト（#570）
+# ------------------------------------------------------------------
+# **TestWebAPIClient は EXE だが、相手に Web サーバが要る。**
+# Kind = "Web" は対象自身が Web アプリのときの仕組みなので使えない。
+# ここで起動し、Verify の最後で止める（DeployZipPackWithHTTP と同じ形）。
+$script:apiWebProc = $null
+
+function Stop-ApiWeb
+{
+    if ($script:apiWebProc -and -not $script:apiWebProc.HasExited)
+    {
+        $script:apiWebProc.Kill()
+        $script:apiWebProc.WaitForExit(5000)
+    }
+    $script:apiWebProc = $null
+}
+
+function Start-ApiWeb([string]$kind, [int]$port)
+{
+    # **前回の残りを先に止める。**（Start-DeployWeb と同じ理由）
+    Stop-ApiWeb
+
+    $log = Join-Path $OutputDir "api_web_$kind.log"
+
+    if ($kind -eq "net48")
+    {
+        $iis = Join-Path $env:ProgramFiles "IIS Express\iisexpress.exe"
+        if (-not (Test-Path $iis)) { return $false }
+
+        $site = Join-Path $PSScriptRoot "CS\Samples\WS_sample\ASPNETWebService\ASPNETWebService"
+        $script:apiWebProc = Start-Process $iis `
+            -ArgumentList "/path:`"$site`"", "/port:$port", "/systray:false" `
+            -PassThru -WindowStyle Hidden `
+            -RedirectStandardOutput $log -RedirectStandardError "$log.err"
+    }
+    else
+    {
+        $dll = Join-Path $PSScriptRoot ("CS\Samples4NetCore\Backend\ASPNETWebService" +
+            "\ASPNETWebService\bin\Debug\net10.0\ASPNETWebService.dll")
+        if (-not (Test-Path $dll)) { return $false }
+
+        # コンテンツ ルートを合わせるため、出力フォルダを作業ディレクトリにする。
+        $script:apiWebProc = Start-Process "dotnet" `
+            -ArgumentList "`"$dll`"", "--urls", "http://localhost:$port" `
+            -PassThru -WindowStyle Hidden -WorkingDirectory (Split-Path $dll) `
+            -RedirectStandardOutput $log -RedirectStandardError "$log.err"
+    }
+
+    # **TCP で繋がるかだけを見る。**（SMOKETEST.md 9 節）
+    for ($i = 0; $i -lt 40; $i++)
+    {
+        Start-Sleep -Milliseconds 500
+        try
+        {
+            $client = New-Object System.Net.Sockets.TcpClient
+            $client.Connect("localhost", $port)
+            $client.Close()
+            return $true
+        }
+        catch { }
+    }
+
+    Stop-ApiWeb
+    return $false
+}
+
+# ------------------------------------------------------------------
 # HTTP 要求
 # ------------------------------------------------------------------
 # リダイレクトを追わずに状態コードを見たいが、Invoke-WebRequest は
@@ -929,6 +996,36 @@ $targetsCS = @(
         Name = "TestTransmission (net48)";  Bat = "y_Build_TestTransmission.bat"
         Exe  = "Frameworks\Tests\TestTransmission\net48\bin\Debug\TestTransmissionFx.exe"
         Expect = 'NG : 0 件'
+    }
+
+    # --- DTO を使用したバッチ更新（WebAPI Client）（#570） ---
+    #
+    # **DataTable を DTTables 経由で JSON にして往復させ、
+    #   RowState と Original が保たれることを、HTTP 越しに確かめる。**
+    #
+    # ＜対象自身は EXE＞
+    #   相手の WebAPI は Pre で起動し、Verify の最後で止める。
+    #
+    # ＜net48 と net10.0 で同じクライアントを使う＞
+    #   接続先を引数で切り替えるだけ。応答の形も揃えてある。
+    #
+    # ＜判定＞
+    #   対象側が項目ごとに OK / NG を出し、末尾に件数を出す。
+    @{
+        Name = "TestWebAPIClient (net48)";   Bat = "y_Build_TestWebAPIClient.bat"
+        Exe  = "Frameworks\\Tests\\TestWebAPIClient\\net48\\bin\\Debug\\TestWebAPIClientFx.exe"
+        Args = @("http://localhost:51087/api/batchupdate")
+        Expect = 'NG : 0 件'
+        Pre = { if (-not (Start-ApiWeb "net48" 51087)) { throw "WebAPI のホストを起動できません（port 51087）" } }
+        Verify = { Stop-ApiWeb; return $true }
+    }
+    @{
+        Name = "TestWebAPIClient (net10.0)"; Bat = "y_Build_TestWebAPIClient.bat"
+        Exe  = "Frameworks\\Tests\\TestWebAPIClient\\net48\\bin\\Debug\\TestWebAPIClientFx.exe"
+        Args = @("http://localhost:51088/api/batchupdate")
+        Expect = 'NG : 0 件'
+        Pre = { if (-not (Start-ApiWeb "net10.0" 51088)) { throw "WebAPI のホストを起動できません（port 51088）" } }
+        Verify = { Stop-ApiWeb; return $true }
     }
 
     # --- Web アプリ ---

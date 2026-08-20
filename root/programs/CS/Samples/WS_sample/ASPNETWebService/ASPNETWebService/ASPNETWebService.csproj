@@ -263,9 +263,14 @@
   <ItemGroup>
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Controllers\BatchUpdateController.cs" />
     <Compile Include="Controllers\JsonController.cs" />
     <Compile Include="Controllers\SampleDataController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
+    <Compile Include="Logic\Business\SuppliersLayerB.cs" />
+    <Compile Include="Logic\Common\SuppliersParameterValue.cs" />
+    <Compile Include="Logic\Common\SuppliersReturnValue.cs" />
+    <Compile Include="Logic\Dao\DaoSuppliers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
