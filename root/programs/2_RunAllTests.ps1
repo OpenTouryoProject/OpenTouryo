@@ -189,11 +189,11 @@ $tests = @(
         Result = "TestDataAccess\ResultCore100.txt"; SkipLog4net = $false; NormBase64 = $false
     }
     @{
-        Name = "SimpleBatch (net48)";        Bat = "y_Build_TestCode_Batch.bat"
+        Name = "TestBatch (net48)";          Bat = "y_Build_TestCode_Batch.bat"
         Result = "TestBatch\ResultSimpleBatch48.txt";     SkipLog4net = $true; NormBase64 = $false
     }
     @{
-        Name = "SimpleBatch (net10.0)";      Bat = "y_Build_TestCode_Batch.bat"
+        Name = "TestBatch (net10.0)";        Bat = "y_Build_TestCode_Batch.bat"
         Result = "TestBatch\ResultSimpleBatchCore100.txt"; SkipLog4net = $true; NormBase64 = $false
     }
     @{
