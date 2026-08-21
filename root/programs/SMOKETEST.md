@@ -156,6 +156,52 @@ NG : /OUTPUT "C:\temp\out"    ← \ が消える
 前段の出力を後段の入力に使う点は `DaoGen_Tool` と同じ。
 
 **配布物（ZIP）は追跡していない。** `Pre` で `FormAppRoot` から毎回作る。
+#### プロキシ経由も確かめる（#578）
+
+`#575` で `HttpWebRequest` を `HttpClient` へ移した際、
+**`HttpClientHandler` では `Proxy = null` が「使わない」にならない**（`UseProxy = false` が要る）
+という差があった。実際に通して確かめる。
+
+| 対象 | 判定 |
+|---|---|
+| `DeployZip 配置 プロキシ` (net48 / net10.0) | 配置が一致し、**プロキシのログに要求が並ぶ** |
+| `DeployZip 配置 プロキシ認証` (net48 / net10.0) | 上記に加え、**`[407]` が記録される** |
+
+**配置の成功だけでは足りない。** プロキシを無視して直結しても成功するため、
+`Test-ProxyUsed` でログを見る。マニフェストと ZIP の両方が通っていることまで確認する。
+
+プロキシは `st_Proxy.ps1`（`TcpListener` の最小実装）。
+`HttpListener` は使えない。**プロキシへの要求は要求行が絶対 URI**
+（`GET http://host:port/path HTTP/1.1`）で来るため、
+プレフィクス登録で受ける `HttpListener` では扱えない。
+
+##### 踏んだ落とし穴
+
+**① `.NET Framework` は localhost 宛のプロキシを無条件にバイパスする。**
+
+```
+BypassProxyOnLocal（既定）  False
+IsBypassed(localhost)       **True**   ← 設定に関わらず
+IsBypassed(example.com)     False
+```
+
+配信が `localhost` にある限り net48 では経路を確かめられない。
+`hosts` は書き換えず、**別名（`deploy.smoketest`）を使い、
+プロキシ側で `localhost` に繋ぎ替える**（`-MapHost`）。
+
+**② `Host` ヘッダも繋ぎ替える。** IIS Express は `Host` が `localhost` でない要求を受け付けない。
+
+**③ 応答は長さに従って読む。** 「上流が閉じるまで読む」では**本体を持たない HEAD で止まる。**
+
+**④ 起動待ちは「ポートに繋がるか」では足りない。**
+前回のプロキシが待ち受けを握ったままだと接続は成功し、
+新しいプロセスは死んでいるのに起動したと誤認する。**自分のログに `[start]` が出るまで待つ。**
+
+> **同じ理由で `Stop-DeployWeb` も直した。**（#578）
+> 残った `iisexpress` は 51084 を握り続け、**前回の web フォルダを配り続ける。**
+> 実測では net48 の配置が `deploy_core` のマニフェストを読み、
+> そちらへ展開していた。**配置は成功するため異常が出ず、判定だけが 0 件になる。**
+
 
 ```
 /ZIPGEN /TOPONLY            → root.zip（ルート直下だけ、書庫内ルート無し）
@@ -669,8 +715,12 @@ MVC_Sample (net10.0)              OK   ログイン後 /Crud1/Index = 200
 | `st_Server.ps1` | サーバー系（Web ホストの起動と停止、HTTP 要求） |
 | `st_Flow.ps1` | アプリケーション検証フロー（WebForms / MVC） |
 | `st_Targets.ps1` | テスト対象定義（CS / VB） |
+| `st_Proxy.ps1` | プロキシ経由の確認に使う最小 HTTP プロキシ（#578） |
 
 **ドット ソースで読む。** `& file` では関数と変数が呼び出し元のスコープに入らない。
+
+**`st_Proxy.ps1` だけは別。** 独立したプロセスとして起動するため読み込まない
+（`Start-Process` で待ち受けさせる）。
 
 ```powershell
 . (Join-Path $PSScriptRoot "st_Utility.ps1")
