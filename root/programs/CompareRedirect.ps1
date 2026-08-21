@@ -117,9 +117,28 @@ if ([Console]::OutputEncoding.CodePage -ne 65001)
 # ------------------------------------------------------------------
 # config から bindingRedirect を読む
 # ------------------------------------------------------------------
+$script:unreadable = @()
+
 function Get-Redirects([string]$path)
 {
-    try { [xml]$x = Get-Content $path -Raw -EA Stop } catch { return @() }
+    # **Get-Content でテキストとして読まない。**（#579）
+    #   Windows PowerShell 5.1 の Get-Content は、BOM が無いと既定の文字コード（CP932）で
+    #   読む。UTF-8 の日本語が壊れて XML として解析できなくなり、
+    #   **その config は宣言ごと数えられずに消えていた。**
+    #   実測で 5 ファイル・38 宣言が 5.1 でだけ測られていなかった。
+    #
+    #   XmlDocument.Load は BOM と XML 宣言を見て復号するため、5.1 と 7 で揃う。
+    $x = New-Object System.Xml.XmlDocument
+
+    try { $x.Load($path) }
+    catch
+    {
+        # **黙って捨てない。** 捨てると「宣言が無い」と区別がつかない。
+        $script:unreadable += [PSCustomObject]@{
+            Config = $path; 理由 = $_.Exception.Message
+        }
+        return @()
+    }
 
     $list = @()
     foreach ($d in $x.SelectNodes("//*[local-name()='dependentAssembly']"))
@@ -182,16 +201,22 @@ foreach ($t in $tracked)
     foreach ($r in $redirects) { $wanted[$r.Name] = $true }
 
     $found = @{}
-    Get-ChildItem $dir -Recurse -File -Filter *.dll -EA SilentlyContinue | ForEach-Object {
-        if (-not $wanted.ContainsKey($_.BaseName)) { return }
-        try { $v = [System.Reflection.AssemblyName]::GetAssemblyName($_.FullName).Version.ToString() }
-        catch { return }
 
-        if (-not $found.ContainsKey($_.BaseName))
+    # **配下の DLL の総数も数える。**（#579）
+    #   0 なら「建てていない」と分かり、判定不能の理由を切り分けられる。
+    $dlls = @(Get-ChildItem $dir -Recurse -File -Filter *.dll -EA SilentlyContinue)
+
+    foreach ($f in $dlls)
+    {
+        if (-not $wanted.ContainsKey($f.BaseName)) { continue }
+        try { $v = [System.Reflection.AssemblyName]::GetAssemblyName($f.FullName).Version.ToString() }
+        catch { continue }
+
+        if (-not $found.ContainsKey($f.BaseName))
         {
-            $found[$_.BaseName] = New-Object System.Collections.Generic.HashSet[string]
+            $found[$f.BaseName] = New-Object System.Collections.Generic.HashSet[string]
         }
-        $null = $found[$_.BaseName].Add($v)
+        $null = $found[$f.BaseName].Add($v)
     }
 
     $ok = 0; $ng = 0; $unk = 0
@@ -204,7 +229,10 @@ foreach ($t in $tracked)
         if ($null -eq $vers)
         {
             $unk++
-            $unknown += [PSCustomObject]@{ Config = $rel; Name = $r.Name; New = $r.New }
+            $unknown += [PSCustomObject]@{
+                Config = $rel; Name = $r.Name; New = $r.New
+                Dir    = $dir; DllCount = $dlls.Count
+            }
         }
         elseif ($vers.Contains($r.New))
         {
@@ -234,6 +262,112 @@ foreach ($t in $tracked)
 }
 
 # ------------------------------------------------------------------
+# 判定不能の分類（#579）
+# ------------------------------------------------------------------
+#   **判定不能を一律に「怪しい」と出すと、見るべきものが埋もれる。**
+#   実測すると、大半は仕組み上そうなるだけで実害が無い。
+#   残る「要調査」だけが、参照の落ち（#566）を疑う対象である。
+
+$KindNote = [ordered]@{
+    "未ビルド"       = "配下に DLL が無い。建ててから測り直す"
+    "ライブラリ"     = "**実行時に読まれない。**効くのはアプリの構成ファイルだけ"
+    "連鎖ごと未配布" = "要求元も配られていない。読み込まれ得ない"
+    "要調査"         = "**要求元は在るのに実体が無い。参照が落ちている疑い**"
+}
+
+function Get-ProjectKind
+{
+    <#
+      .SYNOPSIS
+        その構成ファイルが、実行時に読まれる側のものかを判定する。
+      .DESCRIPTION
+        **bindingRedirect が効くのはアプリケーションの構成ファイルだけ**である。
+        クラス ライブラリの app.config は、そのままでは実行時に読まれない。
+
+        Web アプリは OutputType が Library になるため、**先に Web.config で判定する。**
+        OutputType だけで見ると、Web アプリをライブラリと誤って扱う。
+    #>
+    param([string]$Dir, [string]$Config)
+
+    if ($Config -match '(?i)[\\/]web\.config$') { return "アプリ" }
+
+    $proj = @(Get-ChildItem $Dir -File -EA SilentlyContinue |
+              Where-Object { $_.Extension -eq ".csproj" -or $_.Extension -eq ".vbproj" })
+    if ($proj.Count -eq 0) { return "アプリ" }
+
+    $txt = Get-Content $proj[0].FullName -Raw -EA SilentlyContinue
+    if ($txt -match '<OutputType>\s*([^<]+?)\s*</OutputType>')
+    {
+        if ($Matches[1] -match '(?i)^library$') { return "ライブラリ" }
+        return "アプリ"
+    }
+
+    return "ライブラリ"
+}
+
+function Test-Requester
+{
+    <#
+      .SYNOPSIS
+        そのアセンブリを要求している側が、配下に在るかを調べる。
+      .DESCRIPTION
+        アセンブリ参照は metadata に名前がそのまま入るため、バイト列を見れば分かる。
+        GetReferencedAssemblies は読み込みを伴い、**遅い上に失敗しやすい。**
+    #>
+    param([string]$Dir, [string[]]$Names)
+
+    $hit = @{}
+    foreach ($n in $Names) { $hit[$n] = $false }
+
+    foreach ($f in (Get-ChildItem $Dir -Recurse -File -Filter *.dll -EA SilentlyContinue))
+    {
+        $rest = @($Names | Where-Object { -not $hit[$_] })
+        if ($rest.Count -eq 0) { break }
+        if ($Names -contains $f.BaseName) { continue }
+
+        try { $txt = [Text.Encoding]::ASCII.GetString([IO.File]::ReadAllBytes($f.FullName)) }
+        catch { continue }
+
+        foreach ($n in $rest) { if ($txt.Contains($n)) { $hit[$n] = $true } }
+    }
+
+    return $hit
+}
+
+$kinds = @{}
+
+foreach ($g in ($unknown | Group-Object Dir))
+{
+    $names = @($g.Group | ForEach-Object { $_.Name } | Sort-Object -Unique)
+    $req   = $null
+
+    foreach ($u in $g.Group)
+    {
+        $key = $u.Config + "|" + $u.Name
+
+        if ($u.DllCount -eq 0)
+        {
+            $kinds[$key] = "未ビルド"
+            continue
+        }
+
+        if ((Get-ProjectKind -Dir $u.Dir -Config $u.Config) -eq "ライブラリ")
+        {
+            $kinds[$key] = "ライブラリ"
+            continue
+        }
+
+        # **要求元を見るのは、ここまで絞ってから。**（配下の DLL を全部読むため）
+        if ($null -eq $req) { $req = Test-Requester -Dir $u.Dir -Names $names }
+
+        if ($req[$u.Name]) { $kinds[$key] = "要調査" }
+        else               { $kinds[$key] = "連鎖ごと未配布" }
+    }
+}
+
+$review = @($unknown | Where-Object { $kinds[($_.Config + "|" + $_.Name)] -eq "要調査" })
+
+# ------------------------------------------------------------------
 # 出力
 # ------------------------------------------------------------------
 Write-Host ""
@@ -246,10 +380,27 @@ Write-Host ("  宣言 {0} 件 : 一致 {1} / **不一致 {2}** / 判定不能 {3
 
 if ($unknown.Count -gt 0)
 {
-    Write-Host "  **判定不能は「問題なし」ではない。** そのプロジェクトの配下に実体が無い、という意味である。"
-    Write-Host "  建てていないなら、ビルドしてから測り直す（-Detail で内訳）。"
-    Write-Host "  **建てたはずなら、参照が落ちて配られていない可能性がある。**"
-    Write-Host "  その場合は bin を見て、csproj の Reference の Version が実体と合っているかを疑う。"
+    $byKind = @{}
+    foreach ($k in $kinds.Values)
+    {
+        if ($byKind.ContainsKey($k)) { $byKind[$k] = $byKind[$k] + 1 } else { $byKind[$k] = 1 }
+    }
+
+    Write-Host ""
+    Write-Host "  判定不能の内訳 :"
+
+    foreach ($k in $KindNote.Keys)
+    {
+        if (-not $byKind.ContainsKey($k)) { continue }
+        # **-f の桁指定は文字数で数える。** 日本語は全角なので崩れる（SummaryTable.ps1 1 節）。
+        Write-Host ("    {0} {1} 件  {2}" -f `
+            (Add-Padding $k 16), (Add-LeftPadding ([string]$byKind[$k]) 3), $KindNote[$k])
+    }
+
+    if ($review.Count -eq 0)
+    {
+        Write-Host "  **要調査は 0 件。** 残りは仕組み上そうなるだけで、実行時に読まれない。"
+    }
 }
 
 if ($mismatch.Count -gt 0)
@@ -263,14 +414,40 @@ if ($mismatch.Count -gt 0)
     }
 }
 
-if ($Detail -and $unknown.Count -gt 0)
+# **要調査は -Detail が無くても出す。** ここだけが実害を疑う対象である。
+if ($review.Count -gt 0)
 {
     Write-Host ""
-    Write-Host "=== 判定不能（配下に実体が無い。未ビルド、または参照が落ちている）==="
-    foreach ($u in ($unknown | Sort-Object Config, Name))
+    Write-Host "=== 要調査（要求元は配られているのに、実体だけが無い）==="
+    foreach ($u in ($review | Sort-Object Config, Name))
     {
         Write-Host ("  {0} : {1} → {2}" -f $u.Config, $u.Name, $u.New)
     }
+    Write-Host "  **参照が落ちている可能性がある。**（#566）"
+    Write-Host "  bin を見て、csproj の Reference / PackageReference が在るかを確かめること。"
+}
+
+if ($Detail -and $unknown.Count -gt 0)
+{
+    Write-Host ""
+    Write-Host "=== 判定不能の一覧（分類つき）==="
+    foreach ($u in ($unknown | Sort-Object Config, Name))
+    {
+        Write-Host ("  [{0,-14}] {1} : {2} → {3}" -f `
+            $kinds[($u.Config + "|" + $u.Name)], $u.Config, $u.Name, $u.New)
+    }
+}
+
+if ($script:unreadable.Count -gt 0)
+{
+    Write-Host ""
+    Write-Host "=== 読めなかった config（解析に失敗）==="
+    foreach ($u in $script:unreadable)
+    {
+        Write-Host ("  " + $u.Config)
+        Write-Host ("    " + $u.理由)
+    }
+    Write-Host "  **宣言が無いのと区別がつかないため、件数に表れない。**"
 }
 
 if ($Check)
@@ -280,7 +457,15 @@ if ($Check)
 
     if ($mismatch.Count -eq 0)
     {
-        Write-Host ("  不一致なし。（判定不能 {0} 件）" -f $unknown.Count) -ForegroundColor Green
+        if ($review.Count -eq 0)
+        {
+            Write-Host ("  不一致なし。（判定不能 {0} 件 / **要調査 0**）" -f $unknown.Count) -ForegroundColor Green
+        }
+        else
+        {
+            Write-Host ("  不一致なし。ただし**要調査 {0} 件**（判定不能 {1} 件）" -f `
+                $review.Count, $unknown.Count) -ForegroundColor Yellow
+        }
     }
     else
     {
