@@ -56,6 +56,7 @@
 //*  2014/10/03  Rituparna         Added constants for RadioButtonList,CheckBoxList events and prefix. 
 //*  2015/04/16  Supragyan         Added constants for Textbox events and prefix. 
 //*  2017/08/28  西野 大介         非同期メソッドのリテラルを追加した。
+//*  2026/08/14  玄人 幸道         ConnectionGroupNameが現在は効果を持たない旨をremarksに明記（#546）
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Framework.Util
