@@ -214,6 +214,17 @@ $targetsCS = @(
         Verify = { Stop-ApiWeb; return $true }
     }
 
+    # ResourceServer の OpenAPI（IDL）（#580）
+    #   **.NET 9 以降の ASP.NET Core は標準で OpenAPI を生成する。**
+    #   Swashbuckle は要らない。net48 側（Samples/WS_sample）は
+    #   クラシック ASP.NET のため対象外。
+    @{
+        Name = "OpenAPI (net10.0)";  Bat = "6_Build_WSSrvCore_sample.bat"
+        Kind = "Web";  WebHost = "Kestrel";  Port = 51093
+        Exe  = "Samples4NetCore\Backend\ASPNETWebService\ASPNETWebService\bin\Debug\net10.0\ASPNETWebService.dll"
+        Flow = $openApiFlow
+    }
+
     # --- Web アプリ ---
     @{
         Name = "WebForms_Sample (net48)"; Bat = "10_Build_WebApp_sample.bat"

@@ -15,6 +15,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+//*  2026/08/21  玄人 幸道         OpenAPI（IDL）のドキュメント生成に対応（#580）
 //**********************************************************************************
 
 using Microsoft.AspNetCore.Mvc;
@@ -101,6 +102,12 @@ namespace ASPNETWebService
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+
+                // OpenAPI（IDL）を返す（#580）
+                //   **開発時だけに絞っていない。**
+                //   Resource Server のテンプレートとして、
+                //   利用側が IDL を引けることに意味があるため。
+                endpoints.MapOpenApi();
             });
         }
 
@@ -122,6 +129,12 @@ namespace ASPNETWebService
             services
                 .AddControllers()// WebAPI
                 .AddNewtonsoftJson();// JSON シリアライザの変更
+
+            // OpenAPI（IDL）のドキュメント生成（#580）
+            //
+            // **.NET 9 以降は標準で入っている。** Swashbuckle は要らない。
+            // 既定では /openapi/v1.json で返る。
+            services.AddOpenApi();
 
             //services.AddControllersWithViews(); // MVC & WebAPI
             // services.AddRazorPages(); // Razor Page

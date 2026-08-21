@@ -93,3 +93,35 @@ $webFormsFlow = {
 
     return @{ Ok = $true; Detail = "ログイン後 menu.aspx = 200" }
 }
+# ResourceServer の OpenAPI（IDL）: /openapi/v1.json が仕様として読める形で返ること（#580）
+#
+# **200 が返るだけでは足りない。**
+#   ドキュメントとして壊れていても 200 は返る。
+#   版・パス・スキーマまで見て、初めて「IDL になっている」と言える。
+$openApiFlow = {
+    param($base)
+
+    $r = Invoke-Http "$base/openapi/v1.json"
+    if ($r.Status -ne 200) { return @{ Ok = $false; Detail = "GET /openapi/v1.json = $($r.Status)" } }
+
+    try { $doc = $r.Content | ConvertFrom-Json }
+    catch { return @{ Ok = $false; Detail = "JSON として読めない" } }
+
+    if (-not $doc.openapi) { return @{ Ok = $false; Detail = "openapi の版が無い" } }
+
+    $paths = @($doc.paths.PSObject.Properties.Name)
+    if ($paths.Count -eq 0) { return @{ Ok = $false; Detail = "paths が空" } }
+
+    # **代表的な API が載っていること。**
+    #   コントローラを足しても気づけるよう、数ではなく名前で見る。
+    foreach ($p in @("/api/Json/Select", "/api/BatchUpdate/BatchUpdate"))
+    {
+        if ($paths -notcontains $p) { return @{ Ok = $false; Detail = "$p が載っていない" } }
+    }
+
+    # POST の要求本体にスキーマが付いていること（型情報が落ちていないか）
+    $op = $doc.paths.'/api/BatchUpdate/BatchUpdate'.post
+    if (-not $op) { return @{ Ok = $false; Detail = "/api/BatchUpdate/BatchUpdate に post が無い" } }
+
+    return @{ Ok = $true; Detail = ("openapi {0} / paths {1} 件" -f $doc.openapi, $paths.Count) }
+}

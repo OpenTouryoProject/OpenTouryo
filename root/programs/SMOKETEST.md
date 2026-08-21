@@ -81,7 +81,7 @@ cd root\programs
 
 ---
 
-## 3. 対象（29 件）
+## 3. 対象（30 件）
 
 **基盤系を先に置く。**（#571）
 環境やツールが壊れていれば、アプリケーションの検証を待たずに分かる。
@@ -170,52 +170,32 @@ NG : /OUTPUT "C:\temp\out"    ← \ が消える
 **配置の成功だけでは足りない。** プロキシを無視して直結しても成功するため、
 `Test-ProxyUsed` でログを見る。マニフェストと ZIP の両方が通っていることまで確認する。
 
-プロキシは `st_Proxy.ps1`（`TcpListener` の最小実装）。
-`HttpListener` は使えない。**プロキシへの要求は要求行が絶対 URI**
-（`GET http://host:port/path HTTP/1.1`）で来るため、
-プレフィクス登録で受ける `HttpListener` では扱えない。
+**`.NET Framework` がループバック宛を迂回する件と、その回避（実在しないホスト名）は
+通信制御と同じである。** 理由は下記「宛先に実在しないホスト名を使っている理由」を見ること。
+こちらでは別名を `deploy.smoketest` とし、プロキシ（`-MapHost`）が `localhost` へ繋ぎ替える。
 
-##### 踏んだ落とし穴
+##### 通信制御とは別に立てている理由
 
-**① `.NET Framework` は localhost 宛のプロキシを無条件にバイパスする。**
+**対象が別プロセスの EXE だからである。**
+通信制御（3 節）はオリジンもプロキシも `TestTransmission` の中に立てて 1 プロセスに閉じているが、
+`DeployZipPackWithHTTP` は外部の EXE なので、**プロキシも外に立てる**必要がある。
 
-```
-BypassProxyOnLocal（既定）  False
-IsBypassed(localhost)       **True**   ← 設定に関わらず
-IsBypassed(example.com)     False
-```
+`st_Proxy.ps1`（`TcpListener`）を `Start-Process` で待ち受けさせる。
+**`HttpListener` は使えない。** プロキシへの要求は要求行が**絶対 URI**
+（`GET http://host:port/path HTTP/1.1`）で来るため、プレフィクス登録では受けられない。
 
-配信が `localhost` にある限り net48 では経路を確かめられない。
-`hosts` は書き換えず、**別名（`deploy.smoketest`）を使い、
-プロキシ側で `localhost` に繋ぎ替える**（`-MapHost`）。
+##### 外に立てたことで要ったこと
 
-**② `Host` ヘッダも繋ぎ替える。** IIS Express は `Host` が `localhost` でない要求を受け付けない。
-
-**③ 応答は長さに従って読む。** 「上流が閉じるまで読む」では**本体を持たない HEAD で止まる。**
-
-**④ 起動待ちは「ポートに繋がるか」では足りない。**
-前回のプロキシが待ち受けを握ったままだと接続は成功し、
-新しいプロセスは死んでいるのに起動したと誤認する。**自分のログに `[start]` が出るまで待つ。**
+| | 内容 |
+|---|---|
+| `Host` ヘッダの繋ぎ替え | IIS Express は `Host` が `localhost` でない要求を受け付けない |
+| 応答は長さに従って読む | 「閉じるまで読む」では**本体を持たない HEAD で止まる** |
+| 起動待ちは**自分のログで見る** | ポートに繋がるかだけでは、**前回のプロセスが握っていても素通り**する |
 
 > **同じ理由で `Stop-DeployWeb` も直した。**（#578）
 > 残った `iisexpress` は 51084 を握り続け、**前回の web フォルダを配り続ける。**
-> 実測では net48 の配置が `deploy_core` のマニフェストを読み、
-> そちらへ展開していた。**配置は成功するため異常が出ず、判定だけが 0 件になる。**
-
-
-```
-/ZIPGEN /TOPONLY            → root.zip（ルート直下だけ、書庫内ルート無し）
-/ZIPGEN /ROOTINZIP aaa      → aaa.zip （フォルダごと、書庫内ルート = aaa）
-```
-
-**両方のモードを通る。** GUI のチェック ボックス
-（「個別のフォルダ圧縮」／「ルート フォルダからの圧縮」）に対応する分岐である。
-
-`Sample/FormAppRoot` が配布前の姿なので、**配置結果を MD5 で突き合わせられる**（21 ファイル）。
-
-**ここだけ ZIP 部品（`ZipperV2` / `UnZipperV2`）を通る。**
-単体テスト（`TestCode/TestZipV2.cs`）は部品の振る舞いを見るが、
-配布フロー全体を通すのはこの 2 件だけ。
+> 実測では net48 の配置が `deploy_core` のマニフェストを読み、そちらへ展開していた。
+> **配置は成功するため異常が出ず、判定だけが 0 件になる。**
 
 #### マニュフェストの MD5 は計算し直して突き合わせる
 
@@ -344,6 +324,16 @@ net48   : http://127.0.0.1:51090/  IsBypassed=True    ← プロキシを使わ�
 **テスト用プロキシが名前を解決せず、必ずオリジンへ繋ぎ替える**ようにしてある。
 `hosts` ファイルの編集（管理者権限）も、ファイアウォールへの露出も要らない。
 
+> **`DeployZipPackWithHTTP` のプロキシ経由テストも同じ手を使っている。**（#578）
+> 別名は `deploy.smoketest`、プロキシは `st_Proxy.ps1`（51089）で、
+> `localhost:51084` の配信へ繋ぎ替える。
+> **迂回の理由と回避策はここが一次情報**であり、あちら側には書かない。
+>
+> ただし**外部の EXE が対象**なので、プロキシは別プロセスとして立てる
+> （通信制御は `TestTransmission` の中に閉じている）。
+> そのぶん `Host` ヘッダの繋ぎ替え、応答の長さ管理、起動待ちの判定が要る
+> （「DeployZipPackWithHTTP の CUI モード」を見ること）。
+
 #### 対象外のオプション
 
 | | 理由 |
@@ -449,6 +439,42 @@ JSON をまたいだことにならないため、HTTP 越しに送って戻す�
 > 部分一致にしていたところ、**IIS Express の 500.19 が返す HTML に "test" が含まれ、
 > 疎通が OK と表示された。**「通ったこと」は正しさの証拠にならない。
 
+### ResourceServer の OpenAPI（IDL）（1 件）
+
+| 対象 | 判定 |
+|---|---|
+| `OpenAPI (net10.0)` | `/openapi/v1.json` が**仕様として読める形で返る** |
+
+**.NET 9 以降、ASP.NET Core は標準で OpenAPI ドキュメントを生成する。**
+`Swashbuckle` は要らない（`Microsoft.AspNetCore.OpenApi`）。
+
+```csharp
+services.AddOpenApi();      // ConfigureServices
+endpoints.MapOpenApi();     // UseEndpoints
+```
+
+**200 が返るだけでは足りない。** ドキュメントとして壊れていても 200 は返る。
+
+- `openapi` の版が入っていること
+- `paths` が空でないこと
+- **代表的な API が名前で載っていること**（`/api/Json/Select` と `/api/BatchUpdate/BatchUpdate`）
+- その `post` が定義されていること
+
+**数ではなく名前で見る。** 件数だけだと、コントローラが入れ替わっても気づけない。
+
+#### net48 側は対象外
+
+[`Samples/WS_sample/ASPNETWebService`](CS/Samples/WS_sample/ASPNETWebService) は
+**クラシック ASP.NET（`v4.8` / 非 SDK）**であり、`Microsoft.AspNetCore.OpenApi` は使えない。
+`Swashbuckle`（ASP.NET Web API 2 向け）は入手できるが 2016 年で更新が止まっており、
+生成されるのも Swagger 2.0 である。**古い依存を増やしてまで揃えない**（#580）。
+
+#### `Microsoft.OpenApi` は版を明示している
+
+`Microsoft.AspNetCore.OpenApi` 10.0.5 が引く `Microsoft.OpenApi` 2.0.0 は、
+**高深刻度の脆弱性**（[GHSA-v5pm-xwqc-g5wc](https://github.com/advisories/GHSA-v5pm-xwqc-g5wc)）に該当する。
+修正は 2.7.5 で、**推移的依存のままでは上がらない**ため csproj に明示した（#574 と同じ手）。
+
 ### Web アプリ（3 件）
 
 | 対象 | ホスト | 認証の実装 | 判定 |
@@ -503,10 +529,13 @@ WinForms / WPF 系は、リリース チェックリスト（段階 4）の**手
     `ConnectionString_SQL` を読む。ここで別途ハードコードすると追随できなくなるため
 - **IIS Express** がインストールされていること（net48 の Web アプリ）
 - **ASP.NET 状態サービスが開始されている**こと（net48 の Web アプリ）
-- **ポート 51081 - 51086、51090 - 51092 が空いている**こと
+- **ポート 51081 - 51093 が空いている**こと
   - 51081 - 51083 … Web アプリ（net48 の 2 つと net10.0）
   - 51084 … `DeployZipPackWithHTTP` の配信
   - 51085 - 51086 … VB 側の Web アプリ（`-Lang VB`。10 節）
+  - 51087 - 51088 … `TestWebAPIClient` の相手（net48 / net10.0）
+  - **51089 … `DeployZipPackWithHTTP` のプロキシ（3 節）**
+  - **51093 … ResourceServer の OpenAPI（3 節）**
   - **51090 - 51092 … 通信制御のオリジン・プロキシ・オリジン（TLS）（3 節）**
 
 > **GitHub Actions でも実行している。** 前提の揃え方（SQL Server の導入と Northwind の
@@ -687,7 +716,7 @@ MVC_Sample (net10.0)              OK   ログイン後 /Crud1/Index = 200
   全対象 OK
 ```
 
-全 29 件（ビルド 10 バッチ ＋ 疎通 29 件）で **約 8 分**。
+全 30 件（ビルド 10 バッチ ＋ 疎通 30 件）で **約 8 分**。
 
 **#571 の統合で、13.9 分から半減した。**
 同じ WebAPI を相手にしながらホストを 2 回起動していたのをやめたため。
@@ -823,7 +852,7 @@ $client.Connect("localhost", $port)
 
 ```powershell
 .\3_SmokeTest.ps1 -Lang VB     # VB のみ（6 件）
-.\3_SmokeTest.ps1 -Lang Both   # C# 29 件 ＋ VB 6 件
+.\3_SmokeTest.ps1 -Lang Both   # C# 30 件 ＋ VB 6 件
 ```
 
 **既定に VB を含めない。** リリース時の検証（[`RELEASE.md`](RELEASE.md) 3 節）は
