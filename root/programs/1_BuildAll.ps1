@@ -31,6 +31,8 @@
 .PARAMETER Only
     ステップ名の部分一致で対象を絞る（例: -Only "net48"）。動作確認用。
 
+.PARAMETER List
+    -Only に指定できるステップ名を一覧表示して終わる。**ここが一次情報。**
 .PARAMETER SkipClean
     クリーン処理（1_DeleteDir / 1_DeleteFile）を省略する。
     ※ リリース判定では省略しないこと。前回のビルド成果物が残っていると、
@@ -73,6 +75,7 @@ param(
     [ValidateSet("CS", "VB", "Both")]
     [string]$Lang = "CS",
     [string]$Only,
+    [switch]$List,
     [switch]$SkipClean,
     [switch]$WarnDetail,
     [string]$OutputDir = (Join-Path $env:TEMP "OpenTouryoBuildLogs"),
@@ -305,6 +308,34 @@ $total = [Diagnostics.Stopwatch]::StartNew()
 #   通しは元々クリーン ビルドなので、最初の 1 回で足りる。
 #   区画の区切りとしての表示は「実行済み」として残す（黙って消さない）。
 $executed = @{}
+
+
+# **-Only に何を指定できるかは、ここが一次情報である。**（#576）
+#   文書に書き写すと二重管理になり、対象が増減したときに古くなる。
+if ($List)
+{
+    Write-Host ("=== -Only に指定できる名前（部分一致）{0} ===" -f "（-Lang $Lang）") -ForegroundColor Cyan
+    foreach ($x in $steps) { Write-Host ("  " + $x.Name) }
+    Write-Host ("  ---- {0} 件 ----" -f $steps.Count)
+    exit 0
+}
+
+# **-Only が空振りしたら止める。**（#576）
+#   1 件も選ばれないまま進むと「全ステップ OK」と表示され、
+#   **打ち間違いが緑になる。** 何も建てていないのに成功に見えるのが最も悪い。
+if ($Only)
+{
+    $matched = @($steps | Where-Object { ($_.Name -like "*$Only*") -or ($_.Bat -like "*$Only*") })
+
+    if ($matched.Count -eq 0)
+    {
+        Write-Host ("  **-Only '$Only' に一致するステップがありません。**") -ForegroundColor Red
+        Write-Host ("  -List で一覧を出せます。") -ForegroundColor Yellow
+        exit 1
+    }
+
+    Write-Host ("  -Only '$Only' : {0} ステップに絞りました" -f $matched.Count) -ForegroundColor Yellow
+}
 
 foreach ($s in $steps)
 {

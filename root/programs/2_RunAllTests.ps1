@@ -38,6 +38,11 @@
 .PARAMETER OutputDir
     HEAD 版の期待値とビルド ログの出力先。既定は %TEMP%\OpenTouryoTestResults。
 
+.PARAMETER Only
+    対象名の部分一致で絞る（例: -Only "TestBatch"）。
+    **Result*.txt を書き換えるのは、絞った対象だけになる。**
+.PARAMETER List
+    -Only に指定できる対象名を一覧表示して終わる。**ここが一次情報。**
 .PARAMETER SkipBuild
     バッチの実行を省略し、ワーキング ツリーにある既存の Result*.txt を比較する。
 
@@ -46,6 +51,9 @@
 
 .EXAMPLE
     .\2_RunAllTests.ps1 -SkipBuild
+
+.EXAMPLE
+    .\2_RunAllTests.ps1 -Only "TestBatch"
 
 .NOTES
     作成者          ：玄人 幸道
@@ -58,6 +66,8 @@
 [CmdletBinding()]
 param(
     [string]$OutputDir = (Join-Path $env:TEMP "OpenTouryoTestResults"),
+    [string]$Only,
+    [switch]$List,
     [switch]$SkipBuild
 )
 
@@ -205,6 +215,37 @@ $tests = @(
         Result = "EncAndDecUtilCUI\ResultCore100.txt";   SkipLog4net = $false; NormBase64 = $true
     }
 )
+
+# ------------------------------------------------------------------
+# 対象の絞り込み（#576）
+# ------------------------------------------------------------------
+#   **依存関係の外まで回す必要はない。**
+#   このスクリプトはワーキング ツリーの Result*.txt を書き換えるため、
+#   不要な対象まで回すと、人が確認・コミットする差分が増える。
+
+# **-Only に何を指定できるかは、ここが一次情報である。**（#576）
+#   文書に書き写すと二重管理になり、対象が増減したときに古くなる。
+if ($List)
+{
+    Write-Host ("=== -Only に指定できる名前（部分一致）{0} ===" -f "") -ForegroundColor Cyan
+    foreach ($x in $tests) { Write-Host ("  " + $x.Name) }
+    Write-Host ("  ---- {0} 件 ----" -f $tests.Count)
+    exit 0
+}
+
+if ($Only)
+{
+    $tests = @($tests | Where-Object { $_.Name -like "*$Only*" })
+
+    if ($tests.Count -eq 0)
+    {
+        Write-Host ("  **-Only '$Only' に一致する対象がありません。**") -ForegroundColor Red
+        Write-Host ("  -List で一覧を出せます。") -ForegroundColor Yellow
+        exit 1
+    }
+
+    Write-Host ("  -Only '$Only' : {0} 件に絞りました" -f $tests.Count) -ForegroundColor Yellow
+}
 
 # ------------------------------------------------------------------
 # 期待値（HEAD 版）の取り出し

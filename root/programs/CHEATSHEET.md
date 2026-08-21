@@ -53,8 +53,21 @@ cd root\programs
 
 ```powershell
 .\1_BuildAll.ps1 -Only "WSSrv" -SkipClean    # Clean を挟まない分だけ速い
+.\2_RunAllTests.ps1 -Only "TestBatch"        # Result*.txt も絞った分だけ書き換わる
 .\3_SmokeTest.ps1 -Only "MVC_Sample" -SkipBuild
 ```
+
+**`-Only` に指定できる名前は `-List` で出す。**（#576）
+
+```powershell
+.\3_SmokeTest.ps1 -List          # 対象名の一覧。-Lang が効く
+```
+
+**どこまで回すかは依存関係で決まる。**（#576）
+ツールと個別サンプルは末端なので、基盤のビルドも他のサンプルの疎通も要らない。
+**`2_RunAllTests.ps1` の対象はフレームワークのテストだけ**で、
+ツールやサンプルを変えても動かないため、回す理由が無い。
+対応表は [`AGENTS.md`](../../AGENTS.md)「通しで回す前に、依存関係を見る」。
 
 **警告が多いステップの内訳を見る。**
 

@@ -47,6 +47,8 @@
 .PARAMETER Only
     対象名の部分一致で絞る（例: -Only "Rerunnable"）。
 
+.PARAMETER List
+    -Only に指定できる対象名を一覧表示して終わる。**ここが一次情報。**
 .PARAMETER SkipBuild
     ビルドを省略し、既存のバイナリで疎通のみ行う。
 
@@ -78,6 +80,7 @@ param(
     [ValidateSet("CS", "VB", "Both")]
     [string]$Lang = "CS",
     [string]$Only,
+    [switch]$List,
     [switch]$SkipBuild,
     [string]$OutputDir = (Join-Path $env:TEMP "OpenTouryoSmokeTest")
 )
@@ -277,7 +280,32 @@ function Start-WebHost($t, [string]$log)
 # ------------------------------------------------------------------
 Write-Host ("対象 : {0}" -f $Lang) -ForegroundColor Cyan
 
+
+# **-Only に何を指定できるかは、ここが一次情報である。**（#576）
+#   文書に書き写すと二重管理になり、対象が増減したときに古くなる。
+if ($List)
+{
+    Write-Host ("=== -Only に指定できる名前（部分一致）{0} ===" -f "（-Lang $Lang）") -ForegroundColor Cyan
+    foreach ($x in $targets) { Write-Host ("  " + $x.Name) }
+    Write-Host ("  ---- {0} 件 ----" -f $targets.Count)
+    exit 0
+}
+
 $selected = @($targets | Where-Object { -not $Only -or $_.Name -like "*$Only*" })
+
+# **-Only が空振りしたら止める。**（#576）
+#   0 件のまま進むと「全対象 OK」と表示され、**打ち間違いが緑になる。**
+if ($Only)
+{
+    if ($selected.Count -eq 0)
+    {
+        Write-Host ("  **-Only '$Only' に一致する対象がありません。**") -ForegroundColor Red
+        Write-Host ("  -List で一覧を出せます。") -ForegroundColor Yellow
+        exit 1
+    }
+
+    Write-Host ("  -Only '$Only' : {0} 件に絞りました" -f $selected.Count) -ForegroundColor Yellow
+}
 
 if (-not $SkipBuild)
 {
