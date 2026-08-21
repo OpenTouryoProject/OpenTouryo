@@ -1,4 +1,4 @@
-# MVC_Sample (net10.0) を Docker で動かす（#548）
+# ASPNETWebService（ResourceServerTemplate、net10.0）を Docker で動かす（#582）
 #
 #   前提：DB は LocalServicesOnDocker が提供する。先に起動しておくこと。
 #     https://github.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker
@@ -9,16 +9,22 @@
 #   ・配置ごとに変わる値・秘密           → ここ（environment）
 #   読み込み順は appsettings.json → appsettings.Container.json → 環境変数で、
 #   **後が勝つ**ので、ここに書けば JSON より優先される。
+#
+# ＜MVC_Sample との違い＞（#582）
+#   **ホスト側のポートを 8090 / 8091 にしてある。**
+#   MVC_Sample（8080 / 8081）と**同時に起動できる**ようにするため。
+#   コンテナ内の待ち受けは両者とも 8080 / 8081 のままでよい。
 
 services:
-  mvc-sample:
-    image: opentouryo-mvc-sample
+  ws-sample:
+    image: opentouryo-ws-sample
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
-      - "8081:8081"
+      # **左がホスト側。** MVC_Sample と重ならない番号にしてある。
+      - "8090:8080"
+      - "8091:8081"
     environment:
       # Container 環境として起動する（appsettings.Container.json が読まれる）。
       # **Development にはしない。** 開発者例外ページが出てしまうため。
@@ -55,19 +61,21 @@ services:
       # HTTPS の開発用証明書（0_SetupCert.ps1 が作る。読み取り専用）
       - ./https:/https:ro
       # ログ（書き込む）
-      - mvc-sample-logs:/app/logs
+      - ws-sample-logs:/app/logs
       # データ保護の鍵
       #
-      #   **ここを永続化しないと、コンテナを作り直すたびに鍵が変わり、
-      #   認証 Cookie とセッションが失効する。**
-      - mvc-sample-keys:/app/keys
+      #   **この Resource Server では、まだ使っていない。**（#582）
+      #   Bearer ヘッダ認証で、Cookie もセッションも持たないため。
+      #   Cookie 認証を足すときに効いてくる（Startup.cs のコメント参照）ので、
+      #   MVC_Sample と揃えて用意してある。
+      - ws-sample-keys:/app/keys
 
     networks:
       - common_link
 
 volumes:
-  mvc-sample-logs:
-  mvc-sample-keys:
+  ws-sample-logs:
+  ws-sample-keys:
 
 networks:
   # LocalServicesOnDocker が作るネットワークに相乗りする。
