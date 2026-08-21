@@ -51,7 +51,9 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Threading;
+#if !NETCOREAPP
 using System.Security.Permissions;
+#endif
 using System.Resources;
 using System.Windows.Forms;
 
@@ -358,9 +360,14 @@ namespace DeployZipPackWithHTTP
         /// http://dobon.net/vb/dotnet/form/disabledclosebutton.html
         /// </summary>
         /// <param name="m">Windowメッセージ</param>
+        // **CAS は .NET (Core) 以降で尊重されない**（SYSLIB0003）。
+        //   ただし net48 では生きているため、**消さずに条件で外す**（#575）。
+        //   消すと net48 側の挙動が変わる。
+#if !NETCOREAPP
         [SecurityPermission(
             SecurityAction.LinkDemand,
             Flags = SecurityPermissionFlag.UnmanagedCode)]
+#endif
         protected override void WndProc(ref Message m)
         {
             const int WM_SYSCOMMAND = 0x112;
