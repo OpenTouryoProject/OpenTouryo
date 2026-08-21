@@ -8,8 +8,8 @@ rem See README.md and #548.
 setlocal
 pushd "%~dp0"
 
-set SLN_DIR=..\Backend\MVC_Sample\MVC_Sample
-set FX_DLL=..\..\Frameworks\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Framework.dll
+set SLN_DIR=..\..\Backend\MVC_Sample\MVC_Sample
+set FX_DLL=..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Framework.dll
 
 echo === 1/4 : checking prerequisites ===
 

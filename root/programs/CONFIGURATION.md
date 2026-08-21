@@ -557,7 +557,7 @@ cd root\programs
 | 見たいもの | 場所 |
 |---|---|
 | net10.0 の Web（本番向けの切り替えを含む） | `CS/Samples4NetCore/Backend/MVC_Sample/MVC_Sample/appsettings.json` |
-| 環境変数・`%変数%`・環境別ファイルの実運用 | `CS/Samples4NetCore/Docker/`（[`README.md`](CS/Samples4NetCore/Docker/README.md)） |
+| 環境変数・`%変数%`・環境別ファイルの実運用 | `CS/Samples4NetCore/Docker/`（対象ごとに分かれる。[`MVC_Sample`](CS/Samples4NetCore/Docker/MVC_Sample/README.md) / [`ASPNETWebService`](CS/Samples4NetCore/Docker/ASPNETWebService/README.md)） |
 | net48 の Web（`machineKey` / 転送ヘッダの注記） | `CS/Samples/WebApp_sample/MVC_Sample/MVC_Sample/Web.config` |
 | 相対パスで自己完結させる書き方 | `CS/Samples4NetCore/Legacy/Bat_sample/*/appsettings.json` |
 | 領域ごとの事情 | 各 `ANALYSIS.md`（[Frameworks](CS/Frameworks/ANALYSIS.md) / [Samples](CS/Samples/ANALYSIS.md) / [Samples4NetCore](CS/Samples4NetCore/ANALYSIS.md)） |

@@ -17,7 +17,7 @@ Open棟梁の **.NET (Core) 系サンプル**。4 つの区画に分かれてお
 | **`Backend/`** | `MVC_Sample`（ASP.NET Core MVC） | **現行の推奨サンプル。** ここが本命 |
 | **`Frontend/`** | README のみ | 別リポジトリ `FrontendTemplates` へ移動済み |
 | **`Legacy/`** | `2CS_sample` / `Bat_sample` / `CLI_sample` / `WS_sample` | `../Samples`（net48）を .NET へ移植した**独立コピー**。名前どおり「レガシー」扱い |
-| **`Docker/`** | `Backend/MVC_Sample` を Linux コンテナで動かす一式 | サンプルのコードは持たない。**手順と設計は [`Docker/README.md`](Docker/README.md)**（#548） |
+| **`Docker/`** | `Backend/` のサンプルを Linux コンテナで動かす一式 | **対象ごとに分かれる**（`MVC_Sample` / `ASPNETWebService`）。サンプルのコードは持たない。**手順と設計は各 `README.md`**（#548、#582） |
 
 **全プロジェクトが SDK 形式 csproj / `net10.0`（GUI は `net10.0-windows7.0`）。**
 
@@ -364,10 +364,17 @@ net48 側はコードから変えられない（`Request.IsSecureConnection` は
 **IIS + ARR の URL Rewrite で `HTTPS` サーバ変数を立てる**
 （`Samples/WebApp_sample/MVC_Sample` の `Web.config` にコメントで記載）。
 
-### 5-3. コンテナで動かす場合は `Docker/` を見る（#548）
+### 5-3. コンテナで動かす場合は `Docker/` を見る（#548、#582）
 
-`Backend/MVC_Sample` を Linux コンテナで動かす一式が `Docker/` にある。
-**手順・設計・落とし穴は [`Docker/README.md`](Docker/README.md) が一次情報**で、ここには書かない。
+`Backend/` のサンプルを Linux コンテナで動かす一式が `Docker/` にある。
+**対象ごとにフォルダが分かれる。**
+
+| 対象 | 一式 |
+|---|---|
+| `Backend/MVC_Sample` | [`Docker/MVC_Sample/`](Docker/MVC_Sample/README.md) |
+| `Backend/ASPNETWebService` | [`Docker/ASPNETWebService/`](Docker/ASPNETWebService/README.md) |
+
+**手順・設計・落とし穴は各 `README.md` が一次情報**で、ここには書かない。
 
 上の 5-1 / 5-2 で書いた `%OT_RESOURCE_ROOT%` と 3 つの切り替えを、実際に使っている
 （`appsettings.Container.json` ＋ `docker-compose.yml` の環境変数）。

@@ -1,0 +1,96 @@
+# ASPNETWebService（ResourceServerTemplate、net10.0）を Docker で動かす（#582）
+#
+#   前提：DB は LocalServicesOnDocker が提供する。先に起動しておくこと。
+#     https://github.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker
+#   あちらが作る common_link に相乗りし、サービス名 sqlserver で届く。
+#
+# ＜値をどこに書くか＞
+#   ・配置に依らない「コンテナならこう」 → appsettings.Container.json
+#   ・配置ごとに変わる値・秘密           → ここ（environment）
+#   読み込み順は appsettings.json → appsettings.Container.json → 環境変数で、
+#   **後が勝つ**ので、ここに書けば JSON より優先される。
+#
+# ＜MVC_Sample との違い＞（#582）
+#   **ホスト側のポートを 8090 / 8091 にしてある。**
+#   MVC_Sample（8080 / 8081）と**同時に起動できる**ようにするため。
+#   コンテナ内の待ち受けは両者とも 8080 / 8081 のままでよい。
+
+services:
+  ws-sample:
+    image: opentouryo-ws-sample
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      # **左がホスト側。** MVC_Sample と重ならない番号にしてある。
+      - "8090:8080"
+      - "8091:8081"
+    environment:
+      # Container 環境として起動する（appsettings.Container.json が読まれる）。
+      # **Development にはしない。** 開発者例外ページが出てしまうため。
+      - ASPNETCORE_ENVIRONMENT=Container
+
+      # 待ち受けポート
+      - ASPNETCORE_HTTP_PORTS=8080
+      - ASPNETCORE_HTTPS_PORTS=8081
+
+      # HTTPS へのリダイレクト先のポート（#582）
+      #
+      #   **単数形。** 複数形の ASPNETCORE_HTTPS_PORTS は
+      #   「Kestrel がどこで待ち受けるか」であって、
+      #   UseHttpsRedirection が読むのはこちらである（Startup.cs のコメント）。
+      #
+      #   **ホスト側の番号を与える。**
+      #   コンテナ内の 8081 を書くと、ホストから辿れない URL へ飛ばしてしまう
+      #   （ports で 8091:8081 に付け替えているため）。
+      #   MVC_Sample は 1:1 なので、この指定が要らない。
+      - ASPNETCORE_HTTPS_PORT=8091
+
+      # 証明書（PEM ＋ 秘密鍵。**パスワードを持たない**）
+      - Kestrel__Certificates__Default__Path=/https/aspnetapp.pem
+      - Kestrel__Certificates__Default__KeyPath=/https/aspnetapp.key
+
+      # リソースの置き場所
+      #
+      #   Open棟梁は設定値の中の %変数% を自前で展開する
+      #   （ResourceLoader.ResolveFilePath → StringVariableOperator）。
+      #   Windows の書式に依存しない実装なので、Linux コンテナでも効く。
+      - OT_RESOURCE_ROOT=/app/files/resource
+      # ログの出力先（**リソースは ro でマウントするので、ログは別の場所へ**）
+      - OT_LOG_ROOT=/app/logs
+
+      # 接続文字列
+      #
+      #   **Data Source は localhost ではなく sqlserver。**
+      #   コンテナから見た localhost は自分自身であり、DB には届かない。
+      #   パスワードを直に書いているのは、すぐ動かせるサンプルだからである。
+      #   実際の環境では secrets やシークレット ストアから渡すこと（README 参照）。
+      - connectionStrings__ConnectionString_SQL=Data Source=sqlserver;Initial Catalog=Northwind;User ID=sa;Password=seigi@123;Encrypt=false;
+
+    volumes:
+      # 定義ファイル・SQL・証明書（読み取り専用）
+      - ../../../../../files/resource:/app/files/resource:ro
+      # HTTPS の開発用証明書（0_SetupCert.ps1 が作る。読み取り専用）
+      - ./https:/https:ro
+      # ログ（書き込む）
+      - ws-sample-logs:/app/logs
+      # データ保護の鍵
+      #
+      #   **この Resource Server では、まだ使っていない。**（#582）
+      #   Bearer ヘッダ認証で、Cookie もセッションも持たないため。
+      #   Cookie 認証を足すときに効いてくる（Startup.cs のコメント参照）ので、
+      #   MVC_Sample と揃えて用意してある。
+      - ws-sample-keys:/app/keys
+
+    networks:
+      - common_link
+
+volumes:
+  ws-sample-logs:
+  ws-sample-keys:
+
+networks:
+  # LocalServicesOnDocker が作るネットワークに相乗りする。
+  # 先に向こうを起動しておくこと（無いと compose がエラーになる）。
+  common_link:
+    external: true

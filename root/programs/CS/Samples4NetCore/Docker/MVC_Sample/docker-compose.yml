@@ -51,7 +51,7 @@ services:
 
     volumes:
       # 定義ファイル・SQL・証明書（読み取り専用）
-      - ../../../../files/resource:/app/files/resource:ro
+      - ../../../../../files/resource:/app/files/resource:ro
       # HTTPS の開発用証明書（0_SetupCert.ps1 が作る。読み取り専用）
       - ./https:/https:ro
       # ログ（書き込む）

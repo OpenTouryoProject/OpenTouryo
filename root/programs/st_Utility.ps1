@@ -473,7 +473,10 @@ $verifyDeployCore  = { $r = Test-Deploy "core";  Stop-DeployWeb; return $r }
 #   **#575 で HttpWebRequest を HttpClient へ移した経路の確認。**
 #   HttpClientHandler では Proxy = null が「使わない」にならず
 #   UseProxy = false が要る、という差があったため、実際に通して確かめる。
-$deployProxyPort = 51085
+# **51085 は VB 側の Web アプリが使う。**（SMOKETEST.md 9 節）
+#   51081-51086 は Web アプリ、51087/51088 は TestWebAPIClient、
+#   51090-51092 は通信制御のオリジン・プロキシ。空いているのは 51089。
+$deployProxyPort = 51089
 $deployProxyUser = "pxuser"
 $deployProxyPwd  = "pxpass"
 

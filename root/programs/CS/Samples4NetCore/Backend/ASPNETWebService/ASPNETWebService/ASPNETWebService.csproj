@@ -7,6 +7,10 @@
   <ItemGroup>
     <PackageReference Include="log4net" Version="3.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.5" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.5" />
+    <!-- **推移的な Microsoft.OpenApi 2.0.0 は GHSA-v5pm-xwqc-g5wc（高）に該当する。**
+         修正は 2.7.5。明示しないと上がらない（#580） -->
+    <PackageReference Include="Microsoft.OpenApi" Version="2.7.5" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>

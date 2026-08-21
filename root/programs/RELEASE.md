@@ -185,7 +185,7 @@ cd root\programs
 - [ ] **`1_BuildAll.ps1` のエラーが「既知の 1 件」だけである**
       … `-SkipClean` は**使わない**。前回の成果物が残っていると通ったように見える
 - [ ] **`2_RunAllTests.ps1` が終了コード 0**（8 ケース）
-- [ ] **`3_SmokeTest.ps1` が終了コード 0**（29 件）
+- [ ] **`3_SmokeTest.ps1` が終了コード 0**（30 件）
 
 > **`1_BuildAll.ps1` は現状ここで終了コード 1 になる。**
 > `WSClnt_sample (net48)` の ClickOnce 署名エラー（`MSB3482`）が残るため。
@@ -209,7 +209,7 @@ cd root\programs
 |---|---|
 | `1_BuildAll.ps1`（31 ステップ） | 5.8 分 |
 | `2_RunAllTests.ps1`（8 ケース） | 1.3 分 |
-| `3_SmokeTest.ps1`（29 件） | 7.4 分 |
+| `3_SmokeTest.ps1`（30 件） | 7.4 分 |
 
 ### VB 側は、この 3 本に含めない
 
