@@ -192,6 +192,87 @@ cd root\programs
 `2_RunAllTests.ps1` はワーキング ツリーの `Result*.txt` を書き換える（従来のバッチ運用と同じ）。
 **コミットの要否は人が判断する**ため、エージェントは差分を報告するに留める。
 
+**エージェントは、この 3 本を個別に実行することを検討する。**（#576）
+`0_RunAll.ps1` は 3 本をまとめて回す**利用者向けの入口**であり、
+**必要な 1 本だけを選ぶ、という判断が入らない。**
+どれを回すかは、次節の対応表で決める。
+
+```powershell
+.\1_BuildAll.ps1 -Only "Framework_Tool"     # ビルドするものだけ
+.\2_RunAllTests.ps1 -Only "TestBatch"       # テスト結果 Result*.txt が絞られる
+.\3_SmokeTest.ps1 -Only "DeployZip"         # 確かめるものだけ
+```
+
+**`-Only` に何を指定できるかは `-List` で出す。**
+**文書には一覧を書かない。** 対象が増減したときに古くなるため、
+スクリプト自身を一次情報にする（ツールの `/HELP` と同じ考え方）。
+
+```powershell
+.\1_BuildAll.ps1 -List -Lang Both     # 45 ステップ
+.\2_RunAllTests.ps1 -List             #  8 件
+.\3_SmokeTest.ps1 -List -Lang VB      #  6 件（-Lang が効く）
+```
+
+**3 本とも `-Only` が空振りしたら終了コード 1 で止まる。**
+打ち間違いが「全ステップ OK」になることはない。
+
+#### 通しで回す前に、依存関係を見る（#576）
+
+**全部回すのは「安全」ではない。遅いだけのことがある。**
+
+依存の向きは一方向で、段は 2 つしかない。
+
+```
+基盤    NuGet / Business / Business.RichClient / CopyAssemblies
+          ↓  （ここが変われば、下は全部やり直し）
+末端    Tools / 各サンプル / Tests
+```
+
+**ツールと個別サンプルは末端である。** そこを変えても、基盤も他のサンプルも変わらない。
+
+| 変更した場所 | `1_BuildAll` | `2_RunAllTests` | `3_SmokeTest` |
+|---|---|---|---|
+| `Infrastructure/`（基盤） | **通し** | **通し** | **通し** |
+| `Tools/`（ツール） | `-Only Framework_Tool` | **不要** | `-Only <そのツール>` |
+| 個別サンプル | `-Only <サンプル>` | **不要** | `-Only <サンプル>` |
+| `Tests/` | `-Only <対象>` | `-Only <対象>` | **不要** |
+| `.ps1` / `.md` のみ | **不要** | **不要** | **不要** |
+
+**`2_RunAllTests.ps1` の対象はフレームワークのテストだけ**である。
+`Tools/` や個別サンプルを変えても、ここは動かない。回す理由が無い。
+
+実測（`0_RunAll.ps1 -Lang Both` は 24.6 分）。
+
+```
+基盤のビルド             122.8 秒
+Framework_Tool 系だけ     74.8 秒     ← ツールの変更で必要なのはこちら
+2_RunAllTests 通し       111.6 秒
+2_RunAllTests -Only       35 秒ほど
+```
+
+**ツールだけの変更なら、1/16 ほどで終わる。**
+
+#### 時間だけの問題ではない
+
+`2_RunAllTests.ps1` は**ワーキング ツリーの `Result*.txt` を書き換える。**
+関係の無い対象まで回すと、**人が確認してコミットする差分が増える。**
+
+`-Only` で絞れば、書き換わるのは絞った対象の分だけになる。
+
+#### それでも通しを回す場面
+
+- **基盤（`Infrastructure/`）に触れたとき**
+- **リリース前**（`RELEASE.md`）
+- **絞り込みで妙なエラーが出たとき**（再現するかを見る）
+
+3 本目は制約による誤検知が実際にある。
+`-Only` は前段が用意した状態に依存するステップを落とすことがあり、
+**変更と無関係なエラーに見える。** 詳細は
+[`CHEATSHEET.md`](root/programs/CHEATSHEET.md) 1 節の
+「`-Only` ＋ `-SkipClean` は万能ではない」。
+
+**判断に迷ったら通しでよい。** ただし**迷っていないのに通すのは、ただの浪費である。**
+
 **上記の既定は C# 側である。VB 側に手を入れたときは `-Lang` で回す。**
 
 ```powershell
@@ -210,6 +291,51 @@ cd root\programs
 **8.5 節「ps1 ファイルの文字コードと、PowerShell 5.1 / 7 の両対応」**にある。
 
 前提となるサービスや DB の状態が足りない場合は、**勝手に変えず、対処方法とともに報告する。**
+
+### サンプルを実装するときは、スキル リポジトリのスキルを使う（#577）
+
+**サンプルは「フレームワークを使うアプリ」である。**
+その書き方は本体の規約とは別に、専用のスキルとしてまとめられている。
+
+https://github.com/OpenTouryoProject/OpenTouryoCodingAgentAssets
+
+**`AGENTS.md` に書くだけでは使えない。**
+Claude Code は `.claude/skills/<名前>/SKILL.md` を探すため、実体が要る。
+
+```powershell
+cd root\programs
+.\GetAgentSkills.ps1              # main から取得して .claude/skills へ配置
+.\GetAgentSkills.ps1 -List        # 何が対象になるかだけ見る
+```
+
+**`.claude/skills/` は `.gitignore` の対象である。**
+ここに在るのは複製で、**本体は向こうのリポジトリにある。**
+コミットすると、向こうが更新されたときに古くなり、どちらが正か分からなくなる。
+**使う前に取得する。**
+
+#### 向こうの `install.ps1` は使わない
+
+あちらにも導入スクリプトがあるが、**フレームワークの利用者（アプリ開発）向け**で、
+導入先の `AGENTS.md` と `CLAUDE.md` も生成する。
+**本書は手で書いたものなので、スキルだけを取りに行く。**
+
+#### 既定で除外しているもの
+
+| 除外 | 理由 |
+|---|---|
+| `opentouryo-project-setup*`（6 件） | アプリの新規構築手順。本体の開発では使わない |
+| `opentouryo-project-policy` | **プロジェクト方針は本書（`AGENTS.md`）が正** |
+| `opentouryo-project-transform` | 既存資産の移行。本体側では別の話 |
+| `opentouryo-comment-convention` | **コメント規約は [`CODING.md`](root/programs/CODING.md) が正** |
+| `opentouryo-base2-customize` | 利用者による基底クラスの改造。本体側では別の話 |
+
+**除外を増やしたら、取得し直せば取り残しも消える。**
+前回配置したものが除外に回った場合、`GetAgentSkills.ps1` が削除する
+（消すのは向こうに在るスキル名だけで、無関係なものは触らない）。
+
+**規約が競合したら、本体の文書が優先である。**
+スキルはアプリ開発を前提に書かれているため、
+[`CODING.md`](root/programs/CODING.md) や各 `ANALYSIS.md` と食い違うことがある。
 
 ### 付属ツールを CLI で使うときは、各ツールの README に従う
 

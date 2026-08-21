@@ -1,4 +1,4 @@
-#region Apache License
+﻿#region Apache License
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -81,6 +81,268 @@ namespace TestCode
             MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
 
             TestDto.TestDTTablesIntermediate();
+
+            MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+
+            TestDto.TestKeepOriginal();
+
+            MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+
+            TestDto.TestBatchUpdateUsage();
+        }
+
+        #endregion
+
+        #region 変更前の値（Original）
+
+        /// <summary>変更前の値の保持（KeepOriginal）</summary>
+        /// <remarks>
+        /// **往復しても変更前の値が残るか**を見る（#567）。
+        ///
+        /// ＜なぜ往復させるか＞
+        ///   DataTable を直接引き回す構成では、元から Original が残る。
+        ///   壊れるのは DTTables を挟んだとき（WebAPI 転送・Session 往復）なので、
+        ///   **DataTable → DTTable → JSON → DTTable → DataTable** まで通す。
+        ///
+        /// ＜保持しない場合も並べる＞
+        ///   既定（false）では従来どおり「Original ＝ 現在値」になる。
+        ///   **両方を並べないと、設定が効いているのか元からそうなのかが分からない。**
+        /// </remarks>
+        private static void TestKeepOriginal()
+        {
+            foreach (bool keep in new bool[] { false, true })
+            {
+                MyDebug.OutputDebugAndConsole("KeepOriginal = " + keep.ToString());
+
+                // 元の DataTable（確定済み）
+                DataTable src = TestDto.MakeTypedTable();
+                src.AcceptChanges();
+
+                // DTTable へ（ここで方針を指定しないと取り込めない）
+                DTTable dtt = DTTable.FromDataTable(src, keep);
+
+                // 1 行目を変更する
+                dtt.Rows[0]["Name"] = "変更後";
+                dtt.Rows[0]["Price"] = 9999m;
+
+                MyDebug.OutputDebugAndConsole(
+                    "  変更直後 : RowState=" + dtt.Rows[0].RowState.ToString()
+                    + " / HasOriginal=" + dtt.Rows[0].HasOriginal.ToString());
+
+                MyDebug.OutputDebugAndConsole(
+                    "  変更直後 : Name 現在=[" + TestDto.Fixed(dtt.Rows[0]["Name"])
+                    + "] 変更前=[" + TestDto.Fixed(dtt.Rows[0]["Name", DTRowVersion.Original]) + "]");
+
+                // JSON を往復させる
+                DTTables dtts = new DTTables();
+                dtts.Add(dtt);
+
+                DTTables restored = DTTables.JsonToDTTables(DTTables.DTTablesToJson(dtts));
+
+                MyDebug.OutputDebugAndConsole(
+                    "  JSON 往復後 : KeepOriginal=" + restored[0].KeepOriginal.ToString()
+                    + " / RowState=" + restored[0].Rows[0].RowState.ToString()
+                    + " / HasOriginal=" + restored[0].Rows[0].HasOriginal.ToString());
+
+                MyDebug.OutputDebugAndConsole(
+                    "  JSON 往復後 : Name 現在=[" + TestDto.Fixed(restored[0].Rows[0]["Name"])
+                    + "] 変更前=[" + TestDto.Fixed(restored[0].Rows[0]["Name", DTRowVersion.Original]) + "]");
+
+                // DataTable へ戻す
+                DataTable back = restored[0].ToDataTable();
+
+                MyDebug.OutputDebugAndConsole(
+                    "  DataTable 復元後 : RowState=" + back.Rows[0].RowState.ToString());
+
+                MyDebug.OutputDebugAndConsole(
+                    "  DataTable 復元後 : Name 現在=[" + TestDto.Fixed(back.Rows[0]["Name"])
+                    + "] Original=[" + TestDto.Fixed(back.Rows[0]["Name", DataRowVersion.Original]) + "]");
+
+                MyDebug.OutputDebugAndConsole(
+                    "  DataTable 復元後 : Price 現在=[" + TestDto.Fixed(back.Rows[0]["Price"])
+                    + "] Original=[" + TestDto.Fixed(back.Rows[0]["Price", DataRowVersion.Original]) + "]");
+
+                // **変更していない列も、変更前の値であること。**
+                MyDebug.OutputDebugAndConsole(
+                    "  DataTable 復元後 : Id Original=[" + TestDto.Fixed(back.Rows[0]["Id", DataRowVersion.Original]) + "]");
+
+                MyDebug.OutputDebugAndConsole("");
+            }
+
+            TestDto.TestAcceptAndRejectChanges();
+        }
+
+        /// <summary>確定と取り消し（AcceptChanges、RejectChanges）</summary>
+        private static void TestAcceptAndRejectChanges()
+        {
+            MyDebug.OutputDebugAndConsole("AcceptChanges / RejectChanges");
+
+            // --- AcceptChanges で変更前の値が捨てられること ---
+            DataTable src = TestDto.MakeTypedTable();
+            src.AcceptChanges();
+
+            DTTable dtt = DTTable.FromDataTable(src, true);
+            dtt.Rows[0]["Name"] = "変更後";
+
+            MyDebug.OutputDebugAndConsole(
+                "  AcceptChanges 前 : HasOriginal=" + dtt.Rows[0].HasOriginal.ToString()
+                + " / 変更前=[" + TestDto.Fixed(dtt.Rows[0]["Name", DTRowVersion.Original]) + "]");
+
+            dtt.AcceptChanges();
+
+            MyDebug.OutputDebugAndConsole(
+                "  AcceptChanges 後 : RowState=" + dtt.Rows[0].RowState.ToString()
+                + " / HasOriginal=" + dtt.Rows[0].HasOriginal.ToString()
+                + " / 変更前=[" + TestDto.Fixed(dtt.Rows[0]["Name", DTRowVersion.Original]) + "]");
+
+            // **確定後に再度変更すると、確定値が変更前の値になること。**
+            dtt.Rows[0]["Name"] = "さらに変更";
+
+            MyDebug.OutputDebugAndConsole(
+                "  再変更後 : 現在=[" + TestDto.Fixed(dtt.Rows[0]["Name"])
+                + "] 変更前=[" + TestDto.Fixed(dtt.Rows[0]["Name", DTRowVersion.Original]) + "]");
+
+            // --- RejectChanges で値が戻ること ---
+            DTTable dtt2 = DTTable.FromDataTable(src, true);
+            dtt2.Rows[0]["Name"] = "変更後";
+            int before = dtt2.Rows.Count;
+            dtt2.Rows.AddNew();          // Added の行（取り消しで消える）
+
+            // **増えたことも出す。** 前と後だけを見ても、取り消しで減ったのか、
+            // 元から増えていなかったのかが分からない。
+            int added = dtt2.Rows.Count;
+
+            dtt2.RejectChanges();
+
+            MyDebug.OutputDebugAndConsole(
+                "  RejectChanges 後 : 行数 " + before.ToString() + " → " + added.ToString()
+                + " → " + dtt2.Rows.Count.ToString()
+                + " / RowState=" + dtt2.Rows[0].RowState.ToString()
+                + " / Name=[" + TestDto.Fixed(dtt2.Rows[0]["Name"]) + "]");
+
+            // --- 保持していない場合の RejectChanges ---
+            DTTable dtt3 = DTTable.FromDataTable(src, false);
+            dtt3.Rows[0]["Name"] = "変更後";
+            dtt3.RejectChanges();
+
+            MyDebug.OutputDebugAndConsole(
+                "  保持なしで RejectChanges : RowState=" + dtt3.Rows[0].RowState.ToString()
+                + " / Name=[" + TestDto.Fixed(dtt3.Rows[0]["Name"]) + "]（値は戻らない）");
+        }
+
+        #endregion
+
+        #region バッチ更新への適用
+
+        /// <summary>復元したものが、そのままバッチ更新に使えるか</summary>
+        /// <remarks>
+        /// **_3TierEngine と同じ読み方をする。**（#567）
+        ///
+        /// ＜なぜ「値が残っているか」だけでは足りないか＞
+        ///   Original が保たれていても、**行ステータスごとの読み分けが成り立たなければ
+        ///   更新処理には渡せない。** 実際の使われ方は次の形である。
+        ///
+        ///     Added    : Current を読む（INSERT の値）
+        ///     Modified : Original を WHERE に、Current を SET に
+        ///     Deleted  : Original を WHERE に（Current は読めない）
+        ///
+        ///   `_3TierEngine.cs` の 1136 行付近が、この読み方をしている。
+        ///
+        /// ＜Deleted の Current は触らない＞
+        ///   DataTable の削除済み行は Current を読むと例外になる。
+        ///   **触らないことも含めて、使い方が成り立つ**ことを示す。
+        /// </remarks>
+        private static void TestBatchUpdateUsage()
+        {
+            foreach (bool keep in new bool[] { false, true })
+            {
+                MyDebug.OutputDebugAndConsole("バッチ更新への適用 : KeepOriginal = " + keep.ToString());
+
+                // 確定済みの 3 行を作り、C・U・D を起こす
+                DataTable src = new DataTable("Orders");
+                src.Columns.Add("Id", typeof(int));
+                src.Columns.Add("Note", typeof(string));
+                src.Columns.Add("Qty", typeof(int));
+
+                src.Rows.Add(1, "そのまま", 10);
+                src.Rows.Add(2, "変更前", 20);
+                src.Rows.Add(3, "削除される", 30);
+                src.AcceptChanges();
+
+                src.Rows[1]["Note"] = "変更後";
+                src.Rows[1]["Qty"] = 99;
+                src.Rows[2].Delete();
+                src.Rows.Add(4, "追加", 40);
+
+                // DataTable → DTTable → JSON → DTTable → DataTable
+                DTTables dtts = new DTTables();
+                dtts.Add(DTTable.FromDataTable(src, keep));
+
+                DTTables restored = DTTables.JsonToDTTables(DTTables.DTTablesToJson(dtts));
+                DataTable back = restored[0].ToDataTable();
+
+                // **_3TierEngine と同じ読み方をする。**
+                foreach (DataRow dr in back.Rows)
+                {
+                    switch (dr.RowState)
+                    {
+                        case DataRowState.Added:
+                            MyDebug.OutputDebugAndConsole(
+                                "  INSERT : " + TestDto.ShowRow(back, dr, DataRowVersion.Current));
+                            break;
+
+                        case DataRowState.Modified:
+                            MyDebug.OutputDebugAndConsole(
+                                "  UPDATE SET   : " + TestDto.ShowRow(back, dr, DataRowVersion.Current));
+                            MyDebug.OutputDebugAndConsole(
+                                "  UPDATE WHERE : " + TestDto.ShowRow(back, dr, DataRowVersion.Original));
+                            break;
+
+                        case DataRowState.Deleted:
+                            // **Current は読めない。** Original だけを読む。
+                            MyDebug.OutputDebugAndConsole(
+                                "  DELETE WHERE : " + TestDto.ShowRow(back, dr, DataRowVersion.Original));
+                            break;
+
+                        default:
+                            MyDebug.OutputDebugAndConsole(
+                                "  対象外（" + dr.RowState.ToString() + "） : "
+                                + TestDto.ShowRow(back, dr, DataRowVersion.Current));
+                            break;
+                    }
+                }
+
+                // **区分ごとに取り出せるか。** GetChanges を使う実装もある。
+                foreach (DataRowState st in new DataRowState[]
+                    { DataRowState.Added, DataRowState.Modified, DataRowState.Deleted })
+                {
+                    DataTable ch = back.GetChanges(st);
+
+                    MyDebug.OutputDebugAndConsole(
+                        "  GetChanges(" + st.ToString() + ") : "
+                        + ((ch == null) ? "0" : ch.Rows.Count.ToString()) + " 行");
+                }
+
+                MyDebug.OutputDebugAndConsole("");
+            }
+        }
+
+        /// <summary>行を、指定したバージョンで出力用の文字列にする</summary>
+        /// <param name="dt">DataTable</param>
+        /// <param name="dr">DataRow</param>
+        /// <param name="version">DataRowVersion</param>
+        /// <returns>文字列</returns>
+        private static string ShowRow(DataTable dt, DataRow dr, DataRowVersion version)
+        {
+            string ret = "";
+
+            foreach (DataColumn col in dt.Columns)
+            {
+                ret += (ret == "" ? "" : ", ")
+                    + col.ColumnName + "=" + TestDto.Fixed(dr[col, version]);
+            }
+
+            return ret;
         }
 
         #endregion

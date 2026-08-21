@@ -30,6 +30,13 @@ dotnet msbuild %COMMANDLINE% "Samples4NetCore\Legacy\WS_sample\WSServer_sample\W
 xcopy /E /Y "Samples4NetCore\Legacy\WS_sample\WSServer_sample\bin\%BUILD_CONFIG%\net10.0" "Samples4NetCore\Legacy\WS_sample\Temp\%BUILD_CONFIG%\net10.0\"
 xcopy /E /Y "Samples4NetCore\Legacy\WS_sample\Temp\%BUILD_CONFIG%\net10.0" "Samples4NetCore\Legacy\WS_sample\Build\net10.0\"
 
+@rem --------------------------------------------------
+@rem Batch build of ASPNETWebService(ResourceServer).
+@rem --------------------------------------------------
+@rem Not copied to Build\ : nothing else references it, so just build it.
+dotnet restore "Samples4NetCore\Backend\ASPNETWebService\ASPNETWebService.sln"
+dotnet msbuild %COMMANDLINE% "Samples4NetCore\Backend\ASPNETWebService\ASPNETWebService.sln"
+
 pause
 
 rem -------------------------------------------------------

@@ -70,8 +70,8 @@ cd root\programs
 | TestCode (net10.0) | `TestCode/ResultCore100.txt` | 同上 | 同上 |
 | TestDataAccess (net48) | `TestDataAccess/Result48.txt` | `y_Build_TestCode_DataAccess.bat` | データ アクセス（#520）。**実行モードで対象 DBMS が変わる** |
 | TestDataAccess (net10.0) | `TestDataAccess/ResultCore100.txt` | 同上 | 同上 |
-| SimpleBatch (net48) | `TestBatch/ResultSimpleBatch48.txt` | `y_Build_TestCode_Batch.bat` | **DB 接続あり**（Northwind） |
-| SimpleBatch (net10.0) | `TestBatch/ResultSimpleBatchCore100.txt` | 同上 | 同上 |
+| TestBatch (net48) | `TestBatch/ResultSimpleBatch48.txt` | `y_Build_TestCode_Batch.bat` | **DB 接続あり**（Northwind） |
+| TestBatch (net10.0) | `TestBatch/ResultSimpleBatchCore100.txt` | 同上 | 同上 |
 | EncAndDecUtilCUI (net48) | `EncAndDecUtilCUI/Result48.txt` | `y_Build_TestCode_SecCUI.bat` | 暗号・JWT・XML 署名 |
 | EncAndDecUtilCUI (net10.0) | `EncAndDecUtilCUI/ResultCore100.txt` | 同上 | 同上 |
 
@@ -256,7 +256,7 @@ $old | Where-Object { $new -notcontains $_ }
 `3` の実例（2026-08-01 に発生。復旧済み）:
 
 ```
-SimpleBatch (net48 / net10.0)
+TestBatch (net48 / net10.0)
   [実測のみ] 4件のデータがあります
   [期待のみ] 3件のデータがあります
 ```

@@ -20,6 +20,7 @@
 '*  2014/11/20  Sandeep           Implemented CommandTimeout property and SetCommandTimeout method.
 '*  2015/06/04  Sai               Replaced SqlCommand property with IDbCommand property in SetCommandTimeout method.
 '*  2019/05/14  西野  大介        クエリ再利用の性能向上対策コードの追加
+'*  2026/08/21  玄人 幸道         BC40003対応（Overloadsを付与。他の19ファイルと揃える）
 '**********************************************************************************
 
 #Region "using"
@@ -509,7 +510,7 @@ Public Class DaoShippers
     ''' <param name="fileName">ファイル名</param>
     ''' <param name="sqlUtil">SQLユーティリティ</param>
     ''' <returns>生成した静的SQL</returns>
-    Public Function ExecGenerateSQL(fileName As String, sqlUtil As SQLUtility) As String
+    Public Overloads Function ExecGenerateSQL(fileName As String, sqlUtil As SQLUtility) As String
         ' ファイルからSQLを設定する。
         Me.SetSqlByFile2(fileName)
 

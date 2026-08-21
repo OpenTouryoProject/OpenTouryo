@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2010/03/xx  西野 大介         新規作成
+//*  2026/08/18  玄人 幸道         変更前の値（Original）の保持に対応（#567）
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Public.Dto
@@ -40,5 +41,13 @@ namespace Touryo.Infrastructure.Public.Dto
         /// <summary>行数</summary>
         /// <remarks>外部からは使用できないようにする</remarks>
         internal int RowsCount = 0;
+
+        /// <summary>変更前の値（Original）を保持するか</summary>
+        /// <remarks>
+        /// 既定は false（保持しない）。（#567）
+        /// timestamp 列で排他する構成では不要なため、必要な表だけ有効にする。
+        /// DTColumns と DTRows の両方から見えるよう、ここに置く。
+        /// </remarks>
+        internal bool KeepOriginal = false;
     }
 }

@@ -36,7 +36,7 @@ labels: quality improvement
   .\2_RunAllTests.ps1
   .\3_SmokeTest.ps1
 
-合格の目安は 全ステップ OK / 8-8 差分 0 / 22-22。
+合格の目安は 全ステップ OK / 8-8 差分 0 / 25-25。
 -->
 
 ## 利用者への影響

@@ -26,7 +26,7 @@ cd root\programs
 |---|---|---|
 | ビルド | 全ステップ OK | [`BUILDING.md`](BUILDING.md) |
 | 単体テスト | 8/8 OK、差分 0 | [`TESTING.md`](TESTING.md) |
-| 疎通 | 23/23 OK | [`SMOKETEST.md`](SMOKETEST.md) |
+| 疎通 | 25/25 OK | [`SMOKETEST.md`](SMOKETEST.md) |
 
 **既定は C# 側。VB 側は `-Lang` で回す**（3 節）。
 
@@ -37,6 +37,70 @@ cd root\programs
   除外した内容は件数つきで別枠に出るため、そちらは目を通すこと
 - `2_RunAllTests.ps1` は `Result*.txt` を書き換える。**差分 0 なら中身は同じ**
 - 前提（DB・サービス・IIS Express）は [`RELEASE.md`](RELEASE.md) 2 節
+- **`0_RunAll.ps1` は 1・2・3 の実行時間を出す**（#571）
+
+### 通しは長い。反復では絞り込む（#571）
+
+実測（`-Lang Both`）は **合計 21.7 分**で、内訳はこうなっている。
+
+```
+1_BuildAll.ps1     12.6 分  ← 58%。ここが主因
+2_RunAllTests.ps1   1.7 分
+3_SmokeTest.ps1     7.4 分
+```
+
+**変更した箇所だけを回す。** 通しは最後に 1 回でよい。
+
+```powershell
+.\1_BuildAll.ps1 -Only "WSSrv" -SkipClean    # Clean を挟まない分だけ速い
+.\2_RunAllTests.ps1 -Only "TestBatch"        # Result*.txt も絞った分だけ書き換わる
+.\3_SmokeTest.ps1 -Only "MVC_Sample" -SkipBuild
+```
+
+**`-Only` に指定できる名前は `-List` で出す。**（#576）
+
+```powershell
+.\3_SmokeTest.ps1 -List          # 対象名の一覧。-Lang が効く
+```
+
+**どこまで回すかは依存関係で決まる。**（#576）
+ツールと個別サンプルは末端なので、基盤のビルドも他のサンプルの疎通も要らない。
+**`2_RunAllTests.ps1` の対象はフレームワークのテストだけ**で、
+ツールやサンプルを変えても動かないため、回す理由が無い。
+対応表は [`AGENTS.md`](../../AGENTS.md)「通しで回す前に、依存関係を見る」。
+
+**警告が多いステップの内訳を見る。**
+
+```powershell
+.\1_BuildAll.ps1 -Only "Framework_Tool" -SkipClean -WarnDetail
+```
+
+> **`-Only` ＋ `-SkipClean` は万能ではない。**（#574 で踏んだ）
+> **前段が用意する状態に依存するステップは、飛ばすと落ちる。**
+>
+> ```
+> 通し（Clean あり）             エラー 0 件
+> -Only "Business" -SkipClean    Business.RichClient_net48 で
+>                                「does not reference .NETFramework,Version=v4.8」
+> ```
+>
+> **変更と無関係なエラーに見えるため、切り分けで時間を失う。**
+> 絞り込みで妙なエラーが出たら、**まず通しで再現するかを見ること。**
+> 再現しなければ、それは絞り込みの制約であって不具合ではない。
+
+**パッケージの版を触ったら、次の 2 本も見る**（`0_RunAll.ps1` は自動で回して警告する）。
+
+```powershell
+.\ComparePackage.ps1 -Check     # packages.config と csproj の版（#569）
+.\CompareRedirect.ps1 -Check    # bindingRedirect と配布物の版（#556）
+```
+
+**どちらもビルドの後に回す。** 復元された DLL を読むため。
+`1_BuildAll.ps1` は bin を消すので、**clean の前に測ると古い残骸を拾う。**（#579）
+
+`CompareRedirect.ps1` の**「判定不能」は不一致ではない。**
+分類のうち**「要調査」だけ**を見ればよい（他は実行時に読まれない）。
+読み方は [`BUILDING.md`](BUILDING.md) 12 節。
 
 ---
 
@@ -188,6 +252,7 @@ powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.
 | `MSB4226`（`Microsoft.WebApplication.targets`） | nuget が別製品の MSBuild を拾った | `nuget.exe restore ... %NUGET_MSBUILD%` |
 | ビルドは通るのに `DllNotFoundException`（`...SNI...`） | `nuget restore` を呼んでおらず、ネイティブ DLL が出力に入らない | 該当 sln に restore を足す。[`BUILDING.md`](BUILDING.md) 10 節 |
 | `packages.config` の id が `csproj` に無い＝不要に見える | サテライト（`.ja`）とコンテンツ パッケージは**出なくて正常**（48 件中 44 件） | 消す前に [`BUILDING.md`](BUILDING.md) 11 節 |
+| ビルドは通るのに実行時 `FileNotFoundException` | **版は 4 か所に散らばる。** `<Reference>` の `Version=` がずれると、警告だけ出て参照が落ちる | `.\ComparePackage.ps1 -Check`。[`BUILDING.md`](BUILDING.md) 12 節 |
 
 **NuGet パッケージ作成の落とし穴は
 [`CS/NuGet/README.md`](CS/NuGet/README.md) 9 節**にまとめてある。

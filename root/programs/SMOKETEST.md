@@ -81,56 +81,14 @@ cd root\programs
 
 ---
 
-## 3. 対象（23 件）
+## 3. 対象（25 件）
 
-### バッチ（8 件）
-
-| 対象 | 判定 |
-|---|---|
-| `SimpleBatch_sample` (net48 / net10.0) | `〇件のデータがあります` が出力される |
-| `RerunnableBatch_sample` (net48 / net10.0) | `Orders2` の件数が `Orders` と一致する |
-| `RerunnableBatch_sample2` (net48 / net10.0) | 同上 |
-| `RerunnableBatch_sample3` (net48 / net10.0) | 同上 |
-
-`RerunnableBatch` 系は `Orders`(830 件) を読み `Orders2` へ INSERT する。3 本の違いは
-INSERT の方法（1 件ずつ／SQL 連結／INSERT 文組み立て）で、いずれも結果は同じになる。
-
-**実行前に `Orders2` を空にする必要がある。** `OrderID` が主キーのため、
-残っていると重複で落ちる。スクリプトが `DELETE FROM [Orders2]` を行ってから実行する。
-実行後は 830 件＝初期状態に戻るため、後始末は不要。
-
-#### `Orders2` はスクリプトが作る
-
-**`Orders2` は Northwind 標準の表ではない。** `instnwnd.sql` に含まれないため、
-**DB を作り直すたびに消える**。そのたびに手で作るのは現実的でないので、
-事前準備の中で存在を確認し、無ければ作る。
+**基盤系を先に置く。**（#571）
+環境やツールが壊れていれば、アプリケーションの検証を待たずに分かる。
 
 ```
-Orders2 がありません。作成します（...\RerunnableBatch_sample\CREATE ORDERS2.sql）。
+DaoGen_Tool → DeployZip → TestTransmission → バッチ → CLI → WebAPI Client → Web アプリ
 ```
-
-DDL はサンプル同梱の `CREATE ORDERS2.sql` をそのまま流す。**スクリプトに書き写さない**
-（同じ DDL がサンプル配下に 9 つ重複しており、増やす意味がない）。
-
-流すときの注意が 2 つある。
-
-- **`GO` は自前で分割する。** `SqlClient` は `GO` を解釈できない（`sqlcmd` の
-  バッチ区切りであって T-SQL ではない）。このファイルは 3 バッチに分かれる。
-- **`USE [Northwind]` は流さない。** 接続先は接続文字列に従うべきで、
-  流すと接続文字列が別 DB を指していた場合にそちらへ表を作ってしまう。
-
-> CI では `Set up Northwind` ステップが `instnwnd.sql` の直後に同じ DDL を流している。
-> そちらは `sqlcmd` なので `GO` をそのまま解釈できる。
-
-### CLI（1 件）
-
-| 対象 | 判定 |
-|---|---|
-| `Simple_CLI` (net10.0) | `cmd1 --an-int 123` が `Sub command cmd1: 123` を出力する |
-
-net48 版は `System.CommandLine` / `Sharprompt` の .NET Framework サポート終了により
-ドロップされている（`5_Build_CLI_sample.bat` 参照）。
-`interactive` サブコマンドは対話プロンプトを使うため対象外。
 
 ### DaoGen_Tool（墨壺）の CUI モード（6 件）
 
@@ -354,6 +312,97 @@ ASP.NET WebAPI の経路（`protocol="5"`）は **.NET Framework 限定**であ�
 .NET Core 版では `FxEnum.TmProtocol` ごと落とされている
 （[`CS/Frameworks/ANALYSIS.md`](CS/Frameworks/ANALYSIS.md) と #543）。
 
+### バッチ（8 件）
+
+| 対象 | 判定 |
+|---|---|
+| `SimpleBatch_sample` (net48 / net10.0) | `〇件のデータがあります` が出力される |
+| `RerunnableBatch_sample` (net48 / net10.0) | `Orders2` の件数が `Orders` と一致する |
+| `RerunnableBatch_sample2` (net48 / net10.0) | 同上 |
+| `RerunnableBatch_sample3` (net48 / net10.0) | 同上 |
+
+`RerunnableBatch` 系は `Orders`(830 件) を読み `Orders2` へ INSERT する。3 本の違いは
+INSERT の方法（1 件ずつ／SQL 連結／INSERT 文組み立て）で、いずれも結果は同じになる。
+
+**実行前に `Orders2` を空にする必要がある。** `OrderID` が主キーのため、
+残っていると重複で落ちる。スクリプトが `DELETE FROM [Orders2]` を行ってから実行する。
+実行後は 830 件＝初期状態に戻るため、後始末は不要。
+
+#### `Orders2` はスクリプトが作る
+
+**`Orders2` は Northwind 標準の表ではない。** `instnwnd.sql` に含まれないため、
+**DB を作り直すたびに消える**。そのたびに手で作るのは現実的でないので、
+事前準備の中で存在を確認し、無ければ作る。
+
+```
+Orders2 がありません。作成します（...\RerunnableBatch_sample\CREATE ORDERS2.sql）。
+```
+
+DDL はサンプル同梱の `CREATE ORDERS2.sql` をそのまま流す。**スクリプトに書き写さない**
+（同じ DDL がサンプル配下に 9 つ重複しており、増やす意味がない）。
+
+流すときの注意が 2 つある。
+
+- **`GO` は自前で分割する。** `SqlClient` は `GO` を解釈できない（`sqlcmd` の
+  バッチ区切りであって T-SQL ではない）。このファイルは 3 バッチに分かれる。
+- **`USE [Northwind]` は流さない。** 接続先は接続文字列に従うべきで、
+  流すと接続文字列が別 DB を指していた場合にそちらへ表を作ってしまう。
+
+> CI では `Set up Northwind` ステップが `instnwnd.sql` の直後に同じ DDL を流している。
+> そちらは `sqlcmd` なので `GO` をそのまま解釈できる。
+
+### CLI（1 件）
+
+| 対象 | 判定 |
+|---|---|
+| `Simple_CLI` (net10.0) | `cmd1 --an-int 123` が `Sub command cmd1: 123` を出力する |
+
+net48 版は `System.CommandLine` / `Sharprompt` の .NET Framework サポート終了により
+ドロップされている（`5_Build_CLI_sample.bat` 参照）。
+`interactive` サブコマンドは対話プロンプトを使うため対象外。
+
+### DTO を使用したバッチ更新（WebAPI Client）（2 件）
+
+**対象は EXE だが、相手に WebAPI が要る。**（#570）
+`Kind = "Web"` は対象自身が Web アプリのときの仕組みなので使えない。
+`Pre` で起動し、`Verify` の最後で止める（`DeployZipPackWithHTTP` と同じ形）。
+
+| 対象 | 相手 | ポート |
+|---|---|---|
+| `TestWebAPIClient (net48)` | `Samples/WS_sample/ASPNETWebService` | 51087 |
+| `TestWebAPIClient (net10.0)` | `Samples4NetCore/Backend/ASPNETWebService` | 51088 |
+
+**クライアントは 1 本。** 接続先を引数で切り替えるだけで両方に使える。
+
+＜何を確かめるか＞
+
+  **1 本で 3 つを見る。**（#571 で ResourceServer の 2 件を取り込んだ）
+
+  | 観点 | 口 | 内容 |
+  |---|---|---|
+  | CRUD 一巡 | `api/json` | `JsonController` で追加→取得→更新→削除し、**件数が戻る** |
+  | DTO の往復 | `api/batchupdate` | **`RowState` と `Original` が保たれる**（#567 / #570） |
+  | 楽観排他 | 〃 | `Original` を WHERE に入れ、**古い版の更新を弾く** |
+
+  `JsonController` は `MVC_Sample` の `Crud1Controller` と同じ処理を公開している
+  （Ｂ層は同じ `WSServer_sample.Business.LayerB`）。
+
+  **同じ WebAPI を相手にしながらホストを 2 回起動していた**ため、1 つにまとめた。
+
+```
+往復後も RowState が残る    Added=1 / Modified=1
+往復後も Original が残る    Original=Exotic Liquids / Current=smoke-103919
+他者の更新が通る            {"updateCount":1}
+古い版の更新が弾かれる      {"errorMessageID":"W0002"}
+```
+
+**サーバ側だけでは検証にならない。** 同一プロセス内の `DataTable` を触ってしまい、
+JSON をまたいだことにならないため、HTTP 越しに送って戻すところまでやる。
+
+> **判定は状態コードと JSON の形で行う。**
+> 部分一致にしていたところ、**IIS Express の 500.19 が返す HTML に "test" が含まれ、
+> 疎通が OK と表示された。**「通ったこと」は正しさの証拠にならない。
+
 ### Web アプリ（3 件）
 
 | 対象 | ホスト | 認証の実装 | 判定 |
@@ -386,19 +435,16 @@ ASP.NET WebAPI の経路（`protocol="5"`）は **.NET Framework 限定**であ�
 ポストバックには画面が発行した `__VIEWSTATE` / `__VIEWSTATEGENERATOR` / `__EVENTVALIDATION` を
 そのまま返す必要があり、コントロール名はマスタ ページ配下のため
 `ctl00$ContentPlaceHolder_A$` が付く。
-
 ### 対象外
 
 | 対象 | 理由 |
 |---|---|
 | `2CS_sample` 系（11 本） | WinForms / WPF。UI Automation が必要で、画面変更に弱く維持費が高い |
 | `WSClient_sample` 系（7 本） | 同上 |
-| Web サービス（`ASPNETWebService`） | **別リポジトリへ移設済み**。本リポジトリにホストが無い |
 
 `CS/Samples/WS_sample/WSServer_sample` はクラス ライブラリ（B層・D層）で、
-これを載せる Web サービスは
-[`OpenTouryoProject/ResourceServerTemplates`](https://github.com/OpenTouryoProject/ResourceServerTemplates)
-へ移設されている。このため本リポジトリだけでは HTTP 疎通ができない。
+**これを載せる Web サービスは `ASPNETWebService`**（上記 ResourceServer）である。
+一度 `OpenTouryoProject/ResourceServerTemplates` へ移設したが、**#566 で引き戻した。**
 
 WinForms / WPF 系は、リリース チェックリスト（段階 4）の**手作業項目**として残す。
 
@@ -595,7 +641,10 @@ MVC_Sample (net10.0)              OK   ログイン後 /Crud1/Index = 200
   全対象 OK
 ```
 
-全 23 件（ビルド 8 バッチ ＋ 疎通 23 件）で **約 4 分**。
+全 25 件（ビルド 10 バッチ ＋ 疎通 25 件）で **約 7.4 分**。
+
+**#571 の統合で、13.9 分から半減した。**
+同じ WebAPI を相手にしながらホストを 2 回起動していたのをやめたため。
 
 ### リダイレクトの扱い
 
@@ -606,6 +655,34 @@ MVC_Sample (net10.0)              OK   ログイン後 /Crud1/Index = 200
 ログイン成功時は `FormsAuthentication` が 302 を返すため、これに該当する。
 `3_SmokeTest.ps1` は `Invoke-Http` で捕まえ、3xx を正常な結果として扱う。
 素の `Invoke-WebRequest` を使うと、**判定は通るのにエラーが表示される**状態になる。
+
+---
+
+## 8.5 ファイルの構成（#571 で分割）
+
+**1,477 行あったので分けた。** 本体には引数・環境の準備・実行ループ・サマリだけを残す。
+
+| ファイル | 役割 |
+|---|---|
+| `3_SmokeTest.ps1` | 引数・環境の準備・実行ループ・サマリ |
+| `st_Utility.ps1` | 環境・基盤系（DB / ログ / DaoGen / DeployZip） |
+| `st_Server.ps1` | サーバー系（Web ホストの起動と停止、HTTP 要求） |
+| `st_Flow.ps1` | アプリケーション検証フロー（WebForms / MVC） |
+| `st_Targets.ps1` | テスト対象定義（CS / VB） |
+
+**ドット ソースで読む。** `& file` では関数と変数が呼び出し元のスコープに入らない。
+
+```powershell
+. (Join-Path $PSScriptRoot "st_Utility.ps1")
+. (Join-Path $PSScriptRoot "st_Server.ps1")
+. (Join-Path $PSScriptRoot "st_Flow.ps1")
+. (Join-Path $PSScriptRoot "st_Targets.ps1")
+```
+
+**順序が要る。** `st_Targets.ps1` は他の 3 つが定義した関数と変数
+（`$batchArgs` / `$mvcLoginFlow` / `Start-ApiWeb` 等）を参照するため、**最後に読む。**
+
+**`st_*.ps1` は単体では動かない。** 個別に実行しても意味がない。
 
 ---
 
@@ -685,7 +762,6 @@ $client.Connect("localhost", $port)
 | `-SkipHttpErrorCheck` が 5.1 に無く、HTTP が常に失敗 | `3_SmokeTest.ps1` の `Invoke-Http` |
 | `chcp` による画面クリアと、ログの文字化け | 3 本すべて（冒頭でコード ページを切り替え） |
 
-
 ### PowerShell から `.bat` を呼ぶときの注意
 
 `TESTING.md` と同じく、`NoDefaultCurrentDirectoryInExePath` を解除している。
@@ -697,7 +773,7 @@ $client.Connect("localhost", $port)
 
 ```powershell
 .\3_SmokeTest.ps1 -Lang VB     # VB のみ（6 件）
-.\3_SmokeTest.ps1 -Lang Both   # C# 23 件 ＋ VB 6 件
+.\3_SmokeTest.ps1 -Lang Both   # C# 25 件 ＋ VB 6 件
 ```
 
 **既定に VB を含めない。** リリース時の検証（[`RELEASE.md`](RELEASE.md) 3 節）は

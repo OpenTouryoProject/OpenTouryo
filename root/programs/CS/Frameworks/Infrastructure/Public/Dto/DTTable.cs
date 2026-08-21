@@ -37,6 +37,7 @@
 //*  2011/10/09  西野  大介        国際化対応
 //*  2026/08/14  玄人 幸道         ToDataTableで行ステータスを保つようにした（#544）。
 //*  2026/08/14  玄人 幸道         DataRowStateをDTRowStateに改名（#544）。
+//*  2026/08/18  玄人 幸道         KeepOriginalを追加し、変更前の値を保持できるようにした（#567）。
 //**********************************************************************************
 
 using System;
@@ -59,6 +60,37 @@ namespace Touryo.Infrastructure.Public.Dto
         private string _tblName = "";
 
         #region 行列コレクション
+
+        /// <summary>変更前の値（Original）を保持するか</summary>
+        /// <remarks>
+        /// **既定は false（保持しない）。**（#567）
+        ///
+        /// ＜有効にする場面＞
+        ///   全列の変更前の値を WHERE 条件に使う楽観排他を、
+        ///   DTTables 経由（WebAPI 転送・Session 往復）でも効かせたい場合。
+        ///   保持しないと、往復後の Original に現在値が入り、
+        ///   条件が必ず一致して他者の更新を上書きする。
+        ///
+        /// ＜有効にしなくてよい場面＞
+        ///   timestamp（rowversion）列で排他する構成。
+        ///   その列 1 つで衝突が分かるため、全列を持ち回るのは負担になるだけ。
+        ///
+        /// ＜設定するタイミング＞
+        ///   **編集を始める前に設定すること。**
+        ///   変更のたびに退避するかどうかを見るため、
+        ///   途中で有効にしても、それ以前の変更は退避されない。
+        /// </remarks>
+        public bool KeepOriginal
+        {
+            set
+            {
+                this._tblStat.KeepOriginal = value;
+            }
+            get
+            {
+                return this._tblStat.KeepOriginal;
+            }
+        }
 
         /// <summary>列コレクション</summary>
         private DTColumns _cols;
@@ -153,10 +185,13 @@ namespace Touryo.Infrastructure.Public.Dto
         ///   戻すと落ちる、という非対称な状態だった。
         ///   これでは受け取った側で Added / Modified / Deleted の振り分けができない。
         ///
-        /// ＜Modified の元の値は復元されない＞
-        ///   DTRow は現在値と行ステータスだけを持ち、変更前の値を持たない。
-        ///   このため DataRowVersion.Original には現在値が入る。
-        ///   区分（Added / Modified / Deleted）の判別を目的とした変換である。
+        /// ＜Modified の元の値＞
+        ///   **KeepOriginal が真なら復元される。**（#567）
+        ///   偽の場合は DTRow が変更前の値を持たないため、
+        ///   DataRowVersion.Original には現在値が入る（従来どおり）。
+        ///
+        ///   全列の Original を WHERE 条件に使う楽観排他を DTTables 経由で行うなら、
+        ///   KeepOriginal を有効にすること。timestamp 列で排他する構成では不要。
         /// </remarks>
         public DataTable ToDataTable()
         {
@@ -184,10 +219,17 @@ namespace Touryo.Infrastructure.Public.Dto
                 // 行を新規作成
                 DataRow dr = dt.NewRow();
 
+                // **Original を持つ行は、まず変更前の値で入れる。**（#567）
+                //   このあと AcceptChanges で確定させると、それが Original になる。
+                //   現在値は、行ステータスを復元するときに上書きする。
+                bool useOriginal = (row.RowState == DTRowState.Modified && row.HasOriginal);
+
                 // 各列ごとに値を追加
                 foreach (DTColumn col in this.Cols)
                 {
-                    object value = row[col.ColName];
+                    object value = useOriginal
+                        ? row[col.ColName, DTRowVersion.Original]
+                        : row[col.ColName];
 
                     // **null は DBNull に置き換える。**（#544）
                     //   DTRow は値なしを null で持つが、DataRow は null を受け付けず
@@ -216,7 +258,25 @@ namespace Touryo.Infrastructure.Public.Dto
                         break;
 
                     case DTRowState.Modified:
-                        dt.Rows[i].SetModified();
+                        // **確定済みの値が Original になっている。**（#567）
+                        //   ここで現在値を当てると、Original ≠ Current の行になる。
+                        if (added[i].HasOriginal)
+                        {
+                            foreach (DTColumn col in this.Cols)
+                            {
+                                object value = added[i][col.ColName];
+                                dt.Rows[i][col.ColName] = (value == null) ? DBNull.Value : value;
+                            }
+                        }
+
+                        // **SetModified は Unchanged の行にしか使えない。**
+                        //   上で値を当てた場合、その時点で Modified になっているため、
+                        //   ここで呼ぶと InvalidOperationException になる。
+                        //   値がすべて同じで Unchanged のままの場合もあるので、状態で判断する。
+                        if (dt.Rows[i].RowState == System.Data.DataRowState.Unchanged)
+                        {
+                            dt.Rows[i].SetModified();
+                        }
                         break;
 
                     case DTRowState.Deleted:
@@ -239,11 +299,20 @@ namespace Touryo.Infrastructure.Public.Dto
         /// System.Data.DataTableをDTTableに変換する
         /// </summary>
         /// <param name="table">変換元のSystem.Data.DataTable</param>
+        /// <param name="keepOriginal">
+        /// 変更前の値（Original）を保持するか（既定は false）
+        /// </param>
         /// <returns>変換後のDTTable</returns>
-        public static DTTable FromDataTable(DataTable table)
+        /// <remarks>
+        /// **keepOriginal は、ここで指定しないと取り込めない。**（#567）
+        ///   生成したあとに DTTable.KeepOriginal を立てても、
+        ///   変換は済んでおり、変更前の値は既に失われている。
+        /// </remarks>
+        public static DTTable FromDataTable(DataTable table, bool keepOriginal = false)
         {
             // テーブル定義
             DTTable dt = new DTTable(table.TableName);
+            dt.KeepOriginal = keepOriginal;
 
             // 列定義
             foreach (DataColumn col in table.Columns)
@@ -271,6 +340,22 @@ namespace Touryo.Infrastructure.Public.Dto
                         // 行が削除されている場合は、元の値を取得する
                         dr[col.ColumnName] = row[col.ColumnName, DataRowVersion.Original];
                     }
+                }
+
+                // **変更前の値を取り込む。**（#567）
+                //   Modified の行にだけ Original がある。
+                //   行ステータスを戻す前に入れる（戻したあとだと値の設定で退避が走り得る）。
+                if (dt.KeepOriginal && row.RowState == System.Data.DataRowState.Modified)
+                {
+                    List<object> original = new List<object>();
+
+                    foreach (DataColumn col in table.Columns)
+                    {
+                        object o = row[col.ColumnName, DataRowVersion.Original];
+                        original.Add((o is System.DBNull) ? null : o);
+                    }
+
+                    dr.SetOriginal(original);
                 }
 
                 // 行ステータスを復元
@@ -448,6 +533,41 @@ namespace Touryo.Infrastructure.Public.Dto
                 {
                     // 行ステータスをUnchangedに変え、行の値を確定させる
                     this.Rows[i].RowState = DTRowState.Unchanged;
+
+                    // **確定したので、変更前の値は捨てる。**（#567）
+                    //   現在値が確定値になるため、持ち続けると次の変更で
+                    //   「もっと前の値」が Original として残ってしまう。
+                    this.Rows[i].ClearOriginal();
+
+                    i++;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 行の変更を取り消す
+        /// </summary>
+        /// <remarks>
+        /// **KeepOriginal が真のときだけ、値が戻る。**（#567）
+        ///   保持していない場合、行ステータスだけが Unchanged に戻る。
+        ///
+        /// Added の行は行リストから取り除き、Deleted の行は復帰させる。
+        /// </remarks>
+        public void RejectChanges()
+        {
+            int i = 0;  // カウンタ用
+
+            while (i < this.Rows.Count)
+            {
+                if (this.Rows[i].RowState == DTRowState.Added)
+                {
+                    // 追加された行は、無かったことにする
+                    this.Rows.DeleteFromList(i);
+                }
+                else
+                {
+                    // Modified は値を戻し、Deleted は復帰させる（どちらも Unchanged になる）
+                    this.Rows[i].RejectChanges();
                     i++;
                 }
             }

@@ -31,6 +31,8 @@
 .PARAMETER Only
     ステップ名の部分一致で対象を絞る（例: -Only "net48"）。動作確認用。
 
+.PARAMETER List
+    -Only に指定できるステップ名を一覧表示して終わる。**ここが一次情報。**
 .PARAMETER SkipClean
     クリーン処理（1_DeleteDir / 1_DeleteFile）を省略する。
     ※ リリース判定では省略しないこと。前回のビルド成果物が残っていると、
@@ -73,7 +75,9 @@ param(
     [ValidateSet("CS", "VB", "Both")]
     [string]$Lang = "CS",
     [string]$Only,
+    [switch]$List,
     [switch]$SkipClean,
+    [switch]$WarnDetail,
     [string]$OutputDir = (Join-Path $env:TEMP "OpenTouryoBuildLogs"),
     [string[]]$IgnoreErrors = @()
 )
@@ -305,6 +309,34 @@ $total = [Diagnostics.Stopwatch]::StartNew()
 #   区画の区切りとしての表示は「実行済み」として残す（黙って消さない）。
 $executed = @{}
 
+
+# **-Only に何を指定できるかは、ここが一次情報である。**（#576）
+#   文書に書き写すと二重管理になり、対象が増減したときに古くなる。
+if ($List)
+{
+    Write-Host ("=== -Only に指定できる名前（部分一致）{0} ===" -f "（-Lang $Lang）") -ForegroundColor Cyan
+    foreach ($x in $steps) { Write-Host ("  " + $x.Name) }
+    Write-Host ("  ---- {0} 件 ----" -f $steps.Count)
+    exit 0
+}
+
+# **-Only が空振りしたら止める。**（#576）
+#   1 件も選ばれないまま進むと「全ステップ OK」と表示され、
+#   **打ち間違いが緑になる。** 何も建てていないのに成功に見えるのが最も悪い。
+if ($Only)
+{
+    $matched = @($steps | Where-Object { ($_.Name -like "*$Only*") -or ($_.Bat -like "*$Only*") })
+
+    if ($matched.Count -eq 0)
+    {
+        Write-Host ("  **-Only '$Only' に一致するステップがありません。**") -ForegroundColor Red
+        Write-Host ("  -List で一覧を出せます。") -ForegroundColor Yellow
+        exit 1
+    }
+
+    Write-Host ("  -Only '$Only' : {0} ステップに絞りました" -f $matched.Count) -ForegroundColor Yellow
+}
+
 foreach ($s in $steps)
 {
     if ($Only -and ($s.Name -notlike "*$Only*") -and ($s.Bat -notlike "*$Only*"))
@@ -388,6 +420,7 @@ foreach ($s in $steps)
         エラー   = $stepErrors.Count
         既知     = $stepKnown.Count
         警告     = $diag.Warnings.Count
+        警告詳細 = $diag.Warnings
         秒       = [Math]::Round($sw.Elapsed.TotalSeconds, 1)
     }
 }
@@ -400,7 +433,55 @@ $total.Stop()
 Write-Host ""
 Write-Host "================ サマリ ================"
 Write-Host ""
-Write-SummaryTable $results
+# **警告詳細は列にしない。** 表が壊れるので、集計にだけ使う。
+Write-SummaryTable ($results | Select-Object * -ExcludeProperty 警告詳細)
+
+# --- 警告の内訳（#571）---
+#
+# **件数だけでは何を直せばよいか分からない。** 種類ごとにまとめる。
+# 既定では出さない。毎回出ると本題（エラー）が埋もれるため。
+if ($WarnDetail)
+{
+    $withWarn = @($results | Where-Object { $_.警告詳細 -and $_.警告詳細.Count -gt 0 })
+
+    if ($withWarn.Count -eq 0)
+    {
+        Write-Host ""
+        Write-Host "  警告はありません。"
+    }
+    else
+    {
+        Write-Host ""
+        Write-Host "================ 警告の内訳 ================"
+
+        foreach ($r in ($withWarn | Sort-Object { -$_.警告詳細.Count }))
+        {
+            Write-Host ""
+            Write-Host ("  {0}（{1} 件）" -f $r.ステップ, $r.警告詳細.Count)
+
+            # 「: warning XXnnnn :」から種類を取り出す。取れないものは (種類不明) にまとめる。
+            $byCode = $r.警告詳細 | ForEach-Object {
+                $m = [regex]::Match($_, ':\s*warning\s+([A-Za-z]+\d+)\s*:')
+                if ($m.Success) { $m.Groups[1].Value } else { "(種類不明)" }
+            } | Group-Object | Sort-Object Count -Descending
+
+            foreach ($g in $byCode)
+            {
+                # 代表を 1 つ出す。**同じ種類でも中身が違うことがある**ので、目印になる。
+                $sample = @($r.警告詳細 | Where-Object { $_ -match [regex]::Escape($g.Name) })[0]
+                if ($null -eq $sample) { $sample = "" }
+                $sample = ($sample -replace '\s+', ' ')
+                if ($sample.Length -gt 96) { $sample = $sample.Substring(0, 96) + " …" }
+
+                Write-Host ("      {0,4}  {1,-12} {2}" -f $g.Count, $g.Name, $sample)
+            }
+        }
+
+        Write-Host ""
+        Write-Host "  **同じ種類は、たいてい 1 か所の対処でまとめて消える。**"
+        Write-Host "  MSB3277 は版の混在（CompareRedirect.ps1 / ComparePackage.ps1 も参照）。"
+    }
+}
 Write-Host ""
 Write-Host ("  所要時間 : {0:N1} 分" -f $total.Elapsed.TotalMinutes)
 Write-Host ("  ログ     : {0}" -f $OutputDir)

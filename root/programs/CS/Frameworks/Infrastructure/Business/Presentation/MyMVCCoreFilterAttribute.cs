@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/08/08  西野 大介         新規作成
+//*  2026/08/21  玄人 幸道         CS4014対応（GetUserInfoAsyncを待つ。ログのUserInfoが空になっていた）
 //**********************************************************************************
 
 using System;
@@ -90,8 +91,10 @@ namespace Touryo.Infrastructure.Business.Presentation
         {
             this.GetRouteData(exceptionContext.RouteData);
 
-            // 内部で await するが、呼出し元は同期なので、結果として同期実行になる。
-            this.GetUserInfoAsync();
+            // **await しないと、この後の UserInfo がまだ設定されていない。**（CS4014）
+            //   OutputErrorLog は void で await できないため、ここで待つ。
+            //   ASP.NET Core には SynchronizationContext が無く、デッドロックしない。
+            this.GetUserInfoAsync().GetAwaiter().GetResult();
 
             // 非同期ControllerのInnerException対策（底のExceptionを取得する）。
             Exception ex = exceptionContext.Exception;

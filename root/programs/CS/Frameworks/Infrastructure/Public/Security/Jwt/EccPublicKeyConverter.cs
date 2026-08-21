@@ -34,10 +34,14 @@
 //*  2019/06/25  西野 大介         インスタンス・メソッド化（ES256, 384, 512対応）
 //*  2026/08/01  玄人 幸道         jose-jwtへの依存を解消（JwkToCngをBCLのみで実装）
 //*                                ※ 楕円曲線の決定にcrvを使用するため、jose-jwt非互換。
+//*  2026/08/21  玄人 幸道         CA1416対応（JwkToCngにSupportedOSPlatformを付与）
 //**********************************************************************************
 
 using System;
 using System.Collections.Generic;
+#if NETCOREAPP
+using System.Runtime.Versioning;
+#endif
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
@@ -244,6 +248,11 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         /// <summary>JwkToCng</summary>
         /// <param name="jwkString">string</param>
         /// <returns>CngKey（公開鍵）</returns>
+        // **CngKey / ECDsaCng は Windows 専用である。**（CA1416）
+        //   隠さず、要求する OS を宣言する。net48 には属性が無いため囲む。
+#if NETCOREAPP
+        [SupportedOSPlatform("windows")]
+#endif
         public CngKey JwkToCng(string jwkString)
         {
             return this.JwkToCng(
@@ -265,6 +274,11 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         /// なお crv は RFC 7517／RFC 7518 において EC 鍵の必須メンバであり、
         /// 姉妹メソッドの JwkToParam も従来から crv を必須としている。
         /// </remarks>
+        // **CngKey / ECDsaCng は Windows 専用である。**（CA1416）
+        //   隠さず、要求する OS を宣言する。net48 には属性が無いため囲む。
+#if NETCOREAPP
+        [SupportedOSPlatform("windows")]
+#endif
         public CngKey JwkToCng(Dictionary<string, string> jwk)
         {
             ECParameters ecParams = new ECParameters();

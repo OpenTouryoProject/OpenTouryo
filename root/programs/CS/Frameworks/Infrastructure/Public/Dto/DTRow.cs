@@ -35,6 +35,7 @@
 //*  2011/09/06  前川 祐介         共通化、同値が設定された場合、RowStateを変更しない
 //*  2011/10/09  西野 大介         国際化対応
 //*  2026/08/14  玄人 幸道         DataRowStateをDTRowStateに改名（#544）。
+//*  2026/08/18  玄人 幸道         変更前の値（Original）の保持に対応（#567）
 //**********************************************************************************
 
 using System;
@@ -57,6 +58,14 @@ namespace Touryo.Infrastructure.Public.Dto
 
         /// <summary>行ステータス</summary>
         private DTRowState _rowState;
+
+        /// <summary>変更前のデータ本体</summary>
+        /// <remarks>
+        /// **KeepOriginal が真で、Unchanged から初めて変更したときにだけ作る。**（#567）
+        ///   null のままなら「変更前＝現在値」であり、Original を尋ねられても現在値を返す。
+        ///   保持しない設定では常に null なので、記憶域は増えない。
+        /// </remarks>
+        private List<object> _original = null;
         
         #endregion
 
@@ -142,6 +151,14 @@ namespace Touryo.Infrastructure.Public.Dto
             set
             {
                 //object temp = null;
+
+                // **値を書き換える前に、変更前の値を退避する。**（#567）
+                //   書き換えたあとでは、退避されるのが「変更後の値」になってしまう。
+                //   Added / Deleted の行は退避しない（変更前という概念が無い）。
+                if (this.RowState != DTRowState.Added && this.RowState != DTRowState.Deleted)
+                {
+                    this.KeepOriginalIfNeeded();
+                }
 
                 // 列を確認し
                 DTColumn dtCol = (DTColumn)this._cols[index];
@@ -264,6 +281,108 @@ namespace Touryo.Infrastructure.Public.Dto
                     this.RowState = DTRowState.Modified;
                 }
             }
+        }
+
+        #endregion
+
+        #region 変更前の値（Original）
+
+        /// <summary>変更前の値を取得する</summary>
+        /// <param name="colName">列名</param>
+        /// <param name="version">セルのバージョン</param>
+        /// <returns>セルの値</returns>
+        /// <remarks>
+        /// **Original が意味を持つのは、DTTable.KeepOriginal が真で、かつ Modified の行だけ**です。
+        /// それ以外は現在の値が返ります（System.Data.DataRow のように例外にはなりません）。
+        /// </remarks>
+        public object this[string colName, DTRowVersion version]
+        {
+            get
+            {
+                // 列名チェック
+                if (this._cols.ColNameIndexMap.ContainsKey(colName))
+                {
+                    int index = (int)this._cols.ColNameIndexMap[colName];
+                    return this[index, version];
+                }
+                else
+                {
+                    // 列名が不正
+                    throw new Exception("A column name is inaccurate. ");
+                }
+            }
+        }
+
+        /// <summary>変更前の値を取得する</summary>
+        /// <param name="index">インデックス</param>
+        /// <param name="version">セルのバージョン</param>
+        /// <returns>セルの値</returns>
+        public object this[int index, DTRowVersion version]
+        {
+            get
+            {
+                if (version == DTRowVersion.Original && this._original != null)
+                {
+                    return this._original[index];
+                }
+
+                // 保持していない場合は現在の値
+                return this._row[index];
+            }
+        }
+
+        /// <summary>変更前の値を保持しているか</summary>
+        public bool HasOriginal
+        {
+            get
+            {
+                return (this._original != null);
+            }
+        }
+
+        /// <summary>変更前の値を退避する（初回のみ）</summary>
+        /// <remarks>
+        /// **DTTable.KeepOriginal が真のときだけ退避する。**
+        /// 既に退避済みなら何もしない（2 回目以降に上書きすると、
+        /// 「1 回目の変更後の値」が変更前の値になってしまう）。
+        /// </remarks>
+        private void KeepOriginalIfNeeded()
+        {
+            if (this._original != null) { return; }
+            if (!this._cols.KeepOriginal) { return; }
+
+            this._original = new List<object>(this._row);
+        }
+
+        /// <summary>変更前の値を、外部から設定する</summary>
+        /// <param name="original">変更前の値</param>
+        /// <remarks>
+        /// **復元のためだけに使う。**（FromDataTable、FromJsonObject）
+        /// 通常の編集では KeepOriginalIfNeeded が自動で退避する。
+        /// </remarks>
+        internal void SetOriginal(List<object> original)
+        {
+            this._original = original;
+        }
+
+        /// <summary>変更前の値を破棄する</summary>
+        /// <remarks>AcceptChanges から呼ばれる（現在値が確定値になるため）。</remarks>
+        internal void ClearOriginal()
+        {
+            this._original = null;
+        }
+
+        /// <summary>変更前の値へ戻す</summary>
+        /// <remarks>RejectChanges から呼ばれる。</remarks>
+        internal void RejectChanges()
+        {
+            if (this._original != null)
+            {
+                this._row = this._original;
+                this._original = null;
+            }
+
+            this.RowState = DTRowState.Unchanged;
         }
 
         #endregion

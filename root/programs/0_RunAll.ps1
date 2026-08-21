@@ -71,7 +71,7 @@ foreach ($s in $scripts)
     if ($Lang -eq "VB" -and -not $s.UseLang)
     {
         Write-Host ("{0} は VB 版の対象外のため飛ばします。" -f $s.Name) -ForegroundColor Yellow
-        $results += [pscustomobject]@{ スクリプト = $s.Name; 終了コード = "対象外" }
+        $results += [pscustomobject]@{ スクリプト = $s.Name; 終了コード = "対象外"; 秒 = "-" }
         continue
     }
 
@@ -79,8 +79,20 @@ foreach ($s in $scripts)
     if ($s.UseLang)   { $splat.Lang = $Lang }
     if ($s.UseIgnore) { $splat.IgnoreErrors = $IgnoreErrors }
 
+    # **実行時間を測る。**（#571）
+    #   通しは長い。合計だけ見ても、どこを短くすればよいかが分からない。
+    $sw = [Diagnostics.Stopwatch]::StartNew()
+
     & (Join-Path $PSScriptRoot $s.Name) @splat
-    $results += [pscustomobject]@{ スクリプト = $s.Name; 終了コード = $LASTEXITCODE }
+    $code = $LASTEXITCODE
+
+    $sw.Stop()
+
+    $results += [pscustomobject]@{
+        スクリプト = $s.Name
+        終了コード = $code
+        秒         = ("{0:N1}" -f $sw.Elapsed.TotalSeconds)
+    }
 
     # --- bindingRedirect の突き合わせ（警告のみ）---（#556）
     #
@@ -100,6 +112,25 @@ foreach ($s in $scripts)
             Write-Host "        .\CompareRedirect.ps1 -Check で内容を確認してください。"
             Write-Host ""
         }
+
+        # --- パッケージの版の突き合わせ（警告のみ）---（#569）
+        #
+        # **版は 4 か所に散らばる。**（#566 / #568）
+        # packages.config を基準に、csproj のパス表記（②）と
+        # Reference の Version（③）が外れていないかを見る。
+        #
+        # ③ は HintPath の DLL を読むため、**復元してからでないと判定できない。**
+        # ここ（ビルドの直後）なら材料が揃っている。
+        & (Join-Path $PSScriptRoot "ComparePackage.ps1") -Check 6>$null | Out-Null
+        $packageOk = ($LASTEXITCODE -eq 0)
+
+        if (-not $packageOk)
+        {
+            Write-Host ""
+            Write-Host "【警告】packages.config と csproj で、パッケージの版が食い違っています。" -ForegroundColor Yellow
+            Write-Host "        .\ComparePackage.ps1 -Check で内容を確認してください。"
+            Write-Host ""
+        }
     }
 }
 
@@ -108,6 +139,12 @@ Write-Host ""
 Write-Host "================ 全体のまとめ ================"
 Write-Host ""
 Write-SummaryTable $results
+Write-Host ""
+
+# **合計も出す。** 1 本ずつの秒を足す手間を省く。
+$totalSec = ($results | Where-Object { $_.秒 -ne "-" } |
+             ForEach-Object { [double]$_.秒 } | Measure-Object -Sum).Sum
+Write-Host ("  合計 : {0:N1} 秒（{1:N1} 分）" -f $totalSec, ($totalSec / 60))
 Write-Host ""
 
 # **終了コードをそのまま合否として読んでよい。**（#555）
@@ -140,6 +177,13 @@ if ($null -ne $redirectOk -and -not $redirectOk)
     Write-Host ""
     Write-Host "【警告】bindingRedirect が、配布されないアセンブリの版を指しています" -ForegroundColor Yellow
     Write-Host "        （CompareRedirect.ps1 -Check）。合否には数えていません。"
+}
+
+if ($null -ne $packageOk -and -not $packageOk)
+{
+    Write-Host ""
+    Write-Host "【警告】packages.config と csproj で、パッケージの版が食い違っています" -ForegroundColor Yellow
+    Write-Host "        （ComparePackage.ps1 -Check）。合否には数えていません。"
 }
 
 # --- 画面を残すための処理 ---

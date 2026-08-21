@@ -183,7 +183,6 @@ C:\root\programs\CS\Samples\WS_sample\WSClient_sample\WSClientWinCone_sample\WSC
 
 #### 基盤:
 - C:\root\programs\CS\Frameworks\Infrastructure
-- C:\root\programs\CS\Frameworks\Infrastructure\ServiceInterface\ASPNETWebServiceCore
 
 #### ツール:
 - C:\root\programs\CS\Frameworks\Tools

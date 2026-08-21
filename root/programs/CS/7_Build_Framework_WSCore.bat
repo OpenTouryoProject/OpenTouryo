@@ -16,10 +16,15 @@ set CURRENT_DIR="%~dp0"
 call %CURRENT_DIR%z_Common.bat
 
 rem --------------------------------------------------
-rem Batch build of ServiceInterface(ASPNETWebServiceCore).
+rem Batch build of ServiceInterface (.NET Core).
 rem --------------------------------------------------
-rem dotnet restore "Frameworks\Infrastructure\ServiceInterface\ASPNETWebServiceCore\ASPNETWebServiceCore.sln"
-rem dotnet msbuild %COMMANDLINE% "Frameworks\Infrastructure\ServiceInterface\ASPNETWebServiceCore\ASPNETWebServiceCore.sln"
+rem Nothing to build here.
+rem   The .NET Core edition of ServiceInterface (ASPNETWebServiceCore) was dropped
+rem   when BinarySerialize was abolished for Core.
+rem   ServiceInterface now holds ASPNETWebService (net48) and WCFService only.
+rem
+rem Keep this batch : 1_BuildAll.ps1 runs it as the Framework_WSCore step.
+rem   Removing it would make a skipped step look like a failed one.
 
 echo Core系のBinarySerializeの完全廃止対応
 

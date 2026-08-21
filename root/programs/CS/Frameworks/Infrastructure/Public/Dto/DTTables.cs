@@ -36,6 +36,7 @@
 //*  2026/08/14  玄人 幸道         値と文字列の相互変換の呼び先をDTColumnに変更（#544）。
 //*  2026/08/14  玄人 幸道         DataSetとの相互変換を追加（#544）。
 //*  2026/08/14  玄人 幸道         DataRowStateをDTRowStateに改名（#544）。
+//*  2026/08/18  玄人 幸道         変更前の値（Original）の保持に対応（#567）
 //**********************************************************************************
 
 using System;
@@ -427,6 +428,13 @@ namespace Touryo.Infrastructure.Public.Dto
             /// <summary>表名</summary>
             public string tbl { get; set; }
 
+            /// <summary>変更前の値（Original）を保持するか</summary>
+            /// <remarks>
+            /// 受け取った側が同じ方針で編集を続けられるように運ぶ（#567）。
+            /// 古い形式には無いため、既定（false）で読める。
+            /// </remarks>
+            public bool korg { get; set; }
+
             /// <summary>列（順序に意味があるため配列）</summary>
             public List<JsonColumn> cols { get; set; }
 
@@ -450,6 +458,13 @@ namespace Touryo.Infrastructure.Public.Dto
             /// <summary>セル（列と同じ順序。nullはnullのまま）</summary>
             public List<string> cels { get; set; }
 
+            /// <summary>変更前のセル（列と同じ順序）</summary>
+            /// <remarks>
+            /// **KeepOriginal が真で、かつ Modified の行にだけ入る。**（#567）
+            /// それ以外は null なので、転送量は増えない。
+            /// </remarks>
+            public List<string> ocels { get; set; }
+
             /// <summary>行ステータス（DTRowStateの数値）</summary>
             public int state { get; set; }
         }
@@ -469,6 +484,7 @@ namespace Touryo.Infrastructure.Public.Dto
             {
                 JsonTable jTbl = new JsonTable();
                 jTbl.tbl = dt.TableName;
+                jTbl.korg = dt.KeepOriginal;
 
                 // 列情報
                 jTbl.cols = new List<JsonColumn>();
@@ -495,6 +511,21 @@ namespace Touryo.Infrastructure.Public.Dto
                     }
 
                     jRow.state = (int)dr.RowState;
+
+                    // **変更前の値は、持っている行にだけ付ける。**（#567）
+                    //   持っていない行に現在値を入れて運ぶと、
+                    //   受け取った側で「変更前＝現在値」と区別が付かなくなる。
+                    if (dr.HasOriginal)
+                    {
+                        jRow.ocels = new List<string>();
+
+                        for (int i = 0; i < dt.Cols.Count; i++)
+                        {
+                            jRow.ocels.Add(
+                                DTColumn.StringFromPrimitivetype(dr[i, DTRowVersion.Original], false));
+                        }
+                    }
+
                     jTbl.rows.Add(jRow);
                 }
 
@@ -519,6 +550,10 @@ namespace Touryo.Infrastructure.Public.Dto
                 // 表を生成して追加
                 DTTable tbl = new DTTable(jTbl.tbl);
                 this.Add(tbl);
+
+                // **方針も引き継ぐ。**（#567）
+                //   受け取った側が編集を続けるとき、同じように退避されるようにする。
+                tbl.KeepOriginal = jTbl.korg;
 
                 // 列情報
                 if (jTbl.cols != null)
@@ -549,6 +584,32 @@ namespace Touryo.Infrastructure.Public.Dto
                             DTColumn col = (DTColumn)tbl.Cols.ColsInfo[i];
                             row[i] = DTColumn.PrimitivetypeFromString(col.ColType, cel);
                         }
+                    }
+
+                    // **変更前の値を復元する。**（#567）
+                    //   編集による退避（KeepOriginalIfNeeded）は Unchanged からの初回だけなので、
+                    //   ここでは通らない（AddNew 直後は Added、値の設定でも Added のまま）。
+                    //   そのため、外部から明示的に入れる。
+                    if (jRow.ocels != null)
+                    {
+                        List<object> original = new List<object>();
+
+                        for (int i = 0; i < jRow.ocels.Count; i++)
+                        {
+                            string cel = jRow.ocels[i];
+
+                            if (cel == null)
+                            {
+                                original.Add(null);
+                            }
+                            else
+                            {
+                                DTColumn col = (DTColumn)tbl.Cols.ColsInfo[i];
+                                original.Add(DTColumn.PrimitivetypeFromString(col.ColType, cel));
+                            }
+                        }
+
+                        row.SetOriginal(original);
                     }
 
                     // 行ステータス（値を設定すると Modified になるため、最後に戻す）

@@ -738,7 +738,31 @@ VS 18 のある環境では従来どおり `18.0` になるため、**挙動は�
 ### 実測（run 30984111639 : 全ステップ成功）
 
 > **当時の件数での記録。** その後、単体テストは 8 ケース（#520）、
-> 疎通は 23 件（#528、#546）に増えている。**時間の目安として読むこと。**
+> 疎通は 25 件（#528、#546、#566、#570、#571）である。**時間の目安として読むこと。**
+
+### 警告の内訳を見る（`-WarnDetail`、#571）
+
+**件数だけでは何を直せばよいか分からない。**
+
+```powershell
+.\1_BuildAll.ps1 -Only "Framework_Tool" -SkipClean -WarnDetail
+```
+
+```
+Framework_Tool (net48)（81 件）
+      81  MSB3277      ← **全部これ 1 種類**
+
+Framework_ToolCore（23 件）
+      13  MSB3277
+       6  SYSLIB0003   DeployZipPackWithHTTP\Form2.cs（CAS の廃止）
+       2  SYSLIB0014   Program.cs（WebRequest の廃止）
+       2  SYSLIB0021   Program.cs（廃止された暗号型）
+```
+
+**同じ種類は、たいてい 1 か所の対処でまとめて消える。**
+`MSB3277` は版の混在なので、12 節と `ComparePackage.ps1` を見る。
+
+既定では出さない。**毎回出るとエラーが埋もれる。**
 
 | ステップ | CI | ローカル |
 |---|---|---|
@@ -921,3 +945,122 @@ git diff --numstat
 # 4. 検証する
 .\0_RunAll.ps1 -Lang Both
 ```
+
+## 12. パッケージの版を変えるとき（#566 / #568 / #569）
+
+**版は 4 か所に散らばっている。** 片方だけ直しても**ビルドは通る**。
+
+| | 場所 | ずれると | 検査 |
+|---|---|---|---|
+| ① | `packages.config` の `version=` | 復元される版が変わらない | `ComparePackage.ps1`（基準） |
+| ② | csproj の `packages\X.Y\` パス | **復元済みでも「パッケージが無い」** | `ComparePackage.ps1` |
+| ③ | csproj の `<Reference Include="…, Version=">` | **参照が落ちて bin に配られない** | `ComparePackage.ps1` |
+| ④ | `*.config` の `bindingRedirect` | 実行時に転送先が無い | `CompareRedirect.ps1`（#556） |
+
+`PackageReference`（net10.0）は①だけで済む。**②③④は net48 の話。**
+
+### ③がずれても、ビルドは成功する
+
+`<Reference Include>` に強い名前（`, Version=…`）を書くと、
+**`SpecificVersion` は既定で true** になる。宣言と実体がずれると、
+MSBuild は**警告だけ出して参照を落とす。**
+
+#566 では `Microsoft.Data.SqlClient.dll` が bin に配られず、
+**`1_BuildAll.ps1` は終了コード 0 のまま**、実行時に `FileNotFoundException` になった。
+
+### ③④は「パッケージの版」ではない
+
+**アセンブリの版である。計算で導いてはいけない。**
+
+```
+パッケージ 10.0.5  → アセンブリ 10.0.0.5
+パッケージ 8.17.0  → アセンブリ 8.17.0.0
+パッケージ 13.0.4  → アセンブリ 13.0.0.0   ← 版が変わっても、ここは動かない
+```
+
+**復元してから、`HintPath` が指す DLL を読んで測る。**
+
+測るのは**そのプロジェクトの `HintPath`** だけにする。
+リポジトリ全体から名前で引くと、`Microsoft.Owin` のように
+**同名で版が割れている**もので、どちらが正か決められない。
+
+### ②は `HintPath` だけではない
+
+`Import Project` と `Error Condition` にも版が入る。
+
+```xml
+<HintPath>..\packages\System.ValueTuple.4.6.2\lib\...</HintPath>
+<Import Project="..\packages\System.ValueTuple.4.6.2\build\..." />
+<Error Condition="!Exists('..\packages\System.ValueTuple.4.6.2\...')" />
+```
+
+`packages\<フォルダ>\` を**全部拾って**突き合わせること。
+
+### 名前が似ているだけの別物に注意
+
+**前方一致で拾うと巻き込む。** 版番号の系列が違う。
+
+```
+Microsoft.Extensions.PlatformAbstractions   1.1.0   （Extensions 10.x とは無関係）
+Newtonsoft.Json.Bson                        1.0.3   （Newtonsoft.Json 13.x とは無関係）
+Microsoft.Data.SqlClient.SNI                6.0.2   （SqlClient 7.0.0 でも据え置き）
+```
+
+**「そのパッケージであること」と「今の版がその系列に居ること」の両方**を条件にする。
+
+### 依存の集合が変わることがある
+
+`packages.config` は**依存を自動解決しない。** 追加・削除は手で書く。
+
+`Microsoft.Data.SqlClient` 6.0.2 → 7.0.0 では、`Azure.Identity` 由来の 10 個が落ち、
+`Extensions.Abstractions` / `Internal.Logging` ほかが要る（#568）。
+
+**`.nuspec` を見て確かめること。**`.nupkg`（ZIP）の中にしか無い。
+
+### `CompareRedirect.ps1` の「判定不能」の読み方
+
+**不一致とは別物である。**（#579）
+
+```
+不一致      宣言した版が、配下の実体と食い違う          → **直す**
+判定不能    配下にそのアセンブリの実体が無い            → **分類を見る**
+```
+
+判定不能は「問題あり」ではない。**大半は仕組み上そうなるだけである。**
+そのため 4 つに分類して出す。
+
+| 分類 | 意味 | 対応 |
+|---|---|---|
+| 未ビルド | 配下に DLL が 1 つも無い | 建ててから測り直す |
+| ライブラリ | クラス ライブラリの `app.config` | **不要。実行時に読まれない** |
+| 連鎖ごと未配布 | 要求元のアセンブリも配られていない | **不要。読み込まれ得ない** |
+| **要調査** | **要求元は在るのに実体だけが無い** | **参照の落ちを疑う（#566）** |
+
+**見るのは「要調査」だけでよい。** `-Detail` が無くても出る。
+
+> **`bindingRedirect` が効くのは、アプリケーションの構成ファイルだけである。**
+> クラス ライブラリの `app.config` に書いても、実行時に読まれるのは呼ぶ側の設定になる。
+> だからライブラリの宣言は、実体が無くても実害が無い。
+
+**Web アプリは `OutputType` が `Library` になる。**
+分類は `Web.config` かどうかを先に見てから `OutputType` を見ている。
+逆順にすると、Web アプリをライブラリと誤って扱う。
+
+### 手順
+
+```powershell
+# 1. 版を書き換える（①②）。net10.0 → net48 の順に分けると、切り分けやすい
+# 2. 復元する
+.\1_BuildAll.ps1
+
+# 3. ③④を、復元された DLL の実体版に合わせる
+# 4. 検査する（不一致 0 であること）
+.\ComparePackage.ps1 -Check     # ②③
+.\CompareRedirect.ps1 -Check    # ④
+
+# 5. 検証する。**VB 側にも packages.config がある**ので Both で回す
+.\0_RunAll.ps1 -Lang Both
+```
+
+**ビルドが通っただけでは、実際に読み込めるかは分からない。**
+`3_SmokeTest.ps1` まで見ること。

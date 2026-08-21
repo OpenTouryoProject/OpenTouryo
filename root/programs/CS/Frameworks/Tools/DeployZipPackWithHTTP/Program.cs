@@ -68,6 +68,7 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Collections.Generic;
 using System.Threading;
@@ -1761,8 +1762,10 @@ namespace DeployZipPackWithHTTP
         public static string GetMD5Hash(string FilePath)
         {
             // 暗号化サービスプロバイダ
-            // MD5CryptoServiceProviderサービスプロバイダ
-            HashAlgorithm ha = new MD5CryptoServiceProvider();
+            //   **MD5CryptoServiceProvider は廃止**（SYSLIB0021）。基底の Create を使う。
+            //   **用途は配布物の同一性確認**（変更検知）で、暗号ではない。
+            //   実装が変わるだけで、**ハッシュ値は同じ**（#575）。
+            HashAlgorithm ha = MD5.Create();
 
             // ハッシュ値を計算する
             return CustomEncode.ToBase64String(
@@ -1785,26 +1788,33 @@ namespace DeployZipPackWithHTTP
         /// </returns>
         public static bool LastModifiedCheck_ByHead(Entry entry, Entry history, string zipFile)
         {
-            HttpWebRequest hwReq = null;
-            HttpWebResponse hwRes = null;
+            string url = Program.GetRequestUrl(entry, zipFile);
 
-            try
+            using (HttpClient client = Program.GetHttpClient(entry))
+            using (HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Head, url))
+            using (HttpResponseMessage res =
+                client.SendAsync(req).GetAwaiter().GetResult())
             {
-                hwReq = Program.GetHttpWebRequest(entry, zipFile);
-                hwReq.Timeout = 5000;
-                hwReq.Method = "HEAD";
-                hwRes = (HttpWebResponse)hwReq.GetResponse();
+                res.EnsureSuccessStatusCode();
 
                 // 更新日付のチェック
                 string httpLastModifiedHis = "";
-                string httpLastModifiedWeb = hwRes.LastModified.ToString(
+
+                // **Last-Modified が無いときの既定値が違う。**（#575）
+                //   HttpWebResponse.LastModified は**現在時刻**を返していた。
+                //   HttpClient は null になるので、**従来の見え方に合わせる。**
+                DateTime lastModified = res.Content.Headers.LastModified.HasValue
+                    ? res.Content.Headers.LastModified.Value.LocalDateTime
+                    : DateTime.Now;
+
+                string httpLastModifiedWeb = lastModified.ToString(
                     "yyyy-MM-dd HH:mm:ss:fff"); //.Headers["Last-Modified"];
 
                 if (httpLastModifiedWeb == null && httpLastModifiedWeb == "")
                 {
                     // 更新日付ヘッダなし
                     Program.OutPutMessage(string.Format(
-                        GetMessage.GetMessageDescription("I0006"), hwReq.RequestUri.AbsoluteUri), LogLevel.InfoLog);
+                        GetMessage.GetMessageDescription("I0006"), url), LogLevel.InfoLog);
                 }
                 else
                 {
@@ -1855,7 +1865,7 @@ namespace DeployZipPackWithHTTP
 
                                 // メッセージ
                                 Program.OutPutMessage(string.Format(
-                                    GetMessage.GetMessageDescription("I0007"), hwReq.RequestUri.AbsoluteUri), LogLevel.InfoLog);
+                                    GetMessage.GetMessageDescription("I0007"), url), LogLevel.InfoLog);
 
                                 // → パス
                                 return false;
@@ -1866,7 +1876,7 @@ namespace DeployZipPackWithHTTP
 
                                 // メッセージ
                                 Program.OutPutMessage(string.Format(
-                                    GetMessage.GetMessageDescription("I0008"), hwReq.RequestUri.AbsoluteUri), LogLevel.InfoLog);
+                                    GetMessage.GetMessageDescription("I0008"), url), LogLevel.InfoLog);
                             }
                         }
                     }
@@ -1876,19 +1886,15 @@ namespace DeployZipPackWithHTTP
 
                         // メッセージ
                         Program.OutPutMessage(string.Format(
-                            GetMessage.GetMessageDescription("I0009"), hwReq.RequestUri.AbsoluteUri), LogLevel.InfoLog);
+                            GetMessage.GetMessageDescription("I0009"), url), LogLevel.InfoLog);
                     }
                 }
 
                 // → インスコ
                 return true;
             }
-            finally
-            {
-                // 閉じる（これが無いと２回目実行できない。）
-                if (hwRes != null) { hwRes.Close(); }
-                if (hwReq != null) { hwReq.Abort(); }
-            }
+            // **using で破棄する。**（#575）
+            //   元は「閉じる（これが無いと２回目実行できない。）」と書かれていた。
         }
 
         #endregion
@@ -1900,17 +1906,20 @@ namespace DeployZipPackWithHTTP
         /// <param name="zipFile">ZIPファイル</param>
         public static void GetAndSaveContent(Entry entry, string zipFile)
         {
-            HttpWebRequest hwReq = null;
-            HttpWebResponse hwRes = null;
+            string url = Program.GetRequestUrl(entry, zipFile);
 
-            try
+            using (HttpClient client = Program.GetHttpClient(entry))
+            using (HttpRequestMessage req = new HttpRequestMessage(HttpMethod.Get, url))
+            using (HttpResponseMessage res =
+                client.SendAsync(req).GetAwaiter().GetResult())
             {
-                hwReq = Program.GetHttpWebRequest(entry, zipFile);
-                hwReq.Timeout = 5000;
-                hwReq.Method = "GET";
-                hwRes = (HttpWebResponse)hwReq.GetResponse();
+                res.EnsureSuccessStatusCode();
 
-                if (hwRes.ContentLength != -1)
+                // **長さ不明の表し方が違う。**（#575）
+                //   HttpWebResponse.ContentLength は long で、**不明は -1** だった。
+                //   HttpClient は long? で、**不明は null。**
+                //   `!= -1` をそのまま移すと常に真になり、意味が変わる。
+                if (res.Content.Headers.ContentLength.HasValue)
                 {
                     Stream sm = null;
                     FileStream fs = null;
@@ -1918,7 +1927,7 @@ namespace DeployZipPackWithHTTP
                     try
                     {
                         // 応答データを受信するためのStreamを取得
-                        sm = hwRes.GetResponseStream();
+                        sm = res.Content.ReadAsStreamAsync().GetAwaiter().GetResult();
 
                         // ファイルに書き込むためのFileStreamを作成
                         string saveFileName = "";
@@ -1946,7 +1955,7 @@ namespace DeployZipPackWithHTTP
 
                         // メッセージ
                         Program.OutPutMessage(string.Format(
-                            GetMessage.GetMessageDescription("I0010"), hwReq.RequestUri.AbsoluteUri), LogLevel.InfoLog);
+                            GetMessage.GetMessageDescription("I0010"), url), LogLevel.InfoLog);
                     }
                     finally
                     {
@@ -1956,26 +1965,22 @@ namespace DeployZipPackWithHTTP
                     }
                 }
             }
-            finally
-            {
-                // 閉じる（これが無いと２回目実行できない。）
-                if (hwRes != null) { hwRes.Close(); }
-                if (hwReq != null) { hwReq.Abort(); }
-            }
+            // **using で破棄する。**（#575）
+            //   元は「閉じる（これが無いと２回目実行できない。）」と書かれていた。
+            //   同じことが起きないよう、確実に捨てる。
         }
 
         #endregion
 
-        #region new HttpWebRequest
+        #region HTTP 要求の組み立て（#575 で HttpClient へ）
 
-        /// <summary>HttpWebRequestを取得する。</summary>
+        /// <summary>要求先の URL を組み立てる。</summary>
         /// <param name="entry">エントリ</param>
         /// <param name="zipFile">ZIPファイル名</param>
-        /// <returns>HttpWebRequest</returns>
-        public static HttpWebRequest GetHttpWebRequest(Entry entry, string zipFile)
+        /// <returns>URL</returns>
+        public static string GetRequestUrl(Entry entry, string zipFile)
         {
             string zipURL = entry.WWWURL;
-            HttpWebRequest hwReq = null;
 
             if (!string.IsNullOrEmpty(zipFile))
             {
@@ -1998,14 +2003,29 @@ namespace DeployZipPackWithHTTP
                 zipURL += "/" + zipFile;
             }
 
-            // リクエストを生成する。
-            hwReq = (HttpWebRequest)HttpWebRequest.Create(new Uri(zipURL));
+            return zipURL;
+        }
+
+        /// <summary>HttpClient を取得する。</summary>
+        /// <param name="entry">エントリ</param>
+        /// <returns>HttpClient</returns>
+        /// <remarks>
+        /// **WebRequest は廃止された**（SYSLIB0014）ため HttpClient にした（#575）。
+        ///
+        /// **エントリごとに作る。**
+        /// 資格情報とプロキシは HttpClient ではなく HttpClientHandler が持つため、
+        /// エントリで設定が変わる以上、使い回せない。
+        /// 呼び出し側で using して破棄すること。
+        /// </remarks>
+        public static HttpClient GetHttpClient(Entry entry)
+        {
+            HttpClientHandler handler = new HttpClientHandler();
 
             // WWWサーバのNetworkCredential
             if (entry.WWWUID == null && entry.WWWUID == "")
             {
                 // NetworkCredentialなし（デフォルト）
-                //hwReq.UseDefaultCredentials = true;// ★要・検討
+                //handler.UseDefaultCredentials = true;// ★要・検討
             }
             else
             {
@@ -2013,13 +2033,13 @@ namespace DeployZipPackWithHTTP
                 if (entry.WWWDomain == null || entry.WWWDomain == "")
                 {
                     // UID、PWD
-                    hwReq.Credentials = new NetworkCredential(
+                    handler.Credentials = new NetworkCredential(
                         entry.WWWUID, entry.WWWPWD);
                 }
                 else
                 {
                     // UID、PWD、Domain
-                    hwReq.Credentials = new NetworkCredential(
+                    handler.Credentials = new NetworkCredential(
                         entry.WWWUID, entry.WWWPWD, entry.WWWDomain);
                 }
             }
@@ -2030,15 +2050,14 @@ namespace DeployZipPackWithHTTP
             // Proxyサーバ
             if (entry.ProxyURL.ToLower() == "none")
             {
-                // Proxyサーバなし（null）
-                hwReq.Proxy = null;
-
-                // ※ GlobalProxySelection.GetEmptyWebProxy()は古い形式
+                // Proxyサーバなし
+                //   **HttpClientHandler では Proxy = null が「使わない」にならない。**
+                //   UseProxy を落とす必要がある。
+                handler.UseProxy = false;
             }
             else if (entry.ProxyURL == null || entry.ProxyURL == "")
             {
-                // proxy = (WebProxy)WebProxy.GetDefaultProxy();// 古い形式
-                // 何もしない → DefaultWebProxyプロパティの値を使用する。
+                // 何もしない → 既定のプロキシ設定を使用する。
             }
             else
             {
@@ -2073,10 +2092,16 @@ namespace DeployZipPackWithHTTP
                 }
 
                 // プロキシ設定
-                hwReq.Proxy = proxy;
+                handler.Proxy = proxy;
+                handler.UseProxy = true;
             }
 
-            return hwReq;
+            HttpClient client = new HttpClient(handler);
+
+            // 従来の HttpWebRequest.Timeout = 5000 に合わせる。
+            client.Timeout = TimeSpan.FromMilliseconds(5000);
+
+            return client;
         }
 
         #endregion
