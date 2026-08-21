@@ -180,105 +180,41 @@ Copyright ブロックの扱い、`ArgumentException` 系の引数の順、`.bat
 | 単体テストの実行と判定 | [`TESTING.md`](root/programs/TESTING.md) |
 | サンプルの疎通確認 | [`SMOKETEST.md`](root/programs/SMOKETEST.md) |
 
-検証は次の 3 本で、いずれも終了コードで合否が分かる。**この順で実行すること。**
+検証は `1_BuildAll.ps1`（ビルド）→ `2_RunAllTests.ps1`（単体テスト）→
+`3_SmokeTest.ps1`（疎通）の 3 本で、いずれも終了コードで合否が分かる。
+**順序は固定**（1 のクリーンとアセンブリ配置が 2・3 の前提）。
 
-```powershell
-cd root\programs
-.\1_BuildAll.ps1                 # 全ビルド
-.\2_RunAllTests.ps1              # 単体テスト
-.\3_SmokeTest.ps1                # サンプルの疎通
-```
+**本書にコマンドは書かない。** 引数（`-IgnoreErrors` / `-Only` / `-List` / `-Lang`）と
+合格の目安は [`CHEATSHEET.md`](root/programs/CHEATSHEET.md) 1 節が一次情報である。
+**転記すると、両方を直さないかぎりズレる。**
 
 `2_RunAllTests.ps1` はワーキング ツリーの `Result*.txt` を書き換える（従来のバッチ運用と同じ）。
 **コミットの要否は人が判断する**ため、エージェントは差分を報告するに留める。
+**`-Only` で絞れば、書き換わるのも絞った分だけになる。**
 
-**エージェントは、この 3 本を個別に実行することを検討する。**（#576）
-`0_RunAll.ps1` は 3 本をまとめて回す**利用者向けの入口**であり、
-**必要な 1 本だけを選ぶ、という判断が入らない。**
-どれを回すかは、次節の対応表で決める。
-
-```powershell
-.\1_BuildAll.ps1 -Only "Framework_Tool"     # ビルドするものだけ
-.\2_RunAllTests.ps1 -Only "TestBatch"       # テスト結果 Result*.txt が絞られる
-.\3_SmokeTest.ps1 -Only "DeployZip"         # 確かめるものだけ
-```
-
-**`-Only` に何を指定できるかは `-List` で出す。**
-**文書には一覧を書かない。** 対象が増減したときに古くなるため、
-スクリプト自身を一次情報にする（ツールの `/HELP` と同じ考え方）。
-
-```powershell
-.\1_BuildAll.ps1 -List -Lang Both     # 45 ステップ
-.\2_RunAllTests.ps1 -List             #  8 件
-.\3_SmokeTest.ps1 -List -Lang VB      #  6 件（-Lang が効く）
-```
-
-**3 本とも `-Only` が空振りしたら終了コード 1 で止まる。**
-打ち間違いが「全ステップ OK」になることはない。
-
-#### 通しで回す前に、依存関係を見る（#576）
+#### 回す範囲は、依存関係で決める（#576）
 
 **全部回すのは「安全」ではない。遅いだけのことがある。**
 
-依存の向きは一方向で、段は 2 つしかない。
+`0_RunAll.ps1` は 3 本をまとめて回す**利用者向けの入口**であり、
+**必要な 1 本だけを選ぶ、という判断が入らない。**
+エージェントは**3 本を個別に実行することを検討する。**
 
-```
-基盤    NuGet / Business / Business.RichClient / CopyAssemblies
-          ↓  （ここが変われば、下は全部やり直し）
-末端    Tools / 各サンプル / Tests
-```
+ツールと個別サンプルは**依存の末端**で、そこを変えても基盤も他のサンプルも変わらない。
+`2_RunAllTests.ps1` の対象は**フレームワークのテストだけ**で、
+ツールやサンプルを変えても動かない。**回す理由が無い。**
 
-**ツールと個別サンプルは末端である。** そこを変えても、基盤も他のサンプルも変わらない。
+**どこまで回すかは [`CHEATSHEET.md`](root/programs/CHEATSHEET.md) 1 節の対応表で決める。**
 
-| 変更した場所 | `1_BuildAll` | `2_RunAllTests` | `3_SmokeTest` |
-|---|---|---|---|
-| `Infrastructure/`（基盤） | **通し** | **通し** | **通し** |
-| `Tools/`（ツール） | `-Only Framework_Tool` | **不要** | `-Only <そのツール>` |
-| 個別サンプル | `-Only <サンプル>` | **不要** | `-Only <サンプル>` |
-| `Tests/` | `-Only <対象>` | `-Only <対象>` | **不要** |
-| `.ps1` / `.md` のみ | **不要** | **不要** | **不要** |
-
-**`2_RunAllTests.ps1` の対象はフレームワークのテストだけ**である。
-`Tools/` や個別サンプルを変えても、ここは動かない。回す理由が無い。
-
-実測（`0_RunAll.ps1 -Lang Both` は 24.6 分）。
-
-```
-基盤のビルド             122.8 秒
-Framework_Tool 系だけ     74.8 秒     ← ツールの変更で必要なのはこちら
-2_RunAllTests 通し       111.6 秒
-2_RunAllTests -Only       35 秒ほど
-```
-
-**ツールだけの変更なら、1/16 ほどで終わる。**
-
-#### 時間だけの問題ではない
-
-`2_RunAllTests.ps1` は**ワーキング ツリーの `Result*.txt` を書き換える。**
-関係の無い対象まで回すと、**人が確認してコミットする差分が増える。**
-
-`-Only` で絞れば、書き換わるのは絞った対象の分だけになる。
-
-#### それでも通しを回す場面
+通しを回すのは次の場合。
 
 - **基盤（`Infrastructure/`）に触れたとき**
-- **リリース前**（`RELEASE.md`）
-- **絞り込みで妙なエラーが出たとき**（再現するかを見る）
-
-3 本目は制約による誤検知が実際にある。
-`-Only` は前段が用意した状態に依存するステップを落とすことがあり、
-**変更と無関係なエラーに見える。** 詳細は
-[`CHEATSHEET.md`](root/programs/CHEATSHEET.md) 1 節の
-「`-Only` ＋ `-SkipClean` は万能ではない」。
+- **リリース前**（[`RELEASE.md`](root/programs/RELEASE.md)）
+- **絞り込みで妙なエラーが出たとき**（再現するかを見る。制約による誤検知が実際にある）
 
 **判断に迷ったら通しでよい。** ただし**迷っていないのに通すのは、ただの浪費である。**
 
 **上記の既定は C# 側である。VB 側に手を入れたときは `-Lang` で回す。**
-
-```powershell
-.\0_RunAll.ps1 -Lang VB          # 1 と 3 を VB で通す（2 は VB に対象が無い）
-```
-
 理由と対象は [`BUILDING.md`](root/programs/BUILDING.md) 10 節・
 [`SMOKETEST.md`](root/programs/SMOKETEST.md) 10 節。
 

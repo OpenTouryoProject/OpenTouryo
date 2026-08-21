@@ -26,7 +26,7 @@ cd root\programs
 |---|---|---|
 | ビルド | 全ステップ OK | [`BUILDING.md`](BUILDING.md) |
 | 単体テスト | 8/8 OK、差分 0 | [`TESTING.md`](TESTING.md) |
-| 疎通 | 25/25 OK | [`SMOKETEST.md`](SMOKETEST.md) |
+| 疎通 | 29/29 OK | [`SMOKETEST.md`](SMOKETEST.md) |
 
 **既定は C# 側。VB 側は `-Lang` で回す**（3 節）。
 
@@ -41,13 +41,15 @@ cd root\programs
 
 ### 通しは長い。反復では絞り込む（#571）
 
-実測（`-Lang Both`）は **合計 21.7 分**で、内訳はこうなっている。
+実測（`-Lang Both`）は **合計 24.6 分**で、内訳はこうなっている。
 
 ```
-1_BuildAll.ps1     12.6 分  ← 58%。ここが主因
-2_RunAllTests.ps1   1.7 分
-3_SmokeTest.ps1     7.4 分
+1_BuildAll.ps1     15.5 分  ← 63%。ここが主因
+2_RunAllTests.ps1   1.9 分
+3_SmokeTest.ps1     7.3 分
 ```
+
+**環境と状態で振れる。** 桁を掴むための目安として見ること。
 
 **変更した箇所だけを回す。** 通しは最後に 1 回でよい。
 
@@ -64,10 +66,36 @@ cd root\programs
 ```
 
 **どこまで回すかは依存関係で決まる。**（#576）
-ツールと個別サンプルは末端なので、基盤のビルドも他のサンプルの疎通も要らない。
+
+依存の向きは一方向で、段は 2 つしかない。
+
+```
+基盤    NuGet / Business / Business.RichClient / CopyAssemblies
+          ↓  （ここが変われば、下は全部やり直し）
+末端    Tools / 各サンプル / Tests
+```
+
+| 変更した場所 | `1_BuildAll` | `2_RunAllTests` | `3_SmokeTest` |
+|---|---|---|---|
+| `Infrastructure/`（基盤） | **通し** | **通し** | **通し** |
+| `Tools/`（ツール） | `-Only Framework_Tool` | **不要** | `-Only <そのツール>` |
+| 個別サンプル | `-Only <サンプル>` | **不要** | `-Only <サンプル>` |
+| `Tests/` | `-Only <対象>` | `-Only <対象>` | **不要** |
+| `.ps1` / `.md` のみ | **不要** | **不要** | **不要** |
+
 **`2_RunAllTests.ps1` の対象はフレームワークのテストだけ**で、
-ツールやサンプルを変えても動かないため、回す理由が無い。
-対応表は [`AGENTS.md`](../../AGENTS.md)「通しで回す前に、依存関係を見る」。
+ツールやサンプルを変えても動かない。**回す理由が無い。**
+
+**ツールだけの変更なら、通しの 1/16 ほどで終わる。**
+
+```
+基盤のビルド             122.8 秒
+Framework_Tool 系だけ     74.8 秒     ← ツールの変更で必要なのはこちら
+2_RunAllTests 通し       111.6 秒
+2_RunAllTests -Only       35 秒ほど
+```
+
+**通しを回す場面の判断は [`AGENTS.md`](../../AGENTS.md)「回す範囲は、依存関係で決める」。**
 
 **警告が多いステップの内訳を見る。**
 

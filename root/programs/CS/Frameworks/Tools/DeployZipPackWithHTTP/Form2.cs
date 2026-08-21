@@ -45,6 +45,8 @@
 //*  2011/09/12  西野 大介         画面表示せず、ログ出力のみする例外処理方式を追加
 //*  2014/04/26  Sai               Replaced all the Japanese language in both UI and code with ResorceManager.GetString() method call
 //*  2020/08/03  西野 大介         NETCOREAPP対応
+//*  2026/08/08  玄人 幸道         ZippedFiles・ExtractedFilesの利用に合わせた調整（#528）
+//*  2026/08/21  玄人 幸道         SYSLIB0003対応（CASを#if !NETCOREAPPで囲む。net48では生きているため）（#575）
 //**********************************************************************************
 
 using System;

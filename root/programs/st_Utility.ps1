@@ -437,6 +437,18 @@ function Stop-DeployWeb
         try { $script:deployWebProc | Stop-Process -Force -EA SilentlyContinue } catch { }
         $script:deployWebProc = $null
     }
+
+    # **取り逃がしも消す。**（#578）
+    #   残った iisexpress は 51084 を握り続ける。
+    #   次の起動は 0x800700b7 で失敗するが、**ポートには繋がる**ため
+    #   起動待ちを通過し、**前回の web フォルダが配られ続ける。**
+    #   配置は成功するので異常が出ず、判定だけが 0 件になる。
+    try
+    {
+        Get-Process -Name "iisexpress" -EA SilentlyContinue |
+            Stop-Process -Force -EA SilentlyContinue
+    }
+    catch { }
 }
 
 # ZIP を作るのは対象と同じ実行ファイル（net48 / .NET 10 のそれぞれで確かめる）
@@ -454,6 +466,160 @@ $startDeployWeb48   = { [void](Start-DeployWeb "net48") }
 $startDeployWebCore = { [void](Start-DeployWeb "core") }
 $verifyDeploy48    = { $r = Test-Deploy "net48"; Stop-DeployWeb; return $r }
 $verifyDeployCore  = { $r = Test-Deploy "core";  Stop-DeployWeb; return $r }
+
+# ------------------------------------------------------------------
+# プロキシ経由の配置（#578）
+# ------------------------------------------------------------------
+#   **#575 で HttpWebRequest を HttpClient へ移した経路の確認。**
+#   HttpClientHandler では Proxy = null が「使わない」にならず
+#   UseProxy = false が要る、という差があったため、実際に通して確かめる。
+$deployProxyPort = 51085
+$deployProxyUser = "pxuser"
+$deployProxyPwd  = "pxpass"
+
+# **localhost を使わない。**（#578）
+#   .NET Framework の WebProxy は**ループバック宛を無条件にバイパスする**
+#   （BypassProxyOnLocal = False でも IsBypassed が True）。
+#   localhost のままだと net48 ではプロキシを通らず、経路を確かめられない。
+#   hosts は書き換えず、**プロキシ側で 127.0.0.1 に繋ぎ替える**（st_Proxy.ps1 -MapHost）。
+$deployHostAlias = "deploy.smoketest"
+
+function Get-ProxyLog([string]$tag)
+{
+    return (Join-Path $OutputDir ("deploy_proxy_{0}.log" -f $tag))
+}
+
+function Stop-DeployProxy
+{
+    if ($null -ne $script:deployProxyProc)
+    {
+        try { $script:deployProxyProc | Stop-Process -Force -EA SilentlyContinue } catch { }
+        $script:deployProxyProc = $null
+    }
+
+    # **取り逃がしも消す。**
+    #   前回の実行が異常終了すると待ち受けを握ったまま残り、
+    #   次の起動が黙って失敗する（ポートは繋がるので気づけない）。
+    try
+    {
+        Get-CimInstance Win32_Process -Filter "Name='powershell.exe' OR Name='pwsh.exe'" -EA SilentlyContinue |
+            Where-Object { $_.CommandLine -like "*st_Proxy.ps1*" } |
+            ForEach-Object { Stop-Process -Id $_.ProcessId -Force -EA SilentlyContinue }
+    }
+    catch { }
+}
+
+function Start-DeployProxy([string]$tag, [bool]$auth)
+{
+    # **前回の残りを先に止める。** 掴んだままだと待ち受けに失敗する。
+    Stop-DeployProxy
+
+    $log = Get-ProxyLog $tag
+    if (Test-Path $log) { Remove-Item $log -Force -EA SilentlyContinue }
+
+    $ps1 = Join-Path $PSScriptRoot "st_Proxy.ps1"
+
+    # **利用者の既定は 5.1 だが、ここは疎通の足場なので実行中のホストに合わせる。**
+    $host_ = if ($PSVersionTable.PSVersion.Major -ge 6) { "pwsh" } else { "powershell" }
+
+    $a = @("-NoProfile", "-ExecutionPolicy", "Bypass", "-File", $ps1,
+           "-Port", $deployProxyPort, "-LogPath", $log,
+           "-MapHost", $deployHostAlias)
+    if ($auth) { $a += @("-User", $deployProxyUser, "-Password", $deployProxyPwd) }
+
+    $script:deployProxyProc = Start-Process $host_ -ArgumentList $a -PassThru -WindowStyle Hidden
+
+    # 起動を待つ。
+    #
+    # **TCP で繋がるかだけでは足りない。**（Start-DeployWeb とは事情が違う）
+    #   前回のプロキシが待ち受けを握ったままだと接続は成功するが、
+    #   こちらのプロセスは「ポート使用中」で死んでいる。
+    #   **自分のログに [start] が出るまで待つ。**
+    for ($i = 0; $i -lt 40; $i++)
+    {
+        Start-Sleep -Milliseconds 300
+
+        if ($script:deployProxyProc.HasExited) { return $false }
+
+        if (Test-Path $log)
+        {
+            $head = @(Get-Content $log -TotalCount 5 -EA SilentlyContinue)
+            if ($head | Where-Object { $_ -match "\[start\]" }) { return $true }
+        }
+    }
+
+    return $false
+}
+
+# **配置が成功しただけでは足りない。**
+#   プロキシを無視して直結しても成功するため、
+#   ログに要求 URL が並ぶことまで見て「経路を通った」と言える。
+function Test-ProxyUsed([string]$tag, [bool]$auth)
+{
+    $log = Get-ProxyLog $tag
+
+    if (-not (Test-Path $log))
+    {
+        Write-Host "     プロキシのログが無い : $log"
+        return $false
+    }
+
+    $lines = @(Get-Content $log -EA SilentlyContinue)
+    $hit = @($lines | Where-Object { $_ -match ("http://{0}:{1}/" -f $deployHostAlias, $deployWebPort) })
+
+    if ($hit.Count -eq 0)
+    {
+        Write-Host "     プロキシを経由していない（ログに要求が無い）"
+        return $false
+    }
+
+    # マニフェストと ZIP の両方が通っていること
+    if (-not ($hit | Where-Object { $_ -match "\.mft" }))
+    {
+        Write-Host "     マニフェストの要求がプロキシを通っていない"
+        return $false
+    }
+
+    if (-not ($hit | Where-Object { $_ -match "\.zip" }))
+    {
+        Write-Host "     ZIP の要求がプロキシを通っていない"
+        return $false
+    }
+
+    if ($auth)
+    {
+        # **407 が出ていること**が、資格情報の経路を通った証拠になる。
+        if (-not ($lines | Where-Object { $_ -match "^\[407\]" }))
+        {
+            Write-Host "     407 が記録されていない（認証を要求できていない）"
+            return $false
+        }
+    }
+
+    return $true
+}
+
+# **WWWURL も別名にする。** localhost のままではバイパスされる。
+$deployArgsProxy = @("/CUI", "/NB", "/FORCE", "/WWWURL",
+                     ("http://{0}:{1}/FormAppRoot.mft" -f $deployHostAlias, $deployWebPort),
+                     "/ProxyURL", ("http://localhost:{0}" -f $deployProxyPort))
+
+$deployArgsProxyAuth = $deployArgsProxy + @("/ProxyUID", $deployProxyUser,
+                                            "/ProxyPWD", $deployProxyPwd)
+
+$startProxy48     = { if (-not (Start-DeployProxy "net48" $false)) { throw "プロキシを起動できません（port $deployProxyPort）" }
+                      if (-not (Start-DeployWeb "net48"))          { throw "配信サーバを起動できません（port $deployWebPort）" } }
+$startProxyCore   = { if (-not (Start-DeployProxy "core" $false))  { throw "プロキシを起動できません（port $deployProxyPort）" }
+                      if (-not (Start-DeployWeb "core"))           { throw "配信サーバを起動できません（port $deployWebPort）" } }
+$startProxyAuth48 = { if (-not (Start-DeployProxy "net48auth" $true)) { throw "プロキシを起動できません（port $deployProxyPort）" }
+                      if (-not (Start-DeployWeb "net48"))             { throw "配信サーバを起動できません（port $deployWebPort）" } }
+$startProxyAuthCore = { if (-not (Start-DeployProxy "coreauth" $true)) { throw "プロキシを起動できません（port $deployProxyPort）" }
+                        if (-not (Start-DeployWeb "core"))             { throw "配信サーバを起動できません（port $deployWebPort）" } }
+
+$verifyProxy48       = { $r = (Test-Deploy "net48") -and (Test-ProxyUsed "net48" $false);     Stop-DeployWeb; Stop-DeployProxy; return $r }
+$verifyProxyCore     = { $r = (Test-Deploy "core")  -and (Test-ProxyUsed "core" $false);      Stop-DeployWeb; Stop-DeployProxy; return $r }
+$verifyProxyAuth48   = { $r = (Test-Deploy "net48") -and (Test-ProxyUsed "net48auth" $true);  Stop-DeployWeb; Stop-DeployProxy; return $r }
+$verifyProxyAuthCore = { $r = (Test-Deploy "core")  -and (Test-ProxyUsed "coreauth" $true);   Stop-DeployWeb; Stop-DeployProxy; return $r }
 
 # ------------------------------------------------------------------
 # WebAPI（バッチ更新）のホスト（#570）

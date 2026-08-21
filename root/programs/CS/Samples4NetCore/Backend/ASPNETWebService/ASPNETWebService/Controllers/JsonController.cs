@@ -29,6 +29,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/08/18  西野 大介         新規作成
+//*  2026/08/21  玄人 幸道         CSRFが成立しない前提をコメントに明記（CodeQL誤検知）
 //**********************************************************************************
 
 using System;
@@ -67,7 +68,17 @@ namespace ASPNETWebService.Controllers
     /// <summary>
     /// ASP.NET WebAPI JSON-RPCの個別Webメソッドを公開するサービス インターフェイス基盤。
     /// </summary>
-
+    /// <remarks>
+    /// **OAuth2 の Resource Server であり、CSRF は成立しない。**
+    ///   Cookie 認証を使わず（Startup.cs で UseAuthentication を無効化）、
+    ///   認証は Authorization: Bearer ヘッダ。**ブラウザは自動付与しない。**
+    ///   CORS も AllowCredentials を外してあり、資格情報を送らない構成。
+    ///
+    /// **ValidateAntiForgeryToken は付けないこと。**
+    ///   非ブラウザのクライアント（Frameworks/Tests/TestWebAPIClient）は
+    ///   トークンを持たないため、付けると疎通が壊れる。
+    ///   CodeQL の cs/web/missing-token-validation は false positive として dismiss 済み。
+    /// </remarks>
     [EnableCors]
     [ApiController]
     [MyBaseAsyncApiController(httpAuthHeader:
