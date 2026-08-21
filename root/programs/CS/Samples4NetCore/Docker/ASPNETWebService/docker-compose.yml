@@ -34,6 +34,18 @@ services:
       - ASPNETCORE_HTTP_PORTS=8080
       - ASPNETCORE_HTTPS_PORTS=8081
 
+      # HTTPS へのリダイレクト先のポート（#582）
+      #
+      #   **単数形。** 複数形の ASPNETCORE_HTTPS_PORTS は
+      #   「Kestrel がどこで待ち受けるか」であって、
+      #   UseHttpsRedirection が読むのはこちらである（Startup.cs のコメント）。
+      #
+      #   **ホスト側の番号を与える。**
+      #   コンテナ内の 8081 を書くと、ホストから辿れない URL へ飛ばしてしまう
+      #   （ports で 8091:8081 に付け替えているため）。
+      #   MVC_Sample は 1:1 なので、この指定が要らない。
+      - ASPNETCORE_HTTPS_PORT=8091
+
       # 証明書（PEM ＋ 秘密鍵。**パスワードを持たない**）
       - Kestrel__Certificates__Default__Path=/https/aspnetapp.pem
       - Kestrel__Certificates__Default__KeyPath=/https/aspnetapp.key

@@ -26,7 +26,10 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\0_SetupCert.ps1
 # 2. publish してコンテナを起動する
 .\1_PublishAndUp.bat
 
-# 3. 止める
+# 3. 動いているか確かめる（**画面が無いので、これがクライアント**）
+powershell -NoProfile -ExecutionPolicy Bypass -File .\3_Test.ps1
+
+# 4. 止める
 .\2_Down.bat
 ```
 
@@ -74,19 +77,38 @@ Cookie 認証・セッションを持たないため、次は設定していな�
 
 ---
 
-## 動作の確認
+## 動作の確認は `3_Test.ps1` で行う
 
-```powershell
-# IDL が返るか（openapi の版と paths が入っていること）
-curl -k https://localhost:8091/openapi/v1.json
+**画面が無いため、確かめる手段（クライアント）が要る。** それがこのスクリプトである。
 
-# WebAPI が応答するか
-curl -k -X POST https://localhost:8091/api/Json/test
+```
+OK   HTTP -> HTTPS リダイレクト     307 -> https://localhost:8091/... （辿れる）
+OK   OpenAPI (IDL)                  openapi 3.1.1 / paths 16 件
+OK   WebAPI /api/Json/test          200
+OK   WebAPI /api/BatchUpdate/SelectCount   200 / count
 ```
 
-**IDL は 200 が返るだけでは足りない。**
-`openapi` の版と `paths` が入っていることまで見る
-（疎通テストの判定も同じ。[`SMOKETEST.md`](../../../../SMOKETEST.md) 3 節）。
+**どれも「200 が返る」だけでは足りない。**
+
+- リダイレクトは**飛び先のポートと、実際に辿れるか**まで見る
+- IDL は `openapi` の版と、**代表的な API が名前で載っているか**まで見る
+  （疎通テストの判定も同じ。[`SMOKETEST.md`](../../../../SMOKETEST.md) 3 節）
+- `SelectCount` は **DB まで通る**ので、リソースと接続文字列の確認になる
+
+> **リダイレクトの判定は、最初「3xx かつ https で始まる」だけだった。**
+> それでは飛び先がコンテナ内のポート（8081）でも OK になり、
+> **実際にホストから辿れない状態を見逃していた**（下記）。
+
+### 踏んだところ : リダイレクト先はホスト側のポートで与える
+
+`UseHttpsRedirection` が読むのは **単数形の `ASPNETCORE_HTTPS_PORT`** である
+（複数形の `ASPNETCORE_HTTPS_PORTS` は Kestrel の待ち受け。`Startup.cs` のコメント）。
+
+**ここにコンテナ内の 8081 を与えると、ホストから辿れない URL へ飛ばす。**
+`ports` で `8091:8081` に付け替えているため。
+`docker-compose.yml` で `ASPNETCORE_HTTPS_PORT=8091` を与えている。
+
+**`MVC_Sample` は 1:1（8080/8081）なので、この指定が要らない。**
 
 ---
 
