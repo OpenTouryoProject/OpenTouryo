@@ -81,7 +81,7 @@ cd root\programs
 
 ---
 
-## 3. 対象（25 件）
+## 3. 対象（29 件）
 
 **基盤系を先に置く。**（#571）
 環境やツールが壊れていれば、アプリケーションの検証を待たずに分かる。
@@ -144,7 +144,7 @@ NG : /OUTPUT "C:\temp\out"    ← \ が消える
 **`3_SmokeTest.ps1` は `Start-Process` でファイルへ直接リダイレクトする。**
 パイプ（`\| Out-File`）でも出力自体は取れるが、そちらは別の問題を抱える（9 節）。
 
-### DeployZipPackWithHTTP の CUI モード（4 件）
+### DeployZipPackWithHTTP の CUI モード（8 件）
 
 | 対象 | 判定 |
 |---|---|
@@ -641,7 +641,7 @@ MVC_Sample (net10.0)              OK   ログイン後 /Crud1/Index = 200
   全対象 OK
 ```
 
-全 25 件（ビルド 10 バッチ ＋ 疎通 25 件）で **約 7.4 分**。
+全 29 件（ビルド 10 バッチ ＋ 疎通 29 件）で **約 8 分**。
 
 **#571 の統合で、13.9 分から半減した。**
 同じ WebAPI を相手にしながらホストを 2 回起動していたのをやめたため。
@@ -773,7 +773,7 @@ $client.Connect("localhost", $port)
 
 ```powershell
 .\3_SmokeTest.ps1 -Lang VB     # VB のみ（6 件）
-.\3_SmokeTest.ps1 -Lang Both   # C# 25 件 ＋ VB 6 件
+.\3_SmokeTest.ps1 -Lang Both   # C# 29 件 ＋ VB 6 件
 ```
 
 **既定に VB を含めない。** リリース時の検証（[`RELEASE.md`](RELEASE.md) 3 節）は

@@ -68,6 +68,23 @@ $targetsCS = @(
         Args = $deployArgs;  Expect = '履歴に新規追加しました。'
         Pre = $startDeployWeb48;  Verify = $verifyDeploy48
     }
+    # **プロキシ経由も確かめる。**（#578）
+    #   #575 で HttpWebRequest を HttpClient へ移した際、
+    #   HttpClientHandler では Proxy = null が「使わない」にならない、という差があった。
+    #   **配置の成功だけでは足りない。** プロキシを無視して直結しても成功するため、
+    #   ログに要求が並ぶことまで見る（Test-ProxyUsed）。
+    @{
+        Name = "DeployZip 配置 プロキシ (net48)";     Bat = "4_Build_Framework_Tool.bat"
+        Exe  = "Frameworks\Tools\DeployZipPackWithHTTP\bin\Debug\OpenTouryo.DeployZipPackWithHTTP.exe"
+        Args = $deployArgsProxy;  Expect = '履歴に新規追加しました。'
+        Pre = $startProxy48;  Verify = $verifyProxy48
+    }
+    @{
+        Name = "DeployZip 配置 プロキシ認証 (net48)"; Bat = "4_Build_Framework_Tool.bat"
+        Exe  = "Frameworks\Tools\DeployZipPackWithHTTP\bin\Debug\OpenTouryo.DeployZipPackWithHTTP.exe"
+        Args = $deployArgsProxyAuth;  Expect = '履歴に新規追加しました。'
+        Pre = $startProxyAuth48;  Verify = $verifyProxyAuth48
+    }
     @{
         Name = "DeployZip /MFTGEN (net10.0)";      Bat = "4_Build_Framework_ToolCore.bat"
         Exe  = "Frameworks\Tools\DeployZipPackWithHTTP\bin\Debug\net10.0-windows7.0\OpenTouryo.DeployZipPackWithHTTP.exe"
@@ -79,6 +96,18 @@ $targetsCS = @(
         Exe  = "Frameworks\Tools\DeployZipPackWithHTTP\bin\Debug\net10.0-windows7.0\OpenTouryo.DeployZipPackWithHTTP.exe"
         Args = $deployArgs;  Expect = '履歴に新規追加しました。'
         Pre = $startDeployWebCore;  Verify = $verifyDeployCore
+    }
+    @{
+        Name = "DeployZip 配置 プロキシ (net10.0)";     Bat = "4_Build_Framework_ToolCore.bat"
+        Exe  = "Frameworks\Tools\DeployZipPackWithHTTP\bin\Debug\net10.0-windows7.0\OpenTouryo.DeployZipPackWithHTTP.exe"
+        Args = $deployArgsProxy;  Expect = '履歴に新規追加しました。'
+        Pre = $startProxyCore;  Verify = $verifyProxyCore
+    }
+    @{
+        Name = "DeployZip 配置 プロキシ認証 (net10.0)"; Bat = "4_Build_Framework_ToolCore.bat"
+        Exe  = "Frameworks\Tools\DeployZipPackWithHTTP\bin\Debug\net10.0-windows7.0\OpenTouryo.DeployZipPackWithHTTP.exe"
+        Args = $deployArgsProxyAuth;  Expect = '履歴に新規追加しました。'
+        Pre = $startProxyAuthCore;  Verify = $verifyProxyAuthCore
     }
 
     # --- 通信制御の接続オプション（#546） ---
