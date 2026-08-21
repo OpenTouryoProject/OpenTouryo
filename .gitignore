@@ -341,3 +341,9 @@ __pycache__/
 /root/programs/*/NuGet/in/*/*.json
 /root/programs/*/NuGet/in/*/*/
 *.snupkg
+
+# エージェント用スキル（#577）
+#   本体は OpenTouryoCodingAgentAssets にあり、ここに在るのは複製である。
+#   **コミットすると、向こうが更新されたときに古くなる。**
+#   取得は root/programs/GetAgentSkills.ps1 で行う。
+/.claude/skills/

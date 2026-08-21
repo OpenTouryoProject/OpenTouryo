@@ -292,6 +292,51 @@ Framework_Tool 系だけ     74.8 秒     ← ツールの変更で必要なの�
 
 前提となるサービスや DB の状態が足りない場合は、**勝手に変えず、対処方法とともに報告する。**
 
+### サンプルを実装するときは、スキル リポジトリのスキルを使う（#577）
+
+**サンプルは「フレームワークを使うアプリ」である。**
+その書き方は本体の規約とは別に、専用のスキルとしてまとめられている。
+
+https://github.com/OpenTouryoProject/OpenTouryoCodingAgentAssets
+
+**`AGENTS.md` に書くだけでは使えない。**
+Claude Code は `.claude/skills/<名前>/SKILL.md` を探すため、実体が要る。
+
+```powershell
+cd root\programs
+.\GetAgentSkills.ps1              # main から取得して .claude/skills へ配置
+.\GetAgentSkills.ps1 -List        # 何が対象になるかだけ見る
+```
+
+**`.claude/skills/` は `.gitignore` の対象である。**
+ここに在るのは複製で、**本体は向こうのリポジトリにある。**
+コミットすると、向こうが更新されたときに古くなり、どちらが正か分からなくなる。
+**使う前に取得する。**
+
+#### 向こうの `install.ps1` は使わない
+
+あちらにも導入スクリプトがあるが、**フレームワークの利用者（アプリ開発）向け**で、
+導入先の `AGENTS.md` と `CLAUDE.md` も生成する。
+**本書は手で書いたものなので、スキルだけを取りに行く。**
+
+#### 既定で除外しているもの
+
+| 除外 | 理由 |
+|---|---|
+| `opentouryo-project-setup*`（6 件） | アプリの新規構築手順。本体の開発では使わない |
+| `opentouryo-project-policy` | **プロジェクト方針は本書（`AGENTS.md`）が正** |
+| `opentouryo-project-transform` | 既存資産の移行。本体側では別の話 |
+| `opentouryo-comment-convention` | **コメント規約は [`CODING.md`](root/programs/CODING.md) が正** |
+| `opentouryo-base2-customize` | 利用者による基底クラスの改造。本体側では別の話 |
+
+**除外を増やしたら、取得し直せば取り残しも消える。**
+前回配置したものが除外に回った場合、`GetAgentSkills.ps1` が削除する
+（消すのは向こうに在るスキル名だけで、無関係なものは触らない）。
+
+**規約が競合したら、本体の文書が優先である。**
+スキルはアプリ開発を前提に書かれているため、
+[`CODING.md`](root/programs/CODING.md) や各 `ANALYSIS.md` と食い違うことがある。
+
 ### 付属ツールを CLI で使うときは、各ツールの README に従う
 
 エージェントから実行できる（非対話の）ツールには README を置く。
