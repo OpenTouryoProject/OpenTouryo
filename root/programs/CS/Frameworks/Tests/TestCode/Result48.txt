@@ -70,11 +70,11 @@ log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.Level
 log4net: Created Appender [OPERATION2]
 log4net: Adding appender named [OPERATION2] to logger [OPERATION].
 log4net: Hierarchy Threshold []
-[2026/08/20 10:54:24,630],[DEBUG],[1],LogIF.DebugLog("ACCESS");
-[2026/08/20 10:54:24,639],[INFO ],[1],LogIF.InfoLog("ACCESS");
-[2026/08/20 10:54:24,640],[WARN ],[1],LogIF.WarnLog("ACCESS");
-[2026/08/20 10:54:24,640],[ERROR],[1],LogIF.ErrorLog("ACCESS");
-[2026/08/20 10:54:24,640],[FATAL],[1],LogIF.FatalLog("ACCESS");
+[2026/09/10 22:27:52,562],[DEBUG],[1],LogIF.DebugLog("ACCESS");
+[2026/09/10 22:27:52,568],[INFO ],[1],LogIF.InfoLog("ACCESS");
+[2026/09/10 22:27:52,569],[WARN ],[1],LogIF.WarnLog("ACCESS");
+[2026/09/10 22:27:52,569],[ERROR],[1],LogIF.ErrorLog("ACCESS");
+[2026/09/10 22:27:52,569],[FATAL],[1],LogIF.FatalLog("ACCESS");
 LogIF.Is*Enabled - ACCESS : Debug True / Info True / Warn True / Error True / Fatal True
 log4net: configuring repository [log4net-default-repository] using stream
 log4net: loading XML configuration
@@ -2962,5 +2962,14 @@ CompiledExpressionCreater
 プロパティ Id : 42
 フィールド Field : フィールドの値
 存在しないメンバ : 例外 System.ArgumentException
+----------------------------------------------------------------------------------------------------
+IdToken.CreateHash
+at_hash（OIDC Core 付録 A） : 77QmUPtjPfzWtF2AnpK9RQ（期待値と一致 : True）
+c_hash（OIDC Core 付録 A） : LDktKdoQak3Pk0cnXxCltA（期待値と一致 : True）
+s_hash（#584） : QCiR2bEHBPw1Pd2r2ZtS_Q（期待値と一致 : True）
+----------------------------------------------------------------------------------------------------
+IdToken.VerifyHash
+左半分（OIDC の定義） : True
+左右の XOR（修正前の値） : False
 ----------------------------------------------------------------------------------------------------
 log4net: Shutdown called on Hierarchy [log4net-default-repository]

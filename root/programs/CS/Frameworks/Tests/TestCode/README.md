@@ -64,6 +64,12 @@ y_Build_TestCode_Public.bat     … ビルド → 実行 → 結果ファイル�
 | `TestLatebind` | `Public.Reflection` | 遅延バインドによる呼び出し（`NonPublic` を含む） |
 | `TestFastReflection` | `Public.FastReflection` | `AccessorCacher` / `InstanceCreator` 等の高速リフレクション（#522） |
 
+### Framework
+
+| ファイル | 対象 | 見ていること |
+|---|---|---|
+| `TestIdToken` | `Framework.Authentication` | `at_hash` / `c_hash` / `s_hash` の計算（`IdToken.CreateHash` / `VerifyHash`）。**期待値は OIDC 仕様の例示値**（#584） |
+
 `TestEmbedded.txt` は `TestResourceLoader` が読む埋め込みリソース。
 **`LogicalName` を `TestCode.TestEmbedded.txt` に固定している**
 （既定のままだと `TestCodeFx` / `TestCodeCore` で名前が食い違うため）。
@@ -117,6 +123,17 @@ MyDebug.OutputDebugAndConsole(
 桁の重みを `256 * j`（掛け算）で求めていたため 3 byte 目から誤っていたが、
 8 byte の出力をそのまま期待値にしていたため、いったん見逃した。
 
+### 「作って、同じ実装で確かめる」は検算にならない
+
+**作る側と確かめる側が同じ実装を使うと、誤っていても一致する。**
+
+`IdToken.VerifyHash` は、`CreateHash` で作り直した値と比べるだけである。
+`CreateHash` は OIDC の定義（ハッシュの左半分）ではなく左右の XOR を返していたが、
+本フレームワーク同士では一致するため、**外部の RP に拒否されるまで気付かれなかった**（#584）。
+
+**期待値には、実装と独立に求めた値を置く。** 仕様の例示値があればそれを使う
+（`TestIdToken` は OpenID Connect Core 1.0 付録 A の値を使っている）。
+
 ### 境界は必ず跨ぐ
 
 同じ `GetLongFromByte` は、**1〜2 byte だけを見ていると不具合に気付けない。**
@@ -168,7 +185,7 @@ net48 側は `4_Build_CopyAssemblies.bat` が依存 DLL を `Build_net48` へ並
 |---|---|
 | `PubCmnFunction.GetFileNameNoEx` | 第 2 引数は**パス区切り**。拡張子の区切りだと思って `'.'` を渡すと空文字が返る |
 | `ArrayOperator.CopyArray` | **配列を伸ばせない。** コピー長が「コピー先配列の長さ」で固定のため、コピー先を大きくするとコピー元が足りず落ちる。書込開始位置を 0 より後ろにしても落ちる |
-| `ArrayOperator.ShortenByteArray` | 単純な切り詰めではなく、**XOR で畳み込む**（暗号鍵の生成用） |
+| `ArrayOperator.ShortenByteArray` | 単純な切り詰めではなく、**XOR で畳み込む**（暗号鍵の生成用）。**切り詰めに使ってはならない**（`IdToken.CreateHash` がこれで誤った、#584）。切り詰めは `CopyArray` |
 | `ArrayOperator.GetLongFromByte` | ビッグ エンディアン。8 byte で最上位ビットが立つと **Int64 の範囲を超えて負になる**（2 の補数として解釈した値） |
 | `StringExtractor.GetParameterFromQueryString` | 「値が空」と「名前が無い」を**区別できない**（どちらも `""`） |
 | `ObjectInspector` | 再帰の深さは **5 まで**。入口で加算・出口で減算するカウンタで抑えている |

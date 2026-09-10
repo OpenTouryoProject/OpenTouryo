@@ -86,6 +86,9 @@
     <Compile Include="..\TestGetMessageAndProperty.cs">
       <Link>TestGetMessageAndProperty.cs</Link>
     </Compile>
+    <Compile Include="..\TestIdToken.cs">
+      <Link>TestIdToken.cs</Link>
+    </Compile>
     <Compile Include="..\TestJISCode.cs">
       <Link>TestJISCode.cs</Link>
     </Compile>
