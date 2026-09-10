@@ -133,6 +133,9 @@ cd C:\root\programs
 | `2_RunAllTests.ps1` | Runs the unit tests and compares the results with the previous ones |
 | `3_SmokeTest.ps1` | Starts the sample applications and checks that they work |
 
+The three can also be run individually. **In that case the order is fixed**,
+because the clean and the assembly deployment done by `1_` are prerequisites of `2_` and `3_`.
+
 For the procedures and the criteria, refer to
 [`BUILDING.md`](programs/BUILDING.md) / [`TESTING.md`](programs/TESTING.md) /
 [`SMOKETEST.md`](programs/SMOKETEST.md) in the same folder.

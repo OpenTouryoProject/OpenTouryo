@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/08/22  西野 大介         新規作成
 //*  2018/11/28  西野 大介         証明書 & Jwk対応 + jkuチェック対応の追加
+//*  2026/09/10  玄人 幸道         CreateHashが左半分でなく左右のXORを返していたのを修正（#584）
 //**********************************************************************************
 
 using System;
@@ -209,6 +210,19 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// </summary>
         /// <param name="input">string</param>
         /// <returns>hash</returns>
+        /// <remarks>
+        /// OIDC の定義（OpenID Connect Core 1.0 3.1.3.6 / 3.3.2.11）どおり、
+        /// ハッシュの**左半分**（先頭 bytes.Length / 2 バイト）を base64url にする。
+        ///
+        /// 2026/09/10 まで ArrayOperator.ShortenByteArray で半分にしていたため、
+        /// 左半分ではなく**左半分と右半分の XOR** になっていた（#584）。
+        /// ShortenByteArray は切り詰めではなく XOR による畳み込みで、
+        /// 鍵長の調整（GetKeyedHash）がその挙動に依存するため、あちらは直さない。
+        ///
+        /// VerifyHash も同じ CreateHash で作り直して比べるため、
+        /// 本フレームワーク同士では誤っていても一致し、気付けなかった。
+        /// **修正前の版で発行された値は、修正後の VerifyHash では検証に失敗する。**
+        /// </remarks>
         public static string CreateHash(string input)
         {
             // ID Token の JOSE Header にある
@@ -219,8 +233,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 EnumHashAlgorithm.SHA256);
 
             // 左半分を base64url エンコードした値。
+            // （ShortenByteArray は XOR で畳み込むため使わない。#584）
             return CustomEncode.ToBase64UrlString(
-                ArrayOperator.ShortenByteArray(bytes, (bytes.Length / 2)));
+                ArrayOperator.CopyArray<byte>(bytes, (bytes.Length / 2)));
         }
 
         /// <summary>

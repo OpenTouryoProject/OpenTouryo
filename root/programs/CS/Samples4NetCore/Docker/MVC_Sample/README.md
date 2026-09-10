@@ -36,6 +36,34 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\0_SetupCert.ps1
 
 ログイン画面でユーザ名を入れると入れる（**ユーザ名が空でなければ認証する**実装）。
 
+### 毎回 publish とイメージ ビルドが走る
+
+**`1_PublishAndUp.bat` は、起動のたびに `publish` を作り直す。**
+
+```
+if exist ".\publish" rmdir /s /q ".\publish"
+dotnet publish ... -o ".\publish"
+docker compose up --build -d
+```
+
+意図的である。**ソースとコンテナの内容が必ず一致する**ことを保証している。
+
+実測でも重くない。
+
+```
+dotnet publish       7 秒ほど   （obj\ は消さないので増分ビルドが効く）
+docker compose up    6 秒ほど   （ベース イメージと RUN 層はキャッシュが効く）
+```
+
+> **`rmdir` をやめてはいけない。**
+> 出力先を消さずに publish すると、**ソースから消したファイルが残り続ける。**
+> 古い DLL を抱えたまま動き、原因の分かりにくい不具合になる。
+
+> **「起動だけ」の口を足すのも見送っている。**
+> 古い `publish` のままコンテナが立ち上がると、
+> **直したはずのものが直っていない**という形で時間を失う。
+> 実際、`#578` では古いビルド成果物のまま測って原因を見誤った。
+
 ## ファイル構成
 
 | | 役割 |

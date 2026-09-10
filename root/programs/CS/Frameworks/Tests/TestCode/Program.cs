@@ -27,6 +27,7 @@
 //*  2026/08/18  玄人 幸道         各テストを個別に try で囲むようにした（#564）。
 //*                                1 つが例外を投げると、以降が実行されなかった。
 //*  2026/08/08  玄人 幸道         TestZipV2の呼び出しを追加（#524）
+//*  2026/09/10  玄人 幸道         TestIdTokenの呼び出しを追加（#584）
 //**********************************************************************************
 
 using System;
@@ -105,6 +106,10 @@ namespace TestCode
                 #endregion
                 // Db は TestDataAccess へ移した（#520）。
                 // DB に接続するテストと前提が異なるため、プロジェクトを分けている。
+                #endregion
+
+                #region Framework
+                Program.Run("TestIdToken", TestIdToken.Root);
                 #endregion
 
                 #region Business

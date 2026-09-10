@@ -5,7 +5,7 @@ https://github.com/OpenTouryoProject/OpenTouryo/
 
 と、ソレを使用したサンプル・アプリケーションの開発エージェント用。
 
-環境のセットアップとビルド手順は [root/Readme.ja.md](root/Readme.ja.md) を参照。
+環境のセットアップ・ビルド・検証の手順は [root/Readme.ja.md](root/Readme.ja.md) を参照。
 本書は、その上で**エージェントが守るべきこと**と、**どの文書を見るか**を示す。
 
 **プロジェクト共通の投稿規約は [Contributing.ja.md](Contributing.ja.md) に従う。**
@@ -170,23 +170,17 @@ Copyright ブロックの扱い、`ArgumentException` 系の引数の順、`.bat
 
 ### ビルド・テスト・リリースの検証は、専用の文書に従う
 
-変更を加えたあとの**検証**は、次の文書が一次情報である。
+**検証の手順そのものは、人もエージェントも同じである。**
+入口は [root/Readme.ja.md](root/Readme.ja.md) の「ビルド後の検証」で、
+3 本のスクリプト（ビルド → 単体テスト → 疎通）と、その一次情報
+（`BUILDING.md` / `TESTING.md` / `SMOKETEST.md`、リリース時の作業全体は `RELEASE.md`）は、
+そこから辿れる。**本節は、その上で残るエージェント固有の判断だけを扱う。**
 
-| 目的 | 読む文書 |
-|---|---|
-| **手順だけを引く（早見）** | [`CHEATSHEET.md`](root/programs/CHEATSHEET.md) |
-| リリース時の作業全体 | [`RELEASE.md`](root/programs/RELEASE.md) |
-| 全ビルドの実行と判定 | [`BUILDING.md`](root/programs/BUILDING.md) |
-| 単体テストの実行と判定 | [`TESTING.md`](root/programs/TESTING.md) |
-| サンプルの疎通確認 | [`SMOKETEST.md`](root/programs/SMOKETEST.md) |
+**手順だけを引くなら [`CHEATSHEET.md`](root/programs/CHEATSHEET.md) 1 節。**
+引数（`-IgnoreErrors` / `-Only` / `-List` / `-Lang`）・合格の目安・
+実行順（**固定**。1 のクリーンとアセンブリ配置が 2・3 の前提）は、そこが一次情報である。
 
-検証は `1_BuildAll.ps1`（ビルド）→ `2_RunAllTests.ps1`（単体テスト）→
-`3_SmokeTest.ps1`（疎通）の 3 本で、いずれも終了コードで合否が分かる。
-**順序は固定**（1 のクリーンとアセンブリ配置が 2・3 の前提）。
-
-**本書にコマンドは書かない。** 引数（`-IgnoreErrors` / `-Only` / `-List` / `-Lang`）と
-合格の目安は [`CHEATSHEET.md`](root/programs/CHEATSHEET.md) 1 節が一次情報である。
-**転記すると、両方を直さないかぎりズレる。**
+**本書にコマンドは書かない。転記すると、両方を直さないかぎりズレる。**
 
 `2_RunAllTests.ps1` はワーキング ツリーの `Result*.txt` を書き換える（従来のバッチ運用と同じ）。
 **コミットの要否は人が判断する**ため、エージェントは差分を報告するに留める。

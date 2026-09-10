@@ -131,6 +131,9 @@ cd C:\root\programs
 | `2_RunAllTests.ps1` | 単体テストを実行し、結果を前回のものと比較 |
 | `3_SmokeTest.ps1` | サンプルアプリケーションを起動して疎通を確認 |
 
+3 本は個別に実行することもできます。**その場合の実行順は固定**です
+（`1_` のクリーンとアセンブリ配置が `2_` `3_` の前提になっているため）。
+
 手順と判定基準は、同じフォルダの
 [`BUILDING.md`](programs/BUILDING.md) / [`TESTING.md`](programs/TESTING.md) /
 [`SMOKETEST.md`](programs/SMOKETEST.md) を参照してください。
