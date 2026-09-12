@@ -31,6 +31,7 @@
 //*  201X/XX/XX  西野 大介         ...
 //*  2020/02/27  西野 大介         FAPI CIBAのパラメタを追加
 //*  2020/12/18  西野 大介         Device AuthZのパラメタを追加
+//*  2026/09/12  玄人 幸道         RFC 6750 / RFC 7662 / CIBA / OIDCの定数を追加
 //**********************************************************************************
 
 // urnはClaimのurnで、
@@ -143,6 +144,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>token_type_hint</summary>
         public const string token_type_hint = "token_type_hint";
+
+        /// <summary>active（イントロスペクションの応答フィールド）</summary>
+        public const string active = "active";
 
         #endregion
 
@@ -597,6 +601,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public const string error = "error";
 
         #region error値
+
+        // エラー コードは、ここに定数として定義する。
+        // 但し、トークン エンドポイントのポーリング状態
+        // （authorization_pendingなど）は、状態遷移を伴うため、
+        // OAuth2AndOIDCEnumのDeviceAuthZState、CibaStateに定義し、
+        // ToStringByEmitで文字列化して使用する（access_deniedのみ両方に在る）。
+
+        #region RFC 6749
         /// <summary>invalid_request</summary>
         public const string invalid_request = "invalid_request";
 
@@ -626,6 +638,32 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>temporarily_unavailable</summary>
         public const string temporarily_unavailable = "temporarily_unavailable";
+        #endregion
+
+        #region RFC 6750
+        /// <summary>invalid_token（Bearerトークンが無効）</summary>
+        public const string invalid_token = "invalid_token";
+        #endregion
+
+        #region OIDC Core
+        /// <summary>login_required（prompt=noneで、未認証）</summary>
+        public const string login_required = "login_required";
+
+        /// <summary>consent_required（prompt=noneで、同意が無い）</summary>
+        public const string consent_required = "consent_required";
+
+        /// <summary>interaction_required（prompt=noneで、対話が必要）</summary>
+        public const string interaction_required = "interaction_required";
+
+        /// <summary>account_selection_required（prompt=noneで、アカウントの選択が必要）</summary>
+        public const string account_selection_required = "account_selection_required";
+        #endregion
+
+        #region CIBA Core
+        /// <summary>unknown_user_id（login_hintなどのユーザが見つからない）</summary>
+        public const string unknown_user_id = "unknown_user_id";
+        #endregion
+
         #endregion
 
         /// <summary>error_description</summary>

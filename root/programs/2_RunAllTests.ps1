@@ -29,7 +29,14 @@
 
     ＜前提＞
       ・Frameworks をビルド済み（Build_net48 / Build_netcore100 が存在すること）
-      ・SQL Server の Northwind に接続できること（TestBatch が使用）
+      ・SQL Server の Northwind に接続できること
+        （TestDataAccess と TestBatch が使用。冒頭で確認する）
+
+      **ASP.NET 状態サービス（aspnet_state）は要らない。**
+      System.Web / System.Web.Extensions は csproj の参照だけで、
+      HttpContext も sessionState も使っていない。
+      CI も、このスクリプトの**後**で aspnet_state を開始している
+      （build-windows.yml）。要るのは 3_SmokeTest.ps1 の Web アプリだけ。
 
     ＜副作用＞
       ワーキング ツリーの Result*.txt が書き換わる。これは従来のバッチ運用と同じで、
@@ -96,6 +103,7 @@ New-Item -ItemType Directory -Force $OutputDir | Out-Null
 
 # サマリの整形。Format-Table は 5.1 で全角の桁を数えないため、自前で揃える。
 . (Join-Path $PSScriptRoot "SummaryTable.ps1")
+. (Join-Path $PSScriptRoot "Prerequisite.ps1")
 
 # ------------------------------------------------------------------
 # コンソールのコード ページを先に UTF-8 にしておく
@@ -181,6 +189,8 @@ function Copy-TestCertificates
 #               **伏せると、その範囲の変化は差分に出ない。**
 #               識別子（IsHankaku/IsZenkaku など）にも当たるため、
 #               **実行のたびに値が変わるテストだけ $true にする。**
+# NeedDb      : SQL Server の Northwind を使うか（#588）
+#               **単体テストも DB を使う。** 冒頭でまとめて確認する。
 $tests = @(
     @{
         Name = "TestCode (net48)";           Bat = "y_Build_TestCode_Public.bat"
@@ -193,18 +203,22 @@ $tests = @(
     @{
         Name = "TestDataAccess (net48)";     Bat = "y_Build_TestCode_DataAccess.bat"
         Result = "TestDataAccess\Result48.txt";      SkipLog4net = $false; NormBase64 = $false
+        NeedDb = $true
     }
     @{
         Name = "TestDataAccess (net10.0)";   Bat = "y_Build_TestCode_DataAccess.bat"
         Result = "TestDataAccess\ResultCore100.txt"; SkipLog4net = $false; NormBase64 = $false
+        NeedDb = $true
     }
     @{
         Name = "TestBatch (net48)";          Bat = "y_Build_TestCode_Batch.bat"
         Result = "TestBatch\ResultSimpleBatch48.txt";     SkipLog4net = $true; NormBase64 = $false
+        NeedDb = $true
     }
     @{
         Name = "TestBatch (net10.0)";        Bat = "y_Build_TestCode_Batch.bat"
         Result = "TestBatch\ResultSimpleBatchCore100.txt"; SkipLog4net = $true; NormBase64 = $false
+        NeedDb = $true
     }
     @{
         Name = "EncAndDecUtilCUI (net48)";   Bat = "y_Build_TestCode_SecCUI.bat"
@@ -245,6 +259,25 @@ if ($Only)
     }
 
     Write-Host ("  -Only '$Only' : {0} 件に絞りました" -f $tests.Count) -ForegroundColor Yellow
+}
+
+# ------------------------------------------------------------------
+# 前提の確認（#588）
+# ------------------------------------------------------------------
+# **単体テストも DB を使う。** TestDataAccess と TestBatch が Northwind に繋ぐ。
+#   落ちるまで分からないと、差分を見て初めて気付くことになる。
+#
+# **接続文字列は TestDataAccess の App.config から読む。**
+#   対象が実際に使う設定を見る（3_SmokeTest.ps1 がサンプルの
+#   App.config を見るのと同じ理屈）。
+#
+# **aspnet_state は見ない。** 単体テストは ASP.NET を使わない
+#   （上の＜前提＞を参照）。
+$needDb = @($tests | Where-Object { $_.NeedDb }).Count -gt 0
+
+if ($needDb)
+{
+    Show-Prerequisites -DbConfig (Join-Path $testsRoot "TestDataAccess\App.config")
 }
 
 # ------------------------------------------------------------------

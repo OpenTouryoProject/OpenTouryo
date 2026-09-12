@@ -81,7 +81,13 @@ cd root\programs
 | `Tools/`（ツール） | `-Only Framework_Tool` | **不要** | `-Only <そのツール>` |
 | 個別サンプル | `-Only <サンプル>` | **不要** | `-Only <サンプル>` |
 | `Tests/` | `-Only <対象>` | `-Only <対象>` | **不要** |
-| `.ps1` / `.md` のみ | **不要** | **不要** | **不要** |
+| `.md` のみ | **不要** | **不要** | **不要** |
+| `.ps1` のみ | 変えた本を `-Only` で 1 件 | 同左 | 同左 |
+
+**`.ps1` は、表示だけの変更でも実行する**（#588）。
+構文エラーは読んでも分からず、**5.1 と 7 で振る舞いが違う**
+（[`CODING.md`](CODING.md) 5 節）。
+**回さなかったなら、そう報告する（「検証済み」と書かない）。**
 
 **`2_RunAllTests.ps1` の対象はフレームワークのテストだけ**で、
 ツールやサンプルを変えても動かない。**回す理由が無い。**
@@ -281,6 +287,7 @@ powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.
 | ビルドは通るのに `DllNotFoundException`（`...SNI...`） | `nuget restore` を呼んでおらず、ネイティブ DLL が出力に入らない | 該当 sln に restore を足す。[`BUILDING.md`](BUILDING.md) 10 節 |
 | `packages.config` の id が `csproj` に無い＝不要に見える | サテライト（`.ja`）とコンテンツ パッケージは**出なくて正常**（48 件中 44 件） | 消す前に [`BUILDING.md`](BUILDING.md) 11 節 |
 | ビルドは通るのに実行時 `FileNotFoundException` | **版は 4 か所に散らばる。** `<Reference>` の `Version=` がずれると、警告だけ出て参照が落ちる | `.\ComparePackage.ps1 -Check`。[`BUILDING.md`](BUILDING.md) 12 節 |
+| `MSB3021` / `MSB3027`（コピーできない・ロック）。`error CS` は 0 件 | **前回の疎通テストの残骸**（中断されたときに残る）が出力を掴んでいる。**疎通の「ポートが開かない」まで連鎖する** | 起動時刻で残存を見分けて停止。[`BUILDING.md`](BUILDING.md) 4 節 |
 
 **NuGet パッケージ作成の落とし穴は
 [`CS/NuGet/README.md`](CS/NuGet/README.md) 9 節**にまとめてある。

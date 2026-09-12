@@ -18,18 +18,12 @@
 # ------------------------------------------------------------------
 # サンプルが実際に使う App.config から読む。
 # ここで別途ハードコードすると、サンプル側の変更に追随できなくなる。
-function Get-SampleConnectionString
-{
-    $config = Join-Path $configRoot "Samples\Bat_sample\SimpleBatch_sample\App.config"
-    if (-not (Test-Path $config)) { return $null }
-
-    $xml = [xml](Get-Content $config -Raw)
-    $node = $xml.configuration.connectionStrings.add |
-            Where-Object { $_.name -eq "ConnectionString_SQL" }
-    return $node.connectionString
-}
-
-$connString = Get-SampleConnectionString
+#
+# **読み出し自体は Prerequisite.ps1 にある。**（#588）
+#   2_RunAllTests.ps1 も同じことをする（単体テストも DB を使う）ため、
+#   片方に置くと複写になる。
+$sampleConfig = Join-Path $configRoot "Samples\Bat_sample\SimpleBatch_sample\App.config"
+$connString   = Get-ConnectionStringFromConfig $sampleConfig
 
 function Invoke-Sql([string]$sql)
 {

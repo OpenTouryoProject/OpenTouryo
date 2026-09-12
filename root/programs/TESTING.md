@@ -143,8 +143,30 @@ SimpleBatch.exe /Dap SQL ... > ..\..\..\ResultSimpleBatch48.txt
 ## 3. 前提条件
 
 - **Frameworks をビルド済み**であること（`Build_net48` / `Build_netcore100` が存在）
-- **SQL Server の Northwind に接続できる**こと（SimpleBatch が使用）
+- **SQL Server の Northwind に接続できる**こと
+  （`TestDataAccess` と `TestBatch` が使用。**8 本中 4 本**）
 - **Northwind のテスト データが標準状態**であること（後述の「4. テスト データ」）
+
+### 冒頭の「前提の確認」（#588）
+
+**落ちるまで分からないと、差分を見て初めて気付くことになる。**
+`2_RunAllTests.ps1` は、DB を使う対象が選ばれているときだけ、実行の冒頭で確認する。
+
+```
+=== 前提の確認 ===
+  SQL Server   localhost / Northwind
+```
+
+- **接続文字列は `TestDataAccess\App.config` から読む**（対象が実際に使う設定）
+- **サービス名では見ない。** 理由とタイムアウトの扱いは
+  [`SMOKETEST.md`](SMOKETEST.md) 4 節と共通（実体も `Prerequisite.ps1` で共有）
+- **表示だけで、判定は変えない。** 足りなくても止めない
+
+> **ASP.NET 状態サービス（`aspnet_state`）は要らない。**
+> `System.Web` / `System.Web.Extensions` は csproj の**参照だけ**で、
+> `HttpContext` も `sessionState` も使っていない。
+> CI も、単体テストの**後**で `aspnet_state` を開始している
+> （`build-windows.yml`）。要るのは `3_SmokeTest.ps1` の Web アプリだけ。
 
 > **GitHub Actions でも実行している。** 前提の揃え方（SQL Server の導入、Northwind の
 > ロード、照合順序）は [`BUILDING.md`](BUILDING.md) 9 節が一次情報。

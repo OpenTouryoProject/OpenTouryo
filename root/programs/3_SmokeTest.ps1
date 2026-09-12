@@ -55,6 +55,13 @@
 .PARAMETER OutputDir
     ログの保存先。既定は %TEMP%\OpenTouryoSmokeTest。
 
+.PARAMETER IncludeUIA
+    UI を実際に操作する対象（UIA 系）も回す。**既定では回さない。**（#588）
+
+    **デスクトップを占有するため。** キー入力やフォーカスを奪うので、
+    人が作業中の端末で回すと、その作業と衝突して両方が壊れる。
+    **CI（GitHub Actions）で回すのが本筋で、手元では明示的に指定したときだけ。**
+
 .EXAMPLE
     .\3_SmokeTest.ps1
 
@@ -82,6 +89,7 @@ param(
     [string]$Only,
     [switch]$List,
     [switch]$SkipBuild,
+    [switch]$IncludeUIA,
     [string]$OutputDir = (Join-Path $env:TEMP "OpenTouryoSmokeTest")
 )
 
@@ -152,6 +160,9 @@ if ([Console]::OutputEncoding.CodePage -ne 65001)
 # **ドット ソースで読む。** 関数と変数を、この実行スコープへ入れるため。
 #
 # **順序が要る。** st_Targets.ps1 は他の 3 つが定義したものを参照する。
+# **st_Utility.ps1 より先に読む。**（#588）
+#   st_Utility.ps1 が読み込み時に Get-ConnectionStringFromConfig を使う。
+. (Join-Path $PSScriptRoot "Prerequisite.ps1")
 . (Join-Path $PSScriptRoot "st_Utility.ps1")
 . (Join-Path $PSScriptRoot "st_Server.ps1")
 . (Join-Path $PSScriptRoot "st_Flow.ps1")
@@ -306,6 +317,47 @@ if ($Only)
 
     Write-Host ("  -Only '$Only' : {0} 件に絞りました" -f $selected.Count) -ForegroundColor Yellow
 }
+
+# --- UIA 系は既定で外す（#588）---
+#
+# **UI を実際に操作する対象は、デスクトップを占有する。**
+#   キー入力やフォーカスを奪うため、人が作業中の端末で回すと
+#   **その作業と衝突して、作業もテストも壊れる。**
+#   使い捨てのランナー（CI）にはこの問題が無いので、そちらで回す。
+#
+# **-Only の空振り判定より後ろに置く。**
+#   先に外すと、一致していたのに「一致する対象がありません」と出てしまう。
+#
+# **黙って減らさない。** 外した件数を出す。
+#   出さないと、外れていることに気付けないまま「全対象 OK」になる。
+if (-not $IncludeUIA)
+{
+    $uia = @($selected | Where-Object { $_.UIA })
+
+    if ($uia.Count -gt 0)
+    {
+        $selected = @($selected | Where-Object { -not $_.UIA })
+        Write-Host ("  UIA 系 {0} 件を外しました（回すなら -IncludeUIA）" -f $uia.Count) -ForegroundColor Yellow
+
+        if ($selected.Count -eq 0)
+        {
+            Write-Host "  **残った対象がありません。**" -ForegroundColor Red
+            Write-Host "  UIA 系だけを選んでいます。-IncludeUIA を付けてください。" -ForegroundColor Yellow
+            exit 1
+        }
+    }
+}
+
+# ------------------------------------------------------------------
+# 前提の確認（#588）
+# ------------------------------------------------------------------
+# **選んだ対象が要るものだけを見る。** -Only で絞ったときに、
+#   無関係なサービスの不足を報告しない。
+#   表示だけで判定を変えないことは Prerequisite.ps1 側の責任。
+$needSvc = @($selected | ForEach-Object { $_.Need } | Where-Object { $_ } | Select-Object -Unique)
+$needDb  = @($selected | Where-Object { $_.NeedDb }).Count -gt 0
+
+Show-Prerequisites -Services $needSvc -DbConfig $(if ($needDb) { $sampleConfig })
 
 if (-not $SkipBuild)
 {
