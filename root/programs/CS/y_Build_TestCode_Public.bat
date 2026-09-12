@@ -18,7 +18,7 @@ call %CURRENT_DIR%z_Common.bat
 @rem --------------------------------------------------
 @rem Batch build of TestCode.
 @rem --------------------------------------------------
-..\nuget.exe restore "Frameworks\Tests\TestCode\TestCodeFx48.sln" %NUGET_MSBUILD%
+"%~dp0..\nuget.exe" restore "Frameworks\Tests\TestCode\TestCodeFx48.sln" %NUGET_MSBUILD%
 %BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\TestCode\TestCodeFx48.sln"
 
 dotnet restore "Frameworks\Tests\TestCode\TestCodeCore100.sln"

@@ -118,6 +118,22 @@ set NUGET_MSBUILD=-MSBuildPath "%MSBUILDDIR%"
 
 echo NUGET_MSBUILD %NUGET_MSBUILD%
 
+@rem --------------------------------------------------
+@rem Check that nuget.exe is present (#590).
+@rem
+@rem The build batches call "%~dp0..\nuget.exe" restore without looking at
+@rem the exit code. When the file is missing, cmd.exe sets ERRORLEVEL 9009
+@rem and carries on, so the build fails later inside MSBuild with a message
+@rem about missing NuGet packages - far from the real cause.
+@rem
+@rem This is a warning, not an error. A working tree that already has
+@rem packages\ still builds, so stopping here would be too strict.
+@rem --------------------------------------------------
+if not exist "%~dp0..\nuget.exe" (
+  echo [WARNING] nuget.exe was not found. packages.config is not restored.
+  echo           Restore nuget.exe at root\programs - it is version controlled.
+)
+
 @echo --------------------------------------------------
 @echo The choice of build configuration (Debug / Release).
 @echo BUILD_CONFIG names the configuration (Debug or Release).
