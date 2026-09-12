@@ -167,6 +167,47 @@ error MSB3321: Importing key file "WSClientWinCone_sample_TemporaryKey.pfx" was 
 プロジェクト名まで含めているのは、同じコードが他のプロジェクトで出たときに
 見逃さないため。コードだけで除外すると範囲が広すぎる。
 
+### 残存プロセスによるファイル ロック（#588）
+
+```
+error MSB3027: "...\OpenTouryo.Framework.dll" を "bin\Debug\net10.0\..." にコピーできませんでした。
+               10 回の再試行回数を超えたため、失敗しました。
+               このファイルは ".NET Host (24216)" によってロックされています。
+error MSB3021: ... The process cannot access the file ... because it is being used by another process.
+```
+
+**前回の疎通テストが起動したサンプル Web サーバが残っている。**
+`3_SmokeTest.ps1` は `finally` で停止するため、**正常に終われば残らない。**
+残るのは中断されたときで、**次回の実行はそれを検知しない。**
+
+**コード側の不具合と見分けにくい。** `error CS` は **0 件**のまま NG になる。
+`1_BuildAll.ps1` はこの 2 つのコードを見つけるとヒントを出す（表示だけで、判定は変えない）。
+
+```powershell
+Get-CimInstance Win32_Process -Filter "Name='dotnet.exe'" |
+  Where-Object { $_.CommandLine -like '*OpenTouryo*' } |
+  Select-Object ProcessId, CreationDate, CommandLine
+```
+
+**起動時刻が今回の実行より前なら、残存である。** 停止してから絞って回し直せば足りる。
+
+```powershell
+.\1_BuildAll.ps1 -Only "WSSrvCore_sample" -SkipClean
+.\3_SmokeTest.ps1 -Only "OpenAPI" -SkipBuild
+```
+
+> **疎通まで連鎖する。** Clean で出力を消した後にコピーが失敗するため、
+> `runtimeconfig.json` が揃わず、続く `3_SmokeTest.ps1` で
+> **「ポートが開かない」**（実体は起動失敗）になる。
+> **1 つの残存プロセスが、無関係に見える 2 つの NG を生む。**
+
+**プロセスの停止は、スクリプトは行わない。** システムの状態を変える操作であり、
+利用者が意図して動かしているものを黙って落とすべきではないため
+（[`SMOKETEST.md`](SMOKETEST.md) 4 節と同じ線引き）。
+
+**CI では起きない。** `windows-latest` は使い捨てで回をまたげず、
+回の中でも疎通はビルドの後なので、出力をロックしようがない。
+
 ---
 
 ## 5. 修正の経緯 : nuget.exe の MSBuild 誤検出

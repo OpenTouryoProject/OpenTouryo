@@ -11,6 +11,11 @@
 
     **3_SmokeTest.ps1 からドット ソースで読まれる。**
     単体では動かない（#571 で分割）。
+
+    ＜前提の宣言（#588）＞
+      Need   … 必要な Windows サービス名（名前が固定のものだけ）
+      NeedDb … SQL Server の Northwind を使うか
+      3_SmokeTest.ps1 が冒頭で、**選ばれた対象が要るものだけ**を確認する。
 #>
 
 $targetsCS = @(
@@ -26,6 +31,7 @@ $targetsCS = @(
         Name = "DaoGen_Tool DAODEFGEN (net48)";    Bat = "4_Build_Framework_Tool.bat"
         Exe  = "Frameworks\Tools\DaoGen_Tool\bin\Debug\OpenTouryo.DaoGen_Tool.exe"
         Args = $daoDefArgs48;  Expect = '生成が完了しました。'
+        NeedDb = $true
         Pre = $prepareDaoGen48;  Verify = $verifyDaoDef48
     }
     @{
@@ -43,6 +49,7 @@ $targetsCS = @(
         Name = "DaoGen_Tool DAODEFGEN (net10.0)";  Bat = "4_Build_Framework_ToolCore.bat"
         Exe  = "Frameworks\Tools\DaoGen_Tool\bin\Debug\net10.0-windows7.0\OpenTouryo.DaoGen_Tool.exe"
         Args = $daoDefArgsCore;  Expect = '生成が完了しました。'
+        NeedDb = $true
         Pre = $prepareDaoGenCore;  Verify = $verifyDaoDefCore
     }
     @{
@@ -135,21 +142,25 @@ $targetsCS = @(
         Name = "SimpleBatch_sample (net48)";      Bat = "5_Build_Bat_sample.bat"
         Exe  = "Samples\Bat_sample\SimpleBatch_sample\bin\Debug\SimpleBatch_sample.exe"
         Args = $batchArgs;  Expect = '\d+件のデータがあります'
+        NeedDb = $true
     }
     @{
         Name = "RerunnableBatch_sample (net48)";  Bat = "5_Build_Bat_sample.bat"
         Exe  = "Samples\Bat_sample\RerunnableBatch_sample\bin\Debug\RerunnableBatch_sample.exe"
         Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
+        NeedDb = $true
     }
     @{
         Name = "RerunnableBatch_sample2 (net48)"; Bat = "5_Build_Bat_sample.bat"
         Exe  = "Samples\Bat_sample\RerunnableBatch_sample2\bin\Debug\RerunnableBatch_sample2.exe"
         Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
+        NeedDb = $true
     }
     @{
         Name = "RerunnableBatch_sample3 (net48)"; Bat = "5_Build_Bat_sample.bat"
         Exe  = "Samples\Bat_sample\RerunnableBatch_sample3\bin\Debug\RerunnableBatch_sample3.exe"
         Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
+        NeedDb = $true
     }
 
     # --- バッチ (net10.0) ---
@@ -157,21 +168,25 @@ $targetsCS = @(
         Name = "SimpleBatch_sample (net10.0)";      Bat = "5_Build_BatCore_sample.bat"
         Exe  = "Samples4NetCore\Legacy\Bat_sample\SimpleBatch_sample\bin\Debug\net10.0\SimpleBatch_sample.dll"
         Args = $batchArgs;  Expect = '\d+件のデータがあります'
+        NeedDb = $true
     }
     @{
         Name = "RerunnableBatch_sample (net10.0)";  Bat = "5_Build_BatCore_sample.bat"
         Exe  = "Samples4NetCore\Legacy\Bat_sample\RerunnableBatch_sample\bin\Debug\net10.0\RerunnableBatch_sample.dll"
         Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
+        NeedDb = $true
     }
     @{
         Name = "RerunnableBatch_sample2 (net10.0)"; Bat = "5_Build_BatCore_sample.bat"
         Exe  = "Samples4NetCore\Legacy\Bat_sample\RerunnableBatch_sample2\bin\Debug\net10.0\RerunnableBatch_sample2.dll"
         Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
+        NeedDb = $true
     }
     @{
         Name = "RerunnableBatch_sample3 (net10.0)"; Bat = "5_Build_BatCore_sample.bat"
         Exe  = "Samples4NetCore\Legacy\Bat_sample\RerunnableBatch_sample3\bin\Debug\net10.0\RerunnableBatch_sample3.dll"
         Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
+        NeedDb = $true
     }
 
     # --- CLI (net10.0) ---
@@ -201,6 +216,7 @@ $targetsCS = @(
         Name = "TestWebAPIClient (net48)";   Bat = "y_Build_TestWebAPIClient.bat"
         Exe  = "Frameworks\Tests\TestWebAPIClient\net48\bin\Debug\TestWebAPIClientFx.exe"
         Args = @("http://localhost:51087")
+        NeedDb = $true
         Expect = 'NG : 0 件'
         Pre = { if (-not (Start-ApiWeb "net48" 51087)) { throw "WebAPI のホストを起動できません（port 51087）" } }
         Verify = { Stop-ApiWeb; return $true }
@@ -209,6 +225,7 @@ $targetsCS = @(
         Name = "TestWebAPIClient (net10.0)"; Bat = "y_Build_TestWebAPIClient.bat"
         Exe  = "Frameworks\Tests\TestWebAPIClient\net48\bin\Debug\TestWebAPIClientFx.exe"
         Args = @("http://localhost:51088")
+        NeedDb = $true
         Expect = 'NG : 0 件'
         Pre = { if (-not (Start-ApiWeb "net10.0" 51088)) { throw "WebAPI のホストを起動できません（port 51088）" } }
         Verify = { Stop-ApiWeb; return $true }
@@ -232,6 +249,7 @@ $targetsCS = @(
         Site = "Samples\WebApp_sample\WebForms_Sample\WebForms_Sample"
         Need = "aspnet_state"
         Flow = $webFormsFlow
+        NeedDb = $true
     }
     @{
         Name = "MVC_Sample (net48)";      Bat = "10_Build_WebApp_sample.bat"
@@ -239,12 +257,14 @@ $targetsCS = @(
         Site = "Samples\WebApp_sample\MVC_Sample\MVC_Sample"
         Need = "aspnet_state"
         Flow = $mvcLoginFlow
+        NeedDb = $true
     }
     @{
         Name = "MVC_Sample (net10.0)";    Bat = "10_Build_WebAppCore_sample.bat"
         Kind = "Web";  WebHost = "Kestrel";  Port = 51083
         Exe  = "Samples4NetCore\Backend\MVC_Sample\MVC_Sample\bin\Debug\net10.0\MVC_Sample.dll"
         Flow = $mvcLoginFlow
+        NeedDb = $true
     }
 )
 
@@ -265,21 +285,25 @@ $targetsVB = @(
         Name = "SimpleBatch_sample (VB net48)";      Bat = "5_Build_Bat_sample.bat"
         Exe  = "Samples\Bat_sample\SimpleBatch_sample\bin\Debug\SimpleBatch_sample.exe"
         Args = $batchArgs;  Expect = '\d+件のデータがあります'
+        NeedDb = $true
     }
     @{
         Name = "RerunnableBatch_sample (VB net48)";  Bat = "5_Build_Bat_sample.bat"
         Exe  = "Samples\Bat_sample\RerunnableBatch_sample\bin\Debug\RerunnableBatch_sample.exe"
         Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
+        NeedDb = $true
     }
     @{
         Name = "RerunnableBatch_sample2 (VB net48)"; Bat = "5_Build_Bat_sample.bat"
         Exe  = "Samples\Bat_sample\RerunnableBatch_sample2\bin\Debug\RerunnableBatch_sample2.exe"
         Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
+        NeedDb = $true
     }
     @{
         Name = "RerunnableBatch_sample3 (VB net48)"; Bat = "5_Build_Bat_sample.bat"
         Exe  = "Samples\Bat_sample\RerunnableBatch_sample3\bin\Debug\RerunnableBatch_sample3.exe"
         Args = $batchArgs;  Pre = $clearOrders2;  Verify = $verifyOrders2
+        NeedDb = $true
     }
 
     # --- Web アプリ ---
@@ -289,6 +313,7 @@ $targetsVB = @(
         Site = "Samples\WebApp_sample\MVC_Sample\MVC_Sample"
         Need = "aspnet_state"
         Flow = $mvcLoginFlow
+        NeedDb = $true
     }
     @{
         Name = "WebForms_Sample (VB net48)"; Bat = "10_Build_WebApp_sample.bat"
@@ -296,5 +321,6 @@ $targetsVB = @(
         Site = "Samples\WebApp_sample\WebForms_Sample\WebForms_Sample"
         Need = "aspnet_state"
         Flow = $webFormsFlow
+        NeedDb = $true
     }
 )

@@ -307,6 +307,59 @@ if ($Only)
     Write-Host ("  -Only '$Only' : {0} 件に絞りました" -f $selected.Count) -ForegroundColor Yellow
 }
 
+# ------------------------------------------------------------------
+# 前提の確認（#588）
+# ------------------------------------------------------------------
+# **冒頭で見る。** 対象ごとの確認だけだと、aspnet_state のように
+#   終盤でしか使わないものは、気付くまでに数分かかる。
+#
+# **表示だけで、判定は変えない。** 足りなくてもここでは止めない
+#   （対象ごとの「前提未達」は従来どおり出る）。
+#   **開始も停止もしない。** システムの状態を変える操作だからで、
+#   CI は専用のステップで開始している（SMOKETEST.md 4 節・AGENTS.md の線引き）。
+#
+# **選んだ対象が要るものだけを見る。** -Only で絞ったときに、
+#   無関係なサービスの不足を報告しない。
+$needSvc = @($selected | ForEach-Object { $_.Need } | Where-Object { $_ } | Select-Object -Unique)
+$needDb  = @($selected | Where-Object { $_.NeedDb }).Count -gt 0
+
+if ($needSvc.Count -gt 0 -or $needDb)
+{
+    Write-Host ""
+    Write-Host "=== 前提の確認 ===" -ForegroundColor Cyan
+
+    $missing = @()
+
+    foreach ($name in $needSvc)
+    {
+        $svc = Get-Service $name -EA SilentlyContinue
+        $ok  = ($svc -and $svc.Status -eq "Running")
+        $detail = if ($ok) { "Running" } elseif ($svc) { [string]$svc.Status } else { "未導入" }
+
+        Write-Host ("  {0,-12} {1}" -f $name, $detail) `
+            -ForegroundColor $(if ($ok) { "Green" } else { "Yellow" })
+
+        if (-not $ok) { $missing += ("Start-Service {0}      # 管理者権限が必要" -f $name) }
+    }
+
+    if ($needDb)
+    {
+        # 接続で見る（サービス名では見ない）。理由は st_Utility.ps1 の Test-SqlServer。
+        $db = Test-SqlServer 5
+        Write-Host ("  {0,-12} {1}" -f "SQL Server", $db.Detail) `
+            -ForegroundColor $(if ($db.Ok) { "Green" } else { "Yellow" })
+
+        if (-not $db.Ok) { $missing += "SQL Server の Northwind に接続できること（SMOKETEST.md 4 節）" }
+    }
+
+    if ($missing.Count -gt 0)
+    {
+        Write-Host ""
+        Write-Host "  **前提が足りません。このまま進めますが、該当の対象は NG になります。**" -ForegroundColor Yellow
+        $missing | ForEach-Object { Write-Host ("  " + $_) }
+    }
+}
+
 if (-not $SkipBuild)
 {
     # ビルドする単位は「フォルダ ＋ バッチ」。同じバッチ名が CS と VB の

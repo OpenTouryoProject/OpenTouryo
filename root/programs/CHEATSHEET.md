@@ -281,6 +281,7 @@ powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.
 | ビルドは通るのに `DllNotFoundException`（`...SNI...`） | `nuget restore` を呼んでおらず、ネイティブ DLL が出力に入らない | 該当 sln に restore を足す。[`BUILDING.md`](BUILDING.md) 10 節 |
 | `packages.config` の id が `csproj` に無い＝不要に見える | サテライト（`.ja`）とコンテンツ パッケージは**出なくて正常**（48 件中 44 件） | 消す前に [`BUILDING.md`](BUILDING.md) 11 節 |
 | ビルドは通るのに実行時 `FileNotFoundException` | **版は 4 か所に散らばる。** `<Reference>` の `Version=` がずれると、警告だけ出て参照が落ちる | `.\ComparePackage.ps1 -Check`。[`BUILDING.md`](BUILDING.md) 12 節 |
+| `MSB3021` / `MSB3027`（コピーできない・ロック）。`error CS` は 0 件 | **前回の疎通テストの残骸**（中断されたときに残る）が出力を掴んでいる。**疎通の「ポートが開かない」まで連鎖する** | 起動時刻で残存を見分けて停止。[`BUILDING.md`](BUILDING.md) 4 節 |
 
 **NuGet パッケージ作成の落とし穴は
 [`CS/NuGet/README.md`](CS/NuGet/README.md) 9 節**にまとめてある。

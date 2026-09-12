@@ -497,6 +497,30 @@ if ($allErrors.Count -gt 0)
     }
 }
 
+# --- ロックのヒント（#588）---
+#
+# **MSB3021 / MSB3027 が出たら、一律でヒントを出す。**
+#   出力ファイルがロックされているとき、コンパイル エラーは 0 件のまま NG になるため、
+#   **コード側の誤りと見分けが付かない。**
+#   プロジェクト名や件数で条件を分けない。分けるほどの精度は要らず、
+#   条件が増えるほど「出るはずの場面で出ない」が起きる。
+#
+# **表示だけで、判定は変えない。** 終了コードは従来どおりエラー件数で決まる。
+#   ここでプロセスを探索もしない。コマンドを文字列として示すに留めるので、
+#   CI に権限と実行時間の影響を持ち込まない。
+if (@($allErrors | Where-Object { $_ -match 'MSB3021|MSB3027' }).Count -gt 0)
+{
+    Write-Host ""
+    @(
+        '【ヒント】出力ファイルがロックされています。前回の疎通テストの残骸を疑ってください。'
+        '          中断された 3_SmokeTest.ps1 が起動したプロセスが残っていることが多い。'
+        '          Get-CimInstance Win32_Process -Filter "Name=''dotnet.exe''" |'
+        '            Where-Object { $_.CommandLine -like ''*OpenTouryo*'' } |'
+        '            Select-Object ProcessId, CreationDate, CommandLine'
+        '          詳細は BUILDING.md 4 節「既知の環境依存」。'
+    ) | ForEach-Object { Write-Host $_ -ForegroundColor Yellow }
+}
+
 # 除外したものは必ず表示する。黙って消すと、-IgnoreErrors が広すぎたときに気付けない。
 if ($allKnown.Count -gt 0)
 {
