@@ -28,6 +28,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/12/26  西野 大介         新規作成
+//*  2026/09/12  玄人 幸道         方式の後ろに値の無い Authorization ヘッダで
+//*                                例外になっていたのを修正
 //**********************************************************************************
 
 using System;
@@ -94,24 +96,47 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="authHeader">string</param>
         /// <param name="credentials">string[]</param>
         /// <returns>AuthenticationScheme</returns>
+        /// <remarks>
+        /// 資格情報を取り出せない場合は、空の配列と "" を返す。
+        /// 呼び出し側は、それを受けて 401 を返せる。
+        /// </remarks>
         public static string GetCredentials(string authHeader, out string[] credentials)
         {
             if (!string.IsNullOrEmpty(authHeader))
             {
                 string[] temp = authHeader.Split(' ');
 
-                if (temp[0] == OAuth2AndOIDCConst.Basic)
+                // 方式の後ろに値が無い（"Bearer" や "Bearer " など）場合は、
+                // 資格情報の無い要求として扱う。
+                // 以前は temp[1] を確かめずに読み、IndexOutOfRangeException になっていた。
+                if (temp.Length >= 2 && !string.IsNullOrEmpty(temp[1]))
                 {
-                    credentials = CustomEncode.ByteToString(
-                        CustomEncode.FromBase64String(temp[1]), CustomEncode.us_ascii).Split(':');
+                    if (temp[0] == OAuth2AndOIDCConst.Basic)
+                    {
+                        try
+                        {
+                            credentials = CustomEncode.ByteToString(
+                                CustomEncode.FromBase64String(temp[1]), CustomEncode.us_ascii).Split(':');
 
-                    return OAuth2AndOIDCConst.Basic;
-                }
-                else if (temp[0] == OAuth2AndOIDCConst.Bearer)
-                {
-                    credentials = new string[] { temp[1] };
+                            return OAuth2AndOIDCConst.Basic;
+                        }
+                        catch (FormatException)
+                        {
+                            // Base64 として読めない。資格情報が無いものとして扱う。
+                            //
+                            // **ここで throw すると、呼び出し側は 401 ではなく 500 を返すことになり、
+                            //   クライアントは「サーバの不具合」と「認証の失敗」を区別できない。**
+                            //
+                            // Convert.TryFromBase64String は net48 に無いため、ここは try/catch で受ける
+                            // （このファイルは net48 / net10.0 の共通コード）。
+                        }
+                    }
+                    else if (temp[0] == OAuth2AndOIDCConst.Bearer)
+                    {
+                        credentials = new string[] { temp[1] };
 
-                    return OAuth2AndOIDCConst.Bearer;
+                        return OAuth2AndOIDCConst.Bearer;
+                    }
                 }
             }
 
