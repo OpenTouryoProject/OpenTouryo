@@ -199,10 +199,14 @@ jobs:
 
       # IIS Express は windows-latest に同梱されている（%ProgramFiles% 側）。
       # 3_SmokeTest.ps1 が見るのも同じ場所なので、追加の導入は要らない。
+      #
+      # -IncludeUIA : UI を実際に操作する対象も回す（#588）。
+      #   手元ではデスクトップを占有して人の作業と衝突するため、既定で外れている。
+      #   ランナーは使い捨てで衝突する相手が居ないので、ここでは回す。
       - name: Smoke test (VB)
         shell: pwsh
         working-directory: root/programs
-        run: .\3_SmokeTest.ps1 -Lang VB -OutputDir "${{ runner.temp }}\SmokeTest"
+        run: .\3_SmokeTest.ps1 -Lang VB -IncludeUIA -OutputDir "${{ runner.temp }}\SmokeTest"
 
       # 失敗時こそ中身を見たいので、常に採取する。
       - name: Upload build logs

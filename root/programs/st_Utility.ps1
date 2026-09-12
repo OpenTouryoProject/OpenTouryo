@@ -18,18 +18,12 @@
 # ------------------------------------------------------------------
 # サンプルが実際に使う App.config から読む。
 # ここで別途ハードコードすると、サンプル側の変更に追随できなくなる。
-function Get-SampleConnectionString
-{
-    $config = Join-Path $configRoot "Samples\Bat_sample\SimpleBatch_sample\App.config"
-    if (-not (Test-Path $config)) { return $null }
-
-    $xml = [xml](Get-Content $config -Raw)
-    $node = $xml.configuration.connectionStrings.add |
-            Where-Object { $_.name -eq "ConnectionString_SQL" }
-    return $node.connectionString
-}
-
-$connString = Get-SampleConnectionString
+#
+# **読み出し自体は Prerequisite.ps1 にある。**（#588）
+#   2_RunAllTests.ps1 も同じことをする（単体テストも DB を使う）ため、
+#   片方に置くと複写になる。
+$sampleConfig = Join-Path $configRoot "Samples\Bat_sample\SimpleBatch_sample\App.config"
+$connString   = Get-ConnectionStringFromConfig $sampleConfig
 
 function Invoke-Sql([string]$sql)
 {
@@ -42,67 +36,6 @@ function Invoke-Sql([string]$sql)
         return $cmd.ExecuteScalar()
     }
     finally { $c.Close() }
-}
-
-# ------------------------------------------------------------------
-# SQL Server に繋がるかの確認（#588）
-# ------------------------------------------------------------------
-# **サービス名で確認してはならない。**
-#   既定インスタンス（MSSQLSERVER）と名前付き（MSSQL$SQLEXPRESS）で名前が変わり、
-#   リモートなら手元にサービスが無い。
-#   **決め打つと、CI を誤って「前提未達」にする。**
-#   サンプルが実際に使う接続文字列で、接続そのものを試す。
-#
-# **Connection Timeout を明示する。**
-#   既定は 15 秒で、確認のためだけに待つには長い。
-#   App.config 側の値に左右されると、**確認に掛かる時間が環境で変わる。**
-#   上書きするのはこの確認の中だけで、Invoke-Sql は従来どおりにする。
-function Test-SqlServer([int]$TimeoutSec = 5)
-{
-    if (-not $connString) { return @{ Ok = $false; Detail = "接続文字列を読めない（App.config）" } }
-
-    $c = $null
-    try
-    {
-        $b = New-Object System.Data.SqlClient.SqlConnectionStringBuilder $connString
-
-        # **$b.ConnectTimeout = ... は動かない。**
-        #   SqlConnectionStringBuilder は IDictionary で、PowerShell の代入が
-        #   プロパティではなくキーへ回るため、
-        #   Keyword not supported: 'ConnectTimeout'. になる。
-        #   **接続文字列のキー名で書くこと。**
-        $b['Connection Timeout'] = $TimeoutSec
-
-        $c = New-Object System.Data.SqlClient.SqlConnection $b.ConnectionString
-
-        # **待ち時間は、こちら側で断ち切る。**
-        #   Connection Timeout だけでは上限にならない。実測では、
-        #     到達しないホスト    … 約 21 秒（OS の TCP 再送が先に立つ）
-        #     閉じたポート      … 約 12 秒（IPv6/IPv4 と再試行）
-        #     無いインスタンス  … 約 5 秒
-        #   **確認のために待つ時間を環境任せにしないため**、Wait で打ち切る。
-        $task = $c.OpenAsync()
-        if (-not $task.Wait($TimeoutSec * 1000))
-        {
-            return @{ Ok = $false; Detail = ("応答がありません（{0} 秒で打ち切り）" -f $TimeoutSec) }
-        }
-
-        return @{ Ok = $true; Detail = ("{0} / {1}" -f $c.DataSource, $c.Database) }
-    }
-    catch
-    {
-        # GetBaseException で SqlException 本体を取る。
-        # そのままだと AggregateException や PowerShell の包みが表に出る。
-        # 1 行に畳む。例外の本文は改行を含むことがあり、表示が崩れる。
-        $msg = ($_.Exception.GetBaseException().Message -replace '\s+', ' ')
-        if ($msg.Length -gt 72) { $msg = $msg.Substring(0, 72) + " …" }
-        return @{ Ok = $false; Detail = $msg }
-    }
-    finally
-    {
-        # 打ち切った場合、接続はまだ進行中のことがある。ここでは黙って閉じる。
-        if ($c) { try { $c.Close() } catch { } }
-    }
 }
 
 # ------------------------------------------------------------------

@@ -242,10 +242,14 @@ jobs:
       # IIS Express は windows-latest（win25-vs2026）に同梱されている。
       #   C:\Program Files\IIS Express\iisexpress.exe  v10.0.26013.1000
       # 3_SmokeTest.ps1 が見るのも %ProgramFiles% 側なので、そのまま使える。
+      #
+      # -IncludeUIA : UI を実際に操作する対象も回す（#588）。
+      #   手元ではデスクトップを占有して人の作業と衝突するため、既定で外れている。
+      #   ランナーは使い捨てで衝突する相手が居ないので、ここでは回す。
       - name: Smoke test
         shell: pwsh
         working-directory: root/programs
-        run: .\3_SmokeTest.ps1 -OutputDir "${{ runner.temp }}\SmokeTest"
+        run: .\3_SmokeTest.ps1 -IncludeUIA -OutputDir "${{ runner.temp }}\SmokeTest"
 
       # 失敗時こそ中身を見たいので、常に採取する。
       - name: Upload build logs

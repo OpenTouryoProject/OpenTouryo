@@ -55,6 +55,13 @@
 .PARAMETER OutputDir
     ログの保存先。既定は %TEMP%\OpenTouryoSmokeTest。
 
+.PARAMETER IncludeUIA
+    UI を実際に操作する対象（UIA 系）も回す。**既定では回さない。**（#588）
+
+    **デスクトップを占有するため。** キー入力やフォーカスを奪うので、
+    人が作業中の端末で回すと、その作業と衝突して両方が壊れる。
+    **CI（GitHub Actions）で回すのが本筋で、手元では明示的に指定したときだけ。**
+
 .EXAMPLE
     .\3_SmokeTest.ps1
 
@@ -82,6 +89,7 @@ param(
     [string]$Only,
     [switch]$List,
     [switch]$SkipBuild,
+    [switch]$IncludeUIA,
     [string]$OutputDir = (Join-Path $env:TEMP "OpenTouryoSmokeTest")
 )
 
@@ -152,6 +160,9 @@ if ([Console]::OutputEncoding.CodePage -ne 65001)
 # **ドット ソースで読む。** 関数と変数を、この実行スコープへ入れるため。
 #
 # **順序が要る。** st_Targets.ps1 は他の 3 つが定義したものを参照する。
+# **st_Utility.ps1 より先に読む。**（#588）
+#   st_Utility.ps1 が読み込み時に Get-ConnectionStringFromConfig を使う。
+. (Join-Path $PSScriptRoot "Prerequisite.ps1")
 . (Join-Path $PSScriptRoot "st_Utility.ps1")
 . (Join-Path $PSScriptRoot "st_Server.ps1")
 . (Join-Path $PSScriptRoot "st_Flow.ps1")
@@ -307,58 +318,46 @@ if ($Only)
     Write-Host ("  -Only '$Only' : {0} 件に絞りました" -f $selected.Count) -ForegroundColor Yellow
 }
 
+# --- UIA 系は既定で外す（#588）---
+#
+# **UI を実際に操作する対象は、デスクトップを占有する。**
+#   キー入力やフォーカスを奪うため、人が作業中の端末で回すと
+#   **その作業と衝突して、作業もテストも壊れる。**
+#   使い捨てのランナー（CI）にはこの問題が無いので、そちらで回す。
+#
+# **-Only の空振り判定より後ろに置く。**
+#   先に外すと、一致していたのに「一致する対象がありません」と出てしまう。
+#
+# **黙って減らさない。** 外した件数を出す。
+#   出さないと、外れていることに気付けないまま「全対象 OK」になる。
+if (-not $IncludeUIA)
+{
+    $uia = @($selected | Where-Object { $_.UIA })
+
+    if ($uia.Count -gt 0)
+    {
+        $selected = @($selected | Where-Object { -not $_.UIA })
+        Write-Host ("  UIA 系 {0} 件を外しました（回すなら -IncludeUIA）" -f $uia.Count) -ForegroundColor Yellow
+
+        if ($selected.Count -eq 0)
+        {
+            Write-Host "  **残った対象がありません。**" -ForegroundColor Red
+            Write-Host "  UIA 系だけを選んでいます。-IncludeUIA を付けてください。" -ForegroundColor Yellow
+            exit 1
+        }
+    }
+}
+
 # ------------------------------------------------------------------
 # 前提の確認（#588）
 # ------------------------------------------------------------------
-# **冒頭で見る。** 対象ごとの確認だけだと、aspnet_state のように
-#   終盤でしか使わないものは、気付くまでに数分かかる。
-#
-# **表示だけで、判定は変えない。** 足りなくてもここでは止めない
-#   （対象ごとの「前提未達」は従来どおり出る）。
-#   **開始も停止もしない。** システムの状態を変える操作だからで、
-#   CI は専用のステップで開始している（SMOKETEST.md 4 節・AGENTS.md の線引き）。
-#
 # **選んだ対象が要るものだけを見る。** -Only で絞ったときに、
 #   無関係なサービスの不足を報告しない。
+#   表示だけで判定を変えないことは Prerequisite.ps1 側の責任。
 $needSvc = @($selected | ForEach-Object { $_.Need } | Where-Object { $_ } | Select-Object -Unique)
 $needDb  = @($selected | Where-Object { $_.NeedDb }).Count -gt 0
 
-if ($needSvc.Count -gt 0 -or $needDb)
-{
-    Write-Host ""
-    Write-Host "=== 前提の確認 ===" -ForegroundColor Cyan
-
-    $missing = @()
-
-    foreach ($name in $needSvc)
-    {
-        $svc = Get-Service $name -EA SilentlyContinue
-        $ok  = ($svc -and $svc.Status -eq "Running")
-        $detail = if ($ok) { "Running" } elseif ($svc) { [string]$svc.Status } else { "未導入" }
-
-        Write-Host ("  {0,-12} {1}" -f $name, $detail) `
-            -ForegroundColor $(if ($ok) { "Green" } else { "Yellow" })
-
-        if (-not $ok) { $missing += ("Start-Service {0}      # 管理者権限が必要" -f $name) }
-    }
-
-    if ($needDb)
-    {
-        # 接続で見る（サービス名では見ない）。理由は st_Utility.ps1 の Test-SqlServer。
-        $db = Test-SqlServer 5
-        Write-Host ("  {0,-12} {1}" -f "SQL Server", $db.Detail) `
-            -ForegroundColor $(if ($db.Ok) { "Green" } else { "Yellow" })
-
-        if (-not $db.Ok) { $missing += "SQL Server の Northwind に接続できること（SMOKETEST.md 4 節）" }
-    }
-
-    if ($missing.Count -gt 0)
-    {
-        Write-Host ""
-        Write-Host "  **前提が足りません。このまま進めますが、該当の対象は NG になります。**" -ForegroundColor Yellow
-        $missing | ForEach-Object { Write-Host ("  " + $_) }
-    }
-}
+Show-Prerequisites -Services $needSvc -DbConfig $(if ($needDb) { $sampleConfig })
 
 if (-not $SkipBuild)
 {
