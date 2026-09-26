@@ -30,6 +30,7 @@
 //*  2017/09/06  西野 大介         新規作成
 //*  2020/06/19  西野 大介         GetConfigSectionメソッドを廃止に伴う変更
 //*                                GetConfigSection → GetAnyConfigSection
+//*  2026/09/25  玄人 幸道         AuthRequestPushUri（PARエンドポイント）を追加
 //**********************************************************************************
 
 using System.Collections.Generic;
@@ -140,6 +141,18 @@ namespace Touryo.Infrastructure.Framework.Authentication
             get
             {
                 return GetConfigParameter.GetConfigValue("RequestObjectRegUri");
+            }
+        }
+
+        /// <summary>
+        /// PAR（RFC 9126）のエンドポイント
+        /// （Discoveryのpushed_authorization_request_endpoint）
+        /// </summary>
+        public static string AuthRequestPushUri
+        {
+            get
+            {
+                return GetConfigParameter.GetConfigValue("AuthRequestPushUri");
             }
         }
         #endregion
