@@ -32,6 +32,7 @@
 //*  2020/02/27  西野 大介         FAPI CIBAのパラメタを追加
 //*  2020/12/18  西野 大介         Device AuthZのパラメタを追加
 //*  2026/09/12  玄人 幸道         RFC 6750 / RFC 7662 / CIBA / OIDCの定数を追加
+//*  2026/09/25  玄人 幸道         client_assertion（RFC 7523）の定数を追加
 //**********************************************************************************
 
 // urnはClaimのurnで、
@@ -51,6 +52,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>client_secret</summary>
         public const string client_secret = "client_secret";
+
+        /// <summary>client_assertion（private_key_jwt / client_secret_jwtで使用）</summary>
+        public const string client_assertion = "client_assertion";
+
+        /// <summary>client_assertion_type</summary>
+        public const string client_assertion_type = "client_assertion_type";
+
+        /// <summary>client_assertionのtype（RFC 7523 §2.2）</summary>
+        public const string JwtBearerClientAssertionType = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer";
 
         /// <summary>grant_type</summary>
         public const string grant_type = "grant_type";

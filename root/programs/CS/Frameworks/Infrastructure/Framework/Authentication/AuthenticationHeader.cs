@@ -30,6 +30,8 @@
 //*  2018/12/26  西野 大介         新規作成
 //*  2026/09/12  玄人 幸道         方式の後ろに値の無い Authorization ヘッダで
 //*                                例外になっていたのを修正
+//*  2026/09/25  玄人 幸道         Basic認証の資格情報を、RFC 6749 §2.3.1 に従って
+//*                                符号化・復号するようにした
 //**********************************************************************************
 
 using System;
@@ -66,6 +68,38 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     client_secret = credentials[1];
                     return true;
                 }
+            }
+
+            return false;
+        }
+
+        /// <summary>GetCredentials(Basic、RFC 6749 §2.3.1 の復号あり)</summary>
+        /// <param name="authHeader">string</param>
+        /// <param name="client_id">string（復号後）</param>
+        /// <param name="client_secret">string（復号後）</param>
+        /// <param name="rawClientId">string（復号前＝ヘッダに載っていたまま）</param>
+        /// <param name="rawClientSecret">string（復号前＝ヘッダに載っていたまま）</param>
+        /// <returns>bool</returns>
+        /// <remarks>
+        /// RFC 6749 §2.3.1 は、client_idとclient_secretを
+        /// application/x-www-form-urlencodedで符号化してからBase64にすることを求めている。
+        /// このため、受け側は復号してから照合する。
+        /// ただし、符号化しないクライアントも在るため、復号前の値も返す。
+        /// 両方と照合すれば、どちらのクライアントも受けられる。
+        /// </remarks>
+        public static bool GetCredentials(string authHeader,
+            out string client_id, out string client_secret,
+            out string rawClientId, out string rawClientSecret)
+        {
+            client_id = "";
+            client_secret = "";
+
+            if (AuthenticationHeader.GetCredentials(authHeader, out rawClientId, out rawClientSecret))
+            {
+                client_id = CustomEncode.UrlDecode(rawClientId);
+                client_secret = CustomEncode.UrlDecode(rawClientSecret);
+
+                return true;
             }
 
             return false;
@@ -148,6 +182,23 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="id">string</param>
         /// <param name="secret">string</param>
         /// <returns>AuthenticationHeaderValue</returns>
+        /// <remarks>
+        /// RFC 6749 §2.3.1 は、idとsecretを
+        /// application/x-www-form-urlencodedで符号化してから ":" で連結し、
+        /// Base64にすることを求めている。
+        /// 英数字だけなら符号化しても同じ文字列なので、見た目は変わらない。
+        /// 
+        /// 空白は "+" ではなく "%20" になる（CustomEncode.UrlEncodeがUri.EscapeDataStringのため）。
+        /// RFC 6749 Appendix B の例は "+" だが、"%20" はフォーム形式の復号器でも
+        /// 素朴なURI復号器（Uri.UnescapeDataString）でも空白に戻るのに対し、
+        /// "+" は後者では "+" のまま残る。壊れにくい方を選んでいる。
+        /// 字面どおりに寄せるなら、WebUtility.UrlEncodeを使う。
+        /// 
+        /// 変わるのは "+" "/" "=" "%" ":" などを含む場合で、
+        /// 受け側は復号してから照合する必要がある
+        /// （復号ありのGetCredentialsを参照。復号しないサーバも在るため、
+        /// 復号前の値とも照合する形にしておくと、どちらとも繋がる）。
+        /// </remarks>
         public static AuthenticationHeaderValue CreateBasicAuthenticationHeaderValue(string id, string secret)
         {
             // id + x509 のパターンをサポート
@@ -156,7 +207,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 return new AuthenticationHeaderValue(
                     OAuth2AndOIDCConst.Basic,
                     CustomEncode.ToBase64String(CustomEncode.StringToByte(
-                        string.Format("{0}:{1}", id, secret), CustomEncode.us_ascii)));
+                        string.Format("{0}:{1}",
+                            CustomEncode.UrlEncode(id),
+                            CustomEncode.UrlEncode(secret ?? "")), CustomEncode.us_ascii)));
             }
             else
             {
