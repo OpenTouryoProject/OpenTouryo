@@ -1,0 +1,97 @@
+﻿#region Apache License
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+#endregion
+
+//**********************************************************************************
+//* クラス名        ：JWS_PS384_Param
+//* クラス日本語名  ：ParamによるJWS PS384生成クラス
+//*
+//* 作成者          ：玄人 幸道
+//* 更新履歴        ：
+//*
+//*  日時        更新者            内容
+//*  ----------  ----------------  -------------------------------------------------
+//*  2026/10/03  玄人 幸道         新規作成（#596）
+//**********************************************************************************
+
+using System.Security.Cryptography;
+
+namespace Touryo.Infrastructure.Public.Security.Jwt
+{
+    /// <summary>ParamによるJWS PS384生成クラス</summary>
+    public class JWS_PS384_Param : JWS_PS384
+    {
+        #region mem & prop & constructor
+
+        /// <summary>DigitalSignParam</summary>
+        private DigitalSignParam DigitalSignParam { get; set; }
+
+        /// <summary>秘密鍵のRSAParameters</summary>
+        public RSAParameters RsaPrivateParameters
+        {
+            get
+            {
+                return ((RSA)this.DigitalSignParam.AsymmetricAlgorithm).ExportParameters(true);
+            }
+        }
+
+        /// <summary>公開鍵のRSAParameters</summary>
+        public RSAParameters RsaPublicParameters
+        {
+            get
+            {
+                return ((RSA)this.DigitalSignParam.AsymmetricAlgorithm).ExportParameters(false);
+            }
+        }
+
+        /// <summary>Constructor</summary>
+        public JWS_PS384_Param()
+        {
+            this.DigitalSignParam = new DigitalSignParam(
+                HashAlgorithmName.SHA384, RSASignaturePadding.Pss);
+        }
+
+        /// <summary>Constructor</summary>
+        /// <param name="param">RSAParameters</param>
+        public JWS_PS384_Param(RSAParameters param)
+        {
+            this.DigitalSignParam = new DigitalSignParam(
+                param, HashAlgorithmName.SHA384, RSASignaturePadding.Pss);
+        }
+
+        #endregion
+
+        #region PS384署名・検証
+
+        /// <summary>Create2</summary>
+        /// <param name="data">byte[]</param>
+        /// <returns>byte[]</returns>
+        protected override byte[] Create2(byte[] data)
+        {
+            return this.DigitalSignParam.Sign(data);
+        }
+
+        /// <summary>Verify2</summary>
+        /// <param name="data">byte[]</param>
+        /// <param name="sign">byte[]</param>
+        /// <returns>bool</returns>
+        protected override bool Verify2(byte[] data, byte[] sign)
+        {
+            return this.DigitalSignParam.Verify(data, sign);
+        }
+
+        #endregion
+    }
+}

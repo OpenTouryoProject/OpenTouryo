@@ -30,6 +30,7 @@
 //*  2017/12/25  西野 大介         新規作成
 //*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //*  2018/11/27  西野 大介         コンストラクタをRSA秘密鍵にも対応させた。
+//*  2026/10/03  玄人 幸道         パディングを指定するコンストラクタを追加（RSASSA-PSS 用）（#596）
 //**********************************************************************************
 
 using System;
@@ -109,26 +110,7 @@ namespace Touryo.Infrastructure.Public.Security
 
             if (aa is RSA)
             {
-                RSAParameters temp = new RSAParameters()
-                {
-                    // Public
-                    Modulus = rsaParameters.Modulus,
-                    Exponent = rsaParameters.Exponent,
-                };
-
-                if (rsaParameters.D != null
-                    && rsaParameters.D.Length != 0)
-                {
-                    // Private
-                    temp.D = rsaParameters.D;
-                    temp.P = rsaParameters.P;
-                    temp.Q = rsaParameters.Q;
-                    temp.DP = rsaParameters.DP;
-                    temp.DQ = rsaParameters.DQ;
-                    temp.InverseQ = rsaParameters.InverseQ;
-                }
-
-                ((RSA)aa).ImportParameters(temp);
+                DigitalSignParam.ImportRsaParameters((RSA)aa, rsaParameters);
             }
             else
             {
@@ -137,6 +119,39 @@ namespace Touryo.Infrastructure.Public.Security
 
             this.AsymmetricAlgorithm = aa;
             this.HashAlgorithm = ha;
+        }
+
+        /// <summary>Constructor（パディングを指定する。鍵は新規に生成する）</summary>
+        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
+        /// <param name="padding">RSASignaturePadding</param>
+        /// <remarks>
+        /// RSASSA-PSS（RSASignaturePadding.Pss）で使う。
+        /// EnumDigitalSignAlgorithm を取るコンストラクタは RSACryptoServiceProvider を生成するが、
+        /// RSACryptoServiceProvider は PSS に対応しないため、こちらは PSS に対応する実装を生成する。
+        /// </remarks>
+        public DigitalSignParam(HashAlgorithmName hashAlgorithmName, RSASignaturePadding padding)
+        {
+            this.AsymmetricAlgorithm = DigitalSignParam.CreateRsaForPadding();
+            this.HashAlgorithmName = hashAlgorithmName;
+            this.Padding = padding;
+        }
+
+        /// <summary>Constructor（パディングを指定する）</summary>
+        /// <param name="rsaParameters">RSAParameters</param>
+        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
+        /// <param name="padding">RSASignaturePadding</param>
+        /// <remarks>
+        /// RSASSA-PSS（RSASignaturePadding.Pss）で使う。
+        /// 理由は DigitalSignParam(HashAlgorithmName, RSASignaturePadding) と同じ。
+        /// </remarks>
+        public DigitalSignParam(RSAParameters rsaParameters, HashAlgorithmName hashAlgorithmName, RSASignaturePadding padding)
+        {
+            RSA rsa = DigitalSignParam.CreateRsaForPadding();
+            DigitalSignParam.ImportRsaParameters(rsa, rsaParameters);
+
+            this.AsymmetricAlgorithm = rsa;
+            this.HashAlgorithmName = hashAlgorithmName;
+            this.Padding = padding;
         }
 
         /// <summary>Constructor</summary>
@@ -163,7 +178,51 @@ namespace Touryo.Infrastructure.Public.Security
         }
 
         #endregion
-              
+
+        #region 内部関数
+
+        /// <summary>RSAParametersをインポートする（公開鍵のみ、または秘密鍵）</summary>
+        /// <param name="rsa">RSA</param>
+        /// <param name="rsaParameters">RSAParameters</param>
+        private static void ImportRsaParameters(RSA rsa, RSAParameters rsaParameters)
+        {
+            RSAParameters temp = new RSAParameters()
+            {
+                // Public
+                Modulus = rsaParameters.Modulus,
+                Exponent = rsaParameters.Exponent,
+            };
+
+            if (rsaParameters.D != null
+                && rsaParameters.D.Length != 0)
+            {
+                // Private
+                temp.D = rsaParameters.D;
+                temp.P = rsaParameters.P;
+                temp.Q = rsaParameters.Q;
+                temp.DP = rsaParameters.DP;
+                temp.DQ = rsaParameters.DQ;
+                temp.InverseQ = rsaParameters.InverseQ;
+            }
+
+            rsa.ImportParameters(temp);
+        }
+
+        /// <summary>パディング（PSS）に対応する RSA を生成する</summary>
+        /// <returns>RSA</returns>
+        private static RSA CreateRsaForPadding()
+        {
+#if NETCOREAPP
+            // Windows では RSACng、Linux では RSAOpenSsl になる。
+            return RSA.Create();
+#else
+            // net48 の RSA.Create() は RSACryptoServiceProvider（PSS 非対応）を返す。
+            return new RSACng();
+#endif
+        }
+
+        #endregion
+
         #region MyDispose (派生の末端を呼ぶ)
 
         /// <summary>MyDispose (派生の末端を呼ぶ)</summary>

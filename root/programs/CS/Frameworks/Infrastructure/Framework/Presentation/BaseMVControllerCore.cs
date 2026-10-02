@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/04/19  西野 大介         新規作成
+//*  2026/10/03  玄人 幸道         セッションタイムアウト検出用Cookieの名前に接頭辞を反映（#594）
 //**********************************************************************************
 
 using System;
@@ -124,8 +125,9 @@ namespace Touryo.Infrastructure.Framework.Presentation
                     MyHttpContext.Current.Session.SetInt32("IsNewSession", 0);
 
                     // セッションタイムアウト検出用Cookieをチェック
-                    
-                    if (!requestCookies.Keys.Any(key => key == FxHttpCookieIndex.SESSION_TIMEOUT))
+                    string sessionTimeoutCookieName = FxCmnFunction.GetCookieName(FxHttpCookieIndex.SESSION_TIMEOUT);
+
+                    if (!requestCookies.Keys.Any(key => key == sessionTimeoutCookieName))
                     {
                         // セッションタイムアウト検出用Cookie無し → 新規のアクセス
 
@@ -137,7 +139,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                     {
                         // セッションタイムアウト検出用Cookie有り → セッションタイムアウトの可能性
 
-                        if (string.IsNullOrEmpty(requestCookies.Get(FxHttpCookieIndex.SESSION_TIMEOUT)))
+                        if (string.IsNullOrEmpty(requestCookies.Get(sessionTimeoutCookieName)))
                         {
                             // セッションタイムアウト発生後の新規アクセス
 

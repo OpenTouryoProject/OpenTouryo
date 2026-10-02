@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/08/30  西野 大介         新規作成
+//*  2026/10/03  玄人 幸道         PS256 / PS384 / PS512 を追加（#596）
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Public.Security.Jwt
@@ -56,6 +57,15 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         public const string RS384 = "RS384";
         /// <summary>alg:RS512</summary>
         public const string RS512 = "RS512";
+        #endregion
+
+        #region PS
+        /// <summary>alg:PS256</summary>
+        public const string PS256 = "PS256";
+        /// <summary>alg:PS384</summary>
+        public const string PS384 = "PS384";
+        /// <summary>alg:PS512</summary>
+        public const string PS512 = "PS512";
         #endregion
 
         #region ES

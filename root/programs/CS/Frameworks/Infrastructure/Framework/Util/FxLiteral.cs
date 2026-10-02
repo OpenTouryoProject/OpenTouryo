@@ -57,6 +57,7 @@
 //*  2015/04/16  Supragyan         Added constants for Textbox events and prefix. 
 //*  2017/08/28  西野 大介         非同期メソッドのリテラルを追加した。
 //*  2026/08/14  玄人 幸道         ConnectionGroupNameが現在は効果を持たない旨をremarksに明記（#546）
+//*  2026/10/03  玄人 幸道         Cookie名の接頭辞のキー（FxCookieNamePrefix）を追加（#594）
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Framework.Util
@@ -72,6 +73,13 @@ namespace Touryo.Infrastructure.Framework.Util
 
         /// <summary>セッションタイムアウト検出処理のON / OFFを設定するキー</summary>
         public const string SESSION_TIMEOUT_CHECK = "FxSessionTimeOutCheck";
+
+        /// <summary>フレームワークが発行するCookieの名前に付ける接頭辞を設定するキー</summary>
+        /// <remarks>
+        /// 空（未設定）なら接頭辞を付けない（従来どおり）。
+        /// 対象はセッションタイムアウト検出用Cookieだけ（FxCmnFunction.GetCookieName を参照）。
+        /// </remarks>
+        public const string COOKIE_NAME_PREFIX = "FxCookieNamePrefix";
 
         /// <summary>二重送信の検出処理のON / OFFを設定するキー</summary>
         public const string DOUBLE_TRANSMISSION_CHECK = "FxDoubleTransmissionCheck";

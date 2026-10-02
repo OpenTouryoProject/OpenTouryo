@@ -58,6 +58,7 @@
 //*  2026/08/10  玄人 幸道         Cookie に Secure 属性を設定（HTTPS のときのみ。CodeQL 対応）
 //*  2026/08/16  玄人 幸道         リバース プロキシで TLS を終端すると上記が効かないため、
 //*                                その旨と対処をコメントに追記（#549。挙動は変えていない）
+//*  2026/10/03  玄人 幸道         Cookie名に接頭辞（FxCookieNamePrefix）を付けられるようにした（#594）
 //**********************************************************************************
 
 using Touryo.Infrastructure.Framework.Exceptions;
@@ -939,6 +940,33 @@ namespace Touryo.Infrastructure.Framework.Util
 
         #region セッションタイムアウト検出用クッキー
 
+        /// <summary>Cookieの名前を取得する（接頭辞を付ける）</summary>
+        /// <param name="name">FxHttpCookieIndex の名前</param>
+        /// <returns>FxCookieNamePrefix を前置した名前（未設定・空なら元のまま）</returns>
+        /// <remarks>
+        /// **Cookie のスコープにポートは入らない**（RFC 6265 §8.5）。
+        /// root 配信（コンテナ等）では Path も「/」になるため、同じホストに立てた
+        /// 別アプリと同じ Cookie を奪い合う。接頭辞は、それを配備ごとに分けるためのもの（#594）。
+        ///
+        /// **書く側と読む側の両方で、このメソッドを通すこと。** 片方だけだと検出が効かなくなる。
+        ///
+        /// FxHttpCookieIndex.BACK_BUTTON_CONTROL には使わない。
+        /// クライアントの JavaScript（common.js）が固定の名前で読み書きしているため。
+        /// </remarks>
+        public static string GetCookieName(string name)
+        {
+            string prefix = GetConfigParameter.GetConfigValue(FxLiteral.COOKIE_NAME_PREFIX);
+
+            if (string.IsNullOrEmpty(prefix))
+            {
+                return name;
+            }
+            else
+            {
+                return prefix + name;
+            }
+        }
+
 #if (NETSTD || NETCOREAPP)
         /// <summary>セッションタイムアウト検出用Cookieを生成</summary>
         /// <returns>セッションタイムアウト検出用Cookie（データ有）</returns>
@@ -981,7 +1009,7 @@ namespace Touryo.Infrastructure.Framework.Util
 
             // 設定
             responseCookies.Set(
-                FxHttpCookieIndex.SESSION_TIMEOUT,
+                FxCmnFunction.GetCookieName(FxHttpCookieIndex.SESSION_TIMEOUT),
                 Environment.TickCount.ToString(),
                 cookieOptions);
         }
@@ -1026,7 +1054,7 @@ namespace Touryo.Infrastructure.Framework.Util
             cookieOptions.Secure = MyHttpContext.Current.Request.IsHttps;
 
             // 設定
-            responseCookies.Set(FxHttpCookieIndex.SESSION_TIMEOUT, "", cookieOptions);
+            responseCookies.Set(FxCmnFunction.GetCookieName(FxHttpCookieIndex.SESSION_TIMEOUT), "", cookieOptions);
         }
 #else
         /// <summary>セッションタイムアウト検出用Cookieを生成</summary>
@@ -1039,7 +1067,7 @@ namespace Touryo.Infrastructure.Framework.Util
         {
             // Cookie生成（デバッグしやすいように都度、値を変更する）
             HttpCookie newCookie
-                = new HttpCookie(FxHttpCookieIndex.SESSION_TIMEOUT, Environment.TickCount.ToString());
+                = new HttpCookie(FxCmnFunction.GetCookieName(FxHttpCookieIndex.SESSION_TIMEOUT), Environment.TickCount.ToString());
 
             // Path属性を設定
             if (HttpContext.Current.Request.ApplicationPath == "/")
@@ -1085,7 +1113,7 @@ namespace Touryo.Infrastructure.Framework.Util
         {
             // Cookie生成（削除時は、空の値を指定）
             HttpCookie newCookie
-                = new HttpCookie(FxHttpCookieIndex.SESSION_TIMEOUT, "");
+                = new HttpCookie(FxCmnFunction.GetCookieName(FxHttpCookieIndex.SESSION_TIMEOUT), "");
 
             // Path属性を設定
             if (HttpContext.Current.Request.ApplicationPath == "/")

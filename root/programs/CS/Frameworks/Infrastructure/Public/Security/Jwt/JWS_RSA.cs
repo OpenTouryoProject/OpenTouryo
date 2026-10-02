@@ -32,6 +32,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/06/25  西野 大介         新規作成（分割
+//*  2026/10/03  玄人 幸道         RSASSA-PSS（PS256 / PS384 / PS512）用の列挙型 PS を追加（#596）
 //**********************************************************************************
 
 using System;
@@ -47,11 +48,31 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
     /// - RS256 | RSASSA-PKCS1-v1_5 using SHA-256
     /// - RS384 | RSASSA-PKCS1-v1_5 using SHA-384
     /// - RS512 | RSASSA-PKCS1-v1_5 using SHA-512
+    /// - PS256 | RSASSA-PSS using SHA-256 and MGF1 with SHA-256
+    /// - PS384 | RSASSA-PSS using SHA-384 and MGF1 with SHA-384
+    /// - PS512 | RSASSA-PSS using SHA-512 and MGF1 with SHA-512
     /// </summary>
     public abstract class JWS_RSA : JWS
     {
         /// <summary>RS</summary>
         public enum RS : int
+        {
+            /// <summary>256</summary>
+            _256,
+
+            /// <summary>384</summary>
+            _384,
+
+            /// <summary>512</summary>
+            _512
+        }
+
+        /// <summary>PS（RSASSA-PSS）</summary>
+        /// <remarks>
+        /// 鍵は RS と同じ RSA 鍵で、パディングだけが違う。
+        /// RS に足さず分けたのは、既存の RS の switch に PS が紛れ込まないようにするため。
+        /// </remarks>
+        public enum PS : int
         {
             /// <summary>256</summary>
             _256,

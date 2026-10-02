@@ -272,7 +272,7 @@ UOC_ConnectionOpen で Dam を作り、コネクションとトランザクシ�
 
 ### 5.2 主な appSettings キー（`Fx` プレフィクス）
 
-- 画面制御: `FxSessionTimeOutCheck` `FxDoubleTransmissionCheck` `FxScreenTransitionMode`
+- 画面制御: `FxSessionTimeOutCheck` `FxCookieNamePrefix` `FxDoubleTransmissionCheck` `FxScreenTransitionMode`
   `FxScreenTransitionCheck` `FxErrorScreenPath` `FxOKMessageDialogPath` `FxYesNoMessageDialogPath`
   `FxDialogFramePath` `Fx*IconPath` `Fx*MaxQueueLength` `FxDefault*Style` `FxCacheControl`
 - コントロール接頭辞（集約イベント ハンドラの識別に使う）: `FxPrefixOfButton` `FxPrefixOfTextBox` … 等 15 種
@@ -528,7 +528,7 @@ net48 のサンプルとツールが一切ビルドできない。**
 | `Public.Db` | `BaseDam` `SQLUtility` `DbEnum` `Dam*` |
 | `Public.Dto` | `DTTable/DTRow/DTColumn`（マーシャリング可能な自前 DataTable）、`DataToPoco` `PocoToPoco` `DataToDictionary` |
 | `Public.Str` | `CustomEncode`(Base64/Hex/URL) `StringChecker` `FormatChecker` `StringConverter` `FormatConverter` `CheckCharCode` `JIS2k4Checker` |
-| `Public.Security` | `SymmetricCryptography` `ASymmetricCryptography` `GetHash` `GetKeyedHash` `MsgAuthCode` `DigitalSign*` `PrivacyEnhancedMail`、`Jwt/`（JWS RS/ES/HS 256-512、JWE RSA1_5+A128CBC-HS256 / RSA-OAEP+AES-GCM、`JwkSet`、鍵コンバータ）、`Aead/`、`KeyExg/`（ECDH/RSA）、`Pwd/GetPasswordHashV1/V2` |
+| `Public.Security` | `SymmetricCryptography` `ASymmetricCryptography` `GetHash` `GetKeyedHash` `MsgAuthCode` `DigitalSign*` `PrivacyEnhancedMail`、`Jwt/`（JWS RS/PS/ES/HS 256-512、JWE RSA1_5+A128CBC-HS256 / RSA-OAEP+AES-GCM、`JwkSet`、鍵コンバータ）、`Aead/`、`KeyExg/`（ECDH/RSA）、`Pwd/GetPasswordHashV1/V2` |
 | `Public.Log` | `LogIF`（静的 façade）。ロガー名は慣習的に `"ACCESS"` と `"SQLTRACE"`。バックエンドは `LogLib` 設定で log4net / NLog |
 | `Public.Reflection` | `Latebind`（フレームワークの動的呼び出しの心臓部）、`MyAssemblies` |
 | `Public.FastReflection` | `AccessorCacher` `CompiledExpressionCreater` `InstanceCreator<T>` `EnumToString*Extensions` |
@@ -628,6 +628,13 @@ Dependabot が 1 プロジェクトずつしか上げないため、放ってお
     （`CheckCharCode` → Shift_JIS の 1〜2 byte）では顕在化していなかった。
     **期待値を作るときは、出力をそのまま貼らず実装から検算し、境界を跨いだケースを置く**
     （[`Tests/TestCode/README.md`](Tests/TestCode/README.md)）。
+
+    **`EncAndDecUtilCUI` も同じだった**（2026/10/03 に修正、#595）。
+    Windows の `Result48.txt` / `ResultCore100.txt` は `JWS_ES384_Param.Verify` /
+    `JWS_ES512_Param.Verify` を **`False` で記録していた**（自分で署名した JWS を検証できない）。
+    `DigitalSignECDsaCng` がダイジェストを受け取らず、SHA-256 固定になっていたためである。
+    **Linux の `ResultCore100OnLinux.txt` は `True`** で、同じケースの期待値が OS で食い違っていた。
+    **`Verify` の期待値が `False` なら、それが仕様か不具合かを確かめること。**
 13. **`Public/IO` に、ビルド対象外の旧 ZIP 部品が残っている**。
     `ZipBase.cs` / `Zipper.cs` / `UnZipper.cs` は DotNetZip（非推奨・既知脆弱性
     `GHSA-xhg6-9j5j-w4vf`）に依存しており、**net48 / netcore100 の両方で除外**してある。

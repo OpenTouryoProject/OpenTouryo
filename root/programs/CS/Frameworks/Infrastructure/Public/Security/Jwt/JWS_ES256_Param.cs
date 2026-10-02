@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/01/28  西野 大介         新規作成
 //*  2019/01/29  西野 大介         リファクタリング（プロバイダ処理を末端に）
+//*  2026/10/03  玄人 幸道         Windows（Cng）のダイジェストを明示（既定と同じ SHA-256。挙動は不変）（#595）
 //**********************************************************************************
 
 using System;
@@ -103,7 +104,7 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             // Cng or OpenSsl
             if (os.Platform == PlatformID.Win32NT)
             {
-                this.DigitalSignECDsaCng = new DigitalSignECDsaCng(JWS_ES256.DigitalSignAlgorithm);
+                this.DigitalSignECDsaCng = new DigitalSignECDsaCng(JWS_ES256.DigitalSignAlgorithm, SHA256.Create());
             }
             else
             {
@@ -127,7 +128,7 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             if (os.Platform == PlatformID.Win32NT)
 #endif
             {
-                this.DigitalSignECDsaCng = new DigitalSignECDsaCng(param, isPrivate);
+                this.DigitalSignECDsaCng = new DigitalSignECDsaCng(param, isPrivate, SHA256.Create());
             }
 #if NETSTD
             else if (OperatingSystem.IsLinux())
