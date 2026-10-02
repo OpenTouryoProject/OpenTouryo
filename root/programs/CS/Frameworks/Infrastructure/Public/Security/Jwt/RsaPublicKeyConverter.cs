@@ -33,6 +33,7 @@
 //*  2019/01/16  西野 大介         X509KeyStorageFlagsのオプション・名前付き引数対応
 //*                                下位がExportableである必要性があった、また、ASP.NET上で実行する可能性もある。
 //*  2019/06/25  西野 大介         インスタンス・メソッド化（RS256, 384, 512対応）
+//*  2026/10/03  玄人 幸道         PS（RSASSA-PSS）のコンストラクタを追加（#596）
 //**********************************************************************************
 
 using System;
@@ -58,6 +59,10 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         /// <summary>constructor</summary>
         /// <param name="rsNNN">JWS_RSA.RS</param>
         public RsaPublicKeyConverter(JWS_RSA.RS rsNNN = JWS_RSA.RS._256) : base(rsNNN) { }
+
+        /// <summary>constructor</summary>
+        /// <param name="psNNN">JWS_RSA.PS</param>
+        public RsaPublicKeyConverter(JWS_RSA.PS psNNN) : base(psNNN) { }
         #endregion
 
         #region method

@@ -144,6 +144,15 @@
     <Compile Include="Jwt\JWS_RS512_XML.cs" />
     <Compile Include="Jwt\JWS_RS384_XML.cs" />
     <Compile Include="Jwt\JWS_RS256_XML.cs" />
+    <Compile Include="Jwt\JWS_PS512.cs" />
+    <Compile Include="Jwt\JWS_PS384.cs" />
+    <Compile Include="Jwt\JWS_PS256.cs" />
+    <Compile Include="Jwt\JWS_PS512_Param.cs" />
+    <Compile Include="Jwt\JWS_PS384_Param.cs" />
+    <Compile Include="Jwt\JWS_PS256_Param.cs" />
+    <Compile Include="Jwt\JWS_PS512_X509.cs" />
+    <Compile Include="Jwt\JWS_PS384_X509.cs" />
+    <Compile Include="Jwt\JWS_PS256_X509.cs" />
     <Compile Include="Jwt\JWS_ECDSA.cs" />
     <Compile Include="Jwt\JWS_ES512.cs" />
     <Compile Include="Jwt\JWS_ES384.cs" />

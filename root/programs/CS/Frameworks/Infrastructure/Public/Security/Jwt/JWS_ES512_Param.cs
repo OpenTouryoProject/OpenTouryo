@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/06/25  西野 大介         新規作成（分割
+//*  2026/10/03  玄人 幸道         Windows（Cng）でもダイジェストを SHA-512 に指定（#595）
 //**********************************************************************************
 
 using System;
@@ -103,7 +104,7 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             // Cng or OpenSsl
             if (os.Platform == PlatformID.Win32NT)
             {
-                this.DigitalSignECDsaCng = new DigitalSignECDsaCng(JWS_ES512.DigitalSignAlgorithm);
+                this.DigitalSignECDsaCng = new DigitalSignECDsaCng(JWS_ES512.DigitalSignAlgorithm, SHA512.Create());
             }
             else
             {
@@ -127,7 +128,7 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             if (os.Platform == PlatformID.Win32NT)
 #endif
             {
-                this.DigitalSignECDsaCng = new DigitalSignECDsaCng(param, isPrivate);
+                this.DigitalSignECDsaCng = new DigitalSignECDsaCng(param, isPrivate, SHA512.Create());
             }
 #if NETSTD
             else if(OperatingSystem.IsLinux())

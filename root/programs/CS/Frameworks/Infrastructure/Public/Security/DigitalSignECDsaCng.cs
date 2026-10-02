@@ -29,6 +29,8 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/10/31  西野 大介         新規作成
 //*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
+//*  2026/10/03  玄人 幸道         ダイジェストを指定するコンストラクタを追加（#595）
+//*                                未指定のときは従来どおり ECDsaCng の既定（SHA-256）
 //**********************************************************************************
 
 // ECDsaCng Class (System.Security.Cryptography) | Microsoft Docs
@@ -89,9 +91,18 @@ namespace Touryo.Infrastructure.Public.Security
 
         #region constructor
 
+        // ダイジェスト（hashAlgorithm）を指定しないコンストラクタは、
+        // ECDsaCng の既定（SHA-256）で署名・検証する（従来の挙動）。
+        // P-384 / P-521 で ES384 / ES512 を扱う場合は、指定する側を使うこと（#595）。
+
         /// <summary>Constructor</summary>
         /// <param name="eaa">EnumDigitalSignAlgorithm</param>
-        public DigitalSignECDsaCng(EnumDigitalSignAlgorithm eaa)
+        public DigitalSignECDsaCng(EnumDigitalSignAlgorithm eaa) : this(eaa, null) { }
+
+        /// <summary>Constructor</summary>
+        /// <param name="eaa">EnumDigitalSignAlgorithm</param>
+        /// <param name="hashAlgorithm">ダイジェスト（null なら ECDsaCng の既定）</param>
+        public DigitalSignECDsaCng(EnumDigitalSignAlgorithm eaa, HashAlgorithm hashAlgorithm)
         {
             AsymmetricAlgorithm aa = null;
             HashAlgorithm ha = null;
@@ -103,21 +114,33 @@ namespace Touryo.Infrastructure.Public.Security
             this._publicKey = this._privateKey.Export(CngKeyBlobFormat.EccPublicBlob);
 
             this.AsymmetricAlgorithm = aa;
-            this.HashAlgorithm = ha;
+            this.HashAlgorithm = hashAlgorithm; // ECDsaCng の場合、ha は常に null
         }
 
         /// <summary>Constructor</summary>
         /// <param name="publicKey">公開鍵</param>
-        public DigitalSignECDsaCng(byte[] publicKey)
+        public DigitalSignECDsaCng(byte[] publicKey) : this(publicKey, null) { }
+
+        /// <summary>Constructor</summary>
+        /// <param name="publicKey">公開鍵</param>
+        /// <param name="hashAlgorithm">ダイジェスト（null なら ECDsaCng の既定）</param>
+        public DigitalSignECDsaCng(byte[] publicKey, HashAlgorithm hashAlgorithm)
         {
             this._privateKey = null;
             this._publicKey = publicKey;
+            this.HashAlgorithm = hashAlgorithm;
         }
 
         /// <summary>Constructor</summary>
         /// <param name="cngKey">任意鍵</param>
         /// <param name="isPrivate">秘密鍵か否か</param>
-        public DigitalSignECDsaCng(CngKey cngKey, bool isPrivate)
+        public DigitalSignECDsaCng(CngKey cngKey, bool isPrivate) : this(cngKey, isPrivate, null) { }
+
+        /// <summary>Constructor</summary>
+        /// <param name="cngKey">任意鍵</param>
+        /// <param name="isPrivate">秘密鍵か否か</param>
+        /// <param name="hashAlgorithm">ダイジェスト（null なら ECDsaCng の既定）</param>
+        public DigitalSignECDsaCng(CngKey cngKey, bool isPrivate, HashAlgorithm hashAlgorithm)
         {
             this._publicKey = cngKey.Export(CngKeyBlobFormat.GenericPublicBlob);
 
@@ -125,14 +148,25 @@ namespace Touryo.Infrastructure.Public.Security
             {
                 this._privateKey = cngKey;
             }
+
+            this.HashAlgorithm = hashAlgorithm;
         }
 
         /// <summary>Constructor</summary>
         /// <param name="ecp">任意鍵</param>
         /// <param name="isPrivate">秘密鍵か否か</param>
         //[SupportedOSPlatform("windows")] // #if できない。
-        public DigitalSignECDsaCng(ECParameters ecp, bool isPrivate)
+        public DigitalSignECDsaCng(ECParameters ecp, bool isPrivate) : this(ecp, isPrivate, null) { }
+
+        /// <summary>Constructor</summary>
+        /// <param name="ecp">任意鍵</param>
+        /// <param name="isPrivate">秘密鍵か否か</param>
+        /// <param name="hashAlgorithm">ダイジェスト（null なら ECDsaCng の既定）</param>
+        //[SupportedOSPlatform("windows")] // #if できない。
+        public DigitalSignECDsaCng(ECParameters ecp, bool isPrivate, HashAlgorithm hashAlgorithm)
         {
+            this.HashAlgorithm = hashAlgorithm;
+
 #if NETSTD
             if (OperatingSystem.IsWindows())
 #else
@@ -175,7 +209,14 @@ namespace Touryo.Infrastructure.Public.Security
 #endif
             {
                 ECDsaCng aa = new ECDsaCng(this._privateKey);
-                return aa.SignData(data);
+                if (this.HashAlgorithm == null)
+                {
+                    return aa.SignData(data); // ECDsaCng の既定（SHA-256）
+                }
+                else
+                {
+                    return aa.SignData(data, this.HashAlgorithmName);
+                }
             }
             else
             {
@@ -197,7 +238,14 @@ namespace Touryo.Infrastructure.Public.Security
 #endif
             {
                 ECDsaCng aa = new ECDsaCng(CngKey.Import(this._publicKey, CngKeyBlobFormat.EccPublicBlob));
-                return aa.VerifyData(data, sign);
+                if (this.HashAlgorithm == null)
+                {
+                    return aa.VerifyData(data, sign); // ECDsaCng の既定（SHA-256）
+                }
+                else
+                {
+                    return aa.VerifyData(data, sign, this.HashAlgorithmName);
+                }
             }
             else
             {

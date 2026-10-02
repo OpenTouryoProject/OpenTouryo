@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/11/10  西野 大介         新規作成
+//*  2026/10/03  玄人 幸道         RSASSA-PSS（PS256 / PS384 / PS512）のケースを追加（#596）
 //**********************************************************************************
 
 using System;
@@ -630,6 +631,13 @@ namespace EncAndDecUtilCUI
             JWS_RS512_X509 jWS_RS512_X509 = null;
             JWS_RS512_Param jWS_RS512_Param = null;
 
+            // PS256, PS384, PS512
+            JWS_PS256_X509 jWS_PS256_X509 = null;
+            JWS_PS256_Param jWS_PS256_Param = null;
+            JWS_PS384_Param jWS_PS384_Param = null;
+            JWS_PS512_X509 jWS_PS512_X509 = null;
+            JWS_PS512_Param jWS_PS512_Param = null;
+
             // ES256
             JWS_ES256_X509 jWS_ES256_X509 = null;
             JWS_ES256_Param jWS_ES256_Param = null;
@@ -761,6 +769,80 @@ namespace EncAndDecUtilCUI
             jWS_RS512_Param = new JWS_RS512_Param(rpkc.JwkToParam(jwk));
 
             TIPD.MyDebug.OutputDebugAndConsole("JWS_RS512_Param.Verify", jWS_RS512_Param.Verify(token).ToString());
+            #endregion
+
+            #endregion
+
+            #region RSASSA-PSS(PS)
+
+            // PSS の署名は乱数を含むため、毎回値が変わる（Create の結果は比較の対象外）。
+            // 相互運用は jose-jwt で検証する（xLibTest）。
+
+            #region 256
+            // 署名（X509）
+            jWS_PS256_X509 = new JWS_PS256_X509(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
+            token = jWS_PS256_X509.Create(payloadString);
+
+            Touryo.Infrastructure.Public.Security.
+            MyDebug.InspectJwt("JWS_PS256_X509.Create", token);
+
+            // 鍵の相互変換（alg は PS256、kid は RS256 と同じ値になる）
+            rpkc = new RsaPublicKeyConverter(JWS_RSA.PS._256);
+            jwk = rpkc.ParamToJwk(((RSA)jWS_PS256_X509.DigitalSignX509.AsymmetricAlgorithm).ExportParameters(false));
+
+            TIPD.MyDebug.OutputDebugAndConsole("RSA JWK", jwk);
+
+            // 検証（X509）
+            jWS_PS256_X509 = new JWS_PS256_X509(Program.PublicRsaX509Path, "", x509KSF);
+
+            TIPD.MyDebug.OutputDebugAndConsole("JWS_PS256_X509.Verify", jWS_PS256_X509.Verify(token).ToString());
+
+            // 検証（Param）
+            jWS_PS256_Param = new JWS_PS256_Param(rpkc.JwkToParam(jwk));
+
+            TIPD.MyDebug.OutputDebugAndConsole("JWS_PS256_Param.Verify", jWS_PS256_Param.Verify(token).ToString());
+
+            // ★ xLibTest
+            Program.VerifyResultJwt("JwsAlgorithm.xLibTest", token, jWS_PS256_X509.DigitalSignX509.AsymmetricAlgorithm, JwsAlgorithm.PS256);
+            #endregion
+
+            #region 384
+            // 署名（Param。鍵は新規に生成する）
+            jWS_PS384_Param = new JWS_PS384_Param();
+            token = jWS_PS384_Param.Create(payloadString);
+
+            Touryo.Infrastructure.Public.Security.
+            MyDebug.InspectJwt("JWS_PS384_Param.Create", token);
+
+            // 検証（Param。公開鍵のみ）
+            RSAParameters ps384PublicParameters = jWS_PS384_Param.RsaPublicParameters;
+            jWS_PS384_Param = new JWS_PS384_Param(ps384PublicParameters);
+
+            TIPD.MyDebug.OutputDebugAndConsole("JWS_PS384_Param.Verify", jWS_PS384_Param.Verify(token).ToString());
+
+            // ★ xLibTest
+            RSA ps384PublicKey = RSA.Create();
+            ps384PublicKey.ImportParameters(ps384PublicParameters);
+            Program.VerifyResultJwt("JwsAlgorithm.xLibTest", token, ps384PublicKey, JwsAlgorithm.PS384);
+            #endregion
+
+            #region 512
+            // 署名（Param。X509 の秘密鍵を渡す）
+            jWS_PS512_X509 = new JWS_PS512_X509(Program.PrivateRsaX509Path, Program.PfxPassword, x509KSF);
+            jWS_PS512_Param = new JWS_PS512_Param(
+                ((RSA)jWS_PS512_X509.DigitalSignX509.AsymmetricAlgorithm).ExportParameters(true));
+            token = jWS_PS512_Param.Create(payloadString);
+
+            Touryo.Infrastructure.Public.Security.
+            MyDebug.InspectJwt("JWS_PS512_Param.Create", token);
+
+            // 検証（X509）
+            jWS_PS512_X509 = new JWS_PS512_X509(Program.PublicRsaX509Path, "", x509KSF);
+
+            TIPD.MyDebug.OutputDebugAndConsole("JWS_PS512_X509.Verify", jWS_PS512_X509.Verify(token).ToString());
+
+            // ★ xLibTest
+            Program.VerifyResultJwt("JwsAlgorithm.xLibTest", token, jWS_PS512_X509.DigitalSignX509.AsymmetricAlgorithm, JwsAlgorithm.PS512);
             #endregion
 
             #endregion

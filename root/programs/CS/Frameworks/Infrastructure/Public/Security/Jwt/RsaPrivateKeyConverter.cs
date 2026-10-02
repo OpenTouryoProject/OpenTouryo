@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/11/27  西野 大介         新規作成（秘密鍵 <---> JWKサポート追加
 //*  2019/06/25  西野 大介         新規作成（分割
+//*  2026/10/03  玄人 幸道         PS（RSASSA-PSS）のコンストラクタを追加（#596）
 //**********************************************************************************
 
 using System;
@@ -52,6 +53,10 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         /// <summary>constructor</summary>
         /// <param name="rsNNN">JWS_RSA.RS</param>
         public RsaPrivateKeyConverter(JWS_RSA.RS rsNNN = JWS_RSA.RS._256) : base(rsNNN) { }
+
+        /// <summary>constructor</summary>
+        /// <param name="psNNN">JWS_RSA.PS</param>
+        public RsaPrivateKeyConverter(JWS_RSA.PS psNNN) : base(psNNN) { }
         #endregion
 
         #region method
