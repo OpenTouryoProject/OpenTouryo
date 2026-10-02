@@ -393,6 +393,37 @@ Add the server variable name to the allowed server variable list.
 **ViewState を使う Web Forms では、より当たりやすい。**
 netcore 側の対応物は DataProtection（10 節）。
 
+### 同じホストに複数配備すると、Cookie 名が衝突する（#594）
+
+**Cookie のスコープにポートは入らない**（RFC 6265 §8.5）。
+`https://localhost:44300` と `https://localhost:44301` は、ブラウザから見て同じ入れ物である。
+
+フレームワークが発行するセッション タイムアウト検出用 Cookie（`SessionTimeOut`）は、
+`Path` をアプリケーションのパスにしている。
+
+| 配備 | `Path` | 別アプリとは |
+|---|---|---|
+| IIS の仮想パス（`/WebForms_Sample` など） | `/WebForms_Sample/` | 分かれる |
+| **root 配信（コンテナなど）** | **`/`** | **分かれない** |
+
+**root 配信のアプリを同じホストに 2 つ立てると、同じ Cookie を奪い合う。**
+`FxSessionTimeOutCheck` が `on` なら、別アプリの値を読んで**タイムアウトと誤検出しうる。**
+
+**`FxCookieNamePrefix` に、配備ごとに違う接頭辞を設定する。** 空なら従来どおり。
+
+```
+appSettings__FxCookieNamePrefix=app1_
+```
+
+- **対象は `SessionTimeOut` だけ。** `BackButtonControl`（net48 の Web Forms）は、
+  クライアントの JavaScript（`common.js`）が固定の名前で読み書きしているため対象外
+- **ASP.NET のセッション Cookie や認証 Cookie は対象外**である。
+  それらの名前は、アプリ側の構成（`Startup` / `Web.config`）で決まる
+- **`__Host-` / `__Secure-` で始めない。** ブラウザが特別扱いし、
+  `__Host-` は `Path=/` と `Secure` を要求する。仮想パス配備や HTTP では保存されない
+- **接頭辞を変えても、誤ってタイムアウトにはならない。** 古い名前の Cookie は読まれず、
+  新規のアクセスとして扱われる
+
 ---
 
 ## 9. 秘密の扱い

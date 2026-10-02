@@ -272,7 +272,7 @@ UOC_ConnectionOpen で Dam を作り、コネクションとトランザクシ�
 
 ### 5.2 主な appSettings キー（`Fx` プレフィクス）
 
-- 画面制御: `FxSessionTimeOutCheck` `FxDoubleTransmissionCheck` `FxScreenTransitionMode`
+- 画面制御: `FxSessionTimeOutCheck` `FxCookieNamePrefix` `FxDoubleTransmissionCheck` `FxScreenTransitionMode`
   `FxScreenTransitionCheck` `FxErrorScreenPath` `FxOKMessageDialogPath` `FxYesNoMessageDialogPath`
   `FxDialogFramePath` `Fx*IconPath` `Fx*MaxQueueLength` `FxDefault*Style` `FxCacheControl`
 - コントロール接頭辞（集約イベント ハンドラの識別に使う）: `FxPrefixOfButton` `FxPrefixOfTextBox` … 等 15 種

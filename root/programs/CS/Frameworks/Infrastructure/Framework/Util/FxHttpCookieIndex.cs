@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2007/xx/xx  西野 大介         新規作成
 //*  2013/12/23  西野 大介         アクセス修飾子をすべてpublicに変更した。
+//*  2026/10/03  玄人 幸道         SESSION_TIMEOUTに接頭辞が付く旨をremarksに明記（#594）
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Framework.Util
@@ -37,6 +38,9 @@ namespace Touryo.Infrastructure.Framework.Util
     public class FxHttpCookieIndex
     {
         /// <summary>セッションタイムアウト検出用クッキーのキー</summary>
+        /// <remarks>
+        /// 実際の名前は FxCmnFunction.GetCookieName で取ること（FxCookieNamePrefix が前置される）。
+        /// </remarks>
         public const string SESSION_TIMEOUT = "SessionTimeOut";
 
         /// <summary>子画面表示機能の戻るボタン対策用クッキーのキー</summary>

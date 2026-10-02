@@ -32,6 +32,7 @@
 //*                               Removed unnecessary log information.
 //*  2017/01/23  西野 大介        ログ実装はココではないので削除。
 //*  2013/01/23  西野 大介        FxSessionAbandonメソッドの追加を行った。
+//*  2026/10/03  玄人 幸道        セッションタイムアウト検出用Cookieの名前に接頭辞を反映（#594）
 //**********************************************************************************
 
 using System;
@@ -87,7 +88,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                     // 新しいセッションが開始された
 
                     // セッションタイムアウト検出用Cookieをチェック
-                    HttpCookie cookie = Request.Cookies.Get(FxHttpCookieIndex.SESSION_TIMEOUT);
+                    HttpCookie cookie = Request.Cookies.Get(FxCmnFunction.GetCookieName(FxHttpCookieIndex.SESSION_TIMEOUT));
 
                     if (cookie == null)
                     {

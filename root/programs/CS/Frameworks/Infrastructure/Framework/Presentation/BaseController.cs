@@ -93,6 +93,7 @@
 //*                                transition control, display window and error transition control components.
 //*  2017/02/28  西野 大介         ExceptionDispatchInfoを取り入れ、OriginalStackTraceを削除
 //*  2018/01/31  西野 大介         ネストしたユーザ コントロールに対応（senderで親UCを確認する）
+//*  2026/10/03  玄人 幸道         セッションタイムアウト検出用Cookieの名前に接頭辞を反映（#594）
 //**********************************************************************************
 
 using System;
@@ -482,7 +483,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
                             // 新しいセッションが開始された
 
                             // セッションタイムアウト検出用Cookieをチェック
-                            HttpCookie cookie = Request.Cookies.Get(FxHttpCookieIndex.SESSION_TIMEOUT);
+                            HttpCookie cookie = Request.Cookies.Get(FxCmnFunction.GetCookieName(FxHttpCookieIndex.SESSION_TIMEOUT));
 
                             if (cookie == null)
                             {
