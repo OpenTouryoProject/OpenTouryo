@@ -2,15 +2,22 @@
 desc: 棟梁full
 def: include
 
+## Git
+d: \\\.git$ ## Git
+d: \\\.github$ ## GitHub
+
+## CodingAgent
+d: \\\.claude$ ## Git
+
+## IDE
+d: \\\.vs$ ## Visual Studio
+d: \\\.vscode$ ## Visual Studio Code
+
 f: \.sln$ ## ソリューションファイル
 f: \.suo$ ## ソリューションファイル
 f: \.user$ ## ユーザファイル
 f: \.csproj$ ## プロジェクトファイル
 f: \.vbproj$ ## プロジェクトファイル
-
-## IDE
-d: \\\.vs$ ## Visual Studio
-d: \\\.vscode$ ## Visual Studio Code
 
 ## デザイナ（自動生成）
 f: \.designer\..*$ ## デザイナファイル
@@ -35,7 +42,6 @@ d: \\node_modules$ ## npm
 f: \.svnignore$ ## Subversion ignore file
 f: \.(vs[sp])?scc$  ## Visual SourceSafe files
 
-d: \\\.git$ ## git working copy
 d: \\\.svn$ ## Subversion working copy
 d: \\_svn$  ## Subversion working copy ASP.NET Hack
 d: \\cvs$   ## CVS control directory
