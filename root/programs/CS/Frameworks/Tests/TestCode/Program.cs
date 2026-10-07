@@ -28,6 +28,7 @@
 //*                                1 つが例外を投げると、以降が実行されなかった。
 //*  2026/08/08  玄人 幸道         TestZipV2の呼び出しを追加（#524）
 //*  2026/09/10  玄人 幸道         TestIdTokenの呼び出しを追加（#584）
+//*  2026/10/07  玄人 幸道         TestSAML2の呼び出しを追加（#598）
 //**********************************************************************************
 
 using System;
@@ -110,6 +111,7 @@ namespace TestCode
 
                 #region Framework
                 Program.Run("TestIdToken", TestIdToken.Root);
+                Program.Run("TestSAML2", TestSAML2.Root);
                 #endregion
 
                 #region Business

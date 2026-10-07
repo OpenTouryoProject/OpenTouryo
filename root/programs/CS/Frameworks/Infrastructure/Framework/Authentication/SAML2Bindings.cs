@@ -32,6 +32,8 @@
 //*  2019/05/29  西野 大介         Create XMLでは署名しない。
 //*                                 Encode And Sign / Decode, Verifyで署名・検証する。
 //*  2019/06/04  西野 大介         スキーマ検証と属性抽出にはXPathを使用。
+//*  2026/10/07  玄人 幸道         VerifyByXPathがStatusCodeを見ずにAssertionを必須にしており、
+//*                                Assertionを持たない正当なエラー応答を弾いていたのを修正（#598）
 //**********************************************************************************
 
 using System;
@@ -556,6 +558,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="schema">SAML2Enum.SamlSchema</param>
         /// <param name="samlNsMgr">XmlNamespaceManager</param>
         /// <returns>bool</returns>
+        /// <remarks>
+        /// Response の Assertion は、StatusCode が Success のときだけ必須（#598）。
+        /// SAML 2.0 Core 3.2.2 / 4.1.4.2 のとおり、エラー応答は Status だけで正当である。
+        ///
+        /// そのため、Response で true が返っても Assertion があるとは限らない。
+        /// Assertion を読む前に、StatusCode が Success であることを確かめること。
+        /// </remarks>
         public static bool VerifyByXPath(
             XmlDocument saml, SAML2Enum.SamlSchema schema, XmlNamespaceManager samlNsMgr)
         {
@@ -614,6 +623,16 @@ namespace Touryo.Infrastructure.Framework.Authentication
                                 if (xmlNodeList != null && xmlNodeList.Count == 1)
                                 {
                                     interimReport = true;
+                                }
+                                else if (xmlNodeList != null && xmlNodeList.Count == 0)
+                                {
+                                    // エラー応答（StatusCode が Success 以外）は、
+                                    // Assertion を持たないのが正当（#598）。
+                                    if (SAML2Bindings.GetStatusCodeInResponse(saml, samlNsMgr)
+                                        != SAML2Const.UrnStatusCodeSuccess)
+                                    {
+                                        result = true;
+                                    }
                                 }
                             }
                         }
