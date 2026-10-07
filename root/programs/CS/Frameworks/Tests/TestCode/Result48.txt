@@ -70,11 +70,11 @@ log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.Level
 log4net: Created Appender [OPERATION2]
 log4net: Adding appender named [OPERATION2] to logger [OPERATION].
 log4net: Hierarchy Threshold []
-[2026/09/10 22:27:52,562],[DEBUG],[1],LogIF.DebugLog("ACCESS");
-[2026/09/10 22:27:52,568],[INFO ],[1],LogIF.InfoLog("ACCESS");
-[2026/09/10 22:27:52,569],[WARN ],[1],LogIF.WarnLog("ACCESS");
-[2026/09/10 22:27:52,569],[ERROR],[1],LogIF.ErrorLog("ACCESS");
-[2026/09/10 22:27:52,569],[FATAL],[1],LogIF.FatalLog("ACCESS");
+[2026/10/07 17:09:45,036],[DEBUG],[1],LogIF.DebugLog("ACCESS");
+[2026/10/07 17:09:45,048],[INFO ],[1],LogIF.InfoLog("ACCESS");
+[2026/10/07 17:09:45,049],[WARN ],[1],LogIF.WarnLog("ACCESS");
+[2026/10/07 17:09:45,049],[ERROR],[1],LogIF.ErrorLog("ACCESS");
+[2026/10/07 17:09:45,049],[FATAL],[1],LogIF.FatalLog("ACCESS");
 LogIF.Is*Enabled - ACCESS : Debug True / Info True / Warn True / Error True / Fatal True
 log4net: configuring repository [log4net-default-repository] using stream
 log4net: loading XML configuration
@@ -2971,5 +2971,14 @@ s_hash（#584） : QCiR2bEHBPw1Pd2r2ZtS_Q（期待値と一致 : True）
 IdToken.VerifyHash
 左半分（OIDC の定義） : True
 左右の XOR（修正前の値） : False
+----------------------------------------------------------------------------------------------------
+SAML2Bindings.VerifyByXPath（Response）
+Success・Assertion あり : True（期待値と一致 : True）
+Success・Assertion なし : False（期待値と一致 : True）
+Requester・Assertion なし : True（期待値と一致 : True）
+Responder・Assertion なし : True（期待値と一致 : True）
+Requester・Assertion あり : True（期待値と一致 : True）
+Requester・Assertion に Issuer なし : False（期待値と一致 : True）
+Status なし : False（期待値と一致 : True）
 ----------------------------------------------------------------------------------------------------
 log4net: Shutdown called on Hierarchy [log4net-default-repository]

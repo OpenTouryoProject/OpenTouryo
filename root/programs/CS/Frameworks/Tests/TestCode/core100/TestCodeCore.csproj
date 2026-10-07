@@ -26,6 +26,7 @@
     <Compile Include="..\TestResourceLoader.cs" Link="TestResourceLoader.cs" />
     <Compile Include="..\TestObjectInspector.cs" Link="TestObjectInspector.cs" />
     <Compile Include="..\TestOutputLog.cs" Link="TestOutputLog.cs" />
+    <Compile Include="..\TestSAML2.cs" Link="TestSAML2.cs" />
     <Compile Include="..\TestStringChecker.cs" Link="TestStringChecker.cs" />
     <Compile Include="..\TestStringConverter.cs" Link="TestStringConverter.cs" />
     <Compile Include="..\TestStringExtractor.cs" Link="TestStringExtractor.cs" />

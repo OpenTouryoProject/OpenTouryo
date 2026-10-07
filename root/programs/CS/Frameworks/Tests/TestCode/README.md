@@ -69,6 +69,7 @@ y_Build_TestCode_Public.bat     … ビルド → 実行 → 結果ファイル�
 | ファイル | 対象 | 見ていること |
 |---|---|---|
 | `TestIdToken` | `Framework.Authentication` | `at_hash` / `c_hash` / `s_hash` の計算（`IdToken.CreateHash` / `VerifyHash`）。**期待値は OIDC 仕様の例示値**（#584） |
+| `TestSAML2` | `Framework.Authentication` | SAML2 の応答の構造検証（`SAML2Bindings.VerifyByXPath`）。**Assertion が必須なのは `StatusCode` が `Success` のときだけ**（#598） |
 
 `TestEmbedded.txt` は `TestResourceLoader` が読む埋め込みリソース。
 **`LogicalName` を `TestCode.TestEmbedded.txt` に固定している**

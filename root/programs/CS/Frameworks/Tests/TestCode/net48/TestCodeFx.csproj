@@ -104,6 +104,9 @@
     <Compile Include="..\TestOutputLog.cs">
       <Link>TestOutputLog.cs</Link>
     </Compile>
+    <Compile Include="..\TestSAML2.cs">
+      <Link>TestSAML2.cs</Link>
+    </Compile>
     <Compile Include="..\TestStringChecker.cs">
       <Link>TestStringChecker.cs</Link>
     </Compile>

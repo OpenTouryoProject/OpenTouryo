@@ -29,6 +29,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/06/04  西野 大介         新規作成
+//*  2026/10/07  玄人 幸道         VerifyResponseのout statusCodeを、検証の前に設定するようにした（#598）。
+//*                                検証に失敗するとnullのままで、呼び出し側が理由を切り分けられなかった。
 //**********************************************************************************
 
 using System;
@@ -125,6 +127,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="samlResponse2">XmlDocument</param>
         /// <param name="hashAlgorithmName">HashAlgorithmName</param>
         /// <returns>bool</returns>
+        /// <remarks>
+        /// statusCode は、応答を読めた時点（署名・構造の検証より前）で設定する（#598）。
+        /// false が返ったときに、呼び出し側が理由を切り分けるためである。
+        ///
+        /// したがって、false のときの statusCode は検証されていない値である。
+        /// 表示・ログによる切り分けにだけ使い、認証の判断には戻り値を使うこと。
+        /// </remarks>
         public static bool VerifyResponse(
             string queryString, string samlResponse,
             out string nameId, out string iss, out string aud,
@@ -179,6 +188,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             // XmlNamespaceManager
             XmlNamespaceManager samlNsMgr = SAML2Bindings.CreateNamespaceManager(samlResponse2);
+
+            // StatusCode
+            // 検証に失敗しても呼び出し側が理由を切り分けられるよう、検証の前に設定する（#598）。
+            SAML2Enum.StringToEnum(
+                SAML2Bindings.GetStatusCodeInResponse(
+                    samlResponse2, samlNsMgr), out statusCode);
 #endregion
 
 #region 検証
@@ -215,11 +230,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 string temp1 = "";
                 string temp2 = "";
 
-                // StatusCode
-                SAML2Enum.StringToEnum(
-                    SAML2Bindings.GetStatusCodeInResponse(
-                        samlResponse2, samlNsMgr), out statusCode);
-
+                // StatusCode（準備の時点で設定済み）
                 if (statusCode == SAML2Enum.StatusCode.Success)
                 {
                     // iss
