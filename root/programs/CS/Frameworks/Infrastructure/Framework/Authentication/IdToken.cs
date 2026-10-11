@@ -32,6 +32,7 @@
 //*  2026/09/10  玄人 幸道         CreateHashが左半分でなく左右のXORを返していたのを修正（#584）
 //*  2026/10/11  玄人 幸道         Verifyに、検証鍵（JWS）と期待するiss / audを受けるオーバーロードを追加（#601）。
 //*                                認可サーバ兼クライアントでは、鍵もissも自分の設定で判定され、相手のid_tokenを検証できなかった。
+//*  2026/10/12  玄人 幸道         設定で判定するVerifyでも、認可サーバを兼ねる配備でaudを確認するようにした（#603）。
 //**********************************************************************************
 
 using System;
@@ -103,7 +104,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <returns>検証結果</returns>
         /// <remarks>
         /// 検証鍵・iss・aud は、設定（CmnClientParams / OAuth2AndOIDCParams）から判定する。
-        /// OAuth2AndOIDCParams.JwkSetFilePath が在るのは自己テストの経路でaud は確認しない。
+        /// aud は、OAuth2AndOIDCParams.ClientID / ClientIDs のいずれかを含むことを確認する。
+        /// 2026/10/12 まで、OAuth2AndOIDCParams.JwkSetFilePath が在る配備（認可サーバ兼クライアント）では
+        /// aud を確認していなかった（#603）。
         /// 相手（OP）の id_token を検証する場合は、jws / iss / aud を受けるオーバーロードを使う（#601）。
         /// </remarks>
         public static bool Verify(string id_token,
@@ -112,36 +115,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         {
             return IdToken.VerifyCore(id_token, access_token, code, state,
                 null, CmnClientParams.Isser,
-                audToken =>
-                {
-                    string aud = (string)audToken;
-
-                    if (string.IsNullOrEmpty(OAuth2AndOIDCParams.JwkSetFilePath))
-                    {
-                        // Client側
-                        if (aud == OAuth2AndOIDCParams.ClientID)
-                        {
-                            // OAuth2 Clientバージョンの実装で成功
-                            return true;
-                        }
-                        else if (OAuth2AndOIDCParams.ClientIDs.Any(x => x == aud))
-                        {
-                            // OAuth2 ResourcesServerバージョンの実装で成功
-                            return true;
-                        }
-                        else
-                        {
-                            // JWTの内容検証に失敗
-                            return false;
-                        }
-                    }
-                    else
-                    {
-                        // AuthZ側（検証用カバレッジ＝自己テストの経路
-                        // OAuth2 AuthZバージョンの実装で成功
-                        return true;
-                    }
-                },
+                // 認可サーバを兼ねる配備（JwkSetFilePath が在る）でも aud を確認する（#603）
+                CmnJwtToken.VerifyAudByClientIDs,
                 out sub, out nonce, out jobj);
         }
 

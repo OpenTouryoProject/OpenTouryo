@@ -33,10 +33,13 @@
 //*  2020/06/20  西野 大介         jku無しでもjwks_uriを使うように変更
 //*  2026/10/11  玄人 幸道         Verifyに、検証鍵（JWS）を受けるオーバーロードを追加（#601）。
 //*                                JwkSetFilePathの有無で鍵を選ぶため、認可サーバ兼クライアントでは相手の鍵を引けなかった。
+//*  2026/10/12  玄人 幸道         設定のclient_idでaudを確認するVerifyAudByClientIDsを追加（#603）
 //**********************************************************************************
 
 using System;
+using System.Linq;
 using System.Text;
+using System.Collections.Generic;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -337,6 +340,49 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public static bool VerifyNbf(string nbf)
         {
             return (long.Parse(nbf) <= DateTimeOffset.Now.ToUnixTimeSeconds());
+        }
+
+        /// <summary>
+        /// aud が、設定の client_id（OAuth2AndOIDCParams.ClientID / ClientIDs）の
+        /// いずれかを含むことを確認する。
+        /// </summary>
+        /// <param name="aud">aud（string か array）</param>
+        /// <returns>bool</returns>
+        /// <remarks>
+        /// 設定で判定する IdToken.Verify / ResponseObject.Verify が使う（#603）。
+        /// 認可サーバを兼ねるか（JwkSetFilePath の有無）によらず、同じ判定をする。
+        /// </remarks>
+        internal static bool VerifyAudByClientIDs(JToken aud)
+        {
+            List<string> auds = new List<string>();
+
+            if (aud is JArray)
+            {
+                auds.AddRange(((JArray)aud).Select(x => (string)x));
+            }
+            else if (aud != null)
+            {
+                auds.Add((string)aud);
+            }
+
+            // aud が無い、空の場合は、一致させない。
+            auds = auds.Where(x => !string.IsNullOrEmpty(x)).ToList();
+
+            if (auds.Any(x => x == OAuth2AndOIDCParams.ClientID))
+            {
+                // OAuth2 Clientバージョンの実装で成功
+                return true;
+            }
+            else if (auds.Any(x => OAuth2AndOIDCParams.ClientIDs.Contains(x)))
+            {
+                // OAuth2 ResourcesServerバージョンの実装で成功
+                return true;
+            }
+            else
+            {
+                // JWTの内容検証に失敗
+                return false;
+            }
         }
         #endregion
     }

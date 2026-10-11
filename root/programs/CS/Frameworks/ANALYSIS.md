@@ -563,6 +563,10 @@ net48 のサンプルとツールが一切ビルドできない。**
   **認可サーバ兼クライアントで相手（OP）の `id_token` を検証するなら、
   `IdToken.Verify` の `jws` / `iss` / `aud` を受けるオーバーロードを使う**（#601）。
   `ResponseObject.Verify` にも同じ形の版がある。
+  設定で判定する既存の版（`IdToken` / `ResponseObject`）も、**`JwkSetFilePath` の有無によらず `aud` を確認する**
+  （`OAuth2AndOidcClientID` / `OAuth2AndOidcClientIDs` のいずれかを含むこと。#603）。
+  **認可サーバ兼クライアントの自己テストでは、テスト用クライアントの `client_id` を `OAuth2AndOidcClientIDs` に並べる。**
+  鍵の選び方（`JwkSetFilePath` の有無）は変えていない。
   `AccessToken.Verify` の既存の版は `aud` を確認しない（Keycloakコンパチ）。
   **`aud` を確認するなら `jws` / `iss` / `auds`（期待する `aud` の集合）を受ける版を使う。**
   `aud` に `client_id` が入る形式では、受け付けるクライアントの `client_id` の一覧を渡す。

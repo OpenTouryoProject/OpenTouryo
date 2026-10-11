@@ -24,9 +24,11 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/12  玄人 幸道         新規作成（#601）
+//*  2026/10/12  玄人 幸道         設定で判定するResponseObject.Verifyの、audの確認のテストを追加（#603）
 //**********************************************************************************
 
 using System;
+using System.IO;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -44,6 +46,8 @@ namespace TestCode
     /// ＜鍵は、実行のたびに作る＞
     ///   相手（認可サーバ）の鍵と、それとは別の鍵を作る。response も実行のたびに署名するため、
     ///   出すのは検証の結果（bool）だけにする。
+    ///
+    /// 設定で判定する Verify の aud（#603）。設定と JWK Set の作り方は TestIdToken と同じ。
     /// </remarks>
     public class TestResponseObject
     {
@@ -53,6 +57,10 @@ namespace TestCode
         public static void Root()
         {
             TestResponseObject.TestVerifyByJws();
+
+            MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+
+            TestResponseObject.TestVerifyBySettings();
         }
 
         #endregion
@@ -91,6 +99,35 @@ namespace TestCode
             // 期待値を渡さないのは誤用（設定に落とさず、ArgumentNullException にする）
             TestResponseObject.OutputVerifyByJws("iss が空（例外になること）", response, asPublicJws, "", aud, false);
             TestResponseObject.OutputVerifyByJws("aud が空（例外になること）", response, asPublicJws, iss, "", false);
+        }
+
+        /// <summary>Verify（設定で判定する版）の aud</summary>
+        /// <remarks>
+        /// 認可サーバを兼ねる配備（JwkSetFilePath が在る）でも、aud を確認すること（#603）。
+        /// JARM の応答はブラウザを経由して届くため、別のクライアント宛の応答を拒否できる必要がある。
+        /// </remarks>
+        private static void TestVerifyBySettings()
+        {
+            MyDebug.OutputDebugAndConsole("ResponseObject.Verify（設定で判定する版。JwkSetFilePath が在る配備）");
+
+            JWS_RS256_Param jws = TestIdToken.SaveTestJwkSet();
+            try
+            {
+                const string iss = TestIdToken.TestIssuer;
+
+                TestResponseObject.OutputVerifyBySettings("aud が ClientID",
+                    TestResponseObject.CreateResponse(jws, iss, "client01"), true);
+                TestResponseObject.OutputVerifyBySettings("aud が ClientIDs に在る",
+                    TestResponseObject.CreateResponse(jws, iss, "client02"), true);
+                TestResponseObject.OutputVerifyBySettings("aud が設定に無い",
+                    TestResponseObject.CreateResponse(jws, iss, "client03"), false);
+                TestResponseObject.OutputVerifyBySettings("aud が array（ClientID を含む）",
+                    TestResponseObject.CreateResponse(jws, iss, new JArray("client03", "client01")), true);
+            }
+            finally
+            {
+                File.Delete(TestIdToken.TestJwkSetFilePath);
+            }
         }
 
         #endregion
@@ -137,6 +174,28 @@ namespace TestCode
                 MyDebug.OutputDebugAndConsole(
                     caseName + " : " + actual + "（期待値と一致 : " + (actual == expected) + "）"
                     + (actual ? "、code : " + (string)jobj[OAuth2AndOIDCConst.code] : ""));
+            }
+            catch (Exception ex)
+            {
+                // メッセージは環境の言語で変わるため、型名だけを出す。
+                MyDebug.OutputDebugAndConsole(caseName + " : 例外 " + ex.GetType().FullName);
+            }
+        }
+
+        /// <summary>Verify（設定で判定する版）の結果を出力する</summary>
+        /// <param name="caseName">ケース名</param>
+        /// <param name="response">response</param>
+        /// <param name="expected">期待値</param>
+        private static void OutputVerifyBySettings(string caseName, string response, bool expected)
+        {
+            try
+            {
+                JObject jobj = null;
+
+                bool actual = ResponseObject.Verify(response, out jobj);
+
+                MyDebug.OutputDebugAndConsole(
+                    caseName + " : " + actual + "（期待値と一致 : " + (actual == expected) + "）");
             }
             catch (Exception ex)
             {
