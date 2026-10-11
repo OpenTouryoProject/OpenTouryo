@@ -546,7 +546,18 @@ net48 のサンプルとツールが一切ビルドできない。**
 - `OAuth2AndOIDCClient` … Authorization Code / PKCE(S256) / Client Credentials / ROPC /
   Refresh / UserInfo / Revoke / Introspect / JWT Bearer / Device AuthZ / CIBA / Request Object / JWK Set。
   **すべて `static async Task<string>`（生 JSON を返す）**。`HttpClient` は `static` プロパティで差し替え可能。
-- `OAuth2AndOIDCConst` / `OAuth2AndOIDCEnum` / `OAuth2AndOIDCParams` / `CmnClientParams`
+- `OAuth2AndOIDCConst` / `OAuth2AndOIDCEnum` / `OAuth2AndOIDCParams` / `CmnClientParams`。
+  **`CmnClientParams`（`SpRp_*`）と `JwkSetUri` は、クライアント役が読む設定である**（#602）。
+
+  | キー | フレームワークでの意味 |
+  |---|---|
+  | `SpRp_Isser` / `SpRp_*Uri` / `SpRp_*CerFilePath` / `JwkSetUri` | **相手（OP / IdP）の値**（Issuer・エンドポイント・検証用の公開鍵・JWK Set の URL） |
+  | `SpRp_*PfxFilePath` / `SpRp_*PfxPassword` | **クライアント自身の鍵**（要求の署名・JWE の復号） |
+  | `JwkSetFilePath` | **認可サーバ自身の JWK Set**（`CmnJwtToken.Verify` の分岐にも使われる。上記） |
+
+  **認可サーバを作るアプリが、これらを「自分の値」（自分の Issuer・`/jwkcerts` の口・署名鍵の対）として
+  流用すると、同じ配備でクライアント役を兼ねたときに、相手の値を置けなくなる。**
+  サーバ役の値は、アプリ側で別のキーを持つこと
 - トークン型: `CmnJwtToken` `AccessToken` `IdToken` `JwtAssertion` `RequestObject` `ResponseObject` `ClaimsInRO`。
   `CmnJwtToken.Verify` の検証鍵は、`OAuth2AndOIDCParams.JwkSetFilePath` の有無（＝自分が認可サーバか）で選ぶ。
   **認可サーバ兼クライアントで相手（OP）の `id_token` を検証するなら、
