@@ -24,10 +24,14 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/07  玄人 幸道         新規作成（#598）
+//*  2026/10/11  玄人 幸道         SAML2Client.VerifyResponseの、証明書を渡す版のテストを追加（#600）
 //**********************************************************************************
 
 using System;
+using System.IO;
 using System.Xml;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Public.Diagnostics;
@@ -36,7 +40,8 @@ namespace TestCode
 {
     /// <summary>Framework.Authentication.SAML2Bindingsのテスト</summary>
     /// <remarks>
-    /// 応答（Response）の構造検証（VerifyByXPath）（#598）。
+    /// 応答（Response）の構造検証（VerifyByXPath）（#598）と、
+    /// 証明書を渡す版の VerifyResponse（#600）。
     ///
     /// ＜期待値は、SAML 2.0 Core の定めから置く＞
     ///   成功応答は Assertion を持ち、エラー応答は Status だけで正当である（3.2.2 / 4.1.4.2）。
@@ -46,6 +51,10 @@ namespace TestCode
     /// ＜ID・日時は出力しない＞
     ///   CreateResponse / CreateAssertion は GUID と現在時刻を埋めるため、
     ///   XML そのものは実行のたびに変わる。出すのは検証の結果（bool）だけにする。
+    ///
+    /// ＜鍵は、実行のたびに作る＞
+    ///   IdP の鍵と、それとは別の鍵を作り、証明書（*.cer）を一時ファイルに書き出して渡す。
+    ///   一時ファイルは、テストの終わりに消す。
     /// </remarks>
     public class TestSAML2
     {
@@ -68,6 +77,7 @@ namespace TestCode
         public static void Root()
         {
             TestSAML2.TestVerifyByXPathOfResponse();
+            TestSAML2.TestVerifyResponseByCerFilePath();
         }
 
         #endregion
@@ -112,6 +122,58 @@ namespace TestCode
             TestSAML2.OutputVerifyByXPath("Status なし", noStatus, false);
         }
 
+        /// <summary>VerifyResponse（cerFilePath）</summary>
+        /// <remarks>
+        /// 渡した証明書で検証されること（#600）。
+        /// 2026/10/11 まで、検証の証明書は CmnClientParams.RsaCerFilePath に固定されていた。
+        /// </remarks>
+        private static void TestVerifyResponseByCerFilePath()
+        {
+            MyDebug.OutputDebugAndConsole("SAML2Client.VerifyResponse（cerFilePath）");
+
+            string idpCerFilePath = Path.GetTempFileName();
+            string otherCerFilePath = Path.GetTempFileName();
+
+            try
+            {
+                using (RSA idpRsa = RSA.Create(2048))
+                using (RSA otherRsa = RSA.Create(2048))
+                {
+                    File.WriteAllBytes(idpCerFilePath, TestSAML2.CreateCer(idpRsa));
+                    File.WriteAllBytes(otherCerFilePath, TestSAML2.CreateCer(otherRsa));
+
+                    XmlDocument response = TestSAML2.CreateResponse(SAML2Enum.StatusCode.Success, true);
+                    string id = SAML2Bindings.GetIdInResponse(
+                        response, SAML2Bindings.CreateNamespaceManager(response));
+
+                    // POST（XML の署名）
+                    string samlResponse = SAML2Bindings.EncodeAndSignPost(response.OuterXml, id, idpRsa);
+
+                    TestSAML2.OutputVerifyResponse("POST・IdP の証明書",
+                        null, samlResponse, idpCerFilePath, true);
+                    TestSAML2.OutputVerifyResponse("POST・別の証明書",
+                        null, samlResponse, otherCerFilePath, false);
+
+                    // Redirect（クエリ文字列の署名）
+                    Touryo.Infrastructure.Public.Security.DigitalSignParam dsParam =
+                        new Touryo.Infrastructure.Public.Security.DigitalSignParam(
+                            idpRsa.ExportParameters(true), HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+                    string queryString = SAML2Bindings.EncodeAndSignRedirect(
+                        SAML2Enum.RequestOrResponse.Response, response.OuterXml, "", dsParam);
+
+                    TestSAML2.OutputVerifyResponse("Redirect・IdP の証明書",
+                        queryString, null, idpCerFilePath, true);
+                    TestSAML2.OutputVerifyResponse("Redirect・別の証明書",
+                        queryString, null, otherCerFilePath, false);
+                }
+            }
+            finally
+            {
+                File.Delete(idpCerFilePath);
+                File.Delete(otherCerFilePath);
+            }
+        }
+
         #endregion
 
         #region 組み立てのヘルパ
@@ -140,6 +202,21 @@ namespace TestCode
             }
 
             return response;
+        }
+
+        /// <summary>自己署名の証明書（*.cer の中身）を作る</summary>
+        /// <param name="rsa">鍵</param>
+        /// <returns>DER 形式の証明書</returns>
+        private static byte[] CreateCer(RSA rsa)
+        {
+            CertificateRequest request = new CertificateRequest(
+                "CN=" + TestSAML2.Issuer, rsa, HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+
+            using (X509Certificate2 cert = request.CreateSelfSigned(
+                DateTimeOffset.UtcNow.AddDays(-1), DateTimeOffset.UtcNow.AddDays(1)))
+            {
+                return cert.Export(X509ContentType.Cert);
+            }
         }
 
         /// <summary>XPath で指定したノードを取り除く</summary>
@@ -171,6 +248,47 @@ namespace TestCode
 
                 MyDebug.OutputDebugAndConsole(
                     caseName + " : " + actual + "（期待値と一致 : " + (actual == expected) + "）");
+            }
+            catch (Exception ex)
+            {
+                // メッセージは環境の言語で変わるため、型名だけを出す。
+                MyDebug.OutputDebugAndConsole(caseName + " : 例外 " + ex.GetType().FullName);
+            }
+        }
+
+        /// <summary>VerifyResponse の結果を出力する</summary>
+        /// <param name="caseName">ケース名</param>
+        /// <param name="queryString">Redirect の応答</param>
+        /// <param name="samlResponse">POST の応答</param>
+        /// <param name="cerFilePath">検証に使う証明書</param>
+        /// <param name="expected">期待値</param>
+        private static void OutputVerifyResponse(string caseName,
+            string queryString, string samlResponse, string cerFilePath, bool expected)
+        {
+            try
+            {
+                string nameId = "";
+                string iss = "";
+                string aud = "";
+                string inResponseTo = "";
+                string recipient = "";
+                DateTime? notOnOrAfter = null;
+                SAML2Enum.StatusCode? statusCode = null;
+                SAML2Enum.NameIDFormat? nameIDFormat = null;
+                SAML2Enum.AuthnContextClassRef? authnContextClassRef = null;
+                XmlDocument samlResponse2 = null;
+
+                bool actual = SAML2Client.VerifyResponse(
+                    queryString, samlResponse, cerFilePath,
+                    out nameId, out iss, out aud,
+                    out inResponseTo, out recipient, out notOnOrAfter,
+                    out statusCode, out nameIDFormat, out authnContextClassRef,
+                    out samlResponse2);
+
+                // iss の照合は呼び出し側の責務なので、取れた値も確かめておく。
+                MyDebug.OutputDebugAndConsole(
+                    caseName + " : " + actual + "（期待値と一致 : " + (actual == expected) + "）"
+                    + (actual ? "、iss 一致 : " + (iss == TestSAML2.Issuer) : ""));
             }
             catch (Exception ex)
             {

@@ -70,11 +70,11 @@ log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.Level
 log4net: Created Appender [OPERATION2]
 log4net: Adding appender named [OPERATION2] to logger [OPERATION].
 log4net: Hierarchy Threshold []
-[2026/10/07 17:09:49,867],[DEBUG],[2],LogIF.DebugLog("ACCESS");
-[2026/10/07 17:09:49,876],[INFO ],[2],LogIF.InfoLog("ACCESS");
-[2026/10/07 17:09:49,877],[WARN ],[2],LogIF.WarnLog("ACCESS");
-[2026/10/07 17:09:49,877],[ERROR],[2],LogIF.ErrorLog("ACCESS");
-[2026/10/07 17:09:49,877],[FATAL],[2],LogIF.FatalLog("ACCESS");
+[2026/10/11 21:26:10,878],[DEBUG],[2],LogIF.DebugLog("ACCESS");
+[2026/10/11 21:26:10,888],[INFO ],[2],LogIF.InfoLog("ACCESS");
+[2026/10/11 21:26:10,888],[WARN ],[2],LogIF.WarnLog("ACCESS");
+[2026/10/11 21:26:10,889],[ERROR],[2],LogIF.ErrorLog("ACCESS");
+[2026/10/11 21:26:10,889],[FATAL],[2],LogIF.FatalLog("ACCESS");
 LogIF.Is*Enabled - ACCESS : Debug True / Info True / Warn True / Error True / Fatal True
 log4net: configuring repository [log4net-default-repository] using stream
 log4net: loading XML configuration
@@ -3001,5 +3001,10 @@ Responder・Assertion なし : True（期待値と一致 : True）
 Requester・Assertion あり : True（期待値と一致 : True）
 Requester・Assertion に Issuer なし : False（期待値と一致 : True）
 Status なし : False（期待値と一致 : True）
+SAML2Client.VerifyResponse（cerFilePath）
+POST・IdP の証明書 : True（期待値と一致 : True）、iss 一致 : True
+POST・別の証明書 : False（期待値と一致 : True）
+Redirect・IdP の証明書 : True（期待値と一致 : True）、iss 一致 : True
+Redirect・別の証明書 : False（期待値と一致 : True）
 ----------------------------------------------------------------------------------------------------
 log4net: Shutdown called on Hierarchy [log4net-default-repository]

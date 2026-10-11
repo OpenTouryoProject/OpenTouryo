@@ -550,7 +550,9 @@ net48 のサンプルとツールが一切ビルドできない。**
 - トークン型: `CmnJwtToken` `AccessToken` `IdToken` `JwtAssertion` `RequestObject` `ResponseObject` `ClaimsInRO`
 - `JwkSetStore` … JWK Set のキャッシュ
 - SAML2: `SAML2Client`（`CreateRedirectRequest` / `CreatePostRequest` / `VerifyResponse`）、
-  `SAML2Bindings` `SAML2Const` `SAML2Enum` `SAML2Params`
+  `SAML2Bindings` `SAML2Const` `SAML2Enum` `SAML2Params`。
+  `VerifyResponse` の検証用証明書は、既定で `CmnClientParams.RsaCerFilePath`（配備に 1 本）。
+  **相手（IdP）ごとに替えるなら、`cerFilePath` を受けるオーバーロードを使う**（#600）
 - 依存: `jose-jwt` 5.1.1 / `BouncyCastle.NetCore` 2.2.1（`Public.Security`）
 
 ---
