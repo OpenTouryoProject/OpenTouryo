@@ -550,7 +550,12 @@ net48 のサンプルとツールが一切ビルドできない。**
 - トークン型: `CmnJwtToken` `AccessToken` `IdToken` `JwtAssertion` `RequestObject` `ResponseObject` `ClaimsInRO`。
   `CmnJwtToken.Verify` の検証鍵は、`OAuth2AndOIDCParams.JwkSetFilePath` の有無（＝自分が認可サーバか）で選ぶ。
   **認可サーバ兼クライアントで相手（OP）の `id_token` を検証するなら、
-  `IdToken.Verify` の `jws` / `iss` / `aud` を受けるオーバーロードを使う**（#601）
+  `IdToken.Verify` の `jws` / `iss` / `aud` を受けるオーバーロードを使う**（#601）。
+  `ResponseObject.Verify` にも同じ形の版がある。
+  `AccessToken.Verify` の既存の版は `aud` を確認しない（Keycloakコンパチ）。
+  **`aud` を確認するなら `jws` / `iss` / `auds`（期待する `aud` の集合）を受ける版を使う。**
+  `aud` に `client_id` が入る形式では、受け付けるクライアントの `client_id` の一覧を渡す。
+  `typ`（`at+jwt`）は確認しない（RFC 9068 の形式には準拠していない）
 - `JwkSetStore` … JWK Set のキャッシュ
 - SAML2: `SAML2Client`（`CreateRedirectRequest` / `CreatePostRequest` / `VerifyResponse`）、
   `SAML2Bindings` `SAML2Const` `SAML2Enum` `SAML2Params`。

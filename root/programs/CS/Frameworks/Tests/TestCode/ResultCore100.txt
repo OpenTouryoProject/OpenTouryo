@@ -70,11 +70,11 @@ log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.Level
 log4net: Created Appender [OPERATION2]
 log4net: Adding appender named [OPERATION2] to logger [OPERATION].
 log4net: Hierarchy Threshold []
-[2026/10/11 23:00:35,491],[DEBUG],[2],LogIF.DebugLog("ACCESS");
-[2026/10/11 23:00:35,501],[INFO ],[2],LogIF.InfoLog("ACCESS");
-[2026/10/11 23:00:35,501],[WARN ],[2],LogIF.WarnLog("ACCESS");
-[2026/10/11 23:00:35,502],[ERROR],[2],LogIF.ErrorLog("ACCESS");
-[2026/10/11 23:00:35,502],[FATAL],[2],LogIF.FatalLog("ACCESS");
+[2026/10/12 02:11:54,610],[DEBUG],[2],LogIF.DebugLog("ACCESS");
+[2026/10/12 02:11:54,622],[INFO ],[2],LogIF.InfoLog("ACCESS");
+[2026/10/12 02:11:54,623],[WARN ],[2],LogIF.WarnLog("ACCESS");
+[2026/10/12 02:11:54,623],[ERROR],[2],LogIF.ErrorLog("ACCESS");
+[2026/10/12 02:11:54,624],[FATAL],[2],LogIF.FatalLog("ACCESS");
 LogIF.Is*Enabled - ACCESS : Debug True / Info True / Warn True / Error True / Fatal True
 log4net: configuring repository [log4net-default-repository] using stream
 log4net: loading XML configuration
@@ -2999,6 +2999,27 @@ IdToken.Verify（jws / iss / aud）
 iss が違う : False（期待値と一致 : True）
 aud が違う : False（期待値と一致 : True）
 aud が array（含まれる） : True（期待値と一致 : True）、sub : user01
+aud が array（含まれない） : False（期待値と一致 : True）
+iss が空（例外になること） : 例外 System.ArgumentNullException
+aud が空（例外になること） : 例外 System.ArgumentNullException
+----------------------------------------------------------------------------------------------------
+AccessToken.Verify（jws / iss / auds）
+発行者の鍵・iss・aud の集合 : True（期待値と一致 : True）、sub : user01、scopes : openid profile
+別の鍵 : False（期待値と一致 : True）
+iss が違う : False（期待値と一致 : True）
+aud が集合に無い : False（期待値と一致 : True）
+aud が array（集合と重なる） : True（期待値と一致 : True）、sub : user01、scopes : openid profile
+aud が array（集合と重ならない） : False（期待値と一致 : True）
+aud が無い : False（期待値と一致 : True）
+iss が空（例外になること） : 例外 System.ArgumentNullException
+auds が空（例外になること） : 例外 System.ArgumentNullException
+----------------------------------------------------------------------------------------------------
+ResponseObject.Verify（jws / iss / aud）
+相手の鍵・iss・aud : True（期待値と一致 : True）、code : code01
+別の鍵 : False（期待値と一致 : True）
+iss が違う : False（期待値と一致 : True）
+aud が違う : False（期待値と一致 : True）
+aud が array（含まれる） : True（期待値と一致 : True）、code : code01
 aud が array（含まれない） : False（期待値と一致 : True）
 iss が空（例外になること） : 例外 System.ArgumentNullException
 aud が空（例外になること） : 例外 System.ArgumentNullException

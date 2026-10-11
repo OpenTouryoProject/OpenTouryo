@@ -65,6 +65,9 @@
     <Compile Include="..\Program.cs">
       <Link>Program.cs</Link>
     </Compile>
+    <Compile Include="..\TestAccessToken.cs">
+      <Link>TestAccessToken.cs</Link>
+    </Compile>
     <Compile Include="..\TestCustomEncode.cs">
       <Link>TestCustomEncode.cs</Link>
     </Compile>
@@ -106,6 +109,9 @@
     </Compile>
     <Compile Include="..\TestOutputLog.cs">
       <Link>TestOutputLog.cs</Link>
+    </Compile>
+    <Compile Include="..\TestResponseObject.cs">
+      <Link>TestResponseObject.cs</Link>
     </Compile>
     <Compile Include="..\TestSAML2.cs">
       <Link>TestSAML2.cs</Link>

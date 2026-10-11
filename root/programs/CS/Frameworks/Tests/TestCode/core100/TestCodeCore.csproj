@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Compile Include="..\Program.cs" Link="Program.cs" />
+    <Compile Include="..\TestAccessToken.cs" Link="TestAccessToken.cs" />
     <Compile Include="..\TestCustomEncode.cs" Link="TestCustomEncode.cs" />
     <Compile Include="..\TestDeflateCompression.cs" Link="TestDeflateCompression.cs" />
     <Compile Include="..\TestDto.cs" Link="TestDto.cs" />
@@ -26,6 +27,7 @@
     <Compile Include="..\TestResourceLoader.cs" Link="TestResourceLoader.cs" />
     <Compile Include="..\TestObjectInspector.cs" Link="TestObjectInspector.cs" />
     <Compile Include="..\TestOutputLog.cs" Link="TestOutputLog.cs" />
+    <Compile Include="..\TestResponseObject.cs" Link="TestResponseObject.cs" />
     <Compile Include="..\TestSAML2.cs" Link="TestSAML2.cs" />
     <Compile Include="..\TestStringChecker.cs" Link="TestStringChecker.cs" />
     <Compile Include="..\TestStringConverter.cs" Link="TestStringConverter.cs" />
