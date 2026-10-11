@@ -30,6 +30,8 @@
 //*  2018/08/22  西野 大介         新規作成
 //*  2018/11/28  西野 大介         証明書 & Jwk対応 + jkuチェック対応の追加
 //*  2026/09/10  玄人 幸道         CreateHashが左半分でなく左右のXORを返していたのを修正（#584）
+//*  2026/10/11  玄人 幸道         Verifyに、検証鍵（JWS）と期待するiss / audを受けるオーバーロードを追加（#601）。
+//*                                認可サーバ兼クライアントでは、鍵もissも自分の設定で判定され、相手のid_tokenを検証できなかった。
 //**********************************************************************************
 
 using System;
@@ -86,6 +88,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #region Verify
 
+        // SPRP → (1) → 下流IdP → (2) → 上流IdP
+        // SPRP ← (4) ← 下流IdP ← (3) ← 上流IdP
+        // (3)で後者のVerifyを使い、(4)で前者のVerifyを使う。
+
         /// <summary>汎用認証サイトの発行したIdTokenを検証する。</summary>
         /// <param name="id_token">string</param>
         /// <param name="access_token">string</param>
@@ -95,8 +101,118 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="nonce">out string</param>
         /// <param name="jobj">out JObject</param>
         /// <returns>検証結果</returns>
+        /// <remarks>
+        /// 検証鍵・iss・aud は、設定（CmnClientParams / OAuth2AndOIDCParams）から判定する。
+        /// OAuth2AndOIDCParams.JwkSetFilePath が在るのは自己テストの経路でaud は確認しない。
+        /// 相手（OP）の id_token を検証する場合は、jws / iss / aud を受けるオーバーロードを使う（#601）。
+        /// </remarks>
         public static bool Verify(string id_token,
             string access_token, string code, string state,
+            out string sub, out string nonce, out JObject jobj)
+        {
+            return IdToken.VerifyCore(id_token, access_token, code, state,
+                null, CmnClientParams.Isser,
+                audToken =>
+                {
+                    string aud = (string)audToken;
+
+                    if (string.IsNullOrEmpty(OAuth2AndOIDCParams.JwkSetFilePath))
+                    {
+                        // Client側
+                        if (aud == OAuth2AndOIDCParams.ClientID)
+                        {
+                            // OAuth2 Clientバージョンの実装で成功
+                            return true;
+                        }
+                        else if (OAuth2AndOIDCParams.ClientIDs.Any(x => x == aud))
+                        {
+                            // OAuth2 ResourcesServerバージョンの実装で成功
+                            return true;
+                        }
+                        else
+                        {
+                            // JWTの内容検証に失敗
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        // AuthZ側（検証用カバレッジ＝自己テストの経路
+                        // OAuth2 AuthZバージョンの実装で成功
+                        return true;
+                    }
+                },
+                out sub, out nonce, out jobj);
+        }
+
+        /// <summary>相手（OP）の発行したIdTokenを、指定した検証鍵・iss・audで検証する。</summary>
+        /// <param name="id_token">string</param>
+        /// <param name="access_token">string</param>
+        /// <param name="code">string</param>
+        /// <param name="state">string</param>
+        /// <param name="jws">
+        /// 署名の検証に使う、相手（OP）の鍵（JWS_RS256_Param, JWS_RS256_X509 など）。
+        /// null なら、CmnJwtToken.Verify(jwtToken, out jwtPayload) と同じ方法で選ぶ。
+        /// </param>
+        /// <param name="iss">期待する iss（相手の Issuer）</param>
+        /// <param name="aud">期待する aud（相手に登録した、自分の client_id）</param>
+        /// <param name="sub">out string</param>
+        /// <param name="nonce">out string</param>
+        /// <param name="jobj">out JObject</param>
+        /// <returns>検証結果</returns>
+        /// <remarks>
+        /// 自由に利用できる。
+        ///
+        /// 設定（CmnClientParams.Isser / OAuth2AndOIDCParams.ClientID / JwkSetFilePath）は見ない。
+        /// aud は、認可サーバを兼ねる配備でも必ず確認する（#601）。
+        /// aud が array の場合は、期待する aud を含むことを確認する（OpenID Connect Core 1.0 3.1.3.7）。
+        /// </remarks>
+        public static bool Verify(string id_token,
+            string access_token, string code, string state,
+            JWS jws, string iss, string aud,
+            out string sub, out string nonce, out JObject jobj)
+        {
+            if (string.IsNullOrEmpty(iss))
+            {
+                throw new ArgumentNullException(nameof(iss));
+            }
+
+            if (string.IsNullOrEmpty(aud))
+            {
+                throw new ArgumentNullException(nameof(aud));
+            }
+
+            return IdToken.VerifyCore(id_token, access_token, code, state,
+                jws, iss,
+                audToken =>
+                {
+                    if (audToken is JArray)
+                    {
+                        return ((JArray)audToken).Any(x => (string)x == aud);
+                    }
+                    else
+                    {
+                        return (string)audToken == aud;
+                    }
+                },
+                out sub, out nonce, out jobj);
+        }
+
+        /// <summary>IdTokenを検証する（共通部分）。</summary>
+        /// <param name="id_token">string</param>
+        /// <param name="access_token">string</param>
+        /// <param name="code">string</param>
+        /// <param name="state">string</param>
+        /// <param name="jws">検証鍵（null なら設定から選ぶ）</param>
+        /// <param name="expectedIss">期待する iss</param>
+        /// <param name="verifyAud">aud の確認</param>
+        /// <param name="sub">out string</param>
+        /// <param name="nonce">out string</param>
+        /// <param name="jobj">out JObject</param>
+        /// <returns>検証結果</returns>
+        private static bool VerifyCore(string id_token,
+            string access_token, string code, string state,
+            JWS jws, string expectedIss, Func<JToken, bool> verifyAud,
             out string sub, out string nonce, out JObject jobj)
         {
             sub = "";
@@ -105,7 +221,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             // JWS検証
             string jwtPayload = "";
-            if (CmnJwtToken.Verify(id_token, out jwtPayload))
+            if (CmnJwtToken.Verify(id_token, jws, out jwtPayload))
             {
                 jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
 
@@ -116,7 +232,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 nonce = (string)jobj[OAuth2AndOIDCConst.nonce];
 
                 string iss = (string)jobj[OAuth2AndOIDCConst.iss];
-                string aud = (string)jobj[OAuth2AndOIDCConst.aud];
+                JToken aud = jobj[OAuth2AndOIDCConst.aud];
                 //string iat = (string)jobj[OAuth2AndOIDCConst.iat];
                 string exp = (string)jobj[OAuth2AndOIDCConst.exp];
 
@@ -156,32 +272,16 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
                 long unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
 
-                if (iss == CmnClientParams.Isser &&
+                if (iss == expectedIss &&
                     long.Parse(exp) >= unixTimeSeconds)
                 {
-                    if (string.IsNullOrEmpty(OAuth2AndOIDCParams.JwkSetFilePath))
+                    if (verifyAud(aud))
                     {
-                        // Client側
-                        if (aud == OAuth2AndOIDCParams.ClientID)
-                        {
-                            // OAuth2 Clientバージョンの実装で成功
-                            return true;
-                        }
-                        else if (OAuth2AndOIDCParams.ClientIDs.Any(x => x == aud))
-                        {
-                            // OAuth2 ResourcesServerバージョンの実装で成功
-                            return true;
-                        }
-                        else
-                        {
-                            // JWTの内容検証に失敗
-                        }
+                        return true;
                     }
                     else
                     {
-                        // AuthZ側（検証用カバレッジ
-                        // OAuth2 AuthZバージョンの実装で成功
-                        return true;
+                        // JWTの内容検証に失敗
                     }
                 }
                 else

@@ -31,6 +31,8 @@
 //*  2020/03/02  西野 大介         検証メソッドの追加
 //*  2020/03/04  西野 大介         Claim生成メソッドの追加
 //*  2020/06/20  西野 大介         jku無しでもjwks_uriを使うように変更
+//*  2026/10/11  玄人 幸道         Verifyに、検証鍵（JWS）を受けるオーバーロードを追加（#601）。
+//*                                JwkSetFilePathの有無で鍵を選ぶため、認可サーバ兼クライアントでは相手の鍵を引けなかった。
 //**********************************************************************************
 
 using System;
@@ -57,12 +59,37 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// JWS, JWS + JEWの場合があるのでペイロードを返す。
         /// </param>
         /// <returns>検証結果</returns>
+        /// <remarks>
+        /// 検証鍵は、kid の有無と OAuth2AndOIDCParams.JwkSetFilePath の有無で選ぶ。
+        /// JwkSetFilePath が在る（＝認可サーバを兼ねる）と、自分の JWK Set で引くため、
+        /// 相手（OP）の鍵で検証する場合は、jws を受けるオーバーロードを使う（#601）。
+        /// </remarks>
         public static bool Verify(string jwtToken, out string jwtPayload)
+        {
+            return CmnJwtToken.Verify(jwtToken, null, out jwtPayload);
+        }
+
+        /// <summary>JWT形式のTokenを、指定した検証鍵で検証する。</summary>
+        /// <param name="jwtToken">JWT形式のToken</param>
+        /// <param name="jws">
+        /// 署名の検証に使う、相手（署名者）の鍵（JWS_RS256_Param, JWS_RS256_X509 など）。
+        /// null なら、Verify(jwtToken, out jwtPayload) と同じ方法で選ぶ。
+        /// </param>
+        /// <param name="jwtPayload">
+        /// JWS, JWS + JEWの場合があるのでペイロードを返す。
+        /// </param>
+        /// <returns>検証結果</returns>
+        /// <remarks>
+        /// 自由に利用できる。
+        ///
+        /// JWE の復号には、従来どおり CmnClientParams.RsaPfxFilePath（自分の秘密鍵）を使う。
+        /// jws で替わるのは、署名の検証鍵だけである（#601）。
+        /// </remarks>
+        public static bool Verify(string jwtToken, JWS jws, out string jwtPayload)
         {
             jwtPayload = "";
 
             JWE jwe = null;
-            JWS jws = null;
 
             // 復号化（JWEの場合）
             bool isJWE_FAPI2 = false;
@@ -109,7 +136,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
             else { throw new NotSupportedException("Unexpected combination of JWS and JWE."); }
 
             // 証明書を使用するか、Jwkを使用するか判定
-            if ( //string.IsNullOrEmpty(jwsHeader.jku) || // jkuは非推奨
+            if (jws != null)
+            {
+                // 呼び出し側が指定した鍵を使用（#601）
+            }
+            else if ( //string.IsNullOrEmpty(jwsHeader.jku) || // jkuは非推奨
                 string.IsNullOrEmpty(jwsHeader.kid))
             {
                 // 旧バージョン（証明書を使用

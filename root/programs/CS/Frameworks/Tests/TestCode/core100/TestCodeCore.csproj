@@ -61,8 +61,10 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.5" />
     <!--フレームワークは HintPath で参照しており、NuGet の推移的依存が効かない。
         OpenTouryo.Public / Public.Security が使うパッケージは、ここにも並べる必要がある。
-        BouncyCastle.NetCore は GetHash が使う（IdToken.CreateHash 経由、#584）。-->
+        BouncyCastle.NetCore は GetHash が使う（IdToken.CreateHash 経由、#584）。
+        Newtonsoft.Json は IdToken.Verify の引数（JObject）が使う（#601）。-->
     <PackageReference Include="BouncyCastle.NetCore" Version="2.2.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="SharpZipLib" Version="1.4.2" />
     <PackageReference Include="Zipangu" Version="1.1.8" />
   </ItemGroup>

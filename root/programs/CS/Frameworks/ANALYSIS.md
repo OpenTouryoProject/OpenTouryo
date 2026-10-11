@@ -547,7 +547,10 @@ net48 のサンプルとツールが一切ビルドできない。**
   Refresh / UserInfo / Revoke / Introspect / JWT Bearer / Device AuthZ / CIBA / Request Object / JWK Set。
   **すべて `static async Task<string>`（生 JSON を返す）**。`HttpClient` は `static` プロパティで差し替え可能。
 - `OAuth2AndOIDCConst` / `OAuth2AndOIDCEnum` / `OAuth2AndOIDCParams` / `CmnClientParams`
-- トークン型: `CmnJwtToken` `AccessToken` `IdToken` `JwtAssertion` `RequestObject` `ResponseObject` `ClaimsInRO`
+- トークン型: `CmnJwtToken` `AccessToken` `IdToken` `JwtAssertion` `RequestObject` `ResponseObject` `ClaimsInRO`。
+  `CmnJwtToken.Verify` の検証鍵は、`OAuth2AndOIDCParams.JwkSetFilePath` の有無（＝自分が認可サーバか）で選ぶ。
+  **認可サーバ兼クライアントで相手（OP）の `id_token` を検証するなら、
+  `IdToken.Verify` の `jws` / `iss` / `aud` を受けるオーバーロードを使う**（#601）
 - `JwkSetStore` … JWK Set のキャッシュ
 - SAML2: `SAML2Client`（`CreateRedirectRequest` / `CreatePostRequest` / `VerifyResponse`）、
   `SAML2Bindings` `SAML2Const` `SAML2Enum` `SAML2Params`。
