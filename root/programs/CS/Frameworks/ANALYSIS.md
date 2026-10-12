@@ -575,7 +575,17 @@ net48 のサンプルとツールが一切ビルドできない。**
 - SAML2: `SAML2Client`（`CreateRedirectRequest` / `CreatePostRequest` / `VerifyResponse`）、
   `SAML2Bindings` `SAML2Const` `SAML2Enum` `SAML2Params`。
   `VerifyResponse` の検証用証明書は、既定で `CmnClientParams.RsaCerFilePath`（配備に 1 本）。
-  **相手（IdP）ごとに替えるなら、`cerFilePath` を受けるオーバーロードを使う**（#600）
+  **相手（IdP）ごとに替えるなら、`cerFilePath` を受けるオーバーロードを使う**（#600）。
+  Redirect の `SigAlg` は、`EncodeAndSignRedirect` に渡した `DigitalSign` のアルゴリズムで書く
+  （既定の SHA256 なら `rsa-sha256`。#604 まで `rsa-sha1` 固定だった）。
+  **`VerifyRedirect` は 2 つ在る**（#604）。
+  `DigitalSign` を受ける版は、渡された `DigitalSign` で検証し、**`SigAlg` がそのアルゴリズムと一致しなければ失敗する**
+  （`SAML2Client.VerifyResponse` はこちら。ハッシュは `hashAlgorithmName`、既定は SHA256）。
+  `RSA` を受ける版は、**許可リスト（`sigAlgs`）の中から `SigAlg` でハッシュを選ぶ**（既定は SHA256 / 384 / 512 で、SHA1 は受けない）。
+  **#604 より前の Open棟梁 が送った要求・応答（`rsa-sha1` と名乗る SHA256 の署名）は、どちらでも失敗する。**
+  受け手で `SigAlg` が `rsa-sha1` であることを確かめていると、#604 以降の送り手の要求・応答で落ちる。
+  `EncodeAndSignRedirect` / `VerifyRedirect` の引数名は、#604 で `dsRSAwithSHA1` から `ds` に変えた
+  （SHA1 に限らないため）。**名前付き引数で渡している呼び出し元は、コンパイルが通らなくなる**
 - 依存: `jose-jwt` 5.1.1 / `BouncyCastle.NetCore` 2.2.1（`Public.Security`）
 
 ---

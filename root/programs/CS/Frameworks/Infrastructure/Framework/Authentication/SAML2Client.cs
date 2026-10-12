@@ -33,6 +33,7 @@
 //*                                検証に失敗するとnullのままで、呼び出し側が理由を切り分けられなかった。
 //*  2026/10/11  玄人 幸道         VerifyResponseに、検証用の証明書（*.cer）のパスを受けるオーバーロードを追加（#600）。
 //*                                CmnClientParams.RsaCerFilePath固定で、自分以外のIdPの応答を検証できなかった。
+//*  2026/10/12  玄人 幸道         VerifyResponseのhashAlgorithmNameに、SigAlgとの照合の説明を追加（#604）
 //**********************************************************************************
 
 using System;
@@ -176,6 +177,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="samlResponse2">XmlDocument</param>
         /// <param name="hashAlgorithmName">
         /// HashAlgorithmName（Redirect の署名の検証に使う）。
+        /// Redirect の SigAlg が、このハッシュの RSA を示していなければ失敗する（#604）。
         /// POST の署名は、XML の SignatureMethod に従って検証する。
         /// </param>
         /// <returns>bool</returns>
