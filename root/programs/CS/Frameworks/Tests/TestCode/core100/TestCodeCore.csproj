@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <Compile Include="..\Program.cs" Link="Program.cs" />
+    <Compile Include="..\TestAccessToken.cs" Link="TestAccessToken.cs" />
     <Compile Include="..\TestCustomEncode.cs" Link="TestCustomEncode.cs" />
     <Compile Include="..\TestDeflateCompression.cs" Link="TestDeflateCompression.cs" />
     <Compile Include="..\TestDto.cs" Link="TestDto.cs" />
@@ -26,6 +27,7 @@
     <Compile Include="..\TestResourceLoader.cs" Link="TestResourceLoader.cs" />
     <Compile Include="..\TestObjectInspector.cs" Link="TestObjectInspector.cs" />
     <Compile Include="..\TestOutputLog.cs" Link="TestOutputLog.cs" />
+    <Compile Include="..\TestResponseObject.cs" Link="TestResponseObject.cs" />
     <Compile Include="..\TestSAML2.cs" Link="TestSAML2.cs" />
     <Compile Include="..\TestStringChecker.cs" Link="TestStringChecker.cs" />
     <Compile Include="..\TestStringConverter.cs" Link="TestStringConverter.cs" />
@@ -57,12 +59,16 @@
   <ItemGroup>
     <PackageReference Include="log4net" Version="3.3.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.5" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="10.0.5" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.5" />
     <!--フレームワークは HintPath で参照しており、NuGet の推移的依存が効かない。
         OpenTouryo.Public / Public.Security が使うパッケージは、ここにも並べる必要がある。
-        BouncyCastle.NetCore は GetHash が使う（IdToken.CreateHash 経由、#584）。-->
+        BouncyCastle.NetCore は GetHash が使う（IdToken.CreateHash 経由、#584）。
+        Newtonsoft.Json は IdToken.Verify の引数（JObject）が使う（#601）。
+        Microsoft.Extensions.Configuration.Binder は OAuth2AndOIDCParams.ClientIDs が使う（#603）。-->
     <PackageReference Include="BouncyCastle.NetCore" Version="2.2.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="SharpZipLib" Version="1.4.2" />
     <PackageReference Include="Zipangu" Version="1.1.8" />
   </ItemGroup>

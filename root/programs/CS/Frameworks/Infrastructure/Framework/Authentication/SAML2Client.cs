@@ -31,6 +31,9 @@
 //*  2019/06/04  西野 大介         新規作成
 //*  2026/10/07  玄人 幸道         VerifyResponseのout statusCodeを、検証の前に設定するようにした（#598）。
 //*                                検証に失敗するとnullのままで、呼び出し側が理由を切り分けられなかった。
+//*  2026/10/11  玄人 幸道         VerifyResponseに、検証用の証明書（*.cer）のパスを受けるオーバーロードを追加（#600）。
+//*                                CmnClientParams.RsaCerFilePath固定で、自分以外のIdPの応答を検証できなかった。
+//*  2026/10/12  玄人 幸道         VerifyResponseのhashAlgorithmNameに、SigAlgとの照合の説明を追加（#604）
 //**********************************************************************************
 
 using System;
@@ -128,6 +131,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="hashAlgorithmName">HashAlgorithmName</param>
         /// <returns>bool</returns>
         /// <remarks>
+        /// 署名の検証には CmnClientParams.RsaCerFilePath の証明書を使う。
+        /// 相手（IdP）ごとに証明書を替える場合は、cerFilePath を受けるオーバーロードを使う（#600）。
+        ///
         /// statusCode は、応答を読めた時点（署名・構造の検証より前）で設定する（#598）。
         /// false が返ったときに、呼び出し側が理由を切り分けるためである。
         ///
@@ -143,6 +149,59 @@ namespace Touryo.Infrastructure.Framework.Authentication
             out SAML2Enum.AuthnContextClassRef? authnContextClassRef,
             out XmlDocument samlResponse2,
             HashAlgorithmName? hashAlgorithmName = null) // 既定値の変更 SHA1 → SHA256
+        {
+            return SAML2Client.VerifyResponse(
+                queryString, samlResponse, null,
+                out nameId, out iss, out aud,
+                out inResponseTo, out recipient, out notOnOrAfter,
+                out statusCode, out nameIDFormat, out authnContextClassRef,
+                out samlResponse2, hashAlgorithmName);
+        }
+
+        /// <summary>VerifyResponse</summary>
+        /// <param name="queryString">string</param>
+        /// <param name="samlResponse">string</param>
+        /// <param name="cerFilePath">
+        /// 署名の検証に使う、相手（IdP）のX.509証明書(*.cer)へのパス。
+        /// null か空文字なら、CmnClientParams.RsaCerFilePath を使う。
+        /// </param>
+        /// <param name="nameId">out string</param>
+        /// <param name="iss">out string</param>
+        /// <param name="aud">out string</param>
+        /// <param name="inResponseTo">out string</param>
+        /// <param name="recipient">out string</param>
+        /// <param name="notOnOrAfter">out DateTime</param>
+        /// <param name="statusCode">SAML2Enum.StatusCode</param>
+        /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
+        /// <param name="authnContextClassRef">SAML2Enum.AuthnContextClassRef</param>
+        /// <param name="samlResponse2">XmlDocument</param>
+        /// <param name="hashAlgorithmName">
+        /// HashAlgorithmName（Redirect の署名の検証に使う）。
+        /// Redirect の SigAlg が、このハッシュの RSA を示していなければ失敗する（#604）。
+        /// POST の署名は、XML の SignatureMethod に従って検証する。
+        /// </param>
+        /// <returns>bool</returns>
+        /// <remarks>
+        /// 自由に利用できる。
+        ///
+        /// 検証できるのは「cerFilePath の証明書で署名されていること」までである。
+        /// その証明書の持ち主と、out iss が一致することは、呼び出し側で照合すること（#600）。
+        ///
+        /// statusCode は、応答を読めた時点（署名・構造の検証より前）で設定する（#598）。
+        /// false が返ったときに、呼び出し側が理由を切り分けるためである。
+        ///
+        /// したがって、false のときの statusCode は検証されていない値である。
+        /// 表示・ログによる切り分けにだけ使い、認証の判断には戻り値を使うこと。
+        /// </remarks>
+        public static bool VerifyResponse(
+            string queryString, string samlResponse, string cerFilePath,
+            out string nameId, out string iss, out string aud,
+            out string inResponseTo, out string recipient, out DateTime? notOnOrAfter,
+            out SAML2Enum.StatusCode? statusCode,
+            out SAML2Enum.NameIDFormat? nameIDFormat,
+            out SAML2Enum.AuthnContextClassRef? authnContextClassRef,
+            out XmlDocument samlResponse2,
+            HashAlgorithmName? hashAlgorithmName = null)
         {
             bool verified = false;
 
@@ -198,8 +257,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
 #region 検証
             // Metadata利用を検討
+            // 証明書の指定が無ければ、従来どおり設定の1本を使う（#600）。
+            if (string.IsNullOrEmpty(cerFilePath))
+            {
+                cerFilePath = CmnClientParams.RsaCerFilePath;
+            }
+
             HashAlgorithmName han = hashAlgorithmName ?? HashAlgorithmName.SHA256;
-            DigitalSignX509 dsX509 = new DigitalSignX509(CmnClientParams.RsaCerFilePath, "", han);
+            DigitalSignX509 dsX509 = new DigitalSignX509(cerFilePath, "", han);
 
             if (!string.IsNullOrEmpty(queryString))
             {

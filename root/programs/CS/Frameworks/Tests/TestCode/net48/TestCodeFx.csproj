@@ -40,6 +40,9 @@
     <Reference Include="OpenTouryo.Public">
       <HintPath>..\..\..\Infrastructure\Build_net48\OpenTouryo.Public.dll</HintPath>
     </Reference>
+    <Reference Include="OpenTouryo.Public.Security">
+      <HintPath>..\..\..\Infrastructure\Build_net48\OpenTouryo.Public.Security.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web.Extensions" />
@@ -61,6 +64,9 @@
     </Compile>
     <Compile Include="..\Program.cs">
       <Link>Program.cs</Link>
+    </Compile>
+    <Compile Include="..\TestAccessToken.cs">
+      <Link>TestAccessToken.cs</Link>
     </Compile>
     <Compile Include="..\TestCustomEncode.cs">
       <Link>TestCustomEncode.cs</Link>
@@ -104,6 +110,9 @@
     <Compile Include="..\TestOutputLog.cs">
       <Link>TestOutputLog.cs</Link>
     </Compile>
+    <Compile Include="..\TestResponseObject.cs">
+      <Link>TestResponseObject.cs</Link>
+    </Compile>
     <Compile Include="..\TestSAML2.cs">
       <Link>TestSAML2.cs</Link>
     </Compile>
@@ -146,6 +155,9 @@
   <ItemGroup>
     <PackageReference Include="OssCons.DotNetSubcommittee.TestClassLibrary1">
       <Version>0.1.1</Version>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>13.0.3</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

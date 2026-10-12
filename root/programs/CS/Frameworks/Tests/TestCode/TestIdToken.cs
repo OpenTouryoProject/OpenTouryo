@@ -24,12 +24,19 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/09/10  玄人 幸道         新規作成（#584）
+//*  2026/10/11  玄人 幸道         IdToken.Verifyの、検証鍵とiss / audを渡す版のテストを追加（#601）
+//*  2026/10/12  玄人 幸道         設定で判定するIdToken.Verifyの、audの確認のテストを追加（#603）
 //**********************************************************************************
 
 using System;
+using System.IO;
+
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Public.Diagnostics;
+using Touryo.Infrastructure.Public.Security.Jwt;
 
 namespace TestCode
 {
@@ -45,6 +52,19 @@ namespace TestCode
     ///
     ///   そのため期待値には、OpenID Connect Core 1.0 付録 A の例示値と、
     ///   #584 で実測に使った値（Python の hashlib で求めたもの）を置く。
+    ///
+    /// 検証鍵と iss / aud を渡す Verify（#601）。
+    ///
+    /// ＜鍵は、実行のたびに作る＞
+    ///   相手（OP）の鍵と、それとは別の鍵を作る。id_token も実行のたびに署名するため、
+    ///   出すのは検証の結果（bool）だけにする。
+    ///
+    /// 設定で判定する Verify の aud（#603）。
+    ///
+    /// ＜認可サーバを兼ねる配備を、設定で作る＞
+    ///   App.config / appsettings.json に JwkSetFilePath（TestJwkSet.json）・SpRp_Isser・
+    ///   OAuth2AndOidcClientID / OAuth2AndOidcClientIDs を置く。
+    ///   TestJwkSet.json は、実行のたびに作った鍵で書き出し、終わったら消す。
     /// </remarks>
     public class TestIdToken
     {
@@ -58,6 +78,14 @@ namespace TestCode
             MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
 
             TestIdToken.TestVerifyHash();
+
+            MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+
+            TestIdToken.TestVerifyByJws();
+
+            MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+
+            TestIdToken.TestVerifyBySettings();
         }
 
         #endregion
@@ -106,6 +134,123 @@ namespace TestCode
                 "state-hybrid", "iZPw3gFUI31HD9TANpAVbQ");
         }
 
+        /// <summary>Verify（jws / iss / aud）</summary>
+        /// <remarks>
+        /// 渡した鍵・iss・aud で検証されること（#601）。
+        /// 2026/10/11 まで、鍵と iss は設定から判定され、相手（OP）の id_token を検証できなかった。
+        /// </remarks>
+        private static void TestVerifyByJws()
+        {
+            MyDebug.OutputDebugAndConsole("IdToken.Verify（jws / iss / aud）");
+
+            const string iss = "https://op.example.com/";
+            const string aud = "client01";
+
+            // 相手（OP）の鍵（kid は、自分の JWK Set に無い値にする）
+            JWS_RS256_Param opJws = new JWS_RS256_Param();
+            opJws.JWSHeader.kid = "op-kid";
+            string idToken = TestIdToken.CreateIdToken(opJws, iss, aud);
+
+            JWS opPublicJws = new JWS_RS256_Param(opJws.RsaPublicParameters);
+            JWS otherPublicJws = new JWS_RS256_Param(new JWS_RS256_Param().RsaPublicParameters);
+
+            TestIdToken.OutputVerifyByJws("相手の鍵・iss・aud", idToken, opPublicJws, iss, aud, true);
+            TestIdToken.OutputVerifyByJws("別の鍵", idToken, otherPublicJws, iss, aud, false);
+            TestIdToken.OutputVerifyByJws("iss が違う", idToken, opPublicJws, "https://other.example.com/", aud, false);
+            TestIdToken.OutputVerifyByJws("aud が違う", idToken, opPublicJws, iss, "client02", false);
+
+            // aud を array で返す OP もある（含まれていれば、相手の client_id 宛である）
+            string idTokenAudArray = TestIdToken.CreateIdToken(opJws, iss, new JArray(aud, "client02"));
+            TestIdToken.OutputVerifyByJws("aud が array（含まれる）", idTokenAudArray, opPublicJws, iss, aud, true);
+            TestIdToken.OutputVerifyByJws("aud が array（含まれない）", idTokenAudArray, opPublicJws, iss, "client03", false);
+
+            // 期待値を渡さないのは誤用（設定に落とさず、ArgumentNullException にする）
+            TestIdToken.OutputVerifyByJws("iss が空（例外になること）", idToken, opPublicJws, "", aud, false);
+            TestIdToken.OutputVerifyByJws("aud が空（例外になること）", idToken, opPublicJws, iss, "", false);
+        }
+
+        /// <summary>Verify（設定で判定する版）の aud</summary>
+        /// <remarks>
+        /// 認可サーバを兼ねる配備（JwkSetFilePath が在る）でも、aud を確認すること（#603）。
+        /// 2026/10/12 まで、この配備では aud を確認せず、「aud が設定に無い」も True になっていた。
+        /// </remarks>
+        private static void TestVerifyBySettings()
+        {
+            MyDebug.OutputDebugAndConsole("IdToken.Verify（設定で判定する版。JwkSetFilePath が在る配備）");
+
+            JWS_RS256_Param jws = TestIdToken.SaveTestJwkSet();
+            try
+            {
+                const string iss = TestIdToken.TestIssuer;
+
+                TestIdToken.OutputVerifyBySettings("aud が ClientID",
+                    TestIdToken.CreateIdToken(jws, iss, "client01"), true);
+                TestIdToken.OutputVerifyBySettings("aud が ClientIDs に在る",
+                    TestIdToken.CreateIdToken(jws, iss, "client02"), true);
+                TestIdToken.OutputVerifyBySettings("aud が設定に無い",
+                    TestIdToken.CreateIdToken(jws, iss, "client03"), false);
+                TestIdToken.OutputVerifyBySettings("aud が array（ClientID を含む）",
+                    TestIdToken.CreateIdToken(jws, iss, new JArray("client03", "client01")), true);
+                TestIdToken.OutputVerifyBySettings("aud が array（設定の値を含まない）",
+                    TestIdToken.CreateIdToken(jws, iss, new JArray("client03", "client04")), false);
+                TestIdToken.OutputVerifyBySettings("iss が SpRp_Isser と違う",
+                    TestIdToken.CreateIdToken(jws, "https://other.example.com/", "client01"), false);
+            }
+            finally
+            {
+                File.Delete(TestIdToken.TestJwkSetFilePath);
+            }
+        }
+
+        #endregion
+
+        #region 設定で判定する版のヘルパ（TestResponseObject からも使う）
+
+        /// <summary>App.config / appsettings.json の SpRp_Isser</summary>
+        internal const string TestIssuer = "https://as.example.com/";
+
+        /// <summary>App.config / appsettings.json の JwkSetFilePath</summary>
+        internal const string TestJwkSetFilePath = "TestJwkSet.json";
+
+        /// <summary>
+        /// 鍵を作り、その公開鍵を JwkSetFilePath の JWK Set に書き出す。
+        /// </summary>
+        /// <returns>署名に使う鍵（kid は JWK Set のものを設定済み）</returns>
+        internal static JWS_RS256_Param SaveTestJwkSet()
+        {
+            JWS_RS256_Param jws = new JWS_RS256_Param();
+
+            JObject jwk = JObject.Parse(
+                new RsaPublicKeyConverter().ParamToJwk(jws.RsaPublicParameters));
+            jws.JWSHeader.kid = (string)jwk[JwtConst.kid];
+
+            JwkSet jwkSet = JwkSet.AddJwkToJwkSet(new JwkSet(), jwk);
+            JwkSet.SaveJwkSet(TestIdToken.TestJwkSetFilePath, jwkSet);
+
+            return jws;
+        }
+
+        #endregion
+
+        #region 組み立てのヘルパ
+
+        /// <summary>id_token を作る</summary>
+        /// <param name="jws">署名に使う鍵</param>
+        /// <param name="iss">iss</param>
+        /// <param name="aud">aud（string か JArray）</param>
+        /// <returns>id_token</returns>
+        private static string CreateIdToken(JWS jws, string iss, JToken aud)
+        {
+            JObject payload = new JObject();
+            payload[OAuth2AndOIDCConst.iss] = iss;
+            payload[OAuth2AndOIDCConst.aud] = aud;
+            payload[OAuth2AndOIDCConst.sub] = "user01";
+            payload[OAuth2AndOIDCConst.nonce] = "nonce01";
+            payload[OAuth2AndOIDCConst.exp] = DateTimeOffset.Now.AddHours(1).ToUnixTimeSeconds().ToString();
+
+            return jws.Create(payload.ToString(Formatting.None));
+        }
+
         #endregion
 
         #region 出力のヘルパ
@@ -140,6 +285,61 @@ namespace TestCode
             {
                 MyDebug.OutputDebugAndConsole(
                     caseName + " : " + IdToken.VerifyHash(input, hash));
+            }
+            catch (Exception ex)
+            {
+                // メッセージは環境の言語で変わるため、型名だけを出す。
+                MyDebug.OutputDebugAndConsole(caseName + " : 例外 " + ex.GetType().FullName);
+            }
+        }
+
+        /// <summary>Verify（jws / iss / aud）の結果を出力する</summary>
+        /// <param name="caseName">ケース名</param>
+        /// <param name="idToken">id_token</param>
+        /// <param name="jws">検証に使う鍵</param>
+        /// <param name="iss">期待する iss</param>
+        /// <param name="aud">期待する aud</param>
+        /// <param name="expected">期待値</param>
+        private static void OutputVerifyByJws(string caseName,
+            string idToken, JWS jws, string iss, string aud, bool expected)
+        {
+            try
+            {
+                string sub = "";
+                string nonce = "";
+                JObject jobj = null;
+
+                bool actual = IdToken.Verify(idToken, "", "", "",
+                    jws, iss, aud, out sub, out nonce, out jobj);
+
+                MyDebug.OutputDebugAndConsole(
+                    caseName + " : " + actual + "（期待値と一致 : " + (actual == expected) + "）"
+                    + (actual ? "、sub : " + sub : ""));
+            }
+            catch (Exception ex)
+            {
+                // メッセージは環境の言語で変わるため、型名だけを出す。
+                MyDebug.OutputDebugAndConsole(caseName + " : 例外 " + ex.GetType().FullName);
+            }
+        }
+
+        /// <summary>Verify（設定で判定する版）の結果を出力する</summary>
+        /// <param name="caseName">ケース名</param>
+        /// <param name="idToken">id_token</param>
+        /// <param name="expected">期待値</param>
+        private static void OutputVerifyBySettings(string caseName, string idToken, bool expected)
+        {
+            try
+            {
+                string sub = "";
+                string nonce = "";
+                JObject jobj = null;
+
+                bool actual = IdToken.Verify(idToken, "", "", "",
+                    out sub, out nonce, out jobj);
+
+                MyDebug.OutputDebugAndConsole(
+                    caseName + " : " + actual + "（期待値と一致 : " + (actual == expected) + "）");
             }
             catch (Exception ex)
             {

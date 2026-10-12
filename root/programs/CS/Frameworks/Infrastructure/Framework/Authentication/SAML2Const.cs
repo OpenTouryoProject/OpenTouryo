@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/05/21  西野 大介         新規作成
 //*  2019/12/25  西野 大介         PPID対応による見直し
+//*  2026/10/12  玄人 幸道         RSAwithSHA256 / 384 / 512 を追加（#604）
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Framework.Authentication
@@ -300,6 +301,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>DSAwithSHA1</summary>
         public const string DSAwithSHA1 = "http://www.w3.org/2000/09/xmldsig#dsa-sha1";
+
+        /// <summary>RSAwithSHA256（RFC 6931）</summary>
+        public const string RSAwithSHA256 = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256";
+
+        /// <summary>RSAwithSHA384（RFC 6931）</summary>
+        public const string RSAwithSHA384 = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha384";
+
+        /// <summary>RSAwithSHA512（RFC 6931）</summary>
+        public const string RSAwithSHA512 = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512";
         #endregion
     }
 }

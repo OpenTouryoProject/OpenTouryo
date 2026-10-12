@@ -546,11 +546,46 @@ net48 のサンプルとツールが一切ビルドできない。**
 - `OAuth2AndOIDCClient` … Authorization Code / PKCE(S256) / Client Credentials / ROPC /
   Refresh / UserInfo / Revoke / Introspect / JWT Bearer / Device AuthZ / CIBA / Request Object / JWK Set。
   **すべて `static async Task<string>`（生 JSON を返す）**。`HttpClient` は `static` プロパティで差し替え可能。
-- `OAuth2AndOIDCConst` / `OAuth2AndOIDCEnum` / `OAuth2AndOIDCParams` / `CmnClientParams`
-- トークン型: `CmnJwtToken` `AccessToken` `IdToken` `JwtAssertion` `RequestObject` `ResponseObject` `ClaimsInRO`
+- `OAuth2AndOIDCConst` / `OAuth2AndOIDCEnum` / `OAuth2AndOIDCParams` / `CmnClientParams`。
+  **`CmnClientParams`（`SpRp_*`）と `JwkSetUri` は、クライアント役が読む設定である**（#602）。
+
+  | キー | フレームワークでの意味 |
+  |---|---|
+  | `SpRp_Isser` / `SpRp_*Uri` / `SpRp_*CerFilePath` / `JwkSetUri` | **相手（OP / IdP）の値**（Issuer・エンドポイント・検証用の公開鍵・JWK Set の URL） |
+  | `SpRp_*PfxFilePath` / `SpRp_*PfxPassword` | **クライアント自身の鍵**（要求の署名・JWE の復号） |
+  | `JwkSetFilePath` | **認可サーバ自身の JWK Set**（`CmnJwtToken.Verify` の分岐にも使われる。上記） |
+
+  **認可サーバを作るアプリが、これらを「自分の値」（自分の Issuer・`/jwkcerts` の口・署名鍵の対）として
+  流用すると、同じ配備でクライアント役を兼ねたときに、相手の値を置けなくなる。**
+  サーバ役の値は、アプリ側で別のキーを持つこと
+- トークン型: `CmnJwtToken` `AccessToken` `IdToken` `JwtAssertion` `RequestObject` `ResponseObject` `ClaimsInRO`。
+  `CmnJwtToken.Verify` の検証鍵は、`OAuth2AndOIDCParams.JwkSetFilePath` の有無（＝自分が認可サーバか）で選ぶ。
+  **認可サーバ兼クライアントで相手（OP）の `id_token` を検証するなら、
+  `IdToken.Verify` の `jws` / `iss` / `aud` を受けるオーバーロードを使う**（#601）。
+  `ResponseObject.Verify` にも同じ形の版がある。
+  設定で判定する既存の版（`IdToken` / `ResponseObject`）も、**`JwkSetFilePath` の有無によらず `aud` を確認する**
+  （`OAuth2AndOidcClientID` / `OAuth2AndOidcClientIDs` のいずれかを含むこと。#603）。
+  **認可サーバ兼クライアントの自己テストでは、テスト用クライアントの `client_id` を `OAuth2AndOidcClientIDs` に並べる。**
+  鍵の選び方（`JwkSetFilePath` の有無）は変えていない。
+  `AccessToken.Verify` の既存の版は `aud` を確認しない（Keycloakコンパチ）。
+  **`aud` を確認するなら `jws` / `iss` / `auds`（期待する `aud` の集合）を受ける版を使う。**
+  `aud` に `client_id` が入る形式では、受け付けるクライアントの `client_id` の一覧を渡す。
+  `typ`（`at+jwt`）は確認しない（RFC 9068 の形式には準拠していない）
 - `JwkSetStore` … JWK Set のキャッシュ
 - SAML2: `SAML2Client`（`CreateRedirectRequest` / `CreatePostRequest` / `VerifyResponse`）、
-  `SAML2Bindings` `SAML2Const` `SAML2Enum` `SAML2Params`
+  `SAML2Bindings` `SAML2Const` `SAML2Enum` `SAML2Params`。
+  `VerifyResponse` の検証用証明書は、既定で `CmnClientParams.RsaCerFilePath`（配備に 1 本）。
+  **相手（IdP）ごとに替えるなら、`cerFilePath` を受けるオーバーロードを使う**（#600）。
+  Redirect の `SigAlg` は、`EncodeAndSignRedirect` に渡した `DigitalSign` のアルゴリズムで書く
+  （既定の SHA256 なら `rsa-sha256`。#604 まで `rsa-sha1` 固定だった）。
+  **`VerifyRedirect` は 2 つ在る**（#604）。
+  `DigitalSign` を受ける版は、渡された `DigitalSign` で検証し、**`SigAlg` がそのアルゴリズムと一致しなければ失敗する**
+  （`SAML2Client.VerifyResponse` はこちら。ハッシュは `hashAlgorithmName`、既定は SHA256）。
+  `RSA` を受ける版は、**許可リスト（`sigAlgs`）の中から `SigAlg` でハッシュを選ぶ**（既定は SHA256 / 384 / 512 で、SHA1 は受けない）。
+  **#604 より前の Open棟梁 が送った要求・応答（`rsa-sha1` と名乗る SHA256 の署名）は、どちらでも失敗する。**
+  受け手で `SigAlg` が `rsa-sha1` であることを確かめていると、#604 以降の送り手の要求・応答で落ちる。
+  `EncodeAndSignRedirect` / `VerifyRedirect` の引数名は、#604 で `dsRSAwithSHA1` から `ds` に変えた
+  （SHA1 に限らないため）。**名前付き引数で渡している呼び出し元は、コンパイルが通らなくなる**
 - 依存: `jose-jwt` 5.1.1 / `BouncyCastle.NetCore` 2.2.1（`Public.Security`）
 
 ---

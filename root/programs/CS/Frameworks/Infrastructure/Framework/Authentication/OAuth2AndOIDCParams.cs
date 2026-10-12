@@ -31,6 +31,7 @@
 //*  2020/06/19  西野 大介         GetConfigSectionメソッドを廃止に伴う変更
 //*                                GetConfigSection → GetAnyConfigSection
 //*  2026/09/25  玄人 幸道         AuthRequestPushUri（PARエンドポイント）を追加
+//*  2026/10/12  玄人 幸道         ClientIDsは、未設定なら空のリストを返すようにした（#603）
 //**********************************************************************************
 
 using System.Collections.Generic;
@@ -78,16 +79,23 @@ namespace Touryo.Infrastructure.Framework.Authentication
         }
 
         /// <summary>ClientIDs</summary>
+        /// <remarks>未設定なら空のリストを返す（#603。null だと aud の確認で例外になっていた）</remarks>
         public static List<string> ClientIDs
         {
             get
             {
+                List<string> clientIDs = null;
 #if NETSTD
-                return GetConfigParameter.GetAnyConfigSection(
+                clientIDs = GetConfigParameter.GetAnyConfigSection(
                     "appSettings:OAuth2AndOidcClientIDs").Get<List<string>>();
 #else
-                return JsonConvert.DeserializeObject<List<string>>(GetConfigParameter.GetConfigValue("OAuth2AndOidcClientIDs"));
+                string value = GetConfigParameter.GetConfigValue("OAuth2AndOidcClientIDs");
+                if (!string.IsNullOrEmpty(value))
+                {
+                    clientIDs = JsonConvert.DeserializeObject<List<string>>(value);
+                }
 #endif
+                return clientIDs ?? new List<string>();
             }
         }
 

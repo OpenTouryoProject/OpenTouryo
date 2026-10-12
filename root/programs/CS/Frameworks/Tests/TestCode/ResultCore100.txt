@@ -70,11 +70,11 @@ log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.Level
 log4net: Created Appender [OPERATION2]
 log4net: Adding appender named [OPERATION2] to logger [OPERATION].
 log4net: Hierarchy Threshold []
-[2026/10/07 17:09:49,867],[DEBUG],[2],LogIF.DebugLog("ACCESS");
-[2026/10/07 17:09:49,876],[INFO ],[2],LogIF.InfoLog("ACCESS");
-[2026/10/07 17:09:49,877],[WARN ],[2],LogIF.WarnLog("ACCESS");
-[2026/10/07 17:09:49,877],[ERROR],[2],LogIF.ErrorLog("ACCESS");
-[2026/10/07 17:09:49,877],[FATAL],[2],LogIF.FatalLog("ACCESS");
+[2026/10/12 09:54:13,400],[DEBUG],[2],LogIF.DebugLog("ACCESS");
+[2026/10/12 09:54:13,410],[INFO ],[2],LogIF.InfoLog("ACCESS");
+[2026/10/12 09:54:13,410],[WARN ],[2],LogIF.WarnLog("ACCESS");
+[2026/10/12 09:54:13,411],[ERROR],[2],LogIF.ErrorLog("ACCESS");
+[2026/10/12 09:54:13,411],[FATAL],[2],LogIF.FatalLog("ACCESS");
 LogIF.Is*Enabled - ACCESS : Debug True / Info True / Warn True / Error True / Fatal True
 log4net: configuring repository [log4net-default-repository] using stream
 log4net: loading XML configuration
@@ -2993,6 +2993,51 @@ IdToken.VerifyHash
 左半分（OIDC の定義） : True
 左右の XOR（修正前の値） : False
 ----------------------------------------------------------------------------------------------------
+IdToken.Verify（jws / iss / aud）
+相手の鍵・iss・aud : True（期待値と一致 : True）、sub : user01
+別の鍵 : False（期待値と一致 : True）
+iss が違う : False（期待値と一致 : True）
+aud が違う : False（期待値と一致 : True）
+aud が array（含まれる） : True（期待値と一致 : True）、sub : user01
+aud が array（含まれない） : False（期待値と一致 : True）
+iss が空（例外になること） : 例外 System.ArgumentNullException
+aud が空（例外になること） : 例外 System.ArgumentNullException
+----------------------------------------------------------------------------------------------------
+IdToken.Verify（設定で判定する版。JwkSetFilePath が在る配備）
+aud が ClientID : True（期待値と一致 : True）
+aud が ClientIDs に在る : True（期待値と一致 : True）
+aud が設定に無い : False（期待値と一致 : True）
+aud が array（ClientID を含む） : True（期待値と一致 : True）
+aud が array（設定の値を含まない） : False（期待値と一致 : True）
+iss が SpRp_Isser と違う : False（期待値と一致 : True）
+----------------------------------------------------------------------------------------------------
+AccessToken.Verify（jws / iss / auds）
+発行者の鍵・iss・aud の集合 : True（期待値と一致 : True）、sub : user01、scopes : openid profile
+別の鍵 : False（期待値と一致 : True）
+iss が違う : False（期待値と一致 : True）
+aud が集合に無い : False（期待値と一致 : True）
+aud が array（集合と重なる） : True（期待値と一致 : True）、sub : user01、scopes : openid profile
+aud が array（集合と重ならない） : False（期待値と一致 : True）
+aud が無い : False（期待値と一致 : True）
+iss が空（例外になること） : 例外 System.ArgumentNullException
+auds が空（例外になること） : 例外 System.ArgumentNullException
+----------------------------------------------------------------------------------------------------
+ResponseObject.Verify（jws / iss / aud）
+相手の鍵・iss・aud : True（期待値と一致 : True）、code : code01
+別の鍵 : False（期待値と一致 : True）
+iss が違う : False（期待値と一致 : True）
+aud が違う : False（期待値と一致 : True）
+aud が array（含まれる） : True（期待値と一致 : True）、code : code01
+aud が array（含まれない） : False（期待値と一致 : True）
+iss が空（例外になること） : 例外 System.ArgumentNullException
+aud が空（例外になること） : 例外 System.ArgumentNullException
+----------------------------------------------------------------------------------------------------
+ResponseObject.Verify（設定で判定する版。JwkSetFilePath が在る配備）
+aud が ClientID : True（期待値と一致 : True）
+aud が ClientIDs に在る : True（期待値と一致 : True）
+aud が設定に無い : False（期待値と一致 : True）
+aud が array（ClientID を含む） : True（期待値と一致 : True）
+----------------------------------------------------------------------------------------------------
 SAML2Bindings.VerifyByXPath（Response）
 Success・Assertion あり : True（期待値と一致 : True）
 Success・Assertion なし : False（期待値と一致 : True）
@@ -3001,5 +3046,23 @@ Responder・Assertion なし : True（期待値と一致 : True）
 Requester・Assertion あり : True（期待値と一致 : True）
 Requester・Assertion に Issuer なし : False（期待値と一致 : True）
 Status なし : False（期待値と一致 : True）
+SAML2Client.VerifyResponse（cerFilePath）
+POST・IdP の証明書 : True（期待値と一致 : True）、iss 一致 : True
+POST・別の証明書 : False（期待値と一致 : True）
+Redirect・IdP の証明書 : True（期待値と一致 : True）、iss 一致 : True
+Redirect・別の証明書 : False（期待値と一致 : True）
+SAML2Bindings.EncodeAndSignRedirect（SigAlg） / VerifyRedirect
+RSA・SHA1 : http://www.w3.org/2000/09/xmldsig#rsa-sha1（期待値と一致 : True）、VerifyRedirect（DigitalSign 版） : True、VerifyRedirect（RSA 版） : False（期待値と一致 : True）
+RSA・SHA256 : http://www.w3.org/2001/04/xmldsig-more#rsa-sha256（期待値と一致 : True）、VerifyRedirect（DigitalSign 版） : True、VerifyRedirect（RSA 版） : True（期待値と一致 : True）
+RSA・SHA384 : http://www.w3.org/2001/04/xmldsig-more#rsa-sha384（期待値と一致 : True）、VerifyRedirect（DigitalSign 版） : True、VerifyRedirect（RSA 版） : True（期待値と一致 : True）
+RSA・SHA512 : http://www.w3.org/2001/04/xmldsig-more#rsa-sha512（期待値と一致 : True）、VerifyRedirect（DigitalSign 版） : True、VerifyRedirect（RSA 版） : True（期待値と一致 : True）
+RSA-PSS・SHA256（従来どおり） : http://www.w3.org/2000/09/xmldsig#rsa-sha1（期待値と一致 : True）、VerifyRedirect（DigitalSign 版） : True、VerifyRedirect（RSA 版） : False（期待値と一致 : True）
+RSA・SHA1、RSA 版に rsa-sha1 を許可する : True（期待値と一致 : True）
+rsa-sha384 を、SHA256 の DigitalSign で検証する : False（期待値と一致 : True）
+旧版（rsa-sha1 と名乗る SHA256）、DigitalSign 版（SHA256） : False（期待値と一致 : True）
+旧版（rsa-sha1 と名乗る SHA256）、RSA 版（既定） : False（期待値と一致 : True）
+旧版（rsa-sha1 と名乗る SHA256）、RSA 版に rsa-sha1 を許可する : False（期待値と一致 : True）
+SigAlg を rsa-sha384 に書き換える、DigitalSign 版（SHA384） : False（期待値と一致 : True）
+SigAlg を rsa-sha384 に書き換える、RSA 版 : False（期待値と一致 : True）
 ----------------------------------------------------------------------------------------------------
 log4net: Shutdown called on Hierarchy [log4net-default-repository]
