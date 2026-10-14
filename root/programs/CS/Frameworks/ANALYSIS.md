@@ -576,6 +576,12 @@ net48 のサンプルとツールが一切ビルドできない。**
   `SAML2Bindings` `SAML2Const` `SAML2Enum` `SAML2Params`。
   `VerifyResponse` の検証用証明書は、既定で `CmnClientParams.RsaCerFilePath`（配備に 1 本）。
   **相手（IdP）ごとに替えるなら、`cerFilePath` を受けるオーバーロードを使う**（#600）。
+  要求（`AuthnRequest`）の署名鍵も同じで、既定は `CmnClientParams.RsaPfxFilePath`（配備に 1 本）。
+  **相手ごとに替えるなら、`CreateRedirectRequest` は `digitalSign`、`CreatePostRequest` は `rsa` を受けるオーバーロードを使う**（#606）。
+  どちらも `out id` の手前に置く。`null` なら設定の鍵で署名する
+  （**`SAML2Bindings.EncodeAndSign*` の「`null` なら署名しない」とは違う**）。
+  省略可能な引数ではなくオーバーロードにしたのは、既存の版のシグネチャを変えると、
+  **ビルド済みの呼び出し元が `MissingMethodException` で落ちる**ため
   Redirect の `SigAlg` は、`EncodeAndSignRedirect` に渡した `DigitalSign` のアルゴリズムで書く
   （既定の SHA256 なら `rsa-sha256`。#604 まで `rsa-sha1` 固定だった）。
   **`VerifyRedirect` は 2 つ在る**（#604）。

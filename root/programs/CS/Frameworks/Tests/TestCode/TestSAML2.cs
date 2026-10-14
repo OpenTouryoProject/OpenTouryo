@@ -26,6 +26,7 @@
 //*  2026/10/07  玄人 幸道         新規作成（#598）
 //*  2026/10/11  玄人 幸道         SAML2Client.VerifyResponseの、証明書を渡す版のテストを追加（#600）
 //*  2026/10/12  玄人 幸道         EncodeAndSignRedirectのSigAlgと、VerifyRedirectのSigAlgの扱いのテストを追加（#604）
+//*  2026/10/14  玄人 幸道         SAML2Client.CreateRedirectRequest / CreatePostRequestの、鍵を渡す版のテストを追加（#606）
 //**********************************************************************************
 
 using System;
@@ -43,7 +44,8 @@ namespace TestCode
     /// <remarks>
     /// 応答（Response）の構造検証（VerifyByXPath）（#598）と、
     /// 証明書を渡す版の VerifyResponse（#600）と、
-    /// Redirect の SigAlg が実際の署名アルゴリズムを示すこと（#604）。
+    /// Redirect の SigAlg が実際の署名アルゴリズムを示すこと（#604）と、
+    /// 鍵を渡す版の CreateRedirectRequest / CreatePostRequest（#606）。
     ///
     /// ＜期待値は、SAML 2.0 Core の定めから置く＞
     ///   成功応答は Assertion を持ち、エラー応答は Status だけで正当である（3.2.2 / 4.1.4.2）。
@@ -81,6 +83,7 @@ namespace TestCode
             TestSAML2.TestVerifyByXPathOfResponse();
             TestSAML2.TestVerifyResponseByCerFilePath();
             TestSAML2.TestSigAlgOfRedirect();
+            TestSAML2.TestCreateRequestByKey();
         }
 
         #endregion
@@ -249,6 +252,36 @@ namespace TestCode
                     () => SAML2Bindings.VerifyRedirect(tampered, ds384));
                 TestSAML2.OutputVerifyRedirect("SigAlg を rsa-sha384 に書き換える、RSA 版", false,
                     () => SAML2Bindings.VerifyRedirect(tampered, rsa));
+            }
+        }
+
+        /// <summary>CreateRedirectRequest（digitalSign） / CreatePostRequest（rsa）</summary>
+        /// <remarks>
+        /// 渡した鍵で署名されること（#606）。
+        /// 2026/10/14 まで、署名の鍵は CmnClientParams.RsaPfxFilePath に固定されていた。
+        ///
+        /// Redirect の署名は、SAML2Bindings を通さず、RSA.VerifyData で直に確かめる
+        /// （署名の対象は、クエリ文字列の Signature より前。SAML 2.0 Bindings 3.4.4.1）。
+        ///
+        /// 鍵を渡さない（null）版は、設定の PFX が要るので、ここでは見ない。
+        /// </remarks>
+        private static void TestCreateRequestByKey()
+        {
+            MyDebug.OutputDebugAndConsole("SAML2Client.CreateRedirectRequest（digitalSign） / CreatePostRequest（rsa）");
+
+            using (RSA spRsa = RSA.Create(2048))
+            using (RSA otherRsa = RSA.Create(2048))
+            {
+                // Redirect（クエリ文字列の署名）
+                TestSAML2.OutputCreateRedirectRequest("Redirect・SHA256",
+                    spRsa, otherRsa, HashAlgorithmName.SHA256, SAML2Const.RSAwithSHA256);
+
+                // ハッシュも、渡した DigitalSign のものになる
+                TestSAML2.OutputCreateRedirectRequest("Redirect・SHA384",
+                    spRsa, otherRsa, HashAlgorithmName.SHA384, SAML2Const.RSAwithSHA384);
+
+                // POST（XML の署名）
+                TestSAML2.OutputCreatePostRequest("POST", spRsa, otherRsa);
             }
         }
 
@@ -426,6 +459,92 @@ namespace TestCode
                     caseName + " : " + sigAlg + "（期待値と一致 : " + (sigAlg == expected) + "）"
                     + "、VerifyRedirect（DigitalSign 版） : " + SAML2Bindings.VerifyRedirect(queryString, ds)
                     + "、VerifyRedirect（RSA 版） : " + byRsa + "（期待値と一致 : " + (byRsa == expectedByRsa) + "）");
+            }
+            catch (Exception ex)
+            {
+                // メッセージは環境の言語で変わるため、型名だけを出す。
+                MyDebug.OutputDebugAndConsole(caseName + " : 例外 " + ex.GetType().FullName);
+            }
+        }
+
+        /// <summary>CreateRedirectRequest（digitalSign）の結果を出力する</summary>
+        /// <param name="caseName">ケース名</param>
+        /// <param name="spRsa">署名に使う鍵</param>
+        /// <param name="otherRsa">それとは別の鍵</param>
+        /// <param name="hashAlgorithmName">ハッシュ</param>
+        /// <param name="expectedSigAlg">期待する SigAlg</param>
+        private static void OutputCreateRedirectRequest(string caseName,
+            RSA spRsa, RSA otherRsa, HashAlgorithmName hashAlgorithmName, string expectedSigAlg)
+        {
+            try
+            {
+                Touryo.Infrastructure.Public.Security.DigitalSignParam ds =
+                    new Touryo.Infrastructure.Public.Security.DigitalSignParam(
+                        spRsa.ExportParameters(true), hashAlgorithmName, RSASignaturePadding.Pkcs1);
+
+                string id = "";
+                string queryString = SAML2Client.CreateRedirectRequest(
+                    SAML2Enum.RequestOrResponse.Request,
+                    SAML2Enum.ProtocolBinding.HttpRedirect, SAML2Enum.NameIDFormat.Unspecified,
+                    TestSAML2.Recipient, TestSAML2.Recipient, "state", ds, out id);
+
+                string sigAlg = Touryo.Infrastructure.Public.Str.CustomEncode.UrlDecode(
+                    Touryo.Infrastructure.Public.Str.StringExtractor.GetParameterFromQueryString("SigAlg", queryString));
+
+                // 署名の対象（Signature より前）と、署名
+                const string signatureKey = "&Signature=";
+                int index = queryString.IndexOf(signatureKey, StringComparison.Ordinal);
+                byte[] data = System.Text.Encoding.ASCII.GetBytes(queryString.Substring(0, index));
+                byte[] signature = Convert.FromBase64String(
+                    Touryo.Infrastructure.Public.Str.CustomEncode.UrlDecode(
+                        queryString.Substring(index + signatureKey.Length)));
+
+                // out id は、要求（AuthnRequest）の ID
+                XmlDocument request = new XmlDocument();
+                request.LoadXml(SAML2Bindings.DecodeRedirect(queryString));
+                string idInRequest = SAML2Bindings.GetIdInRequest(
+                    request, SAML2Bindings.CreateNamespaceManager(request));
+
+                MyDebug.OutputDebugAndConsole(
+                    caseName + " : SigAlg " + sigAlg + "（期待値と一致 : " + (sigAlg == expectedSigAlg) + "）"
+                    + "、渡した鍵で検証 : " + spRsa.VerifyData(
+                        data, signature, hashAlgorithmName, RSASignaturePadding.Pkcs1)
+                    + "、別の鍵で検証 : " + otherRsa.VerifyData(
+                        data, signature, hashAlgorithmName, RSASignaturePadding.Pkcs1)
+                    + "、id 一致 : " + (!string.IsNullOrEmpty(id) && id == idInRequest));
+            }
+            catch (Exception ex)
+            {
+                // メッセージは環境の言語で変わるため、型名だけを出す。
+                MyDebug.OutputDebugAndConsole(caseName + " : 例外 " + ex.GetType().FullName);
+            }
+        }
+
+        /// <summary>CreatePostRequest（rsa）の結果を出力する</summary>
+        /// <param name="caseName">ケース名</param>
+        /// <param name="spRsa">署名に使う鍵</param>
+        /// <param name="otherRsa">それとは別の鍵</param>
+        private static void OutputCreatePostRequest(string caseName, RSA spRsa, RSA otherRsa)
+        {
+            try
+            {
+                string id = "";
+                string samlRequest = SAML2Client.CreatePostRequest(
+                    SAML2Enum.ProtocolBinding.HttpPost, SAML2Enum.NameIDFormat.Unspecified,
+                    TestSAML2.Recipient, TestSAML2.Recipient, "state", spRsa, out id);
+
+                string decodeSaml = SAML2Bindings.DecodePost(samlRequest);
+
+                // out id は、要求（AuthnRequest）の ID
+                XmlDocument request = new XmlDocument();
+                request.LoadXml(decodeSaml);
+                string idInRequest = SAML2Bindings.GetIdInRequest(
+                    request, SAML2Bindings.CreateNamespaceManager(request));
+
+                MyDebug.OutputDebugAndConsole(
+                    caseName + " : 渡した鍵で検証 : " + SAML2Bindings.VerifyPost(decodeSaml, id, spRsa)
+                    + "、別の鍵で検証 : " + SAML2Bindings.VerifyPost(decodeSaml, id, otherRsa)
+                    + "、id 一致 : " + (!string.IsNullOrEmpty(id) && id == idInRequest));
             }
             catch (Exception ex)
             {

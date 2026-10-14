@@ -34,6 +34,8 @@
 //*  2026/10/11  玄人 幸道         VerifyResponseに、検証用の証明書（*.cer）のパスを受けるオーバーロードを追加（#600）。
 //*                                CmnClientParams.RsaCerFilePath固定で、自分以外のIdPの応答を検証できなかった。
 //*  2026/10/12  玄人 幸道         VerifyResponseのhashAlgorithmNameに、SigAlgとの照合の説明を追加（#604）
+//*  2026/10/14  玄人 幸道         CreateRedirectRequest / CreatePostRequestに、署名に使う鍵を受けるオーバーロードを追加（#606）。
+//*                                CmnClientParams.RsaPfxFilePath固定で、相手（IdP）ごとに別の鍵で署名できなかった。
 //**********************************************************************************
 
 using System;
@@ -60,6 +62,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="id">out string</param>
         /// <param name="hashAlgorithmName">HashAlgorithmName</param>
         /// <returns>queryString</returns>
+        /// <remarks>
+        /// 署名には CmnClientParams.RsaPfxFilePath の鍵を使う。
+        /// 相手（IdP）ごとに鍵を替える場合は、digitalSign を受けるオーバーロードを使う（#606）。
+        /// </remarks>
         public static string CreateRedirectRequest(
             SAML2Enum.RequestOrResponse createRoR,
             SAML2Enum.ProtocolBinding protocolBinding,
@@ -72,15 +78,52 @@ namespace Touryo.Infrastructure.Framework.Authentication
             DigitalSignX509 dsX509 = new DigitalSignX509(
                 CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword, han);
 
-            // SamlRequestの生成
+            return SAML2Client.CreateRedirectRequest(
+                createRoR, protocolBinding, nameIDFormat,
+                iss, assertionConsumerService, relayState, dsX509, out id);
+        }
 
+        /// <summary>CreateRedirectRequest</summary>
+        /// <param name="createRoR">SAML2Enum.RequestOrResponse</param>
+        /// <param name="protocolBinding">SAML2Enum.ProtocolBinding</param>
+        /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
+        /// <param name="iss">string</param>
+        /// <param name="assertionConsumerService">string</param>
+        /// <param name="relayState">string</param>
+        /// <param name="digitalSign">
+        /// 署名に使う DigitalSign（自分の秘密鍵）。SigAlg も、この DigitalSign のアルゴリズムから決まる。
+        /// null なら、CmnClientParams.RsaPfxFilePath の鍵と SHA256 を使う。
+        /// </param>
+        /// <param name="id">out string</param>
+        /// <returns>queryString</returns>
+        /// <remarks>
+        /// 自由に利用できる。
+        ///
+        /// SAML2Bindings.EncodeAndSignRedirect は null なら署名しないが、
+        /// こちらは null でも署名する（設定の鍵を使う。#606）。
+        /// </remarks>
+        public static string CreateRedirectRequest(
+            SAML2Enum.RequestOrResponse createRoR,
+            SAML2Enum.ProtocolBinding protocolBinding,
+            SAML2Enum.NameIDFormat nameIDFormat,
+            string iss, string assertionConsumerService, string relayState,
+            DigitalSign digitalSign, out string id)
+        {
+            // 鍵の指定が無ければ、従来どおり設定の1本を使う（#606）。
+            if (digitalSign == null)
+            {
+                digitalSign = new DigitalSignX509(
+                    CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword, HashAlgorithmName.SHA256);
+            }
+
+            // SamlRequestの生成
             string samlRequest = SAML2Bindings.CreateRequest(
                 iss, protocolBinding, nameIDFormat,
                 assertionConsumerService, out id).OuterXml;
 
             // SamlRequestのエンコと、QueryStringを生成（ + 署名）
             return SAML2Bindings.EncodeAndSignRedirect(
-                createRoR, samlRequest, relayState, dsX509);
+                createRoR, samlRequest, relayState, digitalSign);
         }
 
         /// <summary>CreatePostRequest</summary>
@@ -91,17 +134,54 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="relayState">string</param>
         /// <param name="id">out string</param>
         /// <returns>samlRequest</returns>
+        /// <remarks>
+        /// 署名には CmnClientParams.RsaPfxFilePath の鍵を使う。
+        /// 相手（IdP）ごとに鍵を替える場合は、rsa を受けるオーバーロードを使う（#606）。
+        /// </remarks>
         public static string CreatePostRequest(
             SAML2Enum.ProtocolBinding protocolBinding,
             SAML2Enum.NameIDFormat nameIDFormat,
             string iss, string assertionConsumerService, string relayState, out string id)
         {
-            // RSA
+            return SAML2Client.CreatePostRequest(
+                protocolBinding, nameIDFormat,
+                iss, assertionConsumerService, relayState, null, out id);
+        }
+
+        /// <summary>CreatePostRequest</summary>
+        /// <param name="protocolBinding">SAML2Enum.ProtocolBinding</param>
+        /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
+        /// <param name="iss">string</param>
+        /// <param name="assertionConsumerService">string</param>
+        /// <param name="relayState">string</param>
+        /// <param name="rsa">
+        /// 署名に使う RSA（自分の秘密鍵）。
+        /// null なら、CmnClientParams.RsaPfxFilePath の鍵を使う。
+        /// </param>
+        /// <param name="id">out string</param>
+        /// <returns>samlRequest</returns>
+        /// <remarks>
+        /// 自由に利用できる。
+        ///
+        /// SAML2Bindings.EncodeAndSignPost は null なら署名しないが、
+        /// こちらは null でも署名する（設定の鍵を使う。#606）。
+        /// </remarks>
+        public static string CreatePostRequest(
+            SAML2Enum.ProtocolBinding protocolBinding,
+            SAML2Enum.NameIDFormat nameIDFormat,
+            string iss, string assertionConsumerService, string relayState,
+            RSA rsa, out string id)
+        {
+            // 鍵の指定が無ければ、従来どおり設定の1本を使う（#606）。
+            if (rsa == null)
+            {
 #if NETSTD
-            X509Certificate2 x509 = X509CertificateLoader.LoadPkcs12FromFile(CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword);
+                X509Certificate2 x509 = X509CertificateLoader.LoadPkcs12FromFile(CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword);
 #else
-            X509Certificate2 x509 = new X509Certificate2(CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword);
+                X509Certificate2 x509 = new X509Certificate2(CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword);
 #endif
+                rsa = x509.GetRSAPrivateKey();
+            }
 
             // SamlRequestの生成
             string samlRequest = SAML2Bindings.CreateRequest(
@@ -109,7 +189,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 assertionConsumerService, out id).OuterXml;
 
             // SamlRequestのエンコと署名
-            return SAML2Bindings.EncodeAndSignPost(samlRequest, id, x509.GetRSAPrivateKey());
+            return SAML2Bindings.EncodeAndSignPost(samlRequest, id, rsa);
         }
         #endregion
 
