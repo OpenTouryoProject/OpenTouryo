@@ -17,6 +17,12 @@ GetPasswordHashV1.EqualSaltedPassword (old) > True
 GetPasswordHashV2.EqualSaltedPassword (old) > False
 GetPasswordHashV2.EqualSaltedPassword (new) > True
 GetPasswordHashV2.EqualSaltedPassword (new) > True
+SymmetricCryptography.AES > EncryptString > J5e3iscHwhAUBYlEr+6cQ8MmXt7UT+w133dNJUqb1CC74BBAMU2blJTeZH6sLlfI
+SymmetricCryptography.AES > equals the expected > True
+SymmetricCryptography.AES > DecryptString > True
+SymmetricCryptography.AES (salt, stretching) > EncryptString > qqv1uM1yxmc/Vk/QP6dSQfEzZ2QXo7i3zZLgnsfFZ19SpJnUp2GLWbNp9wlJ2Jek
+SymmetricCryptography.AES (salt, stretching) > equals the expected > True
+SymmetricCryptography.AES (salt, stretching) > DecryptString > True
 ----------------------------------------------------------------------------------------------------
 RSA > X509Certificate2.PrivateKey: is not null
 RSA > SignatureAlgorithm.FriendlyName: sha256RSA
