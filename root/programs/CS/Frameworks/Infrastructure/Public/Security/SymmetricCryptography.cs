@@ -42,6 +42,10 @@
 //*  2018/10/30  西野 大介         CipherMode, PaddingMode指定の追加（CipherModeによってはIVを無視する）。
 //*  2018/11/09  西野 大介         インスタンス・メソッド化
 //*  2026/08/10  玄人 幸道         CipherMode_ECB 非推奨化に伴う CS0618 の抑止（CodeQL 対応）
+//*  2026/10/14  玄人 幸道         GenerateKeyFromPasswordが自分自身を呼び、StackOverflowExceptionで
+//*                                プロセスが落ちていたのを修正（#608）。ハッシュは従来の既定のSHA1を渡す。
+//*                                合わせて、.NET側で共有キーと初期化ベクタを別々に導出しており、
+//*                                初期化ベクタが共有キーの先頭と同じになっていたのを、従来どおり連続して取り出すようにした。
 //**********************************************************************************
 
 using System;
@@ -202,7 +206,9 @@ namespace Touryo.Infrastructure.Public.Security
             int keySize, out byte[] key, int blockSize, out byte[] iv, byte[] salt, int stretching)
         {
             // overloadへ
-            this.GenerateKeyFromPassword(password, keySize, out key, blockSize, out iv, salt, stretching);   
+            // ハッシュは、Rfc2898DeriveBytes の従来の既定（SHA1）。変えると、既存の暗号文を復号できなくなる（#608）。
+            this.GenerateKeyFromPassword(
+                password, keySize, out key, blockSize, out iv, salt, stretching, HashAlgorithmName.SHA1);
         }
 
         /// <summary>パスワードから共有キーと初期化ベクタを生成する</summary>
@@ -223,21 +229,23 @@ namespace Touryo.Infrastructure.Public.Security
             ////PasswordDeriveBytes deriveBytes = new PasswordDeriveBytes(password, salt);
 
 #if NETSTD
-            // 共有キーを生成
-            key = Rfc2898DeriveBytes.Pbkdf2(
+            // 共有キーと初期化ベクタを、続けて生成する。
+            // 別々に導出すると、初期化ベクタが共有キーの先頭と同じになり、
+            // GetBytes を続けて呼ぶ net48 側とも結果が変わる（#608）。
+            byte[] derived = Rfc2898DeriveBytes.Pbkdf2(
                 password: Encoding.UTF8.GetBytes(password),
                 salt: salt,
                 iterations: stretching,
                 hashAlgorithm: hashAlgorithmName,
-                outputLength: keySize / 8);
+                outputLength: keySize / 8 + blockSize / 8);
 
-            // 初期化ベクタを生成
-            iv = Rfc2898DeriveBytes.Pbkdf2(
-                password: Encoding.UTF8.GetBytes(password),
-                salt: salt,
-                iterations: stretching,
-                hashAlgorithm: hashAlgorithmName,
-                outputLength: blockSize / 8);
+            // 共有キー
+            key = new byte[keySize / 8];
+            Buffer.BlockCopy(derived, 0, key, 0, key.Length);
+
+            // 初期化ベクタ
+            iv = new byte[blockSize / 8];
+            Buffer.BlockCopy(derived, key.Length, iv, 0, iv.Length);
 #else
             //Rfc2898DeriveBytesオブジェクトを作成する
             Rfc2898DeriveBytes deriveBytes = new Rfc2898DeriveBytes(password, salt, stretching, hashAlgorithmName);

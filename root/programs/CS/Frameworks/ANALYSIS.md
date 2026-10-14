@@ -576,6 +576,12 @@ net48 のサンプルとツールが一切ビルドできない。**
   `SAML2Bindings` `SAML2Const` `SAML2Enum` `SAML2Params`。
   `VerifyResponse` の検証用証明書は、既定で `CmnClientParams.RsaCerFilePath`（配備に 1 本）。
   **相手（IdP）ごとに替えるなら、`cerFilePath` を受けるオーバーロードを使う**（#600）。
+  要求（`AuthnRequest`）の署名鍵も同じで、既定は `CmnClientParams.RsaPfxFilePath`（配備に 1 本）。
+  **相手ごとに替えるなら、`CreateRedirectRequest` は `digitalSign`、`CreatePostRequest` は `rsa` を受けるオーバーロードを使う**（#606）。
+  どちらも `out id` の手前に置く。`null` なら設定の鍵で署名する
+  （**`SAML2Bindings.EncodeAndSign*` の「`null` なら署名しない」とは違う**）。
+  省略可能な引数ではなくオーバーロードにしたのは、既存の版のシグネチャを変えると、
+  **ビルド済みの呼び出し元が `MissingMethodException` で落ちる**ため
   Redirect の `SigAlg` は、`EncodeAndSignRedirect` に渡した `DigitalSign` のアルゴリズムで書く
   （既定の SHA256 なら `rsa-sha256`。#604 まで `rsa-sha1` 固定だった）。
   **`VerifyRedirect` は 2 つ在る**（#604）。
@@ -683,6 +689,17 @@ Dependabot が 1 プロジェクトずつしか上げないため、放ってお
 14. **`Symbol_Framework.RichClient.nuspec` の lib TFM が不正確**。
     `net10.0-windows7.0` ビルドを `lib\net10.0` に配置している。本来は `lib\net10.0-windows` が正しく、
     現状は Linux 上の net10.0 消費者も解決してしまう。直すとパッケージ解決セマンティクスが変わるため据え置き。
+15. **オーバーロードへの委譲で引数を落とすと、自分自身を呼んでもコンパイルが通る**（警告も出ない）。
+    `SymmetricCryptography.GenerateKeyFromPassword` は、ハッシュを受ける版を足した際（2025/08/01）に
+    7 引数版が `hashAlgorithmName` を渡さず自分自身を呼ぶ形になり、
+    **`EncryptString` / `DecryptString` が `StackOverflowException` でプロセスごと落ちていた**
+    （**`catch` できない**。2026/10/14 に修正、#608）。
+    **呼ばれないコードは結果ファイルに現れない。** `EncAndDecUtilCUI` の `PrivateKeyCryptography` は空のままだった。
+
+    鍵の導出は、**修正前の既定（PBKDF2-HMAC-SHA1、共有キー → 初期化ベクタの順に続けて取り出す）**に戻した。
+    net10.0 側は `Rfc2898DeriveBytes.Pbkdf2` で 2 回に分けて導出しており、
+    **初期化ベクタが共有キーの先頭と同じ**になっていた（net48 とも暗号文が食い違う）。
+    **ハッシュや取り出し方を変えると、既存の暗号文を復号できなくなる。**
 
 ---
 

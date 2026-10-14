@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/11/10  西野 大介         新規作成
 //*  2026/10/03  玄人 幸道         RSASSA-PSS（PS256 / PS384 / PS512）のケースを追加（#596）
+//*  2026/10/14  玄人 幸道         SymmetricCryptography（EncryptString / DecryptString）のケースを追加（#608）
 //**********************************************************************************
 
 using System;
@@ -258,8 +259,95 @@ namespace EncAndDecUtilCUI
         #region PrivateKey
 
         /// <summary>PrivateKeyCryptography</summary>
+        /// <remarks>
+        /// SymmetricCryptography（#608）。
+        /// 2025/08/01 から 2026/10/14 まで、GenerateKeyFromPassword が自分自身を呼んでおり、
+        /// EncryptString / DecryptString は StackOverflowException でプロセスごと落ちていた（catch できない）。
+        ///
+        /// 期待値は、それより前の実装（Rfc2898DeriveBytes の既定の SHA1 で、
+        /// 共有キー → 初期化ベクタの順に続けて取り出す）を、.NET 標準の API で組み直して求める。
+        /// 暗号文も出すので、net48 と net10.0 の結果ファイルで同じ値になることも見られる。
+        /// </remarks>
         private static void PrivateKeyCryptography()
         {
+            string data = "ynyKeiR9FXWPkNQHvUPZkAlfUmouExBv";
+            string password = "ynyKeiR9FXWPkNQHvUPZkAlfUmouExBv";
+            byte[] salt = CustomEncode.StringToByte("SaltOfSymmetricCryptography", CustomEncode.UTF_8);
+
+            // 既定のソルト・ストレッチング
+            Program.OutputSymmetricCryptography("SymmetricCryptography.AES",
+                new SymmetricCryptography(EnumSymmetricAlgorithm.AES), data, password,
+                SymmetricCryptography.DefaultSalt, SymmetricCryptography.DefaultStretching);
+
+            // ソルト・ストレッチングを渡す
+            Program.OutputSymmetricCryptography("SymmetricCryptography.AES (salt, stretching)",
+                new SymmetricCryptography(EnumSymmetricAlgorithm.AES, salt, 1000), data, password,
+                salt, 1000);
+        }
+
+        /// <summary>SymmetricCryptography の結果を出力する</summary>
+        /// <param name="caseName">ケース名</param>
+        /// <param name="sc">SymmetricCryptography</param>
+        /// <param name="data">暗号化する文字列</param>
+        /// <param name="password">パスワード</param>
+        /// <param name="salt">sc に渡したソルト</param>
+        /// <param name="stretching">sc に渡したストレッチング</param>
+        private static void OutputSymmetricCryptography(string caseName,
+            SymmetricCryptography sc, string data, string password, byte[] salt, int stretching)
+        {
+            try
+            {
+                string encrypted = sc.EncryptString(data, password);
+
+                TIPD.MyDebug.OutputDebugAndConsole(caseName + " > EncryptString", encrypted);
+                TIPD.MyDebug.OutputDebugAndConsole(caseName + " > equals the expected",
+                    (encrypted == Program.EncryptByAes(data, password, salt, stretching)).ToString());
+                TIPD.MyDebug.OutputDebugAndConsole(caseName + " > DecryptString",
+                    (sc.DecryptString(encrypted, password) == data).ToString());
+            }
+            catch (Exception ex)
+            {
+                // メッセージは環境の言語で変わるため、型名だけを出す。
+                TIPD.MyDebug.OutputDebugAndConsole(caseName + " > Exception", ex.GetType().FullName);
+            }
+        }
+
+        /// <summary>SymmetricCryptography を使わずに、AES で暗号化する（期待値）</summary>
+        /// <param name="data">暗号化する文字列</param>
+        /// <param name="password">パスワード</param>
+        /// <param name="salt">ソルト</param>
+        /// <param name="stretching">ストレッチング</param>
+        /// <returns>暗号文（Base64）</returns>
+        private static string EncryptByAes(string data, string password, byte[] salt, int stretching)
+        {
+            using (Aes aes = Aes.Create())
+            {
+                // PBKDF2（HMAC-SHA1）で、共有キー → 初期化ベクタの順に続けて取り出す。
+#if NETCOREAPP
+                byte[] derived = Rfc2898DeriveBytes.Pbkdf2(
+                    Encoding.UTF8.GetBytes(password), salt, stretching,
+                    HashAlgorithmName.SHA1, aes.KeySize / 8 + aes.BlockSize / 8);
+
+                byte[] key = new byte[aes.KeySize / 8];
+                byte[] iv = new byte[aes.BlockSize / 8];
+                Buffer.BlockCopy(derived, 0, key, 0, key.Length);
+                Buffer.BlockCopy(derived, key.Length, iv, 0, iv.Length);
+#else
+                byte[] key;
+                byte[] iv;
+                using (Rfc2898DeriveBytes deriveBytes = new Rfc2898DeriveBytes(password, salt, stretching))
+                {
+                    key = deriveBytes.GetBytes(aes.KeySize / 8);
+                    iv = deriveBytes.GetBytes(aes.BlockSize / 8);
+                }
+#endif
+                aes.Key = key;
+                aes.IV = iv;
+
+                byte[] source = Encoding.UTF8.GetBytes(data);
+                return Convert.ToBase64String(
+                    aes.CreateEncryptor().TransformFinalBlock(source, 0, source.Length));
+            }
         }
 
         #endregion
