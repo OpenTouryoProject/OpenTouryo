@@ -23,6 +23,7 @@
       <group targetFramework="net48">
         <dependency id="log4net" version="3.3.0" />
         <dependency id="Microsoft.Data.SqlClient" version="6.0.2" />
+        <dependency id="System.Security.Cryptography.Pkcs" version="8.0.2" />
         <dependency id="Newtonsoft.Json" version="13.0.3" />
         <dependency id="NLog" version="5.5.0" />
         <dependency id="SharpZipLib" version="1.4.2" />
@@ -30,6 +31,7 @@
       <group targetFramework="net10.0">
         <dependency id="log4net" version="3.3.0" />
         <dependency id="Microsoft.Data.SqlClient" version="6.0.1" />
+        <dependency id="System.Security.Cryptography.Pkcs" version="9.0.21" />
         <dependency id="Microsoft.Extensions.Configuration" version="9.0.4" />
         <dependency id="Microsoft.Extensions.Configuration.Binder" version="9.0.4" />
         <dependency id="Microsoft.Extensions.Configuration.FileExtensions" version="9.0.4" />

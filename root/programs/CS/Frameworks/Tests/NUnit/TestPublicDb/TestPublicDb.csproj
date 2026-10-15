@@ -28,6 +28,8 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
     <PackageReference Include="log4net" Version="3.3.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
+    <!--SqlClient 6.0.2 が引く Pkcs 8.0.1 に既知の脆弱性があるため、修正版へ引き上げる。-->
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="8.0.2" />
     <PackageReference Include="MySql.Data" Version="9.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="Oracle.ManagedDataAccess" Version="23.8.0" />
@@ -46,6 +48,8 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <PackageReference Include="log4net" Version="3.3.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.0" />
+    <!--SqlClient 7.0.0 が引く Pkcs 9.0.13 に既知の脆弱性があるため、修正版へ引き上げる。-->
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.21" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.5" />
     <PackageReference Include="MySql.Data" Version="9.3.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />

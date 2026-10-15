@@ -219,7 +219,7 @@
     <!--Source Link（#531）。**ビルド時にだけ使う**ので PrivateAssets=all にし、
         NuGet パッケージの依存関係には出さない。-->
     <PackageReference Include="Microsoft.SourceLink.GitHub">
-      <Version>10.0.301</Version>
+      <Version>10.0.303</Version>
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
