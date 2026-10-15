@@ -22,6 +22,12 @@
       比較は CompareResult.ps1 が行い、実行ごとに変わる値（日時・処理時間・
       スレッド ID・パス・署名値等）を正規化してから差分を取る。
 
+    ＜NUnit のテスト（#610）＞
+      Tests\NUnit のテストは**期待値ファイルを持たない。** テスト自身が合否を出す。
+      バッチ（y_Build_TestCode_NUnit.bat）が書き出す *.trx を読み、失敗 0 件なら OK とする。
+      trx は Git 管理外（.gitignore）なので、ワーキング ツリーは書き換わらない。
+      net10.0 ではカバレッジも収集し、アセンブリごとの行カバレッジを表示する（判定はしない）。
+
     ＜ビルドをバッチに委ねている理由＞
       csproj / sln を直接 msbuild すると、nuget.exe restore が行うネイティブ DLL の
       配置（Microsoft.Data.SqlClient.SNI 等）が漏れ、実行時に DllNotFoundException になる。
@@ -70,6 +76,7 @@
      2026/08/01  玄人 幸道         新規作成（リリース ワークのエージェント化）
      2026/08/17  玄人 幸道         テストごとに Base64 の正規化を選べるようにした（#562）
      2026/10/15  玄人 幸道         Tests を Golden / NUnit / Else に整理した（#610）
+     2026/10/15  玄人 幸道         NUnit の結果（trx）を判定する対象を加えた（#610）
 #>
 [CmdletBinding()]
 param(
@@ -192,6 +199,9 @@ function Copy-TestCertificates
 #               **実行のたびに値が変わるテストだけ $true にする。**
 # NeedDb      : SQL Server の Northwind を使うか（#588）
 #               **単体テストも DB を使う。** 冒頭でまとめて確認する。
+# Kind        : "NUnit" なら、Result は *.trx で、HEAD とは比較しない（#610）
+#               **テスト自身が合否を出すため、期待値ファイルを持たない。**
+# Coverage    : カバレッジ（coverage.cobertura.xml）を表示するか（#610）
 $tests = @(
     @{
         Name = "TestCode (net48)";           Bat = "y_Build_TestCode_Public.bat"
@@ -228,6 +238,14 @@ $tests = @(
     @{
         Name = "EncAndDecUtilCUI (net10.0)"; Bat = "y_Build_TestCode_SecCUI.bat"
         Result = "Golden\EncAndDecUtilCUI\ResultCore100.txt";   SkipLog4net = $false; NormBase64 = $true
+    }
+    @{
+        Name = "NUnit TestPublic (net48)";   Bat = "y_Build_TestCode_NUnit.bat"
+        Result = "NUnit\TestResults\TestPublic_net48.trx";   Kind = "NUnit"
+    }
+    @{
+        Name = "NUnit TestPublic (net10.0)"; Bat = "y_Build_TestCode_NUnit.bat"
+        Result = "NUnit\TestResults\TestPublic_net10.0.trx"; Kind = "NUnit"; Coverage = $true
     }
 )
 
@@ -294,6 +312,9 @@ $expectedOf = @{}
 
 foreach ($t in $tests)
 {
+    # NUnit は期待値ファイルを持たない（#610）
+    if ($t.Kind -eq "NUnit") { continue }
+
     $full = Join-Path $testsRoot $t.Result
     # git が扱えるようリポジトリ相対・スラッシュ区切りにする
     $rel  = ($full.Substring($repoRoot.Length).TrimStart('\','/') -replace '\\','/')
@@ -418,6 +439,69 @@ foreach ($t in $tests)
 
         $results += [pscustomobject]@{
             テスト = $t.Name; 結果 = "ビルド失敗"; 差分 = "-"
+        }
+        continue
+    }
+
+    # ------------------------------------------------------------------
+    # NUnit（#610）
+    # ------------------------------------------------------------------
+    #   trx の ResultSummary を読む。**差分の列には失敗の件数を出す。**
+    #   バッチは実行前に古い trx を消すので、ここにあるのは今回の結果である。
+    if ($t.Kind -eq "NUnit")
+    {
+        if (-not (Test-Path $actual))
+        {
+            Write-Host "  結果ファイル（trx）が生成されていません" -ForegroundColor Red
+            $results += [pscustomobject]@{ テスト = $t.Name; 結果 = "結果無し"; 差分 = "-" }
+            continue
+        }
+
+        [xml]$trx = Get-Content $actual -Encoding UTF8 -Raw
+        $c = $trx.TestRun.ResultSummary.Counters
+        $total  = [int]$c.total
+        $failed = [int]$c.failed + [int]$c.error + [int]$c.timeout + [int]$c.aborted
+
+        Write-Host ("  合計 {0} 件 / 合格 {1} 件 / 失敗 {2} 件 / 実行せず {3} 件" -f `
+            $total, $c.passed, $failed, $c.notExecuted)
+
+        foreach ($r in @($trx.TestRun.Results.UnitTestResult | Where-Object { $_.outcome -ne "Passed" -and $_.outcome -ne "NotExecuted" }))
+        {
+            Write-Host ("    [{0}] {1}" -f $r.outcome, $r.testName) -ForegroundColor Red
+        }
+
+        # **0 件の合格は OK にしない。** テストが見つからない構成ミスを見逃すため。
+        $ok = ($total -gt 0 -and $failed -eq 0)
+
+        $results += [pscustomobject]@{
+            テスト = $t.Name
+            結果   = $(if ($ok) { "OK" } else { "NG" })
+            差分   = $failed
+        }
+
+        # ------------------------------------------------------------------
+        # カバレッジ（表示のみ。判定はしない）
+        # ------------------------------------------------------------------
+        #   coverlet は実行ごとに GUID のフォルダを作るため、trx の隣を探す。
+        if ($t.Coverage)
+        {
+            $cov = Get-ChildItem (Split-Path $actual) -Recurse -Filter "coverage.cobertura.xml" -EA SilentlyContinue |
+                   Sort-Object LastWriteTime -Descending | Select-Object -First 1
+
+            if ($cov)
+            {
+                [xml]$cx = Get-Content $cov.FullName -Encoding UTF8 -Raw
+                Write-Host "  行カバレッジ（判定には使わない）:"
+                foreach ($p in @($cx.coverage.packages.package))
+                {
+                    Write-Host ("    {0,-28} {1,6:P1}" -f $p.name, [double]$p.'line-rate')
+                }
+                Write-Host ("    詳細 : {0}" -f $cov.FullName)
+            }
+            else
+            {
+                Write-Host "  カバレッジのファイルが見つかりません" -ForegroundColor Yellow
+            }
         }
         continue
     }

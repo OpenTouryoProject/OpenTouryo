@@ -62,7 +62,7 @@ cd root\programs
 生 diff を読むのは、正規化後に差分が出たときだけでよい。
 `Result*.txt` のコミットは、内容が変わった（新しい基準にしたい）ときだけでよい。
 
-### 対象テスト（8 ケース）
+### 対象テスト（Golden 8 ケース）
 
 | テスト | 結果ファイル（＝期待値） | ビルド バッチ | 備考 |
 |---|---|---|---|
@@ -77,6 +77,25 @@ cd root\programs
 
 `Golden/EncAndDecUtilCUI/ResultCore100OnLinux.txt` は Linux 実行時の期待結果のため、
 Windows からの `2_RunAllTests.ps1` の対象外。
+
+### NUnit のテスト（2 ケース、#610）
+
+**期待値ファイルを持たない。テスト自身が合否を出す。**
+HEAD とは比較せず、バッチが書き出す `*.trx` の集計で判定する。
+
+| テスト | 結果ファイル | ビルド バッチ | 判定 |
+|---|---|---|---|
+| NUnit TestPublic (net48) | `NUnit/TestResults/TestPublic_net48.trx` | `y_Build_TestCode_NUnit.bat` | 失敗 0 件、かつ 1 件以上実行 |
+| NUnit TestPublic (net10.0) | `NUnit/TestResults/TestPublic_net10.0.trx` | 同上 | 同上。**カバレッジも表示する** |
+
+- **サマリの「差分」の列は、NUnit では失敗の件数を表す。**
+- **0 件の合格は OK にしない。** テストが見つからない構成ミスを見逃すため
+- `TestResults/` は Git 管理外。**ワーキング ツリーは書き換わらない**
+- バッチは実行前に古い結果を消す。ビルドに失敗したとき、前回の「合格」が残らないようにするため
+- **カバレッジは表示だけで、判定には使わない。** 収集は net10.0 だけで行う
+  （コードはほぼ共通で、両方で取っても指針としては変わらないため）
+
+テストの書き方と置き場は [`Tests/README.md`](CS/Frameworks/Tests/README.md) を参照。
 
 ### `TestCode` / `TestDataAccess` は詳細を別文書に持つ
 
@@ -144,7 +163,7 @@ SimpleBatch.exe /Dap SQL ... > ..\..\..\ResultSimpleBatch48.txt
 
 - **Frameworks をビルド済み**であること（`Build_net48` / `Build_netcore100` が存在）
 - **SQL Server の Northwind に接続できる**こと
-  （`TestDataAccess` と `TestBatch` が使用。**8 本中 4 本**）
+  （`TestDataAccess` と `TestBatch` が使用。**10 本中 4 本**）
 - **Northwind のテスト データが標準状態**であること（後述の「4. テスト データ」）
 
 ### 冒頭の「前提の確認」（#588）

@@ -1,0 +1,40 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--NUnit による Public 層の単体テスト（#610）。
+      Golden の TestCode と違い、net48 / net10.0 を 1 つの csproj でマルチ ターゲットにする。
+      テスト コードは共通で、TFM ごとの差は #if NETCOREAPP で書き分ける。-->
+  <PropertyGroup>
+    <TargetFrameworks>net48;net10.0</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>TestPublic</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
+    <PackageReference Include="NUnit" Version="4.6.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="6.3.0" />
+    <!--カバレッジの収集は net10.0 だけで行う（y_Build_TestCode_NUnit.bat）。-->
+    <PackageReference Include="coverlet.collector" Version="10.0.1" />
+  </ItemGroup>
+
+  <!--フレームワークは HintPath で参照する（Golden と同じ）。
+      → **フレームワークを先にビルドしないと、古い DLL を見る。**
+      HintPath では NuGet の推移的依存が効かないため、
+      Public が使うパッケージは、テストで通る範囲だけここにも並べる。-->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\..\Infrastructure\Build_net48\OpenTouryo.Public.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <!--StringConverter（全角・半角、かな変換）が使う。-->
+    <PackageReference Include="Zipangu" Version="1.1.8" />
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

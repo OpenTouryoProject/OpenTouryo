@@ -314,6 +314,13 @@ __pycache__/
 /root/programs/*/Frameworks/Tests/Golden/EncAndDecUtilCUI/*.cer
 
 # --------------------------------------------------
+# Open棟梁 NUnit test results (#610)
+#   y_Build_TestCode_NUnit.bat が書き出す *.trx とカバレッジ。
+#   2_RunAllTests.ps1 が読んで判定する。実行のたびに作り直す。
+# --------------------------------------------------
+/root/programs/*/Frameworks/Tests/NUnit/TestResults/
+
+# --------------------------------------------------
 # DeployZipPackWithHTTP のサンプル（配布物）
 #   FormAppRootWeb は FormAppRoot から生成する。
 #     /ZIPGEN で ZIP を作り、/MFTGEN でマニュフェストを作る。

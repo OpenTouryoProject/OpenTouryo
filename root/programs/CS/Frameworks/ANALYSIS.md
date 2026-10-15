@@ -54,7 +54,7 @@
 > [`README.md`](Tools/DeployZipPackWithHTTP/README.md) が一次情報。**
 > IIS Express で完結するので、IIS を立てなくても確かめられる。
 
-### 2.3 `Tests/` — テスト（**既存のテストは xUnit/NUnit ではない**）
+### 2.3 `Tests/` — テスト（**`Golden` / `Else` は xUnit/NUnit ではない**）
 
 **判定の方式でフォルダを分けている**（#610）。分け方と置き場の決め方は
 [`Tests/README.md`](Tests/README.md) が一次情報。
@@ -65,6 +65,7 @@
 | `Golden` | `TestDataAccess` | データ アクセスのテスト（#520）。`TestCode` と同じ構成だが**DB に接続する**。`/MODE` で対象 DBMS を切り替える（既定は SQL Server のみ） | [`README.md`](Tests/Golden/TestDataAccess/README.md) |
 | `Golden` | `TestBatch` | バッチ起動確認 | — |
 | `Golden` | `EncAndDecUtilCUI` | 暗号・署名ユーティリティの CUI 確認 | — |
+| `NUnit` | `TestPublic` | NUnit による `Public` 層の単体テスト（#610）。**1 つの csproj で net48 / net10.0 をマルチ ターゲット**にする。テスト自身が合否を出す | [`Tests/README.md`](Tests/README.md) |
 | `Else` | `TestTransmission` | 通信制御の接続オプション（#546）。**オリジンとプロキシを自前で立て**、`CallController` から呼んで、要求に反映されているかを見る。**期待値ファイルを持たず、自分で合否を出す**（疎通テストから呼ばれる） | [`SMOKETEST.md`](../../SMOKETEST.md) 3 節 |
 | `Else` | `TestWebAPIClient` | Web API の非ブラウザ クライアント（疎通テストから呼ばれる） | [`SMOKETEST.md`](../../SMOKETEST.md) |
 | `Else` | `TestLog` | ログ出力確認（log4net/NLog、1〜3） | — |
@@ -73,7 +74,7 @@
 
 **`TestCode` と `TestDataAccess` は専用の `README.md` を持つ。**
 「何をテストしているか」「ケースを書き足すときの決まり」「ケース設計の根拠」は
-そちらが一次情報。`TESTING.md` は 8 ケース全体の運用を扱い、この詳細は持たない。
+そちらが一次情報。`TESTING.md` は Golden 8 ケースと NUnit を含む全体の運用を扱い、この詳細は持たない。
 
 **テストを書き足す前に `TestCode/README.md` を読むこと。**
 結果ファイルとの比較で判定するため、**環境で変わる値を出してはならない**という制約がある

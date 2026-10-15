@@ -270,6 +270,7 @@ jobs:
           path: |
             ${{ runner.temp }}\TestResults
             root/programs/CS/Frameworks/Tests/**/Result*.txt
+            root/programs/CS/Frameworks/Tests/NUnit/TestResults/**
           if-no-files-found: warn
 
       # 疎通は期待結果ファイルを持たないため、判定は各対象の標準出力に残る。
