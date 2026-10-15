@@ -193,6 +193,17 @@ Framework_Tool 系だけ     74.8 秒     ← ツールの変更で必要なの�
 .\CompareRedirect.ps1 -Check    # bindingRedirect と配布物の版（#556）
 ```
 
+**依存パッケージの脆弱性は、ビルドの警告に頼らず別に見る**（#610。`0_RunAll.ps1` は最後に自動で回して警告する）。
+
+```powershell
+.\CheckVulnerability.ps1 -Detail                          # 推移的な依存を含めた一覧
+.\CheckVulnerability.ps1 -IssueDraft "$env:TEMP\vuln.md"  # Issue の文面の下書き（投稿はしない）
+```
+
+- **ビルドの後に回す。** restore 結果が無いと推移的な依存を見られない（「未リストア」として件数が出る）
+- ビルドの NU1901〜NU1904 は restore のときにしか出ず、**Dependabot は推移的な依存を見ない**（[`BUILDING.md`](BUILDING.md) 13 節）
+- **見つけたら Issue を起こさずにその場で直す**（[`AGENTS.md`](../../AGENTS.md)「依存パッケージの脆弱性を見つけたら」）。`-IssueDraft` は直せないときだけ
+
 **どちらもビルドの後に回す。** 復元された DLL を読むため。
 `1_BuildAll.ps1` は bin を消すので、**clean の前に測ると古い残骸を拾う。**（#579）
 

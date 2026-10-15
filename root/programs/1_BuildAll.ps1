@@ -74,6 +74,7 @@
      2026/08/05  玄人 幸道         IgnoreErrors を追加（CI での既知エラーの除外）
      2026/08/13  玄人 幸道         Lang を追加（VB 版のビルドに対応）
      2026/10/15  玄人 幸道         -Only の複数指定と -List -PassThru を追加（#610）
+     2026/10/15  玄人 幸道         脆弱性の警告（NU1901〜NU1904）を別枠で出すようにした（#610）
 #>
 [CmdletBinding()]
 param(
@@ -463,6 +464,37 @@ Write-Host "================ サマリ ================"
 Write-Host ""
 # **警告詳細は列にしない。** 表が壊れるので、集計にだけ使う。
 Write-SummaryTable ($results | Select-Object * -ExcludeProperty 警告詳細)
+
+# --- 脆弱性の警告（NuGet Audit。#610）---
+#
+# **件数に埋もれさせない。** -WarnDetail が無くても、常に別枠で出す。
+#   NU1901〜NU1904 は既知の脆弱性がある版を使っているという警告で、
+#   他の警告と同じ 1 件に数えると、Issue に繋がらないまま流れる。
+#
+# **ここに出なくても安全とは限らない。** NuGet Audit は restore のときにしか判定しないので、
+#   restore 結果を使い回したビルドでは、その後に公表された脆弱性が出ない。
+#   ビルドに依存しない検査は CheckVulnerability.ps1。
+$vulnWarn = @($results | Where-Object { $_.警告詳細 } | ForEach-Object {
+    $step = $_.ステップ
+    $_.警告詳細 | Where-Object { $_ -match 'warning NU190[1-4]\s*:' } | ForEach-Object {
+        # 例: warning NU1903: パッケージ 'System.Security.Cryptography.Pkcs' 9.0.13 に既知の 高 重大度の…
+        #     warning NU1903: Package 'System.Security.Cryptography.Pkcs' 9.0.13 has a known high severity…
+        $m = [regex]::Match($_, "'([^']+)'\s+([0-9][^\s,]*)")
+        if ($m.Success) { [pscustomobject]@{ Package = $m.Groups[1].Value + " " + $m.Groups[2].Value; Step = $step } }
+    }
+})
+
+if ($vulnWarn.Count -gt 0)
+{
+    Write-Host ""
+    Write-Host "================ 脆弱性の警告（NuGet Audit） ================" -ForegroundColor Yellow
+    foreach ($g in ($vulnWarn | Group-Object Package | Sort-Object Name))
+    {
+        Write-Host ("  {0}（{1}）" -f $g.Name, (($g.Group | ForEach-Object { $_.Step } | Sort-Object -Unique) -join ", ")) -ForegroundColor Yellow
+    }
+    Write-Host "  **ビルドは成功扱いだが、放置しない。** .\CheckVulnerability.ps1 で推移的な依存を含めて確かめ、" -ForegroundColor Yellow
+    Write-Host "  AGENTS.md「依存パッケージの脆弱性を見つけたら」に沿って扱うこと。" -ForegroundColor Yellow
+}
 
 # --- 警告の内訳（#571）---
 #

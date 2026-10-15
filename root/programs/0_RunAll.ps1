@@ -134,6 +134,16 @@ foreach ($s in $scripts)
     }
 }
 
+# --- 依存パッケージの脆弱性（警告のみ）---（#610）
+#
+# **最後に行う。** 1 のクリーンでテスト プロジェクトの restore 結果が消え、2 が建て直すため、
+# 推移的な依存（project.assets.json）が全部そろうのは 1・2・3 の後である。
+#
+# ビルドの NU190x は restore のときにしか出ないが、こちらは毎回 NuGet の脆弱性データを取りに行く。
+# **合否には影響させない**（上の 2 本と同じ）。終了コード 2 は取得の失敗。
+& (Join-Path $PSScriptRoot "CheckVulnerability.ps1") -Check 6>$null | Out-Null
+$vulnCode = $LASTEXITCODE
+
 # --- 結果のまとめ ---
 Write-Host ""
 Write-Host "================ 全体のまとめ ================"
@@ -184,6 +194,20 @@ if ($null -ne $packageOk -and -not $packageOk)
     Write-Host ""
     Write-Host "【警告】packages.config と csproj で、パッケージの版が食い違っています" -ForegroundColor Yellow
     Write-Host "        （ComparePackage.ps1 -Check）。合否には数えていません。"
+}
+
+if ($vulnCode -eq 1)
+{
+    Write-Host ""
+    Write-Host "【警告】既知の脆弱性がある NuGet パッケージの版を使っています（推移的な依存を含む）。" -ForegroundColor Yellow
+    Write-Host "        .\CheckVulnerability.ps1 -Detail で内容を確認してください。合否には数えていません。"
+    Write-Host "        扱い方は AGENTS.md「依存パッケージの脆弱性を見つけたら」。"
+}
+elseif ($vulnCode -eq 2)
+{
+    Write-Host ""
+    Write-Host "【警告】脆弱性データを取得できず、依存パッケージの脆弱性を確かめられませんでした" -ForegroundColor Yellow
+    Write-Host "        （CheckVulnerability.ps1）。ネットワークに繋がる環境で回してください。"
 }
 
 # --- 画面を残すための処理 ---
