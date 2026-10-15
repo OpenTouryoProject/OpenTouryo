@@ -25,7 +25,7 @@ cd root\programs
 | | 合格の目安 | 詳細 |
 |---|---|---|
 | ビルド | 全ステップ OK | [`BUILDING.md`](BUILDING.md) |
-| 単体テスト | 12/12 OK、差分 0（NUnit は失敗 0） | [`TESTING.md`](TESTING.md) |
+| 単体テスト | 14/14 OK、差分 0（NUnit は失敗 0） | [`TESTING.md`](TESTING.md) |
 | 疎通 | 30/30 OK | [`SMOKETEST.md`](SMOKETEST.md) |
 
 **既定は C# 側。VB 側は `-Lang` で回す**（3 節）。

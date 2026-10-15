@@ -184,7 +184,7 @@ cd root\programs
 
 - [ ] **`1_BuildAll.ps1` のエラーが「既知の 1 件」だけである**
       … `-SkipClean` は**使わない**。前回の成果物が残っていると通ったように見える
-- [ ] **`2_RunAllTests.ps1` が終了コード 0**（12 ケース。Golden 8 ＋ NUnit 4）
+- [ ] **`2_RunAllTests.ps1` が終了コード 0**（14 ケース。Golden 8 ＋ NUnit 6）
 - [ ] **`3_SmokeTest.ps1` が終了コード 0**（30 件）
 
 > **`1_BuildAll.ps1` は現状ここで終了コード 1 になる。**

@@ -13,7 +13,7 @@
 | フォルダ | 中身 |
 |---|---|
 | `Golden/` | `TestCode` / `TestDataAccess` / `TestBatch` / `EncAndDecUtilCUI` |
-| `NUnit/` | `TestPublic` / `TestPublicNLog`（`LogIF` を NLog にした状態。別プロセスで動かすため分けている） |
+| `NUnit/` | `TestPublic` / `TestPublicNLog`（`LogIF` を NLog にした状態。別プロセスで動かすため分けている） / `TestPublicDb`（Dam のクロス DB。DB に接続する） |
 | `Else/` | `TestTransmission` / `TestWebAPIClient` / `TestLog` / `EncAndDecUtil` / `LaunchJson` |
 
 各プロジェクトの内容は [`ANALYSIS.md`](../ANALYSIS.md) 2.3 節。
@@ -78,6 +78,10 @@ y_Build_TestCode_NUnit.bat     … ビルド → net48 / net10.0 で実行 → T
   （組み立てた SQL を返すだけで、接続を使わない）で、動的パラメタライズド クエリのタグを確かめる。
   XML は `SetSqlByCommand` に文字列で渡せる（動的かどうかは中身で決まる）。
   **実行して件数を見るものは Golden の `TestDataAccess`**（DB が要る）
+- **DB に接続するテストは `TestPublicDb` に書く。** 同じテストを DBMS ごとに回す（`TestFixtureSource`）。
+  DBMS の差（Dam・接続文字列・囲い文字・パラメタ記号・型名）は `DbProvider.cs` に集める。
+  **既存の表は使わず**、一意な名前の表を作って最後に落とす。数値は `Convert` で比べる（Oracle の NUMBER は decimal）。
+  Oracle は空文字を NULL として扱うので、空文字を値に使わない
 - 埋め込みリソースの検証には、`OpenTouryo.Public` に埋め込まれている
   `Xml/TestXml.xml` / `Xml/TestXsd.xsd` を使える
 - フレームワークは `HintPath` で参照する。**`Public` が使うパッケージは、

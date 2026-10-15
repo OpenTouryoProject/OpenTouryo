@@ -83,6 +83,7 @@
      2026/10/15  玄人 幸道         -Only の複数指定と -List -PassThru を追加（#610）
      2026/10/15  玄人 幸道         NUnit の TestPublicNLog を加え、結果をプロジェクトごとに分けた（#610）
      2026/10/15  玄人 幸道         NUnit のスキップを件数と名前で出すようにした（#610）
+     2026/10/15  玄人 幸道         NUnit の TestPublicDb（Dam のクロス DB）を加えた（#610）
 #>
 [CmdletBinding()]
 param(
@@ -262,6 +263,17 @@ $tests = @(
     @{
         Name = "NUnit TestPublicNLog (net10.0)"; Bat = "y_Build_TestCode_NUnit.bat"
         Result = "NUnit\TestResults\TestPublicNLog\TestPublicNLog_net10.0.trx"; Kind = "NUnit"; Coverage = $true
+    }
+    # Dam のクロス DB（#610）。SQL Server は必須、他の DBMS は接続できなければスキップ。
+    @{
+        Name = "NUnit TestPublicDb (net48)";   Bat = "y_Build_TestCode_NUnit.bat"
+        Result = "NUnit\TestResults\TestPublicDb\TestPublicDb_net48.trx";   Kind = "NUnit"
+        NeedDb = $true
+    }
+    @{
+        Name = "NUnit TestPublicDb (net10.0)"; Bat = "y_Build_TestCode_NUnit.bat"
+        Result = "NUnit\TestResults\TestPublicDb\TestPublicDb_net10.0.trx"; Kind = "NUnit"; Coverage = $true
+        NeedDb = $true
     }
 )
 

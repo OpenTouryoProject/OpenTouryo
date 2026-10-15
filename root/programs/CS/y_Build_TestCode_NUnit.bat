@@ -24,6 +24,8 @@ call %CURRENT_DIR%z_Common.bat
 @rem
 @rem   TestPublicNLog is a separate project, because LogIF selects
 @rem   the logging library only once per process (LogLib=nlog).
+@rem   TestPublicDb is a separate project, because it needs databases
+@rem   (SQL Server is required; the others are skipped when not reachable).
 @rem   Each project has its own results folder, so that the
 @rem   coverage of one project is not taken for the other.
 @rem --------------------------------------------------
@@ -40,6 +42,7 @@ dotnet msbuild %COMMANDLINE% "%NUNIT_SLN%"
 
 call :RunTests TestPublic
 call :RunTests TestPublicNLog
+call :RunTests TestPublicDb
 
 pause
 

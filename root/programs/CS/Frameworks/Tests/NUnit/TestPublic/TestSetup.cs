@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/15  玄人 幸道         新規作成（#610）
 //*  2026/10/15  玄人 幸道         LogIF のテスト用に FxLog4NetConfFile を与えた（#610）
+//*  2026/10/15  玄人 幸道         GetConfigParameter のテスト用の値を与えた（#610）
 //**********************************************************************************
 
 using NUnit.Framework;
@@ -62,7 +63,9 @@ namespace TestPublic
                 new ConfigurationBuilder()
                     .AddInMemoryCollection(new Dictionary<string, string>
                     {
-                        { "appSettings:FxLog4NetConfFile", "NUnitLogConf.xml" }
+                        { "appSettings:FxLog4NetConfFile", "NUnitLogConf.xml" },
+                        { "appSettings:NUnitKey", "NUnitValue" },
+                        { "connectionStrings:NUnitConn", "Data Source=nunit;Initial Catalog=x;" }
                     })
                     .Build());
 #endif
