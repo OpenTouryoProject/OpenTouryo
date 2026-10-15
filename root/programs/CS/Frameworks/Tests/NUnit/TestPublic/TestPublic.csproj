@@ -31,6 +31,12 @@
     <Reference Include="OpenTouryo.Public">
       <HintPath>..\..\..\Infrastructure\Build_net48\OpenTouryo.Public.dll</HintPath>
     </Reference>
+    <!--JWS の typ（Security/JwsTypTests.cs。#611）-->
+    <Reference Include="OpenTouryo.Public.Security">
+      <HintPath>..\..\..\Infrastructure\Build_net48\OpenTouryo.Public.Security.dll</HintPath>
+    </Reference>
+    <!--テストがヘッダの JSON を読むのに使う（JObject）。版は Public.Security_net48 と同じ。-->
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
@@ -53,6 +59,10 @@
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.21" />
     <Reference Include="OpenTouryo.Public">
       <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.dll</HintPath>
+    </Reference>
+    <!--JWS の typ（Security/JwsTypTests.cs。#611）-->
+    <Reference Include="OpenTouryo.Public.Security">
+      <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.Security.dll</HintPath>
     </Reference>
   </ItemGroup>
 

@@ -33,6 +33,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/06/25  西野 大介         新規作成（分割
 //*  2026/10/03  玄人 幸道         RSASSA-PSS（PS256 / PS384 / PS512）用の列挙型 PS を追加（#596）
+//*  2026/10/16  玄人 幸道         Verify で typ を照合しないことを明示（照合は JWS.Verify(jwt, typ)。#611）
 //**********************************************************************************
 
 using System;
@@ -157,8 +158,10 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             JWS_Header headerObject = (JWS_Header)JsonConvert.DeserializeObject(
                 CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8), typeof(JWS_Header));
 
-            if (headerObject.alg.ToUpper() == this.JwtConstRSnnn
-                && headerObject.typ.ToUpper() == JwtConst.JWT)
+            // **typ は照合しない。**（#611）
+            //   以前も JWS_Header.typ が readonly で読み込まれず、照合は常に真だった。
+            //   その振る舞いを保つ。照合は JWS.Verify(jwtString, typ) で行う。
+            if (headerObject.alg.ToUpper() == this.JwtConstRSnnn)
             {
                 byte[] data = CustomEncode.StringToByte(temp[0] + "." + temp[1], CustomEncode.UTF_8);
                 byte[] sign = CustomEncode.FromBase64UrlString(temp[2]);

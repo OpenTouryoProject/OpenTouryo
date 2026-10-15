@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/08/30  西野 大介         新規作成
 //*  2026/10/03  玄人 幸道         PS256 / PS384 / PS512 を追加（#596）
+//*  2026/10/16  玄人 幸道         AT_JWT（at+jwt）を追加（#611）
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Public.Security.Jwt
@@ -38,6 +39,9 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
     {
         /// <summary>type:JWT</summary>
         public const string JWT = "JWT";
+
+        /// <summary>type:at+jwt（RFC 9068 の access_token）</summary>
+        public const string AT_JWT = "at+jwt";
 
         #region JWS
 

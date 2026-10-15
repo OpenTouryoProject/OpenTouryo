@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/08/16  西野 大介         新規作成
+//*  2026/10/16  玄人 幸道         typ を設定できるようにした（readonly を外した。#611）
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Public.Security.Jwt
@@ -52,8 +53,13 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
 
         /// <summary>
         /// typ=JWT(JWSもJWTらしい)
-        /// アサーションのタイプを指定。JWT固定。
+        /// アサーションのタイプを指定。既定は JWT。
         /// </summary>
-        public readonly string typ = JwtConst.JWT;
+        /// <remarks>
+        /// 署名の前に設定できる（例: RFC 9068 の access_token なら JwtConst.AT_JWT）。（#611）
+        /// null にすると、ヘッダに typ を出さない。
+        /// 以前は readonly で、設定できず、検証時にもヘッダの値が読み込まれなかった。
+        /// </remarks>
+        public string typ = JwtConst.JWT;
     }
 }

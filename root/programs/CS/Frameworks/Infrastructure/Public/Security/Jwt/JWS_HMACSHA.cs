@@ -32,6 +32,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/06/25  西野 大介         新規作成（分割
+//*  2026/10/16  玄人 幸道         JWSHeader を追加し typ を設定できるようにした。
+//*                                Verify で typ を照合しないことを明示（照合は JWS.Verify(jwt, typ)。#611）
 //**********************************************************************************
 
 using System;
@@ -59,6 +61,32 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
 
         /// <summary>JwtConst.HSnnn</summary>
         protected string JwtConstHSnnn = "";
+
+        /// <summary>_JWSHeader</summary>
+        private JWS_Header _JWSHeader = null;
+
+        /// <summary>JWSHeader</summary>
+        /// <remarks>
+        /// 署名の前に typ などを設定できる（JWS_RSA / JWS_ECDSA と同じ口。#611）。
+        /// 以前は Create の中で毎回作っており、外から設定できなかった。
+        /// </remarks>
+        public JWS_Header JWSHeader
+        {
+            protected set
+            {
+                this._JWSHeader = value;
+            }
+
+            get
+            {
+                // alg は派生のコンストラクタで決まるので、初めて使うときに作る。
+                if (this._JWSHeader == null)
+                {
+                    this._JWSHeader = new JWS_Header { alg = this.JwtConstHSnnn };
+                }
+                return this._JWSHeader;
+            }
+        }
 
         /// <summary>Init</summary>
         /// <param name="key">byte[]</param>
@@ -123,10 +151,8 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         public override string Create(string payloadJson)
         {
             // ヘッダー
-            JWS_Header headerObject = new JWS_Header { alg = this.JwtConstHSnnn };
-
             string headerJson = JsonConvert.SerializeObject(
-                headerObject,
+                this.JWSHeader,
                 new JsonSerializerSettings()
                 {
                     Formatting = Formatting.None,
@@ -159,8 +185,10 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             JWS_Header headerObject = (JWS_Header)JsonConvert.DeserializeObject(
                 CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8), typeof(JWS_Header));
 
-            if (headerObject.alg.ToUpper() == this.JwtConstHSnnn
-                && headerObject.typ.ToUpper() == JwtConst.JWT)
+            // **typ は照合しない。**（#611）
+            //   以前も JWS_Header.typ が readonly で読み込まれず、照合は常に真だった。
+            //   その振る舞いを保つ。照合は JWS.Verify(jwtString, typ) で行う。
+            if (headerObject.alg.ToUpper() == this.JwtConstHSnnn)
             {
                 byte[] data = CustomEncode.StringToByte(temp[0] + "." + temp[1], CustomEncode.UTF_8);
                 byte[] sign = CustomEncode.FromBase64UrlString(temp[2]);
