@@ -227,6 +227,12 @@ Copyright ブロックの扱い、`ArgumentException` 系の引数の順、`.bat
 
 **どこまで回すかは [`CHEATSHEET.md`](root/programs/CHEATSHEET.md) 1 節の対応表で決める。**
 
+**その判断は `SelectTargets.ps1` で機械的に行える**（#610）。
+検証の済んだコミットからの差分（未コミット・未追跡を含む）を読み、
+回す対象を 1 / 2 / 3 ごとに割り出す。**まずこれを回し、結果を見てから実行する。**
+「手で確かめるもの」が出たら、**回せていないものとして報告する。**
+使い方は同じく [`CHEATSHEET.md`](root/programs/CHEATSHEET.md) 1 節。
+
 通しを回すのは次の場合。
 
 - **基盤（`Infrastructure/`）に触れたとき**

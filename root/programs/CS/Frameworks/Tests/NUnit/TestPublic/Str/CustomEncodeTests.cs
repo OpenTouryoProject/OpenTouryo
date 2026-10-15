@@ -89,7 +89,7 @@ namespace TestPublic.Str
         [Test]
         public void FromBase64UrlString_IllegalLength_Throws()
         {
-            Assert.Catch<Exception>(new TestDelegate(() => CustomEncode.FromBase64UrlString("abcde")));
+            Assert.Catch<Exception>(() => CustomEncode.FromBase64UrlString("abcde"));
         }
 
         #endregion

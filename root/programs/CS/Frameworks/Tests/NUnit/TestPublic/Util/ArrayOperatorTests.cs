@@ -108,10 +108,10 @@ namespace TestPublic.Util
         [Test]
         public void GetLongFromByte_InvalidArguments()
         {
-            ArgumentNullException ex = Assert.Throws<ArgumentNullException>(new TestDelegate(() => ArrayOperator.GetLongFromByte(null)));
+            ArgumentNullException ex = Assert.Throws<ArgumentNullException>(() => ArrayOperator.GetLongFromByte(null));
             Assert.That(ex.ParamName, Is.EqualTo("bytes"));
-            Assert.Throws<ArgumentOutOfRangeException>(new TestDelegate(() => ArrayOperator.GetLongFromByte(new byte[0])));
-            Assert.Throws<ArgumentOutOfRangeException>(new TestDelegate(() => ArrayOperator.GetLongFromByte(new byte[9])));
+            Assert.Throws<ArgumentOutOfRangeException>(() => ArrayOperator.GetLongFromByte(new byte[0]));
+            Assert.Throws<ArgumentOutOfRangeException>(() => ArrayOperator.GetLongFromByte(new byte[9]));
         }
 
         #endregion

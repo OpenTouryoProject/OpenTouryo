@@ -321,6 +321,13 @@ __pycache__/
 /root/programs/*/Frameworks/Tests/NUnit/TestResults/
 
 # --------------------------------------------------
+# Open棟梁 verified commit (#610)
+#   SelectTargets.ps1 が記録する「検証の済んだコミット」。
+#   手元の検証の状態なので、共有しない。
+# --------------------------------------------------
+/root/programs/.verified-commit
+
+# --------------------------------------------------
 # DeployZipPackWithHTTP のサンプル（配布物）
 #   FormAppRootWeb は FormAppRoot から生成する。
 #     /ZIPGEN で ZIP を作り、/MFTGEN でマニュフェストを作る。

@@ -8,6 +8,10 @@
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
     <RootNamespace>TestPublic</RootNamespace>
+    <!--net48 の既定（C# 7.3）では、NUnit 4 の Assert.Throws(() => ...) が
+        TestDelegate と Action の間で曖昧になる。新しい言語版なら Action 側に決まる。
+        言語機能だけの話で、ランタイムの機能は使わない。-->
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,6 +36,8 @@
   <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <!--StringConverter（全角・半角、かな変換）が使う。-->
     <PackageReference Include="Zipangu" Version="1.1.8" />
+    <!--DTTables の JSON 化が使う。net48 は Build_net48 の DLL が複写されるので要らない。-->
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <Reference Include="OpenTouryo.Public">
       <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.dll</HintPath>
     </Reference>

@@ -46,9 +46,12 @@ y_Build_TestCode_NUnit.bat     … ビルド → net48 / net10.0 で実行 → T
   Golden のように 2 プロジェクトへ `Link` で共有する作りではない
 - **TFM で結果が違う箇所は `#if NETCOREAPP` で書き分け、テスト名と `<summary>` に違いを書く。**
   例: `StringConverter` は net48 が VB の `StrConv`、.NET が Zipangu で、実装が違う
-- **net48 の既定は C# 7.3。** NUnit 4 の `Assert.Throws(() => ...)` は
-  `TestDelegate` と `Action` の間で曖昧になり、net48 だけコンパイルに失敗する。
-  **`new TestDelegate(() => ...)` で渡す**
+- **csproj で `LangVersion` を `latest` にしている。** net48 の既定（C# 7.3）では、
+  NUnit 4 の `Assert.Throws(() => ...)` が `TestDelegate` と `Action` の間で曖昧になり、
+  net48 だけコンパイルに失敗する。`new TestDelegate(...)` で逃げると、
+  NUnit 4.6 では旧形式の警告（CS0618）になる。**素直にラムダで書けばよい**
+- **カルチャに依存する部品（数値・日付の文字列化）は `[SetCulture("ja-JP")]` で固定する**
+- 環境変数・カルチャなど**プロセスの状態を変えたら、`[TearDown]` で戻す**
 - フレームワークは `HintPath` で参照する。**`Public` が使うパッケージは、
   テストで通る範囲だけ csproj にも並べる**（推移的依存が効かないため）
 - **読み違えやすい挙動を見つけたら、それ自体をテストにする**

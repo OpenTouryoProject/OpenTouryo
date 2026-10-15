@@ -29,10 +29,14 @@
     　 VB\0_ExecAllBat.bat が cd "..\CS" してから呼んでいるのと同じ理由。
 
 .PARAMETER Only
-    ステップ名の部分一致で対象を絞る（例: -Only "net48"）。動作確認用。
+    ステップ名（またはバッチ名）の部分一致で対象を絞る（例: -Only "net48"）。動作確認用。
+    複数指定できる（-Only "Bat_sample", "WSSrv_sample"）。どれかに当たれば対象になる。
 
 .PARAMETER List
     -Only に指定できるステップ名を一覧表示して終わる。**ここが一次情報。**
+.PARAMETER PassThru
+    -List と併せて指定すると、名前・バッチ・フォルダの対応をオブジェクトで返す
+    （SelectTargets.ps1 が使う）。
 .PARAMETER SkipClean
     クリーン処理（1_DeleteDir / 1_DeleteFile）を省略する。
     ※ リリース判定では省略しないこと。前回のビルド成果物が残っていると、
@@ -69,13 +73,15 @@
      2026/08/01  玄人 幸道         新規作成（リリース ワークのエージェント化）
      2026/08/05  玄人 幸道         IgnoreErrors を追加（CI での既知エラーの除外）
      2026/08/13  玄人 幸道         Lang を追加（VB 版のビルドに対応）
+     2026/10/15  玄人 幸道         -Only の複数指定と -List -PassThru を追加（#610）
 #>
 [CmdletBinding()]
 param(
     [ValidateSet("CS", "VB", "Both")]
     [string]$Lang = "CS",
-    [string]$Only,
+    [string[]]$Only,
     [switch]$List,
+    [switch]$PassThru,
     [switch]$SkipClean,
     [switch]$WarnDetail,
     [string]$OutputDir = (Join-Path $env:TEMP "OpenTouryoBuildLogs"),
@@ -317,29 +323,51 @@ if ($List)
     Write-Host ("=== -Only に指定できる名前（部分一致）{0} ===" -f "（-Lang $Lang）") -ForegroundColor Cyan
     foreach ($x in $steps) { Write-Host ("  " + $x.Name) }
     Write-Host ("  ---- {0} 件 ----" -f $steps.Count)
+
+    # **-PassThru では、名前とバッチの対応をオブジェクトで返す。**（#610）
+    #   SelectTargets.ps1 が「変更されたファイル → バッチ → 対象名」を引くのに使う。
+    #   対応の一次情報はこの表なので、向こうには写さない。
+    if ($PassThru)
+    {
+        foreach ($x in $steps) { [pscustomobject]@{ Name = $x.Name; Bat = $x.Bat; Dir = $x.Dir } }
+    }
     exit 0
+}
+
+# ステップが -Only のどれかに当たるか（名前かバッチ名の部分一致）。
+# **-Only は複数指定できる。**（#610）SelectTargets.ps1 が複数の対象を渡すため。
+function Test-OnlyMatch($s)
+{
+    foreach ($o in $Only)
+    {
+        if (($s.Name -like "*$o*") -or ($s.Bat -like "*$o*")) { return $true }
+    }
+    return $false
 }
 
 # **-Only が空振りしたら止める。**（#576）
 #   1 件も選ばれないまま進むと「全ステップ OK」と表示され、
 #   **打ち間違いが緑になる。** 何も建てていないのに成功に見えるのが最も悪い。
+#   複数指定のときは、**1 つでも空振りしたら止める。**（#610）
 if ($Only)
 {
-    $matched = @($steps | Where-Object { ($_.Name -like "*$Only*") -or ($_.Bat -like "*$Only*") })
-
-    if ($matched.Count -eq 0)
+    foreach ($o in $Only)
     {
-        Write-Host ("  **-Only '$Only' に一致するステップがありません。**") -ForegroundColor Red
-        Write-Host ("  -List で一覧を出せます。") -ForegroundColor Yellow
-        exit 1
+        if (@($steps | Where-Object { ($_.Name -like "*$o*") -or ($_.Bat -like "*$o*") }).Count -eq 0)
+        {
+            Write-Host ("  **-Only '$o' に一致するステップがありません。**") -ForegroundColor Red
+            Write-Host ("  -List で一覧を出せます。") -ForegroundColor Yellow
+            exit 1
+        }
     }
 
-    Write-Host ("  -Only '$Only' : {0} ステップに絞りました" -f $matched.Count) -ForegroundColor Yellow
+    $matched = @($steps | Where-Object { Test-OnlyMatch $_ })
+    Write-Host ("  -Only '{0}' : {1} ステップに絞りました" -f ($Only -join "', '"), $matched.Count) -ForegroundColor Yellow
 }
 
 foreach ($s in $steps)
 {
-    if ($Only -and ($s.Name -notlike "*$Only*") -and ($s.Bat -notlike "*$Only*"))
+    if ($Only -and -not (Test-OnlyMatch $s))
     {
         continue
     }

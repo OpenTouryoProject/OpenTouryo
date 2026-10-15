@@ -60,10 +60,36 @@ cd root\programs
 ```
 
 **`-Only` に指定できる名前は `-List` で出す。**（#576）
+**`-Only` は複数指定できる**（#610）。
 
 ```powershell
 .\3_SmokeTest.ps1 -List          # 対象名の一覧。-Lang が効く
+.\2_RunAllTests.ps1 -Only "TestBatch", "NUnit"
 ```
+
+### 回す範囲を差分から割り出す（#610）
+
+**「どこまで回すか」は `SelectTargets.ps1` が下の対応表どおりに決める。**
+検証の済んだコミット（`.verified-commit`。Git 管理外）からの差分を読む。
+**未コミット・未追跡の変更も含む。**
+
+```powershell
+.\SelectTargets.ps1                  # 回す範囲を表示するだけ
+.\SelectTargets.ps1 -Run             # その範囲で 1 → 2 → 3。全部 OK なら記録を進める
+.\SelectTargets.ps1 -Record          # 通しが通った後に、いまの HEAD を記録する
+.\SelectTargets.ps1 -Since develop   # 記録ではなく、指定した基点からの差分で見る
+```
+
+| 表示 | 意味 |
+|---|---|
+| `通し` | 基盤・共通バッチ・対応が引けないファイルに触れている |
+| `N 件` | 変更の下にあるバッチから引いた対象だけ |
+| `スクリプトの確認（1 件）` | 検証スクリプトだけを変えた。軽い対象を 1 件回す |
+| `手で確かめるもの` | **どの検証にも載っていない**（`Else/TestLog`、GUI、`.sh` 等）。**回せていないと報告する** |
+
+- **記録が無いと止まる。** 初回は通しの後に `-Record` するか、`-Since` を付ける
+- **手で確かめるものが残ると、`-Run` が全部 OK でも記録は進まない**（終了コード 1）
+- 対象名とバッチの対応は各スクリプトの `-List -PassThru` から取る（写していない）
 
 **どこまで回すかは依存関係で決まる。**（#576）
 
@@ -80,7 +106,8 @@ cd root\programs
 | `Infrastructure/`（基盤） | **通し** | **通し** | **通し** |
 | `Tools/`（ツール） | `-Only Framework_Tool` | **不要** | `-Only <そのツール>` |
 | 個別サンプル | `-Only <サンプル>` | **不要** | `-Only <サンプル>` |
-| `Tests/` | `-Only <対象>` | `-Only <対象>` | **不要** |
+| `Tests/Golden` `Tests/NUnit` | **不要**（2 が自分でビルドする） | `-Only <対象>` | **不要** |
+| `Tests/Else` | **不要** | **不要** | `TestTransmission` / `TestWebAPIClient` だけ `-Only <対象>`。他は手作業 |
 | `.md` のみ | **不要** | **不要** | **不要** |
 | `.ps1` のみ | 変えた本を `-Only` で 1 件 | 同左 | 同左 |
 

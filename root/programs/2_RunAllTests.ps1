@@ -52,10 +52,13 @@
     HEAD 版の期待値とビルド ログの出力先。既定は %TEMP%\OpenTouryoTestResults。
 
 .PARAMETER Only
-    対象名の部分一致で絞る（例: -Only "TestBatch"）。
+    対象名の部分一致で絞る（例: -Only "TestBatch"）。複数指定できる。
     **Result*.txt を書き換えるのは、絞った対象だけになる。**
 .PARAMETER List
     -Only に指定できる対象名を一覧表示して終わる。**ここが一次情報。**
+.PARAMETER PassThru
+    -List と併せて指定すると、名前・バッチの対応をオブジェクトで返す
+    （SelectTargets.ps1 が使う）。
 .PARAMETER SkipBuild
     バッチの実行を省略し、ワーキング ツリーにある既存の Result*.txt を比較する。
 
@@ -77,12 +80,14 @@
      2026/08/17  玄人 幸道         テストごとに Base64 の正規化を選べるようにした（#562）
      2026/10/15  玄人 幸道         Tests を Golden / NUnit / Else に整理した（#610）
      2026/10/15  玄人 幸道         NUnit の結果（trx）を判定する対象を加えた（#610）
+     2026/10/15  玄人 幸道         -Only の複数指定と -List -PassThru を追加（#610）
 #>
 [CmdletBinding()]
 param(
     [string]$OutputDir = (Join-Path $env:TEMP "OpenTouryoTestResults"),
-    [string]$Only,
+    [string[]]$Only,
     [switch]$List,
+    [switch]$PassThru,
     [switch]$SkipBuild
 )
 
@@ -263,21 +268,33 @@ if ($List)
     Write-Host ("=== -Only に指定できる名前（部分一致）{0} ===" -f "") -ForegroundColor Cyan
     foreach ($x in $tests) { Write-Host ("  " + $x.Name) }
     Write-Host ("  ---- {0} 件 ----" -f $tests.Count)
+
+    # 名前とバッチの対応を返す（#610）。SelectTargets.ps1 が使う。
+    # 単体テストは C# 側にしかないので、Dir は常に CS。
+    if ($PassThru)
+    {
+        foreach ($x in $tests) { [pscustomobject]@{ Name = $x.Name; Bat = $x.Bat; Dir = "CS" } }
+    }
     exit 0
 }
 
+# **-Only は複数指定できる。どれかに当たれば対象。**（#610）
+#   1 つでも空振りしたら止める（打ち間違いが緑になるのを防ぐ。#576）。
 if ($Only)
 {
-    $tests = @($tests | Where-Object { $_.Name -like "*$Only*" })
-
-    if ($tests.Count -eq 0)
+    foreach ($o in $Only)
     {
-        Write-Host ("  **-Only '$Only' に一致する対象がありません。**") -ForegroundColor Red
-        Write-Host ("  -List で一覧を出せます。") -ForegroundColor Yellow
-        exit 1
+        if (@($tests | Where-Object { $_.Name -like "*$o*" }).Count -eq 0)
+        {
+            Write-Host ("  **-Only '$o' に一致する対象がありません。**") -ForegroundColor Red
+            Write-Host ("  -List で一覧を出せます。") -ForegroundColor Yellow
+            exit 1
+        }
     }
 
-    Write-Host ("  -Only '$Only' : {0} 件に絞りました" -f $tests.Count) -ForegroundColor Yellow
+    $tests = @($tests | Where-Object { $cand = $_; @($Only | Where-Object { $cand.Name -like "*$_*" }).Count -gt 0 })
+
+    Write-Host ("  -Only '{0}' : {1} 件に絞りました" -f ($Only -join "', '"), $tests.Count) -ForegroundColor Yellow
 }
 
 # ------------------------------------------------------------------
