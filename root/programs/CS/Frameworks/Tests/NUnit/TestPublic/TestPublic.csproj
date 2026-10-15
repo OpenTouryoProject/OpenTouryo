@@ -64,6 +64,9 @@
     <Reference Include="OpenTouryo.Public.Security">
       <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.Security.dll</HintPath>
     </Reference>
+    <!--JWE の A128CBC-HS256（AeadAesCbc）が使う（Security/JweTypTests.cs。#615）。
+        版は Public.Security_netcore100 と同じ。net48 は Build_net48 の DLL が複写されるので要らない。-->
+    <PackageReference Include="BouncyCastle.NetCore" Version="2.2.1" />
   </ItemGroup>
 
   <ItemGroup>

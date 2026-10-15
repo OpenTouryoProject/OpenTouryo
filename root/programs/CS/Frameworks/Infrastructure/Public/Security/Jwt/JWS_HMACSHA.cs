@@ -32,8 +32,9 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/06/25  西野 大介         新規作成（分割
-//*  2026/10/16  玄人 幸道         JWSHeader を追加し typ を設定できるようにした。
+//*  2026/10/15  玄人 幸道         JWSHeader を追加し typ を設定できるようにした。
 //*                                Verify で typ を照合しないことを明示（照合は JWS.Verify(jwt, typ)。#611）
+//*  2026/10/16  玄人 幸道         JWSHeader を基底（JWS）へ移し、Init で作るようにした（#615）
 //**********************************************************************************
 
 using System;
@@ -62,36 +63,12 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         /// <summary>JwtConst.HSnnn</summary>
         protected string JwtConstHSnnn = "";
 
-        /// <summary>_JWSHeader</summary>
-        private JWS_Header _JWSHeader = null;
-
-        /// <summary>JWSHeader</summary>
-        /// <remarks>
-        /// 署名の前に typ などを設定できる（JWS_RSA / JWS_ECDSA と同じ口。#611）。
-        /// 以前は Create の中で毎回作っており、外から設定できなかった。
-        /// </remarks>
-        public JWS_Header JWSHeader
-        {
-            protected set
-            {
-                this._JWSHeader = value;
-            }
-
-            get
-            {
-                // alg は派生のコンストラクタで決まるので、初めて使うときに作る。
-                if (this._JWSHeader == null)
-                {
-                    this._JWSHeader = new JWS_Header { alg = this.JwtConstHSnnn };
-                }
-                return this._JWSHeader;
-            }
-        }
-
         /// <summary>Init</summary>
         /// <param name="key">byte[]</param>
         public void Init(byte[] key)
         {
+            // alg は派生のコンストラクタで決まるので、ここで作る（#615）。
+            this.JWSHeader = new JWS_Header() { alg = this.JwtConstHSnnn };
             this.Key = key;
 
             // mkjwk - JSON Web Key Generator
@@ -107,6 +84,9 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         /// <param name="jwkString">string</param>
         public void Init(string jwkString)
         {
+            // alg は派生のコンストラクタで決まるので、ここで作る（#615）。
+            this.JWSHeader = new JWS_Header() { alg = this.JwtConstHSnnn };
+
             Dictionary<string, string> jwk = new Dictionary<string, string>();
             jwk = JsonConvert.DeserializeObject<Dictionary<string, string>>(jwkString);
 

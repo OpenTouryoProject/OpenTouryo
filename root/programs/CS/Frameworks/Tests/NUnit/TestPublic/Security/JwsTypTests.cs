@@ -23,7 +23,8 @@
 //*
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
-//*  2026/10/16  玄人 幸道         新規作成（#611）
+//*  2026/10/15  玄人 幸道         新規作成（#611）
+//*  2026/10/16  玄人 幸道         JWSHeader が基底（JWS）に移ったので、リフレクションをやめた（#615）
 //**********************************************************************************
 
 using System;
@@ -68,12 +69,6 @@ namespace TestPublic.Security
                 CustomEncode.FromBase64UrlString(jwt.Split('.')[0]), CustomEncode.UTF_8));
         }
 
-        /// <summary>JWSHeader（JWS 基底クラスには無く、方式ごとのクラスにあるのでリフレクションで取る）</summary>
-        private static JWS_Header HeaderOf(JWS jws)
-        {
-            return (JWS_Header)jws.GetType().GetProperty("JWSHeader").GetValue(jws);
-        }
-
         #region 署名側
 
         /// <summary>既定の typ は JWT（従来どおり）。</summary>
@@ -90,7 +85,7 @@ namespace TestPublic.Security
         public void Create_AtJwt(Func<JWS> factory)
         {
             JWS jws = factory();
-            HeaderOf(jws).typ = JwtConst.AT_JWT;
+            jws.JWSHeader.typ = JwtConst.AT_JWT;
 
             Assert.That((string)Header(jws.Create(Payload))["typ"], Is.EqualTo("at+jwt"));
         }
@@ -100,7 +95,7 @@ namespace TestPublic.Security
         public void Create_NullTyp_Omitted(Func<JWS> factory)
         {
             JWS jws = factory();
-            HeaderOf(jws).typ = null;
+            jws.JWSHeader.typ = null;
 
             Assert.That(Header(jws.Create(Payload))["typ"], Is.Null);
         }
@@ -118,13 +113,13 @@ namespace TestPublic.Security
             JWS jws = factory();
             Assert.That(jws.Verify(jws.Create(Payload)), Is.True, "JWT");
 
-            HeaderOf(jws).typ = JwtConst.AT_JWT;
+            jws.JWSHeader.typ = JwtConst.AT_JWT;
             Assert.That(jws.Verify(jws.Create(Payload)), Is.True, "at+jwt");
 
-            HeaderOf(jws).typ = "dpop+jwt";
+            jws.JWSHeader.typ = "dpop+jwt";
             Assert.That(jws.Verify(jws.Create(Payload)), Is.True, "dpop+jwt");
 
-            HeaderOf(jws).typ = null;
+            jws.JWSHeader.typ = null;
             Assert.That(jws.Verify(jws.Create(Payload)), Is.True, "typ なし");
         }
 
@@ -133,7 +128,7 @@ namespace TestPublic.Security
         public void Verify_AtJwt_Match(Func<JWS> factory)
         {
             JWS jws = factory();
-            HeaderOf(jws).typ = JwtConst.AT_JWT;
+            jws.JWSHeader.typ = JwtConst.AT_JWT;
             string jwt = jws.Create(Payload);
 
             Assert.That(jws.Verify(jwt, JwtConst.AT_JWT), Is.True, "at+jwt");
@@ -160,7 +155,7 @@ namespace TestPublic.Security
             JWS jws = factory();
             string jwtTyp = jws.Create(Payload);              // typ: JWT
 
-            HeaderOf(jws).typ = JwtConst.AT_JWT;
+            jws.JWSHeader.typ = JwtConst.AT_JWT;
             string atTyp = jws.Create(Payload);               // typ: at+jwt
 
             Assert.That(jws.Verify(jwtTyp, JwtConst.AT_JWT), Is.False, "JWT を at+jwt として");
@@ -173,7 +168,7 @@ namespace TestPublic.Security
         public void Verify_NoTyp_WithExpected_Rejected(Func<JWS> factory)
         {
             JWS jws = factory();
-            HeaderOf(jws).typ = null;
+            jws.JWSHeader.typ = null;
             string jwt = jws.Create(Payload);
 
             Assert.That(jws.Verify(jwt, JwtConst.JWT), Is.False);
@@ -185,7 +180,7 @@ namespace TestPublic.Security
         public void Verify_NullOrEmptyExpected_SameAsVerify(Func<JWS> factory)
         {
             JWS jws = factory();
-            HeaderOf(jws).typ = "dpop+jwt";
+            jws.JWSHeader.typ = "dpop+jwt";
             string jwt = jws.Create(Payload);
 
             Assert.That(jws.Verify(jwt, null), Is.True);
@@ -197,7 +192,7 @@ namespace TestPublic.Security
         public void Verify_TypMatch_ButSignatureTampered(Func<JWS> factory)
         {
             JWS jws = factory();
-            HeaderOf(jws).typ = JwtConst.AT_JWT;
+            jws.JWSHeader.typ = JwtConst.AT_JWT;
             string[] parts = jws.Create(Payload).Split('.');
 
             string tampered = parts[0] + "." + CustomEncode.ToBase64UrlString(

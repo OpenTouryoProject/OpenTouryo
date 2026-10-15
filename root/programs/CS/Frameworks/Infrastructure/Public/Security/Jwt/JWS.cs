@@ -31,7 +31,9 @@
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //*  2017/12/25  西野 大介         暗号化ライブラリ追加に伴うコード追加・修正
 //*  2018/08/15  西野 大介         jwks_uri & kid 対応
-//*  2026/10/16  玄人 幸道         typ を照合する Verify(jwtString, typ) を追加（#611）
+//*  2026/10/15  玄人 幸道         typ を照合する Verify(jwtString, typ) を追加（#611）
+//*  2026/10/15  玄人 幸道         typ の読み取りと正規化を JWE からも使えるよう internal にした（#615）
+//*  2026/10/16  玄人 幸道         JWSHeader を派生（JWS_RSA / JWS_ECDSA / JWS_HMACSHA）から移した（#615）
 //**********************************************************************************
 
 using Newtonsoft.Json.Linq;
@@ -43,6 +45,14 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
     /// <summary>JWS</summary>
     public abstract class JWS
     {
+        /// <summary>JWSHeader</summary>
+        /// <remarks>
+        /// 署名の前に typ などを設定できる（#611）。
+        /// alg は方式ごとに決まるので、派生（JWS_RSA / JWS_ECDSA / JWS_HMACSHA）の Init で作る。
+        /// 以前は派生ごとに持っていた（JWS_HMACSHA には無かった）のを、基底に移した（#615）。
+        /// </remarks>
+        public JWS_Header JWSHeader { get; protected set; }
+
         /// <summary>JWS生成メソッド</summary>
         /// <param name="payloadJson">ペイロード部のJson文字列</param>
         /// <returns>JWSの文字列表現</returns>
@@ -96,13 +106,14 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         }
 
         /// <summary>ヘッダの typ を、ヘッダの JSON から直接読む</summary>
-        /// <param name="jwtString">JWSの文字列表現</param>
+        /// <param name="jwtString">JWS / JWE の文字列表現（先頭の区切りがヘッダ）</param>
         /// <returns>typ（無い、または文字列でなければ null）</returns>
         /// <remarks>
         /// JWS_Header に読み込むと、typ が無いときも初期値（"JWT"）に見えてしまうため、
         /// 「無い」を見分けるには JSON を直接読む必要がある。
+        /// JWE.Decrypt(jwtString, typ, out payloadJson) からも使う（#615）。
         /// </remarks>
-        private static string GetHeaderTyp(string jwtString)
+        internal static string GetHeaderTyp(string jwtString)
         {
             string header = jwtString.Split('.')[0];
             JObject headerObject = JObject.Parse(
@@ -115,7 +126,7 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         /// <summary>typ を比較用に正規化する（RFC 7515 4.1.9）</summary>
         /// <param name="typ">typ</param>
         /// <returns>正規化した typ</returns>
-        private static string NormalizeTyp(string typ)
+        internal static string NormalizeTyp(string typ)
         {
             string t = typ.Trim();
             if (t.IndexOf('/') < 0)

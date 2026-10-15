@@ -32,7 +32,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/06/25  西野 大介         新規作成（分割
-//*  2026/10/16  玄人 幸道         Verify で typ を照合しないことを明示（照合は JWS.Verify(jwt, typ)。#611）
+//*  2026/10/15  玄人 幸道         Verify で typ を照合しないことを明示（照合は JWS.Verify(jwt, typ)。#611）
+//*  2026/10/16  玄人 幸道         JWSHeader を基底（JWS）へ移した（#615）
 //**********************************************************************************
 
 using System;
@@ -69,29 +70,12 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         /// <summary>JwtConst.ESnnn</summary>
         protected string JwtConstESnnn = "";
 
-        /// <summary>_JWSHeader</summary>
-        private JWS_Header _JWSHeader = null;
-
-        /// <summary>JWSHeader</summary>
-        public JWS_Header JWSHeader
-        {
-            protected set
-            {
-                this._JWSHeader = value;
-            }
-
-            get
-            {
-                return this._JWSHeader;
-            }
-        }
-
         /// <summary>Init</summary>
         /// <param name="jwtConstESnnn">string</param>
         public void Init(string jwtConstESnnn)
         {
             this.JwtConstESnnn = jwtConstESnnn;
-            this._JWSHeader = new JWS_Header() { alg = jwtConstESnnn };
+            this.JWSHeader = new JWS_Header() { alg = jwtConstESnnn };
         }
 
         #endregion
