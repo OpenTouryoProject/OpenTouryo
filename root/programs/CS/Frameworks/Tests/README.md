@@ -13,7 +13,7 @@
 | フォルダ | 中身 |
 |---|---|
 | `Golden/` | `TestCode` / `TestDataAccess` / `TestBatch` / `EncAndDecUtilCUI` |
-| `NUnit/` | `TestPublic` |
+| `NUnit/` | `TestPublic` / `TestPublicNLog`（`LogIF` を NLog にした状態。別プロセスで動かすため分けている） |
 | `Else/` | `TestTransmission` / `TestWebAPIClient` / `TestLog` / `EncAndDecUtil` / `LaunchJson` |
 
 各プロジェクトの内容は [`ANALYSIS.md`](../ANALYSIS.md) 2.3 節。
@@ -52,6 +52,28 @@ y_Build_TestCode_NUnit.bat     … ビルド → net48 / net10.0 で実行 → T
   NUnit 4.6 では旧形式の警告（CS0618）になる。**素直にラムダで書けばよい**
 - **カルチャに依存する部品（数値・日付の文字列化）は `[SetCulture("ja-JP")]` で固定する**
 - 環境変数・カルチャなど**プロセスの状態を変えたら、`[TearDown]` で戻す**
+- **ファイルを書くテストは、`%TEMP%\OpenTouryoNUnit\<GUID>` を作業フォルダにし、`[TearDown]` で消す**
+- **.NET では、設定を読む部品の前に `GetConfigParameter.InitConfiguration` が要る。**
+  `TestSetup.cs`（`[SetUpFixture]`）が全テストの前に空の構成を与えている。
+  設定を読むと気付きにくい部品もある（例: `EmbeddedResourceLoader` は内部で `Azure` キーを読む）。
+  呼び忘れると `NOT_INITIALIZED` の `ArgumentException` になり、`Exists` のように
+  例外を握る API では **黙って false が返る**
+- **テストに設定値を与えるときは、net48 の `App.config` と .NET の `TestSetup.cs` の両方に同じ値を書く。**
+  いまは `FxLog4NetConfFile`（`NUnitLogConf.xml`。`LogIF` のテストが使う）だけ
+- **`LogIF` の NLog 側は `TestPublicNLog` に書く。** `LogLib` は静的コンストラクタで
+  1 回だけ読まれ、同じプロセスでは log4net のまま変えられないため、別プロジェクトにしている
+  （`dotnet test` はテスト アセンブリごとに別プロセスで動かす）。
+  **プロセスの状態を変える設定が要るテストは、同じやり方でプロジェクトを分ける**
+- **プロジェクトを足したら、`TestPublic.sln` に加え、`y_Build_TestCode_NUnit.bat` の
+  `call :RunTests` と `2_RunAllTests.ps1` の対象に足す。**
+  バッチの `.sln` のパスは変数を使わずに書く（`SelectTargets.ps1` がそこから
+  「このバッチが建てるもの」を読むため。`%VAR%` を含むと解決できず、黙って外れる）
+- **Db のテストは DB に接続しない。** `SQLUtility` と、`DamSqlSvr.ExecGenerateSQL`
+  （組み立てた SQL を返すだけで、接続を使わない）で、動的パラメタライズド クエリのタグを確かめる。
+  XML は `SetSqlByCommand` に文字列で渡せる（動的かどうかは中身で決まる）。
+  **実行して件数を見るものは Golden の `TestDataAccess`**（DB が要る）
+- 埋め込みリソースの検証には、`OpenTouryo.Public` に埋め込まれている
+  `Xml/TestXml.xml` / `Xml/TestXsd.xsd` を使える
 - フレームワークは `HintPath` で参照する。**`Public` が使うパッケージは、
   テストで通る範囲だけ csproj にも並べる**（推移的依存が効かないため）
 - **読み違えやすい挙動を見つけたら、それ自体をテストにする**

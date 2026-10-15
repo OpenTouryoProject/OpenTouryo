@@ -81,6 +81,7 @@
      2026/10/15  玄人 幸道         Tests を Golden / NUnit / Else に整理した（#610）
      2026/10/15  玄人 幸道         NUnit の結果（trx）を判定する対象を加えた（#610）
      2026/10/15  玄人 幸道         -Only の複数指定と -List -PassThru を追加（#610）
+     2026/10/15  玄人 幸道         NUnit の TestPublicNLog を加え、結果をプロジェクトごとに分けた（#610）
 #>
 [CmdletBinding()]
 param(
@@ -246,11 +247,20 @@ $tests = @(
     }
     @{
         Name = "NUnit TestPublic (net48)";   Bat = "y_Build_TestCode_NUnit.bat"
-        Result = "NUnit\TestResults\TestPublic_net48.trx";   Kind = "NUnit"
+        Result = "NUnit\TestResults\TestPublic\TestPublic_net48.trx";   Kind = "NUnit"
     }
     @{
         Name = "NUnit TestPublic (net10.0)"; Bat = "y_Build_TestCode_NUnit.bat"
-        Result = "NUnit\TestResults\TestPublic_net10.0.trx"; Kind = "NUnit"; Coverage = $true
+        Result = "NUnit\TestResults\TestPublic\TestPublic_net10.0.trx"; Kind = "NUnit"; Coverage = $true
+    }
+    # LogIF を NLog に切り替えた状態（別プロセスで動かすため別プロジェクト。#610）
+    @{
+        Name = "NUnit TestPublicNLog (net48)";   Bat = "y_Build_TestCode_NUnit.bat"
+        Result = "NUnit\TestResults\TestPublicNLog\TestPublicNLog_net48.trx";   Kind = "NUnit"
+    }
+    @{
+        Name = "NUnit TestPublicNLog (net10.0)"; Bat = "y_Build_TestCode_NUnit.bat"
+        Result = "NUnit\TestResults\TestPublicNLog\TestPublicNLog_net10.0.trx"; Kind = "NUnit"; Coverage = $true
     }
 )
 

@@ -66,6 +66,7 @@
 | `Golden` | `TestBatch` | バッチ起動確認 | — |
 | `Golden` | `EncAndDecUtilCUI` | 暗号・署名ユーティリティの CUI 確認 | — |
 | `NUnit` | `TestPublic` | NUnit による `Public` 層の単体テスト（#610）。**1 つの csproj で net48 / net10.0 をマルチ ターゲット**にする。テスト自身が合否を出す | [`Tests/README.md`](Tests/README.md) |
+| `NUnit` | `TestPublicNLog` | `LogIF` を NLog に切り替えた状態のテスト（#610）。**使うライブラリはプロセスで 1 回しか決まらない**ため、別プロジェクト（別プロセス）にしている | [`Tests/README.md`](Tests/README.md) |
 | `Else` | `TestTransmission` | 通信制御の接続オプション（#546）。**オリジンとプロキシを自前で立て**、`CallController` から呼んで、要求に反映されているかを見る。**期待値ファイルを持たず、自分で合否を出す**（疎通テストから呼ばれる） | [`SMOKETEST.md`](../../SMOKETEST.md) 3 節 |
 | `Else` | `TestWebAPIClient` | Web API の非ブラウザ クライアント（疎通テストから呼ばれる） | [`SMOKETEST.md`](../../SMOKETEST.md) |
 | `Else` | `TestLog` | ログ出力確認（log4net/NLog、1〜3） | — |

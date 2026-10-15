@@ -38,9 +38,24 @@
     <PackageReference Include="Zipangu" Version="1.1.8" />
     <!--DTTables の JSON 化が使う。net48 は Build_net48 の DLL が複写されるので要らない。-->
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <!--ZipperV2 / UnZipperV2 が使う。-->
+    <PackageReference Include="SharpZipLib" Version="1.4.2" />
+    <!--GetConfigParameter.InitConfiguration に渡す構成（TestSetup.cs）。-->
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.5" />
+    <!--LogIF が使う（NLog は LogLib=nlog のときだけ読まれるので並べない）。-->
+    <PackageReference Include="log4net" Version="3.3.0" />
+    <!--DamSqlSvr が使う（Db のテストは接続しない。SqlCommand を作るだけ）。-->
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.0" />
     <Reference Include="OpenTouryo.Public">
       <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.dll</HintPath>
     </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--LogIF のテストが使う log4net の構成（FxLog4NetConfFile）。-->
+    <None Update="NUnitLogConf.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

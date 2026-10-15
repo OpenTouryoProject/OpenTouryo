@@ -78,15 +78,19 @@ cd root\programs
 `Golden/EncAndDecUtilCUI/ResultCore100OnLinux.txt` は Linux 実行時の期待結果のため、
 Windows からの `2_RunAllTests.ps1` の対象外。
 
-### NUnit のテスト（2 ケース、#610）
+### NUnit のテスト（4 ケース、#610）
 
 **期待値ファイルを持たない。テスト自身が合否を出す。**
 HEAD とは比較せず、バッチが書き出す `*.trx` の集計で判定する。
 
 | テスト | 結果ファイル | ビルド バッチ | 判定 |
 |---|---|---|---|
-| NUnit TestPublic (net48) | `NUnit/TestResults/TestPublic_net48.trx` | `y_Build_TestCode_NUnit.bat` | 失敗 0 件、かつ 1 件以上実行 |
-| NUnit TestPublic (net10.0) | `NUnit/TestResults/TestPublic_net10.0.trx` | 同上 | 同上。**カバレッジも表示する** |
+| NUnit TestPublic (net48) | `NUnit/TestResults/TestPublic/TestPublic_net48.trx` | `y_Build_TestCode_NUnit.bat` | 失敗 0 件、かつ 1 件以上実行 |
+| NUnit TestPublic (net10.0) | `NUnit/TestResults/TestPublic/TestPublic_net10.0.trx` | 同上 | 同上。**カバレッジも表示する** |
+| NUnit TestPublicNLog (net48) | `NUnit/TestResults/TestPublicNLog/TestPublicNLog_net48.trx` | 同上 | 同上 |
+| NUnit TestPublicNLog (net10.0) | `NUnit/TestResults/TestPublicNLog/TestPublicNLog_net10.0.trx` | 同上 | 同上。**カバレッジも表示する** |
+
+**`TestPublicNLog` は、`LogIF` を NLog に切り替えた状態のテスト**で、別のプロセスで動かすために分けている（使うライブラリはプロセスで 1 回しか決まらない）。カバレッジはプロジェクトごとに別に出る。
 
 - **サマリの「差分」の列は、NUnit では失敗の件数を表す。**
 - **0 件の合格は OK にしない。** テストが見つからない構成ミスを見逃すため
@@ -163,7 +167,7 @@ SimpleBatch.exe /Dap SQL ... > ..\..\..\ResultSimpleBatch48.txt
 
 - **Frameworks をビルド済み**であること（`Build_net48` / `Build_netcore100` が存在）
 - **SQL Server の Northwind に接続できる**こと
-  （`TestDataAccess` と `TestBatch` が使用。**10 本中 4 本**）
+  （`TestDataAccess` と `TestBatch` が使用。**12 本中 4 本**）
 - **Northwind のテスト データが標準状態**であること（後述の「4. テスト データ」）
 
 ### 冒頭の「前提の確認」（#588）
