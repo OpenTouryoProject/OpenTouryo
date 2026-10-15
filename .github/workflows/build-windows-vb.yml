@@ -76,6 +76,9 @@ jobs:
       # ------------------------------------------------------------------
       # 第三者のアクションなのでコミットで固定する（v1 はタグではなくブランチ）。
       - name: Install SQL Server
+        # 通常は 6 分前後（取得 2〜3 分、導入 3 分）。Microsoft からの取得が止まると、
+        # 打ち切られずにジョブ全体の timeout-minutes（90）まで待ち続けるため、ここで切る。
+        timeout-minutes: 20
         uses: ankane/setup-sqlserver@82b78e23506d0c8acfb64e05728ac450ff8a98c6 # v1
         with:
           accept-eula: true
