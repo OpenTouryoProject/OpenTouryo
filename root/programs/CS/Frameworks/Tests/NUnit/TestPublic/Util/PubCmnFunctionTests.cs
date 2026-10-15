@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/15  玄人 幸道         新規作成（#610）
+//*  2026/10/15  玄人 幸道         #612 の修正に合わせ、修正後の挙動を確かめるケースを追加
 //**********************************************************************************
 
 using System;
@@ -90,6 +91,8 @@ namespace TestPublic.Util
         [TestCase(@"C:\dir\a.txt", '\\', "a")]
         [TestCase(@"C:\dir\a.b.txt", '\\', "a.b")]
         [TestCase("/var/log/x.log", '/', "x")]
+        // 拡張子が無ければ、ファイル名をそのまま返す（以前は空文字。#612 で修正）
+        [TestCase(@"C:\dir\abc", '\\', "abc")]
         public void GetFileNameNoEx(string path, char div, string expected)
         {
             Assert.That(PubCmnFunction.GetFileNameNoEx(path, div), Is.EqualTo(expected));

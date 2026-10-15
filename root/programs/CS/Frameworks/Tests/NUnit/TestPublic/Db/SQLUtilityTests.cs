@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/15  玄人 幸道         新規作成（#610）
+//*  2026/10/15  玄人 幸道         #612 の修正に合わせ、修正後の挙動を確かめるケースを追加
 //**********************************************************************************
 
 using System;
@@ -152,6 +153,49 @@ namespace TestPublic.Db
         {
             Assert.That(new SQLUtility(DbEnum.DBMSType.SQLServer).ConvertParameterToSQL(DBNull.Value), Is.EqualTo("NULL"));
             Assert.That(new SQLUtility(DbEnum.DBMSType.PstGrS).ConvertParameterToSQL(DBNull.Value), Is.EqualTo("NULL"));
+        }
+
+        /// <summary>
+        /// null は NULL（PostgreSQL は DEFAULT）。
+        /// **以前は NullReferenceException になっていた**（#612 で修正）。
+        /// </summary>
+        [TestCase(DbEnum.DBMSType.SQLServer, "NULL")]
+        [TestCase(DbEnum.DBMSType.Oracle, "NULL")]
+        [TestCase(DbEnum.DBMSType.MySQL, "NULL")]
+        [TestCase(DbEnum.DBMSType.DB2, "NULL")]
+        [TestCase(DbEnum.DBMSType.PstGrS, "DEFAULT")]
+        public void NullValue(DbEnum.DBMSType dbms, string expected)
+        {
+            Assert.That(new SQLUtility(dbms).ConvertParameterToSQL(null), Is.EqualTo(expected));
+        }
+
+        /// <summary>
+        /// 単体の byte も 16 進のリテラルにする。
+        /// **以前は PostgreSQL だけ InvalidCastException になっていた**（#612 で修正）。
+        /// </summary>
+        [TestCase(DbEnum.DBMSType.SQLServer, "0xAB")]
+        [TestCase(DbEnum.DBMSType.MySQL, "0xAB")]
+        [TestCase(DbEnum.DBMSType.Oracle, "hextoraw('AB')")]
+        [TestCase(DbEnum.DBMSType.PstGrS, "decode('AB', 'hex')")]
+        [TestCase(DbEnum.DBMSType.DB2, "x'AB'")]
+        public void SingleByte(DbEnum.DBMSType dbms, string expected)
+        {
+            Assert.That(new SQLUtility(dbms).ConvertParameterToSQL((byte)0xAB), Is.EqualTo(expected));
+        }
+
+        /// <summary>
+        /// char も ' を '' にエスケープする（string と同じ）。
+        /// **以前はエスケープせず、引用符が閉じない SQL になっていた**（#612 で修正）。
+        /// </summary>
+        [TestCase(DbEnum.DBMSType.SQLServer, "Convert(nvarchar, '''')")]
+        [TestCase(DbEnum.DBMSType.MySQL, "Cast('''' as char)")]
+        [TestCase(DbEnum.DBMSType.PstGrS, "Cast('''' as text)")]
+        [TestCase(DbEnum.DBMSType.Oracle, "TO_CHAR('''')")]
+        [TestCase(DbEnum.DBMSType.DB2, "CHAR('''')")]
+        public void Char_EscapesQuote(DbEnum.DBMSType dbms, string expected)
+        {
+            Assert.That(new SQLUtility(dbms).ConvertParameterToSQL('\''), Is.EqualTo(expected));
+            Assert.That(new SQLUtility(dbms).ConvertParameterToSQL('a'), Does.Contain("'a'"));
         }
 
         #endregion

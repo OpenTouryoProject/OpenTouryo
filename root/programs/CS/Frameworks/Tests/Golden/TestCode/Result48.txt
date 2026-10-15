@@ -2351,8 +2351,8 @@ GetUnderlyingType(string): (null)
 ToUnixTime : 1786019696
 GetFileNameNoEx(パス付き)    : a
 GetFileNameNoEx(二重拡張子)  : a.b
-GetFileNameNoEx(拡張子なし)  : 
-GetFileNameNoEx(区切りを「.」): ""
+GetFileNameNoEx(拡張子なし)  : abc
+GetFileNameNoEx(区切りを「.」): "txt"
 GetCurrentMethodName : GetCurrentMethodName
 ----------------------------------------------------------------------------------------------------
 ArrayOperator

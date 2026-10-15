@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/15  玄人 幸道         新規作成（#610）
+//*  2026/10/15  玄人 幸道         #612 の修正に合わせ、修正後の挙動を確かめるケースを追加
 //**********************************************************************************
 
 using System;
@@ -140,12 +141,7 @@ namespace TestPublic.Util
             Assert.That(GetConfigParameter.GetConfigValue(EnvKey), Is.EqualTo("file"));
         }
 
-        /// <summary>
-        /// FxContainerization の on / off は大文字・小文字を問わない。
-        /// **on / off 以外の値はテストしない。** 現状は ArgumentException にならず、
-        /// 例外メッセージの取得（PublicExceptionMessage.CmnFunc）が同じ判定を通って再帰し、
-        /// スタック オーバーフローでテスト プロセスごと落ちるため（#610 で報告済み）。
-        /// </summary>
+        /// <summary>FxContainerization の on / off は大文字・小文字を問わない。</summary>
         [Test]
         public void Containerization_SwitchIsCaseInsensitive()
         {
@@ -153,6 +149,19 @@ namespace TestPublic.Util
             Environment.SetEnvironmentVariable(EnvKey, "env", EnvironmentVariableTarget.Process);
 
             Assert.That(GetConfigParameter.GetConfigValue(EnvKey), Is.EqualTo("env"));
+        }
+
+        /// <summary>
+        /// FxContainerization が on / off 以外なら ArgumentException。
+        /// **以前は例外メッセージの取得（PublicExceptionMessage.CmnFunc）が同じ判定を通って再帰し、
+        /// スタック オーバーフローでプロセスごと落ちていた**（#612 で修正）。
+        /// </summary>
+        [Test]
+        public void Containerization_InvalidSwitch_Throws()
+        {
+            Use(new Dictionary<string, string> { { "appSettings:FxContainerization", "yes" } });
+
+            Assert.Throws<ArgumentException>(() => GetConfigParameter.GetConfigValue(EnvKey));
         }
 
         /// <summary>

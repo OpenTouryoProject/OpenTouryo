@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/15  玄人 幸道         新規作成（#610）
+//*  2026/10/15  玄人 幸道         #612 の修正に合わせ、修正後の挙動を確かめるケースを追加
 //**********************************************************************************
 
 using System;
@@ -88,6 +89,17 @@ namespace TestPublic.Str
         {
             Assert.That(FormatConverter.Ceiling("-1.567", 2u), Is.EqualTo("-1.56"));
             Assert.That(FormatConverter.Ceiling("-1.567", 2u, CeilingToward.RP), Is.EqualTo("-1.56"));
+        }
+
+        /// <summary>
+        /// 負の数の RI は 0 から遠ざかる（無限大へ。絶対値の切り上げ）。
+        /// **以前は .NET だけ 0 の方向に丸めていた**（-1.56。#612 で修正）。
+        /// </summary>
+        [Test]
+        public void Ceiling_Negative_RI()
+        {
+            Assert.That(FormatConverter.Ceiling("-1.567", 2u, CeilingToward.RI), Is.EqualTo("-1.57"));
+            Assert.That(FormatConverter.Ceiling("-1.1", 0u, CeilingToward.RI), Is.EqualTo("-2"));
         }
 
         /// <summary>数値として解釈できないものは "0"。</summary>

@@ -43,6 +43,7 @@
 //*  2018/10/03  西野 大介         GetDataReaderColumnInfoメソッドを追加。
 //*  2018/10/03  西野 大介         CombineByteArrayメソッドを追加。
 //*  2018/10/03  西野 大介         StringVariableOperator, StackFrameOperator, ArrayOperatorに分割
+//*  2026/10/15  玄人 幸道         GetFileNameNoEx：拡張子の無いファイル名で空文字を返すのを修正（#612）
 //**********************************************************************************
 
 using System;
@@ -149,6 +150,13 @@ namespace Touryo.Infrastructure.Public.Util
             // 分解して組み立て
             aryTemp = str.Split(divChar);
             aryTemp = aryTemp[aryTemp.Length - 1].Split('.');
+
+            // 拡張子が無い場合は、ファイル名をそのまま返す（#612）。
+            // ※ 以前は「最後の要素以外をつなぐ」処理だけで、空文字が返っていた。
+            if (aryTemp.Length == 1)
+            {
+                return aryTemp[0];
+            }
 
             for (int i = 0; i < aryTemp.Length - 1; i++)
             {

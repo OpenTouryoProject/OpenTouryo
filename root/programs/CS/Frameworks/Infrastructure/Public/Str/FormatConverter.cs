@@ -40,6 +40,7 @@
 //*  2017/01/13  西野 大介         ToUnixTime, FromUnixTimeメソッドを追加した。
 //*  2018/03/28  西野 大介         .NET Standard対応で、Microsoft.VisualBasicのサポート無し。
 //*  2019/06/04  西野 大介         To, FromSamlTimestampメソッドの追加
+//*  2026/10/15  玄人 幸道         Ceiling(RI)：.NET で負の数を 0 の方向に丸めていたのを修正（#612）
 //**********************************************************************************
 
 using System;
@@ -283,12 +284,10 @@ namespace Touryo.Infrastructure.Public.Str
                     {
                         // 0未満
 
-                        // 数値の整数部分を返す。
-#if (NETSTD || NETCOREAPP)
-                        dcm = Math.Truncate(dcm);
-#else
-                        dcm = Microsoft.VisualBasic.Conversion.Int(dcm);
-#endif
+                        // 0 から遠ざかる側（負の無限大の方向）へ丸める。
+                        // ※ 以前は .NET 側だけ Math.Truncate（0 の方向）になっており、
+                        //    net48 の Conversion.Int（負の無限大の方向）と結果が違っていた（#612）。
+                        dcm = Math.Floor(dcm);
                     }
                 }
                 else

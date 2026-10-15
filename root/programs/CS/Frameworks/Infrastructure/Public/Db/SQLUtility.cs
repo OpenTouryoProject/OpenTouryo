@@ -36,6 +36,8 @@
 //*  2014/01/30  Santoshkumar      added code for batch processing supporting DB2
 //*  2014/03/04  Santoshkumar      Modified code for converting char data type for batch processing supporting DB2 and Oracle
 //*  2026/08/02  玄人 幸道         GetUpdateSQLParts：複合主キーで誤ったUPDATE文を生成する問題を修正
+//*  2026/10/15  玄人 幸道         ConvertParameterToSQL：null で落ちる、PostgreSQL の byte で落ちる、
+//*                                char の ' をエスケープしない、の 3 点を修正（#612）
 //**********************************************************************************
 
 using System;
@@ -550,26 +552,52 @@ namespace Touryo.Infrastructure.Public.Db
         {
             StringBuilder sb = new StringBuilder();
 
-            if (obj.GetType() == typeof(char))
+            // **null の判定は先頭で行う**（#612）。
+            //   以前は obj.GetType() の後ろにあり、null を渡すと NullReferenceException になっていた。
+            if (obj == null)
             {
                 switch (this._dbms)
                 {
                     case DbEnum.DBMSType.SQLServer:
+                    case DbEnum.DBMSType.Oracle:
+                    case DbEnum.DBMSType.MySQL:
+                    case DbEnum.DBMSType.DB2:
+                        // NULL
+                        sb.Append("NULL");
+                        break;
+
+                    case DbEnum.DBMSType.PstGrS:
+                        // For Postgre DEFAULT
+                        sb.Append("DEFAULT");
+                        break;
+
+                    default:
+                        throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+                }
+            }
+            else if (obj.GetType() == typeof(char))
+            {
+                // サニタイジング（string と同じく ' を '' にする。#612）
+                string c = obj.ToString().Replace("'", "''");
+
+                switch (this._dbms)
+                {
+                    case DbEnum.DBMSType.SQLServer:
                         // コンバート
-                        sb.Append("Convert(" + this._convertString + ", '" + obj.ToString() + "')");
+                        sb.Append("Convert(" + this._convertString + ", '" + c + "')");
                         break;
 
                     case DbEnum.DBMSType.MySQL:
                     case DbEnum.DBMSType.PstGrS:
-                        sb.Append("Cast('" + obj.ToString() + "' as " + this._convertString + ")");
+                        sb.Append("Cast('" + c + "' as " + this._convertString + ")");
                         break;
 
                     case DbEnum.DBMSType.Oracle:
-                        sb.Append("TO_CHAR('" + obj.ToString() + "')");
+                        sb.Append("TO_CHAR('" + c + "')");
                         break;
 
                     case DbEnum.DBMSType.DB2:
-                        sb.Append("CHAR('" + obj.ToString() + "')");
+                        sb.Append("CHAR('" + c + "')");
                         break;
 
                     default:
@@ -682,7 +710,8 @@ namespace Touryo.Infrastructure.Public.Db
                         break;
 
                     case DbEnum.DBMSType.PstGrS:
-                        sb.Append("decode('" + (CustomEncode.ToHexString((byte[])obj).Replace(" ", "")) + "', 'hex')");
+                        // 単体の byte なので配列に包む（他の DBMS と同じ。以前は (byte[]) へのキャストで落ちていた。#612）
+                        sb.Append("decode('" + (CustomEncode.ToHexString((new byte[] { (byte)obj })).Replace(" ", "")) + "', 'hex')");
                         break;
 
                     case DbEnum.DBMSType.Oracle:
@@ -754,27 +783,6 @@ namespace Touryo.Infrastructure.Public.Db
                     case DbEnum.DBMSType.DB2:
                         // NULL
                         sb.Append("NULL");
-                        break;
-
-                    default:
-                        throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
-                }
-            }
-            else if (obj == null)
-            {
-                switch (this._dbms)
-                {
-                    case DbEnum.DBMSType.SQLServer:
-                    case DbEnum.DBMSType.Oracle:
-                    case DbEnum.DBMSType.MySQL:
-                    case DbEnum.DBMSType.DB2:
-                        // NULL
-                        sb.Append("NULL");
-                        break;
-
-                    case DbEnum.DBMSType.PstGrS:
-                        // For Postgre DEFAULT
-                        sb.Append("DEFAULT");
                         break;
 
                     default:

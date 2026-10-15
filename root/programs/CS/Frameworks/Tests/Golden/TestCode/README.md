@@ -184,7 +184,7 @@ net48 側は `4_Build_CopyAssemblies.bat` が依存 DLL を `Build_net48` へ並
 
 | 対象 | 挙動 |
 |---|---|
-| `PubCmnFunction.GetFileNameNoEx` | 第 2 引数は**パス区切り**。拡張子の区切りだと思って `'.'` を渡すと空文字が返る |
+| `PubCmnFunction.GetFileNameNoEx` | 第 2 引数は**パス区切り**。拡張子の区切りだと思って `'.'` を渡すと、**拡張子だけ**（`"txt"`）が返る（#612 の修正前は空文字） |
 | `ArrayOperator.CopyArray` | **配列を伸ばせない。** コピー長が「コピー先配列の長さ」で固定のため、コピー先を大きくするとコピー元が足りず落ちる。書込開始位置を 0 より後ろにしても落ちる |
 | `ArrayOperator.ShortenByteArray` | 単純な切り詰めではなく、**XOR で畳み込む**（暗号鍵の生成用）。**切り詰めに使ってはならない**（`IdToken.CreateHash` がこれで誤った、#584）。切り詰めは `CopyArray` |
 | `ArrayOperator.GetLongFromByte` | ビッグ エンディアン。8 byte で最上位ビットが立つと **Int64 の範囲を超えて負になる**（2 の補数として解釈した値） |
