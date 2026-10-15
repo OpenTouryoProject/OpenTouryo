@@ -28,6 +28,9 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/01/29  西野 大介         新規作成
+//*  2026/10/15  玄人 幸道         JWEHeader を公開し typ を設定できるようにした。
+//*                                typ を照合する Decrypt(jwtString, typ, out payloadJson) を追加し、
+//*                                既存の Decrypt では typ を照合しないことを明示（#615）
 //**********************************************************************************
 
 using Newtonsoft.Json;
@@ -43,8 +46,12 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
     {
         #region mem & prop & constructor
 
-        /// <summary>_JWEHeader</summary>
-        protected JWE_Header JWEHeader = null;
+        /// <summary>JWEHeader</summary>
+        /// <remarks>
+        /// 暗号化の前に typ などを設定できる（JWS の JWSHeader と同じ口。#615）。
+        /// 以前は protected のフィールドで、外から設定できなかった。
+        /// </remarks>
+        public JWE_Header JWEHeader { get; protected set; }
 
         /// <summary>CekByteLength</summary>
         protected int CekByteLength = 0;
@@ -108,6 +115,12 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         /// <param name="jwtString">JWEの文字列表現</param>
         /// <param name="payloadJson">ペイロード部のJson文字列</param>
         /// <returns>復号の結果</returns>
+        /// <remarks>
+        /// **typ は照合しない。**（#615）
+        /// 以前は JWE_Header.typ が readonly で、ヘッダの typ が読み込まれず常に "JWT" に見えたため、
+        /// typ の照合は実際には効いていなかった。その振る舞いをそのまま保つ。
+        /// typ を照合したいときは Decrypt(jwtString, typ, out payloadJson) を使う。
+        /// </remarks>
         public bool Decrypt(string jwtString, out string payloadJson)
         {
             try
@@ -118,9 +131,11 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
                 JWE_Header headerObject = (JWE_Header)JsonConvert.DeserializeObject(
                     CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8), typeof(JWE_Header));
 
+                // **typ は照合しない。**（#615）
+                //   以前も JWE_Header.typ が readonly で読み込まれず、照合は常に真だった。
+                //   その振る舞いを保つ。照合は Decrypt(jwtString, typ, out payloadJson) で行う。
                 if (headerObject.alg.ToUpper() == JWEHeader.alg.ToUpper() &&
-                    headerObject.enc.ToUpper() == JWEHeader.enc.ToUpper() &&
-                    headerObject.typ.ToUpper() == JWEHeader.typ.ToUpper())
+                    headerObject.enc.ToUpper() == JWEHeader.enc.ToUpper())
                 {
                     // コンテンツ暗号化キー（CEK）
                     byte[] encryptedCekBytes = CustomEncode.FromBase64UrlString(temp[1]);
@@ -160,6 +175,45 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
                 payloadJson = "";
                 return false;
             }
+        }
+
+        /// <summary>JWE復号メソッド（typ の照合付き）</summary>
+        /// <param name="jwtString">JWEの文字列表現</param>
+        /// <param name="typ">
+        /// 期待する typ（例: JwtConst.JWT）。
+        /// null または空文字なら照合せず、Decrypt(jwtString, out payloadJson) と同じ。
+        /// </param>
+        /// <param name="payloadJson">ペイロード部のJson文字列</param>
+        /// <returns>復号と typ の検証結果</returns>
+        /// <remarks>
+        /// 照合の規則は JWS.Verify(jwtString, typ) と同じ（RFC 7515 4.1.9）。
+        /// - 大文字・小文字を区別しない
+        /// - "/" を含まない値は "application/" を前に付けて比べる
+        /// - **ヘッダに typ が無ければ不一致**（期待値を指定したときだけ）
+        /// </remarks>
+        public bool Decrypt(string jwtString, string typ, out string payloadJson)
+        {
+            if (!string.IsNullOrEmpty(typ))
+            {
+                string actual;
+                try
+                {
+                    actual = JWS.GetHeaderTyp(jwtString);
+                }
+                catch
+                {
+                    // ヘッダが読めなければ、Decrypt と同じく失敗とする。
+                    actual = null;
+                }
+
+                if (actual == null || JWS.NormalizeTyp(actual) != JWS.NormalizeTyp(typ))
+                {
+                    payloadJson = "";
+                    return false;
+                }
+            }
+
+            return this.Decrypt(jwtString, out payloadJson);
         }
 
         #endregion

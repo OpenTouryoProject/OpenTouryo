@@ -133,7 +133,7 @@ $targetsCS = @(
     #   対象側が項目ごとに OK / NG を出し、末尾に件数を出す。
     @{
         Name = "TestTransmission (net48)";  Bat = "y_Build_TestTransmission.bat"
-        Exe  = "Frameworks\Tests\TestTransmission\net48\bin\Debug\TestTransmissionFx.exe"
+        Exe  = "Frameworks\Tests\Else\TestTransmission\net48\bin\Debug\TestTransmissionFx.exe"
         Expect = 'NG : 0 件'
     }
 
@@ -214,7 +214,7 @@ $targetsCS = @(
     #   対象側が項目ごとに OK / NG を出し、末尾に件数を出す。
     @{
         Name = "TestWebAPIClient (net48)";   Bat = "y_Build_TestWebAPIClient.bat"
-        Exe  = "Frameworks\Tests\TestWebAPIClient\net48\bin\Debug\TestWebAPIClientFx.exe"
+        Exe  = "Frameworks\Tests\Else\TestWebAPIClient\net48\bin\Debug\TestWebAPIClientFx.exe"
         Args = @("http://localhost:51087")
         NeedDb = $true
         Expect = 'NG : 0 件'
@@ -223,7 +223,7 @@ $targetsCS = @(
     }
     @{
         Name = "TestWebAPIClient (net10.0)"; Bat = "y_Build_TestWebAPIClient.bat"
-        Exe  = "Frameworks\Tests\TestWebAPIClient\net48\bin\Debug\TestWebAPIClientFx.exe"
+        Exe  = "Frameworks\Tests\Else\TestWebAPIClient\net48\bin\Debug\TestWebAPIClientFx.exe"
         Args = @("http://localhost:51088")
         NeedDb = $true
         Expect = 'NG : 0 件'

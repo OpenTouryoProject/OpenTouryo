@@ -32,6 +32,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/06/25  西野 大介         新規作成（分割
+//*  2026/10/15  玄人 幸道         Verify で typ を照合しないことを明示（照合は JWS.Verify(jwt, typ)。#611）
+//*  2026/10/16  玄人 幸道         JWSHeader を基底（JWS）へ移した（#615）
 //**********************************************************************************
 
 using System;
@@ -68,29 +70,12 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         /// <summary>JwtConst.ESnnn</summary>
         protected string JwtConstESnnn = "";
 
-        /// <summary>_JWSHeader</summary>
-        private JWS_Header _JWSHeader = null;
-
-        /// <summary>JWSHeader</summary>
-        public JWS_Header JWSHeader
-        {
-            protected set
-            {
-                this._JWSHeader = value;
-            }
-
-            get
-            {
-                return this._JWSHeader;
-            }
-        }
-
         /// <summary>Init</summary>
         /// <param name="jwtConstESnnn">string</param>
         public void Init(string jwtConstESnnn)
         {
             this.JwtConstESnnn = jwtConstESnnn;
-            this._JWSHeader = new JWS_Header() { alg = jwtConstESnnn };
+            this.JWSHeader = new JWS_Header() { alg = jwtConstESnnn };
         }
 
         #endregion
@@ -136,8 +121,10 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             JWS_Header headerObject = (JWS_Header)JsonConvert.DeserializeObject(
                 CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(temp[0]), CustomEncode.UTF_8), typeof(JWS_Header));
 
-            if (headerObject.alg.ToUpper() == this.JwtConstESnnn
-                && headerObject.typ.ToUpper() == JwtConst.JWT)
+            // **typ は照合しない。**（#611）
+            //   以前も JWS_Header.typ が readonly で読み込まれず、照合は常に真だった。
+            //   その振る舞いを保つ。照合は JWS.Verify(jwtString, typ) で行う。
+            if (headerObject.alg.ToUpper() == this.JwtConstESnnn)
             {
                 byte[] data = CustomEncode.StringToByte(temp[0] + "." + temp[1], CustomEncode.UTF_8);
                 byte[] sign = CustomEncode.FromBase64UrlString(temp[2]);

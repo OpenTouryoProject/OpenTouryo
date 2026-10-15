@@ -184,7 +184,7 @@ cd root\programs
 
 - [ ] **`1_BuildAll.ps1` のエラーが「既知の 1 件」だけである**
       … `-SkipClean` は**使わない**。前回の成果物が残っていると通ったように見える
-- [ ] **`2_RunAllTests.ps1` が終了コード 0**（8 ケース）
+- [ ] **`2_RunAllTests.ps1` が終了コード 0**（14 ケース。Golden 8 ＋ NUnit 6）
 - [ ] **`3_SmokeTest.ps1` が終了コード 0**（30 件）
 
 > **`1_BuildAll.ps1` は現状ここで終了コード 1 になる。**
@@ -373,7 +373,7 @@ cd root\programs
       削除オプションが無いため、該当する `<add>` 行を手で削除する（`README.md` 8 節）
 - [ ] `git status` に意図しない変更が残っていない
       … 特に `Result*.txt`（`2_RunAllTests.ps1` が再生成する）と
-      `CS\Frameworks\Tests\EncAndDecUtilCUI\*.cer` / `*.pfx`（Git 管理外の作業用コピー）
+      `CS\Frameworks\Tests\Golden\EncAndDecUtilCUI\*.cer` / `*.pfx`（Git 管理外の作業用コピー）
 
 ---
 

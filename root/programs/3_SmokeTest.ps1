@@ -45,10 +45,13 @@
     　 VB を含めると毎回 VB のビルドが乗るため。
 
 .PARAMETER Only
-    対象名の部分一致で絞る（例: -Only "Rerunnable"）。
+    対象名の部分一致で絞る（例: -Only "Rerunnable"）。複数指定できる。
 
 .PARAMETER List
     -Only に指定できる対象名を一覧表示して終わる。**ここが一次情報。**
+.PARAMETER PassThru
+    -List と併せて指定すると、名前・バッチ・フォルダの対応をオブジェクトで返す
+    （SelectTargets.ps1 が使う）。
 .PARAMETER SkipBuild
     ビルドを省略し、既存のバイナリで疎通のみ行う。
 
@@ -81,13 +84,16 @@
      2026/08/13  玄人 幸道         Lang を追加（VB 版の疎通に対応）
      2026/08/15  玄人 幸道         Args を持たない対象が PowerShell 5.1 で起動できず、
                                    しかも前回の出力で OK と判定されていたのを修正
+     2026/10/15  玄人 幸道         -Only の複数指定と -List -PassThru を追加（#610）
+     2026/10/15  玄人 幸道         -List -PassThru に NeedDb を加えた（#610）
 #>
 [CmdletBinding()]
 param(
     [ValidateSet("CS", "VB", "Both")]
     [string]$Lang = "CS",
-    [string]$Only,
+    [string[]]$Only,
     [switch]$List,
+    [switch]$PassThru,
     [switch]$SkipBuild,
     [switch]$IncludeUIA,
     [string]$OutputDir = (Join-Path $env:TEMP "OpenTouryoSmokeTest")
@@ -299,23 +305,35 @@ if ($List)
     Write-Host ("=== -Only に指定できる名前（部分一致）{0} ===" -f "（-Lang $Lang）") -ForegroundColor Cyan
     foreach ($x in $targets) { Write-Host ("  " + $x.Name) }
     Write-Host ("  ---- {0} 件 ----" -f $targets.Count)
+
+    # 名前とバッチの対応を返す（#610）。SelectTargets.ps1 が使う。
+    if ($PassThru)
+    {
+        # NeedDb は SelectTargets.ps1 -Stage fixing が DB を使う対象を後回しにするのに使う（#610）。
+        foreach ($x in $targets) { [pscustomobject]@{ Name = $x.Name; Bat = $x.Bat; Dir = $x.Dir; NeedDb = [bool]$x.NeedDb } }
+    }
     exit 0
 }
 
-$selected = @($targets | Where-Object { -not $Only -or $_.Name -like "*$Only*" })
+# **-Only は複数指定できる。どれかに当たれば対象。**（#610）
+$selected = @($targets | Where-Object { $cand = $_; -not $Only -or @($Only | Where-Object { $cand.Name -like "*$_*" }).Count -gt 0 })
 
 # **-Only が空振りしたら止める。**（#576）
 #   0 件のまま進むと「全対象 OK」と表示され、**打ち間違いが緑になる。**
+#   複数指定のときは、1 つでも空振りしたら止める（#610）。
 if ($Only)
 {
-    if ($selected.Count -eq 0)
+    foreach ($o in $Only)
     {
-        Write-Host ("  **-Only '$Only' に一致する対象がありません。**") -ForegroundColor Red
-        Write-Host ("  -List で一覧を出せます。") -ForegroundColor Yellow
-        exit 1
+        if (@($targets | Where-Object { $_.Name -like "*$o*" }).Count -eq 0)
+        {
+            Write-Host ("  **-Only '$o' に一致する対象がありません。**") -ForegroundColor Red
+            Write-Host ("  -List で一覧を出せます。") -ForegroundColor Yellow
+            exit 1
+        }
     }
 
-    Write-Host ("  -Only '$Only' : {0} 件に絞りました" -f $selected.Count) -ForegroundColor Yellow
+    Write-Host ("  -Only '{0}' : {1} 件に絞りました" -f ($Only -join "', '"), $selected.Count) -ForegroundColor Yellow
 }
 
 # --- UIA 系は既定で外す（#588）---

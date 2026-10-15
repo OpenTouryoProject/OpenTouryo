@@ -1,0 +1,3051 @@
+----------------------------------------------------------------------------------------------------
+log4net: Configuration update mode [Merge].
+log4net: Retrieving an instance of log4net.Repository.Logger for logger [ACCESS].
+log4net: Setting [ACCESS] additivity to [True].
+log4net: Logger [ACCESS] Level string is [All].
+log4net: Logger [ACCESS] level set to [name="ALL",value=-2147483648].
+log4net: Loading Appender [ACCESS2] type: [log4net.Appender.ConsoleAppender]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [ConversionPattern] to String value [[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline]
+log4net: Converter [literal] Option [[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [date] Option [yyyy/MM/dd HH:mm:ss,fff] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [level] Option [] Format [min=5,max=2147483647,leftAlign=True]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [thread] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [Layout] to object [log4net.Layout.PatternLayout]
+log4net: Setting Property [LevelMin] to Level value [DEBUG]
+log4net: Setting Property [LevelMax] to Level value [FATAL]
+log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.LevelRangeFilter]
+log4net: Created Appender [ACCESS2]
+log4net: Adding appender named [ACCESS2] to logger [ACCESS].
+log4net: Retrieving an instance of log4net.Repository.Logger for logger [SQLTRACE].
+log4net: Setting [SQLTRACE] additivity to [True].
+log4net: Logger [SQLTRACE] Level string is [All].
+log4net: Logger [SQLTRACE] level set to [name="ALL",value=-2147483648].
+log4net: Loading Appender [SQLTRACE2] type: [log4net.Appender.ConsoleAppender]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [ConversionPattern] to String value [[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline]
+log4net: Converter [literal] Option [[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [date] Option [yyyy/MM/dd HH:mm:ss,fff] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [level] Option [] Format [min=5,max=2147483647,leftAlign=True]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [thread] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [Layout] to object [log4net.Layout.PatternLayout]
+log4net: Setting Property [LevelMin] to Level value [DEBUG]
+log4net: Setting Property [LevelMax] to Level value [FATAL]
+log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.LevelRangeFilter]
+log4net: Created Appender [SQLTRACE2]
+log4net: Adding appender named [SQLTRACE2] to logger [SQLTRACE].
+log4net: Retrieving an instance of log4net.Repository.Logger for logger [OPERATION].
+log4net: Setting [OPERATION] additivity to [True].
+log4net: Logger [OPERATION] Level string is [All].
+log4net: Logger [OPERATION] level set to [name="ALL",value=-2147483648].
+log4net: Loading Appender [OPERATION2] type: [log4net.Appender.ConsoleAppender]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [ConversionPattern] to String value [[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline]
+log4net: Converter [literal] Option [[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [date] Option [yyyy/MM/dd HH:mm:ss,fff] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [level] Option [] Format [min=5,max=2147483647,leftAlign=True]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [thread] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [Layout] to object [log4net.Layout.PatternLayout]
+log4net: Setting Property [LevelMin] to Level value [DEBUG]
+log4net: Setting Property [LevelMax] to Level value [FATAL]
+log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.LevelRangeFilter]
+log4net: Created Appender [OPERATION2]
+log4net: Adding appender named [OPERATION2] to logger [OPERATION].
+log4net: Hierarchy Threshold []
+[2026/10/14 11:23:19,818],[DEBUG],[1],LogIF.DebugLog("ACCESS");
+[2026/10/14 11:23:19,838],[INFO ],[1],LogIF.InfoLog("ACCESS");
+[2026/10/14 11:23:19,839],[WARN ],[1],LogIF.WarnLog("ACCESS");
+[2026/10/14 11:23:19,839],[ERROR],[1],LogIF.ErrorLog("ACCESS");
+[2026/10/14 11:23:19,839],[FATAL],[1],LogIF.FatalLog("ACCESS");
+LogIF.Is*Enabled - ACCESS : Debug True / Info True / Warn True / Error True / Fatal True
+log4net: configuring repository [log4net-default-repository] using stream
+log4net: loading XML configuration
+log4net: Configuring Repository [log4net-default-repository]
+log4net: Configuration update mode [Merge].
+log4net: Retrieving an instance of log4net.Repository.Logger for logger [ACCESS].
+log4net: Setting [ACCESS] additivity to [True].
+log4net: Logger [ACCESS] Level string is [All].
+log4net: Logger [ACCESS] level set to [name="ALL",value=-2147483648].
+log4net: Loading Appender [ACCESS2] type: [log4net.Appender.ConsoleAppender]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [ConversionPattern] to String value [[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline]
+log4net: Converter [literal] Option [[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [date] Option [yyyy/MM/dd HH:mm:ss,fff] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [level] Option [] Format [min=5,max=2147483647,leftAlign=True]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [thread] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [Layout] to object [log4net.Layout.PatternLayout]
+log4net: Setting Property [LevelMin] to Level value [DEBUG]
+log4net: Setting Property [LevelMax] to Level value [FATAL]
+log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.LevelRangeFilter]
+log4net: Created Appender [ACCESS2]
+log4net: Adding appender named [ACCESS2] to logger [ACCESS].
+log4net: Retrieving an instance of log4net.Repository.Logger for logger [SQLTRACE].
+log4net: Setting [SQLTRACE] additivity to [True].
+log4net: Logger [SQLTRACE] Level string is [All].
+log4net: Logger [SQLTRACE] level set to [name="ALL",value=-2147483648].
+log4net: Loading Appender [SQLTRACE2] type: [log4net.Appender.ConsoleAppender]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [ConversionPattern] to String value [[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline]
+log4net: Converter [literal] Option [[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [date] Option [yyyy/MM/dd HH:mm:ss,fff] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [level] Option [] Format [min=5,max=2147483647,leftAlign=True]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [thread] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [Layout] to object [log4net.Layout.PatternLayout]
+log4net: Setting Property [LevelMin] to Level value [DEBUG]
+log4net: Setting Property [LevelMax] to Level value [FATAL]
+log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.LevelRangeFilter]
+log4net: Created Appender [SQLTRACE2]
+log4net: Adding appender named [SQLTRACE2] to logger [SQLTRACE].
+log4net: Retrieving an instance of log4net.Repository.Logger for logger [OPERATION].
+log4net: Setting [OPERATION] additivity to [True].
+log4net: Logger [OPERATION] Level string is [All].
+log4net: Logger [OPERATION] level set to [name="ALL",value=-2147483648].
+log4net: Loading Appender [OPERATION2] type: [log4net.Appender.ConsoleAppender]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [ConversionPattern] to String value [[%date{yyyy/MM/dd HH:mm:ss,fff}],[%-5level],[%thread],%message%newline]
+log4net: Converter [literal] Option [[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [date] Option [yyyy/MM/dd HH:mm:ss,fff] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [level] Option [] Format [min=5,max=2147483647,leftAlign=True]
+log4net: Converter [literal] Option [],[] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [thread] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [literal] Option [],] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [message] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Converter [newline] Option [] Format [min=-1,max=2147483647,leftAlign=False]
+log4net: Setting Property [Layout] to object [log4net.Layout.PatternLayout]
+log4net: Setting Property [LevelMin] to Level value [DEBUG]
+log4net: Setting Property [LevelMax] to Level value [FATAL]
+log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.LevelRangeFilter]
+log4net: Created Appender [OPERATION2]
+log4net: Adding appender named [OPERATION2] to logger [OPERATION].
+log4net: Hierarchy Threshold []
+LogIF.Is*Enabled - UNDEFINED : Debug True / Info True / Warn True / Error True / Fatal True
+----------------------------------------------------------------------------------------------------
+GetMessage: ～メッセージID:I0001に対応する記述（正常系）～
+GetMessage: ～メッセージID:E0001に対応する記述（異常系）～
+--------------------------------------------------
+GetSharedProperty: てすと１
+GetSharedProperty: てすと３
+----------------------------------------------------------------------------------------------------
+StringChecker.IsNumbers - あああ: False
+StringChecker.IsNumbers - １１１: True
+StringChecker.IsNumbers_Hankaku - あああ: False
+StringChecker.IsNumbers_Hankaku - 111111: True
+StringChecker.IsNumbers_Zenkaku - あああ: False
+StringChecker.IsNumbers_Zenkaku - １１１: True
+----------------------------------------------------------------------------------------------------
+StringChecker.IsAlphabet - あああ: False
+StringChecker.IsAlphabet - ａａａ: True
+StringChecker.IsAlphabet_Hankaku - あああ: False
+StringChecker.IsAlphabet_Hankaku - aaaaaa: True
+StringChecker.IsAlphabet_Zenkaku - あああ: False
+StringChecker.IsAlphabet_Zenkaku - ａａａ: True
+----------------------------------------------------------------------------------------------------
+StringChecker.IsHiragana - ａａａ: False
+StringChecker.IsHiragana - あああ: True
+----------------------------------------------------------------------------------------------------
+StringChecker.IsKatakana - あああ: False
+StringChecker.IsKatakana - アアア: True
+StringChecker.IsKatakana_Zenkaku - あああ: False
+StringChecker.IsKatakana_Zenkaku - アアア: True
+StringChecker.IsKatakana_Zenkaku - アアア: False
+StringChecker.IsKatakana_Zenkaku - ｱｱｱｱｱｱ: True
+----------------------------------------------------------------------------------------------------
+StringChecker.IsKanji - あああ: False
+StringChecker.IsKanji - 亜亜亜: True
+----------------------------------------------------------------------------------------------------
+StringChecker.IsShift_Jis - 鱓鱓鱓: False
+StringChecker.IsShift_Jis - 亜亜亜: True
+StringChecker.IsShift_Jis_Zenkaku - aaaaaa: False
+StringChecker.IsShift_Jis_Zenkaku - 亜亜亜: True
+StringChecker.IsShift_Jis_Hankaku - ａａａ: False
+StringChecker.IsShift_Jis_Hankaku - aaaaaa: True
+--------------------------------------------------
+StringChecker.IsHankaku/IsZenkaku - [abc123]: True / False
+StringChecker.IsHankaku/IsZenkaku - [ｱｲｳ]: True / False
+StringChecker.IsHankaku/IsZenkaku - [あいう]: False / True
+StringChecker.IsHankaku/IsZenkaku - [ａｂｃ]: False / True
+StringChecker.IsHankaku/IsZenkaku - [abcあ]: False / False
+StringChecker.IsHankaku/IsZenkaku - [ ]: True / False
+StringChecker.IsHankaku/IsZenkaku - [～]: False / True
+StringChecker.IsHankaku/IsZenkaku - []: True / True
+StringChecker.IsNumeric - [123]: True（IsNumbers: True）
+StringChecker.IsNumeric - [-123]: True（IsNumbers: False）
+StringChecker.IsNumeric - [1.5]: True（IsNumbers: False）
+StringChecker.IsNumeric - [+1]: True（IsNumbers: False）
+StringChecker.IsNumeric - [1e3]: True（IsNumbers: False）
+StringChecker.IsNumeric - [１２３]: True（IsNumbers: True）
+StringChecker.IsNumeric - [１．５]: True（IsNumbers: False）
+StringChecker.IsNumeric - [12 3]: False（IsNumbers: False）
+StringChecker.IsNumeric - [abc]: False（IsNumbers: False）
+StringChecker.IsNumeric - []: False（IsNumbers: True）
+StringChecker.IsNumeric - [ ]: False（IsNumbers: False）
+StringChecker.IsInCodePage - [abc]: shift_jis True / us_ascii True / utf_8 True
+StringChecker.IsInCodePage - [あいう]: shift_jis True / us_ascii False / utf_8 True
+StringChecker.IsInCodePage - [①]: shift_jis True / us_ascii False / utf_8 True
+StringChecker.IsInCodePage - [𩸽]: shift_jis False / us_ascii False / utf_8 True
+StringChecker.IsInCodePage - []: shift_jis True / us_ascii True / utf_8 True
+StringChecker.Match - [abc123] [0-9]+ : True
+StringChecker.Match - [abc123] ^[0-9]+$ : False
+StringChecker.Match - [abc] [0-9]+ : False
+StringChecker.Match - [ABC] ^abc$ : False
+StringChecker.Match - [ABC] ^abc$ (IgnoreCase) : True
+StringChecker.Matches - [a1b22c333] [0-9]+ : 3 件
+  位置 1 : 1
+  位置 3 : 22
+  位置 6 : 333
+StringChecker.Matches - [abc] [0-9]+ : 0 件
+----------------------------------------------------------------------------------------------------
+TestFormatChecker.IsJpZipCode
+JpZipCode_Hyphen
+000-0000: True
+aaa-aaaa: False
+0000-00000: False
+0000-0000: False
+000-00000: False
+00-000: False
+00-0000: False
+000-000: False
+JpZipKuCode1_Hyphen
+000-00: True
+aaa-aa: False
+0000-000: False
+0000-00: False
+000-000: False
+00-0: False
+00-00: False
+000-0: False
+JpZipKuCode2_Hyphen
+000: True
+aaa: False
+0000: False
+00: False
+JpZipCode_NoHyphen
+0000000: True
+aaaaaaa: False
+00000000: False
+000000: False
+JpZipKuCode1_NoHyphen
+00000: True
+aaaaa: False
+000000: False
+0000: False
+JpZipKuCode2_NoHyphen
+000: True
+aaa: False
+0000: False
+00: False
+--------------------------------------------------
+TestFormatChecker.IsJpZipCode_Hyphen
+JpZipCode_Hyphen
+000-0000: True
+aaa-aaaa: False
+0000-00000: False
+0000-0000: False
+000-00000: False
+00-000: False
+00-0000: False
+000-000: False
+JpZipKuCode1_Hyphen
+000-00: True
+aaa-aa: False
+0000-000: False
+0000-00: False
+000-000: False
+00-0: False
+00-00: False
+000-0: False
+JpZipKuCode2_Hyphen
+000: True
+aaa: False
+0000: False
+00: False
+--------------------------------------------------
+TestFormatChecker.IsJpZipCode_NoHyphen
+JpZipCode_NoHyphen
+0000000: True
+aaaaaaa: False
+00000000: False
+000000: False
+JpZipKuCode1_NoHyphen
+00000: True
+aaaaa: False
+000000: False
+0000: False
+JpZipKuCode2_NoHyphen
+000: True
+aaa: False
+0000: False
+00: False
+--------------------------------------------------
+TestFormatChecker.IsJpZipCode7
+JpZipCode_Hyphen
+000-0000: True
+aaa-aaaa: False
+0000-00000: False
+0000-0000: False
+000-00000: False
+00-000: False
+00-0000: False
+000-000: False
+JpZipCode_NoHyphen
+0000000: True
+aaaaaaa: False
+00000000: False
+000000: False
+--------------------------------------------------
+TestFormatChecker.IsJpZipCode7_Hyphen
+JpZipCode_Hyphen
+000-0000: True
+aaa-aaaa: False
+0000-00000: False
+0000-0000: False
+000-00000: False
+00-000: False
+00-0000: False
+000-000: False
+--------------------------------------------------
+TestFormatChecker.IsJpZipCode7_NoHyphen
+JpZipCode_NoHyphen
+0000000: True
+aaaaaaa: False
+00000000: False
+000000: False
+--------------------------------------------------
+TestFormatChecker.IsJpZipCode5
+JpZipKuCode1_Hyphen
+000-00: True
+aaa-aa: False
+0000-000: False
+0000-00: False
+000-000: False
+00-0: False
+00-00: False
+000-0: False
+JpZipKuCode2_Hyphen
+000: True
+aaa: False
+0000: False
+00: False
+JpZipKuCode1_NoHyphen
+00000: True
+aaaaa: False
+000000: False
+0000: False
+JpZipKuCode2_NoHyphen
+000: True
+aaa: False
+0000: False
+00: False
+--------------------------------------------------
+TestFormatChecker.IsJpZipCode5_Hyphen
+JpZipKuCode1_Hyphen
+000-00: True
+aaa-aa: False
+0000-000: False
+0000-00: False
+000-000: False
+00-0: False
+00-00: False
+000-0: False
+JpZipKuCode2_Hyphen
+000: True
+aaa: False
+0000: False
+00: False
+--------------------------------------------------
+TestFormatChecker.IsJpZipCode5_NoHyphen
+JpZipKuCode1_NoHyphen
+00000: True
+aaaaa: False
+000000: False
+0000: False
+JpZipKuCode2_NoHyphen
+000: True
+aaa: False
+0000: False
+00: False
+--------------------------------------------------
+TestFormatChecker.IsJpTelephoneNumber
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: True
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: True
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: True
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: True
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: True
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: True
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: True
+020-999-9999: True
+020-9999-999: False
+060-9999-9999: True
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: True
+060-999-9999: True
+060-9999-999: False
+070-9999-9999: True
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: True
+070-999-9999: True
+070-9999-999: False
+080-9999-9999: True
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: True
+080-999-9999: True
+080-9999-999: False
+090-9999-9999: True
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: True
+090-999-9999: True
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: True
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: True
+06099999999: True
+07099999999: True
+08099999999: True
+09099999999: True
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: True
+JpIpPhoneNumber_Hyphen
+050-9999-9999: True
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: True
+050-999-9999: True
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: True
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: True
+070-9999-9999: True
+080-9999-9999: True
+090-9999-9999: True
+JpIpPhoneNumber_NoHyphen
+05099999999: True
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: True
+01099999999: False
+02099999999: True
+03099999999: False
+04099999999: False
+06099999999: True
+07099999999: True
+08099999999: True
+09099999999: True
+--------------------------------------------------
+TestFormatChecker.IsJpTelephoneNumber_Hyphen
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: True
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: True
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: True
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: True
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: False
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: True
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: True
+020-999-9999: True
+020-9999-999: False
+060-9999-9999: True
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: True
+060-999-9999: True
+060-9999-999: False
+070-9999-9999: True
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: True
+070-999-9999: True
+070-9999-999: False
+080-9999-9999: True
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: True
+080-999-9999: True
+080-9999-999: False
+090-9999-9999: True
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: True
+090-999-9999: True
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: False
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: False
+JpIpPhoneNumber_Hyphen
+050-9999-9999: True
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: True
+050-999-9999: True
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: True
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: True
+070-9999-9999: True
+080-9999-9999: True
+090-9999-9999: True
+JpIpPhoneNumber_NoHyphen
+05099999999: False
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: False
+01099999999: False
+02099999999: False
+03099999999: False
+04099999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+--------------------------------------------------
+TestFormatChecker.IsJpTelephoneNumber_NoHyphen
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: False
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: False
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: False
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: False
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: True
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: False
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: False
+020-999-9999: False
+020-9999-999: False
+060-9999-9999: False
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: False
+060-999-9999: False
+060-9999-999: False
+070-9999-9999: False
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: False
+070-999-9999: False
+070-9999-999: False
+080-9999-9999: False
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: False
+080-999-9999: False
+080-9999-999: False
+090-9999-9999: False
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: False
+090-999-9999: False
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: True
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: True
+06099999999: True
+07099999999: True
+08099999999: True
+09099999999: True
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: True
+JpIpPhoneNumber_Hyphen
+050-9999-9999: False
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: False
+050-999-9999: False
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: False
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: False
+070-9999-9999: False
+080-9999-9999: False
+090-9999-9999: False
+JpIpPhoneNumber_NoHyphen
+05099999999: True
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: True
+01099999999: False
+02099999999: True
+03099999999: False
+04099999999: False
+06099999999: True
+07099999999: True
+08099999999: True
+09099999999: True
+--------------------------------------------------
+TestFormatChecker.IsJpFixedLinePhoneNumber
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: True
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: True
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: True
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: True
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: True
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: False
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: True
+020-999-9999: True
+020-9999-999: False
+060-9999-9999: False
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: True
+060-999-9999: True
+060-9999-999: False
+070-9999-9999: False
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: True
+070-999-9999: True
+070-9999-999: False
+080-9999-9999: False
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: True
+080-999-9999: True
+080-9999-999: False
+090-9999-9999: False
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: True
+090-999-9999: True
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: False
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: True
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: False
+JpIpPhoneNumber_Hyphen
+050-9999-9999: False
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: True
+050-999-9999: True
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: False
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: False
+070-9999-9999: False
+080-9999-9999: False
+090-9999-9999: False
+JpIpPhoneNumber_NoHyphen
+05099999999: False
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: True
+01099999999: False
+02099999999: False
+03099999999: False
+04099999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+--------------------------------------------------
+TestFormatChecker.IsJpFixedLinePhoneNumber_Hyphen
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: True
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: True
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: True
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: True
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: False
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: False
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: True
+020-999-9999: True
+020-9999-999: False
+060-9999-9999: False
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: True
+060-999-9999: True
+060-9999-999: False
+070-9999-9999: False
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: True
+070-999-9999: True
+070-9999-999: False
+080-9999-9999: False
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: True
+080-999-9999: True
+080-9999-999: False
+090-9999-9999: False
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: True
+090-999-9999: True
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: False
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: False
+JpIpPhoneNumber_Hyphen
+050-9999-9999: False
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: True
+050-999-9999: True
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: False
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: False
+070-9999-9999: False
+080-9999-9999: False
+090-9999-9999: False
+JpIpPhoneNumber_NoHyphen
+05099999999: False
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: False
+01099999999: False
+02099999999: False
+03099999999: False
+04099999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+--------------------------------------------------
+TestFormatChecker.IsJpFixedLinePhoneNumber_NoHyphen
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: False
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: False
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: False
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: False
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: True
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: False
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: False
+020-999-9999: False
+020-9999-999: False
+060-9999-9999: False
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: False
+060-999-9999: False
+060-9999-999: False
+070-9999-9999: False
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: False
+070-999-9999: False
+070-9999-999: False
+080-9999-9999: False
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: False
+080-999-9999: False
+080-9999-999: False
+090-9999-9999: False
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: False
+090-999-9999: False
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: False
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: True
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: False
+JpIpPhoneNumber_Hyphen
+050-9999-9999: False
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: False
+050-999-9999: False
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: False
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: False
+070-9999-9999: False
+080-9999-9999: False
+090-9999-9999: False
+JpIpPhoneNumber_NoHyphen
+05099999999: False
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: True
+01099999999: False
+02099999999: False
+03099999999: False
+04099999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+--------------------------------------------------
+TestFormatChecker.IsJpCellularPhoneNumber
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: False
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: False
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: False
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: False
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: False
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: True
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: False
+020-999-9999: False
+020-9999-999: False
+060-9999-9999: True
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: False
+060-999-9999: False
+060-9999-999: False
+070-9999-9999: True
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: False
+070-999-9999: False
+070-9999-999: False
+080-9999-9999: True
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: False
+080-999-9999: False
+080-9999-999: False
+090-9999-9999: True
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: False
+090-999-9999: False
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: True
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: False
+06099999999: True
+07099999999: True
+08099999999: True
+09099999999: True
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: False
+JpIpPhoneNumber_Hyphen
+050-9999-9999: False
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: False
+050-999-9999: False
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: True
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: True
+070-9999-9999: True
+080-9999-9999: True
+090-9999-9999: True
+JpIpPhoneNumber_NoHyphen
+05099999999: False
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: False
+01099999999: False
+02099999999: True
+03099999999: False
+04099999999: False
+06099999999: True
+07099999999: True
+08099999999: True
+09099999999: True
+--------------------------------------------------
+TestFormatChecker.IsJpCellularPhoneNumber_Hyphen
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: False
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: False
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: False
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: False
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: False
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: True
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: False
+020-999-9999: False
+020-9999-999: False
+060-9999-9999: True
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: False
+060-999-9999: False
+060-9999-999: False
+070-9999-9999: True
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: False
+070-999-9999: False
+070-9999-999: False
+080-9999-9999: True
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: False
+080-999-9999: False
+080-9999-999: False
+090-9999-9999: True
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: False
+090-999-9999: False
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: False
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: False
+JpIpPhoneNumber_Hyphen
+050-9999-9999: False
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: False
+050-999-9999: False
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: True
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: True
+070-9999-9999: True
+080-9999-9999: True
+090-9999-9999: True
+JpIpPhoneNumber_NoHyphen
+05099999999: False
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: False
+01099999999: False
+02099999999: False
+03099999999: False
+04099999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+--------------------------------------------------
+TestFormatChecker.IsJpCellularPhoneNumber_NoHyphen
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: False
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: False
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: False
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: False
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: False
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: False
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: False
+020-999-9999: False
+020-9999-999: False
+060-9999-9999: False
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: False
+060-999-9999: False
+060-9999-999: False
+070-9999-9999: False
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: False
+070-999-9999: False
+070-9999-999: False
+080-9999-9999: False
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: False
+080-999-9999: False
+080-9999-999: False
+090-9999-9999: False
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: False
+090-999-9999: False
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: True
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: False
+06099999999: True
+07099999999: True
+08099999999: True
+09099999999: True
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: False
+JpIpPhoneNumber_Hyphen
+050-9999-9999: False
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: False
+050-999-9999: False
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: False
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: False
+070-9999-9999: False
+080-9999-9999: False
+090-9999-9999: False
+JpIpPhoneNumber_NoHyphen
+05099999999: False
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: False
+01099999999: False
+02099999999: True
+03099999999: False
+04099999999: False
+06099999999: True
+07099999999: True
+08099999999: True
+09099999999: True
+--------------------------------------------------
+TestFormatChecker.IsJpIpPhoneNumber
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: False
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: False
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: False
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: False
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: False
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: False
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: False
+020-999-9999: False
+020-9999-999: False
+060-9999-9999: False
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: False
+060-999-9999: False
+060-9999-999: False
+070-9999-9999: False
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: False
+070-999-9999: False
+070-9999-999: False
+080-9999-9999: False
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: False
+080-999-9999: False
+080-9999-999: False
+090-9999-9999: False
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: False
+090-999-9999: False
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: False
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: True
+JpIpPhoneNumber_Hyphen
+050-9999-9999: True
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: False
+050-999-9999: False
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: False
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: False
+070-9999-9999: False
+080-9999-9999: False
+090-9999-9999: False
+JpIpPhoneNumber_NoHyphen
+05099999999: True
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: False
+01099999999: False
+02099999999: False
+03099999999: False
+04099999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+--------------------------------------------------
+TestFormatChecker.IsJpIpPhoneNumber_Hyphen
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: False
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: False
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: False
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: False
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: False
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: False
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: False
+020-999-9999: False
+020-9999-999: False
+060-9999-9999: False
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: False
+060-999-9999: False
+060-9999-999: False
+070-9999-9999: False
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: False
+070-999-9999: False
+070-9999-999: False
+080-9999-9999: False
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: False
+080-999-9999: False
+080-9999-999: False
+090-9999-9999: False
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: False
+090-999-9999: False
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: False
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: False
+JpIpPhoneNumber_Hyphen
+050-9999-9999: True
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: False
+050-999-9999: False
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: False
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: False
+070-9999-9999: False
+080-9999-9999: False
+090-9999-9999: False
+JpIpPhoneNumber_NoHyphen
+05099999999: False
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: False
+01099999999: False
+02099999999: False
+03099999999: False
+04099999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+--------------------------------------------------
+TestFormatChecker.IsJpIpPhoneNumber_NoHyphen
+JpFixedLinePhoneNumber_Hyphen
+09999-9-9999: False
+99999-9-9999: False
+0aaaa-a-aaaa: False
+099999-9-9999: False
+09999-99-9999: False
+09999-9-99999: False
+0999--999: False
+0999-9-9999: False
+09999--9999: False
+09999-9-999: False
+0999-99-9999: False
+9999-99-9999: False
+0aaa-aa-aaaa: False
+09999-999-99999: False
+09999-99-9999: False
+0999-999-9999: False
+0999-99-99999: False
+099-9-999: False
+099-99-9999: False
+0999-9-9999: False
+0999-99-999: False
+099-999-9999: False
+999-999-9999: False
+0aa-aaa-aaaa: False
+0999-9999-99999: False
+0999-999-9999: False
+099-9999-9999: False
+099-999-99999: False
+09-99-999: False
+09-999-9999: False
+099-99-9999: False
+099-999-999: False
+09-9999-9999: False
+99-9999-9999: False
+0a-aaaa-aaaa: False
+099-99999-99999: False
+099-9999-9999: False
+09-99999-9999: False
+09-9999-99999: False
+0-999-999: False
+0-9999-9999: False
+09-999-9999: False
+09-9999-999: False
+JpFixedLinePhoneNumber_NoHyphen
+0999999999: False
+9999999999: False
+0aaaaaaaaa: False
+09999999999: False
+099999999: False
+JpCellularPhoneNumber_Hyphen
+020-9999-9999: False
+929-9999-9999: False
+020-aaaa-aaaa: False
+0209-99999-99999: False
+0209-9999-9999: False
+020-99999-9999: False
+020-9999-99999: False
+02-999-999: False
+02-9999-9999: False
+020-999-9999: False
+020-9999-999: False
+060-9999-9999: False
+969-9999-9999: False
+060-aaaa-aaaa: False
+0609-99999-99999: False
+0609-9999-9999: False
+060-99999-9999: False
+060-9999-99999: False
+06-999-999: False
+06-9999-9999: False
+060-999-9999: False
+060-9999-999: False
+070-9999-9999: False
+979-9999-9999: False
+070-aaaa-aaaa: False
+0709-99999-99999: False
+0709-9999-9999: False
+070-99999-9999: False
+070-9999-99999: False
+07-999-999: False
+07-9999-9999: False
+070-999-9999: False
+070-9999-999: False
+080-9999-9999: False
+989-9999-9999: False
+080-aaaa-aaaa: False
+0809-99999-99999: False
+0809-9999-9999: False
+080-99999-9999: False
+080-9999-99999: False
+08-999-999: False
+08-9999-9999: False
+080-999-9999: False
+080-9999-999: False
+090-9999-9999: False
+999-9999-9999: False
+090-aaaa-aaaa: False
+0909-99999-99999: False
+0909-9999-9999: False
+090-99999-9999: False
+090-9999-99999: False
+09-999-999: False
+09-9999-9999: False
+090-999-9999: False
+090-9999-999: False
+JpCellularPhoneNumber_NoHyphen
+02099999999: False
+92999999999: False
+020aaaaaaaa: False
+020999999999: False
+0209999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+01099999999: False
+03099999999: False
+04099999999: False
+05099999999: True
+JpIpPhoneNumber_Hyphen
+050-9999-9999: False
+959-9999-9999: False
+050-aaaa-aaaa: False
+0509-99999-99999: False
+0509-9999-9999: False
+050-99999-9999: False
+050-9999-99999: False
+05-999-999: False
+05-9999-9999: False
+050-999-9999: False
+050-9999-999: False
+9999999999999: False
+010-9999-9999: False
+020-9999-9999: False
+030-9999-9999: False
+040-9999-9999: False
+060-9999-9999: False
+070-9999-9999: False
+080-9999-9999: False
+090-9999-9999: False
+JpIpPhoneNumber_NoHyphen
+05099999999: True
+95999999999: False
+050aaaaaaaa: False
+050999999999: False
+0509999999: False
+01099999999: False
+02099999999: False
+03099999999: False
+04099999999: False
+06099999999: False
+07099999999: False
+08099999999: False
+09099999999: False
+----------------------------------------------------------------------------------------------------
+StringVariableOperator.GetPropsFromPropString
+[1 組] a=1
+  件数 : 1
+  A = 1
+[2 組] a=1;b=2
+  件数 : 2
+  A = 1
+  B = 2
+[値が空] a=;b=2
+  件数 : 2
+  A = 
+  B = 2
+[値に = を含む] a={=};b=2
+  件数 : 2
+  A = =
+  B = 2
+[値に ; を含む] a={;};b=2
+  件数 : 2
+  A = ;
+  B = 2
+[名前に = を含む] a{=}b=1
+  件数 : 1
+  A=B = 1
+[= が無い] a
+  件数 : 0
+[空文字] 
+  件数 : 0
+----------------------------------------------------------------------------------------------------
+StringVariableOperator.BuiltStringIntoEnvironmentVariable
+[そのまま] abc → abc
+[埋め込み] x%OPENTOURYO_TEST_VAR%y → xVALUEy
+[2 回] %OPENTOURYO_TEST_VAR%-%OPENTOURYO_TEST_VAR% → VALUE-VALUE
+[未定義] x%OPENTOURYO_NOT_EXIST%y → xy
+[閉じていない] x%OPENTOURYO_TEST_VAR → x%OPENTOURYO_TEST_VAR
+[null] (null) → (null)
+[空文字]  → 
+----------------------------------------------------------------------------------------------------
+StringExtractor.GetParameterFromQueryString
+[先頭の値] a → "1"
+[途中の値] b → "xyz"
+[空の値] c → ""
+[無い名前] z → ""
+[クエリ無し] a → ""
+[前方一致の紛れ] a → "1"
+----------------------------------------------------------------------------------------------------
+StringExtractor.GetAttributeFromXml
+[最初の属性] id → "1"
+[2 番目の属性] name → "abc"
+[無い属性] notexist → ""
+----------------------------------------------------------------------------------------------------
+ToStringExtension.XmlToString
+宣言なし : <root><child id="1">値</child></root>
+インデントあり :
+<root>
+  <child id="1">値</child>
+</root>
+----------------------------------------------------------------------------------------------------
+PubCmnFunction
+ChangeType string → int : 123 (Int32)
+ChangeType int → string : 123 (String)
+ChangeType string → int? : 123 (Int32)
+ChangeType null → int? : null
+ChangeType string → decimal : 1.5 (Decimal)
+ChangeType 変換できない : 例外 System.FormatException
+GetUnderlyingType(int?)  : Int32
+GetUnderlyingType(int)   : (null)
+GetUnderlyingType(string): (null)
+ToUnixTime : 1786019696
+GetFileNameNoEx(パス付き)    : a
+GetFileNameNoEx(二重拡張子)  : a.b
+GetFileNameNoEx(拡張子なし)  : abc
+GetFileNameNoEx(区切りを「.」): "txt"
+GetCurrentMethodName : GetCurrentMethodName
+----------------------------------------------------------------------------------------------------
+ArrayOperator
+CopyArray(3 → 2) : [1, 2]
+CopyArray(3 → 5) : 例外 System.ArgumentException
+CopyArray(読取開始位置をずらす) : [2, 3]
+CopyArray(書込開始位置をずらす) : 例外 System.ArgumentException
+CombineArray : [1, 2, 3, 4, 5]
+ShortenByteArray(8 → 3) : [2, 15, 5]
+ArrayOperator.GetLongFromByte
+1 byte : 1
+2 byte : 258
+3 byte : 66051
+3 byte（上位のみ） : 65536
+8 byte : 72623859790382856
+8 byte（最上位ビット） : -1
+0 byte : 例外 System.ArgumentOutOfRangeException
+9 byte : 例外 System.ArgumentOutOfRangeException
+null : 例外 System.ArgumentNullException
+----------------------------------------------------------------------------------------------------
+GetConfigParameter / EnvInfo
+GetConfigValue(FxBusinessMessageCulture) : ja-JP
+無いキー : null または空
+EnvInfo.MachineName が取れる       : True
+EnvInfo.OsVersionString が取れる   : True
+EnvInfo.ProcessBit が 32 または 64 : True
+GetConfigParameter
+GetAnyConfigValue / GetAnyConfigSection : .NET Core 側のみのため対象外
+GetConnectionString（定義が無い名前。例外にならず空が返る） : null または空
+PubCmnFunction.GetPropsFromPropString
+  [a=1;b=2;] → 2 件 : A=[1], B=[2]
+  [UserName=fxuser;Password=fxpass;] → 2 件 : USERNAME=[fxuser], PASSWORD=[fxpass]
+  [a=1] → 1 件 : A=[1]
+  [] → 0 件 : 
+  [a=;b=2;] → 2 件 : A=[], B=[2]
+PubCmnFunction.BuiltStringIntoEnvironmentVariable
+  [%OT_TEST_VAR%] → [展開後]
+  [前%OT_TEST_VAR%後] → [前展開後後]
+  [C:\%OT_TEST_VAR%\end] → [C:\展開後\end]
+  [%OT_TEST_NOT_EXIST%] → []
+  [変数なし] → [変数なし]
+PubCmnFunction.GetCommandArgs
+  prefix='/' : 名前付き 0 件 / 値のみ 0 件
+  prefix='-' : 名前付き 0 件 / 値のみ 0 件
+----------------------------------------------------------------------------------------------------
+StringConverter.ToHankaku - アアア: ｱｱｱ
+StringConverter.ToZenkaku - ｱｱｱ: アアア
+StringConverter.ToHiragana - アアア: あああ
+StringConverter.ToKatakana - あああ: アアア
+--------------------------------------------------
+StringConverter.EditYYYYMMDDString - [20200102]: False → [20200102]
+StringConverter.EditYYYYMMDDString - [2020115]: True → [20201105]
+StringConverter.EditYYYYMMDDString - [2020155]: True → [20200155]
+StringConverter.EditYYYYMMDDString - [202012]: True → [20200102]
+StringConverter.EditYYYYMMDDString - [2020]: False → [2020]
+StringConverter.EditYYYYMMDDString - [20201a02]: False → [20201a02]
+StringConverter.EditYYYYMMDDString - []: False → []
+StringConverter.FormattingForOneLineLog - [SELECT  *   FROM  Orders]: [SELECT * FROM Orders]
+StringConverter.FormattingForOneLineLog - [SELECT * FROM T WHERE C = 'a   b']: [SELECT * FROM T WHERE C = 'a   b']
+StringConverter.FormattingForOneLineLog - [a\r\nb\rc\nd]: [a b c d]
+StringConverter.FormattingForOneLineLog - [A & B]: [A & B]
+StringConverter.FormattingForOneLineLog - [WHERE C = 'It''s']: [WHERE C = 'It''s']
+StringConverter.FormattingForOneLineLog - []: []
+StringConverter.FormattingForOneLineLog - [   ]: [ ]
+----------------------------------------------------------------------------------------------------
+FormatConverter.SeirekiToWareki
+1977/4/24, ggy年M月d日（ddd）: 昭和52年4月24日（日）
+1977/4/24, ggy年M月d日（ddd）H:m:s: 昭和52年4月24日（日）0:0:0
+1977/4/24 19:15:12, ggy年M月d日（ddd）: 昭和52年4月24日（日）
+1977/4/24 19:15:12, ggy年M月d日（ddd）H:m:s: 昭和52年4月24日（日）19:15:12
+1977/4/24 19:15:12, ggy年M月d日（ddd）tt h:m:s: 昭和52年4月24日（日）午後 7:15:12
+1992/2/6 1:1:1, ggyy年MM月dd日 dddd HH:mm:ss: 平成04年02月06日 木曜日 01:01:01
+1992/2/6 13:1:1, ggyy年MM月dd日 dddd tt hh:mm:ss: 平成04年02月06日 木曜日 午後 01:01:01
+--------------------------------------------------
+FormatConverter.WarekiToSeireki
+昭和52年4月24日（日）, ggy年M月d日（ddd）: 1977/04/24 0:00:00
+昭和52年4月24日（日）19:15:12, ggy年M月d日（ddd）H:m:s: 1977/04/24 19:15:12
+昭和52年4月24日（日）午後 7:15:12, ggy年M月d日（ddd）tt h:m:s: 1977/04/24 19:15:12
+平成04年02月06日 木曜日 01:01:01, ggyy年MM月dd日 dddd HH:mm:ss: 1992/02/06 1:01:01
+平成04年02月06日 木曜日 午後 01:01:01, ggyy年MM月dd日 dddd tt hh:mm:ss: 1992/02/06 13:01:01
+--------------------------------------------------
+FormatConverter.AddFigure3
+12,345
+123,456,789
+123.45
+12,345.6789
+-12,345
+-123,456,789
+-123.45
+-12,345.6789
+12,345
+123,456,789
+123.45
+12,345.6789
+-12,345
+-123,456,789
+-123.45
+-12,345.6789
+----------------------------------------------------------------------------------------------------
+FormatConverter.AddFigure4
+1,2345
+1,2345,6789
+123.45
+1,2345.6789
+-1,2345
+-1,2345,6789
+-123.45
+-1,2345.6789
+1,2345
+1,2345,6789
+123.45
+1,2345.6789
+-1,2345
+-1,2345,6789
+-123.45
+-1,2345.6789
+----------------------------------------------------------------------------------------------------
+FormatConverter.Suppress
+"", 10, '＠': ＠＠＠＠＠＠＠＠＠＠
+"123456789", 0, '＠': 123456789
+"123456789", 1, '＠': 123456789
+"123456789", 5, '＠': 123456789
+"123456789", 9, '＠': 123456789
+"123456789", 10, '＠': ＠123456789
+"123456789", 11, '＠': ＠＠123456789
+"123456789", 20, '＠': ＠＠＠＠＠＠＠＠＠＠＠123456789
+"", 10, '＠': ＠＠＠＠＠＠＠＠＠＠
+"123456789", 0, '＠': abcdefg
+"123456789", 1, '＠': abcdefg
+"123456789", 5, '＠': abcdefg
+"123456789", 9, '＠': ＠＠abcdefg
+"123456789", 10, '＠': ＠＠＠abcdefg
+"123456789", 11, '＠': ＠＠＠＠abcdefg
+"123456789", 20, '＠': ＠＠＠＠＠＠＠＠＠＠＠＠＠abcdefg
+--------------------------------------------------
+FormatConverter.Round_4sya5nyu / Round_Banker
+  0.5 → 四捨五入 1 / 銀行家 0
+  1.5 → 四捨五入 2 / 銀行家 2
+  2.5 → 四捨五入 3 / 銀行家 2
+  3.5 → 四捨五入 4 / 銀行家 4
+  -0.5 → 四捨五入 -1 / 銀行家 0
+  -2.5 → 四捨五入 -3 / 銀行家 -2
+  2.4 → 四捨五入 2 / 銀行家 2
+  2.6 → 四捨五入 3 / 銀行家 3
+  1.005(2桁) → 四捨五入 1.01 / 銀行家 1.00
+  "abc" → 四捨五入 0 / 銀行家 0
+  "2.5"(文字列) → 四捨五入 3
+--------------------------------------------------
+FormatConverter.Floor / Ceiling
+  Floor 1.567(2桁) : 既定 1.56 / RZ(0方向) 1.56 / RM(負の無限大) 1.56
+  Ceiling 1.567(2桁) : 既定 1.57 / RI(絶対値) 1.57 / RP(正の無限大) 1.57
+  Floor -1.567(2桁) : 既定 -1.57 / RZ(0方向) -1.56 / RM(負の無限大) -1.57
+  Ceiling -1.567(2桁) : 既定 -1.56 / RI(絶対値) -1.57 / RP(正の無限大) -1.56
+  Floor 1.9(0桁) : 1 / Ceiling 1.1(0桁) : 2
+  "abc" : Floor 0 / Ceiling 0
+--------------------------------------------------
+FormatConverter.AddFigureX
+  1234567.891 を 2桁区切り : 1,23,45,67.891
+  1234567.891 を 3桁区切り : 1,234,567.891
+  1234567.891 を 4桁区切り : 123,4567.891
+  -1234567.891 を 3桁区切り : -1,234,567.891
+  "abc" を 3桁区切り : 0
+FormatConverter.AddZerosAfterDecimal
+  123(3桁) : 123.000
+  123.4(3桁) : 123.400
+  123.456(2桁) : 123.456
+  123(0桁) : 123
+  -1.2(3桁) : -1.200
+--------------------------------------------------
+FormatConverter.ToUnixTime / FromUnixTime
+  1970/01/01 00:00:00 → 0 → 1970/01/01 00:00:00（Kind=Utc）
+  2000/01/01 00:00:00 → 946684800 → 2000/01/01 00:00:00（Kind=Utc）
+  2038/01/19 03:14:07 → 2147483647 → 2038/01/19 03:14:07（Kind=Utc）
+  1960/01/01 00:00:00 → -315619200 → 1960/01/01 00:00:00（Kind=Utc）
+  秒未満 : 0
+FormatConverter.ToW3cTimestamp / FromW3cTimestamp
+  既定の書式 : 2020-05-06T07:08:09Z
+  書式を指定 : 2020-05-06 07:08:09Z
+  戻り : 2020/05/06 07:08:09（Kind=Unspecified）
+----------------------------------------------------------------------------------------------------
+CustomEncode.HtmlEncode: &quot; id=&quot;txtXXXXX&quot; /&gt;&lt;script type=&quot;text/javascript&quot;&gt;alert(&quot;XSS!!!&quot;)&lt;/script&gt;&lt;input name=&quot;txtXXXXX&quot; type=&quot;text&quot; value=&quot;
+----------------------------------------------------------------------------------------------------
+CustomEncode.UrlEncode: http://www.google.co.jp/search?hl=ja&q=%26
+CustomEncode.UrlEncode2: http://www.google.co.jp/search?hl=ja&q=&
+CustomEncode.UrlEncode2: http://www.google.co.jp/search?hl=ja&q=%3C%3E
+----------------------------------------------------------------------------------------------------
+CustomEncode.HtmlDecode: <a href="x">&amp;</a>
+CustomEncode.HtmlDecode: <p>"'& 
+CustomEncode.UrlEncode: %E3%81%82%26%3D%3F%2F%20%2B
+CustomEncode.UrlDecode: あ&=?/ +
+CustomEncode.UrlDecode: [a b c]
+CustomEncode.StringToByte(65001): E3 81 82 E3 81 84 E3 81 86 41 42 31
+CustomEncode.ByteToString(65001): あいうAB1
+CustomEncode.StringToByte(932): 82 A0 82 A2 82 A4 41 42 31
+CustomEncode.ByteToString(932): あいうAB1
+CustomEncode.StringToByte(51932): A4 A2 A4 A4 A4 A6 41 42 31
+CustomEncode.ByteToString(51932): あいうAB1
+CustomEncode.StringToByte(empty): []
+CustomEncode.ByteToString(sjis as utf8): EF BF BD EF BF BD
+CustomEncode.ToHexString: [00 0F 10 FF]
+CustomEncode.FormHexString: [00 0F 10 FF]
+CustomEncode.ToHexString(empty): []
+CustomEncode.FormHexString(lower): [0A BC]
+CustomEncode.FormHexString(invalid): FormatException
+CustomEncode.ToBase64String: 44GT44KT44Gr44Gh44Gv
+CustomEncode.FromBase64String: こんにちは
+CustomEncode.ToBase64String(empty): []
+CustomEncode.FromBase64String(invalid): FormatException
+CustomEncode.ToBase64String   : /++/
+CustomEncode.ToBase64UrlString: _--_
+CustomEncode.ToBase64UrlString(1byte): [_w] 長さ%4=2
+CustomEncode.FromBase64UrlString(1byte): [FF]
+CustomEncode.ToBase64UrlString(2byte): [__4] 長さ%4=3
+CustomEncode.FromBase64UrlString(2byte): [FF FE]
+CustomEncode.ToBase64UrlString(3byte): [__79] 長さ%4=0
+CustomEncode.FromBase64UrlString(3byte): [FF FE FD]
+CustomEncode.FromBase64UrlString(invalid): Exception : Illegal base64url string!
+CustomEncode.GetEncodings: 行数 141
+CustomEncode.GetEncodings: 列 key, value
+CustomEncode.GetEncodings[0]: 0 = shift_jis
+CustomEncode.GetEncodings[last]: 65001 = utf-8
+----------------------------------------------------------------------------------------------------
+jis2k4.GetStringInfo - あああ: 
+Char長:3; 
+文字列長3; 
+バイト長6; 
+
+----------------------------------------------------------------------------------------------------
+jis2k4.CheckSurrogatesPairChar - あああ: False
+jis2k4.CheckSurrogatesPairChar - あ𩸽あ: True
+jis2k4.CheckSurrogatesPairChar - あああ: -1文字目
+jis2k4.CheckSurrogatesPairChar - あ𩸽あ: 1文字目
+----------------------------------------------------------------------------------------------------
+jis2k4.DeleteSurrogatesPairChar - あ𩸽あ: ああ
+jis2k4.DeleteSurrogatesPairChar - あ𩸽あ: あ●あ
+jis2k4.DeleteSurrogatesPairChar - あ𩸽あ: あ●あ
+----------------------------------------------------------------------------------------------------
+jis2k4.CheckCharAddedWithJIS2k4 - あああ: False
+jis2k4.CheckCharAddedWithJIS2k4 - あ噓あ: True
+jis2k4.CheckCharAddedWithJIS2k4 - あああ: -1文字目
+jis2k4.CheckCharAddedWithJIS2k4 - あ噓あ: 1文字目
+----------------------------------------------------------------------------------------------------
+jis2k4.DeleteCharAddedWithJIS2k4 - あ噓あ: ああ
+jis2k4.DeleteCharAddedWithJIS2k4 - あ噓あ: あ●あ
+jis2k4.DeleteCharAddedWithJIS2k4 - あ噓あ: あ●あ
+----------------------------------------------------------------------------------------------------
+Friday > Friday
+Wednesday > Wednesday
+Saturday > Saturday
+Friday > Friday
+Saturday > Saturday
+--------------------------------------------------
+V2 > V2
+V3 > V3
+V4 > V4
+--------------------------------------------------
+V0 > V0
+V2 > V2
+V4 > V4
+--------------------------------------------------
+One > One
+One,Two > One,Two
+Three > Three
+Four > Four
+----------------------------------------------------------------------------------------------------
+XmlLib > is working properly.
+--------------------------------------------------
+XmlLib.GetAttributeByTagName - item/name: [一つ目]
+XmlLib.GetAttributeByTagName - item/name(index=1): [二つ目]
+XmlLib.GetAttributeByTagName - item/name(index=9): []
+XmlLib.GetAttributeByTagName - item/name(index=-1): []
+XmlLib.GetAttributeByTagName - empty/name: []
+XmlLib.GetAttributeByTagName - none/name: []
+XmlLib.GetAttributeByTagName - item/none: []
+XmlLib.GetAttributeByXPath - //item[@id='i2']/name: [二つ目]
+XmlLib.GetAttributeByXPath - //none: []
+XmlLib.GetAttributeByXPath - //item(index=0): [一つ目]
+XmlLib.GetAttributeByXPath - //item(index=1): [二つ目]
+XmlLib.GetAttributeByXPath - //item(index=2): []
+XmlLib.GetAttributeFromXmlNode - name: [一つ目]
+XmlLib.GetAttributeFromXmlNode - null: []
+XmlLib.GetXmlNodeById - item: item id=i1
+XmlLib.GetXmlNodeById - r1: root id=r1
+XmlLib.GetXmlNodeById - i1: (null)
+XmlLib.GetEncodingFromXmlDeclaration - <?xml version="1.0" encoding="utf-8" ?> : utf-8
+XmlLib.GetEncodingFromXmlDeclaration - <?xml version="1.0" encoding="shift_jis" ?> : shift_jis
+XmlLib.GetEncodingFromXmlDeclaration - <?xml version="1.0" ?> : ArgumentException
+XmlLib.GetEncodingFromXmlDeclaration - <?xml version="1.0" encoding="xxx" ?> : ArgumentException
+----------------------------------------------------------------------------------------------------
+DeflateCompression(FileStream)-1 > is working properly.
+DeflateCompression(FileStream)-2 > is working properly.
+--------------------------------------------------
+DeflateCompression(MemoryStream) > is working properly.
+----------------------------------------------------------------------------------------------------
+ResourceLoader
+絶対パスで解決        : True
+絶対パスで読み込み    : リソースの内容
+環境変数入りで解決    : True
+配置フォルダ基準      : True
+見つからない（解決）  : null
+見つからない（Exists）: False
+見つからない（例外）  : System.ArgumentException
+空文字（解決）        : null
+null（解決）          : null
+----------------------------------------------------------------------------------------------------
+EmbeddedResourceLoader
+存在する              : True
+読み込み              : 埋め込まれたリソースの内容 / embedded resource
+存在しない            : False
+存在しない（例外）    : System.ArgumentException
+LoadAsStream          : 埋め込まれたリソースの内容 / embedded resource
+LoadXMLAsString       : 長さ 292 / ルート要素 bookstore
+LoadXMLAsString       : XML宣言が残るか True
+----------------------------------------------------------------------------------------------------
+ZipperV2 → UnZipperV2（往復）
+解凍した件数 : 4
+  root/a.txt
+  root/b.log
+  root/sub/c.txt
+  root/日本語.txt
+内容が一致 : True
+----------------------------------------------------------------------------------------------------
+暗号化
+[暗号化なし] 往復して一致 : True
+[PkzipWeak] 往復して一致 : True
+[WinZipAes128] 往復して一致 : True
+[WinZipAes256] 往復して一致 : True
+[パスワード誤り] 例外 ICSharpCode.SharpZipLib.Zip.ZipException
+[パスワード未指定] 例外 System.ArgumentException
+----------------------------------------------------------------------------------------------------
+選択デリゲート
+[圧縮時に .log を除く]
+  a.txt
+  sub/c.txt
+  日本語.txt
+[上書き時の動作]
+  DoNotOverwrite の解凍件数 : 0
+  OverwriteSilently の解凍件数 : 3
+  Throw : 例外 System.IO.IOException
+[上書きの問い合わせ]
+  上書きすると答えた : 問い合わせ 3 件 / 解凍 3 件
+  答えない（既定）   : 解凍 0 件
+  打ち切る           : 解凍 0 件
+----------------------------------------------------------------------------------------------------
+進捗イベント
+SaveProgress    : Saving_Started, Saving_BeforeWriteEntry, Saving_EntryBytesRead, Saving_AfterWriteEntry, Saving_Completed
+ExtractProgress : Extracting_Started, Extracting_BeforeExtractEntry, Extracting_EntryBytesWritten, Extracting_AfterExtractEntry, Extracting_Completed
+無圧縮より BestCompression の方が小さい : True
+----------------------------------------------------------------------------------------------------
+DataToPoco
+[DataTableToList : 名前が一致]
+件数 : 2
+OrderID=1, Note=x, Qty=0
+OrderID=2, Note=(null), Qty=0
+[DataTableToPOCO : 先頭行だけ]
+OrderID=1, Note=x, Qty=0
+[マップ無 : 列名が PK_OrderID]
+件数 : 1
+OrderID=0, Note=y, Qty=0
+[マップ有 : OrderID → PK_OrderID]
+件数 : 1
+OrderID=9, Note=y, Qty=0
+----------------------------------------------------------------------------------------------------
+PocoToPoco
+[Map : 同名のみ]
+OrderID=3, Note=z, Qty=0
+[Map : Qty ← OrderID]
+OrderID=3, Note=z, Qty=3
+----------------------------------------------------------------------------------------------------
+DataToDictionary
+OrderID   : 4
+Note      : w
+OrderDate : 2026/08/06 12:34:56
+----------------------------------------------------------------------------------------------------
+DTTable
+[FromDataTable]
+表名 : TestOrders
+列   : OrderID, Note
+行   : 5, a
+行   : 6, b
+[文字列との往復]
+表の数 : 1
+表名 : TestOrders
+列   : OrderID, Note
+行   : 5, a
+行   : 6, b
+----------------------------------------------------------------------------------------------------
+DataSet との JSON 往復
+[元の DataSet]
+表の数 : 2
+表名 : TestTypes
+列   : Id(Int32), Name(String), Price(Decimal), Rate(Double), Ordered(DateTime), Flag(Boolean), Blob(Byte[])
+行   : Id=1, Name="あいう", Price=1234.56, Rate=0.30000000000000004, Ordered=2026-08-14T12:34:56.7890000, Flag=True, Blob=byte[3]:00-01-FF, RowState=Added
+行   : Id=2, Name="", Price=-0.01, Rate=1.7976931348623157E+308, Ordered=1977-04-24T00:00:00.0000000, Flag=False, Blob=byte[0]:, RowState=Added
+行   : Id=3, Name="あ\r\nい", Price=0, Rate=0, Ordered=2000-01-01T00:00:00.0000000, Flag=False, Blob=byte[1]:01, RowState=Added
+行   : Id=4, Name=, Price=, Rate=, Ordered=, Flag=, Blob=, RowState=Added
+表名 : TestOdd
+列   : state(String), cels(Int32)
+行   : state="わな", cels=7, RowState=Added
+[JSON]
+{"tbls":[{"tbl":"TestTypes","korg":false,"cols":[{"name":"Id","type":"Int32"},{"name":"Name","type":"String"},{"name":"Price","type":"Decimal"},{"name":"Rate","type":"Double"},{"name":"Ordered","type":"DateTime"},{"name":"Flag","type":"Boolean"},{"name":"Blob","type":"ByteArray"}],"rows":[{"cels":["1","あいう","1234.56","0.30000000000000004","2026-08-14T12:34:56.7890000","True","AAH/"],"ocels":null,"state":2},{"cels":["2","","-0.01","1.7976931348623157E+308","1977-04-24T00:00:00.0000000","False",""],"ocels":null,"state":2},{"cels":["3","あ\r\nい","0","0","2000-01-01T00:00:00.0000000","False","AQ=="],"ocels":null,"state":2},{"cels":["4",null,null,null,null,null,null],"ocels":null,"state":2}]},{"tbl":"TestOdd","korg":false,"cols":[{"name":"state","type":"String"},{"name":"cels","type":"Int32"}],"rows":[{"cels":["わな","7"],"ocels":null,"state":2}]}]}
+[JSONとの往復（DTTables）]
+表の数 : 2
+表名で取得 : TestOdd
+表名 : TestTypes
+列   : Id(Int32), Name(String), Price(Decimal), Rate(Double), Ordered(DateTime), Flag(Boolean), Blob(ByteArray)
+行   : Id=1, Name="あいう", Price=1234.56, Rate=0.30000000000000004, Ordered=2026-08-14T12:34:56.7890000, Flag=True, Blob=byte[3]:00-01-FF, RowState=Added
+行   : Id=2, Name="", Price=-0.01, Rate=1.7976931348623157E+308, Ordered=1977-04-24T00:00:00.0000000, Flag=False, Blob=byte[0]:, RowState=Added
+行   : Id=3, Name="あ\r\nい", Price=0, Rate=0, Ordered=2000-01-01T00:00:00.0000000, Flag=False, Blob=byte[1]:01, RowState=Added
+行   : Id=4, Name=(null), Price=(null), Rate=(null), Ordered=(null), Flag=(null), Blob=(null), RowState=Added
+表名 : TestOdd
+列   : state(String), cels(Int32)
+行   : state="わな", cels=7, RowState=Added
+[DataSet へ戻す]
+表の数 : 2
+表名 : TestTypes
+列   : Id(Int32), Name(String), Price(Decimal), Rate(Double), Ordered(DateTime), Flag(Boolean), Blob(Byte[])
+行   : Id=1, Name="あいう", Price=1234.56, Rate=0.30000000000000004, Ordered=2026-08-14T12:34:56.7890000, Flag=True, Blob=byte[3]:00-01-FF, RowState=Added
+行   : Id=2, Name="", Price=-0.01, Rate=1.7976931348623157E+308, Ordered=1977-04-24T00:00:00.0000000, Flag=False, Blob=byte[0]:, RowState=Added
+行   : Id=3, Name="あ\r\nい", Price=0, Rate=0, Ordered=2000-01-01T00:00:00.0000000, Flag=False, Blob=byte[1]:01, RowState=Added
+行   : Id=4, Name=, Price=, Rate=, Ordered=, Flag=, Blob=, RowState=Added
+表名 : TestOdd
+列   : state(String), cels(Int32)
+行   : state="わな", cels=7, RowState=Added
+往復 : TestTypes 行1 全列一致
+往復 : TestTypes 行2 全列一致
+往復 : TestTypes 行3 全列一致
+往復 : TestTypes 行4 全列一致
+往復 : TestOdd 行1 全列一致
+[テキストとの往復]
+往復 : TestTypes 行1 全列一致
+往復 : TestTypes 行2 全列一致
+往復 : TestTypes 行3 全列一致
+往復 : TestTypes 行4 全列一致
+往復 : TestOdd 行1 全列一致
+----------------------------------------------------------------------------------------------------
+行ステータスの往復
+[元の DataTable]
+行数 : 4
+行   : Id=1, Note="そのまま", RowState=Unchanged
+行   : Id=2, Note="変更後", RowState=Modified
+行   : Id=3, Note="削除される", RowState=Deleted
+行   : Id=4, Note="追加", RowState=Added
+[JSON 往復後の DTTable]
+行   : 1, そのまま, RowState=Unchanged
+行   : 2, 変更後, RowState=Modified
+行   : 3, 削除される, RowState=Deleted
+行   : 4, 追加, RowState=Added
+[ToDataTable 後の DataTable]
+行数 : 4
+行   : Id=1, Note="そのまま", RowState=Unchanged
+行   : Id=2, Note="変更後", RowState=Modified
+行   : Id=3, Note="削除される", RowState=Deleted
+行   : Id=4, Note="追加", RowState=Added
+----------------------------------------------------------------------------------------------------
+DTTables の中間生成物（JsonTables）との往復
+[中間生成物] 表の数 : 2
+  表名 TestTypes / 列 7 / 行 4
+    列 : Id:Int32, Name:String, Price:Decimal, Rate:Double, Ordered:DateTime, Flag:Boolean, Blob:ByteArray
+  表名 TestOdd / 列 2 / 行 1
+    列 : state:String, cels:Int32
+[戻した DTTables]
+表名 : TestTypes
+列   : Id(Int32), Name(String), Price(Decimal), Rate(Double), Ordered(DateTime), Flag(Boolean), Blob(ByteArray)
+行   : Id=1, Name="あいう", Price=1234.56, Rate=0.30000000000000004, Ordered=2026-08-14T12:34:56.7890000, Flag=True, Blob=byte[3]:00-01-FF, RowState=Added
+行   : Id=2, Name="", Price=-0.01, Rate=1.7976931348623157E+308, Ordered=1977-04-24T00:00:00.0000000, Flag=False, Blob=byte[0]:, RowState=Added
+行   : Id=3, Name="あ\r\nい", Price=0, Rate=0, Ordered=2000-01-01T00:00:00.0000000, Flag=False, Blob=byte[1]:01, RowState=Added
+行   : Id=4, Name=(null), Price=(null), Rate=(null), Ordered=(null), Flag=(null), Blob=(null), RowState=Added
+表名 : TestOdd
+列   : state(String), cels(Int32)
+行   : state="わな", cels=7, RowState=Added
+[空の DTTables] 列挙の回数 : 0
+----------------------------------------------------------------------------------------------------
+KeepOriginal = False
+  変更直後 : RowState=Modified / HasOriginal=False
+  変更直後 : Name 現在=["変更後"] 変更前=["変更後"]
+  JSON 往復後 : KeepOriginal=False / RowState=Modified / HasOriginal=False
+  JSON 往復後 : Name 現在=["変更後"] 変更前=["変更後"]
+  DataTable 復元後 : RowState=Modified
+  DataTable 復元後 : Name 現在=["変更後"] Original=["変更後"]
+  DataTable 復元後 : Price 現在=[9999] Original=[9999]
+  DataTable 復元後 : Id Original=[1]
+
+KeepOriginal = True
+  変更直後 : RowState=Modified / HasOriginal=True
+  変更直後 : Name 現在=["変更後"] 変更前=["あいう"]
+  JSON 往復後 : KeepOriginal=True / RowState=Modified / HasOriginal=True
+  JSON 往復後 : Name 現在=["変更後"] 変更前=["あいう"]
+  DataTable 復元後 : RowState=Modified
+  DataTable 復元後 : Name 現在=["変更後"] Original=["あいう"]
+  DataTable 復元後 : Price 現在=[9999] Original=[1234.56]
+  DataTable 復元後 : Id Original=[1]
+
+AcceptChanges / RejectChanges
+  AcceptChanges 前 : HasOriginal=True / 変更前=["あいう"]
+  AcceptChanges 後 : RowState=Unchanged / HasOriginal=False / 変更前=["変更後"]
+  再変更後 : 現在=["さらに変更"] 変更前=["変更後"]
+  RejectChanges 後 : 行数 4 → 5 → 4 / RowState=Unchanged / Name=["あいう"]
+  保持なしで RejectChanges : RowState=Unchanged / Name=["変更後"]（値は戻らない）
+----------------------------------------------------------------------------------------------------
+バッチ更新への適用 : KeepOriginal = False
+  対象外（Unchanged） : Id=1, Note="そのまま", Qty=10
+  UPDATE SET   : Id=2, Note="変更後", Qty=99
+  UPDATE WHERE : Id=2, Note="変更後", Qty=99
+  DELETE WHERE : Id=3, Note="削除される", Qty=30
+  INSERT : Id=4, Note="追加", Qty=40
+  GetChanges(Added) : 1 行
+  GetChanges(Modified) : 1 行
+  GetChanges(Deleted) : 1 行
+
+バッチ更新への適用 : KeepOriginal = True
+  対象外（Unchanged） : Id=1, Note="そのまま", Qty=10
+  UPDATE SET   : Id=2, Note="変更後", Qty=99
+  UPDATE WHERE : Id=2, Note="変更前", Qty=20
+  DELETE WHERE : Id=3, Note="削除される", Qty=30
+  INSERT : Id=4, Note="追加", Qty=40
+  GetChanges(Added) : 1 行
+  GetChanges(Modified) : 1 行
+  GetChanges(Deleted) : 1 行
+
+----------------------------------------------------------------------------------------------------
+ObjectInspector.Inspect : 基本の型
+[null]
+null
+[int]
+123
+[string]
+"あいう"
+[bool]
+True
+[空文字]
+""
+[int[]]
+[1, 2, 3]
+[int[] （8 要素）]
+[1, 2, 3, 4, 5, 6, 7, 8]
+[List<string>]
+["a", "b"]
+[Dictionary]
+[x = 1, y = 2]
+----------------------------------------------------------------------------------------------------
+ObjectInspector.Inspect : POCO
+[入れ子が null]
+[Name = "外側", Inner = null, Numbers = [10, 20]]
+[入れ子に値]
+[Name = "外側", Inner = [Code = "C1", Value = 99], Numbers = [10, 20]]
+----------------------------------------------------------------------------------------------------
+ObjectInspector.Inspect : 深さの上限
+[入れ子 8 段]
+[Level = 1, Child = [Level = 2, Child = [Level = 3, Child = [Level = 4, Child = [Level = -over-, Child = -over-]]]]]
+[循環参照]
+[Level = 1, Child = [Level = 1, Child = [Level = 1, Child = [Level = 1, Child = [Level = -over-, Child = -over-]]]]]
+----------------------------------------------------------------------------------------------------
+ObjectInspector.Inspect : 日時
+[DateTime（書式あり）]
+2026/08/06 12:34:56
+[TimeSpan（書式あり）]
+1.02:03:04
+----------------------------------------------------------------------------------------------------
+ObjectInspector.Inspect : 除外
+[除外なし]
+[Name = "外側", Inner = [Code = "C2", Value = 1], Numbers = [1]]
+[InnerPoco を除外]
+[Name = "外側", Inner = excluded. TestCode.TestObjectInspector+InnerPoco, Numbers = [1]]
+----------------------------------------------------------------------------------------------------
+Latebind.InvokeMethod
+[引数なし] PublicMethod
+[引数あり] WithArgs:1:x
+[static] StaticMethod
+[private] PrivateMethod
+[基底のメソッド] BaseMethod
+[呼び先が例外] 例外 : System.Reflection.TargetInvocationException
+----------------------------------------------------------------------------------------------------
+Latebind : メソッドが無いとき
+[InvokeMethod] 例外 : System.ArgumentException
+[InvokeMethod_NoErr] null
+----------------------------------------------------------------------------------------------------
+Latebind : オーバーロード
+[引数 1 個] Overloaded(int):1
+[引数 2 個] Overloaded(int,int):1:2
+[引数 3 個（該当なし）] 例外 : System.ArgumentException
+----------------------------------------------------------------------------------------------------
+Latebind : 型とメソッドの確認
+CheckTypeOfBaseClass(Target, TargetBase) : True
+CheckTypeOfBaseClass(Target, string)     : False
+CheckTypeOfMethodByName(PublicMethod)    : True
+CheckTypeOfMethodByName(PrivateMethod)   : True
+CheckTypeOfMethodByName(NotExist)        : False
+----------------------------------------------------------------------------------------------------
+InstanceCreator<T>.Factory
+生成できた       : True
+別のインスタンス : True
+既定値（Id）     : 0
+既定値（Name）   : (null)
+----------------------------------------------------------------------------------------------------
+AccessorCacher.CacheAccessor
+件数 : 5
+Count : 型=Nullable`1, 実体型=Int32, Get=True, Set=True
+Field : 型=String, 実体型=(null), Get=True, Set=True
+Id : 型=Int32, 実体型=(null), Get=True, Set=True
+Name : 型=String, 実体型=(null), Get=True, Set=True
+ReadOnly : 型=String, 実体型=(null), Get=True, Set=False
+Set → Get : 設定した値
+再取得しても同じ : True
+----------------------------------------------------------------------------------------------------
+CompiledExpressionCreater
+プロパティ Id : 42
+フィールド Field : フィールドの値
+存在しないメンバ : 例外 System.ArgumentException
+----------------------------------------------------------------------------------------------------
+IdToken.CreateHash
+at_hash（OIDC Core 付録 A） : 77QmUPtjPfzWtF2AnpK9RQ（期待値と一致 : True）
+c_hash（OIDC Core 付録 A） : LDktKdoQak3Pk0cnXxCltA（期待値と一致 : True）
+s_hash（#584） : QCiR2bEHBPw1Pd2r2ZtS_Q（期待値と一致 : True）
+----------------------------------------------------------------------------------------------------
+IdToken.VerifyHash
+左半分（OIDC の定義） : True
+左右の XOR（修正前の値） : False
+----------------------------------------------------------------------------------------------------
+IdToken.Verify（jws / iss / aud）
+相手の鍵・iss・aud : True（期待値と一致 : True）、sub : user01
+別の鍵 : False（期待値と一致 : True）
+iss が違う : False（期待値と一致 : True）
+aud が違う : False（期待値と一致 : True）
+aud が array（含まれる） : True（期待値と一致 : True）、sub : user01
+aud が array（含まれない） : False（期待値と一致 : True）
+iss が空（例外になること） : 例外 System.ArgumentNullException
+aud が空（例外になること） : 例外 System.ArgumentNullException
+----------------------------------------------------------------------------------------------------
+IdToken.Verify（設定で判定する版。JwkSetFilePath が在る配備）
+aud が ClientID : True（期待値と一致 : True）
+aud が ClientIDs に在る : True（期待値と一致 : True）
+aud が設定に無い : False（期待値と一致 : True）
+aud が array（ClientID を含む） : True（期待値と一致 : True）
+aud が array（設定の値を含まない） : False（期待値と一致 : True）
+iss が SpRp_Isser と違う : False（期待値と一致 : True）
+----------------------------------------------------------------------------------------------------
+AccessToken.Verify（jws / iss / auds）
+発行者の鍵・iss・aud の集合 : True（期待値と一致 : True）、sub : user01、scopes : openid profile
+別の鍵 : False（期待値と一致 : True）
+iss が違う : False（期待値と一致 : True）
+aud が集合に無い : False（期待値と一致 : True）
+aud が array（集合と重なる） : True（期待値と一致 : True）、sub : user01、scopes : openid profile
+aud が array（集合と重ならない） : False（期待値と一致 : True）
+aud が無い : False（期待値と一致 : True）
+iss が空（例外になること） : 例外 System.ArgumentNullException
+auds が空（例外になること） : 例外 System.ArgumentNullException
+----------------------------------------------------------------------------------------------------
+ResponseObject.Verify（jws / iss / aud）
+相手の鍵・iss・aud : True（期待値と一致 : True）、code : code01
+別の鍵 : False（期待値と一致 : True）
+iss が違う : False（期待値と一致 : True）
+aud が違う : False（期待値と一致 : True）
+aud が array（含まれる） : True（期待値と一致 : True）、code : code01
+aud が array（含まれない） : False（期待値と一致 : True）
+iss が空（例外になること） : 例外 System.ArgumentNullException
+aud が空（例外になること） : 例外 System.ArgumentNullException
+----------------------------------------------------------------------------------------------------
+ResponseObject.Verify（設定で判定する版。JwkSetFilePath が在る配備）
+aud が ClientID : True（期待値と一致 : True）
+aud が ClientIDs に在る : True（期待値と一致 : True）
+aud が設定に無い : False（期待値と一致 : True）
+aud が array（ClientID を含む） : True（期待値と一致 : True）
+----------------------------------------------------------------------------------------------------
+SAML2Bindings.VerifyByXPath（Response）
+Success・Assertion あり : True（期待値と一致 : True）
+Success・Assertion なし : False（期待値と一致 : True）
+Requester・Assertion なし : True（期待値と一致 : True）
+Responder・Assertion なし : True（期待値と一致 : True）
+Requester・Assertion あり : True（期待値と一致 : True）
+Requester・Assertion に Issuer なし : False（期待値と一致 : True）
+Status なし : False（期待値と一致 : True）
+SAML2Client.VerifyResponse（cerFilePath）
+POST・IdP の証明書 : True（期待値と一致 : True）、iss 一致 : True
+POST・別の証明書 : False（期待値と一致 : True）
+Redirect・IdP の証明書 : True（期待値と一致 : True）、iss 一致 : True
+Redirect・別の証明書 : False（期待値と一致 : True）
+SAML2Bindings.EncodeAndSignRedirect（SigAlg） / VerifyRedirect
+RSA・SHA1 : http://www.w3.org/2000/09/xmldsig#rsa-sha1（期待値と一致 : True）、VerifyRedirect（DigitalSign 版） : True、VerifyRedirect（RSA 版） : False（期待値と一致 : True）
+RSA・SHA256 : http://www.w3.org/2001/04/xmldsig-more#rsa-sha256（期待値と一致 : True）、VerifyRedirect（DigitalSign 版） : True、VerifyRedirect（RSA 版） : True（期待値と一致 : True）
+RSA・SHA384 : http://www.w3.org/2001/04/xmldsig-more#rsa-sha384（期待値と一致 : True）、VerifyRedirect（DigitalSign 版） : True、VerifyRedirect（RSA 版） : True（期待値と一致 : True）
+RSA・SHA512 : http://www.w3.org/2001/04/xmldsig-more#rsa-sha512（期待値と一致 : True）、VerifyRedirect（DigitalSign 版） : True、VerifyRedirect（RSA 版） : True（期待値と一致 : True）
+RSA-PSS・SHA256（従来どおり） : http://www.w3.org/2000/09/xmldsig#rsa-sha1（期待値と一致 : True）、VerifyRedirect（DigitalSign 版） : True、VerifyRedirect（RSA 版） : False（期待値と一致 : True）
+RSA・SHA1、RSA 版に rsa-sha1 を許可する : True（期待値と一致 : True）
+rsa-sha384 を、SHA256 の DigitalSign で検証する : False（期待値と一致 : True）
+旧版（rsa-sha1 と名乗る SHA256）、DigitalSign 版（SHA256） : False（期待値と一致 : True）
+旧版（rsa-sha1 と名乗る SHA256）、RSA 版（既定） : False（期待値と一致 : True）
+旧版（rsa-sha1 と名乗る SHA256）、RSA 版に rsa-sha1 を許可する : False（期待値と一致 : True）
+SigAlg を rsa-sha384 に書き換える、DigitalSign 版（SHA384） : False（期待値と一致 : True）
+SigAlg を rsa-sha384 に書き換える、RSA 版 : False（期待値と一致 : True）
+SAML2Client.CreateRedirectRequest（digitalSign） / CreatePostRequest（rsa）
+Redirect・SHA256 : SigAlg http://www.w3.org/2001/04/xmldsig-more#rsa-sha256（期待値と一致 : True）、渡した鍵で検証 : True、別の鍵で検証 : False、id 一致 : True
+Redirect・SHA384 : SigAlg http://www.w3.org/2001/04/xmldsig-more#rsa-sha384（期待値と一致 : True）、渡した鍵で検証 : True、別の鍵で検証 : False、id 一致 : True
+POST : 渡した鍵で検証 : True、別の鍵で検証 : False、id 一致 : True
+----------------------------------------------------------------------------------------------------
+log4net: Shutdown called on Hierarchy [log4net-default-repository]

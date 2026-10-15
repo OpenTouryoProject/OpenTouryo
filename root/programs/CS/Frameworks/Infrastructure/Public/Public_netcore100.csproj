@@ -90,6 +90,8 @@
   <ItemGroup>
     <PackageReference Include="log4net" Version="3.3.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.0" />
+    <!--SqlClient 7.0.0 が引く Pkcs 9.0.13 に既知の脆弱性があるため、修正版へ引き上げる。-->
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.21" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.5" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.5" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="10.0.5" />

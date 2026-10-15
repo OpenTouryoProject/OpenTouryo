@@ -1,6 +1,6 @@
 # TESTING.md — 単体テストの実行と判定
 
-対象: `root/programs/CS/Frameworks/Tests`（C# 側）
+対象: `root/programs/CS/Frameworks/Tests/Golden`（C# 側。フォルダの分け方は [`Tests/README.md`](CS/Frameworks/Tests/README.md)）
 配置: `root/programs`
 本書は、リリース時に行っていた「単体テスト スクリプトの実行結果を diff で目視」を、
 **機械判定に置き換える**ための手順と判定基準を記述する（#513 段階 1）。
@@ -22,8 +22,8 @@ cd root\programs
 .\2_RunAllTests.ps1 -SkipBuild
 
 # 個別に比較する
-.\CompareResult.ps1 -Expected <HEAD 版> -Actual TestCode\Result48.txt
-.\CompareResult.ps1 -Expected <HEAD 版> -Actual TestBatch\ResultSimpleBatch48.txt -SkipLog4netTrace
+.\CompareResult.ps1 -Expected <HEAD 版> -Actual Golden\TestCode\Result48.txt
+.\CompareResult.ps1 -Expected <HEAD 版> -Actual Golden\TestBatch\ResultSimpleBatch48.txt -SkipLog4netTrace
 ```
 
 終了コードは `0` = 全 OK、`1` = NG あり、`2` = ファイル無し。
@@ -62,21 +62,54 @@ cd root\programs
 生 diff を読むのは、正規化後に差分が出たときだけでよい。
 `Result*.txt` のコミットは、内容が変わった（新しい基準にしたい）ときだけでよい。
 
-### 対象テスト（8 ケース）
+### 対象テスト（Golden 8 ケース）
 
 | テスト | 結果ファイル（＝期待値） | ビルド バッチ | 備考 |
 |---|---|---|---|
-| TestCode (net48) | `TestCode/Result48.txt` | `y_Build_TestCode_Public.bat` | 部品層の総合テスト（約 2,500 行）。**DB に接続しない** |
-| TestCode (net10.0) | `TestCode/ResultCore100.txt` | 同上 | 同上 |
-| TestDataAccess (net48) | `TestDataAccess/Result48.txt` | `y_Build_TestCode_DataAccess.bat` | データ アクセス（#520）。**実行モードで対象 DBMS が変わる** |
-| TestDataAccess (net10.0) | `TestDataAccess/ResultCore100.txt` | 同上 | 同上 |
-| TestBatch (net48) | `TestBatch/ResultSimpleBatch48.txt` | `y_Build_TestCode_Batch.bat` | **DB 接続あり**（Northwind） |
-| TestBatch (net10.0) | `TestBatch/ResultSimpleBatchCore100.txt` | 同上 | 同上 |
-| EncAndDecUtilCUI (net48) | `EncAndDecUtilCUI/Result48.txt` | `y_Build_TestCode_SecCUI.bat` | 暗号・JWT・XML 署名 |
-| EncAndDecUtilCUI (net10.0) | `EncAndDecUtilCUI/ResultCore100.txt` | 同上 | 同上 |
+| TestCode (net48) | `Golden/TestCode/Result48.txt` | `y_Build_TestCode_Public.bat` | 部品層の総合テスト（約 2,500 行）。**DB に接続しない** |
+| TestCode (net10.0) | `Golden/TestCode/ResultCore100.txt` | 同上 | 同上 |
+| TestDataAccess (net48) | `Golden/TestDataAccess/Result48.txt` | `y_Build_TestCode_DataAccess.bat` | データ アクセス（#520）。**実行モードで対象 DBMS が変わる** |
+| TestDataAccess (net10.0) | `Golden/TestDataAccess/ResultCore100.txt` | 同上 | 同上 |
+| TestBatch (net48) | `Golden/TestBatch/ResultSimpleBatch48.txt` | `y_Build_TestCode_Batch.bat` | **DB 接続あり**（Northwind） |
+| TestBatch (net10.0) | `Golden/TestBatch/ResultSimpleBatchCore100.txt` | 同上 | 同上 |
+| EncAndDecUtilCUI (net48) | `Golden/EncAndDecUtilCUI/Result48.txt` | `y_Build_TestCode_SecCUI.bat` | 暗号・JWT・XML 署名 |
+| EncAndDecUtilCUI (net10.0) | `Golden/EncAndDecUtilCUI/ResultCore100.txt` | 同上 | 同上 |
 
-`EncAndDecUtilCUI/ResultCore100OnLinux.txt` は Linux 実行時の期待結果のため、
+`Golden/EncAndDecUtilCUI/ResultCore100OnLinux.txt` は Linux 実行時の期待結果のため、
 Windows からの `2_RunAllTests.ps1` の対象外。
+
+### NUnit のテスト（6 ケース、#610）
+
+**期待値ファイルを持たない。テスト自身が合否を出す。**
+HEAD とは比較せず、バッチが書き出す `*.trx` の集計で判定する。
+
+| テスト | 結果ファイル | ビルド バッチ | 判定 |
+|---|---|---|---|
+| NUnit TestPublic (net48) | `NUnit/TestResults/TestPublic/TestPublic_net48.trx` | `y_Build_TestCode_NUnit.bat` | 失敗 0 件、かつ 1 件以上実行 |
+| NUnit TestPublic (net10.0) | `NUnit/TestResults/TestPublic/TestPublic_net10.0.trx` | 同上 | 同上。**カバレッジも表示する** |
+| NUnit TestPublicNLog (net48) | `NUnit/TestResults/TestPublicNLog/TestPublicNLog_net48.trx` | 同上 | 同上 |
+| NUnit TestPublicNLog (net10.0) | `NUnit/TestResults/TestPublicNLog/TestPublicNLog_net10.0.trx` | 同上 | 同上。**カバレッジも表示する** |
+| NUnit TestPublicDb (net48) | `NUnit/TestResults/TestPublicDb/TestPublicDb_net48.trx` | 同上 | 同上。**DB 接続あり** |
+| NUnit TestPublicDb (net10.0) | `NUnit/TestResults/TestPublicDb/TestPublicDb_net10.0.trx` | 同上 | 同上。**DB 接続あり**。カバレッジも表示する |
+
+**`TestPublicNLog` は、`LogIF` を NLog に切り替えた状態のテスト**で、別のプロセスで動かすために分けている（使うライブラリはプロセスで 1 回しか決まらない）。カバレッジはプロジェクトごとに別に出る。
+
+**`TestPublicDb` は Dam のクロス DB テスト**（DB に接続する）。同じテストを DBMS ごとに回す。
+**SQL Server は必須**（接続できなければ失敗。CI でも接続する）。Oracle / MySQL / PostgreSQL は**接続できなければスキップ**し、件数と名前が「実行せず」に出る。
+クロス DB で確かめるなら LocalServicesOnDocker の各 DBMS を起動してから回す（接続先は Golden の `TestDataAccess` と同じ）。PostgreSQL は `DamPstGrS` が .NET 専用のため net10.0 だけ。
+
+- **サマリの「差分」の列は、NUnit では失敗の件数を表す。**
+- **0 件の合格は OK にしない。** テストが見つからない構成ミスを見逃すため
+- **スキップ（`Assert.Ignore`）は OK に数えるが、件数と名前を出す。**
+  いまは net48 のイベント ログのテスト 3 件が、**管理者でないとスキップされる**
+  （イベント ソースの作成に管理者権限が要る。CI の windows-latest は管理者なので走る）。
+  手元で確かめるなら、管理者の PowerShell で回す
+- `TestResults/` は Git 管理外。**ワーキング ツリーは書き換わらない**
+- バッチは実行前に古い結果を消す。ビルドに失敗したとき、前回の「合格」が残らないようにするため
+- **カバレッジは表示だけで、判定には使わない。** 収集は net10.0 だけで行う
+  （コードはほぼ共通で、両方で取っても指針としては変わらないため）
+
+テストの書き方と置き場は [`Tests/README.md`](CS/Frameworks/Tests/README.md) を参照。
 
 ### `TestCode` / `TestDataAccess` は詳細を別文書に持つ
 
@@ -85,8 +118,8 @@ Windows からの `2_RunAllTests.ps1` の対象外。
 
 | 文書 | そちらで扱うもの |
 |---|---|
-| [`TestCode/README.md`](CS/Frameworks/Tests/TestCode/README.md) | `Test*.cs` と対象名前空間の対応、環境依存の値を出さないための決まり、記録している「仕様」（読み違えやすい挙動） |
-| [`TestDataAccess/README.md`](CS/Frameworks/Tests/TestDataAccess/README.md) | 実行モードと対象 DBMS、更新系・動的パラメタライズドクエリのケース設計の根拠、クロス DB テストの実施手順 |
+| [`TestCode/README.md`](CS/Frameworks/Tests/Golden/TestCode/README.md) | `Test*.cs` と対象名前空間の対応、環境依存の値を出さないための決まり、記録している「仕様」（読み違えやすい挙動） |
+| [`TestDataAccess/README.md`](CS/Frameworks/Tests/Golden/TestDataAccess/README.md) | 実行モードと対象 DBMS、更新系・動的パラメタライズドクエリのケース設計の根拠、クロス DB テストの実施手順 |
 
 `TestCode` と `TestDataAccess` を分けているのは、**`TestDataAccess` が DB を前提にする**ため。
 混ぜると、DB が無い環境では `TestCode` ごと動かなくなる。
@@ -126,7 +159,7 @@ PowerShell は子プロセスに `NoDefaultCurrentDirectoryInExePath=1` を渡�
 一方バッチは、出力フォルダへ `cd` したうえでパス区切りを含まない名前で実行している。
 
 ```bat
-cd "Frameworks\Tests\TestBatch\SimpleBatch\bin\Debug"
+cd "Frameworks\Tests\Golden\TestBatch\SimpleBatch\bin\Debug"
 SimpleBatch.exe /Dap SQL ... > ..\..\..\ResultSimpleBatch48.txt
 ```
 
@@ -144,7 +177,7 @@ SimpleBatch.exe /Dap SQL ... > ..\..\..\ResultSimpleBatch48.txt
 
 - **Frameworks をビルド済み**であること（`Build_net48` / `Build_netcore100` が存在）
 - **SQL Server の Northwind に接続できる**こと
-  （`TestDataAccess` と `TestBatch` が使用。**8 本中 4 本**）
+  （`TestDataAccess` と `TestBatch` が使用。**14 本中 6 本**）
 - **Northwind のテスト データが標準状態**であること（後述の「4. テスト データ」）
 
 ### 冒頭の「前提の確認」（#588）
@@ -188,10 +221,10 @@ SimpleBatch.exe /Dap SQL ... > ..\..\..\ResultSimpleBatch48.txt
 
 ```powershell
 # リポジトリ内の正本から配置（推奨・配置場所に依存しない）
-Copy-Item ..\..\..\..\files\resource\X509\SHA*.??? EncAndDecUtilCUI\
+Copy-Item ..\..\..\..\files\resource\X509\SHA*.??? Golden\EncAndDecUtilCUI\
 
 # あるいは同梱のバッチ（C:\root\files\resource\X509\ を参照する）
-cd EncAndDecUtilCUI
+cd Golden\EncAndDecUtilCUI
 .\copy_cert.bat
 ```
 

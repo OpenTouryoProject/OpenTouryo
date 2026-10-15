@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--LogIF を NLog に切り替えた状態の単体テスト（#610）。
+      **TestPublic と分けているのは、別のプロセスで動かすため。**
+      LogIF は使うライブラリ（LogLib）を静的コンストラクタで 1 回だけ決めるので、
+      log4net を使う TestPublic と同じプロセスでは NLog に切り替えられない。
+      dotnet test はテスト アセンブリごとに別のプロセス（testhost）で動かす。-->
+  <PropertyGroup>
+    <TargetFrameworks>net48;net10.0</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>TestPublicNLog</RootNamespace>
+    <!--TestPublic と同じ理由（Assert.Throws のラムダ）。-->
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
+    <PackageReference Include="NUnit" Version="4.6.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="6.3.0" />
+    <PackageReference Include="coverlet.collector" Version="10.0.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\..\Infrastructure\Build_net48\OpenTouryo.Public.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <!--InitConfiguration に渡す構成（TestSetup.cs）。-->
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.5" />
+    <!--LogIF が使う。log4net は静的コンストラクタが型を参照するので、使わなくても要る。-->
+    <PackageReference Include="NLog" Version="5.5.0" />
+    <PackageReference Include="log4net" Version="3.3.0" />
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--NLog の構成（FxLog4NetConfFile。NLog でも同じキーを使う）。-->
+    <None Update="NUnitNLogConf.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

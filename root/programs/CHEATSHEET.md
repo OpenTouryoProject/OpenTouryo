@@ -25,7 +25,7 @@ cd root\programs
 | | 合格の目安 | 詳細 |
 |---|---|---|
 | ビルド | 全ステップ OK | [`BUILDING.md`](BUILDING.md) |
-| 単体テスト | 8/8 OK、差分 0 | [`TESTING.md`](TESTING.md) |
+| 単体テスト | 14/14 OK、差分 0（NUnit は失敗 0） | [`TESTING.md`](TESTING.md) |
 | 疎通 | 30/30 OK | [`SMOKETEST.md`](SMOKETEST.md) |
 
 **既定は C# 側。VB 側は `-Lang` で回す**（3 節）。
@@ -60,9 +60,72 @@ cd root\programs
 ```
 
 **`-Only` に指定できる名前は `-List` で出す。**（#576）
+**`-Only` は複数指定できる**（#610）。
 
 ```powershell
 .\3_SmokeTest.ps1 -List          # 対象名の一覧。-Lang が効く
+.\2_RunAllTests.ps1 -Only "TestBatch", "NUnit"
+```
+
+### 回す範囲を差分から割り出す（#610）
+
+**「どこまで回すか」は `SelectTargets.ps1` が下の対応表どおりに決める。**
+検証の済んだコミット（`.verified-commit`。Git 管理外）からの差分を読む。
+**未コミット・未追跡の変更も含む。**
+
+```powershell
+.\SelectTargets.ps1                  # 回す範囲を表示するだけ
+.\SelectTargets.ps1 -Run             # その範囲で 1 → 2 → 3。全部 OK なら記録を進める
+.\SelectTargets.ps1 -Record          # 通しが通った後に、いまの HEAD を記録する
+.\SelectTargets.ps1 -Since develop   # 記録ではなく、指定した基点からの差分で見る
+```
+
+| 表示 | 意味 |
+|---|---|
+| `通し` | 基盤・共通バッチ・対応が引けないファイルに触れている |
+| `N 件` | 変更の下にあるバッチから引いた対象だけ |
+| `スクリプトの確認（1 件）` | 検証スクリプトだけを変えた。軽い対象を 1 件回す |
+| `手で確かめるもの` | **どの検証にも載っていない**（`Else/TestLog`、GUI、`.sh` 等）。**回せていないと報告する** |
+
+- **記録が無いと止まる。** 初回は通しの後に `-Record` するか、`-Since` を付ける
+- **手で確かめるものが残ると、`-Run` が全部 OK でも記録は進まない**（終了コード 1）
+- 対象名とバッチの対応は各スクリプトの `-List -PassThru` から取る（写していない）
+
+### 段階で回す量を変える（fixing / fixed、#610）
+
+**途中（`fixing #N`）は軽く、完了（`fixed #N`）の前に全部。** 判断の理由は [`AGENTS.md`](../../AGENTS.md)。
+
+```powershell
+# 編集中（変えたテストだけ。NUnit はフィルタで 1 クラス・1 メソッドに絞れる）
+dotnet test CS\Frameworks\Tests\NUnit\TestPublic\TestPublic.csproj -f net10.0 --filter "FullyQualifiedName~SQLUtilityTests"
+.\2_RunAllTests.ps1 -Only "TestCode (net10.0)"
+
+.\SelectTargets.ps1 -Stage fixing -Run    # 途中のコミットの前（記録は進まない）
+.\SelectTargets.ps1 -Run                  # 完了のコミットの前（既定は fixed。通れば記録が進む）
+```
+
+| | fixing | fixed |
+|---|---|---|
+| DB を使う対象 | **後回し** | 回す |
+| 基盤に触れたときのビルド | **基盤だけ**（クリーンを含む 11 ステップ） | 通し |
+| 基盤に触れたときの疎通 | **後回し** | 通し |
+| 末端（サンプル・ツール・テスト）の変更 | 変えたものだけ（DB を使うものは後回し） | 変えたものだけ |
+| 記録（`.verified-commit`） | **進めない** | 全部 OK なら進める |
+
+- **後回しにしたものは「後回しにしたもの（fixed で必ず回す）」に一覧で出る。** 報告にそのまま書く
+- 記録が fixed でしか進まないので、**基点は「最後に fixed で通ったコミット」になる**
+- クロス DB・VB・管理者権限は、触れたときだけ回す（[`AGENTS.md`](../../AGENTS.md) の表）
+- `dotnet test` の `-f net10.0` を外すと net48 も回る。**net48 / net10.0 で実装が違う箇所は両方回す**
+
+- **基盤だけのビルドでもクリーンは外さない。** 外すと #574 の罠
+  （`Business.RichClient (net48)` が「does not reference .NETFramework,Version=v4.8」）を踏む。
+  クリーンは CS 配下の bin / obj をすべて消すので、**fixing の後に疎通だけを `-SkipBuild` で回してはならない**
+
+**基盤（Public の 4 ファイル）を変えたときの実測**（#612、C# のみ）。**約 5 分の 1 になる。**
+
+```
+fixing : 基盤だけのビルド 1.4 分 ＋ DB を使わない単体テスト 8 件 2.8 分   … 約 4 分
+fixed  : 通し（ビルド 8.8 分 ＋ 単体テスト 14 件 約 4 分 ＋ 疎通 30 件 約 9 分） … 約 22 分
 ```
 
 **どこまで回すかは依存関係で決まる。**（#576）
@@ -80,7 +143,8 @@ cd root\programs
 | `Infrastructure/`（基盤） | **通し** | **通し** | **通し** |
 | `Tools/`（ツール） | `-Only Framework_Tool` | **不要** | `-Only <そのツール>` |
 | 個別サンプル | `-Only <サンプル>` | **不要** | `-Only <サンプル>` |
-| `Tests/` | `-Only <対象>` | `-Only <対象>` | **不要** |
+| `Tests/Golden` `Tests/NUnit` | **不要**（2 が自分でビルドする） | `-Only <対象>` | **不要** |
+| `Tests/Else` | **不要** | **不要** | `TestTransmission` / `TestWebAPIClient` だけ `-Only <対象>`。他は手作業 |
 | `.md` のみ | **不要** | **不要** | **不要** |
 | `.ps1` のみ | 変えた本を `-Only` で 1 件 | 同左 | 同左 |
 
@@ -128,6 +192,17 @@ Framework_Tool 系だけ     74.8 秒     ← ツールの変更で必要なの�
 .\ComparePackage.ps1 -Check     # packages.config と csproj の版（#569）
 .\CompareRedirect.ps1 -Check    # bindingRedirect と配布物の版（#556）
 ```
+
+**依存パッケージの脆弱性は、ビルドの警告に頼らず別に見る**（#610。`0_RunAll.ps1` は最後に自動で回して警告する）。
+
+```powershell
+.\CheckVulnerability.ps1 -Detail                          # 推移的な依存を含めた一覧
+.\CheckVulnerability.ps1 -IssueDraft "$env:TEMP\vuln.md"  # Issue の文面の下書き（投稿はしない）
+```
+
+- **ビルドの後に回す。** restore 結果が無いと推移的な依存を見られない（「未リストア」として件数が出る）
+- ビルドの NU1901〜NU1904 は restore のときにしか出ず、**Dependabot は推移的な依存を見ない**（[`BUILDING.md`](BUILDING.md) 13 節）
+- **見つけたら Issue を起こさずにその場で直す**（[`AGENTS.md`](../../AGENTS.md)「依存パッケージの脆弱性を見つけたら」）。`-IssueDraft` は直せないときだけ
 
 **どちらもビルドの後に回す。** 復元された DLL を読むため。
 `1_BuildAll.ps1` は bin を消すので、**clean の前に測ると古い残骸を拾う。**（#579）

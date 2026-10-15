@@ -18,8 +18,8 @@ call %CURRENT_DIR%z_Common.bat
 @rem --------------------------------------------------
 @rem Batch build of TestTransmission.
 @rem --------------------------------------------------
-"%~dp0..\nuget.exe" restore "Frameworks\Tests\TestTransmission\TestTransmissionFx48.sln" %NUGET_MSBUILD%
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\TestTransmission\TestTransmissionFx48.sln"
+"%~dp0..\nuget.exe" restore "Frameworks\Tests\Else\TestTransmission\TestTransmissionFx48.sln" %NUGET_MSBUILD%
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\Else\TestTransmission\TestTransmissionFx48.sln"
 
 pause
 

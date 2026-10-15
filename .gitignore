@@ -311,7 +311,21 @@ __pycache__/
 #      .cer は正本 (root/files/resource/X509/*.cer) を追跡し続ける必要があるため、
 #      汎用パターンにはせず、複製先のフォルダに限定する。
 # --------------------------------------------------
-/root/programs/*/Frameworks/Tests/EncAndDecUtilCUI/*.cer
+/root/programs/*/Frameworks/Tests/Golden/EncAndDecUtilCUI/*.cer
+
+# --------------------------------------------------
+# Open棟梁 NUnit test results (#610)
+#   y_Build_TestCode_NUnit.bat が書き出す *.trx とカバレッジ。
+#   2_RunAllTests.ps1 が読んで判定する。実行のたびに作り直す。
+# --------------------------------------------------
+/root/programs/*/Frameworks/Tests/NUnit/TestResults/
+
+# --------------------------------------------------
+# Open棟梁 verified commit (#610)
+#   SelectTargets.ps1 が記録する「検証の済んだコミット」。
+#   手元の検証の状態なので、共有しない。
+# --------------------------------------------------
+/root/programs/.verified-commit
 
 # --------------------------------------------------
 # DeployZipPackWithHTTP のサンプル（配布物）

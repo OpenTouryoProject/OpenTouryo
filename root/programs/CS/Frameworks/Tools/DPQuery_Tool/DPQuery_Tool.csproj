@@ -211,7 +211,7 @@
       <Version>6.0.1</Version>
     </PackageReference>
     <PackageReference Include="System.Security.Cryptography.Pkcs">
-      <Version>9.0.6</Version>
+      <Version>9.0.21</Version>
     </PackageReference>
     <PackageReference Include="System.Security.Cryptography.ProtectedData">
       <Version>9.0.6</Version>

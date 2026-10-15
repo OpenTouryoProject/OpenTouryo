@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--カバレッジの収集設定（#610）。
+    計測の対象はフレームワークの DLL だけにする（テスト自身と NUnit は外す）。
+    HintPath で参照した DLL も、pdb が出力先に複製されるので計測できる。-->
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat code coverage">
+        <Configuration>
+          <Format>cobertura</Format>
+          <Include>[OpenTouryo.*]*</Include>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

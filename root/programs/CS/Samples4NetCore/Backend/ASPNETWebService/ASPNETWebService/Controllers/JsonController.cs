@@ -30,6 +30,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/08/18  西野 大介         新規作成
 //*  2026/08/21  玄人 幸道         CSRFが成立しない前提をコメントに明記（CodeQL誤検知）
+//*  2026/10/15  玄人 幸道         コメント中のテストのパスを追随（#610）
 //**********************************************************************************
 
 using System;
@@ -75,7 +76,7 @@ namespace ASPNETWebService.Controllers
     ///   CORS も AllowCredentials を外してあり、資格情報を送らない構成。
     ///
     /// **ValidateAntiForgeryToken は付けないこと。**
-    ///   非ブラウザのクライアント（Frameworks/Tests/TestWebAPIClient）は
+    ///   非ブラウザのクライアント（Frameworks/Tests/Else/TestWebAPIClient）は
     ///   トークンを持たないため、付けると疎通が壊れる。
     ///   CodeQL の cs/web/missing-token-validation は false positive として dismiss 済み。
     /// </remarks>

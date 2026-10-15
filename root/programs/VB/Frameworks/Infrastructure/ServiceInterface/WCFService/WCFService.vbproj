@@ -104,6 +104,10 @@
     <PackageReference Include="Microsoft.Data.SqlClient">
       <Version>6.0.2</Version>
     </PackageReference>
+    <!-- Microsoft.Data.SqlClient 6.0.2 が引く Pkcs 8.0.1 に既知の脆弱性があるため、修正版へ引き上げる -->
+    <PackageReference Include="System.Security.Cryptography.Pkcs">
+      <Version>8.0.2</Version>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>13.0.3</Version>
     </PackageReference>

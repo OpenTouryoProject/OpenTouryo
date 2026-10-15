@@ -18,8 +18,8 @@ call %CURRENT_DIR%z_Common.bat
 rem --------------------------------------------------
 rem Batch build of EncAndDecUtil.
 rem --------------------------------------------------
-"%~dp0..\nuget.exe" restore "Frameworks\Tests\EncAndDecUtil\EncAndDecUtil48.sln" %NUGET_MSBUILD%
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\EncAndDecUtil\EncAndDecUtil48.sln"
+"%~dp0..\nuget.exe" restore "Frameworks\Tests\Else\EncAndDecUtil\EncAndDecUtil48.sln" %NUGET_MSBUILD%
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\Else\EncAndDecUtil\EncAndDecUtil48.sln"
 
 pause
 

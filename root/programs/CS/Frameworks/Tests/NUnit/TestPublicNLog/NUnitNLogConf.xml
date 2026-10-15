@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- LogIF（NLog）の単体テスト用の構成（#610）。
+     出力先は実行フォルダ（${basedir}）基準。 -->
+<nlog xmlns="http://www.nlog-project.org/schemas/NLog.xsd"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+  <targets>
+    <!-- テストが書き込み中のファイルを読むため、書くたびに閉じる（keepFileOpen="false"） -->
+    <target xsi:type="File" name="NLOG_INFO"
+            fileName="${basedir}/NUnitLog/NLOG_INFO.log" encoding="utf-8" keepFileOpen="false"
+            layout="[${level:uppercase=true:padding=-5}],${message}" />
+    <target xsi:type="File" name="NLOG_WARN"
+            fileName="${basedir}/NUnitLog/NLOG_WARN.log" encoding="utf-8" keepFileOpen="false"
+            layout="[${level:uppercase=true:padding=-5}],${message}" />
+  </targets>
+
+  <rules>
+    <logger name="NLOG_INFO" minlevel="Info" writeTo="NLOG_INFO" />
+    <logger name="NLOG_WARN" minlevel="Warn" writeTo="NLOG_WARN" />
+  </rules>
+</nlog>

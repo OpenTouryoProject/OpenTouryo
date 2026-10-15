@@ -134,6 +134,15 @@ cd C:\root\programs
 3 本は個別に実行することもできます。**その場合の実行順は固定**です
 （`1_` のクリーンとアセンブリ配置が `2_` `3_` の前提になっているため）。
 
+変更がサンプルやテストだけなら、`SelectTargets.ps1` で回す範囲を絞れます。
+前回の検証からの変更を調べ、必要なビルド・テスト・疎通だけを選びます。
+
+```powershell
+.\SelectTargets.ps1 -Record   # 通しが通ったら、いまのコミットを記録しておく
+.\SelectTargets.ps1           # 記録からの変更で、回す範囲を表示する
+.\SelectTargets.ps1 -Run      # その範囲で 1 → 2 → 3 を実行する
+```
+
 手順と判定基準は、同じフォルダの
 [`BUILDING.md`](programs/BUILDING.md) / [`TESTING.md`](programs/TESTING.md) /
 [`SMOKETEST.md`](programs/SMOKETEST.md) を参照してください。

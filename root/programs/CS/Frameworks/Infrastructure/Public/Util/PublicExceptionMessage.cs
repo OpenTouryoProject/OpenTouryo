@@ -47,6 +47,7 @@
 //*  2016/05/30  Supragyan         Added a message in the case of NotSupportedException
 //*  2018/03/28  西野 大介         .NET Standard対応で、GetConfigParameterに例外処理を追加
 //*  2019/01/28  西野 大介         .NET Standard対応で、CmnFuncに例外処理を追加
+//*  2026/10/15  玄人 幸道         CmnFunc：FxContainerization が不正なとき無限に再帰するのを修正（#612）
 //**********************************************************************************
 
 using System;
@@ -760,7 +761,10 @@ namespace Touryo.Infrastructure.Public.Util
 
             try
             {
-                fxUICulture = GetConfigParameter.GetConfigValue(PubLiteral.EXCEPTIONMESSAGECULTUER);
+                // **コンテナ・モードの判定を通さない（第 2 引数 false）。**（#612）
+                //   判定で FxContainerization が不正だと SWITCH_ERROR を取りに来るため、
+                //   ここで判定を通すと、例外を投げる前に無限に再帰してスタック オーバーフローになる。
+                fxUICulture = GetConfigParameter.GetConfigValue(PubLiteral.EXCEPTIONMESSAGECULTUER, false);
             }
             catch (Exception ex)
             {
