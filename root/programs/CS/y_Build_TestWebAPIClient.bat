@@ -18,8 +18,8 @@ call %CURRENT_DIR%z_Common.bat
 @rem --------------------------------------------------
 @rem Batch build of TestTransmission.
 @rem --------------------------------------------------
-"%~dp0..\nuget.exe" restore "Frameworks\Tests\TestWebAPIClient\TestWebAPIClientFx48.sln" %NUGET_MSBUILD%
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\TestWebAPIClient\TestWebAPIClientFx48.sln"
+"%~dp0..\nuget.exe" restore "Frameworks\Tests\Else\TestWebAPIClient\TestWebAPIClientFx48.sln" %NUGET_MSBUILD%
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\Else\TestWebAPIClient\TestWebAPIClientFx48.sln"
 
 pause
 

@@ -249,7 +249,7 @@ Web アプリと違い**対象は EXE** なので、本文側の Web ホスト�
 |---|---|
 | `TestTransmission` (net48) | 対象側が出す `NG : 0 件` |
 
-対象は **`Frameworks/Tests/TestTransmission`** の net48 コンソールで、
+対象は **`Frameworks/Tests/Else/TestTransmission`** の net48 コンソールで、
 **オリジンとプロキシを自前で立て、そこへ `CallController` から呼ぶ**。
 判定は対象側が行い、項目ごとに `OK` / `NG` を出して末尾に件数を出す。
 

@@ -18,17 +18,17 @@ call %CURRENT_DIR%z_Common.bat
 @rem --------------------------------------------------
 @rem Batch build of TestCode.
 @rem --------------------------------------------------
-"%~dp0..\nuget.exe" restore "Frameworks\Tests\TestCode\TestCodeFx48.sln" %NUGET_MSBUILD%
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\TestCode\TestCodeFx48.sln"
+"%~dp0..\nuget.exe" restore "Frameworks\Tests\Golden\TestCode\TestCodeFx48.sln" %NUGET_MSBUILD%
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\Golden\TestCode\TestCodeFx48.sln"
 
-dotnet restore "Frameworks\Tests\TestCode\TestCodeCore100.sln"
-dotnet msbuild %COMMANDLINE% "Frameworks\Tests\TestCode\TestCodeCore100.sln"
+dotnet restore "Frameworks\Tests\Golden\TestCode\TestCodeCore100.sln"
+dotnet msbuild %COMMANDLINE% "Frameworks\Tests\Golden\TestCode\TestCodeCore100.sln"
 
 @echo --------------------------------------------------
 @echo Test the TestCodeFx(48).
 @echo --------------------------------------------------
 set CURRENTDIR=%cd%
-cd "Frameworks\Tests\TestCode\net48\bin\Debug"
+cd "Frameworks\Tests\Golden\TestCode\net48\bin\Debug"
 "TestCodeFx.exe" > ..\..\..\Result48.txt
 cd %CURRENTDIR%
 
@@ -36,7 +36,7 @@ cd %CURRENTDIR%
 @echo Test the TestCodeCore(100).
 @echo --------------------------------------------------
 set CURRENTDIR=%cd%
-cd "Frameworks\Tests\TestCode\core100\bin\Debug\net10.0"
+cd "Frameworks\Tests\Golden\TestCode\core100\bin\Debug\net10.0"
 dotnet "TestCodeCore.dll" > ..\..\..\..\ResultCore100.txt
 cd %CURRENTDIR%
 

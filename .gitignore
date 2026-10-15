@@ -311,7 +311,7 @@ __pycache__/
 #      .cer は正本 (root/files/resource/X509/*.cer) を追跡し続ける必要があるため、
 #      汎用パターンにはせず、複製先のフォルダに限定する。
 # --------------------------------------------------
-/root/programs/*/Frameworks/Tests/EncAndDecUtilCUI/*.cer
+/root/programs/*/Frameworks/Tests/Golden/EncAndDecUtilCUI/*.cer
 
 # --------------------------------------------------
 # DeployZipPackWithHTTP のサンプル（配布物）

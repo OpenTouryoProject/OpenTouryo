@@ -54,16 +54,22 @@
 > [`README.md`](Tools/DeployZipPackWithHTTP/README.md) が一次情報。**
 > IIS Express で完結するので、IIS を立てなくても確かめられる。
 
-### 2.3 `Tests/` — テスト（**xUnit/NUnit ではない**）
+### 2.3 `Tests/` — テスト（**既存のテストは xUnit/NUnit ではない**）
 
-| 名前 | 内容 | 専用の文書 |
-|---|---|---|
-| `TestCode` | コンソール EXE。`Program.cs` から `Test*.Root()` を順次呼ぶ手動確認型。期待値は `Result48.txt` / `ResultCore100.txt` と比較。**DB には接続しない** | [`README.md`](Tests/TestCode/README.md) |
-| `TestDataAccess` | データ アクセスのテスト（#520）。`TestCode` と同じ構成だが**DB に接続する**。`/MODE` で対象 DBMS を切り替える（既定は SQL Server のみ） | [`README.md`](Tests/TestDataAccess/README.md) |
-| `TestLog` | ログ出力確認（log4net/NLog、1〜3） | — |
-| `TestBatch` | バッチ起動確認 | — |
-| `TestTransmission` | 通信制御の接続オプション（#546）。**オリジンとプロキシを自前で立て**、`CallController` から呼んで、要求に反映されているかを見る。**期待値ファイルを持たず、自分で合否を出す**（疎通テストから呼ばれる） | [`SMOKETEST.md`](../../SMOKETEST.md) 3 節 |
-| `EncAndDecUtil` / `EncAndDecUtilCUI` | 暗号・署名ユーティリティの GUI/CUI 確認 | — |
+**判定の方式でフォルダを分けている**（#610）。分け方と置き場の決め方は
+[`Tests/README.md`](Tests/README.md) が一次情報。
+
+| 区分 | 名前 | 内容 | 専用の文書 |
+|---|---|---|---|
+| `Golden` | `TestCode` | コンソール EXE。`Program.cs` から `Test*.Root()` を順次呼ぶ手動確認型。期待値は `Result48.txt` / `ResultCore100.txt` と比較。**DB には接続しない** | [`README.md`](Tests/Golden/TestCode/README.md) |
+| `Golden` | `TestDataAccess` | データ アクセスのテスト（#520）。`TestCode` と同じ構成だが**DB に接続する**。`/MODE` で対象 DBMS を切り替える（既定は SQL Server のみ） | [`README.md`](Tests/Golden/TestDataAccess/README.md) |
+| `Golden` | `TestBatch` | バッチ起動確認 | — |
+| `Golden` | `EncAndDecUtilCUI` | 暗号・署名ユーティリティの CUI 確認 | — |
+| `Else` | `TestTransmission` | 通信制御の接続オプション（#546）。**オリジンとプロキシを自前で立て**、`CallController` から呼んで、要求に反映されているかを見る。**期待値ファイルを持たず、自分で合否を出す**（疎通テストから呼ばれる） | [`SMOKETEST.md`](../../SMOKETEST.md) 3 節 |
+| `Else` | `TestWebAPIClient` | Web API の非ブラウザ クライアント（疎通テストから呼ばれる） | [`SMOKETEST.md`](../../SMOKETEST.md) |
+| `Else` | `TestLog` | ログ出力確認（log4net/NLog、1〜3） | — |
+| `Else` | `EncAndDecUtil` | 暗号・署名ユーティリティの GUI 確認 | — |
+| `Else` | `LaunchJson` | リモート デバッグ用の `launch.json` の例（テストではない） | — |
 
 **`TestCode` と `TestDataAccess` は専用の `README.md` を持つ。**
 「何をテストしているか」「ケースを書き足すときの決まり」「ケース設計の根拠」は
@@ -460,7 +466,7 @@ Public → Public.Security → Framework → Business → Tools / Tests / Sample
 **`4_Build_CopyAssemblies.bat`（`Build_net48` → `Build\` の xcopy）を飛ばすと、
 net48 のサンプルとツールが一切ビルドできない。**
 `Frameworks\Infrastructure\Build\` を `HintPath` 参照するプロジェクトが CS/VB 合わせて **42 件**あるため
-（`Samples/*` の全 net48 サンプル、`Tools/DaoGen_Tool`・`DPQuery_Tool`、`Tests/TestLog*`）。
+（`Samples/*` の全 net48 サンプル、`Tools/DaoGen_Tool`・`DPQuery_Tool`、`Tests/Else/TestLog*`）。
 `0_ExecAllBat.bat` が `2_`/`3_` → `4_CopyAssemblies` → `5_`〜`10_`（サンプル）の順で呼ぶのはこのため。
 
 `Build\` に入るのは **net48 の成果物のみ**で、.NET (Core) 側に相当物は無い
@@ -648,7 +654,7 @@ Dependabot が 1 プロジェクトずつしか上げないため、放ってお
     ```
     Public/Security/Public.Security_netcore100.csproj
     Business/Business_netcore100.csproj
-    Tests/EncAndDecUtilCUI/core100/EncAndDecUtilCUICore.csproj
+    Tests/Golden/EncAndDecUtilCUI/core100/EncAndDecUtilCUICore.csproj
     NuGet/Symbol_Public.Security.nuspec
     ```
 
@@ -668,7 +674,7 @@ Dependabot が 1 プロジェクトずつしか上げないため、放ってお
     1〜2 byte は `256 * 1 == 256 ^ 1` でたまたま一致するため、呼び出し元
     （`CheckCharCode` → Shift_JIS の 1〜2 byte）では顕在化していなかった。
     **期待値を作るときは、出力をそのまま貼らず実装から検算し、境界を跨いだケースを置く**
-    （[`Tests/TestCode/README.md`](Tests/TestCode/README.md)）。
+    （[`Tests/Golden/TestCode/README.md`](Tests/Golden/TestCode/README.md)）。
 
     **`EncAndDecUtilCUI` も同じだった**（2026/10/03 に修正、#595）。
     Windows の `Result48.txt` / `ResultCore100.txt` は `JWS_ES384_Param.Verify` /

@@ -18,11 +18,11 @@ call %CURRENT_DIR%z_Common.bat
 @rem --------------------------------------------------
 @rem Batch build of TestDataAccess.
 @rem --------------------------------------------------
-"%~dp0..\nuget.exe" restore "Frameworks\Tests\TestDataAccess\TestDataAccessFx48.sln" %NUGET_MSBUILD%
-%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\TestDataAccess\TestDataAccessFx48.sln"
+"%~dp0..\nuget.exe" restore "Frameworks\Tests\Golden\TestDataAccess\TestDataAccessFx48.sln" %NUGET_MSBUILD%
+%BUILDFILEPATH% %COMMANDLINE% "Frameworks\Tests\Golden\TestDataAccess\TestDataAccessFx48.sln"
 
-dotnet restore "Frameworks\Tests\TestDataAccess\TestDataAccessCore100.sln"
-dotnet msbuild %COMMANDLINE% "Frameworks\Tests\TestDataAccess\TestDataAccessCore100.sln"
+dotnet restore "Frameworks\Tests\Golden\TestDataAccess\TestDataAccessCore100.sln"
+dotnet msbuild %COMMANDLINE% "Frameworks\Tests\Golden\TestDataAccess\TestDataAccessCore100.sln"
 
 @rem --------------------------------------------------
 @rem /MODE SQLONLY : SQL Server only (the default).
@@ -34,7 +34,7 @@ dotnet msbuild %COMMANDLINE% "Frameworks\Tests\TestDataAccess\TestDataAccessCore
 @echo Test the TestDataAccessFx(48).
 @echo --------------------------------------------------
 set CURRENTDIR=%cd%
-cd "Frameworks\Tests\TestDataAccess\net48\bin\Debug"
+cd "Frameworks\Tests\Golden\TestDataAccess\net48\bin\Debug"
 "TestDataAccessFx.exe" /MODE SQLONLY > ..\..\..\Result48.txt
 cd %CURRENTDIR%
 
@@ -42,7 +42,7 @@ cd %CURRENTDIR%
 @echo Test the TestDataAccessCore(100).
 @echo --------------------------------------------------
 set CURRENTDIR=%cd%
-cd "Frameworks\Tests\TestDataAccess\core100\bin\Debug\net10.0"
+cd "Frameworks\Tests\Golden\TestDataAccess\core100\bin\Debug\net10.0"
 dotnet "TestDataAccessCore.dll" -- /MODE SQLONLY > ..\..\..\..\ResultCore100.txt
 cd %CURRENTDIR%
 

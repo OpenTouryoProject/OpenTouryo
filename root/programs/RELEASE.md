@@ -373,7 +373,7 @@ cd root\programs
       削除オプションが無いため、該当する `<add>` 行を手で削除する（`README.md` 8 節）
 - [ ] `git status` に意図しない変更が残っていない
       … 特に `Result*.txt`（`2_RunAllTests.ps1` が再生成する）と
-      `CS\Frameworks\Tests\EncAndDecUtilCUI\*.cer` / `*.pfx`（Git 管理外の作業用コピー）
+      `CS\Frameworks\Tests\Golden\EncAndDecUtilCUI\*.cer` / `*.pfx`（Git 管理外の作業用コピー）
 
 ---
 

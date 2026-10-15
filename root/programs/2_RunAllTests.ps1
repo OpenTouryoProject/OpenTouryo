@@ -69,6 +69,7 @@
      ----------  ----------------  -------------------------------------------------
      2026/08/01  玄人 幸道         新規作成（リリース ワークのエージェント化）
      2026/08/17  玄人 幸道         テストごとに Base64 の正規化を選べるようにした（#562）
+     2026/10/15  玄人 幸道         Tests を Golden / NUnit / Else に整理した（#610）
 #>
 [CmdletBinding()]
 param(
@@ -140,7 +141,7 @@ if ([Console]::OutputEncoding.CodePage -ne 65001)
 # ここではリポジトリ内の正本（root/files/resource/X509/）から補う。
 function Copy-TestCertificates
 {
-    $destDir = Join-Path $testsRoot "EncAndDecUtilCUI"
+    $destDir = Join-Path $testsRoot "Golden\EncAndDecUtilCUI"
     $srcDir  = Join-Path $testsRoot "..\..\..\..\files\resource\X509"
 
     if (-not (Test-Path $srcDir))
@@ -194,39 +195,39 @@ function Copy-TestCertificates
 $tests = @(
     @{
         Name = "TestCode (net48)";           Bat = "y_Build_TestCode_Public.bat"
-        Result = "TestCode\Result48.txt";            SkipLog4net = $false; NormBase64 = $false
+        Result = "Golden\TestCode\Result48.txt";            SkipLog4net = $false; NormBase64 = $false
     }
     @{
         Name = "TestCode (net10.0)";         Bat = "y_Build_TestCode_Public.bat"
-        Result = "TestCode\ResultCore100.txt";       SkipLog4net = $false; NormBase64 = $false
+        Result = "Golden\TestCode\ResultCore100.txt";       SkipLog4net = $false; NormBase64 = $false
     }
     @{
         Name = "TestDataAccess (net48)";     Bat = "y_Build_TestCode_DataAccess.bat"
-        Result = "TestDataAccess\Result48.txt";      SkipLog4net = $false; NormBase64 = $false
+        Result = "Golden\TestDataAccess\Result48.txt";      SkipLog4net = $false; NormBase64 = $false
         NeedDb = $true
     }
     @{
         Name = "TestDataAccess (net10.0)";   Bat = "y_Build_TestCode_DataAccess.bat"
-        Result = "TestDataAccess\ResultCore100.txt"; SkipLog4net = $false; NormBase64 = $false
+        Result = "Golden\TestDataAccess\ResultCore100.txt"; SkipLog4net = $false; NormBase64 = $false
         NeedDb = $true
     }
     @{
         Name = "TestBatch (net48)";          Bat = "y_Build_TestCode_Batch.bat"
-        Result = "TestBatch\ResultSimpleBatch48.txt";     SkipLog4net = $true; NormBase64 = $false
+        Result = "Golden\TestBatch\ResultSimpleBatch48.txt";     SkipLog4net = $true; NormBase64 = $false
         NeedDb = $true
     }
     @{
         Name = "TestBatch (net10.0)";        Bat = "y_Build_TestCode_Batch.bat"
-        Result = "TestBatch\ResultSimpleBatchCore100.txt"; SkipLog4net = $true; NormBase64 = $false
+        Result = "Golden\TestBatch\ResultSimpleBatchCore100.txt"; SkipLog4net = $true; NormBase64 = $false
         NeedDb = $true
     }
     @{
         Name = "EncAndDecUtilCUI (net48)";   Bat = "y_Build_TestCode_SecCUI.bat"
-        Result = "EncAndDecUtilCUI\Result48.txt";        SkipLog4net = $false; NormBase64 = $true
+        Result = "Golden\EncAndDecUtilCUI\Result48.txt";        SkipLog4net = $false; NormBase64 = $true
     }
     @{
         Name = "EncAndDecUtilCUI (net10.0)"; Bat = "y_Build_TestCode_SecCUI.bat"
-        Result = "EncAndDecUtilCUI\ResultCore100.txt";   SkipLog4net = $false; NormBase64 = $true
+        Result = "Golden\EncAndDecUtilCUI\ResultCore100.txt";   SkipLog4net = $false; NormBase64 = $true
     }
 )
 
@@ -277,7 +278,7 @@ $needDb = @($tests | Where-Object { $_.NeedDb }).Count -gt 0
 
 if ($needDb)
 {
-    Show-Prerequisites -DbConfig (Join-Path $testsRoot "TestDataAccess\App.config")
+    Show-Prerequisites -DbConfig (Join-Path $testsRoot "Golden\TestDataAccess\App.config")
 }
 
 # ------------------------------------------------------------------
