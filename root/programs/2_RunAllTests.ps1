@@ -84,6 +84,7 @@
      2026/10/15  玄人 幸道         NUnit の TestPublicNLog を加え、結果をプロジェクトごとに分けた（#610）
      2026/10/15  玄人 幸道         NUnit のスキップを件数と名前で出すようにした（#610）
      2026/10/15  玄人 幸道         NUnit の TestPublicDb（Dam のクロス DB）を加えた（#610）
+     2026/10/15  玄人 幸道         -List -PassThru に NeedDb を加えた（#610）
 #>
 [CmdletBinding()]
 param(
@@ -296,7 +297,8 @@ if ($List)
     # 単体テストは C# 側にしかないので、Dir は常に CS。
     if ($PassThru)
     {
-        foreach ($x in $tests) { [pscustomobject]@{ Name = $x.Name; Bat = $x.Bat; Dir = "CS" } }
+        # NeedDb は SelectTargets.ps1 -Stage fixing が DB を使う対象を後回しにするのに使う（#610）。
+        foreach ($x in $tests) { [pscustomobject]@{ Name = $x.Name; Bat = $x.Bat; Dir = "CS"; NeedDb = [bool]$x.NeedDb } }
     }
     exit 0
 }

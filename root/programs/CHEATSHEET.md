@@ -91,6 +91,43 @@ cd root\programs
 - **手で確かめるものが残ると、`-Run` が全部 OK でも記録は進まない**（終了コード 1）
 - 対象名とバッチの対応は各スクリプトの `-List -PassThru` から取る（写していない）
 
+### 段階で回す量を変える（fixing / fixed、#610）
+
+**途中（`fixing #N`）は軽く、完了（`fixed #N`）の前に全部。** 判断の理由は [`AGENTS.md`](../../AGENTS.md)。
+
+```powershell
+# 編集中（変えたテストだけ。NUnit はフィルタで 1 クラス・1 メソッドに絞れる）
+dotnet test CS\Frameworks\Tests\NUnit\TestPublic\TestPublic.csproj -f net10.0 --filter "FullyQualifiedName~SQLUtilityTests"
+.\2_RunAllTests.ps1 -Only "TestCode (net10.0)"
+
+.\SelectTargets.ps1 -Stage fixing -Run    # 途中のコミットの前（記録は進まない）
+.\SelectTargets.ps1 -Run                  # 完了のコミットの前（既定は fixed。通れば記録が進む）
+```
+
+| | fixing | fixed |
+|---|---|---|
+| DB を使う対象 | **後回し** | 回す |
+| 基盤に触れたときのビルド | **基盤だけ**（クリーンを含む 11 ステップ） | 通し |
+| 基盤に触れたときの疎通 | **後回し** | 通し |
+| 末端（サンプル・ツール・テスト）の変更 | 変えたものだけ（DB を使うものは後回し） | 変えたものだけ |
+| 記録（`.verified-commit`） | **進めない** | 全部 OK なら進める |
+
+- **後回しにしたものは「後回しにしたもの（fixed で必ず回す）」に一覧で出る。** 報告にそのまま書く
+- 記録が fixed でしか進まないので、**基点は「最後に fixed で通ったコミット」になる**
+- クロス DB・VB・管理者権限は、触れたときだけ回す（[`AGENTS.md`](../../AGENTS.md) の表）
+- `dotnet test` の `-f net10.0` を外すと net48 も回る。**net48 / net10.0 で実装が違う箇所は両方回す**
+
+- **基盤だけのビルドでもクリーンは外さない。** 外すと #574 の罠
+  （`Business.RichClient (net48)` が「does not reference .NETFramework,Version=v4.8」）を踏む。
+  クリーンは CS 配下の bin / obj をすべて消すので、**fixing の後に疎通だけを `-SkipBuild` で回してはならない**
+
+**基盤（Public の 4 ファイル）を変えたときの実測**（#612、C# のみ）。**約 5 分の 1 になる。**
+
+```
+fixing : 基盤だけのビルド 1.4 分 ＋ DB を使わない単体テスト 8 件 2.8 分   … 約 4 分
+fixed  : 通し（ビルド 8.8 分 ＋ 単体テスト 14 件 約 4 分 ＋ 疎通 30 件 約 9 分） … 約 22 分
+```
+
 **どこまで回すかは依存関係で決まる。**（#576）
 
 依存の向きは一方向で、段は 2 つしかない。

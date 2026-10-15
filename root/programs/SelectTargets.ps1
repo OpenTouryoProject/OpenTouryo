@@ -32,6 +32,17 @@
       .ps1 は表示だけの変更でも実行する（CODING.md 5 節）。
       変えたスクリプトが他の対象で回らないときは、軽い対象を 1 件だけ選んで回す。
 
+    ＜段階（-Stage）＞
+      コミットの段階で回す量を変える（#610）。施主のコミットは
+      「fixing #N (phX)」（途中）と「fixed #N」（完了）に分かれる。
+        fixed  … 割り出した範囲を全部回す（DB を使う対象を含む）。全部 OK なら記録を進める
+        fixing … 重いものを後回しにする。**記録は進めない**（後回しにした分が残るため）
+                 ・DB を使う対象（NeedDb）を外す
+                 ・基盤に触れて通しになった場合、ビルドは基盤だけ、疎通は後回し
+                   （単体テストは基盤の DLL だけを見るので、それで回せる）
+                 ・VB の通しも後回し
+      後回しにしたものは一覧で出す。**fixed で必ず回すこと。**
+
 .PARAMETER Since
     差分の基点（コミット、ブランチ、HEAD~3 など）。省略時は .verified-commit の記録。
 .PARAMETER Run
@@ -40,9 +51,14 @@
     いまの HEAD を「検証の済んだコミット」として記録して終わる。
 .PARAMETER IgnoreErrors
     1_BuildAll.ps1 に渡す既知のエラー。既定は 0_RunAll.ps1 と同じ。
+.PARAMETER Stage
+    fixed（既定）/ fixing。上の＜段階＞を参照。
 
 .EXAMPLE
     .\SelectTargets.ps1                     # 割り出すだけ（何も実行しない）
+
+.EXAMPLE
+    .\SelectTargets.ps1 -Stage fixing -Run  # 途中のコミットの前。重いものは後回し
 
 .EXAMPLE
     .\SelectTargets.ps1 -Run                # 割り出した範囲で実行する
@@ -59,12 +75,15 @@
      日時        更新者            内容
      ----------  ----------------  -------------------------------------------------
      2026/10/15  玄人 幸道         新規作成（#610）
+     2026/10/15  玄人 幸道         -Stage（fixing / fixed）を追加（#610）
 #>
 [CmdletBinding()]
 param(
     [string]$Since,
     [switch]$Run,
     [switch]$Record,
+    [ValidateSet("fixed", "fixing")]
+    [string]$Stage = "fixed",
     [string[]]$IgnoreErrors = @('error MSB(3482|3325|3321):.*WSClientWinCone_sample\.csproj')
 )
 
@@ -447,9 +466,73 @@ foreach ($no in @($scriptRuns.Keys | Sort-Object))
 }
 
 # ------------------------------------------------------------------
+# 段階 fixing : 重いものを後回しにする（#610）
+# ------------------------------------------------------------------
+# **後回しにしたものは $deferred に残し、必ず表示する。** 黙って落とすと「回した」と読める。
+# 記録は進めない（後回しにした分を、次の fixed で拾うため）。
+$deferred = @()
+
+# 対象名の一覧から、DB を使うもの（NeedDb）を外す。外したものは後回しに積む。
+function Remove-DbTargets([int]$no, $list)
+{
+    $p = $plan[$no]
+    $cands = $(if ($p.Only.Count -eq 0) { @($list | Where-Object { $p.Lang -eq "Both" -or -not $p.Lang -or $_.Dir -eq $p.Lang } | ForEach-Object { $_.Name }) } else { @($p.Only) })
+    $db    = @($list | Where-Object { $_.NeedDb -and $cands -contains $_.Name } | ForEach-Object { $_.Name })
+
+    if ($db.Count -eq 0) { return }
+
+    $script:deferred += ("{0} : DB を使う {1} 件（{2}）" -f $scriptNames[$no], $db.Count, ($db -join ", "))
+    $keep = @($cands | Where-Object { $db -notcontains $_ })
+
+    if ($keep.Count -eq 0) { $plan.Remove($no) } else { $p.Only = $keep }
+}
+
+$scriptNames = @{ 1 = "1_BuildAll.ps1"; 2 = "2_RunAllTests.ps1"; 3 = "3_SmokeTest.ps1" }
+
+if ($Stage -eq "fixing")
+{
+    # --- 1 : 通しなら、基盤（C#）だけ建てる ---
+    #   単体テストは基盤の DLL（Build_net48 / Build_netcore100）だけを見るので、それで回せる。
+    #   ツール・サンプル・VB は疎通と一緒に fixed で建てる。
+    if ($plan.ContainsKey(1) -and $plan[1].Only.Count -eq 0)
+    {
+        # **基盤のクリーンも含める。**（CHEATSHEET.md 1 節「-Only ＋ -SkipClean は万能ではない」、#574）
+        #   net48 版と core 版のプロジェクトが同じフォルダにあり、前回の通しで最後に建てた
+        #   core 版の restore 結果（obj）が残っていると、Business.RichClient (net48) が
+        #   「does not reference .NETFramework,Version=v4.8」で落ちる（#610 で実際に踏んだ）。
+        #   クリーンは CS 配下の bin / obj をすべて消すが、fixing では疎通を後回しにし、
+        #   単体テストのバッチは自分でビルドし直すので困らない。
+        $base = @($listBuild | Where-Object {
+                $_.Dir -eq "CS" -and $_.Name -notlike "VB :*" -and (
+                    $_.Bat -match '^(2_Build_NuGet|3_Build_Business|4_Build_CopyAssemblies)' -or
+                    ($_.Bat -match '^1_Delete' -and $_.Name -like "*基盤*")) } |
+            ForEach-Object { $_.Name })
+
+        $deferred += ("1_BuildAll.ps1 : 基盤以外（ツール・サンプル{0}）" -f $(if ($plan[1].Lang -ne "CS") { "・VB" } else { "" }))
+        $plan[1] = @{ Lang = "CS"; Only = $base; Base = $true }
+    }
+
+    # --- 2 : DB を使う対象を外す ---
+    if ($plan.ContainsKey(2)) { Remove-DbTargets 2 $listTest }
+
+    # --- 3 : 通しなら後回し。絞った範囲なら、DB を使う対象を外す ---
+    if ($plan.ContainsKey(3))
+    {
+        if ($plan[3].Only.Count -eq 0)
+        {
+            $deferred += "3_SmokeTest.ps1 : 通し（基盤の変更の疎通は fixed で見る）"
+            $plan.Remove(3)
+        }
+        else
+        {
+            Remove-DbTargets 3 $listSmoke
+        }
+    }
+}
+
+# ------------------------------------------------------------------
 # 計画の表示
 # ------------------------------------------------------------------
-$scriptNames = @{ 1 = "1_BuildAll.ps1"; 2 = "2_RunAllTests.ps1"; 3 = "3_SmokeTest.ps1" }
 
 function Get-Splat([int]$no)
 {
@@ -463,7 +546,8 @@ function Get-Splat([int]$no)
     #   Clean は bin を再帰的に消すため、絞った範囲の外の成果物まで失う。
     if ($no -eq 1)
     {
-        if ($p.Only.Count -gt 0) { $s.SkipClean = $true }
+        # 基盤だけのビルド（fixing）はクリーンを含めて建てる（上の理由）。
+        if ($p.Only.Count -gt 0 -and -not $p.Base) { $s.SkipClean = $true }
         $s.IgnoreErrors = $IgnoreErrors
     }
     return $s
@@ -481,7 +565,7 @@ function Format-Command([int]$no)
 }
 
 Write-Host ""
-Write-Host "=== 回す範囲 ===" -ForegroundColor Cyan
+Write-Host ("=== 回す範囲（段階 : {0}） ===" -f $Stage) -ForegroundColor Cyan
 
 foreach ($k in ($full.Keys | Sort-Object))
 {
@@ -502,7 +586,8 @@ foreach ($no in @(1, 2, 3))
     }
 
     $p = $plan[$no]
-    $what = $(if ($p.Only.Count -eq 0) { "通し" } elseif ($p.Probe) { "スクリプトの確認（1 件）" } else { "{0} 件" -f $p.Only.Count })
+    $what = $(if ($p.Only.Count -eq 0) { "通し" } elseif ($p.Probe) { "スクリプトの確認（1 件）" }
+              elseif ($p.Base) { "基盤だけ（{0} ステップ）" -f $p.Only.Count } else { "{0} 件" -f $p.Only.Count })
     Write-Host ("  {0,-18} {1}" -f $scriptNames[$no], $what)
     Write-Host ("      " + (Format-Command $no)) -ForegroundColor DarkGray
 }
@@ -514,6 +599,13 @@ if ($manual.Count -gt 0)
     $manual = @($manual | Sort-Object -Unique)
     foreach ($m in ($manual | Select-Object -First 15)) { Write-Host ("    " + $m) -ForegroundColor Yellow }
     if ($manual.Count -gt 15) { Write-Host ("    ... 他 {0} 件" -f ($manual.Count - 15)) -ForegroundColor Yellow }
+}
+
+if ($deferred.Count -gt 0)
+{
+    Write-Host ""
+    Write-Host "  **後回しにしたもの（fixed で必ず回す）:**" -ForegroundColor Yellow
+    foreach ($d in $deferred) { Write-Host ("    " + $d) -ForegroundColor Yellow }
 }
 
 if (-not $Run)
@@ -567,6 +659,23 @@ Write-SummaryTable $results
 Write-Host ""
 
 $ng = @($results | Where-Object { $_.終了コード -ne 0 -and $_.終了コード -ne "不要" })
+
+# **fixing では記録しない。** 後回しにした分が回っていないため（#610）。
+#   ここで記録すると、次の fixed で後回しの分が対象から外れてしまう。
+if ($Stage -eq "fixing")
+{
+    if ($ng.Count -eq 0)
+    {
+        Write-Host "  fixing の範囲はすべて OK です（記録は進めません）。" -ForegroundColor Green
+        if ($deferred.Count -gt 0)
+        {
+            Write-Host ("  後回しにしたもの {0} 件は、fixed で回してください。" -f $deferred.Count) -ForegroundColor Yellow
+        }
+        exit 0
+    }
+    Write-Host ("  {0} 本が 0 以外で終了しました。" -f $ng.Count) -ForegroundColor Yellow
+    exit 1
+}
 
 # **記録するのは、全部 OK で、手作業が残っていないときだけ。**
 #   手作業が残っているのに記録すると、次回その変更が対象から外れる。

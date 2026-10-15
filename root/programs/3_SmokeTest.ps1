@@ -85,6 +85,7 @@
      2026/08/15  玄人 幸道         Args を持たない対象が PowerShell 5.1 で起動できず、
                                    しかも前回の出力で OK と判定されていたのを修正
      2026/10/15  玄人 幸道         -Only の複数指定と -List -PassThru を追加（#610）
+     2026/10/15  玄人 幸道         -List -PassThru に NeedDb を加えた（#610）
 #>
 [CmdletBinding()]
 param(
@@ -308,7 +309,8 @@ if ($List)
     # 名前とバッチの対応を返す（#610）。SelectTargets.ps1 が使う。
     if ($PassThru)
     {
-        foreach ($x in $targets) { [pscustomobject]@{ Name = $x.Name; Bat = $x.Bat; Dir = $x.Dir } }
+        # NeedDb は SelectTargets.ps1 -Stage fixing が DB を使う対象を後回しにするのに使う（#610）。
+        foreach ($x in $targets) { [pscustomobject]@{ Name = $x.Name; Bat = $x.Bat; Dir = $x.Dir; NeedDb = [bool]$x.NeedDb } }
     }
     exit 0
 }
