@@ -68,6 +68,12 @@ y_Build_TestCode_NUnit.bat     … ビルド → net48 / net10.0 で実行 → T
   `call :RunTests` と `2_RunAllTests.ps1` の対象に足す。**
   バッチの `.sln` のパスは変数を使わずに書く（`SelectTargets.ps1` がそこから
   「このバッチが建てるもの」を読むため。`%VAR%` を含むと解決できず、黙って外れる）
+- **フォルダ名を `Log` にしない。** `.gitignore` の `[Ll]og/`（ログ出力先の除外）に当たり、
+  **中のテストが黙って Git から外れる**（ビルドは通るので気付かない）。ログのテストは `Logging/` に置く。
+  新しいフォルダを作ったら `git status` で未追跡に出ることを確かめる
+- **OS の状態を変えるテストは、権限が無ければ `Assert.Ignore` でスキップし、`[TearDown]` で必ず戻す。**
+  例: `Logging/CustomEventLogTests.cs`（net48 専用。専用のログ `OTNUnitLog` を作って消す。管理者のみ）。
+  **`CustomEventLog.Delete` はソースが属するログごと消す**ので、既存のログのソースを渡さない
 - **Db のテストは DB に接続しない。** `SQLUtility` と、`DamSqlSvr.ExecGenerateSQL`
   （組み立てた SQL を返すだけで、接続を使わない）で、動的パラメタライズド クエリのタグを確かめる。
   XML は `SetSqlByCommand` に文字列で渡せる（動的かどうかは中身で決まる）。

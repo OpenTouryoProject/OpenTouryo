@@ -82,6 +82,7 @@
      2026/10/15  玄人 幸道         NUnit の結果（trx）を判定する対象を加えた（#610）
      2026/10/15  玄人 幸道         -Only の複数指定と -List -PassThru を追加（#610）
      2026/10/15  玄人 幸道         NUnit の TestPublicNLog を加え、結果をプロジェクトごとに分けた（#610）
+     2026/10/15  玄人 幸道         NUnit のスキップを件数と名前で出すようにした（#610）
 #>
 [CmdletBinding()]
 param(
@@ -489,12 +490,21 @@ foreach ($t in $tests)
         $total  = [int]$c.total
         $failed = [int]$c.failed + [int]$c.error + [int]$c.timeout + [int]$c.aborted
 
+        # **スキップ（Assert.Ignore）は Counters の notExecuted に入らない。**
+        #   total と executed の差にだけ現れ、個々の結果では outcome="NotExecuted" になる。
+        #   出さないと「全部走った」と読めてしまうので、件数と名前を必ず出す。
+        $skipped = [int]$c.total - [int]$c.executed
+
         Write-Host ("  合計 {0} 件 / 合格 {1} 件 / 失敗 {2} 件 / 実行せず {3} 件" -f `
-            $total, $c.passed, $failed, $c.notExecuted)
+            $total, $c.passed, $failed, $skipped)
 
         foreach ($r in @($trx.TestRun.Results.UnitTestResult | Where-Object { $_.outcome -ne "Passed" -and $_.outcome -ne "NotExecuted" }))
         {
             Write-Host ("    [{0}] {1}" -f $r.outcome, $r.testName) -ForegroundColor Red
+        }
+        foreach ($r in @($trx.TestRun.Results.UnitTestResult | Where-Object { $_.outcome -eq "NotExecuted" }))
+        {
+            Write-Host ("    [スキップ] {0}" -f $r.testName) -ForegroundColor Yellow
         }
 
         # **0 件の合格は OK にしない。** テストが見つからない構成ミスを見逃すため。

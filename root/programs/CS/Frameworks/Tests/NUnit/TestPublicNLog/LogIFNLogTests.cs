@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/15  玄人 幸道         新規作成（#610）
+//*  2026/10/15  玄人 幸道         TestPublic の Log フォルダを Logging に改めたのに追随（#610）
 //**********************************************************************************
 
 using System;
@@ -41,7 +42,7 @@ namespace TestPublicNLog
     /// 構成は NUnitNLogConf.xml。LogLib=nlog で、LogIF の呼び出しが NLog へ向かう。
     ///   NLOG_INFO … Info 以上を NUnitLog/NLOG_INFO.log へ
     ///   NLOG_WARN … Warn 以上を NUnitLog/NLOG_WARN.log へ
-    /// log4net の側は TestPublic の Log/LogIFTests.cs。
+    /// log4net の側は TestPublic の Logging/LogIFTests.cs。
     /// </remarks>
     [TestFixture]
     public class LogIFNLogTests
