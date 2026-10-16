@@ -26,6 +26,7 @@
 //*  2026/08/06  玄人 幸道         新規作成（#522）
 //*  2026/08/17  玄人 幸道         設定取得・環境変数展開・コマンド引数のテストを追加（#552）
 //*  2026/10/15  玄人 幸道         GetFileNameNoEx の修正（#612）に合わせてコメントを更新
+//*  2026/10/16  玄人 幸道         PubCmnFunction.GetCurrentMethodName の修正（#616）に合わせてコメントを更新
 //**********************************************************************************
 
 using System;
@@ -121,6 +122,7 @@ namespace TestCode
             // --- 呼び出し元の情報 ---
             // メソッド名は固定なので決定的。
             // **ファイル パスと行番号は出さない**（環境と編集で変わるため）。
+            // 呼び出し元（TestPubCmnFunction）が出る。以前は転送元の "GetCurrentMethodName" が出ていた。
             MyDebug.OutputDebugAndConsole(
                 "GetCurrentMethodName : " + PubCmnFunction.GetCurrentMethodName());
         }

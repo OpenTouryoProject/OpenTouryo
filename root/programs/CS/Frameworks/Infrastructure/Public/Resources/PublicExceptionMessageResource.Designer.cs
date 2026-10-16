@@ -63,9 +63,9 @@ namespace Touryo.Infrastructure.Public.Resources {
         /// <summary>
         ///   Argument injustice. に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        internal static string ARGUMENT_INJUSTICE {
+        internal static string ARGUMENT_INCORRECT {
             get {
-                return ResourceManager.GetString("ARGUMENT_INJUSTICE", resourceCulture);
+                return ResourceManager.GetString("ARGUMENT_INCORRECT", resourceCulture);
             }
         }
         
