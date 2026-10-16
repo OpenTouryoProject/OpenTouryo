@@ -153,8 +153,12 @@ net48 は各 `Properties\AssemblyInfo.cs` が持ち、`Business` 系は `1.0.0.0
 
 | プロジェクト | 種類 | 受けるプロトコル | 参照 |
 |---|---|---|---|
-| `ASPNETWebService` | ASP.NET WebAPI（Web アプリ） | `AspNetWebAPI`（`FxController` の `WebAPIControllerForFx`） | `Build\` の `Public` / `Public.Security` / `Framework` |
-| `WCFService` | コンソール EXE（自己ホスト） | `WCF_TCPIP`（`WCFTCPSvcForFx`） | `Build\` の `Public` / `Framework` / `Business` |
+| `ASPNETWebService` | ASP.NET WebAPI（Web アプリ） | `AspNetWebAPI`（`FxController` の `WebAPIControllerForFx`） | `Build\` の `Public` / `Public.Security` / `Framework`、`Samples\WS_sample\Build\` の `WSServer_sample` / `WSIFType_sample` |
+| `WCFService` | コンソール EXE（自己ホスト） | `WCF_TCPIP`（`WCFTCPSvcForFx`） | `Build\` の `Public` / `Framework` / `Business`、`Samples\WS_sample\Build\` の `WSServer_sample` / `WSIFType_sample` |
+
+**基盤側のホストが、サンプル（`WS_sample`）のビルド結果に依存している。**
+`6_Build_WSSrv_sample.bat` が `WS_sample\Build\` を作ってからでないと、`7_Build_Framework_WS.bat` は通らない
+（[`Samples/WS_sample/ANALYSIS.md`](../../Samples/WS_sample/ANALYSIS.md) 4 節）。
 
 - 受けた要求は、`InProcessNameService` で `serviceName` を assembly / class に解決し、`DoBusinessLogic` を呼ぶ。
   **呼び出し側と同じ `TMInProcessDefinition.xml` の考え方**で、こちら側にも定義が要る
