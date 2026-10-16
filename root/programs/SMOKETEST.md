@@ -346,7 +346,7 @@ net48   : http://127.0.0.1:51090/  IsBypassed=True    ← プロキシを使わ�
 ASP.NET WebAPI の経路（`protocol="5"`）は **.NET Framework 限定**である。
 引数と戻り値の受け渡しに `BinarySerialize` を使っており、
 .NET Core 版では `FxEnum.TmProtocol` ごと落とされている
-（[`CS/Frameworks/ANALYSIS.md`](CS/Frameworks/ANALYSIS.md) と #543）。
+（[`CS/Frameworks/Infrastructure/Framework/ANALYSIS.md`](CS/Frameworks/Infrastructure/Framework/ANALYSIS.md) 3.2 節と #543）。
 
 ### バッチ（8 件）
 

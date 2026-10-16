@@ -1,10 +1,13 @@
 ﻿# ANALYSIS.md — Open棟梁 フレームワーク本体（CS/Frameworks）コード分析
 
 対象: `root/programs/CS/Frameworks` / ブランチ: `develop`
-最終更新: 2026-07-31
+最終更新: 2026-10-17
 
 本書は **コーディング・エージェントが本リポジトリで作業する際の Context** を目的とした分析結果である。
 「どこに何があるか」「どの規約に従うべきか」「何を壊しやすいか」を記す。
+
+**本書は俯瞰である。** アセンブリごとの詳細は、下の案内表の文書が一次情報を持つ（#613）。
+本書には、**領域をまたいで効くこと**（呼び出しの流れ、例外モデル、条件コンパイル、ビルド順、バージョン管理、横断の落とし穴）を残す。
 
 ---
 
@@ -20,72 +23,57 @@
   → **エージェントは git 操作（add/commit/push/checkout/branch/reset/restore/stash）を行わない。**
   作業結果はワーキング ツリーに残し、変更内容を報告するに留める。
 
+### 下位の文書（案内表）
+
+**作業対象のディレクトリに近い文書から読む。** 各文書の末尾に「落とし穴」と「作業チェックリスト」がある。
+
+| ディレクトリ | 文書 | 扱うこと |
+|---|---|---|
+| `Infrastructure/` | [`Infrastructure/ANALYSIS.md`](Infrastructure/ANALYSIS.md) | **部品とテンプレートの区別**、アセンブリの依存の向き、ソリューションと参照の方式、TFM と出力先、ビルド対象外のファイル、`ServiceInterface`、VB 版 |
+| `Infrastructure/Public/` | [`Public/ANALYSIS.md`](Infrastructure/Public/ANALYSIS.md) | 汎用ライブラリ（Db / Dto / Str / IO / Log / Util / Reflection ほか）と `Dam*` |
+| `Infrastructure/Public/Security/` | [`Public/Security/ANALYSIS.md`](Infrastructure/Public/Security/ANALYSIS.md) | 暗号・署名・JWT・鍵交換・パスワード ハッシュ |
+| `Infrastructure/Framework/` | [`Framework/ANALYSIS.md`](Infrastructure/Framework/ANALYSIS.md) | P/B/D の親クラス、通信制御、例外、**認証（OAuth2 / OIDC / SAML2）**、`Framework.RichClient` |
+| `Infrastructure/Business/` | [`Business/ANALYSIS.md`](Infrastructure/Business/ANALYSIS.md) | 業務フレームワーク（サーバ側のテンプレート）。データ プロバイダの選択、`MyBaseDao` / `CmnDao`、`_3TierEngine` |
+| `Infrastructure/Business/RichClient/` | [`Business/RichClient/ANALYSIS.md`](Infrastructure/Business/RichClient/ANALYSIS.md) | 同上（WinForms / WPF） |
+| `Infrastructure/CustomControl/` | [`CustomControl/ANALYSIS.md`](Infrastructure/CustomControl/ANALYSIS.md) | ASP.NET Web Forms のカスタム コントロール |
+| `Infrastructure/CustomControl/RichClient/` | [`CustomControl/RichClient/ANALYSIS.md`](Infrastructure/CustomControl/RichClient/ANALYSIS.md) | WinForms のカスタム コントロール |
+| `Tools/` | [`Tools/ANALYSIS.md`](Tools/ANALYSIS.md) | 開発支援ツール（墨壺・DPQuery・ZIP の HTTP 配布） |
+| `Tests/` | [`Tests/README.md`](Tests/README.md) | テストの区分（`Golden` / `NUnit` / `Else`）と置き場の決め方 |
+
 ---
 
 ## 2. ディレクトリとアセンブリの対応
 
 ### 2.1 `Infrastructure/`（フレームワーク本体）
 
-| ディレクトリ | アセンブリ | ルート名前空間 | 役割 |
+| ディレクトリ | アセンブリ | 種類 | 役割 |
 |---|---|---|---|
-| `Public/` | `OpenTouryo.Public` | `Touryo.Infrastructure.Public` | 汎用ライブラリ。フレームワーク非依存で単体利用可 |
-| `Public/Security/` | `OpenTouryo.Public.Security` | `...Public.Security` | 暗号・署名・JWT/JWS/JWE・鍵交換・パスワードハッシュ |
-| `Public/Db/Dam*/` | `OpenTouryo.Dam*` | `...Public.Db` | DBMS 別データアクセス制御（Dam）の別アセンブリ |
-| `Framework/` | `OpenTouryo.Framework` | `...Framework` | フレームワーク中核（P/B/D の親クラス、通信、認証、例外） |
-| `Framework/RichClient/` | `OpenTouryo.Framework.RichClient` | `...Framework.RichClient` | WinForms/WPF 向け |
-| `Business/` | `OpenTouryo.Business` | `...Business` | **業務フレームワーク＝テンプレート層**。アプリ側でカスタマイズ前提 |
-| `Business/RichClient/` | `OpenTouryo.Business.RichClient` | `...Business.RichClient` | 同上（リッチクライアント） |
-| `CustomControl/` | `OpenTouryo.CustomControl` | `...CustomControl` | ASP.NET Web Forms カスタム コントロール（net48 のみ） |
-| `CustomControl/RichClient/` | `OpenTouryo.CustomControl.RichClient` | `...CustomControl.RichClient` | WinForms カスタム コントロール |
-| `ServiceInterface/` | — | — | サービス公開ホスト（ASP.NET WebAPI / WCF-TCP）。net48 のみ |
+| `Public/` | `OpenTouryo.Public` | 部品 | 汎用ライブラリ。フレームワーク非依存で単体利用可 |
+| `Public/Security/` | `OpenTouryo.Public.Security` | 部品 | 暗号・署名・JWT/JWS/JWE・鍵交換・パスワードハッシュ |
+| `Public/Db/Dam*/` | `OpenTouryo.Dam*` | 部品 | DBMS 別データアクセス制御（Dam）の別アセンブリ |
+| `Framework/` | `OpenTouryo.Framework` | 部品 | フレームワーク中核（P/B/D の親クラス、通信、認証、例外） |
+| `Framework/RichClient/` | `OpenTouryo.Framework.RichClient` | 部品 | WinForms/WPF 向け |
+| `Business/` | `OpenTouryo.Business` | **テンプレート** | **業務フレームワーク**。アプリ側でカスタマイズ前提 |
+| `Business/RichClient/` | `OpenTouryo.Business.RichClient` | テンプレート | 同上（リッチクライアント） |
+| `CustomControl/` | `OpenTouryo.CustomControl` | テンプレート | ASP.NET Web Forms カスタム コントロール（net48 のみ） |
+| `CustomControl/RichClient/` | `OpenTouryo.CustomControl.RichClient` | テンプレート | WinForms カスタム コントロール |
+| `ServiceInterface/` | — | ホスト | サービス公開ホスト（ASP.NET WebAPI / WCF-TCP）。net48 のみ |
 
-ファイル数の目安: Public 188 / Framework 76 / CustomControl 50 / Business 42 / ServiceInterface 10。
+**部品とテンプレートで、変更の影響の読み方が違う**（部品は公開 API の互換、テンプレートは VB 版の追随）。
+依存の向き・参照の方式・出力先は [`Infrastructure/ANALYSIS.md`](Infrastructure/ANALYSIS.md) 3〜5 節。
 
-### 2.2 `Tools/` — 開発支援 GUI ツール（WinForms）
+### 2.2 `Tools/` — 開発支援ツール（WinForms）
 
-- `DaoGen_Tool` : DB スキーマから D層 Dao クラス＋SQL(XML) を自動生成
-- `DPQuery_Tool` : DPQ（動的パラメタライズド・クエリ）XML の編集・検証
-- `DeployZipPackWithHTTP` : ZIP を HTTP で配布し、クライアントで展開する（#528 で復元）
-
-> `DeployZipPackWithHTTP` は `ZipperV2` / `UnZipperV2` を使う唯一の利用者。
-> **ZIP 部品を変えたら、このツールのビルドと疎通も確かめること**
-> （`4_Build_Framework_Tool.bat` / `4_Build_Framework_ToolCore.bat` に入れてある）。
-> **実行方法・マニフェストの書式・疎通の手順は
-> [`README.md`](Tools/DeployZipPackWithHTTP/README.md) が一次情報。**
-> IIS Express で完結するので、IIS を立てなくても確かめられる。
+`DaoGen_Tool`（墨壺。D 層の自動生成）/ `DPQuery_Tool`（DPQ の編集・検証）/ `DeployZipPackWithHTTP`（ZIP の HTTP 配布）。
+構成・検証・落とし穴は [`Tools/ANALYSIS.md`](Tools/ANALYSIS.md)、CLI での使い方は各ツールの `README.md`。
 
 ### 2.3 `Tests/` — テスト（**`Golden` / `Else` は xUnit/NUnit ではない**）
 
-**判定の方式でフォルダを分けている**（#610）。分け方と置き場の決め方は
-[`Tests/README.md`](Tests/README.md) が一次情報。
+**判定の方式でフォルダを分けている**（#610）。区分ごとの中身と、置き場の決め方は
+[`Tests/README.md`](Tests/README.md) が一次情報。運用（何をいつ回すか）は [`TESTING.md`](../../TESTING.md)。
 
-| 区分 | 名前 | 内容 | 専用の文書 |
-|---|---|---|---|
-| `Golden` | `TestCode` | コンソール EXE。`Program.cs` から `Test*.Root()` を順次呼ぶ手動確認型。期待値は `Result48.txt` / `ResultCore100.txt` と比較。**DB には接続しない** | [`README.md`](Tests/Golden/TestCode/README.md) |
-| `Golden` | `TestDataAccess` | データ アクセスのテスト（#520）。`TestCode` と同じ構成だが**DB に接続する**。`/MODE` で対象 DBMS を切り替える（既定は SQL Server のみ） | [`README.md`](Tests/Golden/TestDataAccess/README.md) |
-| `Golden` | `TestBatch` | バッチ起動確認 | — |
-| `Golden` | `EncAndDecUtilCUI` | 暗号・署名ユーティリティの CUI 確認 | — |
-| `NUnit` | `TestPublic` | NUnit による `Public` 層の単体テスト（#610）。**1 つの csproj で net48 / net10.0 をマルチ ターゲット**にする。テスト自身が合否を出す | [`Tests/README.md`](Tests/README.md) |
-| `NUnit` | `TestPublicNLog` | `LogIF` を NLog に切り替えた状態のテスト（#610）。**使うライブラリはプロセスで 1 回しか決まらない**ため、別プロジェクト（別プロセス）にしている | [`Tests/README.md`](Tests/README.md) |
-| `NUnit` | `TestPublicDb` | Dam のクロス DB テスト（#610）。**DB に接続する**ので別プロジェクト。SQL Server は必須、他の DBMS は接続できなければスキップ | [`Tests/README.md`](Tests/README.md) |
-| `Else` | `TestTransmission` | 通信制御の接続オプション（#546）。**オリジンとプロキシを自前で立て**、`CallController` から呼んで、要求に反映されているかを見る。**期待値ファイルを持たず、自分で合否を出す**（疎通テストから呼ばれる） | [`SMOKETEST.md`](../../SMOKETEST.md) 3 節 |
-| `Else` | `TestWebAPIClient` | Web API の非ブラウザ クライアント（疎通テストから呼ばれる） | [`SMOKETEST.md`](../../SMOKETEST.md) |
-| `Else` | `TestLog` | ログ出力確認（log4net/NLog、1〜3） | — |
-| `Else` | `EncAndDecUtil` | 暗号・署名ユーティリティの GUI 確認 | — |
-| `Else` | `LaunchJson` | リモート デバッグ用の `launch.json` の例（テストではない） | — |
-
-**`TestCode` と `TestDataAccess` は専用の `README.md` を持つ。**
-「何をテストしているか」「ケースを書き足すときの決まり」「ケース設計の根拠」は
-そちらが一次情報。`TESTING.md` は Golden 8 ケースと NUnit を含む全体の運用を扱い、この詳細は持たない。
-
-**テストを書き足す前に `TestCode/README.md` を読むこと。**
-結果ファイルとの比較で判定するため、**環境で変わる値を出してはならない**という制約がある
-（例外はメッセージを出さず型名だけ、日時は固定値、`csproj` は net48 / core100 の両方を直す）。
-
-**重要:** テスト プロジェクトはフレームワークを `ProjectReference` ではなく
-**`HintPath` で `Infrastructure/Build_netcore100/net10.0/*.dll` を参照**する。
+**テスト プロジェクトはフレームワークを `ProjectReference` ではなく `HintPath` で参照する。**
 → **フレームワークを先にビルドしないとテストは古い DLL を見る。**
-また `net48` / `core100` の 2 プロジェクトが `..\*.cs` を `Link` で共有する（実体は 1 つ）。
 
 ---
 
@@ -113,8 +101,12 @@
       ↓
 [D層] BaseDao ← MyBaseDao ← CmnDao / アプリ個別 Dao
       ↓
-[DAM] BaseDam ← DamSqlSvr / DamODBC / DamOLEDB / DamMySQL / DamPstGrS / DamManagedOdp / DamDB2 / DamHiRDB
+[DAM] BaseDam ← DamSqlSvr / DamODBC / DamOLEDB / DamMySQL / DamPstGrS / DamManagedOdp
 ```
+
+各層の中身: 通信は [`Framework/ANALYSIS.md`](Infrastructure/Framework/ANALYSIS.md) 3 節、
+`UOC_ConnectionOpen`（データ プロバイダの選択）は [`Business/ANALYSIS.md`](Infrastructure/Business/ANALYSIS.md) 3.1 節、
+Dam は [`Public/ANALYSIS.md`](Infrastructure/Public/ANALYSIS.md) 4 節。
 
 ### 3.1 引数・戻り値クラス
 
@@ -126,8 +118,9 @@
 
 - `[Serializable]`。WS 越えのため。
 - `ActionType` は `"SQL%common"` のように **`%` 区切りの複合文字列**。
-  先頭要素が **データ プロバイダ選択キー**（`SQL`/`OLE`/`ODB`/`ODP`/`MCN`/`NPS`/`DB2`/`HIR`）として
-  `MyBaseLogic.UOC_ConnectionOpen` / `MyFcBaseLogic.UOC_ConnectionOpen` で分岐する。
+  **先頭要素だけがフレームワーク（`Business` のテンプレート）の解釈するデータ プロバイダ選択キー**で、
+  `UOC_ConnectionOpen` で分岐する。使えるキーと、**どれにも当たらなければ黙って SQL Server になる**ことは
+  [`Business/ANALYSIS.md`](Infrastructure/Business/ANALYSIS.md) 3.1 節。2 番目以降はアプリ（サンプル）側の約束である。
 
 ### 3.2 自動振り分け（重要なマジック）
 
@@ -182,17 +175,14 @@ private void UOC_SelectCount(TestParameterValue p)   // private でよい
 
 ### 4.2 Dam / Dao の責務
 
-- `BaseDam`（3198 行、`Public/Db/BaseDam.cs`）… SQL ロード、パラメタ記号変換（`@`/`:`/`?`）、DPQ 展開、
-  トランザクション制御、コマンド タイムアウトを担う。DBMS 差異はここに集約。
-- `BaseDao` … `SetSqlByFile` / `SetSqlByCommand` / `SetParameter` / `ExecSelectFill_DT` /
-  `ExecSelect_DR` / `ExecSelectScalar` / `ExecInsUpDel_NonQuery` を `protected` で提供。
-  UOC は `UOC_PreQuery` / `UOC_AfterQuery(sql)` / `UOC_AfterQuery(sql, ex)`。
-- `MyBaseDao` … `SetSqlByFile2`（`appSettings:sqlTextFilePath` を基点にパス解決。
-  `MyBaseDao.UseEmbeddedResource = true` で埋め込みリソースへ切替）＋ SQLTRACE ログ・性能測定。
-- `CmnDao` … Dao クラスを書かずに使える汎用 Dao。パラメタを `Dictionary` に溜め、実行直前に反映。
-  `BaseDao` のメソッドを `new` で隠蔽して `public` 化している（**`override` ではない点に注意**）。
-- `_3TierEngine`（1452 行）… `_3TierParameterValue` の検索条件辞書から SQL を生成する CRUD エンジン。
-  `DaoGen_Tool` が生成するコードとセットで使う。
+| 層 | クラス | 所管の文書 |
+|---|---|---|
+| Dam（DBMS 差異の吸収） | `BaseDam` と `Dam*` | [`Public/ANALYSIS.md`](Infrastructure/Public/ANALYSIS.md) 4 節 |
+| Dao の親 | `BaseDao` | [`Framework/ANALYSIS.md`](Infrastructure/Framework/ANALYSIS.md) 6 節 |
+| Dao のテンプレート | `MyBaseDao`（`SetSqlByFile2`・SQLTRACE）/ `CmnDao`（汎用 Dao）/ `_3TierEngine` | [`Business/ANALYSIS.md`](Infrastructure/Business/ANALYSIS.md) 3.3・4 節 |
+
+- `CmnDao` は `BaseDao` のメソッドを **`new` で隠蔽**して `public` 化している（**`override` ではない**。12 節 3）。
+- `_3TierEngine` は `DaoGen_Tool` が生成するコードとセットで使う。**net48 専用**（6.3 節）。
 
 ### 4.3 分離レベル
 
@@ -265,6 +255,9 @@ UOC_ConnectionOpen で Dam を作り、コネクションとトランザクシ�
 
 ## 5. 設定（XML 定義ファイル ＋ appSettings）
 
+**設定ファイルの仕組み（種類・読み込み順・環境変数での上書き・`%変数%` の展開・パスの落とし穴）は
+[`CONFIGURATION.md`](../../CONFIGURATION.md) が一次情報。** 本節は、フレームワークが読む定義ファイルとキーの俯瞰に留める。
+
 ### 5.1 XML 定義ファイル（`root/files/resource/Xml/`）
 
 | appSettings キー | ファイル | 用途 |
@@ -277,29 +270,26 @@ UOC_ConnectionOpen で Dam を作り、コネクションとトランザクシ�
 | `FxXMLTMProtocolDefinition` | `TMProtocolDefinition.xml` | プロトコル／URL／タイムアウト／プロパティ |
 
 読み込み順は **埋め込みリソース → 物理ファイル → 未設定なら空 XML（OFF 扱い）→ それ以外はエラー**。
-パスには `%ENV%` 形式の環境変数を展開できる（`StringVariableOperator.BuiltStringIntoEnvironmentVariable`）。
+パスには `%ENV%` 形式の環境変数を展開できる（[`CONFIGURATION.md`](../../CONFIGURATION.md) 5 節）。
 
 ### 5.2 主な appSettings キー（`Fx` プレフィクス）
 
-- 画面制御: `FxSessionTimeOutCheck` `FxCookieNamePrefix` `FxDoubleTransmissionCheck` `FxScreenTransitionMode`
-  `FxScreenTransitionCheck` `FxErrorScreenPath` `FxOKMessageDialogPath` `FxYesNoMessageDialogPath`
-  `FxDialogFramePath` `Fx*IconPath` `Fx*MaxQueueLength` `FxDefault*Style` `FxCacheControl`
-- コントロール接頭辞（集約イベント ハンドラの識別に使う）: `FxPrefixOfButton` `FxPrefixOfTextBox` … 等 15 種
-- DB: `FxSqlCacheSwitch` `FxSqlCommandTimeout` `FxSqlDotnetTypeInfo` `FxSqlEncoding` `FxSqlTraceLog`
-- ログ: `FxLog4NetConfFile` / `LogLib`（`"nlog"` で NLog、既定は log4net）
-- 国際化: `FxExceptionMessageCulture` `FxBusinessMessageCulture`
-- 実行環境: `FxContainerization`（**true のとき環境変数を appSettings より優先**。JSON キーの `:` は `__` で表現）
-- `_3TierEngine` 用: `MethodNameHeaderS/FooterS` `MethodNameHeaderD/FooterD`
-  `MethodLabel_Ins/Sel/Upd/Del/SelCnt` `UpdateParamHeader/Footer` `LikeParamHeader/Footer`
-- Dao: `sqlTextFilePath` / 接続文字列 `ConnectionString_SQL|OLE|ODBC|ODP|MCN|NPS|DB2|HIR`
+| 分類 | 代表的なキー | 読む側 |
+|---|---|---|
+| 画面制御（Web Forms） | `FxSessionTimeOutCheck` `FxDoubleTransmissionCheck` `FxScreenTransitionMode` `FxErrorScreenPath` `FxPrefixOf*` | `Framework` の P 層 |
+| DB | `FxSqlCacheSwitch` `FxSqlCommandTimeout` `FxSqlTraceLog` / `sqlTextFilePath` / `ConnectionString_*` | `Public/Db`・`MyBaseDao` |
+| ログ | `FxLog4NetConfFile` / `LogLib`（`"nlog"` で NLog、既定は log4net） | `Public/Log` |
+| 国際化 | `FxExceptionMessageCulture` `FxBusinessMessageCulture` | `Framework` |
+| 実行環境 | `FxContainerization`（**true のとき環境変数を appSettings より優先**） | `GetConfigParameter`（[`CONFIGURATION.md`](../../CONFIGURATION.md) 4-2） |
+| `_3TierEngine` | `MethodNameHeaderS/FooterS` `MethodLabel_*` `UpdateParamHeader/Footer` `LikeParamHeader/Footer` | `Business`（net48） |
+
+**キーの全量は各サンプルの `app.config` / `appsettings.json` を見る。** 本表は目安である。
 
 ### 5.3 設定の読み取り API
 
-`Public/Util/GetConfigParameter.cs` に集約。
-- net48: `System.Configuration`（`app.config` / `web.config`）
-- .NET (Core): `Microsoft.Extensions.Configuration`。**使用前に `GetConfigParameter.InitConfiguration(...)` が必須**
-  （`IConfiguration` / `IConfigurationBuilder` / JSON ファイル名 / 引数なし=`appsettings.json` の 4 オーバーロード）。
-  JSON は `"appSettings": { ... }` セクション配下に置く慣習。
+`Public/Util/GetConfigParameter.cs` に集約。**.NET では使用前に `GetConfigParameter.InitConfiguration(...)` が必須**
+（呼ばないと `NOT_INITIALIZED` の `ArgumentException`。例外を握る API では黙って false になる）。オーバーロードと、初期化前に読みに来る部品は
+[`Public/ANALYSIS.md`](Infrastructure/Public/ANALYSIS.md) 6.1 節。
 
 ---
 
@@ -313,7 +303,8 @@ UOC_ConnectionOpen で Dam を作り、コネクションとトランザクシ�
 | .NET | `*_netcore100.csproj` / `*_netcore100.sln` | `net10.0`（SDK 形式） |
 | リッチクライアント (.NET) | 同上 | `net10.0-windows7.0` |
 
-出力先は `Infrastructure/Build_net48/` と `Infrastructure/Build_netcore100/net10.0/`（`.gitignore` 対象）。
+出力先は `Infrastructure/Build_net48/` と `Infrastructure/Build_netcore100/net10.0/`（`.gitignore` 対象。
+詳細は [`Infrastructure/ANALYSIS.md`](Infrastructure/ANALYSIS.md) 5 節）。
 
 ### 6.2 プリプロセッサ シンボル
 
@@ -374,50 +365,55 @@ UOC_ConnectionOpen で Dam を作り、コネクションとトランザクシ�
 
 SDK 形式 csproj はワイルドカード込みなので、**プラットフォーム非対応ファイルを `Compile Remove` で明示的に外している**。
 新規ファイルを追加すると **net10.0 側に自動で含まれてしまう**ため、Windows 専用 API を使う場合は
-`Compile Remove` の追加が必要。主な除外例:
+`Compile Remove` の追加が必要。逆に旧形式（net48）は列挙なので、**書き足さないと入らない。**
 
-- `Public_netcore100`: `Win32/**` `WinProc/**` `Security/**` `Db/Dam*/**`、
-  `IO/BinarySerialize.cs` `IO/Zip*.cs` `Log/CustomEventLog.cs` `Log/SecurityEventLog.cs`
-  `Db/DamOLEDB.cs` `Db/DamOraClient.cs` `Util/SharedMemory.cs`
-- `Framework_netcore100`: `RichClient/**`、`Presentation/BaseController.cs`（Web Forms）
-  `Presentation/BaseMasterController.cs` `Presentation/BaseMVController.cs` `Presentation/FxEventArgs.cs`
-  `Transmission/IWCFTCPSvcForFx.cs` `Util/FxSessionUtil.cs` `Util/FxHttpQueryStringIndex.cs`
-- `Business_netcore100`: `Csp/**` `RichClient/**`、
-  **`Business/MyBaseLogic.cs` と `Business/_3TierEngine.cs` / `Common/_3Tier*Value.cs`**、
-  `Presentation/MyBaseController.cs` `MyBaseMVController.cs` `MyBaseAsyncApiController.cs` 他
-- `Public.Security_netcore100`: `IdentityImpersonation.cs` `KeyExg/EcdhCng*.cs`
+**外しているファイルの一覧は、各下位文書の「TFM 差」の節にある**
+（[`Public`](Infrastructure/Public/ANALYSIS.md) 3 節 / [`Public.Security`](Infrastructure/Public/Security/ANALYSIS.md) 3 節 /
+[`Framework`](Infrastructure/Framework/ANALYSIS.md) 10 節 / [`Business`](Infrastructure/Business/ANALYSIS.md) 6 節）。
 
 → **`_3TierEngine` と `MyBaseLogic` は net48 専用**。.NET (Core) 側で使うのは `MyFcBaseLogic` 系。
 
 ### 6.4 net48 専用の機能
 
-- ASP.NET Web Forms 一式（`BaseController` 4836 行、`CustomControl/`）
-- `CallController` のリモート プロトコル（`FxEnum.TmProtocol` は .NET (Core) では `InProcess` のみ）:
+- ASP.NET Web Forms 一式（`BaseController`、`CustomControl/`）
+- `CallController` のリモート プロトコル（**`FxEnum.TmProtocol` は .NET (Core) では `InProcess` のみ**）:
   ASP.NET WS / WCF-HTTP / WCF-TCP / ASP.NET WebAPI(JSON-RPC)
-- `ServiceInterface/`（WCF ホスト、ASP.NET WebAPI ホスト）
+  （[`Framework/ANALYSIS.md`](Infrastructure/Framework/ANALYSIS.md) 3.2 節）
+- `ServiceInterface/`（WCF ホスト、ASP.NET WebAPI ホスト。[`Infrastructure/ANALYSIS.md`](Infrastructure/ANALYSIS.md) 7 節）
 
 ---
 
 ## 7. ビルド
 
+**検証としてのビルドの手順（`1_BuildAll.ps1`、判定基準、既知のエラー）は [`BUILDING.md`](../../BUILDING.md) が一次情報。**
+本節は、その下にある bat の構成と、ビルド順・バージョン管理の仕組みを扱う。
+
 `root/programs/CS/` 直下の連番 `.bat` をダブルクリック実行する運用（`_Please run with a double-click...txt`）。
 
 | bat | 内容 |
 |---|---|
-| `2_Build_NuGet_net48.bat` / `2_Build_NuGet_netcore100.bat` | `Nuget_*.sln` + `Nuget_RichClient_*.sln` をビルド（＝フレームワーク本体） |
-| `3_Build_Business_*.bat` / `3_Build_BusinessRichClient_*.bat` | Business 層 |
-| `4_Build_CopyAssemblies.bat` / `4_Build_Framework_Tool*.bat` | 成果物コピー・ツール |
-| `5〜8_*` | サンプル各種 |
-| `y_Build_TestCode*.bat` | テスト |
+| `1_DeleteDir.bat` / `1_DeleteFile.bat` | 生成物の削除 |
+| `2_Build_NuGet_net48.bat` / `2_Build_NuGet_netcore100.bat` | `Nuget_*.sln` + `Nuget_RichClient_*.sln` をビルド（＝部品） |
+| `3_Build_Business_*.bat` / `3_Build_BusinessRichClient_*.bat` | テンプレート（`Business` / `CustomControl` 系） |
+| `4_Build_CopyAssemblies.bat` | `Build_net48\` → `Build\` の複写（7.1 節） |
+| `4_Build_Framework_Tool.bat` / `4_Build_Framework_ToolCore.bat` | ツール |
+| `5_Build_*_sample.bat` / `5_Build_*Core_sample.bat` | サンプル（2CS / Bat / CLI） |
+| `6_Build_WSSrv*_sample.bat` | `WSServer_sample` をビルドし `WS_sample\Build\` へ複写（続けてサンプルの `ASPNETWebService`） |
+| `7_Build_Framework_WS.bat` | **`ServiceInterface`**（基盤側のホスト。`WS_sample\Build\` を参照するので `6_` の後） |
+| `7_Build_Framework_WSCore.bat` | **何もしない**（net10.0 にホストが無い。`1_BuildAll.ps1` の段を残すための空の手順） |
+| `8_Build_WSClnt*_sample.bat` | WS クライアント |
+| `10_Build_WebApp*_sample.bat` | Web アプリのサンプル |
+| `y_Build_Test*.bat` | テスト |
 | `0_ExecAllBat.bat` | 全実行 |
+| `0_Release4Nuget.bat` | NuGet パッケージ用のビルド（[`NuGet/README.md`](../NuGet/README.md)） |
 | `z_Common.bat` / `z_Common2.bat` | ビルド ツールのパス解決（各 bat が冒頭で `call` する） |
+
+サンプル側の bat の詳細は [`Samples/ANALYSIS.md`](../Samples/ANALYSIS.md) 8 節と
+[`Samples4NetCore/ANALYSIS.md`](../Samples4NetCore/ANALYSIS.md) 6 節。
 
 .NET (Core) 側は `dotnet restore` → `dotnet msbuild` を呼ぶだけなので、
 **エージェントは bat を経由せず直接 `dotnet build "Frameworks\Infrastructure\Nuget_netcore100.sln"` してよい。**
 net48 側は MSBuild / devenv が必要（Windows + VS 前提）。
-
-`dotnet build Nuget_netcore100.sln` は **0 エラー / 20 警告**。
-警告はすべて NuGet 脆弱性警告（12 節）で、コンパイル警告ではない。
 
 #### `z_Common.bat` と `z_Common2.bat`（MSBuild 版 / devenv 版）
 
@@ -466,14 +462,21 @@ NuGet パッケージ用のビルド（`0_Release4Nuget.bat`）だけが既定�
 Public → Public.Security → Framework → Business → Tools / Tests / Samples
 ```
 
+**部品（`2_`）→ テンプレート（`3_`）の順は、`HintPath` 参照による制約である。**
+`Business` 系は `Nuget_*.sln` の出力 DLL を拾うだけなので、`Framework` を直して `3_` だけを回しても変更は入らない
+（[`Infrastructure/ANALYSIS.md`](Infrastructure/ANALYSIS.md) 4.2 節）。
+
 **`4_Build_CopyAssemblies.bat`（`Build_net48` → `Build\` の xcopy）を飛ばすと、
 net48 のサンプルとツールが一切ビルドできない。**
-`Frameworks\Infrastructure\Build\` を `HintPath` 参照するプロジェクトが CS/VB 合わせて **42 件**あるため
-（`Samples/*` の全 net48 サンプル、`Tools/DaoGen_Tool`・`DPQuery_Tool`、`Tests/Else/TestLog*`）。
+`Frameworks\Infrastructure\Build\` を `HintPath` 参照するプロジェクトが CS/VB 合わせて **46 件**あるため
+（2026-10-17 の実測。net48 のサンプル CS 20・VB 18、`Tools` 3、`Tests` 3、`ServiceInterface` 2）。
 `0_ExecAllBat.bat` が `2_`/`3_` → `4_CopyAssemblies` → `5_`〜`10_`（サンプル）の順で呼ぶのはこのため。
 
 `Build\` に入るのは **net48 の成果物のみ**で、.NET (Core) 側に相当物は無い
 （`Samples4NetCore` は `Build_netcore100\net10.0\` を直接参照する）。この非対称は設計どおり。
+
+**`ServiceInterface`（`7_`）はサンプルの `WS_sample\Build\`（`6_`）に依存する。** 基盤側のホストが
+サンプルのビルド結果を参照している（[`Infrastructure/ANALYSIS.md`](Infrastructure/ANALYSIS.md) 7 節）。
 
 ### 7.2 バージョン番号の一元管理
 
@@ -481,10 +484,12 @@ net48 のサンプルとツールが一切ビルドできない。**
 
 ```xml
 <PropertyGroup>
-  <OpenTouryoVersion>3.0.0</OpenTouryoVersion>
+  <OpenTouryoVersion>3.3.0-alpha1</OpenTouryoVersion>   <!-- 2026-10-17 時点の値 -->
   <Company>Hitachi Solutions</Company>
 </PropertyGroup>
 ```
+
+**手で書き換えない。** `0_SetVersion.ps1` が、ここと net48 の `AssemblyInfo.cs` を一括で書き換える（手順は [`RELEASE.md`](../../RELEASE.md) フェーズ 0）。
 
 | 反映先 | 仕組み |
 |---|---|
@@ -494,7 +499,7 @@ net48 のサンプルとツールが一切ビルドできない。**
 - **旧形式 csproj（`*_net48.csproj`）には効かない。** `Microsoft.Common.props` をインポートしないため。
   net48 のバージョンは各プロジェクトの `Properties\AssemblyInfo.cs` が持つ。
 - **`Business` 系は 1.0.0 で別系統。** `Business/Properties/AssemblyInfo.cs` が `AssemblyVersion("1.0.0.0")` であり、
-  Public / Framework / Public.Security の 3.0.0.0 とは意図的に分けている。
+  Public / Framework / Public.Security の版（`OpenTouryoVersion` に追随する）とは意図的に分けている。
   そのため `Directory.Build.props` では `<Version>` を全体に設定せず、
   `OpenTouryoVersion` という独自プロパティをパッケージ対象の 7 プロジェクトだけが参照する形にしている。
 
@@ -506,10 +511,10 @@ net48 のサンプルとツールが一切ビルドできない。**
 `root/programs/CS/NuGet/`（`*.nuspec` + `_NuGetPack.bat`、`in/` に DLL を staging）。
 手順は [`NuGet/README.md`](../NuGet/README.md) を参照。
 
-- **nuspec の `<dependencies>` は csproj の `PackageReference` と一致している**（余分・不足・版ズレなし）。
+- **nuspec の `<dependencies>` は csproj の `PackageReference` と一致させる**（余分・不足・版ズレなし）。
   依存を増減したら nuspec 側も合わせること。
 - パッケージ自身と `Touryo.Infrastructure.*` の相互依存のバージョンは `$version$` トークンで自動追随する（7.2 節）。
-- `Symbol_Framework.RichClient.nuspec` のみ、`net10.0-windows7.0` ビルドを `lib\net10.0` に配置している（12 節）。
+- `Symbol_Framework.RichClient.nuspec` のみ、`net10.0-windows7.0` ビルドを `lib\net10.0` に配置している（12 節 14）。
 
 ---
 
@@ -530,6 +535,9 @@ net48 のサンプルとツールが一切ビルドできない。**
 | 引数を検査する例外 | 3 |
 | bat ファイルの文字コード | 4 |
 | ps1 の文字コードと PowerShell 5.1 / 7 の両対応 | 5 |
+
+---
+
 ## 9. Public 層の主なユーティリティ（再実装しないこと）
 
 | 名前空間 | 主なクラス |
@@ -537,7 +545,7 @@ net48 のサンプルとツールが一切ビルドできない。**
 | `Public.Db` | `BaseDam` `SQLUtility` `DbEnum` `Dam*` |
 | `Public.Dto` | `DTTable/DTRow/DTColumn`（マーシャリング可能な自前 DataTable）、`DataToPoco` `PocoToPoco` `DataToDictionary` |
 | `Public.Str` | `CustomEncode`(Base64/Hex/URL) `StringChecker` `FormatChecker` `StringConverter` `FormatConverter` `CheckCharCode` `JIS2k4Checker` |
-| `Public.Security` | `SymmetricCryptography` `ASymmetricCryptography` `GetHash` `GetKeyedHash` `MsgAuthCode` `DigitalSign*` `PrivacyEnhancedMail`、`Jwt/`（JWS RS/PS/ES/HS 256-512、JWE RSA1_5+A128CBC-HS256 / RSA-OAEP+AES-GCM、`JwkSet`、鍵コンバータ）、`Aead/`、`KeyExg/`（ECDH/RSA）、`Pwd/GetPasswordHashV1/V2` |
+| `Public.Security` | 共通鍵・公開鍵暗号、ハッシュ、署名、`Jwt/`（JWS・JWE・JWK）、`Aead/`、`KeyExg/`、`Pwd/`（[`Public/Security/ANALYSIS.md`](Infrastructure/Public/Security/ANALYSIS.md)） |
 | `Public.Log` | `LogIF`（静的 façade）。ロガー名は慣習的に `"ACCESS"` と `"SQLTRACE"`。バックエンドは `LogLib` 設定で log4net / NLog |
 | `Public.Reflection` | `Latebind`（フレームワークの動的呼び出しの心臓部）、`MyAssemblies` |
 | `Public.FastReflection` | `AccessorCacher` `CompiledExpressionCreater` `InstanceCreator<T>` `EnumToString*Extensions` |
@@ -546,86 +554,55 @@ net48 のサンプルとツールが一切ビルドできない。**
 | `Public.Diagnostics` | `MyDebug`（`OutputDebugAndConsole`）`ObjectInspector` `StackFrameOperator` |
 | `Public.Win32` / `WinProc` | P/Invoke 群（net48 のみ） |
 
+各名前空間の中身と落とし穴は [`Public/ANALYSIS.md`](Infrastructure/Public/ANALYSIS.md)。
+
 ---
 
 ## 10. 認証まわり（`Framework/Authentication/`）
 
-比較的新しく、直近も更新されている領域（`fixed #503` / `#504` は `SAML2Client.cs`）。
+**[`Framework/ANALYSIS.md`](Infrastructure/Framework/ANALYSIS.md) 8 節に移した。** 比較的新しく、直近も更新されている領域（#600〜#606）。
 
-- `OAuth2AndOIDCClient` … Authorization Code / PKCE(S256) / Client Credentials / ROPC /
-  Refresh / UserInfo / Revoke / Introspect / JWT Bearer / Device AuthZ / CIBA / Request Object / JWK Set。
-  **すべて `static async Task<string>`（生 JSON を返す）**。`HttpClient` は `static` プロパティで差し替え可能。
-- `OAuth2AndOIDCConst` / `OAuth2AndOIDCEnum` / `OAuth2AndOIDCParams` / `CmnClientParams`。
-  **`CmnClientParams`（`SpRp_*`）と `JwkSetUri` は、クライアント役が読む設定である**（#602）。
+| 内容 | 節 |
+|---|---|
+| `OAuth2AndOIDCClient`（すべて `static async Task<string>`）、`CmnClientParams`（`SpRp_*`）は**クライアント役の設定**であること | 8.1 |
+| トークンの検証（`CmnJwtToken` / `IdToken` / `AccessToken` の `aud` の扱い、相手の値を受けるオーバーロード） | 8.2 |
+| SAML2（相手ごとの証明書と署名鍵、`SigAlg`、`VerifyRedirect` の 2 つの版） | 8.3 |
 
-  | キー | フレームワークでの意味 |
-  |---|---|
-  | `SpRp_Isser` / `SpRp_*Uri` / `SpRp_*CerFilePath` / `JwkSetUri` | **相手（OP / IdP）の値**（Issuer・エンドポイント・検証用の公開鍵・JWK Set の URL） |
-  | `SpRp_*PfxFilePath` / `SpRp_*PfxPassword` | **クライアント自身の鍵**（要求の署名・JWE の復号） |
-  | `JwkSetFilePath` | **認可サーバ自身の JWK Set**（`CmnJwtToken.Verify` の分岐にも使われる。上記） |
-
-  **認可サーバを作るアプリが、これらを「自分の値」（自分の Issuer・`/jwkcerts` の口・署名鍵の対）として
-  流用すると、同じ配備でクライアント役を兼ねたときに、相手の値を置けなくなる。**
-  サーバ役の値は、アプリ側で別のキーを持つこと
-- トークン型: `CmnJwtToken` `AccessToken` `IdToken` `JwtAssertion` `RequestObject` `ResponseObject` `ClaimsInRO`。
-  `CmnJwtToken.Verify` の検証鍵は、`OAuth2AndOIDCParams.JwkSetFilePath` の有無（＝自分が認可サーバか）で選ぶ。
-  **認可サーバ兼クライアントで相手（OP）の `id_token` を検証するなら、
-  `IdToken.Verify` の `jws` / `iss` / `aud` を受けるオーバーロードを使う**（#601）。
-  `ResponseObject.Verify` にも同じ形の版がある。
-  設定で判定する既存の版（`IdToken` / `ResponseObject`）も、**`JwkSetFilePath` の有無によらず `aud` を確認する**
-  （`OAuth2AndOidcClientID` / `OAuth2AndOidcClientIDs` のいずれかを含むこと。#603）。
-  **認可サーバ兼クライアントの自己テストでは、テスト用クライアントの `client_id` を `OAuth2AndOidcClientIDs` に並べる。**
-  鍵の選び方（`JwkSetFilePath` の有無）は変えていない。
-  `AccessToken.Verify` の既存の版は `aud` を確認しない（Keycloakコンパチ）。
-  **`aud` を確認するなら `jws` / `iss` / `auds`（期待する `aud` の集合）を受ける版を使う。**
-  `aud` に `client_id` が入る形式では、受け付けるクライアントの `client_id` の一覧を渡す。
-  `typ`（`at+jwt`）は確認しない（RFC 9068 の形式には準拠していない）
-- `JwkSetStore` … JWK Set のキャッシュ
-- SAML2: `SAML2Client`（`CreateRedirectRequest` / `CreatePostRequest` / `VerifyResponse`）、
-  `SAML2Bindings` `SAML2Const` `SAML2Enum` `SAML2Params`。
-  `VerifyResponse` の検証用証明書は、既定で `CmnClientParams.RsaCerFilePath`（配備に 1 本）。
-  **相手（IdP）ごとに替えるなら、`cerFilePath` を受けるオーバーロードを使う**（#600）。
-  要求（`AuthnRequest`）の署名鍵も同じで、既定は `CmnClientParams.RsaPfxFilePath`（配備に 1 本）。
-  **相手ごとに替えるなら、`CreateRedirectRequest` は `digitalSign`、`CreatePostRequest` は `rsa` を受けるオーバーロードを使う**（#606）。
-  どちらも `out id` の手前に置く。`null` なら設定の鍵で署名する
-  （**`SAML2Bindings.EncodeAndSign*` の「`null` なら署名しない」とは違う**）。
-  省略可能な引数ではなくオーバーロードにしたのは、既存の版のシグネチャを変えると、
-  **ビルド済みの呼び出し元が `MissingMethodException` で落ちる**ため
-  Redirect の `SigAlg` は、`EncodeAndSignRedirect` に渡した `DigitalSign` のアルゴリズムで書く
-  （既定の SHA256 なら `rsa-sha256`。#604 まで `rsa-sha1` 固定だった）。
-  **`VerifyRedirect` は 2 つ在る**（#604）。
-  `DigitalSign` を受ける版は、渡された `DigitalSign` で検証し、**`SigAlg` がそのアルゴリズムと一致しなければ失敗する**
-  （`SAML2Client.VerifyResponse` はこちら。ハッシュは `hashAlgorithmName`、既定は SHA256）。
-  `RSA` を受ける版は、**許可リスト（`sigAlgs`）の中から `SigAlg` でハッシュを選ぶ**（既定は SHA256 / 384 / 512 で、SHA1 は受けない）。
-  **#604 より前の Open棟梁 が送った要求・応答（`rsa-sha1` と名乗る SHA256 の署名）は、どちらでも失敗する。**
-  受け手で `SigAlg` が `rsa-sha1` であることを確かめていると、#604 以降の送り手の要求・応答で落ちる。
-  `EncodeAndSignRedirect` / `VerifyRedirect` の引数名は、#604 で `dsRSAwithSHA1` から `ds` に変えた
-  （SHA1 に限らないため）。**名前付き引数で渡している呼び出し元は、コンパイルが通らなくなる**
-- 依存: `jose-jwt` 5.1.1 / `BouncyCastle.NetCore` 2.2.1（`Public.Security`）
+**既存の版のシグネチャを変えず、オーバーロードを足す**という方針が、この領域の変更すべてに通っている
+（ビルド済みの呼び出し元が `MissingMethodException` で落ちるため）。
 
 ---
 
 ## 11. 主要な依存パッケージ（netcore100）
 
-| プロジェクト | パッケージ |
-|---|---|
-| Public | `log4net` 3.3.0, `NLog` 5.5.0, `Microsoft.Data.SqlClient` 6.0.1, `System.Data.Odbc` 9.0.4, `Newtonsoft.Json` 13.0.3, `Microsoft.Extensions.Configuration*` 9.0.4, `Zipangu` 1.1.8 |
-| Public.Security | `jose-jwt` 5.1.1, `BouncyCastle.NetCore` 2.2.1, `System.Security.Cryptography.Xml` 9.0.18, `Newtonsoft.Json` 13.0.3 |
-| Framework | `Microsoft.AspNetCore.{Http,Http.Extensions,Mvc,Session}` 2.3.0, `Microsoft.Extensions.PlatformAbstractions` 1.1.0 |
-| Business | `Microsoft.AspNetCore.Authentication{,.Cookies}` 2.3.0, `Microsoft.AspNetCore.{Http,Mvc}` 2.3.0, `System.Security.Cryptography.Xml` 9.0.18, `Newtonsoft.Json` 13.0.3 ほか |
+**版は csproj を直接見ること。** Dependabot と #610 の運用で随時変わるため、本書には版を書かない。
+
+| プロジェクト | パッケージ | 一次情報 |
+|---|---|---|
+| Public | `log4net` `NLog` `Microsoft.Data.SqlClient` `System.Data.Odbc` `Microsoft.Extensions.Configuration*` `Newtonsoft.Json` `SharpZipLib` `Zipangu`、推移的依存を引き上げる `System.Security.Cryptography.Pkcs` | [`Public/ANALYSIS.md`](Infrastructure/Public/ANALYSIS.md) 9 節 |
+| Public.Security | `BouncyCastle.NetCore` `System.Security.Cryptography.Xml` `Newtonsoft.Json` | [`Public/Security/ANALYSIS.md`](Infrastructure/Public/Security/ANALYSIS.md) 7 節 |
+| Framework | `Microsoft.AspNetCore.{Http,Http.Extensions,Mvc,Session}` `Microsoft.Extensions.PlatformAbstractions` | [`Framework/ANALYSIS.md`](Infrastructure/Framework/ANALYSIS.md) 10 節 |
+| Business | `Microsoft.AspNetCore.Authentication{,.Cookies}` `Microsoft.AspNetCore.{Http,Mvc}` `System.Security.Cryptography.Xml` `Newtonsoft.Json` ほか | [`Business/ANALYSIS.md`](Infrastructure/Business/ANALYSIS.md) 6 節 |
+
+`jose-jwt` は**部品の依存ではない**（`Tests/Golden/EncAndDecUtilCUI` が相互運用の確認相手として参照する）。
 
 **注意 1:** `Microsoft.AspNetCore.*` は **2.3.0（互換シム パッケージ）** を使い続けている。
 net10.0 のフレームワーク参照（`Microsoft.AspNetCore.App`）ではない。安易に上げると壊れる可能性が高い。
 
 **注意 2:** `System.Security.Cryptography.Xml` は **4 箇所すべてを同じ版で揃える**こと。
-Dependabot が 1 プロジェクトずつしか上げないため、放っておくと版が割れて NU1903 が残る
-（12 節に advisory と該当箇所を挙げてある）。
+Dependabot が 1 プロジェクトずつしか上げないため、放っておくと版が割れて NU1903 が残る（12 節 11）。
 
-依存は Dependabot で随時更新される。**上表は目安であり、正確な値は csproj を直接見ること。**
+**注意 3:** 部品の依存を上げたら、**`HintPath` で部品を拾うサンプル（`Samples4NetCore`）の csproj と、
+net48 の `packages.config`・`bindingRedirect` も見る**（`ComparePackage.ps1` / `CompareRedirect.ps1`。
+[`Samples4NetCore/Legacy/ANALYSIS.md`](../Samples4NetCore/Legacy/ANALYSIS.md) 6 節）。
+脆弱性の警告を見つけたときの扱いは `AGENTS.md`「依存パッケージの脆弱性を見つけたら」と [`BUILDING.md`](../../BUILDING.md) 13 節。
 
 ---
 
 ## 12. 落とし穴 / 既知の不整合（作業前に把握しておく）
+
+**領域をまたぐもの、または経緯として残すものを置く。** 各アセンブリに閉じた落とし穴は、下位文書の「落とし穴」の節にある。
+番号は他の文書から参照されているので、**詰めずに残す。**
 
 1. **`4_Build_CopyAssemblies.bat` を飛ばすと net48 のサンプル・ツールが全滅する**（7.1 節）。
 2. **`Compile Remove` を忘れると .NET (Core) ビルドが壊れる**（6.3 節）。
@@ -633,58 +610,32 @@ Dependabot が 1 プロジェクトずつしか上げないため、放ってお
 4. **`ReturnValue` を設定し忘れると戻り値が null** になる（3.2 節）。例外時も同様。
 5. **`_dams` ディクショナリと `_dam` の二重管理**。Commit/Rollback/Close は両方に対して行われる。
    複数 DB を使う場合は `SetDam(key, dam)` を使い、`GetDam(key)` で取り出す。
-6. **`BaseController.cs`（4836 行）と `BaseDam.cs`（3198 行）は巨大**。
+6. **`BaseController.cs`（Web Forms）と `BaseDam.cs` は巨大**。
    変更時は該当 `#region` に閉じた修正に留め、全体リファクタは避ける（互換性維持が最優先の設計）。
 7. **VB 版ミラーが存在**: `root/programs/VB/Frameworks/Infrastructure/` に
    `Business` / `CustomControl` / `ServiceInterface` の VB.NET 版がある（`Public` / `Framework` は C# 版を共有）。
-   Business 層テンプレートの仕様を変えると **VB 側も追随が必要**。
-8. **作業ツリーに未追跡の生成物が残る**。`Build*/` と `ServiceInterface/*/dll/` は `.gitignore` 済み。
-   残るのは `*.cer`（テスト生成物）と `SAML2Client.cs.bak`（残骸）で、いずれもコミット対象ではない。
+   Business 層テンプレートの仕様を変えると **VB 側も追随が必要**（[`Infrastructure/ANALYSIS.md`](Infrastructure/ANALYSIS.md) 8 節）。
+8. **生成物は `.gitignore` 済み。** `Build*/` と `ServiceInterface/*/dll/`、テストが出力先に作る `*.cer` は、
+   `git status` に出ない（2026-10-17 の実測で未追跡は 0 件）。**出てきたら、それは新しい生成物か残骸なので、コミットせずに報告する。**
 9. `Public/Security/MyDebug.cs` は `Public/Diagnostics/MyDebug.cs` の**派生クラス**（重複ではない。
    アセンブリ分割の都合）。
 10. `TMProtocolDefinition2.xml` など「2」付きの定義ファイルが並存する。用途は用例違い。
-11. **`System.Security.Cryptography.Xml` は 9.0.18 で揃える**（NU1903 / 高、2026/08/08 に解消）。
-
-    2 件の advisory が出ており、**9.0.15 では片方しか直っていない**。
-
-    | Advisory | 影響（9 系） | 修正版 |
-    |---|---|---|
-    | `GHSA-23rf-6693-g89p`（CVE-2026-50648） | `>= 9.0.0, <= 9.0.17` | **9.0.18** |
-    | `GHSA-37gx-xxp4-5rgx`（CVE-2026-33116） | `>= 9.0.0, <= 9.0.14` | 9.0.15 |
-
-    参照は次の 4 箇所。**すべて netcore100 側だけ**である。
-
-    ```
-    Public/Security/Public.Security_netcore100.csproj
-    Business/Business_netcore100.csproj
-    Tests/Golden/EncAndDecUtilCUI/core100/EncAndDecUtilCUICore.csproj
-    NuGet/Symbol_Public.Security.nuspec
-    ```
-
-    > **net48 は、このパッケージを参照しない。** .NET Framework は
-    > `System.Security.dll` を BCL として持つため（`<Reference Include="System.Security" />`）。
-    > 「net48 / netcore100 の両方を直す」という一般則は、**このパッケージには当てはまらない。**
-
+11. **`System.Security.Cryptography.Xml` は参照している 4 箇所を同じ版で揃える**（NU1903 / 高、2026/08/08 に一度解消）。
     **Dependabot は 1 プロジェクトずつしか上げない。** #507 が `Public.Security` だけを
-    9.0.15 にし、#510 がテスト プロジェクトだけを 9.0.18 にしたため、
-    一時 4 箇所が 3 通りの版に割れていた（84 警告）。
+    上げ、#510 がテスト プロジェクトだけを上げたため、一時 4 箇所が 3 通りの版に割れていた（84 警告）。
     **セキュリティ更新は、Dependabot の PR を取り込んだら他の参照も揃えること。**
     揃えておけば「もう脆弱でない」ため、同じ箇所への PR が後から来て競合することも無い
     （運用は [`BUILDING.md`](../../BUILDING.md) 9 節）。
+    4 箇所と、net48 がこのパッケージを参照しない（BCL を使う）ことは
+    [`Public/Security/ANALYSIS.md`](Infrastructure/Public/Security/ANALYSIS.md) 7 節。
 12. **結果ファイル比較のテストは、検算しないと不具合を「正」として固定する。**
-    `ArrayOperator.GetLongFromByte` は桁の重みを `256 * j`（掛け算）で求めており、
-    **3 byte 目から誤った値**を返していた（2026/08/06 に修正、#522）。
-    1〜2 byte は `256 * 1 == 256 ^ 1` でたまたま一致するため、呼び出し元
-    （`CheckCharCode` → Shift_JIS の 1〜2 byte）では顕在化していなかった。
-    **期待値を作るときは、出力をそのまま貼らず実装から検算し、境界を跨いだケースを置く**
+    実例が 2 つある。`ArrayOperator.GetLongFromByte` が 3 byte 目から誤った値を返していた（#522。
+    [`Public/ANALYSIS.md`](Infrastructure/Public/ANALYSIS.md) 10 節）。
+    `EncAndDecUtilCUI` が ES384 / ES512 の `Verify` を `False` で記録していた（#595。
+    [`Public/Security/ANALYSIS.md`](Infrastructure/Public/Security/ANALYSIS.md) 3.1 節）。
+    **期待値を作るときは、出力をそのまま貼らず実装から検算し、境界を跨いだケースを置く。**
+    **`Verify` の期待値が `False` なら、それが仕様か不具合かを確かめること**
     （[`Tests/Golden/TestCode/README.md`](Tests/Golden/TestCode/README.md)）。
-
-    **`EncAndDecUtilCUI` も同じだった**（2026/10/03 に修正、#595）。
-    Windows の `Result48.txt` / `ResultCore100.txt` は `JWS_ES384_Param.Verify` /
-    `JWS_ES512_Param.Verify` を **`False` で記録していた**（自分で署名した JWS を検証できない）。
-    `DigitalSignECDsaCng` がダイジェストを受け取らず、SHA-256 固定になっていたためである。
-    **Linux の `ResultCore100OnLinux.txt` は `True`** で、同じケースの期待値が OS で食い違っていた。
-    **`Verify` の期待値が `False` なら、それが仕様か不具合かを確かめること。**
 13. **`Public/IO` に、ビルド対象外の旧 ZIP 部品が残っている**。
     `ZipBase.cs` / `Zipper.cs` / `UnZipper.cs` は DotNetZip（非推奨・既知脆弱性
     `GHSA-xhg6-9j5j-w4vf`）に依存しており、**net48 / netcore100 の両方で除外**してある。
@@ -695,37 +646,25 @@ Dependabot が 1 プロジェクトずつしか上げないため、放ってお
     旧ファイルを直しても何も起きない。**触るなら V2 の方。**
     I/F 互換は無いが、**引数の並びと名前、列挙体のメンバ名は旧に合わせて**ある。
     自己解凍書庫・選択条件の文字列・`StatusMSG` は落とした（代替は `ExtractedFiles`）。
+    ビルド対象外のファイルは他にもある（[`Infrastructure/ANALYSIS.md`](Infrastructure/ANALYSIS.md) 6 節）。
 14. **`Symbol_Framework.RichClient.nuspec` の lib TFM が不正確**。
     `net10.0-windows7.0` ビルドを `lib\net10.0` に配置している。本来は `lib\net10.0-windows` が正しく、
     現状は Linux 上の net10.0 消費者も解決してしまう。直すとパッケージ解決セマンティクスが変わるため据え置き。
 15. **オーバーロードへの委譲で引数を落とすと、自分自身を呼んでもコンパイルが通る**（警告も出ない）。
-    `SymmetricCryptography.GenerateKeyFromPassword` は、ハッシュを受ける版を足した際（2025/08/01）に
-    7 引数版が `hashAlgorithmName` を渡さず自分自身を呼ぶ形になり、
-    **`EncryptString` / `DecryptString` が `StackOverflowException` でプロセスごと落ちていた**
-    （**`catch` できない**。2026/10/14 に修正、#608）。
-    **呼ばれないコードは結果ファイルに現れない。** `EncAndDecUtilCUI` の `PrivateKeyCryptography` は空のままだった。
-
-    鍵の導出は、**修正前の既定（PBKDF2-HMAC-SHA1、共有キー → 初期化ベクタの順に続けて取り出す）**に戻した。
-    net10.0 側は `Rfc2898DeriveBytes.Pbkdf2` で 2 回に分けて導出しており、
-    **初期化ベクタが共有キーの先頭と同じ**になっていた（net48 とも暗号文が食い違う）。
-    **ハッシュや取り出し方を変えると、既存の暗号文を復号できなくなる。**
+    `SymmetricCryptography.GenerateKeyFromPassword` で、**`EncryptString` / `DecryptString` が
+    `StackOverflowException` でプロセスごと落ちていた**（**`catch` できない**。#608）。
+    **呼ばれないコードは結果ファイルに現れない。** 経緯と、鍵の導出を変えてはいけない理由は
+    [`Public/Security/ANALYSIS.md`](Infrastructure/Public/Security/ANALYSIS.md) 6 節。
 
 ---
 
 ## 13. サンプル（フレームワークの正しい使い方の参照先）
 
-> **詳細な分析は各ディレクトリの ANALYSIS.md を参照:**
-> - `../Samples/ANALYSIS.md`（net48 版サンプル）
-> - `../Samples4NetCore/ANALYSIS.md`（.NET 10 版サンプル）
-
-| パス | 内容 |
-|---|---|
-| `Samples/WebApp_sample/` | ASP.NET Web Forms / MVC5（net48） |
-| `Samples/2CS_sample/` | 2層 C/S（WinForms / WPF） |
-| `Samples/Bat_sample/` | バッチ（`SimpleBatch` / `RerunnableBatch` 1〜3） |
-| `Samples/CLI_sample/` `Samples/WS_sample/` | CLI / Web サービス |
-| `Samples4NetCore/Backend/MVC_Sample` `ASPNETWebService` | .NET (Core) 版 |
-| `Samples4NetCore/Legacy/` | 上記の .NET (Core) 移植版 |
+| パス | 内容 | 文書 |
+|---|---|---|
+| `Samples/` | net48 版サンプル（Web Forms / MVC5 / 2 層 C/S / バッチ / WS） | [`Samples/ANALYSIS.md`](../Samples/ANALYSIS.md) |
+| `Samples4NetCore/Backend/` | .NET 10 版の Web アプリ（`MVC_Sample` / `ASPNETWebService`） | [`Samples4NetCore/ANALYSIS.md`](../Samples4NetCore/ANALYSIS.md) |
+| `Samples4NetCore/Legacy/` | 上記 net48 版の .NET 10 移植 | 同上 |
 
 典型的な B層実装は `Samples/Bat_sample/SimpleBatch_sample/Business/LayerB.cs`（`MyFcBaseLogic` 継承）。
 「テンプレ」`#region` に `UOC_メソッド名` という雛形がそのまま残っているのが本フレームワークの流儀。
@@ -735,11 +674,12 @@ Dependabot が 1 プロジェクトずつしか上げないため、放ってお
 ## 14. エージェント向け作業チェックリスト
 
 - [ ] `AGENTS.md` のポリシー遵守（**git 操作をしない**）
+- [ ] 作業対象の**下位文書**（1 節の案内表）の「落とし穴」と「作業チェックリスト」を読む
 - [ ] 変更対象が net48 / netcore100 / 両方のどれか判定（`Compile Remove` を確認）
 - [ ] 条件コンパイルは **`#if NETCOREAPP`（＝非 net48）を使う**。
       `#if NETSTD` は `Framework` / `Public.Security` / `Dam*` でしか真にならないので新規には使わない（6.2 節）
 - [ ] 新規 .cs にはヘッダ コメント（Apache License / クラス名・日本語名・更新履歴）を付与。
-      **Copyright ブロックは新規には付けない**（8.1 節）
+      **Copyright ブロックは新規には付けない**（[`CODING.md`](../../CODING.md) 1 節）
 - [ ] 既存 .cs 変更時は更新履歴に 1 行追記
 - [ ] public/protected メンバに日本語 `<summary>` を付与（DocumentationFile 出力のため）
 - [ ] 文字列リテラルは `FxLiteral` / `MyLiteral` / `PubLiteral` に定数として追加

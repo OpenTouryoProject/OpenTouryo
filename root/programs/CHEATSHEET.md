@@ -330,6 +330,8 @@ root\programs\VB\0_ExecAllBat.bat           ← 通し（先に CS 側を建て�
 | net48 サンプル | [`CS/Samples/ANALYSIS.md`](CS/Samples/ANALYSIS.md) |
 | netcore サンプル | [`CS/Samples4NetCore/ANALYSIS.md`](CS/Samples4NetCore/ANALYSIS.md) |
 
+上の 3 つは俯瞰。**アセンブリ・サンプルごとの下位の `ANALYSIS.md` は、各文書の冒頭の案内表から辿る**（#613）。
+
 ### `.bat` を書くとき
 
 - **リリース・公開に使う bat は非 ASCII を書かない**（コメントも英語）。BOM も不要
