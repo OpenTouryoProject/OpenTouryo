@@ -8,6 +8,15 @@
 リリース時の作業全体は [`RELEASE.md`](RELEASE.md) を参照。
 実行順は `1_BuildAll.ps1` → `2_RunAllTests.ps1` → `3_SmokeTest.ps1`。
 
+> **DB のコンテナは、LocalServicesOnDocker の [`CHEATSHEET.md`](https://github.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker/blob/master/CHEATSHEET.md) に従って起動・停止する。**
+> **メモリを節約しないと、最悪の場合、コンテナがシステムごとハングさせる**（Docker の VM がメモリを使い切る）。
+>
+> - **必要なサービスだけを、名前を指定して起動する。** 引数なしの `Start-Services.ps1` は全サービスを起動するので使わない
+> - **必須でないコンテナを同時に複数起動しない。** クロス DB は、SQL Server（必須）に 1 つずつ足して回し、測り終えたら止める
+> - **使い終わったら止める**（`Stop-Services.ps1 <サービス名>`）。状態は `Show-Services.ps1`（読み取り専用）で確かめる
+> - Rancher Desktop 版（`*.ps1`）と WSL2 版（`*_wsl2.ps1`）は**別の Docker を見る。** 混ぜて使うと、同じサービスが二重に立つ
+> - `oracle` と `sqlserver` は特に大きい
+
 ---
 
 ## 1. 使い方
@@ -97,6 +106,8 @@ HEAD とは比較せず、バッチが書き出す `*.trx` の集計で判定す
 **`TestPublicDb` は Dam のクロス DB テスト**（DB に接続する）。同じテストを DBMS ごとに回す。
 **SQL Server は必須**（接続できなければ失敗。CI でも接続する）。Oracle / MySQL / PostgreSQL は**接続できなければスキップ**し、件数と名前が「実行せず」に出る。
 クロス DB で確かめるなら LocalServicesOnDocker の各 DBMS を起動してから回す（接続先は Golden の `TestDataAccess` と同じ）。PostgreSQL は `DamPstGrS` が .NET 専用のため net10.0 だけ。
+**DBMS は 1 つずつ起動して回す**（冒頭の CHEATSHEET の注意）。起動していない DBMS はスキップされるだけなので、1 つずつでも漏れなく確かめられる。
+ただし**バッチは実行のたびに `TestResults` を消す**ので、カバレッジは回した回の分しか残らない（Dam ごとの値は、その DBMS を起動した回の表示で見る）。
 
 - **サマリの「差分」の列は、NUnit では失敗の件数を表す。**
 - **0 件の合格は OK にしない。** テストが見つからない構成ミスを見逃すため
@@ -338,21 +349,22 @@ Northwind は起動のたびに `start-up.sh` が再作成するため、
 
 `LocalServicesOnDocker` の PowerShell 版スクリプトを使用する
 （**DB の初期化完了待ちを行う**ため、`.bat` 版よりテスト用途に適している）。
+**サービス名を必ず指定する**（引数なしは全サービスが対象になる。冒頭の CHEATSHEET の注意）。
 
 | 環境 | 使用するスクリプト |
 |---|---|
-| Rancher Desktop 導入時（Windows から `docker` が使える） | `Stop-Services.ps1` → `Start-Services.ps1` |
-| WSL2 内の Docker を使う場合 | `Stop-Services_wsl2.ps1` → `Start-Services_wsl2.ps1` |
+| Rancher Desktop 導入時（Windows から `docker` が使える） | `Stop-Services.ps1 sqlserver` → `Start-Services.ps1 sqlserver` |
+| WSL2 内の Docker を使う場合 | `Stop-Services_wsl2.ps1 sqlserver` → `Start-Services_wsl2.ps1 sqlserver` |
 
 ```powershell
 cd <LocalServicesOnDocker>
-.\Stop-Services.ps1      # docker compose down（コンテナを破棄）
-.\Start-Services.ps1     # docker compose up -d ＋ DB 初期化完了待ち
+.\Stop-Services.ps1 sqlserver      # docker compose down（コンテナを破棄）
+.\Start-Services.ps1 sqlserver     # docker compose up -d ＋ DB 初期化完了待ち
 ```
 
 > **`docker restart` では戻らない。** 同一コンテナが再開されるだけで書き込み層が保持されるため。
 > コンテナの破棄（`down`）と再作成（`up`）が必要。
-> なお compose には `restart: always` が指定されているため、ホスト再起動でも戻らない。
+> なお compose は `restart: "no"` なので、Docker エンジンを起動してもコンテナは自動では起動しない。
 
 初期化完了待ちを省略したい場合は `-NoWait` を指定できるが、
 その場合は Northwind のロード完了前にテストが始まり得るため、テスト用途では非推奨。

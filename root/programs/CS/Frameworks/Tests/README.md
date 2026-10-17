@@ -4,6 +4,12 @@
 実行と判定の手順は [`TESTING.md`](../../../TESTING.md)（`Golden` / `NUnit`）と
 [`SMOKETEST.md`](../../../SMOKETEST.md)（`Else` の一部）が一次情報。
 
+> **DB を使うテスト（`TestDataAccess` / `TestPublicDb`）のコンテナは、LocalServicesOnDocker の
+> [`CHEATSHEET.md`](https://github.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker/blob/master/CHEATSHEET.md) に従って扱う。**
+> **メモリを節約しないと、最悪の場合、コンテナがシステムごとハングさせる。**
+> 必要なものだけを名前で起動し、必須でないものを同時に複数起動せず、使い終わったら止める
+> （要点は [`TESTING.md`](../../../TESTING.md) の冒頭）。
+
 | フォルダ | 判定の方式 | 回すもの |
 |---|---|---|
 | `Golden/` | **ゴールデン ファイル方式。** 出力を、コミット済みの `Result*.txt` と比較する（後退テスト） | `2_RunAllTests.ps1` |

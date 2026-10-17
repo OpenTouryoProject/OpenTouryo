@@ -115,6 +115,9 @@ dotnet test CS\Frameworks\Tests\NUnit\TestPublic\TestPublic.csproj -f net10.0 --
 - **後回しにしたものは「後回しにしたもの（fixed で必ず回す）」に一覧で出る。** 報告にそのまま書く
 - 記録が fixed でしか進まないので、**基点は「最後に fixed で通ったコミット」になる**
 - クロス DB・VB・管理者権限は、触れたときだけ回す（[`AGENTS.md`](../../AGENTS.md) の表）
+- **DB のコンテナは LocalServicesOnDocker の [`CHEATSHEET.md`](https://github.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker/blob/master/CHEATSHEET.md) に従う。**
+  必要なものだけを名前で起動し、**必須でないものを同時に複数起動しない**（クロス DB は SQL Server に 1 つずつ足す）。
+  使い終わったら止める。**メモリを使い切ると、コンテナがシステムごとハングさせる**（[`TESTING.md`](TESTING.md) の冒頭）
 - `dotnet test` の `-f net10.0` を外すと net48 も回る。**net48 / net10.0 で実装が違う箇所は両方回す**
 
 - **基盤だけのビルドでもクリーンは外さない。** 外すと #574 の罠

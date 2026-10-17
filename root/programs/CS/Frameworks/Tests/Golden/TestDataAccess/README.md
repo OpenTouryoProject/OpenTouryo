@@ -16,7 +16,7 @@
 ## 実行モード（`/MODE`）
 
 **クロス DB は CI では実行できない。** LocalServicesOnDocker の各 DBMS は Linux コンテナで、
-`windows-latest` は Linux コンテナを動かせないため（[`BUILDING.md`](BUILDING.md) 9 節）。
+`windows-latest` は Linux コンテナを動かせないため（[`BUILDING.md`](../../../../../BUILDING.md) 9 節）。
 このため対象を切り替えられるようにしてある。
 
 ```
@@ -319,9 +319,16 @@ PostgreSQL は `:` から `@` に変更された経緯がある（`DamPstGrS.cs`
 各 DBMS は [LocalServicesOnDocker](https://github.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker)
 のコンテナで動かす。
 
+> **LocalServicesOnDocker の [`CHEATSHEET.md`](https://github.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker/blob/master/CHEATSHEET.md) に従うこと。**
+> **メモリを節約しないと、最悪の場合、コンテナがシステムごとハングさせる。**
+> 全サービスを一度に起動せず、SQL Server（必須）に **1 つずつ足して回し、測り終えたら止める**
+> （`LOCAL` は起動している DBMS だけを対象にするので、1 つずつでも漏れなく確かめられる）。
+
 ```powershell
 cd <LocalServicesOnDocker のパス>
-.\Start-Services.ps1
+.\Start-Services.ps1 oracle      # 1 つだけ。引数なしは全サービスを起動するので使わない
+# … ②・③ を回す …
+.\Stop-Services.ps1 oracle       # 終わったら止めてから、次の DBMS へ
 ```
 
 `test\dotnet\start.bat` で、各サービスへ接続できるかを先に確かめられる。

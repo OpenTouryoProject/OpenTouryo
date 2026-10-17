@@ -303,6 +303,12 @@ Copyright ブロックの扱い、`ArgumentException` 系の引数の順、`.bat
 
 **コンテナやサービスは勝手に起動しない**（下の「前提となるサービスや DB」と同じ）。必要なら施主に確認する。
 
+**DB のコンテナは、LocalServicesOnDocker の
+[`CHEATSHEET.md`](https://github.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker/blob/master/CHEATSHEET.md)
+に従って扱う。** **メモリを節約しないと、最悪の場合、コンテナがシステムごとハングさせる。**
+必須でないものを同時に複数起動せず、1 つずつ起動して測り、終わったら止める。
+手順の要点は [`TESTING.md`](root/programs/TESTING.md) の冒頭。
+
 **次のコミットがどちらの段階か分からなければ、施主に確かめるか、fixed として回す。**
 **報告には、どの段階で回したかと、後回しにしたものを書く。**
 後回しのまま「検証済み」と書かない。
