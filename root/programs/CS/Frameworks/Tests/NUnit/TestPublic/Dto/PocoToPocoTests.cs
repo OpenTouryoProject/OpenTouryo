@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/17  玄人 幸道         新規作成（カバレッジの拡充）
+//*  2026/10/17  玄人 幸道         公開の set / get を持たないプロパティのケースを追加（#618）
 //**********************************************************************************
 
 using System.Collections.Generic;
@@ -164,5 +165,67 @@ namespace TestPublic.Dto
             Assert.That(dst.OrderID, Is.EqualTo(3));
             Assert.That(dst.Note, Is.EqualTo("z"));
         }
+
+        #region 公開の set / get を持たないプロパティ（#618）
+
+        /// <summary>移送先：get だけと private set のプロパティを持つ</summary>
+        public class NoSetterDestination
+        {
+            /// <summary>OrderID（get だけ）</summary>
+            public int OrderID { get { return -1; } }
+
+            /// <summary>Note（private set）</summary>
+            public string Note { get; private set; }
+
+            /// <summary>Code（フィールド）</summary>
+            public string Code;
+        }
+
+        /// <summary>移送元：set だけのプロパティを持つ</summary>
+        public class NoGetterSource
+        {
+            /// <summary>OrderID の実体</summary>
+            private int _orderID = 0;
+
+            /// <summary>OrderID（set だけ）</summary>
+            public int OrderID { set { this._orderID = value; } }
+
+            /// <summary>OrderID の値（プロパティではないので移送の対象にならない）</summary>
+            public int GetOrderID() { return this._orderID; }
+
+            /// <summary>Note</summary>
+            public string Note { get; set; }
+        }
+
+        /// <summary>
+        /// **公開の set を持たない移送先のプロパティは、移送の対象から外す**（private set を含む）。他の項目は移送する。
+        /// 2026/10/17 まで NullReferenceException になっていた（#618）。
+        /// </summary>
+        [Test]
+        public void NoPublicSetterDestination_Skipped()
+        {
+            NoSetterDestination dst = PocoToPoco.Map<OrderSource, NoSetterDestination>(CreateSource());
+
+            Assert.That(dst.OrderID, Is.EqualTo(-1));
+            Assert.That(dst.Note, Is.Null);
+            Assert.That(dst.Code, Is.EqualTo("C3"));
+        }
+
+        /// <summary>
+        /// **公開の get を持たない移送元のプロパティは、値を取れないので飛ばす。** 移送先は既定値のまま。
+        /// 2026/10/17 まで NullReferenceException になっていた（#618）。
+        /// </summary>
+        [Test]
+        public void NoPublicGetterSource_Skipped()
+        {
+            NoGetterSource src = new NoGetterSource() { OrderID = 5, Note = "n" };
+
+            OrderDestination dst = PocoToPoco.Map<NoGetterSource, OrderDestination>(src);
+
+            Assert.That(dst.OrderID, Is.EqualTo(0));
+            Assert.That(dst.Note, Is.EqualTo("n"));
+        }
+
+        #endregion
     }
 }

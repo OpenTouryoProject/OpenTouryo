@@ -30,6 +30,8 @@
 //*  2018/07/19  西野 大介         新規作成
 //*  2018/10/03  西野 大介         性能対策
 //*  2018/10/23  西野 大介         微調整
+//*  2026/10/17  玄人 幸道         公開の set を持たないプロパティに同名の列があると、
+//*                                NullReferenceException になるのを修正（#618）
 //**********************************************************************************
 
 using System;
@@ -144,6 +146,13 @@ namespace Touryo.Infrastructure.Public.Dto
 
                 foreach (AccessorInfo ai_dst in AccessorCacher.CncDic[obj.GetType()])
                 {
+                    if (ai_dst.SetDelegate == null)
+                    {
+                        // 公開の set を持たないプロパティ（private set を含む）は、移送の対象から外す（#618）。
+                        // AccessorCacher は、公開の set が無いと SetDelegate を null にする。
+                        continue;
+                    }
+
                     string srcName = ai_dst.AccessorName;
 
                     // マップの有無
@@ -275,6 +284,13 @@ namespace Touryo.Infrastructure.Public.Dto
 
                 foreach (AccessorInfo ai_dst in AccessorCacher.CncDic[obj.GetType()])
                 {
+                    if (ai_dst.SetDelegate == null)
+                    {
+                        // 公開の set を持たないプロパティ（private set を含む）は、移送の対象から外す（#618）。
+                        // AccessorCacher は、公開の set が無いと SetDelegate を null にする。
+                        continue;
+                    }
+
                     string srcName = ai_dst.AccessorName;
 
                     // マップの有無

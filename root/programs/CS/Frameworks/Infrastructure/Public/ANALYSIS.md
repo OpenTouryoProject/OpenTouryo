@@ -174,6 +174,9 @@ DBMS の差を `BaseDam` と各 `Dam*` に閉じ込め、上位（`BaseDao`）�
   （`EmbeddedResourceLoader` も内部でこれを使う）
 
 `FastReflection` は、繰り返し呼ぶアクセサを式木・Emit でコンパイルして持つ（`DataToPoco` などの詰め替えが使う）。
+`AccessorCacher` は、**公開の set / get が無いプロパティでは `SetDelegate` / `GetDelegate` を `null` にする**（`private set` も公開ではない）。
+`DataToPoco` / `PocoToPoco` は、それを**移送の対象から外す**（#618。以前は同名の列・項目があると `NullReferenceException` になった）。
+`AccessorCacher` を使う詰め替えを足すなら、同じく `null` を確かめること。
 
 ---
 

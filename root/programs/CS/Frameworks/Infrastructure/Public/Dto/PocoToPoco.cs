@@ -31,6 +31,8 @@
 //*  2018/10/03  西野 大介         性能対策
 //*  2018/10/23  西野 大介         微調整
 //*  2018/12/11  西野 大介         バグ修正（マップ無し時の動作
+//*  2026/10/17  玄人 幸道         公開の set を持たない移送先・公開の get を持たない移送元の
+//*                                プロパティで、NullReferenceException になるのを修正（#618）
 //**********************************************************************************
 
 using System.Collections.Generic;
@@ -95,6 +97,13 @@ namespace Touryo.Infrastructure.Public.Dto
             // dst
             foreach (AccessorInfo dst_ai in AccessorCacher.CncDic[dst.GetType()])
             {
+                if (dst_ai.SetDelegate == null)
+                {
+                    // 公開の set を持たないプロパティ（private set を含む）は、移送の対象から外す（#618）。
+                    // AccessorCacher は、公開の set が無いと SetDelegate を null にする。
+                    continue;
+                }
+
                 string dstName = dst_ai.AccessorName;
                 string srcName = "";
 
@@ -123,7 +132,8 @@ namespace Touryo.Infrastructure.Public.Dto
                 // src
                 foreach (AccessorInfo src_ai in AccessorCacher.CncDic[src.GetType()])
                 {
-                    if (srcName == src_ai.AccessorName)
+                    // 公開の get を持たない移送元のプロパティは、値を取れないので飛ばす（#618）。
+                    if (srcName == src_ai.AccessorName && src_ai.GetDelegate != null)
                     {
                         dst_ai.SetDelegate(dst, src_ai.GetDelegate(src));
                     }

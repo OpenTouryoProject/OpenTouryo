@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/17  玄人 幸道         新規作成（カバレッジの拡充）
+//*  2026/10/17  玄人 幸道         公開の set を持たないプロパティのケースを追加（#618）
 //**********************************************************************************
 
 using System;
@@ -239,6 +240,57 @@ namespace TestPublic.Dto
 
             dt.Rows[0]["OrderID"] = "x";
             Assert.Throws<FormatException>(() => DataToPoco.DataTableToPOCO<OrderPoco>(dt));
+        }
+
+        #endregion
+
+        #region 公開の set を持たないプロパティ（#618）
+
+        /// <summary>get だけのプロパティを持つ POCO</summary>
+        public class GetOnlyPoco
+        {
+            /// <summary>OrderID（get だけ）</summary>
+            public int OrderID { get { return -1; } }
+
+            /// <summary>Note</summary>
+            public string Note { get; set; }
+        }
+
+        /// <summary>private set のプロパティを持つ POCO</summary>
+        public class PrivateSetPoco
+        {
+            /// <summary>OrderID（private set）</summary>
+            public int OrderID { get; private set; }
+
+            /// <summary>Note</summary>
+            public string Note { get; set; }
+        }
+
+        /// <summary>
+        /// **公開の set を持たないプロパティは、同名の列があっても移送の対象から外す。**
+        /// private set も公開の set ではないので外す。他の項目は移送する。
+        /// 2026/10/17 まで、同名の列があると NullReferenceException になっていた（#618）。
+        /// </summary>
+        [Test]
+        public void NoPublicSetter_Skipped()
+        {
+            DataTable dt = CreateTable();
+
+            GetOnlyPoco getOnly = DataToPoco.DataTableToPOCO<GetOnlyPoco>(dt);
+            Assert.That(getOnly.OrderID, Is.EqualTo(-1));
+            Assert.That(getOnly.Note, Is.EqualTo("x"));
+
+            PrivateSetPoco privateSet = DataToPoco.DataTableToPOCO<PrivateSetPoco>(dt);
+            Assert.That(privateSet.OrderID, Is.EqualTo(0));
+            Assert.That(privateSet.Note, Is.EqualTo("x"));
+
+            List<PrivateSetPoco> list = DataToPoco.DataTableToList<PrivateSetPoco>(dt);
+            Assert.That(list, Has.Count.EqualTo(2));
+            Assert.That(list[0].OrderID, Is.EqualTo(0));
+            Assert.That(list[0].Note, Is.EqualTo("x"));
+
+            List<GetOnlyPoco> list2 = DataToPoco.DataTableToList<GetOnlyPoco>(dt);
+            Assert.That(list2[0].Note, Is.EqualTo("x"));
         }
 
         #endregion
