@@ -61,6 +61,27 @@
     （SelectTargets.ps1 が使う）。
 .PARAMETER SkipBuild
     バッチの実行を省略し、ワーキング ツリーにある既存の Result*.txt を比較する。
+.PARAMETER CrossDb
+    Dam のクロス DB テスト（NUnit の TestPublicDb）を、**DBMS ごとに「起動 → テスト → 停止」**で回す（#623）。
+    対象は TestPublicDb だけになる。**-LocalServicesDir が必須。**
+    **コンテナを起動・停止するのは、これを指定したときだけ。** 既定の動きは変わらない。
+
+    ＜なぜ 1 つずつか＞
+      DB のコンテナを同時に複数起動すると、Docker の VM がメモリを使い切り、
+      最悪の場合システムごとハングする（LocalServicesOnDocker の CHEATSHEET.md）。
+      同時に動かすのは、常に SQL Server（必須）ともう 1 つだけにする。
+
+    ＜流れ＞
+      1. SQL Server が動いていなければ起動する（終わったら止める）
+      2. 通常どおりバッチでビルドし、TestPublicDb を回す（SQL Server だけの回）
+      3. Oracle → MySQL → PostgreSQL の順に、起動 → TestPublicDb だけを --no-build で回す → 停止
+         結果は NUnit\TestResults\CrossDb\<サービス名> に分けて残す（カバレッジも回ごとに残る）
+
+    **始める前から動いていた DBMS は、起動も停止もしない。**
+    **起動したのに、その DBMS のテストが 1 件も実行されなければ NG にする**（スキップのまま OK にしない）。
+.PARAMETER LocalServicesDir
+    LocalServicesOnDocker のフォルダ（-CrossDb で使う）。
+    **docker コマンドが使えれば Rancher Desktop 版（*.ps1）、使えなければ WSL2 版（*_wsl2.ps1）を使う。**
 
 .EXAMPLE
     .\2_RunAllTests.ps1
@@ -70,6 +91,9 @@
 
 .EXAMPLE
     .\2_RunAllTests.ps1 -Only "TestBatch"
+
+.EXAMPLE
+    .\2_RunAllTests.ps1 -CrossDb -LocalServicesDir D:\git\LocalServicesOnDocker
 
 .NOTES
     作成者          ：玄人 幸道
@@ -85,6 +109,7 @@
      2026/10/15  玄人 幸道         NUnit のスキップを件数と名前で出すようにした（#610）
      2026/10/15  玄人 幸道         NUnit の TestPublicDb（Dam のクロス DB）を加えた（#610）
      2026/10/15  玄人 幸道         -List -PassThru に NeedDb を加えた（#610）
+     2026/10/18  玄人 幸道         -CrossDb / -LocalServicesDir を追加した（#623）
 #>
 [CmdletBinding()]
 param(
@@ -92,7 +117,9 @@ param(
     [string[]]$Only,
     [switch]$List,
     [switch]$PassThru,
-    [switch]$SkipBuild
+    [switch]$SkipBuild,
+    [switch]$CrossDb,
+    [string]$LocalServicesDir
 )
 
 $ErrorActionPreference = "Continue"
@@ -323,6 +350,88 @@ if ($Only)
 }
 
 # ------------------------------------------------------------------
+# クロス DB（#623）
+# ------------------------------------------------------------------
+#   **DBMS ごとに 1 つずつ起動して回す。** 同時に複数起動すると、
+#   Docker の VM がメモリを使い切り、システムごとハングすることがある
+#   （LocalServicesOnDocker の CHEATSHEET.md）。
+#
+# サービス名・TestPublicDb の DBMS の略号（DbProvider.cs）・ポート・回す TFM
+#   PostgreSQL は DamPstGrS が .NET 専用のため net10.0 だけ。
+$crossDbServices = @(
+    @{ Service = "oracle";   Dbms = "ODP"; Port = 1521; Tfms = @("net48", "net10.0") }
+    @{ Service = "mysql";    Dbms = "MCN"; Port = 3306; Tfms = @("net48", "net10.0") }
+    @{ Service = "postgres"; Dbms = "NPS"; Port = 5432; Tfms = @("net10.0") }
+)
+$crossDbProject = "TestPublicDb"
+
+if ($CrossDb)
+{
+    if (-not $LocalServicesDir -or -not (Test-Path (Join-Path $LocalServicesDir "Start-Services.ps1")))
+    {
+        Write-Host "  **-CrossDb には -LocalServicesDir（LocalServicesOnDocker のフォルダ）が要ります。**" -ForegroundColor Red
+        Write-Host ("  指定 : '{0}'（Start-Services.ps1 が見つかりません）" -f $LocalServicesDir) -ForegroundColor Yellow
+        exit 1
+    }
+
+    # **対象は TestPublicDb だけにする。** 他のテストは DBMS を切り替えても結果が変わらない。
+    $tests = @($tests | Where-Object { $_.Name -like "*$crossDbProject*" })
+    if ($tests.Count -eq 0)
+    {
+        Write-Host "  **-CrossDb の対象（TestPublicDb）が、-Only で外れています。**" -ForegroundColor Red
+        exit 1
+    }
+    Write-Host ("  -CrossDb : 対象を {0} の {1} 件に絞りました" -f $crossDbProject, $tests.Count) -ForegroundColor Yellow
+
+    # **docker コマンドが使えれば Rancher Desktop 版、使えなければ WSL2 版。**
+    #   2 つは別の Docker を見るので、混ぜると同じサービスが二重に立つ。
+    $suffix = "_wsl2"
+    if (Get-Command docker -EA SilentlyContinue)
+    {
+        & docker info *> $null
+        if ($LASTEXITCODE -eq 0) { $suffix = "" }
+    }
+    $svcStart = Join-Path $LocalServicesDir ("Start-Services{0}.ps1" -f $suffix)
+    $svcStop  = Join-Path $LocalServicesDir ("Stop-Services{0}.ps1" -f $suffix)
+    Write-Host ("  -CrossDb : {0} を使います" -f $(if ($suffix) { "WSL2 版（*_wsl2.ps1）" } else { "Rancher Desktop 版（*.ps1）" })) -ForegroundColor Yellow
+
+    foreach ($s in @($svcStart, $svcStop))
+    {
+        if (-not (Test-Path $s))
+        {
+            Write-Host ("  **見つかりません : {0}**" -f $s) -ForegroundColor Red
+            exit 1
+        }
+    }
+}
+
+# サービスの起動・停止（#623）
+#   **別のプロセスで動かす。** 向こうのスクリプトは exit で終わり、
+#   コード ページやエラー設定も変えるので、こちらのスコープに持ち込まない。
+#   **サービス名は必ず渡す。** 省略すると全サービスが対象になる。
+function Invoke-LocalService([string]$Script, [string]$Service)
+{
+    $psExe = (Get-Process -Id $PID).Path
+    & $psExe -NoProfile -ExecutionPolicy Bypass -File $Script $Service -NoPause *>&1 |
+        ForEach-Object { Write-Host ("    " + $_) }
+    return ($LASTEXITCODE -eq 0)
+}
+
+# ポートが開いているか（始める前から動いている DBMS を見分ける。#623）
+#   待ち時間はこちらで断ち切る（Prerequisite.ps1 の Test-SqlServer と同じ理由）。
+function Test-LocalPort([int]$Port, [int]$TimeoutMs = 2000)
+{
+    $c = New-Object System.Net.Sockets.TcpClient
+    try
+    {
+        $task = $c.ConnectAsync("localhost", $Port)
+        return ($task.Wait($TimeoutMs) -and $c.Connected)
+    }
+    catch { return $false }
+    finally { $c.Dispose() }
+}
+
+# ------------------------------------------------------------------
 # 前提の確認（#588）
 # ------------------------------------------------------------------
 # **単体テストも DB を使う。** TestDataAccess と TestBatch が Northwind に繋ぐ。
@@ -336,9 +445,25 @@ if ($Only)
 #   （上の＜前提＞を参照）。
 $needDb = @($tests | Where-Object { $_.NeedDb }).Count -gt 0
 
+$dbConfig = Join-Path $testsRoot "Golden\TestDataAccess\App.config"
+
+# **-CrossDb では、SQL Server（必須）が動いていなければ起動する。**（#623）
+#   起動したものだけを、終わったら止める（始める前から動いていれば、そのまま）。
+$startedSqlServer = $false
+if ($CrossDb -and -not (Test-SqlServer (Get-ConnectionStringFromConfig $dbConfig)).Ok)
+{
+    Write-Host "=== クロス DB : SQL Server を起動します ===" -ForegroundColor Cyan
+    if (-not (Invoke-LocalService $svcStart "sqlserver"))
+    {
+        Write-Host "  **SQL Server を起動できませんでした。**" -ForegroundColor Red
+        exit 1
+    }
+    $startedSqlServer = $true
+}
+
 if ($needDb)
 {
-    Show-Prerequisites -DbConfig (Join-Path $testsRoot "Golden\TestDataAccess\App.config")
+    Show-Prerequisites -DbConfig $dbConfig
 }
 
 # ------------------------------------------------------------------
@@ -459,6 +584,98 @@ if (-not $SkipBuild)
 }
 
 # ------------------------------------------------------------------
+# NUnit の結果（trx）の判定（#610）
+# ------------------------------------------------------------------
+#   trx の ResultSummary を読む。**差分の列には失敗の件数を出す。**
+#   バッチは実行前に古い trx を消すので、ここにあるのは今回の結果である。
+#
+#   -RequireDbms : その DBMS のテストが 1 件以上実行されたことも求める（-CrossDb。#623）。
+#                  **起動したのにスキップされたら、接続できていない。** OK にしない。
+#                  DBMS は TestFixtureSource の引数で、trx の className に DamTests("ODP") のように出る。
+function Get-NUnitResult([string]$Name, [string]$Trx, [bool]$Coverage, [string]$RequireDbms)
+{
+    if (-not (Test-Path $Trx))
+    {
+        Write-Host "  結果ファイル（trx）が生成されていません" -ForegroundColor Red
+        return [pscustomobject]@{ テスト = $Name; 結果 = "結果無し"; 差分 = "-" }
+    }
+
+    [xml]$trx = Get-Content $Trx -Encoding UTF8 -Raw
+    $c = $trx.TestRun.ResultSummary.Counters
+    $total  = [int]$c.total
+    $failed = [int]$c.failed + [int]$c.error + [int]$c.timeout + [int]$c.aborted
+
+    # **スキップ（Assert.Ignore）は Counters の notExecuted に入らない。**
+    #   total と executed の差にだけ現れ、個々の結果では outcome="NotExecuted" になる。
+    #   出さないと「全部走った」と読めてしまうので、件数と名前を必ず出す。
+    $skipped = [int]$c.total - [int]$c.executed
+
+    Write-Host ("  合計 {0} 件 / 合格 {1} 件 / 失敗 {2} 件 / 実行せず {3} 件" -f `
+        $total, $c.passed, $failed, $skipped)
+
+    foreach ($r in @($trx.TestRun.Results.UnitTestResult | Where-Object { $_.outcome -ne "Passed" -and $_.outcome -ne "NotExecuted" }))
+    {
+        Write-Host ("    [{0}] {1}" -f $r.outcome, $r.testName) -ForegroundColor Red
+    }
+    foreach ($r in @($trx.TestRun.Results.UnitTestResult | Where-Object { $_.outcome -eq "NotExecuted" }))
+    {
+        Write-Host ("    [スキップ] {0}" -f $r.testName) -ForegroundColor Yellow
+    }
+
+    # **0 件の合格は OK にしない。** テストが見つからない構成ミスを見逃すため。
+    $ok = ($total -gt 0 -and $failed -eq 0)
+
+    if ($RequireDbms)
+    {
+        # testId → className（UnitTestResult には className が無い）
+        $classOf = @{}
+        foreach ($u in @($trx.TestRun.TestDefinitions.UnitTest)) { $classOf[$u.id] = $u.TestMethod.className }
+
+        $mark = '("{0}")' -f $RequireDbms
+        $ran = @($trx.TestRun.Results.UnitTestResult | Where-Object {
+            $_.outcome -ne "NotExecuted" -and "$($classOf[$_.testId])".Contains($mark) })
+
+        Write-Host ("  {0} のテスト : 実行 {1} 件" -f $RequireDbms, $ran.Count)
+        if ($ran.Count -eq 0)
+        {
+            Write-Host ("  **{0} のテストが 1 件も実行されていません**（起動したのに接続できていない）" -f $RequireDbms) -ForegroundColor Red
+            $ok = $false
+        }
+    }
+
+    # ------------------------------------------------------------------
+    # カバレッジ（表示のみ。判定はしない）
+    # ------------------------------------------------------------------
+    #   coverlet は実行ごとに GUID のフォルダを作るため、trx の隣を探す。
+    if ($Coverage)
+    {
+        $cov = Get-ChildItem (Split-Path $Trx) -Recurse -Filter "coverage.cobertura.xml" -EA SilentlyContinue |
+               Sort-Object LastWriteTime -Descending | Select-Object -First 1
+
+        if ($cov)
+        {
+            [xml]$cx = Get-Content $cov.FullName -Encoding UTF8 -Raw
+            Write-Host "  行カバレッジ（判定には使わない）:"
+            foreach ($p in @($cx.coverage.packages.package))
+            {
+                Write-Host ("    {0,-28} {1,6:P1}" -f $p.name, [double]$p.'line-rate')
+            }
+            Write-Host ("    詳細 : {0}" -f $cov.FullName)
+        }
+        else
+        {
+            Write-Host "  カバレッジのファイルが見つかりません" -ForegroundColor Yellow
+        }
+    }
+
+    return [pscustomobject]@{
+        テスト = $Name
+        結果   = $(if ($ok) { "OK" } else { "NG" })
+        差分   = $failed
+    }
+}
+
+# ------------------------------------------------------------------
 # 比較
 # ------------------------------------------------------------------
 $cmp = Join-Path $progRoot "CompareResult.ps1"
@@ -485,75 +702,10 @@ foreach ($t in $tests)
         continue
     }
 
-    # ------------------------------------------------------------------
-    # NUnit（#610）
-    # ------------------------------------------------------------------
-    #   trx の ResultSummary を読む。**差分の列には失敗の件数を出す。**
-    #   バッチは実行前に古い trx を消すので、ここにあるのは今回の結果である。
+    # NUnit（#610）。判定は Get-NUnitResult（クロス DB の各回と共通。#623）
     if ($t.Kind -eq "NUnit")
     {
-        if (-not (Test-Path $actual))
-        {
-            Write-Host "  結果ファイル（trx）が生成されていません" -ForegroundColor Red
-            $results += [pscustomobject]@{ テスト = $t.Name; 結果 = "結果無し"; 差分 = "-" }
-            continue
-        }
-
-        [xml]$trx = Get-Content $actual -Encoding UTF8 -Raw
-        $c = $trx.TestRun.ResultSummary.Counters
-        $total  = [int]$c.total
-        $failed = [int]$c.failed + [int]$c.error + [int]$c.timeout + [int]$c.aborted
-
-        # **スキップ（Assert.Ignore）は Counters の notExecuted に入らない。**
-        #   total と executed の差にだけ現れ、個々の結果では outcome="NotExecuted" になる。
-        #   出さないと「全部走った」と読めてしまうので、件数と名前を必ず出す。
-        $skipped = [int]$c.total - [int]$c.executed
-
-        Write-Host ("  合計 {0} 件 / 合格 {1} 件 / 失敗 {2} 件 / 実行せず {3} 件" -f `
-            $total, $c.passed, $failed, $skipped)
-
-        foreach ($r in @($trx.TestRun.Results.UnitTestResult | Where-Object { $_.outcome -ne "Passed" -and $_.outcome -ne "NotExecuted" }))
-        {
-            Write-Host ("    [{0}] {1}" -f $r.outcome, $r.testName) -ForegroundColor Red
-        }
-        foreach ($r in @($trx.TestRun.Results.UnitTestResult | Where-Object { $_.outcome -eq "NotExecuted" }))
-        {
-            Write-Host ("    [スキップ] {0}" -f $r.testName) -ForegroundColor Yellow
-        }
-
-        # **0 件の合格は OK にしない。** テストが見つからない構成ミスを見逃すため。
-        $ok = ($total -gt 0 -and $failed -eq 0)
-
-        $results += [pscustomobject]@{
-            テスト = $t.Name
-            結果   = $(if ($ok) { "OK" } else { "NG" })
-            差分   = $failed
-        }
-
-        # ------------------------------------------------------------------
-        # カバレッジ（表示のみ。判定はしない）
-        # ------------------------------------------------------------------
-        #   coverlet は実行ごとに GUID のフォルダを作るため、trx の隣を探す。
-        if ($t.Coverage)
-        {
-            $cov = Get-ChildItem (Split-Path $actual) -Recurse -Filter "coverage.cobertura.xml" -EA SilentlyContinue |
-                   Sort-Object LastWriteTime -Descending | Select-Object -First 1
-
-            if ($cov)
-            {
-                [xml]$cx = Get-Content $cov.FullName -Encoding UTF8 -Raw
-                Write-Host "  行カバレッジ（判定には使わない）:"
-                foreach ($p in @($cx.coverage.packages.package))
-                {
-                    Write-Host ("    {0,-28} {1,6:P1}" -f $p.name, [double]$p.'line-rate')
-                }
-                Write-Host ("    詳細 : {0}" -f $cov.FullName)
-            }
-            else
-            {
-                Write-Host "  カバレッジのファイルが見つかりません" -ForegroundColor Yellow
-            }
-        }
+        $results += Get-NUnitResult -Name $t.Name -Trx $actual -Coverage ([bool]$t.Coverage)
         continue
     }
 
@@ -591,6 +743,109 @@ foreach ($t in $tests)
         結果   = $cmpResult.Result
         差分   = $cmpResult.DiffCount
     }
+}
+
+# ------------------------------------------------------------------
+# クロス DB : DBMS ごとに 起動 → テスト → 停止（#623）
+# ------------------------------------------------------------------
+#   **同時に動かすのは、SQL Server ともう 1 つだけ。**
+#   ビルドは上のバッチで済んでいるので、ここは --no-build で TestPublicDb だけを回す。
+#   **結果のフォルダを回ごとに分ける。** バッチは実行のたびに TestResults を消すが、
+#   ここでは消さないので、回ごとのカバレッジが残る。
+if ($CrossDb -and $buildFailed.ContainsKey("y_Build_TestCode_NUnit.bat"))
+{
+    Write-Host ""
+    Write-Host "  **NUnit のビルドに失敗しているため、クロス DB は回しません。**" -ForegroundColor Red
+}
+elseif ($CrossDb)
+{
+    $nunitDir  = Join-Path $testsRoot "NUnit"
+    $csproj    = Join-Path $nunitDir ("{0}\{0}.csproj" -f $crossDbProject)
+    $runsettings = Join-Path $nunitDir "TestPublic\coverlet.runsettings"
+
+    foreach ($db in $crossDbServices)
+    {
+        Write-Host ""
+        Write-Host ("=== クロス DB : {0}（{1}） ===" -f $db.Service, $db.Dbms) -ForegroundColor Cyan
+
+        # **始める前から動いていたものは、起動も停止もしない。**（人の作業状態を変えない）
+        $wasRunning = Test-LocalPort $db.Port
+        if ($wasRunning)
+        {
+            Write-Host ("  既に動いています（localhost:{0}）。起動・停止はしません。" -f $db.Port) -ForegroundColor Yellow
+        }
+        else
+        {
+            Write-Host ("  起動します : {0}" -f $db.Service)
+            if (-not (Invoke-LocalService $svcStart $db.Service))
+            {
+                Write-Host ("  **{0} を起動できませんでした。**" -f $db.Service) -ForegroundColor Red
+                # 中途半端に立ったものを残さない
+                Invoke-LocalService $svcStop $db.Service | Out-Null
+                foreach ($tfm in $db.Tfms)
+                {
+                    $results += [pscustomobject]@{ テスト = ("{0} ({1}) [{2}]" -f $crossDbProject, $tfm, $db.Service); 結果 = "起動失敗"; 差分 = "-" }
+                }
+                continue
+            }
+        }
+
+        try
+        {
+            # **回す前に、SQL Server（必須）が応答するのを確かめる。**
+            #   DBMS を起動した直後は VM の負荷が高く、SQL Server のログインがタイムアウトして
+            #   SQL Server 側のテストが落ちたことがある（2026-10-18、MySQL の起動直後）。
+            #   一度つながれば応答は戻るので、数回まで待ってから回す。
+            $sqlOk = $false
+            for ($i = 1; $i -le 4 -and -not $sqlOk; $i++)
+            {
+                $sqlOk = (Test-SqlServer (Get-ConnectionStringFromConfig $dbConfig) 15).Ok
+                if (-not $sqlOk) { Write-Host ("  SQL Server の応答待ち（{0} 回目）..." -f $i) -ForegroundColor Yellow }
+            }
+            if (-not $sqlOk)
+            {
+                Write-Host "  **SQL Server が応答しません。この回の結果は当てになりません。**" -ForegroundColor Red
+            }
+
+            $resDir = Join-Path $nunitDir ("TestResults\CrossDb\{0}" -f $db.Service)
+            if (Test-Path $resDir) { Remove-Item $resDir -Recurse -Force }
+
+            foreach ($tfm in $db.Tfms)
+            {
+                $name = "{0} ({1}) [{2}]" -f $crossDbProject, $tfm, $db.Service
+                $trxName = "{0}_{1}.trx" -f $crossDbProject, $tfm
+                Write-Host ""
+                Write-Host ("=== {0} ===" -f $name) -ForegroundColor Cyan
+
+                $testArgs = @("test", $csproj, "--no-build", "-c", "Debug", "-f", $tfm,
+                    "--results-directory", $resDir, "--logger", "trx;LogFileName=$trxName")
+                # カバレッジは net10.0 だけで取る（y_Build_TestCode_NUnit.bat と同じ）
+                if ($tfm -eq "net10.0") { $testArgs += @("--settings", $runsettings, "--collect", "XPlat Code Coverage") }
+
+                $log = Join-Path $OutputDir ("crossdb_{0}_{1}.log" -f $db.Service, ($tfm -replace '[^A-Za-z0-9]', '_'))
+                & dotnet @testArgs *>&1 | Out-File $log -Encoding UTF8
+
+                $results += Get-NUnitResult -Name $name -Trx (Join-Path $resDir $trxName) `
+                    -Coverage ($tfm -eq "net10.0") -RequireDbms $db.Dbms
+            }
+        }
+        finally
+        {
+            # **使い終わったら止める。** 失敗しても、Ctrl+C でも止める。
+            if (-not $wasRunning)
+            {
+                Write-Host ("  停止します : {0}" -f $db.Service)
+                Invoke-LocalService $svcStop $db.Service | Out-Null
+            }
+        }
+    }
+}
+
+if ($startedSqlServer)
+{
+    Write-Host ""
+    Write-Host "=== クロス DB : 起動した SQL Server を停止します ===" -ForegroundColor Cyan
+    Invoke-LocalService $svcStop "sqlserver" | Out-Null
 }
 
 # ------------------------------------------------------------------

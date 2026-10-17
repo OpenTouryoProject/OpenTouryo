@@ -13,6 +13,7 @@
 >
 > - **必要なサービスだけを、名前を指定して起動する。** 引数なしの `Start-Services.ps1` は全サービスを起動するので使わない
 > - **必須でないコンテナを同時に複数起動しない。** クロス DB は、SQL Server（必須）に 1 つずつ足して回し、測り終えたら止める
+>   （`2_RunAllTests.ps1 -CrossDb` がこれを自動で行う。下の `TestPublicDb` の説明）
 > - **使い終わったら止める**（`Stop-Services.ps1 <サービス名>`）。状態は `Show-Services.ps1`（読み取り専用）で確かめる
 > - Rancher Desktop 版（`*.ps1`）と WSL2 版（`*_wsl2.ps1`）は**別の Docker を見る。** 混ぜて使うと、同じサービスが二重に立つ
 > - `oracle` と `sqlserver` は特に大きい
@@ -107,7 +108,22 @@ HEAD とは比較せず、バッチが書き出す `*.trx` の集計で判定す
 **SQL Server は必須**（接続できなければ失敗。CI でも接続する）。Oracle / MySQL / PostgreSQL は**接続できなければスキップ**し、件数と名前が「実行せず」に出る。
 クロス DB で確かめるなら LocalServicesOnDocker の各 DBMS を起動してから回す（接続先は Golden の `TestDataAccess` と同じ）。PostgreSQL は `DamPstGrS` が .NET 専用のため net10.0 だけ。
 **DBMS は 1 つずつ起動して回す**（冒頭の CHEATSHEET の注意）。起動していない DBMS はスキップされるだけなので、1 つずつでも漏れなく確かめられる。
-ただし**バッチは実行のたびに `TestResults` を消す**ので、カバレッジは回した回の分しか残らない（Dam ごとの値は、その DBMS を起動した回の表示で見る）。
+
+**`-CrossDb -LocalServicesDir <LocalServicesOnDocker のフォルダ>` を付けると、これを自動で行う**（#623）。
+
+```powershell
+.\2_RunAllTests.ps1 -CrossDb -LocalServicesDir <LocalServicesOnDocker のフォルダ>
+```
+
+- 対象は `TestPublicDb` だけになる。まずバッチでビルドして SQL Server だけの回を回し、
+  続けて **Oracle → MySQL → PostgreSQL を 1 つずつ「起動 → `--no-build` で回す → 停止」** する
+- 起動・停止は LocalServicesOnDocker のスクリプトで行う。**`docker` が使えれば Rancher Desktop 版（`*.ps1`）、使えなければ WSL2 版（`*_wsl2.ps1`）**
+- **始める前から動いていた DBMS は、起動も停止もしない。** SQL Server が動いていなければ起動し、終わったら止める
+- **起動したのに、その DBMS のテストが 1 件も実行されなければ NG**（スキップのまま OK にしない）
+- 回ごとの結果は `NUnit\TestResults\CrossDb\<サービス名>` に残る（カバレッジも回ごと）。サマリの名前は `TestPublicDb (net10.0) [oracle]` の形
+- **コンテナを起動・停止するのは `-CrossDb` を付けたときだけ。** 付けなければ、今までどおり動いている DB を使うだけ
+
+手で 1 つずつ回す場合、**バッチは実行のたびに `TestResults` を消す**ので、カバレッジは回した回の分しか残らない（Dam ごとの値は、その DBMS を起動した回の表示で見る）。
 
 - **サマリの「差分」の列は、NUnit では失敗の件数を表す。**
 - **0 件の合格は OK にしない。** テストが見つからない構成ミスを見逃すため

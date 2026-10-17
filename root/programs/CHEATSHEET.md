@@ -118,6 +118,9 @@ dotnet test CS\Frameworks\Tests\NUnit\TestPublic\TestPublic.csproj -f net10.0 --
 - **DB のコンテナは LocalServicesOnDocker の [`CHEATSHEET.md`](https://github.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker/blob/master/CHEATSHEET.md) に従う。**
   必要なものだけを名前で起動し、**必須でないものを同時に複数起動しない**（クロス DB は SQL Server に 1 つずつ足す）。
   使い終わったら止める。**メモリを使い切ると、コンテナがシステムごとハングさせる**（[`TESTING.md`](TESTING.md) の冒頭）
+- **クロス DB（`TestPublicDb`）は `.\2_RunAllTests.ps1 -CrossDb -LocalServicesDir <LocalServicesOnDocker>` で回す**（#623）。
+  DBMS を 1 つずつ起動 → 回す → 停止まで自動で行う（`docker` が使えれば Rancher 版、使えなければ WSL2 版）。
+  始める前から動いていた DBMS には触らない。`-CrossDb` を付けなければ、コンテナは起動も停止もしない
 - `dotnet test` の `-f net10.0` を外すと net48 も回る。**net48 / net10.0 で実装が違う箇所は両方回す**
 
 - **基盤だけのビルドでもクリーンは外さない。** 外すと #574 の罠

@@ -331,6 +331,9 @@ cd <LocalServicesOnDocker のパス>
 .\Stop-Services.ps1 oracle       # 終わったら止めてから、次の DBMS へ
 ```
 
+> **`2_RunAllTests.ps1 -CrossDb`（#623）は、こちらを回さない。** 自動で 1 つずつ起動・停止するのは
+> NUnit の `TestPublicDb` だけである。`LOCAL` は期待値と比べない手動の確認なので（③）、上の手順で回す。
+
 `test\dotnet\start.bat` で、各サービスへ接続できるかを先に確かめられる。
 **ここで NG のものは、こちらのテストでも当然 NG になる。**
 
