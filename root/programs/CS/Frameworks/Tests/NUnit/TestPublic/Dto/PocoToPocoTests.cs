@@ -25,8 +25,10 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/17  玄人 幸道         新規作成（カバレッジの拡充）
 //*  2026/10/17  玄人 幸道         公開の set / get を持たないプロパティのケースを追加（#618）
+//*  2026/10/18  玄人 幸道         同名で型の違う項目のケースを追加（#619）
 //**********************************************************************************
 
+using System;
 using System.Collections.Generic;
 
 using NUnit.Framework;
@@ -224,6 +226,152 @@ namespace TestPublic.Dto
 
             Assert.That(dst.OrderID, Is.EqualTo(0));
             Assert.That(dst.Note, Is.EqualTo("n"));
+        }
+
+        #endregion
+
+        #region 同名で型の違う項目（#619）
+
+        /// <summary>列挙型</summary>
+        public enum Kind
+        {
+            /// <summary>A</summary>
+            A = 0,
+            /// <summary>B</summary>
+            B = 1
+        }
+
+        /// <summary>移送元（型の違う項目を持つ）</summary>
+        public class TypedSource
+        {
+            /// <summary>int → long</summary>
+            public int ToLong { get; set; }
+            /// <summary>int → string</summary>
+            public int ToStr { get; set; }
+            /// <summary>string → int</summary>
+            public string StrToInt { get; set; }
+            /// <summary>int → int?</summary>
+            public int ToNullable { get; set; }
+            /// <summary>int? → int（値あり）</summary>
+            public int? NullableToInt { get; set; }
+            /// <summary>int? → int（null）</summary>
+            public int? NullToInt { get; set; }
+            /// <summary>int → long?</summary>
+            public int ToNullableLong { get; set; }
+        }
+
+        /// <summary>移送先</summary>
+        public class TypedDestination
+        {
+            /// <summary>int → long</summary>
+            public long ToLong { get; set; }
+            /// <summary>int → string</summary>
+            public string ToStr { get; set; }
+            /// <summary>string → int</summary>
+            public int StrToInt { get; set; }
+            /// <summary>int → int?</summary>
+            public int? ToNullable { get; set; }
+            /// <summary>int? → int（値あり）</summary>
+            public int NullableToInt { get; set; }
+            /// <summary>int? → int（null）</summary>
+            public int NullToInt { get; set; } = -1;
+            /// <summary>int → long?</summary>
+            public long? ToNullableLong { get; set; }
+        }
+
+        /// <summary>移送元（キャストで済む項目だけ。以前から移送できていたもの）</summary>
+        public class AssignableSource
+        {
+            /// <summary>int → int?</summary>
+            public int ToNullable { get; set; }
+            /// <summary>int → 列挙型</summary>
+            public int ToEnum { get; set; }
+            /// <summary>列挙型 → int</summary>
+            public Kind EnumToInt { get; set; }
+            /// <summary>派生型 → インタフェイス</summary>
+            public List<string> ToEnumerable { get; set; }
+        }
+
+        /// <summary>移送先（キャストで済む項目だけ）</summary>
+        public class AssignableDestination
+        {
+            /// <summary>int → int?</summary>
+            public int? ToNullable { get; set; }
+            /// <summary>int → 列挙型</summary>
+            public Kind ToEnum { get; set; }
+            /// <summary>列挙型 → int</summary>
+            public int EnumToInt { get; set; }
+            /// <summary>派生型 → インタフェイス</summary>
+            public IEnumerable<string> ToEnumerable { get; set; }
+        }
+
+        /// <summary>移送元を作る。</summary>
+        private static TypedSource CreateTypedSource()
+        {
+            return new TypedSource()
+            {
+                ToLong = 5, ToStr = 6, StrToInt = "12", ToNullable = 7, NullableToInt = 8, NullToInt = null,
+                ToNullableLong = 9
+            };
+        }
+
+        /// <summary>
+        /// **同名で型が違えば、DataToPoco と同じく変換して移送する**（int → long / int → string / string → int / int → long?）。
+        /// 2026/10/18 まで InvalidCastException になっていた（#619）。
+        /// </summary>
+        [Test]
+        [SetCulture("ja-JP")]
+        public void DifferentType_Converted()
+        {
+            TypedDestination dst = PocoToPoco.Map<TypedSource, TypedDestination>(CreateTypedSource());
+
+            Assert.That(dst.ToLong, Is.EqualTo(5L));
+            Assert.That(dst.ToStr, Is.EqualTo("6"));
+            Assert.That(dst.StrToInt, Is.EqualTo(12));
+            Assert.That(dst.ToNullableLong, Is.EqualTo(9L));
+            Assert.That(dst.NullableToInt, Is.EqualTo(8));
+        }
+
+        /// <summary>
+        /// キャストで済む組み合わせは、以前と同じくそのまま移送する
+        /// （T → Nullable(T)・整数 ⇔ 列挙型・派生型 → インタフェイス。参照はそのまま）。
+        /// #619 の前の DLL でも通ることを確かめてある（変換を足して壊していないことの確認）。
+        /// </summary>
+        [Test]
+        public void AssignableType_AsBefore()
+        {
+            AssignableSource src = new AssignableSource()
+            {
+                ToNullable = 7, ToEnum = 1, EnumToInt = Kind.B, ToEnumerable = new List<string>() { "a" }
+            };
+            AssignableDestination dst = PocoToPoco.Map<AssignableSource, AssignableDestination>(src);
+
+            Assert.That(dst.ToNullable, Is.EqualTo(7));
+            Assert.That(dst.ToEnum, Is.EqualTo(Kind.B));
+            Assert.That(dst.EnumToInt, Is.EqualTo(1));
+            Assert.That(dst.ToEnumerable, Is.SameAs(src.ToEnumerable));
+        }
+
+        /// <summary>
+        /// null は、Nullable でない値型には入らない。**既定値のまま**（DataToPoco の DBNull と同じ）。
+        /// 2026/10/18 まで NullReferenceException になっていた（#619）。
+        /// </summary>
+        [Test]
+        public void NullToValueType_LeavesValue()
+        {
+            TypedDestination dst = PocoToPoco.Map<TypedSource, TypedDestination>(CreateTypedSource());
+
+            Assert.That(dst.NullToInt, Is.EqualTo(-1));
+        }
+
+        /// <summary>変換できない値は、DataToPoco と同じく FormatException（どの値かは例外で分かる）。</summary>
+        [Test]
+        public void NotConvertible_Throws()
+        {
+            TypedSource src = CreateTypedSource();
+            src.StrToInt = "x";
+
+            Assert.Throws<FormatException>(() => PocoToPoco.Map<TypedSource, TypedDestination>(src));
         }
 
         #endregion

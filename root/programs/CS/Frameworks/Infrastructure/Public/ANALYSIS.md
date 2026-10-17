@@ -177,6 +177,9 @@ DBMS の差を `BaseDam` と各 `Dam*` に閉じ込め、上位（`BaseDao`）�
 `AccessorCacher` は、**公開の set / get が無いプロパティでは `SetDelegate` / `GetDelegate` を `null` にする**（`private set` も公開ではない）。
 `DataToPoco` / `PocoToPoco` は、それを**移送の対象から外す**（#618。以前は同名の列・項目があると `NullReferenceException` になった）。
 `AccessorCacher` を使う詰め替えを足すなら、同じく `null` を確かめること。
+**同名で型が違う項目は、`DataToPoco` も `PocoToPoco` も `Convert.ChangeType` で変換して移す**（`PocoToPoco` は #619 から。それまでは `InvalidCastException`）。
+`PocoToPoco` は、キャストで済む組み合わせ（派生型 → 基底型・`T` → `Nullable<T>`・整数 ⇔ 列挙型）はそのまま移し、
+`null` は Nullable でない値型に入れない（既定値のまま）。
 
 ---
 

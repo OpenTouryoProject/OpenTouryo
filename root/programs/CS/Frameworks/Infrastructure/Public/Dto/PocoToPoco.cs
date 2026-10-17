@@ -33,8 +33,10 @@
 //*  2018/12/11  西野 大介         バグ修正（マップ無し時の動作
 //*  2026/10/17  玄人 幸道         公開の set を持たない移送先・公開の get を持たない移送元の
 //*                                プロパティで、NullReferenceException になるのを修正（#618）
+//*  2026/10/18  玄人 幸道         同名で型の違う項目を、DataToPoco と同じく変換して移送するようにした（#619）
 //**********************************************************************************
 
+using System;
 using System.Collections.Generic;
 
 using Touryo.Infrastructure.Public.FastReflection;
@@ -135,12 +137,70 @@ namespace Touryo.Infrastructure.Public.Dto
                     // 公開の get を持たない移送元のプロパティは、値を取れないので飛ばす（#618）。
                     if (srcName == src_ai.AccessorName && src_ai.GetDelegate != null)
                     {
-                        dst_ai.SetDelegate(dst, src_ai.GetDelegate(src));
+                        object dstValue = null;
+                        if (PocoToPoco.TryConvert(src_ai.GetDelegate(src), dst_ai, out dstValue))
+                        {
+                            dst_ai.SetDelegate(dst, dstValue);
+                        }
                     }
                 }
             }
 
             return dst;
+        }
+
+        /// <summary>移送元の値を、移送先の型に合わせる（#619）</summary>
+        /// <param name="srcValue">移送元の値</param>
+        /// <param name="dst_ai">移送先の AccessorInfo</param>
+        /// <param name="dstValue">移送先に設定する値</param>
+        /// <returns>設定するなら true。設定しない（既定値のまま）なら false</returns>
+        /// <remarks>
+        /// 2026/10/18 まで変換をせず、同名で型が違うと（int → long でも）InvalidCastException になっていた。
+        /// DataToPoco は Convert.ChangeType で変換するので、それに合わせる。
+        /// ただし、キャストで済む組み合わせ（派生型 → 基底型・インタフェイス、T → Nullable(T)、
+        /// 整数 ⇔ 列挙型）は、以前と同じくそのまま設定する（変換すると、かえって通らなくなる）。
+        /// </remarks>
+        private static bool TryConvert(object srcValue, AccessorInfo dst_ai, out object dstValue)
+        {
+            dstValue = srcValue;
+
+            // 移送先の型（Nullable なら中身の型）
+            Type dstType = dst_ai.UnderlyingType ?? dst_ai.AccessorType;
+
+            if (srcValue == null)
+            {
+                // null は、Nullable でない値型には入らない。既定値のまま（DataToPoco の DBNull と同じ）。
+                return !(dst_ai.AccessorType.IsValueType && dst_ai.UnderlyingType == null);
+            }
+
+            Type srcType = srcValue.GetType();
+
+            if (dst_ai.AccessorType.IsAssignableFrom(srcType))
+            {
+                // そのまま入る（型一致・派生型 → 基底型・T → Nullable(T)）
+            }
+            else if (dstType.IsEnum && PocoToPoco.IsIntegral(srcType))
+            {
+                // 整数・列挙型 → 列挙型（Convert.ChangeType は列挙型へ変換できない）
+                dstValue = Enum.ToObject(dstType, srcValue);
+            }
+            else
+            {
+                // Convert.ChangeType() doesn't handle nullables -> use UnderlyingType.
+                dstValue = Convert.ChangeType(srcValue, dstType);
+            }
+
+            return true;
+        }
+
+        /// <summary>整数型（列挙型は中身の型で見る）か</summary>
+        /// <param name="type">Type</param>
+        /// <returns>整数型なら true</returns>
+        private static bool IsIntegral(Type type)
+        {
+            // TypeCode は SByte ～ UInt64 が整数型。列挙型は中身の型の TypeCode を返す。
+            TypeCode tc = Type.GetTypeCode(type);
+            return TypeCode.SByte <= tc && tc <= TypeCode.UInt64;
         }
     }
 }
