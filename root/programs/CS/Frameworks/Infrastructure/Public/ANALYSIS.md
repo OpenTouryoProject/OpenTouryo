@@ -185,6 +185,8 @@ DBMS の差を `BaseDam` と各 `Dam*` に閉じ込め、上位（`BaseDao`）�
 **1 度だけボックス化したものに値を入れ、最後に取り出す**こと（詰め替えを足すときも同じ）。
 `CompiledExpressionCreater` の Setter は、値型では `Expression.Unbox` でボックスの中身に代入する
 （#620 まで `Expression.Convert` で、アンボックス化したコピーに代入していた）。
+`DataToDictionary` は、マップで他の列と同じキーに付け替える（か同名の列がある）と、**キーと列名を示す `ArgumentException`**
+（`PublicExceptionMessage.DUPLICATE_DICTIONARY_KEY`）を投げる（#622。それまでは `Dictionary.Add` の汎用のメッセージ）。
 
 ---
 
