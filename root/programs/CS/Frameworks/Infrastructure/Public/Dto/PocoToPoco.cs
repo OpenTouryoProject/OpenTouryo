@@ -35,6 +35,7 @@
 //*                                プロパティで、NullReferenceException になるのを修正（#618）
 //*  2026/10/18  玄人 幸道         同名で型の違う項目を、DataToPoco と同じく変換して移送するようにした（#619）
 //*  2026/10/18  玄人 幸道         移送先が構造体のとき、値が入らないのを修正（#620）
+//*  2026/10/18  玄人 幸道         移送元が null なら ArgumentNullException にした（#621）
 //**********************************************************************************
 
 using System;
@@ -50,7 +51,7 @@ namespace Touryo.Infrastructure.Public.Dto
         /// <summary>POCO型を、POCO型にマップ</summary>
         /// <typeparam name="TSource">srcのPOCO型</typeparam>
         /// <typeparam name="TDestination">dstのPOCO型</typeparam>
-        /// <param name="src">srcのPOCOインスタンス</param>
+        /// <param name="src">srcのPOCOインスタンス(null不可。nullならArgumentNullException)</param>
         /// <returns>TDestination型のPOCO</returns>
         public static TDestination Map<TSource, TDestination>(TSource src)
         {
@@ -60,7 +61,7 @@ namespace Touryo.Infrastructure.Public.Dto
         /// <summary>POCO型を、POCO型にマップ</summary>
         /// <typeparam name="TSource">srcのPOCO型</typeparam>
         /// <typeparam name="TDestination">dstのPOCO型</typeparam>
-        /// <param name="src">srcのPOCOインスタンス</param>
+        /// <param name="src">srcのPOCOインスタンス(null不可。nullならArgumentNullException)</param>
         /// <param name="dst">dstのPOCOインスタンス(null可)</param>
         /// <returns>TDestination型のPOCO</returns>
         public static TDestination Map<TSource, TDestination>(TSource src, TDestination dst)
@@ -71,7 +72,7 @@ namespace Touryo.Infrastructure.Public.Dto
         /// <summary>POCO型を、POCO型にマップ</summary>
         /// <typeparam name="TSource">srcのPOCO型</typeparam>
         /// <typeparam name="TDestination">dstのPOCO型</typeparam>
-        /// <param name="src">srcのPOCOインスタンス</param>
+        /// <param name="src">srcのPOCOインスタンス(null不可。nullならArgumentNullException)</param>
         /// <param name="map">Dictionary(dst property or field string, src property or field string)</param>
         /// <returns>TDestination型のPOCO</returns>
         public static TDestination Map<TSource, TDestination>(TSource src, Dictionary<string, string> map)
@@ -82,12 +83,19 @@ namespace Touryo.Infrastructure.Public.Dto
         /// <summary>POCO型を、POCO型にマップ</summary>
         /// <typeparam name="TSource">srcのPOCO型</typeparam>
         /// <typeparam name="TDestination">dstのPOCO型</typeparam>
-        /// <param name="src">srcのPOCOインスタンス</param>
+        /// <param name="src">srcのPOCOインスタンス(null不可。nullならArgumentNullException)</param>
         /// <param name="dst">dstのPOCOインスタンス(null可)</param>
         /// <param name="map">Dictionary(dst property or field string, src property or field string)</param>
         /// <returns>TDestination型のPOCO</returns>
         public static TDestination Map<TSource, TDestination>(TSource src, TDestination dst, Dictionary<string, string> map)
         {
+            // 移送元は必須（#621）。他のオーバーロードもここに集まる。
+            // 2026/10/18 まで、src.GetType() で NullReferenceException になっていた。
+            if (src == null)
+            {
+                throw new ArgumentNullException(nameof(src));
+            }
+
             // POCOのnew()
             if (dst == null)
             {

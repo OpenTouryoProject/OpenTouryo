@@ -27,6 +27,7 @@
 //*  2026/10/17  玄人 幸道         公開の set / get を持たないプロパティのケースを追加（#618）
 //*  2026/10/18  玄人 幸道         同名で型の違う項目のケースを追加（#619）
 //*  2026/10/18  玄人 幸道         構造体のケースを追加（#620）
+//*  2026/10/18  玄人 幸道         移送元が null のケースを追加（#621）
 //**********************************************************************************
 
 using System;
@@ -404,6 +405,25 @@ namespace TestPublic.Dto
             OrderStruct dst2 = PocoToPoco.Map<OrderSource, OrderStruct>(CreateSource(), given);
             Assert.That(dst2.OrderID, Is.EqualTo(3));
             Assert.That(given.OrderID, Is.EqualTo(99), "値渡しなので、渡した変数は変わらない");
+        }
+
+        /// <summary>
+        /// **移送元が null なら ArgumentNullException**（引数名は src）。どのオーバーロードでも同じ。
+        /// 2026/10/18 まで NullReferenceException だった（#621）。
+        /// </summary>
+        [Test]
+        public void NullSource_ThrowsArgumentNull()
+        {
+            Dictionary<string, string> map = new Dictionary<string, string>();
+
+            Assert.That(Assert.Throws<ArgumentNullException>(() =>
+                PocoToPoco.Map<OrderSource, OrderDestination>(null)).ParamName, Is.EqualTo("src"));
+            Assert.That(Assert.Throws<ArgumentNullException>(() =>
+                PocoToPoco.Map<OrderSource, OrderDestination>(null, new OrderDestination())).ParamName, Is.EqualTo("src"));
+            Assert.That(Assert.Throws<ArgumentNullException>(() =>
+                PocoToPoco.Map<OrderSource, OrderDestination>(null, map)).ParamName, Is.EqualTo("src"));
+            Assert.That(Assert.Throws<ArgumentNullException>(() =>
+                PocoToPoco.Map<OrderSource, OrderDestination>(null, new OrderDestination(), map)).ParamName, Is.EqualTo("src"));
         }
 
         /// <summary>移送元が構造体でも移送できる（読むだけなので、以前から移送できていた）。</summary>
