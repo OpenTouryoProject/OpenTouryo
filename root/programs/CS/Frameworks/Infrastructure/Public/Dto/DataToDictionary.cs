@@ -31,6 +31,7 @@
 //*  2018/10/03  西野 大介         性能対策
 //*  2018/10/23  西野 大介         微調整
 //*  2026/08/06  玄人 幸道         コンストラクタの引数の取り違えを修正（#522）
+//*  2026/10/18  玄人 幸道         キーが重なったとき、原因の分かる例外にした（#622）
 //**********************************************************************************
 
 using System;
@@ -148,6 +149,14 @@ namespace Touryo.Infrastructure.Public.Dto
 
                     if (hs.Contains(srcPropName))
                     {
+                        if (obj.ContainsKey(dstPropName))
+                        {
+                            // キーが重なったら、マップの指定（か同名の列）が原因と分かる例外にする（#622）。
+                            // 2026/10/18 まで、Dictionary.Add の「同じキーの項目が既に追加されています」だった。
+                            throw new ArgumentException(string.Format(
+                                PublicExceptionMessage.DUPLICATE_DICTIONARY_KEY, dstPropName, srcPropName));
+                        }
+
                         object o = dr[srcPropName];
 
                         // TimeSpan型の書式指定をする方法と注意点(C#)
@@ -246,6 +255,14 @@ namespace Touryo.Infrastructure.Public.Dto
 
                     if (hs.Contains(srcPropName))
                     {
+                        if (obj.ContainsKey(dstPropName))
+                        {
+                            // キーが重なったら、マップの指定（か同名の列）が原因と分かる例外にする（#622）。
+                            // 2026/10/18 まで、Dictionary.Add の「同じキーの項目が既に追加されています」だった。
+                            throw new ArgumentException(string.Format(
+                                PublicExceptionMessage.DUPLICATE_DICTIONARY_KEY, dstPropName, srcPropName));
+                        }
+
                         object o = dr[srcPropName];
 
                         // TimeSpan型の書式指定をする方法と注意点(C#)

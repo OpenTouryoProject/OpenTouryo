@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/17  玄人 幸道         新規作成（カバレッジの拡充）
+//*  2026/10/18  玄人 幸道         マップでキーが重なるケースを追加（#622）
 //**********************************************************************************
 
 using System;
@@ -33,6 +34,7 @@ using System.Data;
 using NUnit.Framework;
 
 using Touryo.Infrastructure.Public.Dto;
+using Touryo.Infrastructure.Public.Util;
 
 namespace TestPublic.Dto
 {
@@ -224,6 +226,28 @@ namespace TestPublic.Dto
 
             List<Dictionary<string, string>> list = d2d.DataTableToDictionaryList(CreateTable());
             Assert.That(list[1]["id"], Is.EqualTo("5"));
+        }
+
+        /// <summary>
+        /// **マップで、他の列と同じキーに付け替えると ArgumentException**（List も Dictionary も）。
+        /// メッセージに、重なったキーと列名が出る（マップの指定が原因と分かる）。
+        /// 2026/10/18 まで、Dictionary.Add の「同じキーの項目が既に追加されています」だった（#622）。
+        /// </summary>
+        [Test]
+        public void Map_DuplicateKey_Throws()
+        {
+            // 列 OrderID をキー Note に付け替える。列 Note もキー Note になるので重なる
+            Dictionary<string, string> map = new Dictionary<string, string>();
+            map.Add("OrderID", "Note");
+
+            DataToDictionary d2d = new DataToDictionary(map, "", "");
+
+            // 列は先頭から順に積むので、重なりに気付くのは 2 つ目の列 Note を積むとき（キーも列も Note）
+            ArgumentException ex = Assert.Throws<ArgumentException>(() => d2d.DataTableToDictionary(CreateTable()));
+            Assert.That(ex.Message, Is.EqualTo(string.Format(PublicExceptionMessage.DUPLICATE_DICTIONARY_KEY, "Note", "Note")));
+            Assert.That(ex.Message, Does.Contain("[Note]").And.Contain("Mapping"));
+
+            Assert.Throws<ArgumentException>(() => d2d.DataTableToDictionaryList(CreateTable()));
         }
 
         #endregion

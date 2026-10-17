@@ -212,7 +212,16 @@ namespace Touryo.Infrastructure.Public.Resources {
                 return ResourceManager.GetString("DPQ_TAG_VALUE_ATTR_NOT_EXIST", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   The key [{0}] of the column [{1}] is duplicated. The Mapping maps the column to the same key as another column, or there are columns with the same name. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string DUPLICATE_DICTIONARY_KEY {
+            get {
+                return ResourceManager.GetString("DUPLICATE_DICTIONARY_KEY", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   assembly name: [{0}] does not exist. に類似しているローカライズされた文字列を検索します。
         /// </summary>
