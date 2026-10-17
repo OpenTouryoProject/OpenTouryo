@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/17  玄人 幸道         新規作成（カバレッジの拡充）
 //*  2026/10/17  玄人 幸道         公開の set を持たないプロパティのケースを追加（#618）
+//*  2026/10/18  玄人 幸道         構造体のケースを追加（#620）
 //**********************************************************************************
 
 using System;
@@ -291,6 +292,40 @@ namespace TestPublic.Dto
 
             List<GetOnlyPoco> list2 = DataToPoco.DataTableToList<GetOnlyPoco>(dt);
             Assert.That(list2[0].Note, Is.EqualTo("x"));
+        }
+
+        #endregion
+
+        #region 構造体（#620）
+
+        /// <summary>構造体の POCO（フィールドとプロパティ）</summary>
+        public struct OrderStruct
+        {
+            /// <summary>OrderID（フィールド）</summary>
+            public int OrderID;
+
+            /// <summary>Note（プロパティ）</summary>
+            public string Note { get; set; }
+        }
+
+        /// <summary>
+        /// **構造体にも値が入る**（フィールドにもプロパティにも）。
+        /// 2026/10/18 まで、例外にならずに値が 1 つも入らなかった（#620。ボックス化したコピーに値を入れていた）。
+        /// </summary>
+        [Test]
+        public void Struct_Mapped()
+        {
+            DataTable dt = CreateTable();
+
+            OrderStruct poco = DataToPoco.DataTableToPOCO<OrderStruct>(dt);
+            Assert.That(poco.OrderID, Is.EqualTo(1));
+            Assert.That(poco.Note, Is.EqualTo("x"));
+
+            List<OrderStruct> list = DataToPoco.DataTableToList<OrderStruct>(dt);
+            Assert.That(list, Has.Count.EqualTo(2));
+            Assert.That(list[0].OrderID, Is.EqualTo(1));
+            Assert.That(list[1].OrderID, Is.EqualTo(2));
+            Assert.That(list[1].Note, Is.Null);
         }
 
         #endregion

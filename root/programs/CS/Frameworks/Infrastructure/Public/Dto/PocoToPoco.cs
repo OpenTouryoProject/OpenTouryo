@@ -34,6 +34,7 @@
 //*  2026/10/17  玄人 幸道         公開の set を持たない移送先・公開の get を持たない移送元の
 //*                                プロパティで、NullReferenceException になるのを修正（#618）
 //*  2026/10/18  玄人 幸道         同名で型の違う項目を、DataToPoco と同じく変換して移送するようにした（#619）
+//*  2026/10/18  玄人 幸道         移送先が構造体のとき、値が入らないのを修正（#620）
 //**********************************************************************************
 
 using System;
@@ -96,6 +97,12 @@ namespace Touryo.Infrastructure.Public.Dto
             AccessorCacher.CacheAccessor(dst); // dstの型
             AccessorCacher.CacheAccessor(src); // srcの型
 
+            // **値を入れる先は、1 度だけボックス化したもの**（#620）。
+            // SetDelegate は object を受けるので、構造体の dst をそのまま渡すと、
+            // 呼ぶたびにボックス化したコピーに値が入り、dst は変わらない。
+            // 参照型なら、boxedDst は dst と同じインスタンス。
+            object boxedDst = dst;
+
             // dst
             foreach (AccessorInfo dst_ai in AccessorCacher.CncDic[dst.GetType()])
             {
@@ -140,13 +147,14 @@ namespace Touryo.Infrastructure.Public.Dto
                         object dstValue = null;
                         if (PocoToPoco.TryConvert(src_ai.GetDelegate(src), dst_ai, out dstValue))
                         {
-                            dst_ai.SetDelegate(dst, dstValue);
+                            dst_ai.SetDelegate(boxedDst, dstValue);
                         }
                     }
                 }
             }
 
-            return dst;
+            // ボックス化したものから取り出す（構造体の場合。#620）
+            return (TDestination)boxedDst;
         }
 
         /// <summary>移送元の値を、移送先の型に合わせる（#619）</summary>

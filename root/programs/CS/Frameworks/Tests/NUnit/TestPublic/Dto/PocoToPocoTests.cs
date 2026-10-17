@@ -26,6 +26,7 @@
 //*  2026/10/17  玄人 幸道         新規作成（カバレッジの拡充）
 //*  2026/10/17  玄人 幸道         公開の set / get を持たないプロパティのケースを追加（#618）
 //*  2026/10/18  玄人 幸道         同名で型の違う項目のケースを追加（#619）
+//*  2026/10/18  玄人 幸道         構造体のケースを追加（#620）
 //**********************************************************************************
 
 using System;
@@ -372,6 +373,49 @@ namespace TestPublic.Dto
             src.StrToInt = "x";
 
             Assert.Throws<FormatException>(() => PocoToPoco.Map<TypedSource, TypedDestination>(src));
+        }
+
+        #endregion
+
+        #region 構造体（#620）
+
+        /// <summary>構造体（フィールドとプロパティ）</summary>
+        public struct OrderStruct
+        {
+            /// <summary>OrderID（フィールド）</summary>
+            public int OrderID;
+
+            /// <summary>Note（プロパティ）</summary>
+            public string Note { get; set; }
+        }
+
+        /// <summary>
+        /// **移送先が構造体でも値が入る。** 移送先のインスタンスを渡した場合も、値の入った構造体を返す。
+        /// 2026/10/18 まで、例外にならずに値が入らなかった（#620。ボックス化したコピーに値を入れていた）。
+        /// </summary>
+        [Test]
+        public void StructDestination_Mapped()
+        {
+            OrderStruct dst = PocoToPoco.Map<OrderSource, OrderStruct>(CreateSource());
+            Assert.That(dst.OrderID, Is.EqualTo(3));
+            Assert.That(dst.Note, Is.EqualTo("z"));
+
+            OrderStruct given = new OrderStruct() { OrderID = 99 };
+            OrderStruct dst2 = PocoToPoco.Map<OrderSource, OrderStruct>(CreateSource(), given);
+            Assert.That(dst2.OrderID, Is.EqualTo(3));
+            Assert.That(given.OrderID, Is.EqualTo(99), "値渡しなので、渡した変数は変わらない");
+        }
+
+        /// <summary>移送元が構造体でも移送できる（読むだけなので、以前から移送できていた）。</summary>
+        [Test]
+        public void StructSource_Mapped()
+        {
+            OrderStruct src = new OrderStruct() { OrderID = 4, Note = "s" };
+
+            OrderDestination dst = PocoToPoco.Map<OrderStruct, OrderDestination>(src);
+
+            Assert.That(dst.OrderID, Is.EqualTo(4));
+            Assert.That(dst.Note, Is.EqualTo("s"));
         }
 
         #endregion

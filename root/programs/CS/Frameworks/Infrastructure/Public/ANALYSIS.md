@@ -180,6 +180,11 @@ DBMS の差を `BaseDam` と各 `Dam*` に閉じ込め、上位（`BaseDao`）�
 **同名で型が違う項目は、`DataToPoco` も `PocoToPoco` も `Convert.ChangeType` で変換して移す**（`PocoToPoco` は #619 から。それまでは `InvalidCastException`）。
 `PocoToPoco` は、キャストで済む組み合わせ（派生型 → 基底型・`T` → `Nullable<T>`・整数 ⇔ 列挙型）はそのまま移し、
 `null` は Nullable でない値型に入れない（既定値のまま）。
+**移送先は構造体でもよい**（#620。それまでは例外にならずに値が入らなかった）。
+`SetDelegate` は `object` を受けるので、構造体を渡すと呼ぶたびにボックス化したコピーに値が入る。
+**1 度だけボックス化したものに値を入れ、最後に取り出す**こと（詰め替えを足すときも同じ）。
+`CompiledExpressionCreater` の Setter は、値型では `Expression.Unbox` でボックスの中身に代入する
+（#620 まで `Expression.Convert` で、アンボックス化したコピーに代入していた）。
 
 ---
 
