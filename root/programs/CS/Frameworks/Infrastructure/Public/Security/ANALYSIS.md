@@ -168,6 +168,10 @@ net48 はこのパッケージを参照しない（BCL を使う）。
 7. **net10.0（Windows）の `X509Certificate2.GetDSAPublicKey()` は、2048 ビットの DSA 証明書を読めない**（「プロバイダーの公開キーは無効です」）。
    `X509Certificate2.PublicKey.GetDSAPublicKey()` なら読めるので、`AsymmetricAlgorithmCmnFunc.GetPublicKey` はこちらを使う。
    net48 の DSACng の秘密鍵は平文でエクスポートできないので、`DigitalSignX509` は写し直せなければそのまま使う（#626）。
+8. **`RSACng.Create()` / `RSACryptoServiceProvider.Create()` は親の `RSA.Create()` で、派生クラスの名前で呼んでも既定の実装を返す。**
+   `EnumASymmetricAlgorithm.RsaCng` は `new RSACng()` で作る（Windows のみ。Windows 以外は既定の実装）。
+   **`RsaCsp` は `RSA.Create()` のまま**：net48 では RSACryptoServiceProvider になり、.NET ではその環境の既定の実装（Windows は CNG、Linux は OpenSSL）に読み替える。
+   .NET の `RSACryptoServiceProvider` は OAEP-SHA256 などを持たないので、寄せると動いている呼び出しが例外になる（#628）。
 
 ---
 

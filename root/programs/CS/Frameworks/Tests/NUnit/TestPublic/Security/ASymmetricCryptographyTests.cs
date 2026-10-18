@@ -24,7 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
-//*  2026/10/18  玄人 幸道         RsaCng で OAEP-SHA256 を使うケースを追加（#628）
+//*  2026/10/18  玄人 幸道         RsaCng で OAEP-SHA256 を使うケースと、.NET の RsaCsp の互換のケースを追加（#628）
 //**********************************************************************************
 
 using System.Security.Cryptography;
@@ -101,6 +101,22 @@ namespace TestPublic.Security
 
             Assert.That(ac.DecryptString(cipher, "", RSAEncryptionPadding.OaepSHA256), Is.EqualTo(Plain));
         }
+
+#if NETCOREAPP
+        /// <summary>
+        /// .NET の RsaCsp は、その環境の既定の実装に読み替えるので、OAEP-SHA256 も使える（#628 で互換を保った）。
+        /// RSACryptoServiceProvider に寄せると、これが例外になる。
+        /// </summary>
+        [Test]
+        public void RsaCsp_OaepSha256_OnDotNet()
+        {
+            ASymmetricCryptography ac = new ASymmetricCryptography(EnumASymmetricAlgorithm.RsaCsp);
+
+            string cipher = ac.EncryptString(Plain, "", RSAEncryptionPadding.OaepSHA256);
+
+            Assert.That(ac.DecryptString(cipher, "", RSAEncryptionPadding.OaepSHA256), Is.EqualTo(Plain));
+        }
+#endif
 
         /// <summary>証明書：*.cer（公開鍵）で暗号化し、*.pfx（秘密鍵）で戻せる。</summary>
         [Test]

@@ -33,7 +33,7 @@
 //*  2019/06/12  西野 大介         constructorのX509KeyStorageFlagsの既定値を変更
 //*  2026/10/18  玄人 幸道         GetPublicKey：net10.0 で DSA の証明書の公開鍵を読めないのを修正（#626）
 //*  2026/10/18  玄人 幸道         CreateDigitalSignSP：生成する ECDSA（CNG）の鍵を、平文でエクスポートできるようにした（#627）
-//*  2026/10/18  玄人 幸道         CreateCryptographySP：RsaCsp / RsaCng の指定が効かないのを修正（#628）
+//*  2026/10/18  玄人 幸道         CreateCryptographySP：RsaCng の指定が効かないのを修正（#628。RsaCsp は .NET では既定の実装に読み替える）
 //**********************************************************************************
 
 using System;
@@ -200,11 +200,15 @@ namespace Touryo.Infrastructure.Public.Security
                 // **RSACryptoServiceProvider.Create() / RSACng.Create() は、親の RSA.Create() である。**（#628）
                 //   派生クラス名で呼んでも既定の実装を返すので、指定が効いていなかった
                 //   （net48 の RsaCng が RSACryptoServiceProvider になり、OAEP-SHA256 が使えなかった）。
-                //   コンストラクタで、指定どおりの実装を作る。
                 if (easa == EnumASymmetricAlgorithm.RsaCsp)
                 {
-                    // RSACryptoServiceProviderサービスプロバイダ（.NET では Windows 以外でも使える）
-                    asa = new RSACryptoServiceProvider();
+                    // RSACryptoServiceProviderサービスプロバイダ
+                    // **RSA.Create() のままにする。**（#628）
+                    //   net48 では RSA.Create() が RSACryptoServiceProvider を返すので、指定どおりになる。
+                    //   .NET では、その環境の既定の実装（Windows は CNG、Linux は OpenSSL）に読み替える。
+                    //   .NET の RSACryptoServiceProvider は互換のための古い型で、OAEP-SHA256 などを持たない。
+                    //   寄せると、いま動いている呼び出しが例外になる。
+                    asa = RSA.Create();
                 }
                 else if (easa == EnumASymmetricAlgorithm.RsaCng)
                 {
