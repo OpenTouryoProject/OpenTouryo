@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
 //*  2026/10/18  玄人 幸道         文字列版の Encrypt / Decrypt のケースを追加（#629）
+//*  2026/10/18  玄人 幸道         フラグを省いた版（証明書）の Bob のケースを追加（#630）
 //**********************************************************************************
 
 using System;
@@ -108,6 +109,31 @@ namespace TestPublic.Security.KeyExg
             RsaPkcs1Alice alice2 = new RsaPkcs1Alice(bob2.ExchangeKey2);
             bob2.GeneratePrivateKey(alice2.ExchangeKey, alice2.IV);
             Assert.That(bob2.Decrypt(alice2.Encrypt(Plain)), Is.EqualTo(Plain));
+        }
+
+        /// <summary>
+        /// **フラグを省いた版（証明書）でも、Bob を作れる。**
+        /// 2026/10/18 まで、既定の DefaultKeySet では秘密鍵を写し直せず、必ず例外になった（#630）。
+        /// </summary>
+        [Test]
+        public void BobFromPfx_DefaultFlags()
+        {
+            RsaOaepBob bob = new RsaOaepBob(TestCertificates.RsaPfx, TestCertificates.Password);
+            RsaOaepAlice alice = new RsaOaepAlice(bob.ExchangeKey2);
+            bob.GeneratePrivateKey(alice.ExchangeKey, alice.IV);
+            Assert.That(bob.Decrypt(alice.Encrypt(Plain)), Is.EqualTo(Plain));
+
+            RsaPkcs1Bob bob2 = new RsaPkcs1Bob(TestCertificates.RsaPfx, TestCertificates.Password);
+            RsaPkcs1Alice alice2 = new RsaPkcs1Alice(bob2.ExchangeKey2);
+            bob2.GeneratePrivateKey(alice2.ExchangeKey, alice2.IV);
+            Assert.That(bob2.Decrypt(alice2.Encrypt(Plain)), Is.EqualTo(Plain));
+
+            // フラグを渡す版も、Exportable を含めなくてよい
+            RsaOaepBob bob3 = new RsaOaepBob(TestCertificates.RsaPfx, TestCertificates.Password,
+                System.Security.Cryptography.X509Certificates.X509KeyStorageFlags.DefaultKeySet);
+            RsaOaepAlice alice3 = new RsaOaepAlice(bob3.ExchangeKey2);
+            bob3.GeneratePrivateKey(alice3.ExchangeKey, alice3.IV);
+            Assert.That(bob3.Decrypt(alice3.Encrypt(Plain)), Is.EqualTo(Plain));
         }
 
 #if !NETCOREAPP

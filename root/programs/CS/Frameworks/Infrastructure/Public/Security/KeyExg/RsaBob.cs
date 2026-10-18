@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/10/31  西野 大介         新規作成
 //*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
+//*  2026/10/18  玄人 幸道         フラグに Exportable を足し、フラグを省いた版が例外になるのを修正（#630）
 //**********************************************************************************
 
 using System;
@@ -65,6 +66,11 @@ namespace Touryo.Infrastructure.Public.Security.KeyExg
         /// <param name="flag">X509KeyStorageFlags</param>
         protected RsaBob(string rsaPfxFilePath, string password, X509KeyStorageFlags flag)
         {
+            // 下で秘密鍵を ExportParameters(true) して写し直すので、Exportable を足す（#630）。
+            // 足さないと、フラグを省いた版（DefaultKeySet）が必ず例外になっていた。
+            // DigitalSignX509 と同じ扱い。
+            flag = flag | X509KeyStorageFlags.Exportable;
+
 #if NETSTD
             X509Certificate2 x509Certificate = null;
 
