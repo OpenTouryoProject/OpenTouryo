@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
+//*  2026/10/18  玄人 幸道         生成した鍵の秘密鍵を取り出すケースを追加（#627）
 //**********************************************************************************
 
 using System;
@@ -115,6 +116,29 @@ namespace TestPublic.Security
             {
                 Assert.That(pub.PrivateKey, Is.Null);
                 Assert.That(pub.PublicKey, Is.Not.Null);
+            }
+        }
+
+        /// <summary>
+        /// 生成した鍵は、秘密鍵を ECParameters として取り出せる（平文でのエクスポートを許す）。
+        /// 2026/10/18 まで、取り出すと例外になった（#627）。
+        /// </summary>
+        [TestCase(EnumDigitalSignAlgorithm.ECDsaCng_P256)]
+        [TestCase(EnumDigitalSignAlgorithm.ECDsaCng_P384)]
+        [TestCase(EnumDigitalSignAlgorithm.ECDsaCng_P521)]
+        public void GeneratedKey_Exportable(EnumDigitalSignAlgorithm eaa)
+        {
+            using (DigitalSignECDsaCng ds = new DigitalSignECDsaCng(eaa))
+            {
+                ECParameters priv = ((ECDsa)ds.AsymmetricAlgorithm).ExportParameters(true);
+                Assert.That(priv.D, Is.Not.Null);
+
+                // 取り出した秘密鍵で署名し、元の公開鍵で検証できる
+                using (DigitalSignECDsaCng imported = new DigitalSignECDsaCng(priv, true))
+                using (DigitalSignECDsaCng verifier = new DigitalSignECDsaCng(ds.PublicKey))
+                {
+                    Assert.That(verifier.Verify(Data, imported.Sign(Data)), Is.True);
+                }
             }
         }
 

@@ -32,6 +32,7 @@
 //*  2019/01/29  西野 大介         X.509対応（JWE（RSAES-OAEP and AES GCM）対応
 //*  2019/06/12  西野 大介         constructorのX509KeyStorageFlagsの既定値を変更
 //*  2026/10/18  玄人 幸道         GetPublicKey：net10.0 で DSA の証明書の公開鍵を読めないのを修正（#626）
+//*  2026/10/18  玄人 幸道         CreateDigitalSignSP：生成する ECDSA（CNG）の鍵を、平文でエクスポートできるようにした（#627）
 //**********************************************************************************
 
 using System;
@@ -334,7 +335,12 @@ namespace Touryo.Infrastructure.Public.Security
                         cngAlgorithm = CngAlgorithm.ECDsaP521;
                         break;
                 }
-                aa = new ECDsaCng(CngKey.Create(cngAlgorithm));
+                // 平文でのエクスポートを許す鍵にする（#627）。
+                // 既定の CngKey はこれを許さず、JWS_ES*_Param.ECDsaPrivateParameters など、
+                // 生成した秘密鍵を ECParameters として取り出す処理が例外になっていた。
+                // この鍵はプロセスの中で生成する一時的な鍵で、取り出せることが前提の API である。
+                aa = new ECDsaCng(CngKey.Create(cngAlgorithm, null,
+                    new CngKeyCreationParameters() { ExportPolicy = CngExportPolicies.AllowPlaintextExport }));
                 ha = null; // ハッシュ無し
             }
 #if NETSTD

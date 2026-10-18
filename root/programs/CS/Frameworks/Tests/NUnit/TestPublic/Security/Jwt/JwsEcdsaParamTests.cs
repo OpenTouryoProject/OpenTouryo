@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
+//*  2026/10/18  玄人 幸道         生成した秘密鍵を取り出すケースを追加（#627）
 //**********************************************************************************
 
 using System;
@@ -123,6 +124,25 @@ namespace TestPublic.Security.Jwt
             string jwt512 = new JWS_ES512_Param(p521, true).Create(Payload);
             ECParameters pub521 = p521; pub521.D = null;
             Assert.That(new JWS_ES512_Param(pub521, false).Verify(jwt512), Is.True);
+        }
+
+        /// <summary>
+        /// **生成した鍵の秘密鍵（ECDsaPrivateParameters）を取り出せる。** 取り出した秘密鍵で作った JWT は、元の側で検証できる。
+        /// 2026/10/18 まで、Windows（CNG）では例外になった（#627。鍵が平文でのエクスポートを許していなかった）。
+        /// </summary>
+        [Test]
+        public void PrivateParameters_Exportable()
+        {
+            JWS_ES256_Param es256 = new JWS_ES256_Param();
+            ECParameters priv256 = es256.ECDsaPrivateParameters;
+            Assert.That(priv256.D, Is.Not.Null);
+            Assert.That(es256.Verify(new JWS_ES256_Param(priv256, true).Create(Payload)), Is.True);
+
+            JWS_ES384_Param es384 = new JWS_ES384_Param();
+            Assert.That(es384.Verify(new JWS_ES384_Param(es384.ECDsaPrivateParameters, true).Create(Payload)), Is.True);
+
+            JWS_ES512_Param es512 = new JWS_ES512_Param();
+            Assert.That(es512.Verify(new JWS_ES512_Param(es512.ECDsaPrivateParameters, true).Create(Payload)), Is.True);
         }
 
         /// <summary>証明書（_X509）：*.pfx で作り、*.cer で検証できる（ES256 / ES384 / ES512）。</summary>
