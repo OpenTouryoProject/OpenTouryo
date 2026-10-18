@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
+//*  2026/10/18  玄人 幸道         RsaCng で OAEP-SHA256 を使うケースを追加（#628）
 //**********************************************************************************
 
 using System.Security.Cryptography;
@@ -84,6 +85,21 @@ namespace TestPublic.Security
 
             Assert.That(ac.DecryptString(cipher, "", RSAEncryptionPadding.OaepSHA1), Is.EqualTo(Plain));
             Assert.Throws(Is.InstanceOf<CryptographicException>(), () => ac.DecryptString(cipher));
+        }
+
+        /// <summary>
+        /// RsaCng（Windows）は、OAEP-SHA256 も使える。
+        /// 2026/10/18 まで、net48 では RsaCng が RSACryptoServiceProvider になり、例外になった（#628）。
+        /// </summary>
+        [Test]
+        [Platform("Win")]
+        public void RsaCng_OaepSha256()
+        {
+            ASymmetricCryptography ac = new ASymmetricCryptography(EnumASymmetricAlgorithm.RsaCng);
+
+            string cipher = ac.EncryptString(Plain, "", RSAEncryptionPadding.OaepSHA256);
+
+            Assert.That(ac.DecryptString(cipher, "", RSAEncryptionPadding.OaepSHA256), Is.EqualTo(Plain));
         }
 
         /// <summary>証明書：*.cer（公開鍵）で暗号化し、*.pfx（秘密鍵）で戻せる。</summary>

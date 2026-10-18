@@ -24,6 +24,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
+//*  2026/10/18  玄人 幸道         DSA の証明書のケースを追加（#626）
+//*  2026/10/18  玄人 幸道         RsaCsp / RsaCng が指定どおりの実装になるケースを追加（#628）
 //**********************************************************************************
 
 using System.Security.Cryptography;
@@ -93,6 +95,19 @@ namespace TestPublic.Security
         public void CreateCryptographySP_Rsa(EnumASymmetricAlgorithm easa)
         {
             Assert.That(AsymmetricAlgorithmCmnFunc.CreateCryptographySP(easa), Is.InstanceOf<RSA>());
+        }
+
+        /// <summary>
+        /// **CreateCryptographySP は、指定どおりの実装を作る**（RsaCsp は RSACryptoServiceProvider、RsaCng は RSACng）。
+        /// 2026/10/18 まで、どちらも RSA.Create()（既定の実装）になっていた（#628）。
+        /// RsaCng は Windows だけ（Windows 以外は CNG が無いので、既定の実装になる）。
+        /// </summary>
+        [Test]
+        [Platform("Win")]
+        public void CreateCryptographySP_AsSpecified()
+        {
+            Assert.That(AsymmetricAlgorithmCmnFunc.CreateCryptographySP(EnumASymmetricAlgorithm.RsaCsp), Is.InstanceOf<RSACryptoServiceProvider>());
+            Assert.That(AsymmetricAlgorithmCmnFunc.CreateCryptographySP(EnumASymmetricAlgorithm.RsaCng), Is.InstanceOf<RSACng>());
         }
 
         /// <summary>簡易なファクトリと、同じ鍵長のインスタンスを作る CreateSameKeySizeSP。</summary>
