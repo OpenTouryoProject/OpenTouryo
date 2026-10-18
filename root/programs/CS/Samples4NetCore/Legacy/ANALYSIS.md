@@ -125,12 +125,11 @@ GetConfigParameter.InitConfiguration("appsettings.json");
 .NET には `bindingRedirect` が無いので、**サンプル側の版が部品側より古いと、起動直後に `FileNotFoundException` で落ちる。**
 
 いまは多くが部品と同じ版に揃っている（`log4net` 3.3.0、`Microsoft.Data.SqlClient` 7.0.0、`Newtonsoft.Json` 13.0.4、
-`Microsoft.Extensions.Configuration*` 10.0.5）。**揃っていないもの:**
+`Microsoft.Extensions.Configuration*` 10.0.5、`System.Security.Cryptography.Pkcs` 10.0.13。Pkcs は #617 で揃えた）。**揃っていないもの:**
 
 | パッケージ | Legacy | 部品（`Public`） |
 |---|---|---|
 | `System.Data.Odbc` | 9.0.5（5 件）/ 9.0.6（1 件） | 9.0.4 |
-| `System.Security.Cryptography.Pkcs` | 10.0.13（`Bat_sample` の 4 件） | 9.0.21 |
 
 サンプル側が**新しい**分には動く。**部品側が上がったときに、サンプルが取り残されると起動できなくなる。**
 部品の依存を上げたら、`Legacy` と `Backend` の全 csproj も見ること。
