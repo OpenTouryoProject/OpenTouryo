@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/05/20  西野 大介         新規作成
+//*  2026/10/19  玄人 幸道         出力先を省いたとき、Linux で入力と同じフォルダに出力されないのを修正（#632）
 //**********************************************************************************
 
 using System.IO;
@@ -56,9 +57,10 @@ namespace Touryo.Infrastructure.Public.IO
             if (string.IsNullOrEmpty(outFilePath))
             {
                 // inFilePathと同じ位置・ファイル名に、指定の拡張子で
-                outFilePath = 
-                    Path.GetDirectoryName(inFilePath) + "\\" +
-                    Path.GetFileNameWithoutExtension(inFilePath) + "." + ext;
+                // 区切りは Path.Combine に任せる（#632。"\\" でつなぐと、Linux ではファイル名の一部になっていた）。
+                outFilePath = Path.Combine(
+                    Path.GetDirectoryName(inFilePath),
+                    Path.GetFileNameWithoutExtension(inFilePath) + "." + ext);
             }
             else
             {
@@ -105,9 +107,10 @@ namespace Touryo.Infrastructure.Public.IO
             if (string.IsNullOrEmpty(outFilePath))
             {
                 // inFilePathと同じ位置・ファイル名に、指定の拡張子で
-                outFilePath =
-                    Path.GetDirectoryName(inFilePath) + "\\" +
-                    Path.GetFileNameWithoutExtension(inFilePath) + "." + ext;
+                // 区切りは Path.Combine に任せる（#632。"\\" でつなぐと、Linux ではファイル名の一部になっていた）。
+                outFilePath = Path.Combine(
+                    Path.GetDirectoryName(inFilePath),
+                    Path.GetFileNameWithoutExtension(inFilePath) + "." + ext);
             }
             else
             {

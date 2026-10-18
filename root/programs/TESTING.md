@@ -85,8 +85,8 @@ cd root\programs
 | EncAndDecUtilCUI (net48) | `Golden/EncAndDecUtilCUI/Result48.txt` | `y_Build_TestCode_SecCUI.bat` | 暗号・JWT・XML 署名 |
 | EncAndDecUtilCUI (net10.0) | `Golden/EncAndDecUtilCUI/ResultCore100.txt` | 同上 | 同上 |
 
-`Golden/EncAndDecUtilCUI/ResultCore100OnLinux.txt` は Linux 実行時の期待結果のため、
-Windows からの `2_RunAllTests.ps1` の対象外。
+`Golden/EncAndDecUtilCUI/ResultCore100OnLinux.txt` は Linux 実行時の期待結果で、
+**`-Linux` を付けたときだけ**比べる（下の「Linux のテスト」）。
 
 ### NUnit のテスト（6 ケース、#610）
 
@@ -137,6 +137,31 @@ HEAD とは比較せず、バッチが書き出す `*.trx` の集計で判定す
   （コードはほぼ共通で、両方で取っても指針としては変わらないため）
 
 テストの書き方と置き場は [`Tests/README.md`](CS/Frameworks/Tests/README.md) を参照。
+
+### Linux のテスト（`-Linux`、#632）
+
+**Windows でビルドした net10.0 の出力を、そのまま Linux のコンテナで回す。**
+net10.0 の DLL は OS によらないので、Windows で作ったものを Linux に置く、という使われ方をそのまま確かめられる。
+
+```powershell
+.\2_RunAllTests.ps1 -Linux
+```
+
+| テスト | 結果ファイル | 判定 |
+|---|---|---|
+| EncAndDecUtilCUI (Linux) | `Golden/EncAndDecUtilCUI/ResultCore100OnLinux.txt` | HEAD 版と比べる（Windows の回と同じ） |
+| NUnit TestPublic (Linux) | `NUnit/TestResults/Linux/TestPublic_linux.trx` | 失敗 0 件、かつ 1 件以上実行 |
+
+- **`docker` コマンドが要る**（Rancher Desktop）。無ければ回さずに止める
+- コンテナは**1 つだけ、`--rm` で起動する**（イメージは `mcr.microsoft.com/dotnet/sdk:10.0`、メモリの上限は 4g。`-LinuxImage` / `-LinuxMemory` で変えられる）。
+  同じ名前（`opentouryo-linuxtest`）のコンテナが既にあれば、触らずに止める
+- 出力のフォルダ（`bin\Debug\net10.0`）は**読み取り専用でマウント**し、コンテナの中で写してから動かす。ワーキング ツリーの bin / obj は変わらない
+- Golden の結果は、Windows の回と同じくワーキング ツリーの `ResultCore100OnLinux.txt` を書き換える
+- `[Platform("Win")]` のテスト（CNG など）は、Linux ではスキップに出る。`[Platform("Linux")]` のテスト（`DSAOpenSsl` など）は、Linux の回でしか走らない
+- **`-Linux` を付けなければ、Linux の対象は回らない。** `-CrossDb` とは同時に指定できない
+- **`SelectTargets.ps1` は、Public・Public.Security（と、それを Linux で回す `TestPublic` / `EncAndDecUtilCUI`）に触れたとき、`-Linux` を付ける**（fixed のみ。fixing では後回し）
+- **NUnit のテストは、portable の PDB でビルドする**（`y_Build_TestCode_NUnit.bat`）。
+  Linux の .NET は Windows の PDB（full）を読めず、スタック フレームからソースのファイル名を取るテストが null になっていた
 
 ### `TestCode` / `TestDataAccess` は詳細を別文書に持つ
 

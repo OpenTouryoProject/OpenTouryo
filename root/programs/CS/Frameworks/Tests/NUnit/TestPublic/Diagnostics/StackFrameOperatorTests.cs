@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/15  玄人 幸道         新規作成（#610）
+//*  2026/10/19  玄人 幸道         GetCurrentCodeInfo：Linux でも成り立つよう、ファイル名を末尾で見るようにした（#632）
 //**********************************************************************************
 
 using System;
@@ -93,7 +94,9 @@ namespace TestPublic.Diagnostics
             string filePath, line, signature;
             StackFrameOperator.GetCurrentCodeInfo(out filePath, out line, out signature);
 
-            Assert.That(Path.GetFileName(filePath), Is.EqualTo("StackFrameOperatorTests.cs"));
+            // PDB に記録されたビルド時のパス（Windows の形）が返る。
+            // Linux で回すと Path.GetFileName は "\" で区切らないので、末尾で見る（#632）。
+            Assert.That(filePath, Does.EndWith("StackFrameOperatorTests.cs"));
             Assert.That(int.Parse(line), Is.GreaterThan(0));
             Assert.That(signature, Is.EqualTo("Void GetCurrentCodeInfo()"));
         }

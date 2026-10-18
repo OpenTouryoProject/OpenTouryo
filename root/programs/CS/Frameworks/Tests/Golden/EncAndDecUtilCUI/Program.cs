@@ -28,6 +28,7 @@
 //*  2026/10/14  玄人 幸道         SymmetricCryptography（EncryptString / DecryptString）のケースを追加（#608）
 //*  2026/10/18  玄人 幸道         DSA の Sign / Verify を直したので、コメントを改めた（#625。出力は変えない）
 //*  2026/10/18  玄人 幸道         DSA の X509 を直したので、コメントを改めた（#626。出力は変えない）
+//*  2026/10/19  玄人 幸道         Linux の ECDSA（OpenSSL）の Param を、DSA で検証していたのを修正（#632）
 //**********************************************************************************
 
 using System;
@@ -649,7 +650,8 @@ namespace EncAndDecUtilCUI
 
                 dsECDsaOpenSsl = new DigitalSignECDsaOpenSsl(dsECDsaOpenSsl.PublicKey.Value, SHA256.Create());
 
-                TIPD.MyDebug.OutputDebugAndConsole("DigitalSignParam.Verify(ECDSA-P256)", dsParam.Verify(data, sign).ToString());
+                // 2026/10/19 まで、DSA の dsParam で検証しており、常に False だった（#632）
+                TIPD.MyDebug.OutputDebugAndConsole("DigitalSignParam.Verify(ECDSA-P256)", dsECDsaOpenSsl.Verify(data, sign).ToString());
                 #endregion
 #endif
             }
