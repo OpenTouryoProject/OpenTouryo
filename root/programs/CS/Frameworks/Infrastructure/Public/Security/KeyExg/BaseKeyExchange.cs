@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/10/31  西野 大介         新規作成
+//*  2026/10/18  玄人 幸道         Encrypt(string) / Decrypt(string)：暗号文を Base64 にした（#629。以前は戻せなかった）
 //**********************************************************************************
 
 using System.IO;
@@ -67,18 +68,20 @@ namespace Touryo.Infrastructure.Public.Security.KeyExg
         }
 
         /// <summary>復号化</summary>
-        /// <param name="msg">復号化するメッセージ</param>
+        /// <param name="msg">復号化するメッセージ（Encrypt(string) の結果。Base64）</param>
         /// <returns>復号化したメッセージ</returns>
         public string Decrypt(string msg)
         {
+            // 暗号文は Base64 で受ける（#629）。
+            // 2026/10/18 まで UTF-8 でバイト列に戻しており、暗号文を復元できなかった。
             return CustomEncode.ByteToString(
-                this.Decrypt(CustomEncode.StringToByte(msg, CustomEncode.UTF_8)),
+                this.Decrypt(CustomEncode.FromBase64String(msg)),
                 CustomEncode.UTF_8);
         }
 
-        /// <summary>暗号化</summary>
-        /// <param name="msg">暗号化するメッセージ</param>
-        /// <returns>暗号化したメッセージ</returns>
+        /// <summary>復号化</summary>
+        /// <param name="msg">復号化するメッセージ</param>
+        /// <returns>復号化したメッセージ</returns>
         public byte[] Decrypt(byte[] msg)
         {
             using (MemoryStream plaintext = new MemoryStream())
@@ -94,12 +97,14 @@ namespace Touryo.Infrastructure.Public.Security.KeyExg
 
         /// <summary>暗号化</summary>
         /// <param name="msg">暗号化するメッセージ</param>
-        /// <returns>暗号化したメッセージ</returns>
+        /// <returns>暗号化したメッセージ（Base64）</returns>
         public string Encrypt(string msg)
         {
-            return CustomEncode.ByteToString(
-                this.Encrypt(CustomEncode.StringToByte(msg, CustomEncode.UTF_8)),
-                CustomEncode.UTF_8);
+            // 暗号文は Base64 にする（#629。SymmetricCryptography.EncryptString と同じ）。
+            // 2026/10/18 まで UTF-8 の文字列にしており、任意のバイト列は UTF-8 として正しくないため、
+            // 不正なバイトが置き換わって元に戻らなかった。
+            return CustomEncode.ToBase64String(
+                this.Encrypt(CustomEncode.StringToByte(msg, CustomEncode.UTF_8)));
         }
 
         /// <summary>暗号化</summary>

@@ -24,8 +24,10 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
+//*  2026/10/18  玄人 幸道         文字列版の Encrypt / Decrypt のケースを追加（#629）
 //**********************************************************************************
 
+using System;
 using System.Text;
 
 using NUnit.Framework;
@@ -38,7 +40,7 @@ namespace TestPublic.Security.KeyExg
     /// <remarks>
     /// 流れ：Bob が交換鍵（公開鍵）を出す → Alice が共通鍵を作り、Bob の公開鍵で包んだ交換鍵と IV を出す
     ///       → Bob が交換鍵を開いて共通鍵を得る → 同じ共通鍵で暗号化・復号できる。
-    /// ここではバイト列の Encrypt / Decrypt で確かめる。
+    /// バイト列の Encrypt / Decrypt と、文字列版（暗号文は Base64。#629）で確かめる。
     /// ECDH（CNG）は net48 だけ（net10.0 では Compile Remove。Public/Security/ANALYSIS.md 3 節）。
     /// </remarks>
     [TestFixture]
@@ -71,6 +73,25 @@ namespace TestPublic.Security.KeyExg
             bob.GeneratePrivateKey(alice.ExchangeKey, alice.IV);
 
             Assert.That(bob.Decrypt(alice.Encrypt(Plain)), Is.EqualTo(Plain));
+        }
+
+        /// <summary>
+        /// **文字列版の Encrypt / Decrypt でも暗号化して戻せる。** 暗号文は Base64（バイト列版の暗号文を Base64 にしたもの）。
+        /// 2026/10/18 まで、暗号文を UTF-8 の文字列にしていて、戻せなかった（#629）。
+        /// </summary>
+        [Test]
+        public void StringOverloads_RoundTrip()
+        {
+            RsaOaepBob bob = new RsaOaepBob();
+            RsaOaepAlice alice = new RsaOaepAlice(bob.ExchangeKey2);
+            bob.GeneratePrivateKey(alice.ExchangeKey, alice.IV);
+
+            const string plain = "鍵交換のテスト 0123456789 abcdefghij";
+            string cipher = alice.Encrypt(plain);
+
+            Assert.That(Convert.FromBase64String(cipher), Is.EqualTo(alice.Encrypt(Encoding.UTF8.GetBytes(plain))));
+            Assert.That(bob.Decrypt(cipher), Is.EqualTo(plain));
+            Assert.That(alice.Decrypt(bob.Encrypt(plain)), Is.EqualTo(plain));
         }
 
         /// <summary>Bob は証明書（*.pfx）の鍵でもよい（鍵をエクスポートできるフラグで読む）。</summary>
