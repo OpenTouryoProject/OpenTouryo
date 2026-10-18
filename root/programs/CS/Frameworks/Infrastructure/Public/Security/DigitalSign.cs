@@ -29,6 +29,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2017/01/10  西野 大介         新規作成
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
+//*  2026/10/18  玄人 幸道         Sign / Verify：DSA でデータをハッシュせずに渡し、例外になるのを修正（#625）
 //**********************************************************************************
 
 // 参考（少しでもミスると動かないので、結構難しい
@@ -131,8 +132,10 @@ namespace Touryo.Infrastructure.Public.Security
             else if (aa is DSA)
             {
                 // DSA
+                // CreateSignature はハッシュ値を受けるので、データを渡すと例外になる（#625）。
+                // SignData でハッシュ込みで署名する（SignByFormatter と同じ方式で、互いに検証できる）。
                 DSA dsa = (DSA)aa;
-                signedByte = dsa.CreateSignature(data);
+                signedByte = dsa.SignData(data, this.HashAlgorithmName);
             }
             else
             {
@@ -161,7 +164,8 @@ namespace Touryo.Infrastructure.Public.Security
             else if (aa is DSA)
             {
                 // DSA
-                return ((DSA)aa).VerifySignature(data, sign);
+                // VerifySignature はハッシュ値を受ける（#625）。VerifyData でハッシュ込みで検証する。
+                return ((DSA)aa).VerifyData(data, sign, this.HashAlgorithmName);
             }
 
             return flg;

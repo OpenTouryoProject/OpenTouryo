@@ -110,6 +110,7 @@
      2026/10/15  玄人 幸道         NUnit の TestPublicDb（Dam のクロス DB）を加えた（#610）
      2026/10/15  玄人 幸道         -List -PassThru に NeedDb を加えた（#610）
      2026/10/18  玄人 幸道         -CrossDb / -LocalServicesDir を追加した（#623）
+     2026/10/18  玄人 幸道         NUnit のカバレッジを、別のプロジェクトの結果から表示していたのを修正（#623 の後）
 #>
 [CmdletBinding()]
 param(
@@ -600,8 +601,10 @@ function Get-NUnitResult([string]$Name, [string]$Trx, [bool]$Coverage, [string]$
         return [pscustomobject]@{ テスト = $Name; 結果 = "結果無し"; 差分 = "-" }
     }
 
-    [xml]$trx = Get-Content $Trx -Encoding UTF8 -Raw
-    $c = $trx.TestRun.ResultSummary.Counters
+    # **変数名を $Trx（引数）と分ける。** PowerShell は大文字・小文字を区別しないので、同じ名前だと引数を上書きする
+    #   （カバレッジのファイルを、trx の隣ではなく作業フォルダから探していた。#623 の後で修正）。
+    [xml]$trxXml = Get-Content $Trx -Encoding UTF8 -Raw
+    $c = $trxXml.TestRun.ResultSummary.Counters
     $total  = [int]$c.total
     $failed = [int]$c.failed + [int]$c.error + [int]$c.timeout + [int]$c.aborted
 
@@ -613,11 +616,11 @@ function Get-NUnitResult([string]$Name, [string]$Trx, [bool]$Coverage, [string]$
     Write-Host ("  合計 {0} 件 / 合格 {1} 件 / 失敗 {2} 件 / 実行せず {3} 件" -f `
         $total, $c.passed, $failed, $skipped)
 
-    foreach ($r in @($trx.TestRun.Results.UnitTestResult | Where-Object { $_.outcome -ne "Passed" -and $_.outcome -ne "NotExecuted" }))
+    foreach ($r in @($trxXml.TestRun.Results.UnitTestResult | Where-Object { $_.outcome -ne "Passed" -and $_.outcome -ne "NotExecuted" }))
     {
         Write-Host ("    [{0}] {1}" -f $r.outcome, $r.testName) -ForegroundColor Red
     }
-    foreach ($r in @($trx.TestRun.Results.UnitTestResult | Where-Object { $_.outcome -eq "NotExecuted" }))
+    foreach ($r in @($trxXml.TestRun.Results.UnitTestResult | Where-Object { $_.outcome -eq "NotExecuted" }))
     {
         Write-Host ("    [スキップ] {0}" -f $r.testName) -ForegroundColor Yellow
     }
@@ -629,10 +632,10 @@ function Get-NUnitResult([string]$Name, [string]$Trx, [bool]$Coverage, [string]$
     {
         # testId → className（UnitTestResult には className が無い）
         $classOf = @{}
-        foreach ($u in @($trx.TestRun.TestDefinitions.UnitTest)) { $classOf[$u.id] = $u.TestMethod.className }
+        foreach ($u in @($trxXml.TestRun.TestDefinitions.UnitTest)) { $classOf[$u.id] = $u.TestMethod.className }
 
         $mark = '("{0}")' -f $RequireDbms
-        $ran = @($trx.TestRun.Results.UnitTestResult | Where-Object {
+        $ran = @($trxXml.TestRun.Results.UnitTestResult | Where-Object {
             $_.outcome -ne "NotExecuted" -and "$($classOf[$_.testId])".Contains($mark) })
 
         Write-Host ("  {0} のテスト : 実行 {1} 件" -f $RequireDbms, $ran.Count)

@@ -149,7 +149,7 @@ net48 はこのパッケージを参照しない（BCL を使う）。
 | 置き場 | 確かめること |
 |---|---|
 | `Tests/Golden/EncAndDecUtilCUI` | ほぼ全部の API を net48 / net10.0（Windows・Linux）で回し、結果ファイルと比べる。`jose-jwt` との相互運用も見る |
-| `Tests/NUnit/TestPublic/Security/` | `JwsTypTests` / `JweTypTests`（`typ` の照合） |
+| `Tests/NUnit/TestPublic/Security/` | 単体テスト（カバレッジを意識）。ハッシュ・HMAC（RFC のテスト ベクタ）、共通鍵暗号（鍵の導出を .NET の API で組み立てて一致を見る）、パスワード、署名（パラメタ・XML・証明書・CNG）、公開鍵暗号、JWK（RFC 7638 の Thumbprint）、JWS、PEM、鍵交換、XML 署名。`JwsTypTests` / `JweTypTests` は `typ` の照合（#611）。**CNG を使うものは Windows だけで回す**（`[Platform("Win")]`） |
 | `Tests/Else/EncAndDecUtil` | GUI での確認 |
 
 **結果ファイルは 3 つある**（`Result48.txt` / `ResultCore100.txt` / `ResultCore100OnLinux.txt`）。

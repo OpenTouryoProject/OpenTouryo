@@ -121,6 +121,12 @@ y_Build_TestCode_NUnit.bat     … ビルド → net48 / net10.0 で実行 → T
   Oracle は空文字を NULL として扱うので、空文字を値に使わない
 - 埋め込みリソースの検証には、`OpenTouryo.Public` に埋め込まれている
   `Xml/TestXml.xml` / `Xml/TestXsd.xsd` を使える
+- **証明書が要るテスト（`Security/`）は、正本（`root/files/resource/X509`）を csproj のリンクで出力先の `X509` に複写して使う**
+  （`Security/TestCertificates.cs`。`*.pfx` のパスワードは `test`）。
+  読み込みのフラグは `Exportable` だけにする（`MachineKeySet` は管理者でないと失敗することがある）。
+  net10.0 は `X509Certificate2` のコンストラクタが旧式扱い（SYSLIB0057）なので、`TestCertificates.LoadCer` / `LoadPfx` を使う
+- **CNG（`ECDsaCng` など）を使うテストは `[Platform("Win")]` を付ける。** Windows 以外では動かない
+  （[`Public/Security/ANALYSIS.md`](../Infrastructure/Public/Security/ANALYSIS.md) 3.1 節）
 - フレームワークは `HintPath` で参照する。**`Public` が使うパッケージは、
   テストで通る範囲だけ csproj にも並べる**（推移的依存が効かないため）
 - **読み違えやすい挙動を見つけたら、それ自体をテストにする**

@@ -26,6 +26,7 @@
 //*  2018/11/10  西野 大介         新規作成
 //*  2026/10/03  玄人 幸道         RSASSA-PSS（PS256 / PS384 / PS512）のケースを追加（#596）
 //*  2026/10/14  玄人 幸道         SymmetricCryptography（EncryptString / DecryptString）のケースを追加（#608）
+//*  2026/10/18  玄人 幸道         DSA の Sign / Verify を直したので、コメントを改めた（#625。出力は変えない）
 //**********************************************************************************
 
 using System;
@@ -513,7 +514,8 @@ namespace EncAndDecUtilCUI
                 #endregion
 
                 #region DSA
-                // DSAはFormatterバージョンしか動かない。
+                // DSA の Sign / Verify（Formatter を使わない版）は、以前は例外になった（#625 で修正）。
+                // ここでは結果ファイルを変えないよう、Formatter 版のまま確かめる（データを渡す版は NUnit で確かめる）。
                 // また、WinではDSAのX509が処理できない（Linux上では動作することを確認済み）。
                 //dsX509 = new DigitalSignX509(Program.PrivateDsaX509Path, Program.PfxPassword , "SHA256", x509KSF);
                 //sign = dsX509.Sign(data);
