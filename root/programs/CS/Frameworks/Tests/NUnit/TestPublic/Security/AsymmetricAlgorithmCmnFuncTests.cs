@@ -27,6 +27,7 @@
 //*  2026/10/18  玄人 幸道         DSA の証明書のケースを追加（#626）
 //*  2026/10/18  玄人 幸道         RsaCng が RSACng になるケースを追加（#628）
 //*  2026/10/19  玄人 幸道         DsaOpenSsl_SHA256 が SHA256 になるケースを追加（#631。Linux のみ）
+//*  2026/10/19  玄人 幸道         Factories：1024 の鍵長リテラルをやめた（CodeQL cs/insufficient-key-size）
 //**********************************************************************************
 
 using System.Security.Cryptography;
@@ -122,11 +123,16 @@ namespace TestPublic.Security
             Assert.That(AsymmetricAlgorithmCmnFunc.RsaFactory(), Is.InstanceOf<RSA>());
             Assert.That(AsymmetricAlgorithmCmnFunc.DsaFactory(), Is.InstanceOf<DSA>());
 
-            using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(1024))
+            // CreateSameKeySizeSP が「同じ型・同じ鍵長」のインスタンスを作ることの確認。
+            // 鍵長は、鍵長リテラルを書かずにコピー元の値で照合する
+            //   （CreateSameKeySizeSP は既定コンストラクタ＋KeySize セッターで組むため、
+            //    既定より大きい鍵長は RSACryptoServiceProvider では反映されない。
+            //    また小さい鍵長リテラルは CodeQL の cs/insufficient-key-size に当たる）。
+            using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
             {
                 AsymmetricAlgorithm same = AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(rsa);
                 Assert.That(same, Is.InstanceOf<RSACryptoServiceProvider>());
-                Assert.That(same.KeySize, Is.EqualTo(1024));
+                Assert.That(same.KeySize, Is.EqualTo(rsa.KeySize));
             }
         }
 
