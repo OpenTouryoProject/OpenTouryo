@@ -31,6 +31,7 @@
 //*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //*  2019/01/29  西野 大介         X.509対応（JWE（RSAES-OAEP and AES GCM）対応
 //*  2019/06/12  西野 大介         constructorのX509KeyStorageFlagsの既定値を変更
+//*  2026/10/18  玄人 幸道         GetPublicKey：net10.0 で DSA の証明書の公開鍵を読めないのを修正（#626）
 //**********************************************************************************
 
 using System;
@@ -64,7 +65,14 @@ namespace Touryo.Infrastructure.Public.Security
                     return x509Key.GetRSAPublicKey();
 
                 case "DSA":
+#if NETSTD
+                    // X509Certificate2.GetDSAPublicKey() は、Windows で 2048 ビットの
+                    // DSA 証明書を「プロバイダーの公開キーは無効です」で読めない（#626）。
+                    // PublicKey（SubjectPublicKeyInfo）からなら読めるので、こちらを使う。
+                    return x509Key.PublicKey.GetDSAPublicKey();
+#else
                     return x509Key.GetDSAPublicKey();
+#endif
 
                 case "ECC":
                 case "ECDSA":

@@ -165,6 +165,9 @@ net48 はこのパッケージを参照しない（BCL を使う）。
 4. **鍵の導出を変えると既存の暗号文が読めない**（6 節）。
 5. **委譲で引数を落としても、自分自身を呼んでコンパイルが通る**（6 節）。呼ばれないコードは結果ファイルにも現れない。
 6. **`System.Security.Cryptography.Xml` は 4 箇所を揃える**（7 節）。
+7. **net10.0（Windows）の `X509Certificate2.GetDSAPublicKey()` は、2048 ビットの DSA 証明書を読めない**（「プロバイダーの公開キーは無効です」）。
+   `X509Certificate2.PublicKey.GetDSAPublicKey()` なら読めるので、`AsymmetricAlgorithmCmnFunc.GetPublicKey` はこちらを使う。
+   net48 の DSACng の秘密鍵は平文でエクスポートできないので、`DigitalSignX509` は写し直せなければそのまま使う（#626）。
 
 ---
 

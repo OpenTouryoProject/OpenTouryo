@@ -96,6 +96,32 @@ namespace TestPublic.Security
 
         #endregion
 
+        #region DSA（DigitalSignX509）
+
+        /// <summary>
+        /// **DSA：*.pfx で署名し、*.cer で検証できる**（SHA-256 の DSA 証明書。鍵は 2048 ビット）。
+        /// 2026/10/18 まで、net48 は *.pfx（秘密鍵の写し直し）、net10.0 は *.cer（公開鍵の取り出し）で例外になった（#626）。
+        /// </summary>
+        [Test]
+        public void Dsa_PfxSign_CerVerify()
+        {
+            using (DigitalSignX509 signer = new DigitalSignX509(TestCertificates.DsaPfx, TestCertificates.Password, HashAlgorithmName.SHA256, TestCertificates.Flags))
+            using (DigitalSignX509 verifier = new DigitalSignX509(TestCertificates.DsaCer, "", "SHA256", TestCertificates.Flags))
+            {
+                Assert.That(signer.AsymmetricAlgorithm, Is.InstanceOf<DSA>());
+                Assert.That(verifier.AsymmetricAlgorithm, Is.InstanceOf<DSA>());
+                Assert.That(signer.PrivateKey, Is.InstanceOf<DSA>());
+                Assert.That(verifier.PublicKey, Is.InstanceOf<DSA>());
+
+                byte[] sign = signer.Sign(Data);
+                Assert.That(verifier.Verify(Data, sign), Is.True);
+                Assert.That(verifier.Verify(Tampered, sign), Is.False);
+                Assert.That(signer.Verify(Data, sign), Is.True);
+            }
+        }
+
+        #endregion
+
         #region ECDSA（DigitalSignECDsaX509）
 
         /// <summary>ECDSA：*.pfx で署名し、*.cer で検証できる（P-256 / P-384 / P-521）。</summary>

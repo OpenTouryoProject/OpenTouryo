@@ -57,6 +57,23 @@ namespace TestPublic.Security
             }
         }
 
+        /// <summary>
+        /// DSA の証明書からも、公開鍵・秘密鍵を取り出せる。
+        /// 2026/10/18 まで、net10.0（Windows）では公開鍵の取り出しで例外になった（#626）。
+        /// </summary>
+        [Test]
+        public void GetPublicKey_GetPrivateKey_Dsa()
+        {
+            using (X509Certificate2 cer = TestCertificates.LoadCer(TestCertificates.DsaCer))
+            using (X509Certificate2 pfx = TestCertificates.LoadPfx(TestCertificates.DsaPfx))
+            {
+                Assert.That(AsymmetricAlgorithmCmnFunc.GetPublicKey(cer), Is.InstanceOf<DSA>());
+                Assert.That(AsymmetricAlgorithmCmnFunc.GetPublicKey(pfx), Is.InstanceOf<DSA>());
+                Assert.That(AsymmetricAlgorithmCmnFunc.GetPrivateKey(pfx), Is.InstanceOf<DSA>());
+                Assert.That(AsymmetricAlgorithmCmnFunc.GetPrivateKey(cer), Is.Null);
+            }
+        }
+
         /// <summary>CreateCryptographySP：証明書は、パスワードが無ければ公開鍵、あれば秘密鍵。</summary>
         [Test]
         public void CreateCryptographySP_X509()
