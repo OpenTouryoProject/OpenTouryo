@@ -26,6 +26,7 @@
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
 //*  2026/10/18  玄人 幸道         DSA の証明書のケースを追加（#626）
 //*  2026/10/18  玄人 幸道         RsaCng が RSACng になるケースを追加（#628）
+//*  2026/10/19  玄人 幸道         DsaOpenSsl_SHA256 が SHA256 になるケースを追加（#631。Linux のみ）
 //**********************************************************************************
 
 using System.Security.Cryptography;
@@ -150,5 +151,25 @@ namespace TestPublic.Security
             Assert.That(aa.KeySize, Is.EqualTo(521));
             Assert.That(ha, Is.Null);
         }
+
+#if NETCOREAPP
+        /// <summary>
+        /// CreateDigitalSignSP：DsaOpenSsl_SHA256 は DSAOpenSsl と SHA256 を返す（Linux）。
+        /// 2026/10/19 まで SHA1 を返していた（#631）。
+        /// </summary>
+        [Test]
+        [Platform("Linux")]
+        public void CreateDigitalSignSP_DsaOpenSsl()
+        {
+            AsymmetricAlgorithm aa;
+            HashAlgorithm ha;
+
+            AsymmetricAlgorithmCmnFunc.CreateDigitalSignSP(EnumDigitalSignAlgorithm.DsaOpenSsl_SHA256, out aa, out ha);
+#pragma warning disable CA1416 // Platform("Linux") で Linux に限っている
+            Assert.That(aa, Is.InstanceOf<DSAOpenSsl>());
+#pragma warning restore CA1416
+            Assert.That(ha, Is.InstanceOf<SHA256>());
+        }
+#endif
     }
 }

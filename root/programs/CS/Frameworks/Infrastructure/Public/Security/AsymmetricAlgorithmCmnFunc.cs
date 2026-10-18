@@ -34,6 +34,7 @@
 //*  2026/10/18  玄人 幸道         GetPublicKey：net10.0 で DSA の証明書の公開鍵を読めないのを修正（#626）
 //*  2026/10/18  玄人 幸道         CreateDigitalSignSP：生成する ECDSA（CNG）の鍵を、平文でエクスポートできるようにした（#627）
 //*  2026/10/18  玄人 幸道         CreateCryptographySP：RsaCng の指定が効かないのを修正（#628。RsaCsp は .NET では既定の実装に読み替える）
+//*  2026/10/19  玄人 幸道         CreateDigitalSignSP：DsaOpenSsl_SHA256 が SHA1 になっていたのを修正（#631）
 //**********************************************************************************
 
 using System;
@@ -321,12 +322,14 @@ namespace Touryo.Infrastructure.Public.Security
             }
             
 #if NETSTD
-            else if (eaa == EnumDigitalSignAlgorithm.DsaOpenSsl_SHA256)//DsaOpenSsl_SHA1)
+            else if (eaa == EnumDigitalSignAlgorithm.DsaOpenSsl_SHA256)
             {
                 // DSAOpenSslサービスプロバイダ
                 aa = new DSAOpenSsl();
 
-                ha = SHA1.Create();
+                // 名前どおり SHA-256 にする（#631）。
+                // 2026/10/19 まで、列挙値の名前（以前は DsaOpenSsl_SHA1）だけを変えた名残で SHA1 になっていた。
+                ha = SHA256.Create();
             }
 #endif
             else if (

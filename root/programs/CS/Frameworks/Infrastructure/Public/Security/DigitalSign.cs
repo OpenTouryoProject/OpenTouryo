@@ -30,6 +30,7 @@
 //*  2017/01/10  西野 大介         新規作成
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //*  2026/10/18  玄人 幸道         Sign / Verify：DSA でデータをハッシュせずに渡し、例外になるのを修正（#625）
+//*  2026/10/19  玄人 幸道         SignByFormatter / VerifyByDeformatter：DSA で SHA1 以外のハッシュを扱えるようにした（#631）
 //**********************************************************************************
 
 // 参考（少しでもミスると動かないので、結構難しい
@@ -195,10 +196,19 @@ namespace Touryo.Infrastructure.Public.Security
             }
             else if (this.AsymmetricAlgorithm is DSA)
             {
-                // DSASignatureFormatterオブジェクトを作成
-                DSASignatureFormatter dsaFormatter = new DSASignatureFormatter(this.AsymmetricAlgorithm);
-                dsaFormatter.SetHashAlgorithm(HashNameConst.SHA1);
-                signedByte = dsaFormatter.CreateSignature(hash);
+                if (this.HashAlgorithmString == HashNameConst.SHA1)
+                {
+                    // DSASignatureFormatterオブジェクトを作成
+                    DSASignatureFormatter dsaFormatter = new DSASignatureFormatter(this.AsymmetricAlgorithm);
+                    dsaFormatter.SetHashAlgorithm(HashNameConst.SHA1);
+                    signedByte = dsaFormatter.CreateSignature(hash);
+                }
+                else
+                {
+                    // DSASignatureFormatter は SHA1 しか受けない（#631。DsaOpenSsl_SHA256 は SHA-256）。
+                    // Formatter は名前を確かめて CreateSignature を呼ぶだけなので、直接呼ぶ。
+                    signedByte = ((DSA)this.AsymmetricAlgorithm).CreateSignature(hash);
+                }
             }
             else
             {
@@ -226,10 +236,18 @@ namespace Touryo.Infrastructure.Public.Security
             }
             else if (this.AsymmetricAlgorithm is DSA)
             {
-                // DSASignatureDeformatterオブジェクトを作成
-                DSASignatureDeformatter dsaDeformatter = new DSASignatureDeformatter(this.AsymmetricAlgorithm);
-                dsaDeformatter.SetHashAlgorithm(this.HashAlgorithmString);
-                return dsaDeformatter.VerifySignature(hash, sign);
+                if (this.HashAlgorithmString == HashNameConst.SHA1)
+                {
+                    // DSASignatureDeformatterオブジェクトを作成
+                    DSASignatureDeformatter dsaDeformatter = new DSASignatureDeformatter(this.AsymmetricAlgorithm);
+                    dsaDeformatter.SetHashAlgorithm(this.HashAlgorithmString);
+                    return dsaDeformatter.VerifySignature(hash, sign);
+                }
+                else
+                {
+                    // DSASignatureDeformatter は SHA1 しか受けない（#631）。SignByFormatter と同じく直接呼ぶ。
+                    return ((DSA)this.AsymmetricAlgorithm).VerifySignature(hash, sign);
+                }
             }
             else
             {

@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
 //*  2026/10/18  玄人 幸道         DSA の Sign / Verify のケースを追加（#625）
+//*  2026/10/19  玄人 幸道         DsaOpenSsl_SHA256 のケースを追加（#631。Linux のみ）
 //**********************************************************************************
 
 using System;
@@ -209,6 +210,59 @@ namespace TestPublic.Security
 
             Assert.Throws<ArgumentException>(() => new DigitalSignParam(pub, EnumDigitalSignAlgorithm.Rsa_SHA256));
         }
+
+#if NETCOREAPP
+        /// <summary>
+        /// **DsaOpenSsl_SHA256 は SHA-256 で署名する**（Linux。DSAOpenSsl は Windows では作れない）。
+        /// 素の DSA.VerifyData で、SHA-256 なら通り、SHA1 なら通らないことで確かめる。
+        /// 2026/10/19 まで、名前と違って SHA1 だった（#631）。
+        /// </summary>
+        [Test]
+        [Platform("Linux")]
+        public void DsaOpenSsl_Sha256_SignAndVerify()
+        {
+            using (DigitalSignParam signer = new DigitalSignParam(EnumDigitalSignAlgorithm.DsaOpenSsl_SHA256))
+            {
+                Assert.That(signer.AsymmetricAlgorithm, Is.InstanceOf<DSA>());
+                Assert.That(signer.HashAlgorithmString, Is.EqualTo("SHA256"));
+
+                byte[] sign = signer.Sign(Data);
+                Assert.That(signer.Verify(Data, sign), Is.True);
+                Assert.That(signer.Verify(Tampered, sign), Is.False);
+
+                using (DSA dsa = DSA.Create())
+                {
+                    dsa.ImportParameters((DSAParameters)signer.PublicKey);
+                    Assert.That(dsa.VerifyData(Data, sign, HashAlgorithmName.SHA256), Is.True);
+                    Assert.That(dsa.VerifyData(Data, sign, HashAlgorithmName.SHA1), Is.False);
+                }
+
+                using (DigitalSignParam verifier = new DigitalSignParam((DSAParameters)signer.PublicKey, EnumDigitalSignAlgorithm.DsaOpenSsl_SHA256))
+                {
+                    Assert.That(verifier.Verify(Data, sign), Is.True);
+                }
+            }
+        }
+
+        /// <summary>
+        /// DsaOpenSsl_SHA256 は Formatter の版でも署名して検証でき、Sign / Verify の版と互いに検証できる（Linux）。
+        /// 2026/10/19 まで、Formatter に渡すハッシュ名が SHA1 に決め打ちだった（#631）。
+        /// </summary>
+        [Test]
+        [Platform("Linux")]
+        public void DsaOpenSsl_Sha256_Formatter()
+        {
+            using (DigitalSignParam signer = new DigitalSignParam(EnumDigitalSignAlgorithm.DsaOpenSsl_SHA256))
+            {
+                byte[] sign = signer.SignByFormatter(Data);
+                Assert.That(signer.VerifyByDeformatter(Data, sign), Is.True);
+                Assert.That(signer.VerifyByDeformatter(Tampered, sign), Is.False);
+
+                Assert.That(signer.Verify(Data, sign), Is.True);
+                Assert.That(signer.VerifyByDeformatter(Data, signer.Sign(Data)), Is.True);
+            }
+        }
+#endif
 
         #endregion
 
