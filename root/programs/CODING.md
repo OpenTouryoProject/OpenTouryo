@@ -11,6 +11,8 @@
 | net48 サンプル | [`CS/Samples/ANALYSIS.md`](CS/Samples/ANALYSIS.md) |
 | netcore サンプル | [`CS/Samples4NetCore/ANALYSIS.md`](CS/Samples4NetCore/ANALYSIS.md) |
 
+上の 3 つは俯瞰である。アセンブリ・サンプルごとの下位の `ANALYSIS.md` は、各文書の冒頭の案内表から辿る（#613）。
+
 > **既存箇所の一括置換はしない。** 下位互換の維持が最優先のため
 > （[`Contributing.ja.md`](../../Contributing.ja.md)）、新規・修正箇所から適用する。
 

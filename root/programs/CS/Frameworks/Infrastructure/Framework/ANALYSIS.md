@@ -1,0 +1,290 @@
+﻿# ANALYSIS.md — フレームワーク中核（Infrastructure/Framework）
+
+対象: `root/programs/CS/Frameworks/Infrastructure/Framework`（`RichClient/` を含む） / 最終更新: 2026-10-16
+
+上位: [`Infrastructure/ANALYSIS.md`](../ANALYSIS.md) / 全体: [`Frameworks/ANALYSIS.md`](../../ANALYSIS.md)（呼び出しフロー・例外モデルの俯瞰）
+
+---
+
+## 1. これは何か
+
+| アセンブリ | 名前空間 | TFM |
+|---|---|---|
+| `OpenTouryo.Framework` | `Touryo.Infrastructure.Framework` | net48 / net10.0 |
+| `OpenTouryo.Framework.RichClient` | `Touryo.Infrastructure.Framework.RichClient` | net48 / net10.0-windows7.0 |
+
+**P 層・B 層・D 層の「親クラス 1」**（フレームワークが持つ基底）と、その間をつなぐ**通信制御**、
+**例外**、**メッセージ・共有情報**、**認証（OAuth2 / OIDC / SAML2）**を持つ。
+
+利用者はこれを直接継承せず、`Business` の**「親クラス 2」（テンプレート）**を継承する
+（[`Business/ANALYSIS.md`](../Business/ANALYSIS.md)）。
+
+```
+親クラス 1（Framework）        親クラス 2（Business、テンプレート）     アプリ
+BaseController            ←  MyBaseController                  ←  画面（Web Forms）
+BaseMVController          ←  MyBaseMVController                ←  コントローラ（MVC5）
+BaseMVControllerCore      ←  MyBaseMVControllerCore            ←  コントローラ（ASP.NET Core）
+BaseLogic                 ←  MyBaseLogic / MyFcBaseLogic       ←  業務ロジック
+BaseDao                   ←  MyBaseDao ← CmnDao                ←  Dao
+BaseControllerWin         ←  MyBaseControllerWin               ←  画面（WinForms / WPF）
+BaseLogic2CS              ←  MyBaseLogic2CS / MyFcBaseLogic2CS ←  業務ロジック（2 層 C/S）
+BaseAsyncFunc             ←  MyBaseAsyncFunc                   ←  非同期処理（リッチ クライアント）
+```
+
+---
+
+## 2. 構成
+
+| フォルダ | 主なクラス | 一言で |
+|---|---|---|
+| `Presentation/` | `BaseController`（Web Forms、約 4800 行）`BaseMasterController` `BaseMVController`（MVC5）`BaseMVControllerCore`（ASP.NET Core）`FxEventArgs` `JsonContent` | P 層の親クラス 1（4 節） |
+| `Transmission/` | `CallController` `ProtocolNameService` `InProcessNameService` `WSErrorInfo` `IWCFTCPSvcForFx` | 通信制御（3 節） |
+| `Business/` | `BaseLogic` `TransactionControl` | B 層の親クラス 1（5 節） |
+| `Dao/` | `BaseDao` `DaoParam` | D 層の親クラス 1（6 節） |
+| `Common/` | `BaseParameterValue` `BaseReturnValue` | 引数・戻り値の親クラス 1 |
+| `Exceptions/` | `BusinessApplicationException` `BusinessSystemException` `FrameworkException` `FrameworkExceptionMessage` | 例外（[`Frameworks/ANALYSIS.md`](../../ANALYSIS.md) 3.3 節） |
+| `Util/` | `GetMessage` `GetSharedProperty` `FxCmnFunction` `FxLiteral` `FxEnum` `Fx*Index` `UserInfo(Handle)` `SubsysInfo(Handle)` `FxSessionUtil` `GetClientIpAddress` | メッセージ・共有情報・定数（7 節） |
+| `StdMigration/` | `MyHttpContext` `HttpContextExtensions` `CookieExtensions` `SessionExtensions` | `System.Web` の書き方を ASP.NET Core へ移すための補助（**net10.0 のみ**） |
+| `Authentication/` | `OAuth2AndOIDCClient` `SAML2Client` `SAML2Bindings` `CmnJwtToken` `IdToken` `AccessToken` … | 認証（8 節） |
+| `AsyncProcessingService/` | `AsyncCommand` `AsyncStatus` `AsyncErrorMessageID` `AsyncTaskUpdate` | 非同期処理サービスの共通定義（本リポジトリの中では使っていない） |
+| `RichClient/` | `BaseControllerWin` `BaseLogic2CS` `BaseAsyncFunc` `AsyncEventFx` … | リッチ クライアント（9 節。別アセンブリ） |
+| `Resources/` | `FrameworkExceptionMessageResource` | 例外メッセージ（既定と `ja-JP`） |
+
+---
+
+## 3. 通信制御（Transmission）
+
+### 3.1 名前解決の 2 段
+
+```
+CallController.Invoke(serviceName, parameterValue)
+  ↓ ProtocolNameService   … serviceName → protocol / URL / タイムアウト / プロパティ（TMProtocolDefinition.xml）
+  ↓ protocol が InProcess なら
+  ↓ InProcessNameService  … serviceName → assembly / class（TMInProcessDefinition.xml）
+  ↓ Latebind.InvokeMethod(assembly, class, "DoBusinessLogic", ...)
+```
+
+定義ファイルの場所は `FxXMLTMProtocolDefinition` / `FxXMLTMInProcessDefinition`
+（[`Frameworks/ANALYSIS.md`](../../ANALYSIS.md) 5.1 節）。
+
+### 3.2 プロトコル（`FxEnum.TmProtocol`）
+
+| 値 | プロトコル | net48 | net10.0 | 受ける側 |
+|---|---|:-:|:-:|---|
+| 1 | `InProcess` | ✓ | ✓ | 同じプロセス |
+| 2 | `AspNetWs`（ASP.NET Web サービス） | ✓ | — | — |
+| 3 | `WCF_HTTP` | ✓ | — | — |
+| 4 | `WCF_TCPIP` | ✓ | — | `ServiceInterface/WCFService` |
+| 5 | `AspNetWebAPI`（JSON-RPC） | ✓ | — | `ServiceInterface/ASPNETWebService`、各サンプルの `ASPNETWebService` |
+
+- **net10.0 は `InProcess` だけ。** 列挙体からも 2〜5 を落としてある
+- それでも定義ファイルに `protocol="4"` などがあれば到達する（`ProtocolNameService` は値を検査しない。
+  配布している `TMProtocolDefinition.xml` にも 4・5 がある）。**`null` ではなく `FrameworkException` を投げる**（#543）
+- `WCF_TCPIP` の呼び出しは、#546 でメソッドに切り出した際に欠落し、#561 で戻した
+
+### 3.3 HTTP の接続（`AspNetWebAPI`）
+
+- `HttpClient` / `HttpClientHandler` は**内部で都度作らず、`serviceName` ごとに持ち回る**。
+  そのため **1 つの `CallController` を複数のスレッドから同時に使えない**
+- `props`（定義ファイルのプロパティ）から、タイムアウト・プロキシ（`ProxyUrl` / `NetworkCredentialToProxy`）・Cookie などを反映する
+- 接続オプションが要求に反映されることは、`Tests/Else/TestTransmission` が自前のオリジンとプロキシを立てて確かめる（#546。[`SMOKETEST.md`](../../../../SMOKETEST.md) 3 節）
+
+### 3.4 `~Async`
+
+`CallController.InvokeAsync` も `BaseLogic.DoBusinessLogicAsync` も、**別スレッドで同期版を走らせているだけ**である
+（[`Frameworks/ANALYSIS.md`](../../ANALYSIS.md) 4.4 節）。
+
+---
+
+## 4. P 層（Presentation）
+
+| クラス | 対象 | TFM |
+|---|---|---|
+| `BaseController` / `BaseMasterController` | ASP.NET Web Forms のページ・マスタ ページ | net48 |
+| `BaseMVController` | ASP.NET MVC5 | net48 |
+| `BaseMVControllerCore` | ASP.NET Core MVC | net10.0 |
+
+### 4.1 Web Forms の集約イベント ハンドラ
+
+`BaseController` は、**コントロール ID の接頭辞でイベント ハンドラを自動で結び付ける。**
+
+1. 設定の `FxPrefixOfButton`（例 `btn`）などで、接頭辞と種類を対応付ける（15 種）
+2. ページ・マスタ ページ・ユーザ コントロールのコントロールを走査し、接頭辞が合うものに共通のハンドラを付ける
+3. イベントが起きると、`UOC_<コントロール ID>_<イベント名>` を `Latebind` で探して呼ぶ
+   （ページ → マスタ ページ → ユーザ コントロールの順）
+
+**接頭辞の設定が無い種類は結び付けない。** `CustomControl` の各コントロールもこの仕組みに乗る
+（[`CustomControl/ANALYSIS.md`](../CustomControl/ANALYSIS.md)）。
+
+画面遷移の制御（`FxScreenTransitionMode` / `SCDefinition.xml`）、二重送信の防止、セッション タイムアウトの検出も `BaseController` が持つ。
+**約 4800 行と巨大**なので、変更は該当の `#region` に閉じる。
+
+### 4.2 `StdMigration`（net10.0 のみ）
+
+`MyHttpContext.Current` など、**`System.Web` の静的な書き方を ASP.NET Core に持ち込む**ための補助。
+`HttpContext` / Cookie / Session に、`System.Web` に近い拡張メソッドを足す。
+
+---
+
+## 5. B 層（`BaseLogic`）
+
+`DoBusinessLogic(parameterValue, iso)` が、**接続 → 前処理 → 業務処理 → コミット → 後処理、失敗ならロールバック**の型を固定する。
+流れと例外ごとの振る舞いは [`Frameworks/ANALYSIS.md`](../../ANALYSIS.md) 3 節。
+
+- **Dam は 2 通りで持つ。** 既定の 1 つ（`SetDam(dam)` / `GetDam()`）と、名前付きの複数（`SetDam(key, dam)` / `GetDam(key)`）。
+  **コミット・ロールバック・切断は、両方のすべてに対して行う**
+- `GetDam` と `ReturnValue` の setter は **`DoBusinessLogic` の中でしか使えない**（`WasCalledFromDoBusinessLogic`）。外で呼ぶと `FrameworkException`
+- `TransactionControl` は `TCDefinition.xml` から、トランザクション パターン（接続文字列のキーと分離レベル）を引く
+  （`GetTransactionPatterns` / `InitDam`）
+
+---
+
+## 6. D 層（`BaseDao`）
+
+`BaseDam` を受け取り、`SetSqlByFile` / `SetSqlByCommand` / `SetParameter` / `ExecSelectFill_DT` / `ExecSelect_DR` /
+`ExecSelectScalar` / `ExecInsUpDel_NonQuery` を **`protected`** で提供する。
+UOC は `UOC_PreQuery` / `UOC_AfterQuery(sql)` / `UOC_AfterQuery(sql, ex)`。
+
+**アプリは `BaseDao` を直接継承しない。** `MyBaseDao`（SQL ファイルのパス解決・SQLTRACE）か `CmnDao`（Dao を書かずに使う）を使う
+（[`Business/ANALYSIS.md`](../Business/ANALYSIS.md)）。
+
+---
+
+## 7. メッセージ・共有情報・定数
+
+| クラス | 読むもの | 設定キー |
+|---|---|---|
+| `GetMessage.GetMessageDescription(id[, culture])` | `MSGDefinition[_ja / _zh-CN].xml` | `FxXMLMSGDefinition`、`FxBusinessMessageCulture` |
+| `GetSharedProperty.GetSharedPropertyValue(key)` | `SPDefinition.xml` | `FxXMLSPDefinition` |
+| `TransactionControl` | `TCDefinition.xml` | `FxXMLTCDefinition` |
+
+- 定義ファイルは**埋め込みリソース → 物理ファイル → 未設定なら空（OFF 扱い）**の順で探す
+- `FxLiteral` は `Framework` の文字列定数（設定キー名を含む）。**新しい文字列リテラルはここに足す**
+- `FxEnum` は列挙型（`TmProtocol` など）
+
+---
+
+## 8. 認証（`Authentication/`）
+
+比較的新しく、直近も更新されている領域（#600〜#606）。
+
+### 8.1 OAuth2 / OIDC
+
+- `OAuth2AndOIDCClient` … Authorization Code / PKCE(S256) / Client Credentials / ROPC /
+  Refresh / UserInfo / Revoke / Introspect / JWT Bearer / Device AuthZ / CIBA / Request Object / JWK Set。
+  **すべて `static async Task<string>`（生の JSON を返す）**。`HttpClient` は `static` プロパティで差し替えられる
+- `OAuth2AndOIDCConst` / `OAuth2AndOIDCEnum` / `OAuth2AndOIDCParams` / `CmnClientParams`
+- `JwkSetStore` … JWK Set のキャッシュ
+
+**`CmnClientParams`（`SpRp_*`）と `JwkSetUri` は、クライアント役が読む設定である**（#602）。
+
+| キー | フレームワークでの意味 |
+|---|---|
+| `SpRp_Isser` / `SpRp_*Uri` / `SpRp_*CerFilePath` / `JwkSetUri` | **相手（OP / IdP）の値**（Issuer・エンドポイント・検証用の公開鍵・JWK Set の URL） |
+| `SpRp_*PfxFilePath` / `SpRp_*PfxPassword` | **クライアント自身の鍵**（要求の署名・JWE の復号） |
+| `JwkSetFilePath` | **認可サーバ自身の JWK Set**（`CmnJwtToken.Verify` の分岐にも使われる） |
+
+**認可サーバを作るアプリが、これらを「自分の値」（自分の Issuer・`/jwkcerts` の口・署名鍵の対）として
+流用すると、同じ配備でクライアント役を兼ねたときに、相手の値を置けなくなる。**
+サーバ役の値は、アプリ側で別のキーを持つこと。
+
+### 8.2 トークンの検証
+
+型: `CmnJwtToken` `AccessToken` `IdToken` `JwtAssertion` `RequestObject` `ResponseObject` `ClaimsInRO`。
+
+- `CmnJwtToken.Verify` の検証鍵は、`OAuth2AndOIDCParams.JwkSetFilePath` の有無（＝自分が認可サーバか）で選ぶ
+- **認可サーバ兼クライアントで相手（OP）の `id_token` を検証するなら、
+  `IdToken.Verify` の `jws` / `iss` / `aud` を受けるオーバーロードを使う**（#601）。`ResponseObject.Verify` にも同じ形の版がある
+- 設定で判定する既存の版（`IdToken` / `ResponseObject`）も、**`JwkSetFilePath` の有無によらず `aud` を確認する**
+  （`OAuth2AndOidcClientID` / `OAuth2AndOidcClientIDs` のいずれかを含むこと。#603）。
+  **認可サーバ兼クライアントの自己テストでは、テスト用クライアントの `client_id` を `OAuth2AndOidcClientIDs` に並べる。**
+  鍵の選び方（`JwkSetFilePath` の有無）は変えていない
+- `AccessToken.Verify` の既存の版は `aud` を確認しない（Keycloak 互換）。
+  **`aud` を確認するなら `jws` / `iss` / `auds`（期待する `aud` の集合）を受ける版を使う。**
+  `aud` に `client_id` が入る形式では、受け付けるクライアントの `client_id` の一覧を渡す
+- `AccessToken` は `typ`（`at+jwt`）を確認しない（RFC 9068 の形式には準拠していない）。
+  JWS の層で照合するなら `JWS.Verify(jwt, typ)`（[`Public/Security/ANALYSIS.md`](../Public/Security/ANALYSIS.md) 4.1 節）
+
+### 8.3 SAML2
+
+`SAML2Client`（`CreateRedirectRequest` / `CreatePostRequest` / `VerifyResponse`）、`SAML2Bindings` `SAML2Const` `SAML2Enum` `SAML2Params`。
+XML 署名は `Public.Security` の `SignedXml2`。
+
+| 何の鍵 | 既定 | 相手ごとに替えるなら |
+|---|---|---|
+| `VerifyResponse` の検証用証明書 | `CmnClientParams.RsaCerFilePath`（配備に 1 本） | `cerFilePath` を受けるオーバーロード（#600） |
+| 要求（`AuthnRequest`）の署名鍵 | `CmnClientParams.RsaPfxFilePath`（配備に 1 本） | `CreateRedirectRequest` は `digitalSign`、`CreatePostRequest` は `rsa` を受けるオーバーロード（#606） |
+
+- #606 の引数は `out id` の手前に置く。**`null` なら設定の鍵で署名する**
+  （**`SAML2Bindings.EncodeAndSign*` の「`null` なら署名しない」とは違う**）
+- 省略可能な引数ではなくオーバーロードにしたのは、既存の版のシグネチャを変えると、
+  **ビルド済みの呼び出し元が `MissingMethodException` で落ちる**ため
+- Redirect の `SigAlg` は、`EncodeAndSignRedirect` に渡した `DigitalSign` のアルゴリズムで書く
+  （既定の SHA256 なら `rsa-sha256`。#604 まで `rsa-sha1` 固定だった）
+
+**`VerifyRedirect` は 2 つ在る**（#604）。
+
+| 版 | 検証のしかた |
+|---|---|
+| `DigitalSign` を受ける | 渡された `DigitalSign` で検証し、**`SigAlg` がそのアルゴリズムと一致しなければ失敗する**（`SAML2Client.VerifyResponse` はこちら。ハッシュは `hashAlgorithmName`、既定は SHA256） |
+| `RSA` を受ける | **許可リスト（`sigAlgs`）の中から `SigAlg` でハッシュを選ぶ**（既定は SHA256 / 384 / 512 で、SHA1 は受けない） |
+
+- **#604 より前の Open棟梁 が送った要求・応答（`rsa-sha1` と名乗る SHA256 の署名）は、どちらでも失敗する。**
+  受け手で `SigAlg` が `rsa-sha1` であることを確かめていると、#604 以降の送り手の要求・応答で落ちる
+- `EncodeAndSignRedirect` / `VerifyRedirect` の引数名は、#604 で `dsRSAwithSHA1` から `ds` に変えた（SHA1 に限らないため）。
+  **名前付き引数で渡している呼び出し元は、コンパイルが通らなくなる**
+
+---
+
+## 9. リッチ クライアント（`RichClient/`、`OpenTouryo.Framework.RichClient`）
+
+| フォルダ | 主なクラス | 一言で |
+|---|---|---|
+| `Presentation/` | `BaseControllerWin` `RcFxEventArgs` `HiddenButton` | WinForms の画面の親クラス 1。`BaseController` と同じく**接頭辞でイベント ハンドラを結び付ける**（`CreatePrefixAndEvtHndHt`） |
+| `Business/` | `BaseLogic2CS` | **2 層 C/S 用**の B 層の親クラス 1（クライアントのプロセスで B 層を動かし、DB に直接つなぐ） |
+| `Asynchronous/` | `BaseAsyncFunc` `AsyncEventFx` `AsyncEventHeader` `AsyncEventEntry` | 画面を固めずに処理を走らせる親クラス（`WindowLock` / `WindowUnlock`、進捗の通知、`UOC_Pre` / `UOC_After` / `UOC_ABEND` / `UOC_Finally`）。`AsyncEventFx` は名前付きパイプでプロセス間のイベントを通知する |
+| `Util/` | `RcFxCmnFunction` | コントロールの走査など |
+
+- net10.0 版は `net10.0-windows7.0`（`UseWindowsForms` / `UseWPF`）。出力は `Build_netcore100\net10.0-windows7.0\`
+- net48 版は `Framework` を `HintPath`（`Build_net48\`）で、net10.0 版は `ProjectReference` で参照する
+- **NuGet の `Symbol_Framework.RichClient.nuspec` は、`net10.0-windows7.0` の成果物を `lib\net10.0` に置いている**（本来は `lib\net10.0-windows`）。
+  直すとパッケージ解決の意味が変わるため据え置き
+
+---
+
+## 10. TFM 差
+
+| | net48 | net10.0 |
+|---|---|---|
+| 条件コンパイル | `NET48` | **`NETSTD` を明示的に定義**（`$(DefineConstants);NETSTD`） |
+| 外しているもの | `StdMigration/**` `BaseMVControllerCore.cs` `Util/GetClientIpAddress.cs`（列挙に無い） | `BaseController.cs` `BaseMasterController.cs` `BaseMVController.cs` `FxEventArgs.cs` `IWCFTCPSvcForFx.cs` `FxSessionUtil.cs` `FxHttpQueryStringIndex.cs` `RichClient/**`（`Compile Remove`） |
+| 通信 | 5 プロトコル | `InProcess` のみ（3.2 節） |
+| 依存 | — | `Microsoft.AspNetCore.{Http, Http.Extensions, Mvc, Session}` 2.3.0、`Microsoft.Extensions.PlatformAbstractions` 1.1.0 |
+
+条件コンパイルは `#if (NETSTD || NETCOREAPP)` / `#if NETSTD` / `#if NETCOREAPP` が混在しているが、
+**このプロジェクトではどれも同じ意味になる**（`NETSTD` を定義しているため）。
+
+**`Microsoft.AspNetCore.*` は 2.3.0（互換のための旧パッケージ）を使い続けている。**
+net10.0 のフレームワーク参照（`Microsoft.AspNetCore.App`）ではない。安易に上げると壊れる可能性が高い。
+
+---
+
+## 11. 落とし穴
+
+1. **`ReturnValue` / `GetDam` は `DoBusinessLogic` の外では使えない**（5 節）。
+2. **名前付きの Dam（`SetDam(key, dam)`）も、コミット・ロールバックの対象になる**（5 節）。手で閉じなくてよい。
+3. **net10.0 でリモート プロトコルの定義があると `FrameworkException`**（3.2 節）。定義ファイルを net48 と共有するときに踏む。
+4. **`CallController` はスレッド間で共有できない**（3.3 節）。
+5. **`BaseController` は巨大**。`#region` に閉じた修正に留め、全体のリファクタリングは避ける（互換性の維持が最優先）。
+6. **認証の公開 API はオーバーロードで足す**（8.3 節）。既存の版のシグネチャ・引数名を変えると、ビルド済みの呼び出し元が壊れる。
+
+---
+
+## 12. 作業チェックリスト
+
+- [ ] 変えるのは親クラス 1（ここ）か、親クラス 2（`Business`）か。**利用者が触るのは 2 の方**
+- [ ] net48 だけ・net10.0 だけのファイルではないか（10 節）
+- [ ] 公開 API を変えない（NuGet で配布している）。足すならオーバーロード
+- [ ] 文字列リテラルは `FxLiteral` に、例外メッセージは `FrameworkExceptionMessage` とリソース（既定と `ja-JP`）に足す
+- [ ] 通信を変えたら `TestTransmission` と疎通テスト（[`SMOKETEST.md`](../../../../SMOKETEST.md)）を回す
+- [ ] 認証を変えたら、サンプルの認可サーバ・クライアント（別リポジトリを含む）への影響を報告する

@@ -207,6 +207,9 @@ gh auth switch --user OsscJpDevInfra  # 異なる場合は切り替え
 | `root/programs/CS/Samples/` の分析 | [`Samples/ANALYSIS.md`](root/programs/CS/Samples/ANALYSIS.md) |
 | `root/programs/CS/Samples4NetCore/` の分析 | [`Samples4NetCore/ANALYSIS.md`](root/programs/CS/Samples4NetCore/ANALYSIS.md) |
 
+**上の 3 つは俯瞰であり、詳細はアセンブリ・サンプルごとの下位の `ANALYSIS.md` にある**（#613）。
+下位の文書は、各文書の冒頭にある案内表から辿る。
+
 **設定ファイルに「仕組み」を書き足したくなったら、[`CONFIGURATION.md`](root/programs/CONFIGURATION.md)
 に書く。** 設定ファイルは 86 個あり、一部にだけ詳しい説明があると、
 **書かれていないファイルを「該当しない」と誤読させる。**
@@ -300,6 +303,12 @@ Copyright ブロックの扱い、`ArgumentException` 系の引数の順、`.bat
 
 **コンテナやサービスは勝手に起動しない**（下の「前提となるサービスや DB」と同じ）。必要なら施主に確認する。
 
+**DB のコンテナは、LocalServicesOnDocker の
+[`CHEATSHEET.md`](https://github.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker/blob/master/CHEATSHEET.md)
+に従って扱う。** **メモリを節約しないと、最悪の場合、コンテナがシステムごとハングさせる。**
+必須でないものを同時に複数起動せず、1 つずつ起動して測り、終わったら止める。
+手順の要点は [`TESTING.md`](root/programs/TESTING.md) の冒頭。
+
 **次のコミットがどちらの段階か分からなければ、施主に確かめるか、fixed として回す。**
 **報告には、どの段階で回したかと、後回しにしたものを書く。**
 後回しのまま「検証済み」と書かない。
@@ -341,8 +350,8 @@ Copyright ブロックの扱い、`ArgumentException` 系の引数の順、`.bat
 7 だけで確認すると 5.1 で落ちる。**変更したら 5.1 でも実行して確かめること。**
 
 規約の実体は
-[`Frameworks/ANALYSIS.md`](root/programs/CS/Frameworks/ANALYSIS.md) の
-**8.5 節「ps1 ファイルの文字コードと、PowerShell 5.1 / 7 の両対応」**にある。
+[`CODING.md`](root/programs/CODING.md) の
+**5 節「ps1 の文字コードと PowerShell 5.1 / 7 の両対応」**にある。
 
 前提となるサービスや DB の状態が足りない場合は、**勝手に変えず、対処方法とともに報告する。**
 

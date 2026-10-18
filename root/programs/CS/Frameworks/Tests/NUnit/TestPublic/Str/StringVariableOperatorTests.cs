@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/15  玄人 幸道         新規作成（#610）
+//*  2026/10/16  玄人 幸道         構文エラーとコマンドライン引数のケースを追加（カバレッジの拡充）
 //**********************************************************************************
 
 using System;
@@ -92,9 +93,67 @@ namespace TestPublic.Str
         [TestCase("=")]           // 名前が空
         [TestCase("a{x}=1")]      // エスケープできない文字
         [TestCase("a}=1")]        // 対応しない閉じ括弧
+        [TestCase("a{=x")]        // エスケープが閉じていない
+        [TestCase("a=1;=b")]      // 2 つ目の名前が空
         public void GetPropsFromPropString_FormatError(string propString)
         {
             Assert.Throws<ArgumentException>(() => StringVariableOperator.GetPropsFromPropString(propString));
+        }
+
+        /// <summary>先頭からエスケープで始めてもよい。</summary>
+        [Test]
+        public void GetPropsFromPropString_EscapeAtStart()
+        {
+            Dictionary<string, string> props = StringVariableOperator.GetPropsFromPropString("{=}a=1");
+
+            Assert.That(props["=A"], Is.EqualTo("1"));
+        }
+
+        #endregion
+
+        #region コマンドライン引数
+
+        /// <summary>
+        /// GetCommandArgs は、**このプロセスの**コマンドライン（Environment.CommandLine）を読む。
+        /// 先頭（実行ファイル）を除き、接頭辞で始まるものをキー（大文字）、続くものを値とする。
+        /// </summary>
+        /// <remarks>
+        /// テストでは引数を与えられないので、テスト ホストの起動引数（--port 番号 など）で確かめる。
+        /// 期待値は Environment.GetCommandLineArgs から組み立てる。
+        /// 引用符・円記号・空白を含む引数は解釈が分かれるので、比べる対象から外す。
+        /// </remarks>
+        [Test]
+        public void GetCommandArgs_ReadsThisProcess()
+        {
+            Dictionary<string, string> argsDic;
+            List<string> valsLst;
+            StringVariableOperator.GetCommandArgs('-', out argsDic, out valsLst);
+
+            Assert.That(argsDic, Is.Not.Null);
+            Assert.That(valsLst, Is.Not.Null);
+
+            string[] args = Environment.GetCommandLineArgs();
+            int compared = 0;
+            for (int i = 1; i < args.Length; i++)
+            {
+                if (!args[i].StartsWith("-") || !IsPlain(args[i])) { continue; }
+
+                if (i + 1 < args.Length && !args[i + 1].StartsWith("-") && IsPlain(args[i + 1]))
+                {
+                    // キーと値
+                    Assert.That(argsDic[args[i].ToUpper()], Is.EqualTo(args[i + 1]), args[i]);
+                    compared++;
+                }
+            }
+
+            // テスト ホストは --port などを必ず渡すので、1 つは比べられるはず。
+            Assert.That(compared, Is.GreaterThan(0), string.Join(" ", args));
+        }
+
+        /// <summary>解釈が分かれない引数か（引用符・円記号・空白を含まない）</summary>
+        private static bool IsPlain(string arg)
+        {
+            return arg.Length != 0 && arg.IndexOfAny(new char[] { '"', '\\', ' ' }) < 0;
         }
 
         #endregion

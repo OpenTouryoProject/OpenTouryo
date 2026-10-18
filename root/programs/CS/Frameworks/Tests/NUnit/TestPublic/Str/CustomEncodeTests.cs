@@ -24,9 +24,12 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/15  玄人 幸道         新規作成（#610）
+//*  2026/10/16  玄人 幸道         GetEncodings のケースを追加（カバレッジの拡充）
 //**********************************************************************************
 
 using System;
+using System.Collections.Generic;
+using System.Data;
 
 using NUnit.Framework;
 
@@ -175,6 +178,35 @@ namespace TestPublic.Str
 
             Assert.That(bytes, Is.EqualTo(new byte[] { 0xE3, 0x81, 0x82 }));
             Assert.That(CustomEncode.ByteToString(bytes, CustomEncode.UTF_8), Is.EqualTo("あ"));
+        }
+
+        /// <summary>
+        /// GetEncodings は、コード ページ（key）と名前（value）の一覧を返す。
+        /// **key は重複しない**（画面のドロップダウンの値に使うため）。
+        /// 0 は既定の shift_jis。
+        /// </summary>
+        [Test]
+        public void GetEncodings()
+        {
+            DataTable dt = CustomEncode.GetEncodings();
+
+            Assert.That(dt.Columns["key"].DataType, Is.EqualTo(typeof(int)));
+            Assert.That(dt.Columns["value"].DataType, Is.EqualTo(typeof(string)));
+            Assert.That(dt.Rows.Count, Is.EqualTo(141));
+
+            // DataSetExtensions（AsEnumerable）は net48 で参照が要るので使わない。
+            Dictionary<int, string> map = new Dictionary<int, string>();
+            foreach (DataRow r in dt.Rows)
+            {
+                int key = (int)r["key"];
+                Assert.That(map.ContainsKey(key), Is.False, "key の重複 : " + key);
+                Assert.That((string)r["value"], Is.Not.Empty, "value が空 : " + key);
+                map[key] = (string)r["value"];
+            }
+
+            Assert.That(map[0], Is.EqualTo("shift_jis"));
+            Assert.That(map[CustomEncode.shift_jis], Is.EqualTo("shift_jis"));
+            Assert.That(map[CustomEncode.UTF_8], Is.EqualTo("utf-8"));
         }
 
         #endregion

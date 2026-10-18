@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/15  玄人 幸道         新規作成（#610）
+//*  2026/10/18  玄人 幸道         Setter が構造体のボックスの中身に代入するケースを追加（#620）
 //**********************************************************************************
 
 using System;
@@ -97,6 +98,35 @@ namespace TestPublic.FastReflection
             Action<object, object> set = CompiledExpressionCreater.CreateSetterOfPropertyOrField(typeof(AccessorTarget), "Id");
 
             Assert.Throws<InvalidCastException>(() => set(new AccessorTarget(), 7L));
+        }
+
+        /// <summary>Setter のテストに使う構造体</summary>
+        public struct StructTarget
+        {
+            /// <summary>Id（フィールド）</summary>
+            public int Id;
+
+            /// <summary>Name（プロパティ）</summary>
+            public string Name { get; set; }
+        }
+
+        /// <summary>
+        /// **値型（構造体）でも、渡したボックスの中身に代入する**（フィールドにもプロパティにも）。
+        /// 2026/10/18 まで、アンボックス化したコピーに代入され、ボックスの中身は変わらなかった（#620）。
+        /// </summary>
+        [Test]
+        public void Setter_Struct_WritesIntoBox()
+        {
+            Action<object, object> setId = CompiledExpressionCreater.CreateSetterOfPropertyOrField(typeof(StructTarget), "Id");
+            Action<object, object> setName = CompiledExpressionCreater.CreateSetterOfPropertyOrField(typeof(StructTarget), "Name");
+
+            object boxed = new StructTarget();
+            setId(boxed, 5);
+            setName(boxed, "s");
+
+            StructTarget t = (StructTarget)boxed;
+            Assert.That(t.Id, Is.EqualTo(5));
+            Assert.That(t.Name, Is.EqualTo("s"));
         }
 
         /// <summary>存在しないメンバは、デリゲートを作る時点で ArgumentException。</summary>

@@ -44,12 +44,15 @@
 //*  2018/10/03  西野 大介         CombineByteArrayメソッドを追加。
 //*  2018/10/03  西野 大介         StringVariableOperator, StackFrameOperator, ArrayOperatorに分割
 //*  2026/10/15  玄人 幸道         GetFileNameNoEx：拡張子の無いファイル名で空文字を返すのを修正（#612）
+//*  2026/10/16  玄人 幸道         GetCurrentMethodName / GetCurrentPropertyName / GetCurrentCodeInfo：
+//*                                呼び出し元ではなく、本メソッド自身の情報を返していたのを修正（#616）
 //**********************************************************************************
 
 using System;
 using System.Text;
 using System.Data;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Diagnostics;
@@ -252,28 +255,37 @@ namespace Touryo.Infrastructure.Public.Util
 
         /// <summary>カンレントMethod名を取得する。</summary>
         /// <returns>カンレントMethod名</returns>
+        /// <remarks>
+        /// StackFrameOperator.GetCurrentMethodName へ転送すると、転送する本メソッド自身の名前が返る。
+        /// そのため「呼び出し元の、さらに呼び出し元」を返す方を呼ぶ（インライン展開もさせない）。
+        /// </remarks>
         [Obsolete("This method is deprecated, please use StackFrameOperator.GetCurrentMethodName() instead.")]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static string GetCurrentMethodName()
         {
-            return StackFrameOperator.GetCurrentMethodName();
+            return StackFrameOperator.GetCallerMethodName();
         }
 
         /// <summary>カンレントProperty名を取得する。</summary>
         /// <returns>カンレントProperty名</returns>
+        /// <remarks>GetCurrentMethodName と同じ理由で、GetCallerPropertyName を呼ぶ。</remarks>
         [Obsolete("This method is deprecated, please use StackFrameOperator.GetCurrentPropertyName() instead.")]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static string GetCurrentPropertyName()
         {
-            return StackFrameOperator.GetCurrentPropertyName();
+            return StackFrameOperator.GetCallerPropertyName();
         }
 
         /// <summary>カンレント・コード情報を取得する。</summary>
         /// <param name="filePath">ファイル・パス</param>
         /// <param name="fileLineNumber">ファイル行数</param>
         /// <param name="methodSignature">メソッド・シグネチャ</param>
+        /// <remarks>GetCurrentMethodName と同じ理由で、GetCallerCodeInfo を呼ぶ。</remarks>
         [Obsolete("This method is deprecated, please use StackFrameOperator.GetCurrentCodeInfo() instead.")]
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static void GetCurrentCodeInfo(out string filePath, out string fileLineNumber, out string methodSignature)
         {
-            StackFrameOperator.GetCurrentCodeInfo(out filePath, out fileLineNumber, out methodSignature);
+            StackFrameOperator.GetCallerCodeInfo(out filePath, out fileLineNumber, out methodSignature);
             return;
         }
 

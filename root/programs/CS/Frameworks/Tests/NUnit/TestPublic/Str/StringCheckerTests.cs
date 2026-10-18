@@ -24,7 +24,10 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/15  玄人 幸道         新規作成（#610）
+//*  2026/10/16  玄人 幸道         コード ページ（IsInCodePage・IsShift_Jis 系）のケースを追加（カバレッジの拡充）
 //**********************************************************************************
+
+using System.Text;
 
 using NUnit.Framework;
 
@@ -157,6 +160,56 @@ namespace TestPublic.Str
             Assert.That(StringChecker.Match("ABC", "^[a-z]+$",
                 System.Text.RegularExpressions.RegexOptions.IgnoreCase), Is.True);
             Assert.That(StringChecker.Matches("a1b22c333", "\\d+").Count, Is.EqualTo(3));
+        }
+
+        #endregion
+
+        #region コード ページ
+
+        /// <summary>😀（U+1F600、サロゲート ペア）。Shift_JIS には無い。</summary>
+        private const string Emoji = "😀";
+
+        /// <summary>
+        /// **.NET では、Shift_JIS を使う前に CodePagesEncodingProvider の登録が要る。**
+        /// 登録しないと Encoding.GetEncoding(932) が NotSupportedException になる。
+        /// 登録は利用側（アプリ）の責務で、フレームワークは行わない。net48 は標準で使える。
+        /// </summary>
+        [OneTimeSetUp]
+        public void OneTimeSetUp()
+        {
+#if NETCOREAPP
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+#endif
+        }
+
+        /// <summary>
+        /// IsInCodePage は、そのコード ページで**往復しても変わらない**かを見る。空文字は true。
+        /// </summary>
+        [TestCase("abc", CustomEncode.us_ascii, ExpectedResult = true)]
+        [TestCase("あ", CustomEncode.us_ascii, ExpectedResult = false)]
+        [TestCase("あ亜ｱ", CustomEncode.shift_jis, ExpectedResult = true)]
+        [TestCase(Emoji, CustomEncode.shift_jis, ExpectedResult = false)]
+        [TestCase(Emoji, CustomEncode.UTF_8, ExpectedResult = true)]
+        [TestCase("", CustomEncode.us_ascii, ExpectedResult = true)]
+        public bool IsInCodePage(string input, int codePageNum)
+        {
+            return StringChecker.IsInCodePage(input, codePageNum);
+        }
+
+        /// <summary>
+        /// IsShift_Jis（Shift_JIS の文字か）、_Zenkaku（2 バイト文字だけか）、_Hankaku（1 バイト文字だけか）。
+        /// **半角カナ（ｱ）は 1 バイトなので半角。** Shift_JIS に無い文字は、どれも false。
+        /// </summary>
+        [TestCase("あア亜", true, true, false)]
+        [TestCase("ｱa1", true, false, true)]
+        [TestCase("aあ", true, false, false)]
+        [TestCase("a" + Emoji, false, false, false)]
+        [TestCase("", true, true, true)]
+        public void IsShift_Jis(string input, bool sjis, bool zenkaku, bool hankaku)
+        {
+            Assert.That(StringChecker.IsShift_Jis(input), Is.EqualTo(sjis), "IsShift_Jis");
+            Assert.That(StringChecker.IsShift_Jis_Zenkaku(input), Is.EqualTo(zenkaku), "IsShift_Jis_Zenkaku");
+            Assert.That(StringChecker.IsShift_Jis_Hankaku(input), Is.EqualTo(hankaku), "IsShift_Jis_Hankaku");
         }
 
         #endregion

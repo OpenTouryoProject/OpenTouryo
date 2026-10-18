@@ -168,6 +168,9 @@
   <data name="DPQ_TAG_VALUE_ATTR_NOT_EXIST" xml:space="preserve">
     <value>The value attribute is not set to {0} tag (null).</value>
   </data>
+  <data name="DUPLICATE_DICTIONARY_KEY" xml:space="preserve">
+    <value>The key [{0}] of the column [{1}] is duplicated. The Mapping maps the column to the same key as another column, or there are columns with the same name.</value>
+  </data>
   <data name="LATEBIND_ERROR0" xml:space="preserve">
     <value>assembly name: [{0}] does not exist.</value>
   </data>

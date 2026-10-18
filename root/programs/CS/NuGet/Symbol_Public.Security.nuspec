@@ -28,7 +28,7 @@
       <group targetFramework="net10.0">
         <dependency id="Touryo.Infrastructure.Public" version="$version$" />
         <dependency id="BouncyCastle.NetCore" version="2.2.1" />
-        <dependency id="Newtonsoft.Json" version="13.0.3" />
+        <dependency id="Newtonsoft.Json" version="13.0.4" />
         <dependency id="System.Security.Cryptography.Xml" version="9.0.21" />
       </group>
     </dependencies>

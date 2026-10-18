@@ -30,6 +30,9 @@
 //*  2018/07/19  西野 大介         新規作成
 //*  2018/10/03  西野 大介         性能対策
 //*  2018/10/23  西野 大介         微調整
+//*  2026/10/17  玄人 幸道         公開の set を持たないプロパティに同名の列があると、
+//*                                NullReferenceException になるのを修正（#618）
+//*  2026/10/18  玄人 幸道         T が構造体のとき、値が入らないのを修正（#620）
 //**********************************************************************************
 
 using System;
@@ -142,8 +145,21 @@ namespace Touryo.Infrastructure.Public.Dto
                 // POCOのnew()
                 obj = InstanceCreator<T>.Factory();
 
+                // **値を入れる先は、1 度だけボックス化したもの**（#620）。
+                // SetDelegate は object を受けるので、構造体の obj をそのまま渡すと、
+                // 呼ぶたびにボックス化したコピーに値が入り、obj は変わらない。
+                // 参照型なら、boxed は obj と同じインスタンス。
+                object boxed = obj;
+
                 foreach (AccessorInfo ai_dst in AccessorCacher.CncDic[obj.GetType()])
                 {
+                    if (ai_dst.SetDelegate == null)
+                    {
+                        // 公開の set を持たないプロパティ（private set を含む）は、移送の対象から外す（#618）。
+                        // AccessorCacher は、公開の set が無いと SetDelegate を null にする。
+                        continue;
+                    }
+
                     string srcName = ai_dst.AccessorName;
 
                     // マップの有無
@@ -209,10 +225,13 @@ namespace Touryo.Infrastructure.Public.Dto
                                 }
                             }
 
-                            ai_dst.SetDelegate(obj, dstValue);
+                            ai_dst.SetDelegate(boxed, dstValue);
                         }
                     }
                 }
+
+                // ボックス化したものから取り出す（構造体の場合。#620）
+                obj = (T)boxed;
 
                 // List<POCO>に追加。
                 if (obj != null) list.Add(obj);
@@ -273,8 +292,18 @@ namespace Touryo.Infrastructure.Public.Dto
                 //}
                 //Debug.WriteLine(pr.EndsPerformanceRecord());
 
+                // **値を入れる先は、1 度だけボックス化したもの**（#620。List の版と同じ理由）
+                object boxed = obj;
+
                 foreach (AccessorInfo ai_dst in AccessorCacher.CncDic[obj.GetType()])
                 {
+                    if (ai_dst.SetDelegate == null)
+                    {
+                        // 公開の set を持たないプロパティ（private set を含む）は、移送の対象から外す（#618）。
+                        // AccessorCacher は、公開の set が無いと SetDelegate を null にする。
+                        continue;
+                    }
+
                     string srcName = ai_dst.AccessorName;
 
                     // マップの有無
@@ -352,12 +381,15 @@ namespace Touryo.Infrastructure.Public.Dto
                             //pr.StartsPerformanceRecord();
                             //for (int i = 0; i < 1000; i++)
                             //{
-                            ai_dst.SetDelegate(obj, dstValue);
+                            ai_dst.SetDelegate(boxed, dstValue);
                             //}
                             //Debug.WriteLine(pr.EndsPerformanceRecord());
                         }
                     }
                 }
+
+                // ボックス化したものから取り出す（構造体の場合。#620）
+                obj = (T)boxed;
             }
 
             //Debug.WriteLine(pr.EndsPerformanceRecord());

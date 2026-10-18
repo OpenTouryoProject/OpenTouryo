@@ -57,7 +57,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 # --------------------------------------------------
-# コンソールのコード ページと、PowerShell の出力エンコードは別物（ANALYSIS.md 8.5）。
+# コンソールのコード ページと、PowerShell の出力エンコードは別物（CODING.md 5 節）。
 # 判定を分けること。
 # --------------------------------------------------
 if ((cmd /c chcp) -notmatch '65001')
@@ -107,7 +107,7 @@ $net48Projects = @(
 # 読み書きのヘルパ
 #
 # BOM の有無を保って書き戻す。5.1 の Get-Content / Set-Content は
-# 既定のエンコードが ANSI のため使わない（ANALYSIS.md 8.5）。
+# 既定のエンコードが ANSI のため使わない（CODING.md 5 節）。
 # --------------------------------------------------
 function Read-TextFile
 {

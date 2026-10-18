@@ -48,6 +48,7 @@
 //*  2018/03/28  西野 大介         .NET Standard対応で、GetConfigParameterに例外処理を追加
 //*  2019/01/28  西野 大介         .NET Standard対応で、CmnFuncに例外処理を追加
 //*  2026/10/15  玄人 幸道         CmnFunc：FxContainerization が不正なとき無限に再帰するのを修正（#612）
+//*  2026/10/18  玄人 幸道         DUPLICATE_DICTIONARY_KEY を追加（#622）
 //**********************************************************************************
 
 using System;
@@ -733,6 +734,23 @@ namespace Touryo.Infrastructure.Public.Util
 
         /// <summary>NotSupportedExceptionの場合</summary>
         public static string NOT_SUPPORTED
+        {
+            get
+            {
+                // Get current property name.
+                string key = StackFrameOperator.GetCurrentPropertyName();
+
+                // Returns the specified string resource for the specified culture or current UI culture.
+                return PublicExceptionMessage.CmnFunc(key);
+            }
+        }
+
+        #endregion
+
+        #region Dto
+
+        /// <summary>Dictionary のキーの重複（DataToDictionary。{0}：キー、{1}：列名）</summary>
+        public static string DUPLICATE_DICTIONARY_KEY
         {
             get
             {

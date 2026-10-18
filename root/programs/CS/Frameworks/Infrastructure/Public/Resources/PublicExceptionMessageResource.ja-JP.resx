@@ -168,6 +168,9 @@
   <data name="DPQ_TAG_VALUE_ATTR_NOT_EXIST" xml:space="preserve">
     <value>{0}タグにvalue属性が設定されていません（null）。</value>
   </data>
+  <data name="DUPLICATE_DICTIONARY_KEY" xml:space="preserve">
+    <value>列[{1}]のキー[{0}]が重複しています。マップ（Mapping）で他の列と同じキーに付け替えているか、同名の列があります。</value>
+  </data>
   <data name="LATEBIND_ERROR0" xml:space="preserve">
     <value>アセンブリ名：[{0}]が存在しません。</value>
   </data>

@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/10/04  西野 大介         新規作成
+//*  2026/10/18  玄人 幸道         Setter：値型（構造体）で、渡したボックスの中身が変わらないのを修正（#620）
 //**********************************************************************************
 
 using System;
@@ -70,8 +71,14 @@ namespace Touryo.Infrastructure.Public.FastReflection
             var target = Expression.Parameter(typeof(object), "target");
             var value = Expression.Parameter(typeof(object), "value");
 
-            var left = Expression.PropertyOrField(
-                Expression.Convert(target, type), memberName);
+            // **値型は Unbox で、ボックスの中身を直接指す**（#620）。
+            //   Convert（unbox.any）だとアンボックス化した**コピー**に代入され、
+            //   渡したボックスの中身は変わらない（例外にもならない）。
+            //   参照型は、これまでどおり Convert（キャスト）。
+            var instance = type.IsValueType ?
+                Expression.Unbox(target, type) : Expression.Convert(target, type);
+
+            var left = Expression.PropertyOrField(instance, memberName);
 
             var right = Expression.Convert(value, left.Type);
 

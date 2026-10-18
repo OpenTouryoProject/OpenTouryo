@@ -4,19 +4,56 @@
 実行と判定の手順は [`TESTING.md`](../../../TESTING.md)（`Golden` / `NUnit`）と
 [`SMOKETEST.md`](../../../SMOKETEST.md)（`Else` の一部）が一次情報。
 
+> **DB を使うテスト（`TestDataAccess` / `TestPublicDb`）のコンテナは、LocalServicesOnDocker の
+> [`CHEATSHEET.md`](https://github.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker/blob/master/CHEATSHEET.md) に従って扱う。**
+> **メモリを節約しないと、最悪の場合、コンテナがシステムごとハングさせる。**
+> 必要なものだけを名前で起動し、必須でないものを同時に複数起動せず、使い終わったら止める
+> （要点は [`TESTING.md`](../../../TESTING.md) の冒頭）。
+
 | フォルダ | 判定の方式 | 回すもの |
 |---|---|---|
 | `Golden/` | **ゴールデン ファイル方式。** 出力を、コミット済みの `Result*.txt` と比較する（後退テスト） | `2_RunAllTests.ps1` |
 | `NUnit/` | NUnit による単体テスト。**テスト自身が合否を出す** | `2_RunAllTests.ps1` |
 | `Else/` | 上のどちらでもないもの（自分で合否を出す EXE、GUI、目視の確認、補助ファイル） | 一部は `3_SmokeTest.ps1` |
 
-| フォルダ | 中身 |
-|---|---|
-| `Golden/` | `TestCode` / `TestDataAccess` / `TestBatch` / `EncAndDecUtilCUI` |
-| `NUnit/` | `TestPublic` / `TestPublicNLog`（`LogIF` を NLog にした状態。別プロセスで動かすため分けている） / `TestPublicDb`（Dam のクロス DB。DB に接続する） |
-| `Else/` | `TestTransmission` / `TestWebAPIClient` / `TestLog` / `EncAndDecUtil` / `LaunchJson` |
+上位: [`Frameworks/ANALYSIS.md`](../ANALYSIS.md)（全体の俯瞰・ビルド）
 
-各プロジェクトの内容は [`ANALYSIS.md`](../ANALYSIS.md) 2.3 節。
+---
+
+## 各プロジェクト
+
+| 区分 | 名前 | 内容 | 専用の文書 |
+|---|---|---|---|
+| `Golden` | `TestCode` | コンソール EXE。`Program.cs` から `Test*.Root()` を順に呼ぶ。期待値は `Result48.txt` / `ResultCore100.txt` と比較。**DB には接続しない** | [`README.md`](Golden/TestCode/README.md) |
+| `Golden` | `TestDataAccess` | データ アクセスのテスト（#520）。`TestCode` と同じ構成だが**DB に接続する**。`/MODE` で対象の DBMS を切り替える（既定は SQL Server のみ） | [`README.md`](Golden/TestDataAccess/README.md) |
+| `Golden` | `TestBatch` | バッチ起動の確認 | — |
+| `Golden` | `EncAndDecUtilCUI` | 暗号・署名ユーティリティの CUI 確認。結果ファイルは net48 / net10.0 / Linux の 3 つ。`jose-jwt` との相互運用も見る | [`Public/Security/ANALYSIS.md`](../Infrastructure/Public/Security/ANALYSIS.md) 8 節 |
+| `NUnit` | `TestPublic` | `Public` 層の単体テスト（#610）。**1 つの csproj で net48 / net10.0 をマルチ ターゲット**にする。テスト自身が合否を出す | 本書 |
+| `NUnit` | `TestPublicNLog` | `LogIF` を NLog に切り替えた状態のテスト（#610）。**使うライブラリはプロセスで 1 回しか決まらない**ため、別プロジェクト（別プロセス）にしている | 本書 |
+| `NUnit` | `TestPublicDb` | Dam のクロス DB テスト（#610）。**DB に接続する**ので別プロジェクト。SQL Server は必須、他の DBMS は接続できなければスキップ | 本書 |
+| `Else` | `TestTransmission` | 通信制御の接続オプション（#546）。**オリジンとプロキシを自前で立て**、`CallController` から呼んで、要求に反映されているかを見る。**期待値ファイルを持たず、自分で合否を出す**（疎通テストから呼ばれる） | [`SMOKETEST.md`](../../../SMOKETEST.md) 3 節 |
+| `Else` | `TestWebAPIClient` | Web API の非ブラウザ クライアント（疎通テストから呼ばれる） | [`SMOKETEST.md`](../../../SMOKETEST.md) |
+| `Else` | `TestLog` | ログ出力の確認（log4net / NLog、1〜3） | — |
+| `Else` | `EncAndDecUtil` | 暗号・署名ユーティリティの GUI 確認 | — |
+| `Else` | `LaunchJson` | リモート デバッグ用の `launch.json` の例（テストではない） | — |
+
+**`TestCode` と `TestDataAccess` は専用の `README.md` を持つ。**
+「何をテストしているか」「ケースを書き足すときの決まり」「ケース設計の根拠」はそちらが一次情報。
+[`TESTING.md`](../../../TESTING.md) は Golden と NUnit を含む全体の運用を扱い、この詳細は持たない。
+
+**Golden のテストを書き足す前に `TestCode/README.md` を読むこと。**
+結果ファイルとの比較で判定するため、**環境で変わる値を出してはならない**という制約がある
+（例外はメッセージを出さず型名だけ、日時は固定値、`csproj` は net48 / core100 の両方を直す）。
+
+### フレームワークは DLL で参照する
+
+**テスト プロジェクトはフレームワークを `ProjectReference` ではなく `HintPath` で参照する**
+（net10.0 は `Infrastructure/Build_netcore100/net10.0/*.dll`、net48 は `Infrastructure/Build_net48/*.dll`。
+`Else/TestLog` だけは `Infrastructure/Build/*.dll` で、`4_Build_CopyAssemblies.bat` の後でないとビルドできない）。
+→ **フレームワークを先にビルドしないと、テストは古い DLL を見る。**
+
+Golden は `net48` / `core100` の 2 プロジェクトが `..\*.cs` を `Link` で共有する（実体は 1 つ）。
+NUnit は 1 つの csproj でマルチ ターゲットにする（下の「NUnit のテストを書き足すとき」）。
 
 ---
 

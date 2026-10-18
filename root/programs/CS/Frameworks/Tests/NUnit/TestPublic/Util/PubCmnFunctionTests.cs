@@ -25,11 +25,14 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/15  玄人 幸道         新規作成（#610）
 //*  2026/10/15  玄人 幸道         #612 の修正に合わせ、修正後の挙動を確かめるケースを追加
+//*  2026/10/16  玄人 幸道         転送用メソッド（Obsolete）のケースを追加（カバレッジの拡充）
+//*  2026/10/16  玄人 幸道         StackFrame を使う転送用メソッドが、呼び出し元を返すことのケースを追加（#616）
 //**********************************************************************************
 
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Runtime.CompilerServices;
 
 using NUnit.Framework;
 
@@ -113,6 +116,65 @@ namespace TestPublic.Util
                 Assert.That(cols, Is.EquivalentTo(new[] { "ID", "Name" }));
             }
         }
+
+        #endregion
+
+        #region 互換のために残した転送用メソッド
+
+#pragma warning disable CS0618 // 互換のために残した転送用メソッドを、あえて呼ぶ。
+        /// <summary>
+        /// 移動先のクラスへ転送するだけのメソッドは、移動先と同じ結果を返す。
+        /// </summary>
+        /// <remarks>StackFrame を使う 3 つは、下の別のテストで見る。</remarks>
+        [Test]
+        public void ObsoleteForwarders_SameAsNewLocation()
+        {
+            Dictionary<string, string> props = PubCmnFunction.GetPropsFromPropString("a=1;b=2");
+            Assert.That(props, Is.EqualTo(Touryo.Infrastructure.Public.Str.StringVariableOperator.GetPropsFromPropString("a=1;b=2")));
+
+            Dictionary<string, string> argsDic;
+            List<string> valsLst;
+            PubCmnFunction.GetCommandArgs('-', out argsDic, out valsLst);
+            Assert.That(argsDic, Is.Not.Null);
+            Assert.That(valsLst, Is.Not.Null);
+
+            Assert.That(PubCmnFunction.BuiltStringIntoEnvironmentVariable("abc"), Is.EqualTo("abc"));
+
+            int[] src = new int[] { 1, 2, 3, 4, 5 };
+            Assert.That(PubCmnFunction.CopyArray(src, 3), Is.EqualTo(ArrayOperator.CopyArray(src, 3)));
+            Assert.That(PubCmnFunction.CopyArray(src, 2, 3, 0), Is.EqualTo(ArrayOperator.CopyArray(src, 2, 3, 0)));
+            Assert.That(PubCmnFunction.CombineArray(src, src), Is.EqualTo(ArrayOperator.CombineArray(src, src)));
+
+            byte[] bytes = new byte[] { 0x01, 0x02, 0x03 };
+            Assert.That(PubCmnFunction.ShortenByteArray(bytes, 2), Is.EqualTo(ArrayOperator.ShortenByteArray(bytes, 2)));
+            Assert.That(PubCmnFunction.GetLongFromByte(bytes), Is.EqualTo(0x010203));
+        }
+
+        /// <summary>
+        /// **StackFrame を使う 3 つは、本メソッド自身ではなく、呼び出し元の情報を返す。**
+        /// 以前は StackFrameOperator へそのまま転送しており、"GetCurrentMethodName" などを返していた。
+        /// </summary>
+        [Test]
+        public void ObsoleteStackFrame_ReturnsCaller()
+        {
+            Assert.That(PubCmnFunction.GetCurrentMethodName(), Is.EqualTo(nameof(ObsoleteStackFrame_ReturnsCaller)));
+            Assert.That(this.CurrentPropertyName, Is.EqualTo(nameof(CurrentPropertyName)));
+            Assert.That(PubCmnFunction.GetCurrentPropertyName(), Is.Empty, "プロパティでなければ空文字");
+
+            string filePath, fileLineNumber, methodSignature;
+            PubCmnFunction.GetCurrentCodeInfo(out filePath, out fileLineNumber, out methodSignature);
+            Assert.That(methodSignature, Does.Contain(nameof(ObsoleteStackFrame_ReturnsCaller)));
+            Assert.That(filePath, Does.EndWith("PubCmnFunctionTests.cs"));
+            Assert.That(int.Parse(fileLineNumber), Is.GreaterThan(0));
+        }
+
+        /// <summary>GetCurrentPropertyName を呼ぶプロパティ（インライン展開させない）</summary>
+        private string CurrentPropertyName
+        {
+            [MethodImpl(MethodImplOptions.NoInlining)]
+            get { return PubCmnFunction.GetCurrentPropertyName(); }
+        }
+#pragma warning restore CS0618
 
         #endregion
     }

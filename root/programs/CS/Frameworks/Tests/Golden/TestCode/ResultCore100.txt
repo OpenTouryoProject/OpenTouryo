@@ -2353,7 +2353,7 @@ GetFileNameNoEx(パス付き)    : a
 GetFileNameNoEx(二重拡張子)  : a.b
 GetFileNameNoEx(拡張子なし)  : abc
 GetFileNameNoEx(区切りを「.」): "txt"
-GetCurrentMethodName : GetCurrentMethodName
+GetCurrentMethodName : TestPubCmnFunction
 ----------------------------------------------------------------------------------------------------
 ArrayOperator
 CopyArray(3 → 2) : [1, 2]
