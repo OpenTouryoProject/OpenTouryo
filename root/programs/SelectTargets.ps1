@@ -28,6 +28,12 @@
       **基盤（Frameworks\Infrastructure）に触れたら通し。** 下は全部やり直しになるため。
       **対応が引けないファイルも通し。** 迷ったら通し（AGENTS.md）。
 
+    ＜Linux（#632）＞
+      Public・Public.Security（と、それを Linux で回すテスト）に触れたら、
+      2_RunAllTests.ps1 に -Linux を付ける（net10.0 の出力を Linux のコンテナで回す）。
+      OS で実装が分かれる（CNG / OpenSSL、パスの区切り）のは、この 2 つのため。
+      **docker が要る。** 無ければ 2 が NG になる（黙って省かない）。fixing では後回しにする。
+
     ＜検証スクリプト自身の変更＞
       .ps1 は表示だけの変更でも実行する（CODING.md 5 節）。
       変えたスクリプトが他の対象で回らないときは、軽い対象を 1 件だけ選んで回す。
@@ -76,6 +82,7 @@
      ----------  ----------------  -------------------------------------------------
      2026/10/15  玄人 幸道         新規作成（#610）
      2026/10/15  玄人 幸道         -Stage（fixing / fixed）を追加（#610）
+     2026/10/19  玄人 幸道         Public・Public.Security に触れたら、2_RunAllTests.ps1 に -Linux を付けるようにした（#632）
 #>
 [CmdletBinding()]
 param(
@@ -257,12 +264,23 @@ $bats        = @{}            # "CS|xxx.bat" → 理由
 $scriptRuns  = @{}            # 1/2/3 → 理由
 $manual      = @()            # 手で確かめるもの
 $rows        = @()
+$linux       = $null          # -Linux を付ける理由（#632）
+
+# **Linux でも回すもの**（#632）。Public・Public.Security と、それを Linux で回すテスト。
+#   Public\Db の Dam*（Oracle / MySQL / PostgreSQL）は、Linux の回の対象（TestPublic）に入らないので外す。
+$linuxPattern   = '^root/programs/cs/frameworks/(infrastructure/public/|tests/nunit/testpublic/|tests/golden/encanddecutilcui/)'
+$linuxExclusion = '^root/programs/cs/frameworks/infrastructure/public/db/dam'
 
 foreach ($f in $changed)
 {
     $lf   = $f.ToLowerInvariant()
     $lang = $(if ($lf -match '^root/programs/vb/') { "VB" } else { "CS" })
     $kind = $null
+
+    if (-not $linux -and $lf -match $linuxPattern -and $lf -notmatch $linuxExclusion -and $lf -notmatch '\.md$')
+    {
+        $linux = $f
+    }
 
     if ($lf -match '\.md$')
     {
@@ -385,6 +403,10 @@ if ($rows.Count -gt 0)
 #   VB だけが一部、という組み合わせなら、VB 側も通しにする（安全側）。
 $listBuild = @(& (Join-Path $progRoot "1_BuildAll.ps1")    -Lang Both -List -PassThru 6>$null)
 $listTest  = @(& (Join-Path $progRoot "2_RunAllTests.ps1") -List -PassThru 6>$null)
+# **Linux の対象は分けておく**（#632）。-Linux を付けるときにだけ -Only に入れる。
+#   混ぜると、-Linux を付けない回の -Only に入り、2_RunAllTests.ps1 が「一致する対象が無い」で止まる。
+$listLinux = @($listTest | Where-Object { $_.Linux })
+$listTest  = @($listTest | Where-Object { -not $_.Linux })
 $listSmoke = @(& (Join-Path $progRoot "3_SmokeTest.ps1")   -Lang Both -List -PassThru 6>$null)
 
 # **どの検証にも載っていないバッチは、手で実行する。**
@@ -445,6 +467,16 @@ else
 {
     $names = Select-ByBat $listTest
     if ($names.Count -gt 0) { $plan[2] = @{ Only = $names } }
+}
+
+# Linux（#632）。2 を回すなら -Linux を付ける。絞っているなら、Linux の対象も -Only に足す。
+if ($linux -and $plan.ContainsKey(2))
+{
+    $plan[2].Linux = $true
+    if ($plan[2].Only.Count -gt 0)
+    {
+        $plan[2].Only = @($plan[2].Only) + @($listLinux | ForEach-Object { $_.Name })
+    }
 }
 
 # 検証スクリプトを変えたのに、その本が回らないなら、軽い対象を 1 件足す。
@@ -512,6 +544,15 @@ if ($Stage -eq "fixing")
         $plan[1] = @{ Lang = "CS"; Only = $base; Base = $true }
     }
 
+    # --- 2 : Linux は後回し（コンテナを使う。#632）---
+    #   先に外す。Remove-DbTargets は -Only の名前を見るので、Linux の名前が残っていると混ざる。
+    if ($plan.ContainsKey(2) -and $plan[2].Linux)
+    {
+        $deferred += "2_RunAllTests.ps1 : -Linux（Public・Public.Security に触れている）"
+        $plan[2].Linux = $false
+        $plan[2].Only  = @($plan[2].Only | Where-Object { @($listLinux | ForEach-Object { $_.Name }) -notcontains $_ })
+    }
+
     # --- 2 : DB を使う対象を外す ---
     if ($plan.ContainsKey(2)) { Remove-DbTargets 2 $listTest }
 
@@ -541,6 +582,7 @@ function Get-Splat([int]$no)
 
     if ($no -ne 2 -and $p.Lang -and $p.Lang -ne "CS") { $s.Lang = $p.Lang }
     if ($p.Only.Count -gt 0) { $s.Only = $p.Only }
+    if ($no -eq 2 -and $p.Linux) { $s.Linux = $true }
 
     # **絞ったビルドは Clean を挟まない。**（CHEATSHEET.md 1 節）
     #   Clean は bin を再帰的に消すため、絞った範囲の外の成果物まで失う。
@@ -560,6 +602,7 @@ function Format-Command([int]$no)
     if ($s.Lang)      { $cmd += " -Lang " + $s.Lang }
     if ($s.Only)      { $cmd += " -Only " + (($s.Only | ForEach-Object { "'$_'" }) -join ", ") }
     if ($s.SkipClean) { $cmd += " -SkipClean" }
+    if ($s.Linux)     { $cmd += " -Linux" }
     if ($s.IgnoreErrors -and $no -eq 1) { $cmd += " -IgnoreErrors '...'" }
     return $cmd
 }
@@ -570,6 +613,10 @@ Write-Host ("=== 回す範囲（段階 : {0}） ===" -f $Stage) -ForegroundColor
 foreach ($k in ($full.Keys | Sort-Object))
 {
     Write-Host ("  {0} は通し : {1}" -f $k, $full[$k]) -ForegroundColor Yellow
+}
+if ($plan.ContainsKey(2) -and $plan[2].Linux)
+{
+    Write-Host ("  Linux も回す : {0}" -f $linux) -ForegroundColor Yellow
 }
 
 if ($plan.Count -eq 0)

@@ -149,7 +149,7 @@ net48 はこのパッケージを参照しない（BCL を使う）。
 | 置き場 | 確かめること |
 |---|---|
 | `Tests/Golden/EncAndDecUtilCUI` | ほぼ全部の API を net48 / net10.0（Windows・Linux）で回し、結果ファイルと比べる。`jose-jwt` との相互運用も見る |
-| `Tests/NUnit/TestPublic/Security/` | `JwsTypTests` / `JweTypTests`（`typ` の照合） |
+| `Tests/NUnit/TestPublic/Security/` | 単体テスト（カバレッジを意識）。ハッシュ・HMAC（RFC のテスト ベクタ）、共通鍵暗号（鍵の導出を .NET の API で組み立てて一致を見る）、パスワード、署名（パラメタ・XML・証明書・CNG）、公開鍵暗号、JWK（RFC 7638 の Thumbprint）、JWS、PEM、鍵交換、XML 署名。`JwsTypTests` / `JweTypTests` は `typ` の照合（#611）。**CNG を使うものは Windows だけで回す**（`[Platform("Win")]`） |
 | `Tests/Else/EncAndDecUtil` | GUI での確認 |
 
 **結果ファイルは 3 つある**（`Result48.txt` / `ResultCore100.txt` / `ResultCore100OnLinux.txt`）。
@@ -165,6 +165,13 @@ net48 はこのパッケージを参照しない（BCL を使う）。
 4. **鍵の導出を変えると既存の暗号文が読めない**（6 節）。
 5. **委譲で引数を落としても、自分自身を呼んでコンパイルが通る**（6 節）。呼ばれないコードは結果ファイルにも現れない。
 6. **`System.Security.Cryptography.Xml` は 4 箇所を揃える**（7 節）。
+7. **net10.0（Windows）の `X509Certificate2.GetDSAPublicKey()` は、2048 ビットの DSA 証明書を読めない**（「プロバイダーの公開キーは無効です」）。
+   `X509Certificate2.PublicKey.GetDSAPublicKey()` なら読めるので、`AsymmetricAlgorithmCmnFunc.GetPublicKey` はこちらを使う。
+   net48 の DSACng の秘密鍵は平文でエクスポートできないので、`DigitalSignX509` は写し直せなければそのまま使う（#626）。
+8. **`RSACng.Create()` / `RSACryptoServiceProvider.Create()` は親の `RSA.Create()` で、派生クラスの名前で呼んでも既定の実装を返す。**
+   `EnumASymmetricAlgorithm.RsaCng` は `new RSACng()` で作る（Windows のみ。Windows 以外は既定の実装）。
+   **`RsaCsp` は `RSA.Create()` のまま**：net48 では RSACryptoServiceProvider になり、.NET ではその環境の既定の実装（Windows は CNG、Linux は OpenSSL）に読み替える。
+   .NET の `RSACryptoServiceProvider` は OAEP-SHA256 などを持たないので、寄せると動いている呼び出しが例外になる（#628）。
 
 ---
 

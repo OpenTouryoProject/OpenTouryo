@@ -31,6 +31,10 @@
 //*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //*  2019/01/29  西野 大介         X.509対応（JWE（RSAES-OAEP and AES GCM）対応
 //*  2019/06/12  西野 大介         constructorのX509KeyStorageFlagsの既定値を変更
+//*  2026/10/18  玄人 幸道         GetPublicKey：net10.0 で DSA の証明書の公開鍵を読めないのを修正（#626）
+//*  2026/10/18  玄人 幸道         CreateDigitalSignSP：生成する ECDSA（CNG）の鍵を、平文でエクスポートできるようにした（#627）
+//*  2026/10/18  玄人 幸道         CreateCryptographySP：RsaCng の指定が効かないのを修正（#628。RsaCsp は .NET では既定の実装に読み替える）
+//*  2026/10/19  玄人 幸道         CreateDigitalSignSP：DsaOpenSsl_SHA256 が SHA1 になっていたのを修正（#631）
 //**********************************************************************************
 
 using System;
@@ -64,7 +68,14 @@ namespace Touryo.Infrastructure.Public.Security
                     return x509Key.GetRSAPublicKey();
 
                 case "DSA":
+#if NETSTD
+                    // X509Certificate2.GetDSAPublicKey() は、Windows で 2048 ビットの
+                    // DSA 証明書を「プロバイダーの公開キーは無効です」で読めない（#626）。
+                    // PublicKey（SubjectPublicKeyInfo）からなら読めるので、こちらを使う。
+                    return x509Key.PublicKey.GetDSAPublicKey();
+#else
                     return x509Key.GetDSAPublicKey();
+#endif
 
                 case "ECC":
                 case "ECDSA":
@@ -187,15 +198,29 @@ namespace Touryo.Infrastructure.Public.Security
             }
             else
             {
+                // **RSACryptoServiceProvider.Create() / RSACng.Create() は、親の RSA.Create() である。**（#628）
+                //   派生クラス名で呼んでも既定の実装を返すので、指定が効いていなかった
+                //   （net48 の RsaCng が RSACryptoServiceProvider になり、OAEP-SHA256 が使えなかった）。
                 if (easa == EnumASymmetricAlgorithm.RsaCsp)
                 {
                     // RSACryptoServiceProviderサービスプロバイダ
-                    asa = RSACryptoServiceProvider.Create(); // devps(1703)
+                    // **RSA.Create() のままにする。**（#628）
+                    //   net48 では RSA.Create() が RSACryptoServiceProvider を返すので、指定どおりになる。
+                    //   .NET では、その環境の既定の実装（Windows は CNG、Linux は OpenSSL）に読み替える。
+                    //   .NET の RSACryptoServiceProvider は互換のための古い型で、OAEP-SHA256 などを持たない。
+                    //   寄せると、いま動いている呼び出しが例外になる。
+                    asa = RSA.Create();
                 }
                 else if (easa == EnumASymmetricAlgorithm.RsaCng)
                 {
                     // RSACngサービスプロバイダ
-                    asa = RSACng.Create(); // devps(1703)
+#if NETSTD
+                    // CNG は Windows だけ。Windows 以外は、これまでどおり既定の実装（OpenSSL）にする
+                    // （例外にすると、いま Linux で動いている呼び出しが動かなくなる）。
+                    asa = OperatingSystem.IsWindows() ? new RSACng() : RSA.Create();
+#else
+                    asa = new RSACng();
+#endif
                 }
 #if NETSTD
                 else if (easa == EnumASymmetricAlgorithm.RsaOpenSsl)
@@ -297,12 +322,14 @@ namespace Touryo.Infrastructure.Public.Security
             }
             
 #if NETSTD
-            else if (eaa == EnumDigitalSignAlgorithm.DsaOpenSsl_SHA256)//DsaOpenSsl_SHA1)
+            else if (eaa == EnumDigitalSignAlgorithm.DsaOpenSsl_SHA256)
             {
                 // DSAOpenSslサービスプロバイダ
                 aa = new DSAOpenSsl();
 
-                ha = SHA1.Create();
+                // 名前どおり SHA-256 にする（#631）。
+                // 2026/10/19 まで、列挙値の名前（以前は DsaOpenSsl_SHA1）だけを変えた名残で SHA1 になっていた。
+                ha = SHA256.Create();
             }
 #endif
             else if (
@@ -326,7 +353,12 @@ namespace Touryo.Infrastructure.Public.Security
                         cngAlgorithm = CngAlgorithm.ECDsaP521;
                         break;
                 }
-                aa = new ECDsaCng(CngKey.Create(cngAlgorithm));
+                // 平文でのエクスポートを許す鍵にする（#627）。
+                // 既定の CngKey はこれを許さず、JWS_ES*_Param.ECDsaPrivateParameters など、
+                // 生成した秘密鍵を ECParameters として取り出す処理が例外になっていた。
+                // この鍵はプロセスの中で生成する一時的な鍵で、取り出せることが前提の API である。
+                aa = new ECDsaCng(CngKey.Create(cngAlgorithm, null,
+                    new CngKeyCreationParameters() { ExportPolicy = CngExportPolicies.AllowPlaintextExport }));
                 ha = null; // ハッシュ無し
             }
 #if NETSTD

@@ -299,6 +299,7 @@ Copyright ブロックの扱い、`ArgumentException` 系の引数の順、`.bat
 |---|---|
 | クロス DB（Oracle / MySQL / PostgreSQL のコンテナ） | Dam・SQL の生成（`Public/Db`、`Dam*`）に触れた fixed と、リリース |
 | VB 側（`-Lang VB`） | VB のソース、または VB が取り込む基盤に触れた fixed と、リリース |
+| Linux（`-Linux`。net10.0 の出力を Linux のコンテナで回す） | Public・Public.Security に触れた fixed と、リリース（`SelectTargets.ps1` が付ける。#632） |
 | 管理者権限（イベント ログの NUnit） | `CustomEventLog` に触れたとき。手元が管理者でなければ、回せていないと報告する |
 
 **コンテナやサービスは勝手に起動しない**（下の「前提となるサービスや DB」と同じ）。必要なら施主に確認する。

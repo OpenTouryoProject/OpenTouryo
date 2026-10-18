@@ -82,6 +82,23 @@
 .PARAMETER LocalServicesDir
     LocalServicesOnDocker のフォルダ（-CrossDb で使う）。
     **docker コマンドが使えれば Rancher Desktop 版（*.ps1）、使えなければ WSL2 版（*_wsl2.ps1）を使う。**
+.PARAMETER Linux
+    Windows でのビルドとテストの後に、**net10.0 の出力をそのまま Linux のコンテナで回す**（#632）。
+    対象は EncAndDecUtilCUI（期待値は ResultCore100OnLinux.txt）と NUnit の TestPublic。
+    **docker コマンドが要る**（Rancher Desktop）。指定しなければ、既定の動きは変わらない。
+
+    ＜なぜビルドした出力をそのまま使うか＞
+      net10.0 の DLL は OS によらない。Windows で作ったものを Linux へ配置する、という
+      実際の使われ方をそのまま確かめられる。コンテナの中でビルドし直すより速く、
+      ワーキング ツリーの bin/obj にも触れない（出力は読み取り専用でマウントする）。
+
+    ＜コンテナ＞
+      **1 つだけ、--rm で起動する**（終われば消える）。メモリは -LinuxMemory で抑える。
+      同じ名前のコンテナが既にあれば、触らずに止める。
+.PARAMETER LinuxImage
+    -Linux で使うイメージ。既定は mcr.microsoft.com/dotnet/sdk:10.0（dotnet test に SDK が要る）。
+.PARAMETER LinuxMemory
+    -Linux のコンテナのメモリの上限（docker run --memory）。既定は 4g。
 
 .EXAMPLE
     .\2_RunAllTests.ps1
@@ -94,6 +111,9 @@
 
 .EXAMPLE
     .\2_RunAllTests.ps1 -CrossDb -LocalServicesDir D:\git\LocalServicesOnDocker
+
+.EXAMPLE
+    .\2_RunAllTests.ps1 -Linux
 
 .NOTES
     作成者          ：玄人 幸道
@@ -110,6 +130,8 @@
      2026/10/15  玄人 幸道         NUnit の TestPublicDb（Dam のクロス DB）を加えた（#610）
      2026/10/15  玄人 幸道         -List -PassThru に NeedDb を加えた（#610）
      2026/10/18  玄人 幸道         -CrossDb / -LocalServicesDir を追加した（#623）
+     2026/10/18  玄人 幸道         NUnit のカバレッジを、別のプロジェクトの結果から表示していたのを修正（#623 の後）
+     2026/10/19  玄人 幸道         -Linux / -LinuxImage / -LinuxMemory を追加した（#632）
 #>
 [CmdletBinding()]
 param(
@@ -119,7 +141,10 @@ param(
     [switch]$PassThru,
     [switch]$SkipBuild,
     [switch]$CrossDb,
-    [string]$LocalServicesDir
+    [string]$LocalServicesDir,
+    [switch]$Linux,
+    [string]$LinuxImage = "mcr.microsoft.com/dotnet/sdk:10.0",
+    [string]$LinuxMemory = "4g"
 )
 
 $ErrorActionPreference = "Continue"
@@ -238,6 +263,7 @@ function Copy-TestCertificates
 # Kind        : "NUnit" なら、Result は *.trx で、HEAD とは比較しない（#610）
 #               **テスト自身が合否を出すため、期待値ファイルを持たない。**
 # Coverage    : カバレッジ（coverage.cobertura.xml）を表示するか（#610）
+# Linux       : -Linux のときだけ回す。Bat がビルドした net10.0 の出力を、Linux のコンテナで動かす（#632）
 $tests = @(
     @{
         Name = "TestCode (net48)";           Bat = "y_Build_TestCode_Public.bat"
@@ -303,6 +329,17 @@ $tests = @(
         Result = "NUnit\TestResults\TestPublicDb\TestPublicDb_net10.0.trx"; Kind = "NUnit"; Coverage = $true
         NeedDb = $true
     }
+    # Linux（#632）。Windows でビルドした net10.0 の出力を、そのまま Linux のコンテナで回す。
+    @{
+        Name = "EncAndDecUtilCUI (Linux)";   Bat = "y_Build_TestCode_SecCUI.bat"
+        Result = "Golden\EncAndDecUtilCUI\ResultCore100OnLinux.txt"; SkipLog4net = $false; NormBase64 = $true
+        Linux = $true
+    }
+    @{
+        Name = "NUnit TestPublic (Linux)";   Bat = "y_Build_TestCode_NUnit.bat"
+        Result = "NUnit\TestResults\Linux\TestPublic_linux.trx"; Kind = "NUnit"
+        Linux = $true
+    }
 )
 
 # ------------------------------------------------------------------
@@ -317,7 +354,7 @@ $tests = @(
 if ($List)
 {
     Write-Host ("=== -Only に指定できる名前（部分一致）{0} ===" -f "") -ForegroundColor Cyan
-    foreach ($x in $tests) { Write-Host ("  " + $x.Name) }
+    foreach ($x in $tests) { Write-Host ("  " + $x.Name + $(if ($x.Linux) { "  （-Linux のときだけ）" } else { "" })) }
     Write-Host ("  ---- {0} 件 ----" -f $tests.Count)
 
     # 名前とバッチの対応を返す（#610）。SelectTargets.ps1 が使う。
@@ -325,9 +362,17 @@ if ($List)
     if ($PassThru)
     {
         # NeedDb は SelectTargets.ps1 -Stage fixing が DB を使う対象を後回しにするのに使う（#610）。
-        foreach ($x in $tests) { [pscustomobject]@{ Name = $x.Name; Bat = $x.Bat; Dir = "CS"; NeedDb = [bool]$x.NeedDb } }
+        # Linux は -Linux のときだけ回る対象の印（#632）。SelectTargets.ps1 は、これを -Linux を付けるときにだけ -Only に入れる。
+        foreach ($x in $tests) { [pscustomobject]@{ Name = $x.Name; Bat = $x.Bat; Dir = "CS"; NeedDb = [bool]$x.NeedDb; Linux = [bool]$x.Linux } }
     }
     exit 0
+}
+
+# **Linux の対象は -Linux のときだけ。**（#632）
+#   -Only より先に外す。外さないと、-Only "EncAndDecUtilCUI" が Linux の分まで拾う。
+if (-not $Linux)
+{
+    $tests = @($tests | Where-Object { -not $_.Linux })
 }
 
 # **-Only は複数指定できる。どれかに当たれば対象。**（#610）
@@ -403,6 +448,48 @@ if ($CrossDb)
             exit 1
         }
     }
+}
+
+# ------------------------------------------------------------------
+# Linux（#632）
+# ------------------------------------------------------------------
+#   **docker が要る。** 無ければ、回さずに止める（黙って Windows の分だけ OK にしない）。
+$linuxContainer = "opentouryo-linuxtest"
+
+if ($Linux)
+{
+    if ($CrossDb)
+    {
+        Write-Host "  **-Linux と -CrossDb は同時に指定できません。** 別々に実行してください。" -ForegroundColor Red
+        exit 1
+    }
+
+    $dockerOk = $false
+    if (Get-Command docker -EA SilentlyContinue)
+    {
+        & docker info *> $null
+        $dockerOk = ($LASTEXITCODE -eq 0)
+    }
+    if (-not $dockerOk)
+    {
+        Write-Host "  **-Linux には docker コマンドが要ります**（Rancher Desktop が動いているか確かめてください）。" -ForegroundColor Red
+        exit 1
+    }
+
+    # **同じ名前のコンテナがあれば触らない。** 前回の残りか、人が動かしているもの。
+    $existing = (& docker ps -a --filter "name=^$linuxContainer`$" --format "{{.Names}}" 2>$null)
+    if ($existing)
+    {
+        Write-Host ("  **コンテナ '{0}' が既にあります。** 触らずに止めます（docker ps -a で確かめてください）。" -f $linuxContainer) -ForegroundColor Red
+        exit 1
+    }
+
+    if (@($tests | Where-Object { $_.Linux }).Count -eq 0)
+    {
+        Write-Host "  **-Linux の対象が、-Only で外れています。**" -ForegroundColor Red
+        exit 1
+    }
+    Write-Host ("  -Linux : {0} を使います（メモリ上限 {1}）" -f $LinuxImage, $LinuxMemory) -ForegroundColor Yellow
 }
 
 # サービスの起動・停止（#623）
@@ -584,6 +671,86 @@ if (-not $SkipBuild)
 }
 
 # ------------------------------------------------------------------
+# Linux : ビルドした net10.0 の出力を、Linux のコンテナで回す（#632）
+# ------------------------------------------------------------------
+#   出力のフォルダは**読み取り専用**でマウントし、コンテナの中で /tmp に写してから動かす
+#   （テストが出力のフォルダに書いても、ワーキング ツリーは変わらない）。
+#   結果はいったん $OutputDir\linux に受け、Windows の回と同じ場所へ置く
+#   （Golden はワーキング ツリーの ResultCore100OnLinux.txt。Windows の回と同じく、書き換わる）。
+$linuxTests = @($tests | Where-Object { $_.Linux -and -not $buildFailed.ContainsKey($_.Bat) })
+$linuxFailed = @{}
+if ($linuxTests.Count -gt 0)
+{
+    Write-Host ""
+    Write-Host "=== Linux : コンテナで実行 ===" -ForegroundColor Cyan
+
+    $linuxOut = Join-Path $OutputDir "linux"
+    if (Test-Path $linuxOut) { Remove-Item $linuxOut -Recurse -Force }
+    New-Item -ItemType Directory -Force $linuxOut | Out-Null
+
+    # 回すものと、マウントするフォルダ（net10.0 の出力）
+    $golden = $linuxTests | Where-Object { $_.Kind -ne "NUnit" } | Select-Object -First 1
+    $nunit  = $linuxTests | Where-Object { $_.Kind -eq "NUnit" } | Select-Object -First 1
+    $goldenBin = Join-Path $testsRoot "Golden\EncAndDecUtilCUI\core100\bin\Debug\net10.0"
+    $nunitBin  = Join-Path $testsRoot "NUnit\TestPublic\bin\Debug\net10.0"
+
+    $dockerArgs = @("run", "--rm", "--name", $linuxContainer, "--memory", $LinuxMemory, "-v", ("{0}:/out" -f $linuxOut))
+    $sh = @("set -u")
+    if ($nunit)
+    {
+        $dockerArgs += @("-v", ("{0}:/nunit:ro" -f $nunitBin))
+        $sh += "cp -r /nunit /tmp/nunit"
+        $sh += "dotnet test /tmp/nunit/TestPublic.dll --logger 'trx;LogFileName=/out/TestPublic_linux.trx' > /out/nunit.log 2>&1"
+    }
+    if ($golden)
+    {
+        $dockerArgs += @("-v", ("{0}:/golden:ro" -f $goldenBin))
+        $sh += "cp -r /golden /tmp/golden"
+        # 最後に Console.ReadKey を呼ぶので、標準入力を閉じておく
+        $sh += "cd /tmp/golden && dotnet EncAndDecUtilCUICore.dll < /dev/null > /out/golden.txt 2>&1"
+    }
+
+    # **スクリプトはファイルで渡す**（LF・BOM 無し）。引数で渡すと、5.1 は中の引用符を落とす。
+    [IO.File]::WriteAllText((Join-Path $linuxOut "run.sh"), (($sh -join "`n") + "`n"), (New-Object Text.UTF8Encoding $false))
+    $dockerArgs += @($LinuxImage, "bash", "/out/run.sh")
+
+    $log = Join-Path $OutputDir "linux_docker.log"
+    $sw  = [Diagnostics.Stopwatch]::StartNew()
+    & docker @dockerArgs *>&1 | Out-File $log -Encoding UTF8
+    $dockerExit = $LASTEXITCODE
+    $sw.Stop()
+    Write-Host ("  完了 ({0:N1} 秒、終了コード {1})  ログ : {2}" -f $sw.Elapsed.TotalSeconds, $dockerExit, $log)
+
+    # 結果を、Windows の回と同じ場所へ置く。**無ければ置かない**（比較で「結果無し」になる）。
+    if ($golden)
+    {
+        $src = Join-Path $linuxOut "golden.txt"
+        $dst = Join-Path $testsRoot $golden.Result
+        if (Test-Path $src)
+        {
+            # 改行は Windows の回の結果ファイルに合わせて CRLF にする（Linux は LF で出す）
+            $text = [IO.File]::ReadAllText($src, [Text.Encoding]::UTF8) -replace "`r?`n", "`r`n"
+            [IO.File]::WriteAllText($dst, $text, (New-Object Text.UTF8Encoding $false))
+        }
+        else
+        {
+            # **前回の結果ファイルと比べて OK にしない。** ワーキング ツリーのファイルは消さずに、NG として扱う。
+            $linuxFailed[$golden.Name] = "コンテナで結果が出ませんでした（ログ : $log）"
+        }
+    }
+    if ($nunit)
+    {
+        $src = Join-Path $linuxOut "TestPublic_linux.trx"
+        $dst = Join-Path $testsRoot $nunit.Result
+        $dstDir = Split-Path $dst
+        if (Test-Path $dstDir) { Remove-Item $dstDir -Recurse -Force }
+        New-Item -ItemType Directory -Force $dstDir | Out-Null
+        if (Test-Path $src) { Copy-Item $src $dst -Force }
+        Write-Host ("  NUnit のログ : {0}" -f (Join-Path $linuxOut "nunit.log"))
+    }
+}
+
+# ------------------------------------------------------------------
 # NUnit の結果（trx）の判定（#610）
 # ------------------------------------------------------------------
 #   trx の ResultSummary を読む。**差分の列には失敗の件数を出す。**
@@ -600,8 +767,10 @@ function Get-NUnitResult([string]$Name, [string]$Trx, [bool]$Coverage, [string]$
         return [pscustomobject]@{ テスト = $Name; 結果 = "結果無し"; 差分 = "-" }
     }
 
-    [xml]$trx = Get-Content $Trx -Encoding UTF8 -Raw
-    $c = $trx.TestRun.ResultSummary.Counters
+    # **変数名を $Trx（引数）と分ける。** PowerShell は大文字・小文字を区別しないので、同じ名前だと引数を上書きする
+    #   （カバレッジのファイルを、trx の隣ではなく作業フォルダから探していた。#623 の後で修正）。
+    [xml]$trxXml = Get-Content $Trx -Encoding UTF8 -Raw
+    $c = $trxXml.TestRun.ResultSummary.Counters
     $total  = [int]$c.total
     $failed = [int]$c.failed + [int]$c.error + [int]$c.timeout + [int]$c.aborted
 
@@ -613,11 +782,11 @@ function Get-NUnitResult([string]$Name, [string]$Trx, [bool]$Coverage, [string]$
     Write-Host ("  合計 {0} 件 / 合格 {1} 件 / 失敗 {2} 件 / 実行せず {3} 件" -f `
         $total, $c.passed, $failed, $skipped)
 
-    foreach ($r in @($trx.TestRun.Results.UnitTestResult | Where-Object { $_.outcome -ne "Passed" -and $_.outcome -ne "NotExecuted" }))
+    foreach ($r in @($trxXml.TestRun.Results.UnitTestResult | Where-Object { $_.outcome -ne "Passed" -and $_.outcome -ne "NotExecuted" }))
     {
         Write-Host ("    [{0}] {1}" -f $r.outcome, $r.testName) -ForegroundColor Red
     }
-    foreach ($r in @($trx.TestRun.Results.UnitTestResult | Where-Object { $_.outcome -eq "NotExecuted" }))
+    foreach ($r in @($trxXml.TestRun.Results.UnitTestResult | Where-Object { $_.outcome -eq "NotExecuted" }))
     {
         Write-Host ("    [スキップ] {0}" -f $r.testName) -ForegroundColor Yellow
     }
@@ -629,10 +798,10 @@ function Get-NUnitResult([string]$Name, [string]$Trx, [bool]$Coverage, [string]$
     {
         # testId → className（UnitTestResult には className が無い）
         $classOf = @{}
-        foreach ($u in @($trx.TestRun.TestDefinitions.UnitTest)) { $classOf[$u.id] = $u.TestMethod.className }
+        foreach ($u in @($trxXml.TestRun.TestDefinitions.UnitTest)) { $classOf[$u.id] = $u.TestMethod.className }
 
         $mark = '("{0}")' -f $RequireDbms
-        $ran = @($trx.TestRun.Results.UnitTestResult | Where-Object {
+        $ran = @($trxXml.TestRun.Results.UnitTestResult | Where-Object {
             $_.outcome -ne "NotExecuted" -and "$($classOf[$_.testId])".Contains($mark) })
 
         Write-Host ("  {0} のテスト : 実行 {1} 件" -f $RequireDbms, $ran.Count)
@@ -699,6 +868,14 @@ foreach ($t in $tests)
         $results += [pscustomobject]@{
             テスト = $t.Name; 結果 = "ビルド失敗"; 差分 = "-"
         }
+        continue
+    }
+
+    # Linux のコンテナで結果が出なかった（#632）
+    if ($linuxFailed.ContainsKey($t.Name))
+    {
+        Write-Host ("  **{0}**" -f $linuxFailed[$t.Name]) -ForegroundColor Red
+        $results += [pscustomobject]@{ テスト = $t.Name; 結果 = "実行失敗"; 差分 = "-" }
         continue
     }
 

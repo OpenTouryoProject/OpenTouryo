@@ -32,6 +32,7 @@
 //*  2018/11/07  西野 大介         DSA証明書のサポートを追加（4.7以上）
 //*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //*  2019/06/12  西野 大介         constructorのX509KeyStorageFlagsの既定値を変更
+//*  2026/10/18  玄人 幸道         Prepare：DSA の秘密鍵を写し直せないとき、例外にせずそのまま使うようにした（#626）
 //**********************************************************************************
 
 using System;
@@ -224,9 +225,18 @@ namespace Touryo.Infrastructure.Public.Security
                 else if (aa is DSA)
                 {
                     // DSA
-                    DSA dsa = (DSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(aa);
-                    dsa.ImportParameters(((DSA)(aa)).ExportParameters(true));
-                    aa = dsa;
+                    // 秘密鍵が平文でのエクスポートを許さないことがある（net48 の DSACng。#626）。
+                    // その場合は写し直さず、証明書から取り出した鍵をそのまま使う（署名・検証はできる）。
+                    try
+                    {
+                        DSA dsa = (DSA)AsymmetricAlgorithmCmnFunc.CreateSameKeySizeSP(aa);
+                        dsa.ImportParameters(((DSA)(aa)).ExportParameters(true));
+                        aa = dsa;
+                    }
+                    catch (CryptographicException)
+                    {
+                        // aa をそのまま使う。
+                    }
                 }
                 else
                 {

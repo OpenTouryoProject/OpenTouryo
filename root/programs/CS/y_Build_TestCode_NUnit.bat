@@ -11,6 +11,15 @@ setlocal
 set CURRENT_DIR="%~dp0"
 
 @rem --------------------------------------------------
+@rem The PDB of the tests is portable (#632).
+@rem   The net10.0 output is also run on Linux (2_RunAllTests.ps1 -Linux).
+@rem   .NET on Linux cannot read a Windows (full) PDB, so the tests that
+@rem   look at the file name of a stack frame got null there.
+@rem   A value the caller has already set still wins (z_Common.bat).
+@rem --------------------------------------------------
+if not defined DEBUG_TYPE set DEBUG_TYPE=portable
+
+@rem --------------------------------------------------
 @rem Execution of the common processing.
 @rem --------------------------------------------------
 call %CURRENT_DIR%z_Common.bat

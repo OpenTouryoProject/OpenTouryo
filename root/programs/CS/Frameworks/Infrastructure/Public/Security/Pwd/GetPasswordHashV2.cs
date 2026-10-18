@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/10/31  西野 大介         クラスの再編（GetKeyedHash -> GetKeyedHash, GetPasswordHashVn, MsgAuthCode）
+//*  2026/10/19  玄人 幸道         キー付き版の GetSaltedPassword に、ストレッチのかかり方を remarks で書いた
 //**********************************************************************************
 
 using System.Security.Cryptography;
@@ -119,6 +120,12 @@ namespace Touryo.Infrastructure.Public.Security.Pwd
         /// <param name="key">キー</param>
         /// <param name="saltLength">saltの文字列長</param>
         /// <param name="stretchCount">Stretch回数</param>
+        /// <remarks>
+        /// **キー付き版のストレッチ（stretchCount）は、HMAC の鍵（key と salt から PBKDF2 で導出）にだけかかる。**
+        /// パスワードには HMAC が 1 回かかるだけで、また key は結果の文字列に含まれる。
+        /// このため stretchCount を増やしても、パスワードの総当たりに対する耐性は上がらない。
+        /// 総当たりへの耐性が要るなら、キー無し版（EnumHashAlgorithm を受ける GetSaltedPassword）で stretchCount を指定する。
+        /// </remarks>
         /// <returns>Salted and hashed password.</returns>
         public static string GetSaltedPassword(string rawPassword,
             EnumKeyedHashAlgorithm ekha, string key, int saltLength, int stretchCount)
@@ -138,6 +145,12 @@ namespace Touryo.Infrastructure.Public.Security.Pwd
         /// <param name="saltLength">saltの文字列長</param>
         /// <param name="stretchCount">Stretch回数</param>
         /// <param name="hashAlgorithmName">Hashアルゴリズム名</param>
+        /// <remarks>
+        /// **キー付き版のストレッチ（stretchCount）は、HMAC の鍵（key と salt から PBKDF2 で導出）にだけかかる。**
+        /// パスワードには HMAC が 1 回かかるだけで、また key は結果の文字列に含まれる。
+        /// このため stretchCount を増やしても、パスワードの総当たりに対する耐性は上がらない。
+        /// 総当たりへの耐性が要るなら、キー無し版（EnumHashAlgorithm を受ける GetSaltedPassword）で stretchCount を指定する。
+        /// </remarks>
         /// <returns>Salted and hashed password.</returns>
         public static string GetSaltedPassword(string rawPassword,
             EnumKeyedHashAlgorithm ekha, string key, int saltLength, int stretchCount, HashAlgorithmName hashAlgorithmName)

@@ -37,6 +37,7 @@
 //*  2017/09/08  西野 大介         名前空間の移動（ ---> Security ）
 //*  2018/03/28  西野 大介         .NET Standard対応で、HMACRIPEMD160, MACTripleDESのサポート無し。
 //*  2018/10/31  西野 大介         クラスの再編（GetKeyedHash -> GetKeyedHash, GetPasswordHashVn, MsgAuthCode）
+//*  2026/10/19  玄人 幸道         キー付き版の GetSaltedPassword に、ストレッチのかかり方を remarks で書いた
 //**********************************************************************************
 
 using System;
@@ -157,6 +158,12 @@ namespace Touryo.Infrastructure.Public.Security.Pwd
         /// <param name="ekha">Hashアルゴリズム列挙型</param>
         /// <param name="key">キー（システム共通）</param>
         /// <param name="saltLength">saltの文字列長</param>
+        /// <remarks>
+        /// **キー付き版のストレッチ（stretchCount）は、HMAC の鍵（key と salt から PBKDF2 で導出）にだけかかる。**
+        /// パスワードには HMAC が 1 回かかるだけで、また key は結果の文字列に含まれる。
+        /// このため stretchCount を増やしても、パスワードの総当たりに対する耐性は上がらない。
+        /// 総当たりへの耐性が要るなら、キー無し版（EnumHashAlgorithm を受ける GetSaltedPassword）で stretchCount を指定する。
+        /// </remarks>
         /// <returns>Salted and hashed password.</returns>
         /// <see ref="http://www.atmarkit.co.jp/ait/articles/1110/06/news154_2.html"/>
         public static string GetSaltedPassword(string rawPassword, EnumKeyedHashAlgorithm ekha, string key, int saltLength)
@@ -174,6 +181,12 @@ namespace Touryo.Infrastructure.Public.Security.Pwd
         /// <param name="key">キー</param>
         /// <param name="saltLength">saltの文字列長</param>
         /// <param name="stretchCount">Stretch回数</param>
+        /// <remarks>
+        /// **キー付き版のストレッチ（stretchCount）は、HMAC の鍵（key と salt から PBKDF2 で導出）にだけかかる。**
+        /// パスワードには HMAC が 1 回かかるだけで、また key は結果の文字列に含まれる。
+        /// このため stretchCount を増やしても、パスワードの総当たりに対する耐性は上がらない。
+        /// 総当たりへの耐性が要るなら、キー無し版（EnumHashAlgorithm を受ける GetSaltedPassword）で stretchCount を指定する。
+        /// </remarks>
         /// <returns>Salted and hashed password.</returns>
         public static string GetSaltedPassword(string rawPassword, EnumKeyedHashAlgorithm ekha, string key, int saltLength, int stretchCount)
         {

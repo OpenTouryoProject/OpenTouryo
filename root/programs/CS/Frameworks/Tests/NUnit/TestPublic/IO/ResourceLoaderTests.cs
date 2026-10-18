@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/15  玄人 幸道         新規作成（#610）
+//*  2026/10/19  玄人 幸道         ResolveFilePath_ExpandsEnvironmentVariable：Linux でも成り立つよう、区切りを Path.Combine にした（#632）
 //**********************************************************************************
 
 using System;
@@ -84,7 +85,8 @@ namespace TestPublic.IO
         {
             Environment.SetEnvironmentVariable(EnvName, this._work, EnvironmentVariableTarget.Process);
 
-            Assert.That(ResourceLoader.ResolveFilePath("%" + EnvName + "%\\a.txt"),
+            // 区切りは Path.Combine に任せる（#632。"\\" 決め打ちでは Linux で見つからない）
+            Assert.That(ResourceLoader.ResolveFilePath(Path.Combine("%" + EnvName + "%", "a.txt")),
                 Is.EqualTo(Path.Combine(this._work, "a.txt")));
         }
 

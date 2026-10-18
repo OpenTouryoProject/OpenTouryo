@@ -32,6 +32,8 @@
 //*                                GetAttributeFromXmlNodeのindexは、属性名が一意で
 //*                                意味を持たないため、引数なしのオーバーロードを
 //*                                追加し、引数ありをObsoleteとした。
+//*  2026/10/19  玄人 幸道         GetXmlNodeByIdがidをXPathに連結していたのを直し、
+//*                                GetElementsById（id で要素を数える）を追加した。
 //**********************************************************************************
 
 using System;
@@ -39,6 +41,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Schema;
 using System.Text;
+using System.Collections.Generic;
 
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Str;
@@ -118,12 +121,21 @@ namespace Touryo.Infrastructure.Public.Xml
         /// </remarks>
         public static XmlNode GetXmlNodeById(XmlDocument xmlDoc, string referenceId)
         {
+            XmlNode targetNode = null;
+
             // ルート以下を検索
-            XmlNode targetNode = xmlDoc.SelectSingleNode("//" + referenceId);
+            // **素の値を XPath に連結しない。**
+            //   referenceId は外部入力のことがあり（SAML の応答の ID 等）、
+            //   そのまま "//" に足すと式として解釈される（XPath インジェクション）か、
+            //   不正な式で例外になる。ノード名として妥当なときだけ XPath に使う。
+            if (XmlLib.IsSafeNodeName(referenceId))
+            {
+                targetNode = xmlDoc.SelectSingleNode("//" + referenceId);
+            }
 
             // ルートを検索（XML宣言 + ルートノード）
             if (targetNode == null)
-            {   
+            {
                 foreach (XmlNode tempNode in xmlDoc.ChildNodes)
                 {
                     if (tempNode.Attributes == null) continue; // XML宣言対策
@@ -141,6 +153,65 @@ namespace Touryo.Infrastructure.Public.Xml
             }
 
             return targetNode;
+        }
+
+        /// <summary>IsSafeNodeName（XPath に素で連結してよい、ノード名として妥当なトークンか）</summary>
+        /// <param name="s">string</param>
+        /// <returns>bool</returns>
+        /// <remarks>
+        /// XPath のメタ文字（* [ ] | ( ) / @ = 空白 引用符 等）を含まない、
+        /// XML 名の規則に沿ったトークンだけを許す。
+        /// </remarks>
+        private static bool IsSafeNodeName(string s)
+        {
+            if (string.IsNullOrEmpty(s)) return false;
+
+            // 先頭は英字か '_'（XML 名の規則）
+            char head = s[0];
+            if (!(char.IsLetter(head) || head == '_')) return false;
+
+            foreach (char c in s)
+            {
+                if (!(char.IsLetterOrDigit(c) || c == '_' || c == '-' || c == '.' || c == ':'))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>GetElementsById（id 属性の値が一致する要素を、文書内から全て返す）</summary>
+        /// <param name="xmlDoc">XmlDocument</param>
+        /// <param name="id">string</param>
+        /// <returns>一致した要素（0 件なら空配列）</returns>
+        /// <remarks>
+        /// 属性名は大文字小文字を無視して "id"（ローカル名）を見る（Id / ID / id / wsu:Id 等）。
+        /// 「その id の要素が文書内でちょうど 1 つか」を数え、署名の付け替えを防ぐのに使う。
+        /// GetXmlNodeById と違い、ルート以下の入れ子も含めて走査する。
+        /// </remarks>
+        public static XmlElement[] GetElementsById(XmlDocument xmlDoc, string id)
+        {
+            List<XmlElement> result = new List<XmlElement>();
+            if (xmlDoc == null || id == null) { return result.ToArray(); }
+
+            foreach (XmlNode node in xmlDoc.GetElementsByTagName("*"))
+            {
+                XmlElement elem = node as XmlElement;
+                if (elem == null || elem.Attributes == null) continue;
+
+                foreach (XmlAttribute attr in elem.Attributes)
+                {
+                    if (string.Equals(attr.LocalName, "id", StringComparison.OrdinalIgnoreCase)
+                        && attr.Value == id)
+                    {
+                        result.Add(elem);
+                        break;
+                    }
+                }
+            }
+
+            return result.ToArray();
         }
         #endregion
 

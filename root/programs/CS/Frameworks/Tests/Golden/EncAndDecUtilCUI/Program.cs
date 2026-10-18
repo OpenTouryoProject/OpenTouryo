@@ -26,6 +26,9 @@
 //*  2018/11/10  西野 大介         新規作成
 //*  2026/10/03  玄人 幸道         RSASSA-PSS（PS256 / PS384 / PS512）のケースを追加（#596）
 //*  2026/10/14  玄人 幸道         SymmetricCryptography（EncryptString / DecryptString）のケースを追加（#608）
+//*  2026/10/18  玄人 幸道         DSA の Sign / Verify を直したので、コメントを改めた（#625。出力は変えない）
+//*  2026/10/18  玄人 幸道         DSA の X509 を直したので、コメントを改めた（#626。出力は変えない）
+//*  2026/10/19  玄人 幸道         Linux の ECDSA（OpenSSL）の Param を、DSA で検証していたのを修正（#632）
 //**********************************************************************************
 
 using System;
@@ -513,8 +516,10 @@ namespace EncAndDecUtilCUI
                 #endregion
 
                 #region DSA
-                // DSAはFormatterバージョンしか動かない。
-                // また、WinではDSAのX509が処理できない（Linux上では動作することを確認済み）。
+                // DSA の Sign / Verify（Formatter を使わない版）は、以前は例外になった（#625 で修正）。
+                // ここでは結果ファイルを変えないよう、Formatter 版のまま確かめる（データを渡す版は NUnit で確かめる）。
+                // DSA の X509 は、以前は Windows で処理できなかった（#626 で修正。Linux では以前から動作）。
+                // ここでは結果ファイルを変えないよう有効にしていない（DSA の X509 の署名・検証は NUnit で確かめる）。
                 //dsX509 = new DigitalSignX509(Program.PrivateDsaX509Path, Program.PfxPassword , "SHA256", x509KSF);
                 //sign = dsX509.Sign(data);
                 //MyDebug.OutputDebugAndConsole("DigitalSignX509.Verify(DSA-SHA256)", dsX509.Verify(data, sign).ToString());
@@ -645,7 +650,8 @@ namespace EncAndDecUtilCUI
 
                 dsECDsaOpenSsl = new DigitalSignECDsaOpenSsl(dsECDsaOpenSsl.PublicKey.Value, SHA256.Create());
 
-                TIPD.MyDebug.OutputDebugAndConsole("DigitalSignParam.Verify(ECDSA-P256)", dsParam.Verify(data, sign).ToString());
+                // 2026/10/19 まで、DSA の dsParam で検証しており、常に False だった（#632）
+                TIPD.MyDebug.OutputDebugAndConsole("DigitalSignParam.Verify(ECDSA-P256)", dsECDsaOpenSsl.Verify(data, sign).ToString());
                 #endregion
 #endif
             }

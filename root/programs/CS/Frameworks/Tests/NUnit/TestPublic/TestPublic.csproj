@@ -67,6 +67,9 @@
     <!--JWE の A128CBC-HS256（AeadAesCbc）が使う（Security/JweTypTests.cs。#615）。
         版は Public.Security_netcore100 と同じ。net48 は Build_net48 の DLL が複写されるので要らない。-->
     <PackageReference Include="BouncyCastle.NetCore" Version="2.2.1" />
+    <!--SignedXml2（XML 署名）が使う（Security/Xml/SignedXml2Tests.cs）。
+        版は Public.Security_netcore100 と同じ（Public/Security/ANALYSIS.md 7 節）。-->
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.21" />
   </ItemGroup>
 
   <ItemGroup>
@@ -74,6 +77,22 @@
     <None Update="NUnitLogConf.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--署名・暗号のテストが使う証明書（Security/TestCertificates.cs）。
+        正本（root/files/resource/X509）をリンクで出力先の X509 フォルダへ複写する。
+        Golden の EncAndDecUtilCUI と同じ証明書で、*.pfx のパスワードは "test"。-->
+    <None Include="..\..\..\..\..\..\files\resource\X509\SHA256RSA.cer" Link="X509\SHA256RSA.cer" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\..\..\..\..\files\resource\X509\SHA256RSA.pfx" Link="X509\SHA256RSA.pfx" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\..\..\..\..\files\resource\X509\SHA256DSA.cer" Link="X509\SHA256DSA.cer" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\..\..\..\..\files\resource\X509\SHA256DSA.pfx" Link="X509\SHA256DSA.pfx" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\..\..\..\..\files\resource\X509\SHA256ECDSA.cer" Link="X509\SHA256ECDSA.cer" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\..\..\..\..\files\resource\X509\SHA256ECDSA.pfx" Link="X509\SHA256ECDSA.pfx" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\..\..\..\..\files\resource\X509\SHA384ECDSA.cer" Link="X509\SHA384ECDSA.cer" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\..\..\..\..\files\resource\X509\SHA384ECDSA.pfx" Link="X509\SHA384ECDSA.pfx" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\..\..\..\..\files\resource\X509\SHA521ECDSA.cer" Link="X509\SHA521ECDSA.cer" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\..\..\..\..\files\resource\X509\SHA521ECDSA.pfx" Link="X509\SHA521ECDSA.pfx" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>

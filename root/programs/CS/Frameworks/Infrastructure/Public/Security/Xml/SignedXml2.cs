@@ -28,6 +28,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/05/20  西野 大介         新規作成
+//*  2026/10/19  玄人 幸道         Verifyが署名の対象（referenceId）を突き合わせておらず、
+//*                                署名の付け替えが通りえたのを修正。
 //**********************************************************************************
 
 using System.Xml;
@@ -117,15 +119,45 @@ namespace Touryo.Infrastructure.Public.Security.Xml
             xmlDoc.PreserveWhitespace = preserveWhitespace;
             xmlDoc.LoadXml(signedXmlString);
 
-            // 子ノード のXML検証
-            XmlNode targetNode = XmlLib.GetXmlNodeById(xmlDoc, referenceId);
+            try
+            {
+                // 子ノード のXML検証
+                XmlNode targetNode = XmlLib.GetXmlNodeById(xmlDoc, referenceId);
+                if (targetNode == null) return false;
 
-            // 署名ノードの直下のSignatureを取り出して、signedXml.LoadXmlする。
-            SignedXml signedXml = new SignedXml(targetNode.OwnerDocument);
-            signedXml.LoadXml(targetNode["Signature"] as XmlElement);
+                // 署名の付け替え（XML Signature Wrapping）対策。
+                // ＜なぜ要るか＞
+                //   CheckSignature は「Reference（#id）が指す要素が、その鍵で署名されている」ことしか見ない。
+                //   どの要素が署名されたか（referenceId）と、呼び出し側が消費する要素が一致することは、
+                //   ここで突き合わせないと保証されない。一致を見ないと、別途正当に署名された要素を
+                //   残したまま消費側を差し替えても、検証が通ってしまう。
+                //
+                // referenceId の id を持つ要素が、文書内でちょうど 1 つで、それが targetNode 自身であること。
+                //   同じ id が複数あると、CheckSignature は targetNode とは別の要素を検証しうる。
+                XmlElement[] byId = XmlLib.GetElementsById(xmlDoc, referenceId);
+                if (byId.Length != 1) return false;
+                if (!object.ReferenceEquals(byId[0], targetNode)) return false;
 
-            // XML検証
-            return signedXml.CheckSignature(this._rsa);
-        }        
+                // 署名ノードの直下のSignatureを取り出して、signedXml.LoadXmlする。
+                XmlElement signatureElement = targetNode["Signature"] as XmlElement;
+                if (signatureElement == null) return false;
+
+                SignedXml signedXml = new SignedXml(xmlDoc);
+                signedXml.LoadXml(signatureElement);
+
+                // 署名が、検証対象ノードちょうど 1 つ（#referenceId）を指していること。
+                if (signedXml.SignedInfo.References.Count != 1) return false;
+                Reference reference = signedXml.SignedInfo.References[0] as Reference;
+                if (reference == null || reference.Uri != "#" + referenceId) return false;
+
+                // XML検証
+                return signedXml.CheckSignature(this._rsa);
+            }
+            catch (CryptographicException)
+            {
+                // 署名が壊れている・解釈できない場合は、検証失敗として扱う（例外を投げない）。
+                return false;
+            }
+        }
     }
 }
