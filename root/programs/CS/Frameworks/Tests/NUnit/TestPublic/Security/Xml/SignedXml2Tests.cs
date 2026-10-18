@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
+//*  2026/10/19  玄人 幸道         署名の付け替え（XML Signature Wrapping）を弾くケースを追加
 //**********************************************************************************
 
 using System.Security.Cryptography;
@@ -91,6 +92,72 @@ namespace TestPublic.Security.Xml
 
                 Assert.That(sx.Verify(signed.Replace(">value<", ">evil<"), "b"), Is.False);
                 Assert.That(new SignedXml2(other).Verify(signed, "b"), Is.False);
+            }
+        }
+
+        /// <summary>
+        /// **署名の付け替え（XML Signature Wrapping）を弾く。**
+        /// 正当に署名された断片（Reference は「#b」）を文書内に残したまま、
+        /// 消費する要素（ここでは id="z"）を差し替えても、検証は通らない。
+        /// Verify は「署名が referenceId を指していること」を突き合わせる。
+        /// </summary>
+        [Test]
+        public void SignatureWrapping_WrongReference_False()
+        {
+            using (RSA rsa = RSA.Create())
+            {
+                SignedXml2 sx = new SignedXml2(rsa);
+
+                // b を署名（Reference は「#b」）。この断片は、それ自体は正当に署名されている。
+                XmlDocument signedDoc = sx.Create(Xml, "b");
+                string signatureXml = signedDoc
+                    .SelectSingleNode("//*[local-name()='Signature']").OuterXml;
+
+                // 付け替え：ルート z（消費される側）に、署名が守っていない evil を入れ、
+                //           署名が守っている b（署名時のまま）と、b を指す署名を同居させる。
+                string wrapped =
+                    "<z ID=\"z\"><c>evil</c>"
+                    + "<b ID=\"b\"><c>value</c></b>"
+                    + signatureXml
+                    + "</z>";
+
+                // 署名は「#b」を指すので、z としては通らない（Uri の不一致）。
+                Assert.That(sx.Verify(wrapped, "z"), Is.False);
+            }
+        }
+
+        /// <summary>
+        /// **同じ id の要素が複数ある応答を弾く。**
+        /// 署名された b のほかに、同じ id="b" の偽ノードを足しても、検証は通らない。
+        /// （CheckSignature がどちらを検証するかに依存させない。）
+        /// </summary>
+        [Test]
+        public void SignatureWrapping_DuplicateId_False()
+        {
+            using (RSA rsa = RSA.Create())
+            {
+                SignedXml2 sx = new SignedXml2(rsa);
+
+                string signed = sx.Create(Xml, "b").OuterXml;
+
+                // 署名済みの b の後ろに、同じ id="b" の偽ノードを足す。
+                string duplicated = signed.Replace(
+                    "</b></a>", "</b><b ID=\"b\"><c>evil</c></b></a>");
+
+                Assert.That(sx.Verify(duplicated, "b"), Is.False);
+            }
+        }
+
+        /// <summary>壊れた署名・対象に Signature が無い場合は、例外ではなく false を返す。</summary>
+        [Test]
+        public void Malformed_False()
+        {
+            using (RSA rsa = RSA.Create())
+            {
+                SignedXml2 sx = new SignedXml2(rsa);
+
+                // Signature を持たない文書
+                Assert.That(sx.Verify("<xml><b ID=\"b\"><c>value</c></b></xml>", "b"), Is.False);
             }
         }
     }
