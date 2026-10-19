@@ -35,6 +35,9 @@ call %CURRENT_DIR%z_Common.bat
 @rem   the logging library only once per process (LogLib=nlog).
 @rem   TestPublicDb is a separate project, because it needs databases
 @rem   (SQL Server is required; the others are skipped when not reachable).
+@rem   TestFramework tests the parts of OpenTouryo.Framework that can be
+@rem   used on their own (Authentication, Exceptions). The base classes are
+@rem   used in combination and are left to the smoke tests.
 @rem   Each project has its own results folder, so that the
 @rem   coverage of one project is not taken for the other.
 @rem --------------------------------------------------
@@ -52,6 +55,7 @@ dotnet msbuild %COMMANDLINE% "%NUNIT_SLN%"
 call :RunTests TestPublic
 call :RunTests TestPublicNLog
 call :RunTests TestPublicDb
+call :RunTests TestFramework
 
 pause
 

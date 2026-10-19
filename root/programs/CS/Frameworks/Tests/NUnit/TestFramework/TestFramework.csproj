@@ -1,0 +1,74 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--NUnit による Framework 層の単体テスト。
+      **単体で使える部品だけを対象にする**（認証の Authentication と、例外）。
+      親クラス（Business / Dao / Presentation / Transmission）は組み合わせて使うものなので、ここでは扱わない。
+      TestPublic と同じく、net48 / net10.0 を 1 つの csproj でマルチ ターゲットにする。-->
+  <PropertyGroup>
+    <TargetFrameworks>net48;net10.0</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <RootNamespace>TestFramework</RootNamespace>
+    <!--TestPublic と同じ理由（NUnit 4 の Assert.Throws の曖昧さ）。-->
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.10.1" />
+    <PackageReference Include="NUnit" Version="4.6.1" />
+    <PackageReference Include="NUnit3TestAdapter" Version="6.3.0" />
+    <!--カバレッジの収集は net10.0 だけで行う（y_Build_TestCode_NUnit.bat）。-->
+    <PackageReference Include="coverlet.collector" Version="10.0.1" />
+  </ItemGroup>
+
+  <!--フレームワークは HintPath で参照する（TestPublic と同じ）。
+      → **フレームワークを先にビルドしないと、古い DLL を見る。**
+      HintPath では NuGet の推移的依存が効かないため、テストで通る範囲のパッケージをここにも並べる。-->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <!--AuthenticationHeaderValue（AuthenticationHeader が返す）-->
+    <Reference Include="System.Net.Http" />
+    <!--SignedXml（SAML2 の XML 署名）-->
+    <Reference Include="System.Security" />
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\..\..\Infrastructure\Build_net48\OpenTouryo.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\..\Infrastructure\Build_net48\OpenTouryo.Public.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public.Security">
+      <HintPath>..\..\..\Infrastructure\Build_net48\OpenTouryo.Public.Security.dll</HintPath>
+    </Reference>
+    <!--JWT のペイロード（JObject）。版は Framework_net48 と同じ。-->
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public.Security">
+      <HintPath>..\..\..\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.Security.dll</HintPath>
+    </Reference>
+    <!--JWT のペイロード（JObject）。版は Framework_netcore100 と同じ。-->
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <!--GetConfigParameter.InitConfiguration に渡す構成（TestSetup.cs）。-->
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.5" />
+    <!--SignedXml2（SAML2 の XML 署名）が使う。版は Public.Security_netcore100 と同じ。-->
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.21" />
+    <!--Public.Security（ハッシュ等）が使う。版は Public.Security_netcore100 と同じ。-->
+    <PackageReference Include="BouncyCastle.NetCore" Version="2.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--SAML2 の署名・検証が使う証明書（TestCertificates.cs）。TestPublic と同じ正本をリンクする。
+        *.pfx のパスワードは "test"。-->
+    <None Include="..\..\..\..\..\..\files\resource\X509\SHA256RSA.cer" Link="X509\SHA256RSA.cer" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\..\..\..\..\files\resource\X509\SHA256RSA.pfx" Link="X509\SHA256RSA.pfx" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\..\..\..\..\files\resource\X509\SHA256ECDSA.cer" Link="X509\SHA256ECDSA.cer" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="..\..\..\..\..\..\files\resource\X509\SHA256ECDSA.pfx" Link="X509\SHA256ECDSA.pfx" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>

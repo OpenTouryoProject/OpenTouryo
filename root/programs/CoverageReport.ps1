@@ -6,8 +6,8 @@
     2_RunAllTests.ps1 -Coverage がドット ソースで読む部品。
 
     ＜何をするか＞
-      1 回の実行で作られた net10.0 のカバレッジ ファイル（TestPublic・TestPublicNLog・TestPublicDb と、
-      クロス DB の各回）を、アセンブリごとに**通った行の和集合**で数え、COVERAGE.md の表を作り直す。
+      1 回の実行で作られた net10.0 のカバレッジ ファイル（TestPublic・TestPublicNLog・TestPublicDb・TestFramework と、
+      Linux の回・クロス DB の各回）を、アセンブリごとに**通った行の和集合**で数え、COVERAGE.md の表を作り直す。
       **前の値とは混ぜない。** 表は毎回丸ごと置き換える。
 
       例：OpenTouryo.Public には、TestPublic で通った行に加えて、
@@ -15,7 +15,8 @@
           Dam（DamManagedOdp 等）には、その DBMS を起動した回で通った行が入る。
 
     ＜行と分岐＞
-      行  … (ファイル, 行番号) で重複を除き、どれかの回で 1 回でも通れば通ったと数える。
+      行  … (ファイルのフル パス, 行番号) で重複を除き、どれかの回で 1 回でも通れば通ったと数える。
+             **相対パスでは数えない**（<source> の根が計測ごとに違い、同じ行を二重に数えるため）。
       分岐 … 行ごとに、最も多くの分岐を通した回の数を採る（condition-coverage の「通過/全体」）。
              どの分岐を通ったかまではファイルに無いため、回をまたいだ和集合は取れない。
              **下限の値になる**（実際はこれ以上）。
@@ -35,6 +36,7 @@
      日時        更新者            内容
      ----------  ----------------  -------------------------------------------------
      2026/10/19  玄人 幸道         新規作成（2_RunAllTests.ps1 -Coverage の結果を COVERAGE.md に残す）
+     2026/10/19  玄人 幸道         行をフル パスで数えるようにした（計測ごとに <source> の根が違い、二重に数えていた）
 #>
 
 # 書き換える範囲の印
@@ -55,6 +57,24 @@ function Get-CoverageCommit([string]$RepoRoot)
     return $sha
 }
 
+# class の filename を、比べられるフル パス（区切りは /、小文字）にする。
+#   <source> が複数あるときは、そのファイルが実在するものを選ぶ（無ければ最初の <source>）。
+function Resolve-CoverageFile([string]$FileName, [string[]]$Sources)
+{
+    $f = $FileName -replace '\\', '/'
+    $full = $f
+    if (-not ($f -match '^[A-Za-z]:/' -or $f.StartsWith('/')) -and $Sources.Count -gt 0)
+    {
+        $full = ($Sources[0] -replace '\\', '/').TrimEnd('/') + '/' + $f
+        foreach ($s in $Sources)
+        {
+            $cand = ($s -replace '\\', '/').TrimEnd('/') + '/' + $f
+            if (Test-Path -LiteralPath $cand) { $full = $cand; break }
+        }
+    }
+    return $full.ToLowerInvariant()
+}
+
 # 複数のカバレッジ ファイルを、アセンブリ（package）ごとに合算する。
 #   Files : Measure（計測名）と File（coverage.cobertura.xml のパス）を持つオブジェクトの配列
 function Get-CoverageUnion([object[]]$Files)
@@ -71,6 +91,13 @@ function Get-CoverageUnion([object[]]$Files)
         $ts = 0L
         if ([long]::TryParse("$($cx.coverage.timestamp)", [ref]$ts) -and $ts -gt $latest) { $latest = $ts }
 
+        # **行は「ファイルのフル パス＋行番号」で数える。**
+        #   class の filename は <source>（coverlet が実行ごとに決める共通の根）からの相対パスで、
+        #   計測ごとに根が違う（TestFramework の回は Framework を含むので、根が 1 つ上になる）。
+        #   相対パスのまま数えると、同じ行が別の行として二重に数えられる。
+        $sources = @($cx.coverage.sources.source | ForEach-Object { "$_" } | Where-Object { $_ })
+        $fullOf  = @{}
+
         foreach ($p in @($cx.coverage.packages.package))
         {
             if (-not $acc.ContainsKey($p.name)) { $acc[$p.name] = @{ Lines = @{}; Branch = @{} } }
@@ -78,10 +105,14 @@ function Get-CoverageUnion([object[]]$Files)
 
             foreach ($c in @($p.classes.class))
             {
+                $fn = "$($c.filename)"
+                if (-not $fullOf.ContainsKey($fn)) { $fullOf[$fn] = Resolve-CoverageFile $fn $sources }
+                $full = $fullOf[$fn]
+
                 foreach ($l in @($c.lines.line))
                 {
                     if ($null -eq $l) { continue }
-                    $k = "$($c.filename)|$($l.number)"
+                    $k = "$full|$($l.number)"
 
                     $hit = ([int]$l.hits -gt 0)
                     if (-not $a.Lines.ContainsKey($k)) { $a.Lines[$k] = $hit }

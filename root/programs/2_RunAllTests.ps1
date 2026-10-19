@@ -84,9 +84,11 @@
     **カバレッジを測る専用の実行。** 結果を Tests\COVERAGE.md に書く。**-LocalServicesDir が必須。**
 
     ＜流れ＞
-      1. NUnit の 3 プロジェクト（TestPublic・TestPublicNLog・TestPublicDb）を 1 回のバッチで回して判定する
-      2. -CrossDb と同じく、Oracle → MySQL → PostgreSQL を 1 つずつ「起動 → TestPublicDb → 停止」する
-      3. **全部 OK なら**、この実行で作られた net10.0 のカバレッジを、アセンブリごとに通った行の
+      1. NUnit の 4 プロジェクト（TestPublic・TestPublicNLog・TestPublicDb・TestFramework）を 1 回のバッチで回して判定する
+      2. -Linux と同じく、TestPublic を Linux のコンテナで回す（OpenSSL 系など、Linux でしか通らない行を数える）。
+         **docker が要る**
+      3. -CrossDb と同じく、Oracle → MySQL → PostgreSQL を 1 つずつ「起動 → TestPublicDb → 停止」する
+      4. **全部 OK なら**、この実行で作られた net10.0 のカバレッジを、アセンブリごとに通った行の
          和集合で数え、COVERAGE.md の表を丸ごと置き換える（CoverageReport.ps1）
 
     ＜なぜ専用にするか＞
@@ -111,6 +113,11 @@
     ＜コンテナ＞
       **1 つだけ、--rm で起動する**（終われば消える）。メモリは -LinuxMemory で抑える。
       同じ名前のコンテナが既にあれば、触らずに止める。
+
+    ＜カバレッジ＞
+      TestPublic の回はカバレッジも取る（表示する。COVERAGE.md に残すのは -Coverage の回）。
+      **基盤の DLL だけは、この回のために portable の PDB でビルドし直したものに差し替える**
+      （Linux の coverlet は Windows 形式の PDB を読めない。詳しくは本文の「Linux」の節）。
 .PARAMETER LinuxImage
     -Linux で使うイメージ。既定は mcr.microsoft.com/dotnet/sdk:10.0（dotnet test に SDK が要る）。
 .PARAMETER LinuxMemory
@@ -152,6 +159,8 @@
      2026/10/18  玄人 幸道         NUnit のカバレッジを、別のプロジェクトの結果から表示していたのを修正（#623 の後）
      2026/10/19  玄人 幸道         -Linux / -LinuxImage / -LinuxMemory を追加した（#632）
      2026/10/19  玄人 幸道         -Coverage を追加した（NUnit のカバレッジを合算して Tests\COVERAGE.md に書く）
+     2026/10/19  玄人 幸道         Linux の回でもカバレッジを取るようにした（-Coverage にも含める）
+     2026/10/19  玄人 幸道         NUnit の TestFramework（Framework の単体で使える部品）を加えた
 #>
 [CmdletBinding()]
 param(
@@ -356,6 +365,15 @@ $tests = @(
         Result = "NUnit\TestResults\TestPublicDb\TestPublicDb_net10.0.trx"; Kind = "NUnit"; Coverage = $true
         NeedDb = $true
     }
+    # Framework の、単体で使える部品（認証・例外）。親クラスは組み合わせて使うので疎通に任せる。
+    @{
+        Name = "NUnit TestFramework (net48)";   Bat = "y_Build_TestCode_NUnit.bat"
+        Result = "NUnit\TestResults\TestFramework\TestFramework_net48.trx";   Kind = "NUnit"
+    }
+    @{
+        Name = "NUnit TestFramework (net10.0)"; Bat = "y_Build_TestCode_NUnit.bat"
+        Result = "NUnit\TestResults\TestFramework\TestFramework_net10.0.trx"; Kind = "NUnit"; Coverage = $true
+    }
     # Linux（#632）。Windows でビルドした net10.0 の出力を、そのまま Linux のコンテナで回す。
     @{
         Name = "EncAndDecUtilCUI (Linux)";   Bat = "y_Build_TestCode_SecCUI.bat"
@@ -364,7 +382,7 @@ $tests = @(
     }
     @{
         Name = "NUnit TestPublic (Linux)";   Bat = "y_Build_TestCode_NUnit.bat"
-        Result = "NUnit\TestResults\Linux\TestPublic_linux.trx"; Kind = "NUnit"
+        Result = "NUnit\TestResults\Linux\TestPublic_linux.trx"; Kind = "NUnit"; Coverage = $true
         Linux = $true
     }
 )
@@ -395,9 +413,9 @@ if ($List)
     exit 0
 }
 
-# **Linux の対象は -Linux のときだけ。**（#632）
+# **Linux の対象は -Linux（と -Coverage）のときだけ。**（#632）
 #   -Only より先に外す。外さないと、-Only "EncAndDecUtilCUI" が Linux の分まで拾う。
-if (-not $Linux)
+if (-not ($Linux -or $Coverage))
 {
     $tests = @($tests | Where-Object { -not $_.Linux })
 }
@@ -460,9 +478,9 @@ if ($crossDbRun)
 
     if ($Coverage)
     {
-        # **対象は NUnit の全部**（Linux の回を除く）。カバレッジを取るのは NUnit だけなので、Golden は回さない。
-        $tests = @($tests | Where-Object { $_.Kind -eq "NUnit" -and -not $_.Linux })
-        Write-Host ("  -Coverage : 対象を NUnit の {0} 件に絞りました（続けてクロス DB を回します）" -f $tests.Count) -ForegroundColor Yellow
+        # **対象は NUnit の全部**（Linux の回を含む）。カバレッジを取るのは NUnit だけなので、Golden は回さない。
+        $tests = @($tests | Where-Object { $_.Kind -eq "NUnit" })
+        Write-Host ("  -Coverage : 対象を NUnit の {0} 件に絞りました（Linux の回を含む。続けてクロス DB を回します）" -f $tests.Count) -ForegroundColor Yellow
     }
     else
     {
@@ -504,13 +522,16 @@ if ($crossDbRun)
 #   **docker が要る。** 無ければ、回さずに止める（黙って Windows の分だけ OK にしない）。
 $linuxContainer = "opentouryo-linuxtest"
 
-if ($Linux)
+if ($Linux -or $Coverage)
 {
-    if ($CrossDb)
+    if ($Linux -and $CrossDb)
     {
         Write-Host "  **-Linux と -CrossDb は同時に指定できません。** 別々に実行してください。" -ForegroundColor Red
         exit 1
     }
+
+    # -Coverage も Linux の回を含む（OpenSSL 系など、Linux でしか通らない行を数えるため）
+    $linuxMode = $(if ($Coverage) { "-Coverage" } else { "-Linux" })
 
     $dockerOk = $false
     if (Get-Command docker -EA SilentlyContinue)
@@ -520,7 +541,7 @@ if ($Linux)
     }
     if (-not $dockerOk)
     {
-        Write-Host "  **-Linux には docker コマンドが要ります**（Rancher Desktop が動いているか確かめてください）。" -ForegroundColor Red
+        Write-Host ("  **{0} には docker コマンドが要ります**（Rancher Desktop が動いているか確かめてください）。" -f $linuxMode) -ForegroundColor Red
         exit 1
     }
 
@@ -532,7 +553,7 @@ if ($Linux)
         exit 1
     }
 
-    if (@($tests | Where-Object { $_.Linux }).Count -eq 0)
+    if ($Linux -and @($tests | Where-Object { $_.Linux }).Count -eq 0)
     {
         Write-Host "  **-Linux の対象が、-Only で外れています。**" -ForegroundColor Red
         exit 1
@@ -725,6 +746,56 @@ if (-not $SkipBuild)
 #   （テストが出力のフォルダに書いても、ワーキング ツリーは変わらない）。
 #   結果はいったん $OutputDir\linux に受け、Windows の回と同じ場所へ置く
 #   （Golden はワーキング ツリーの ResultCore100OnLinux.txt。Windows の回と同じく、書き換わる）。
+#
+#   ＜カバレッジ＞
+#   Windows の回と同じ coverlet で取る。ただし Linux では、次の 2 つが要る。
+#     1. **基盤の DLL の PDB が portable であること。** 基盤は既定で full（Windows 形式）の PDB で
+#        ビルドされ、Linux の coverlet はそれを読めない（何も計測されない）。
+#        そこで、この回のためだけに基盤（Public・Public.Security）を portable でビルドし直し、
+#        コンテナの中で差し替える。**--artifacts-path で中間ファイルも別にする**
+#        （-o だけだと基盤の obj に portable の中間ファイルが残り、後の差分ビルドで Build_netcore100 に混ざる）。
+#     2. **ExcludeAssembliesWithoutSources を None にすること。** PDB のソースのパス（C:\...）は
+#        コンテナに無く、既定ではソースの無いアセンブリを計測から外す。
+#   コレクタは NuGet のキャッシュ（TestPublic が参照する版の coverlet.collector）を読み取り専用でマウントする。
+#   **用意できなければ、カバレッジ無しで回す**（テストの合否は変わらない）。
+function Get-LinuxCoverageSetup([string]$LinuxOut)
+{
+    $csproj = Join-Path $testsRoot "NUnit\TestPublic\TestPublic.csproj"
+    $ver = @(([xml](Get-Content $csproj -Encoding UTF8 -Raw)).Project.ItemGroup.PackageReference |
+             Where-Object { $_.Include -eq "coverlet.collector" } | ForEach-Object { $_.Version }) | Select-Object -First 1
+    $gp  = (@(& dotnet nuget locals global-packages --list 2>$null) -join "") -replace '^.*?global-packages:\s*', ''
+    $collector = $null
+    if ($ver -and $gp)
+    {
+        $root = Join-Path $gp.Trim() ("coverlet.collector\{0}\build" -f $ver)
+        # 版によって置き場所が違う（netstandard2.0 / net10.0 など）。コレクタの DLL がある所を使う。
+        $collector = @(Get-ChildItem $root -Recurse -Filter "coverlet.collector.dll" -EA SilentlyContinue |
+                       Sort-Object { $_.DirectoryName -notlike "*net10.0*" } | Select-Object -First 1)
+    }
+    if (-not $collector)
+    {
+        Write-Host ("  coverlet.collector {0} が NuGet のキャッシュに見つかりません。Linux の回はカバレッジ無しで回します。" -f $ver) -ForegroundColor Yellow
+        return $null
+    }
+
+    $base = Join-Path $LinuxOut "base"
+    $blog = Join-Path $LinuxOut "build_base_portable.log"
+    $proj = Join-Path $csRoot "Frameworks\Infrastructure\Public\Security\Public.Security_netcore100.csproj"
+    & dotnet build $proj -c Debug -f net10.0 /p:DebugType=portable --artifacts-path (Join-Path $LinuxOut "base_artifacts") -o $base *>&1 |
+        Out-File $blog -Encoding UTF8
+    if (-not (Test-Path (Join-Path $base "OpenTouryo.Public.pdb")))
+    {
+        Write-Host ("  基盤を portable でビルドできませんでした（ログ : {0}）。Linux の回はカバレッジ無しで回します。" -f $blog) -ForegroundColor Yellow
+        return $null
+    }
+
+    $rs = [IO.File]::ReadAllText((Join-Path $testsRoot "NUnit\TestPublic\coverlet.runsettings"), [Text.Encoding]::UTF8) -replace
+        '</Include>', "</Include>`n          <ExcludeAssembliesWithoutSources>None</ExcludeAssembliesWithoutSources>"
+    [IO.File]::WriteAllText((Join-Path $LinuxOut "coverlet.runsettings"), $rs, (New-Object Text.UTF8Encoding $false))
+
+    return [pscustomobject]@{ Base = $base; Collector = $collector[0].DirectoryName }
+}
+
 $linuxTests = @($tests | Where-Object { $_.Linux -and -not $buildFailed.ContainsKey($_.Bat) })
 $linuxFailed = @{}
 if ($linuxTests.Count -gt 0)
@@ -748,7 +819,17 @@ if ($linuxTests.Count -gt 0)
     {
         $dockerArgs += @("-v", ("{0}:/nunit:ro" -f $nunitBin))
         $sh += "cp -r /nunit /tmp/nunit"
-        $sh += "dotnet test /tmp/nunit/TestPublic.dll --logger 'trx;LogFileName=/out/TestPublic_linux.trx' > /out/nunit.log 2>&1"
+
+        # カバレッジ（上の＜カバレッジ＞）。portable の基盤で差し替えてから回す。
+        $covArgs = ""
+        $linuxCov = Get-LinuxCoverageSetup $linuxOut
+        if ($linuxCov)
+        {
+            $dockerArgs += @("-v", ("{0}:/base:ro" -f $linuxCov.Base), "-v", ("{0}:/coverlet:ro" -f $linuxCov.Collector))
+            $sh += "cp /base/OpenTouryo.* /tmp/nunit/"
+            $covArgs = " --test-adapter-path /coverlet --collect 'XPlat Code Coverage' --settings /out/coverlet.runsettings --results-directory /out/cov"
+        }
+        $sh += "dotnet test /tmp/nunit/TestPublic.dll --logger 'trx;LogFileName=/out/TestPublic_linux.trx'$covArgs > /out/nunit.log 2>&1"
     }
     if ($golden)
     {
@@ -794,6 +875,9 @@ if ($linuxTests.Count -gt 0)
         if (Test-Path $dstDir) { Remove-Item $dstDir -Recurse -Force }
         New-Item -ItemType Directory -Force $dstDir | Out-Null
         if (Test-Path $src) { Copy-Item $src $dst -Force }
+        # カバレッジは trx の隣に置く（Get-NUnitResult が trx の隣を探す）
+        $covSrc = Join-Path $linuxOut "cov"
+        if (Test-Path $covSrc) { Copy-Item $covSrc (Join-Path $dstDir "cov") -Recurse -Force }
         Write-Host ("  NUnit のログ : {0}" -f (Join-Path $linuxOut "nunit.log"))
     }
 }

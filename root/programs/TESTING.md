@@ -88,7 +88,7 @@ cd root\programs
 `Golden/EncAndDecUtilCUI/ResultCore100OnLinux.txt` は Linux 実行時の期待結果で、
 **`-Linux` を付けたときだけ**比べる（下の「Linux のテスト」）。
 
-### NUnit のテスト（6 ケース、#610）
+### NUnit のテスト（8 ケース、#610）
 
 **期待値ファイルを持たない。テスト自身が合否を出す。**
 HEAD とは比較せず、バッチが書き出す `*.trx` の集計で判定する。
@@ -101,6 +101,12 @@ HEAD とは比較せず、バッチが書き出す `*.trx` の集計で判定す
 | NUnit TestPublicNLog (net10.0) | `NUnit/TestResults/TestPublicNLog/TestPublicNLog_net10.0.trx` | 同上 | 同上。**カバレッジも表示する** |
 | NUnit TestPublicDb (net48) | `NUnit/TestResults/TestPublicDb/TestPublicDb_net48.trx` | 同上 | 同上。**DB 接続あり** |
 | NUnit TestPublicDb (net10.0) | `NUnit/TestResults/TestPublicDb/TestPublicDb_net10.0.trx` | 同上 | 同上。**DB 接続あり**。カバレッジも表示する |
+| NUnit TestFramework (net48) | `NUnit/TestResults/TestFramework/TestFramework_net48.trx` | 同上 | 同上 |
+| NUnit TestFramework (net10.0) | `NUnit/TestResults/TestFramework/TestFramework_net10.0.trx` | 同上 | 同上。**カバレッジも表示する** |
+
+**`TestFramework` は、`OpenTouryo.Framework` のうち単体で使える部品だけのテスト**（`Authentication` の鍵・値を引数で受ける版と、`Exceptions`）。
+親クラス（`Business`・`Dao`・`Presentation`・`Transmission`）は組み合わせて使うものなので、疎通に任せる。
+設定（`CmnClientParams` 等）を読む版や、サーバが要る `OAuth2AndOIDCClient`・`JwkSetStore` も対象外。
 
 **`TestPublicNLog` は、`LogIF` を NLog に切り替えた状態のテスト**で、別のプロセスで動かすために分けている（使うライブラリはプロセスで 1 回しか決まらない）。カバレッジはプロジェクトごとに別に出る。
 
@@ -136,7 +142,7 @@ HEAD とは比較せず、バッチが書き出す `*.trx` の集計で判定す
 - **カバレッジは表示だけで、判定には使わない。** 収集は net10.0 だけで行う
   （コードはほぼ共通で、両方で取っても指針としては変わらないため）
 - **カバレッジを [`Tests/COVERAGE.md`](CS/Frameworks/Tests/COVERAGE.md) に残すのは `-Coverage` の回だけ**（`CoverageReport.ps1`）。
-  `.\2_RunAllTests.ps1 -Coverage -LocalServicesDir <LocalServicesOnDocker のフォルダ>` は、NUnit の全部とクロス DB を 1 回で回し、
+  `.\2_RunAllTests.ps1 -Coverage -LocalServicesDir <LocalServicesOnDocker のフォルダ>` は、NUnit の全部（Linux の回を含む）とクロス DB を 1 回で回し、
   全部 OK なら、アセンブリごとに通った行の和集合で表を作り直す（`OpenTouryo.Public` には NLog・DB の回で通った行も入る）。
   **普通の実行は COVERAGE.md を書かない。** `-Coverage` の回は `Result*.txt` と同じく**ワーキング ツリーが書き換わる**（コミットは人が決める）
 
@@ -164,6 +170,10 @@ net10.0 の DLL は OS によらないので、Windows で作ったものを Lin
 - `[Platform("Win")]` のテスト（CNG など）は、Linux ではスキップに出る。`[Platform("Linux")]` のテスト（`DSAOpenSsl` など）は、Linux の回でしか走らない
 - **`-Linux` を付けなければ、Linux の対象は回らない。** `-CrossDb` とは同時に指定できない
 - **`SelectTargets.ps1` は、Public・Public.Security（と、それを Linux で回す `TestPublic` / `EncAndDecUtilCUI`）に触れたとき、`-Linux` を付ける**（fixed のみ。fixing では後回し）
+- **TestPublic の回はカバレッジも取る**（表示する。COVERAGE.md に残すのは `-Coverage` の回）。
+  Linux の coverlet は Windows 形式（full）の PDB を読めないので、**この回のためだけに基盤（Public・Public.Security）を
+  portable の PDB でビルドし直し**（`--artifacts-path` で中間ファイルも分ける）、コンテナの中で差し替える。
+  コレクタは NuGet のキャッシュの `coverlet.collector` を使う。用意できなければカバレッジ無しで回す
 - **NUnit のテストは、portable の PDB でビルドする**（`y_Build_TestCode_NUnit.bat`）。
   Linux の .NET は Windows の PDB（full）を読めず、スタック フレームからソースのファイル名を取るテストが null になっていた
 
