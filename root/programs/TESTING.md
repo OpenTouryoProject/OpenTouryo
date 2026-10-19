@@ -135,6 +135,10 @@ HEAD とは比較せず、バッチが書き出す `*.trx` の集計で判定す
 - バッチは実行前に古い結果を消す。ビルドに失敗したとき、前回の「合格」が残らないようにするため
 - **カバレッジは表示だけで、判定には使わない。** 収集は net10.0 だけで行う
   （コードはほぼ共通で、両方で取っても指針としては変わらないため）
+- **カバレッジを [`Tests/COVERAGE.md`](CS/Frameworks/Tests/COVERAGE.md) に残すのは `-Coverage` の回だけ**（`CoverageReport.ps1`）。
+  `.\2_RunAllTests.ps1 -Coverage -LocalServicesDir <LocalServicesOnDocker のフォルダ>` は、NUnit の全部とクロス DB を 1 回で回し、
+  全部 OK なら、アセンブリごとに通った行の和集合で表を作り直す（`OpenTouryo.Public` には NLog・DB の回で通った行も入る）。
+  **普通の実行は COVERAGE.md を書かない。** `-Coverage` の回は `Result*.txt` と同じく**ワーキング ツリーが書き換わる**（コミットは人が決める）
 
 テストの書き方と置き場は [`Tests/README.md`](CS/Frameworks/Tests/README.md) を参照。
 

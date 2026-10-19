@@ -121,6 +121,8 @@ dotnet test CS\Frameworks\Tests\NUnit\TestPublic\TestPublic.csproj -f net10.0 --
 - **クロス DB（`TestPublicDb`）は `.\2_RunAllTests.ps1 -CrossDb -LocalServicesDir <LocalServicesOnDocker>` で回す**（#623）。
   DBMS を 1 つずつ起動 → 回す → 停止まで自動で行う（`docker` が使えれば Rancher 版、使えなければ WSL2 版）。
   始める前から動いていた DBMS には触らない。`-CrossDb` を付けなければ、コンテナは起動も停止もしない
+- **カバレッジを [`Tests/COVERAGE.md`](CS/Frameworks/Tests/COVERAGE.md) に残すなら `.\2_RunAllTests.ps1 -Coverage -LocalServicesDir <LocalServicesOnDocker>`。**
+  NUnit の全部とクロス DB を 1 回で回し、全部 OK ならアセンブリごとに合算して書く。普通の実行は COVERAGE.md を書かない
 - **Linux（Golden の EncAndDecUtilCUI と NUnit の TestPublic）は `.\2_RunAllTests.ps1 -Linux` で回す**（#632）。
   Windows でビルドした net10.0 の出力を、Linux のコンテナ（1 つ、`--rm`）でそのまま動かす。`docker` が要る（[`TESTING.md`](TESTING.md) 2 節）。
   **Public・Public.Security に触れた fixed では、`SelectTargets.ps1` が自動で付ける**（fixing では後回し）

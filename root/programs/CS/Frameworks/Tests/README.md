@@ -141,6 +141,9 @@ y_Build_TestCode_NUnit.bat     … ビルド → net48 / net10.0 で実行 → T
 `coverage.cobertura.xml`（クラス・行の単位）の場所を出す。
 **計測するのは `OpenTouryo.*` だけ**（`coverlet.runsettings`）。
 
+**アセンブリごとの値は [`COVERAGE.md`](COVERAGE.md) にある。** `2_RunAllTests.ps1 -Coverage` が、
+NUnit の全部とクロス DB を 1 回で回して合算し、書き換える（普通の実行は書き換えない）。
+
 > **Golden のテストが通している行は数えていない。** コンソール EXE の出力比較であり、
 > カバレッジの計測には載っていない。低い数字は「NUnit で確かめていない」という意味である。
 
