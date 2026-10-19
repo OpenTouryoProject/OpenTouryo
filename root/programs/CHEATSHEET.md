@@ -7,6 +7,59 @@
 
 ---
 
+## 0. ワンライナー集
+
+**すべて `root\programs` で実行する**（`cd root\programs`）。詳しくは右端の節。
+
+### 検証する
+
+| やりたいこと | コマンド | 節 |
+|---|---|---|
+| 全部を通しで（ビルド → 単体テスト → 疎通） | `.\0_RunAll.ps1` | 1 |
+| 変えた所に必要な分だけ回す | `.\SelectTargets.ps1 -Run` | 1 |
+| 何が回るかだけ見る | `.\SelectTargets.ps1` | 1 |
+| 全ビルドだけ | `.\1_BuildAll.ps1 -IgnoreErrors 'error MSB(3482\|3325\|3321):.*WSClientWinCone_sample\.csproj'` | 1 |
+| 単体テストだけ | `.\2_RunAllTests.ps1` | 1 |
+| 疎通だけ | `.\3_SmokeTest.ps1` | 1 |
+| VB 側を通しで | `.\0_RunAll.ps1 -Lang VB` | 3 |
+
+### 単体テストを絞る・広げる
+
+| やりたいこと | コマンド | 節 |
+|---|---|---|
+| 一部だけ回す（名前は部分一致・複数可） | `.\2_RunAllTests.ps1 -Only "TestBatch", "NUnit"` | 1 |
+| 指定できる名前を見る | `.\2_RunAllTests.ps1 -List` | 1 |
+| Linux でも回す（docker が要る） | `.\2_RunAllTests.ps1 -Linux` | 1 |
+| DB を Oracle / MySQL / PostgreSQL でも回す | `.\2_RunAllTests.ps1 -CrossDb -LocalServicesDir D:\path\to\LocalServicesOnDocker` | 1 |
+| カバレッジを測って COVERAGE.md を更新する | `.\2_RunAllTests.ps1 -Coverage -LocalServicesDir D:\path\to\LocalServicesOnDocker` | 1 |
+
+### 依存パッケージを点検する
+
+| やりたいこと | コマンド | 節 |
+|---|---|---|
+| 脆弱性のある依存を見る（ビルドの後に） | `.\CheckVulnerability.ps1 -Detail` | 1 |
+| packages.config と csproj の版を突き合わせる | `.\ComparePackage.ps1 -Check` | 1 |
+| bindingRedirect と配布物の版を突き合わせる | `.\CompareRedirect.ps1 -Check` | 1 |
+
+### リリースする
+
+| やりたいこと | コマンド | 節 |
+|---|---|---|
+| 版を上げる（変更内容の確認） | `.\0_SetVersion.ps1 -Version 3.3.0 -WhatIf` | 2 |
+| 版を上げる | `.\0_SetVersion.ps1 -Version 3.3.0` | 2 |
+| NuGet 用にビルドする | `CS\0_Release4Nuget.bat` | 2 |
+| パッケージを作る | `CS\NuGet\_NuGetPack.bat` | 2 |
+| 作ったパッケージを消す | `CS\NuGet\_Cleanup.bat` | 2 |
+
+### その他
+
+| やりたいこと | コマンド | 節 |
+|---|---|---|
+| エージェント用のスキルを取ってくる | `.\GetAgentSkills.ps1` | [`AGENTS.md`](../../AGENTS.md) |
+| 2 つの結果ファイルを比べる | `.\CompareResult.ps1 -Expected <期待> -Actual <実測>` | [`TESTING.md`](TESTING.md) 1 節 |
+
+---
+
 ## 1. 検証（変更したら必ず）
 
 ```powershell
