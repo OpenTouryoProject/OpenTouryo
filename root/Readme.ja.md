@@ -134,6 +134,10 @@ cd C:\root\programs
 3 本は個別に実行することもできます。**その場合の実行順は固定**です
 （`1_` のクリーンとアセンブリ配置が `2_` `3_` の前提になっているため）。
 
+`2_RunAllTests.ps1` には、Linux のコンテナでも回す（`-Linux`）、DBMS ごとに回す（`-CrossDb`）、
+カバレッジを測る（`-Coverage`）などのオプションがあります。一覧は
+[`programs/CHEATSHEET.md`](programs/CHEATSHEET.md) 1 節、詳細は [`programs/TESTING.md`](programs/TESTING.md) にあります。
+
 変更がサンプルやテストだけなら、`SelectTargets.ps1` で回す範囲を絞れます。
 前回の検証からの変更を調べ、必要なビルド・テスト・疎通だけを選びます。
 

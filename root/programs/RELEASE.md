@@ -54,7 +54,13 @@ cd root\programs
 
 ```powershell
 .\2_RunAllTests.ps1 -Linux       # 単体テスト（Linux の回を含む。docker が要る。#632）
+
+# クロス DB と、カバレッジ（Tests\COVERAGE.md）の更新。DBMS は 1 つずつ起動 → 回す → 停止する
+.\2_RunAllTests.ps1 -Coverage -LocalServicesDir <LocalServicesOnDocker のフォルダ>
 ```
+
+**リリースではクロス DB も回す**（[`AGENTS.md`](../../AGENTS.md) の表）。`-Coverage` はクロス DB を含むので、これ 1 本で足りる。
+COVERAGE.md が書き換わるので、リリースのコミットに含めるかを決める。
 
 ```powershell
 .\3_SmokeTest.ps1                # サンプルの疎通
@@ -185,6 +191,7 @@ cd root\programs
 - [ ] **`1_BuildAll.ps1` のエラーが「既知の 1 件」だけである**
       … `-SkipClean` は**使わない**。前回の成果物が残っていると通ったように見える
 - [ ] **`2_RunAllTests.ps1 -Linux` が終了コード 0**（18 ケース。Golden 8 ＋ NUnit 8 ＋ Linux 2）
+- [ ] **`2_RunAllTests.ps1 -Coverage` が終了コード 0**（NUnit 8 ＋ Linux 1 ＋ クロス DB 5。COVERAGE.md が書き換わる）
 - [ ] **`3_SmokeTest.ps1` が終了コード 0**（30 件）
 
 > **`1_BuildAll.ps1` は現状ここで終了コード 1 になる。**

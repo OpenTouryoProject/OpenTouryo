@@ -25,10 +25,24 @@ cd root\programs
 | | 合格の目安 | 詳細 |
 |---|---|---|
 | ビルド | 全ステップ OK | [`BUILDING.md`](BUILDING.md) |
-| 単体テスト | 14/14 OK、差分 0（NUnit は失敗 0） | [`TESTING.md`](TESTING.md) |
+| 単体テスト | 16/16 OK、差分 0（Golden 8 ＋ NUnit 8。NUnit は失敗 0） | [`TESTING.md`](TESTING.md) |
 | 疎通 | 30/30 OK | [`SMOKETEST.md`](SMOKETEST.md) |
 
 **既定は C# 側。VB 側は `-Lang` で回す**（3 節）。
+
+**`2_RunAllTests.ps1` のオプション**（詳細は [`TESTING.md`](TESTING.md)。**コンテナを使うものは、付けたときだけ起動する**）
+
+| オプション | 何をするか | 要るもの |
+|---|---|---|
+| `-Only <名前>[, …]` / `-List` | 対象を絞る（部分一致・複数可）／指定できる名前を出す | — |
+| `-SkipBuild` | バッチを回さず、手元の結果だけを判定する | — |
+| `-Linux` | Golden の EncAndDecUtilCUI と NUnit の TestPublic を、Linux のコンテナでも回す（＋2 ケース） | `docker` |
+| `-CrossDb -LocalServicesDir <dir>` | TestPublicDb を Oracle → MySQL → PostgreSQL の順に 1 つずつ「起動 → 回す → 停止」 | `docker` か WSL2 |
+| `-Coverage -LocalServicesDir <dir>` | NUnit の全部・Linux の回・クロス DB を 1 回で回し、全部 OK なら [`Tests/COVERAGE.md`](CS/Frameworks/Tests/COVERAGE.md) を書き直す | `docker` |
+| `-LinuxImage` / `-LinuxMemory` | Linux のコンテナのイメージ（既定 `mcr.microsoft.com/dotnet/sdk:10.0`）／メモリ上限（既定 `4g`） | — |
+
+- `-Coverage` は `-Only` / `-SkipBuild` / `-Linux` / `-CrossDb` と同時に指定できない（全部をそろえて測るため）。`-Linux` と `-CrossDb` も同時には指定できない
+- **普通の実行は COVERAGE.md を書かない**（カバレッジは画面に出すだけ）
 
 - **`1_BuildAll.ps1` を単体で回すときは `-IgnoreErrors` を付ける。**
   ClickOnce の署名（`MSB3482`）で、証明書が無い環境では必ず出る
@@ -122,7 +136,8 @@ dotnet test CS\Frameworks\Tests\NUnit\TestPublic\TestPublic.csproj -f net10.0 --
   DBMS を 1 つずつ起動 → 回す → 停止まで自動で行う（`docker` が使えれば Rancher 版、使えなければ WSL2 版）。
   始める前から動いていた DBMS には触らない。`-CrossDb` を付けなければ、コンテナは起動も停止もしない
 - **カバレッジを [`Tests/COVERAGE.md`](CS/Frameworks/Tests/COVERAGE.md) に残すなら `.\2_RunAllTests.ps1 -Coverage -LocalServicesDir <LocalServicesOnDocker>`。**
-  NUnit の全部とクロス DB を 1 回で回し、全部 OK ならアセンブリごとに合算して書く。普通の実行は COVERAGE.md を書かない
+  NUnit の全部（Linux の回を含む）とクロス DB を 1 回で回し、全部 OK ならアセンブリごとに合算して書く
+  （`OpenTouryo.Framework` だけは、TestFramework の対象モジュールごと）。`docker` が要る。普通の実行は COVERAGE.md を書かない
 - **Linux（Golden の EncAndDecUtilCUI と NUnit の TestPublic）は `.\2_RunAllTests.ps1 -Linux` で回す**（#632）。
   Windows でビルドした net10.0 の出力を、Linux のコンテナ（1 つ、`--rm`）でそのまま動かす。`docker` が要る（[`TESTING.md`](TESTING.md) 2 節）。
   **Public・Public.Security に触れた fixed では、`SelectTargets.ps1` が自動で付ける**（fixing では後回し）

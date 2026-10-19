@@ -31,12 +31,31 @@ cd root\programs
 # バッチを実行せず、いま手元にある結果ファイルだけを比較する
 .\2_RunAllTests.ps1 -SkipBuild
 
+# 対象を絞る（部分一致・複数可）。指定できる名前は -List で出す
+.\2_RunAllTests.ps1 -Only "TestBatch", "NUnit"
+.\2_RunAllTests.ps1 -List
+
+# Linux のコンテナでも回す（2 節「Linux のテスト」。docker が要る）
+.\2_RunAllTests.ps1 -Linux
+
+# クロス DB（2 節「NUnit のテスト」の TestPublicDb）。DBMS を 1 つずつ起動 → 回す → 停止
+.\2_RunAllTests.ps1 -CrossDb -LocalServicesDir <LocalServicesOnDocker のフォルダ>
+
+# カバレッジを測って Tests\COVERAGE.md を書き直す（NUnit の全部・Linux の回・クロス DB。docker が要る）
+.\2_RunAllTests.ps1 -Coverage -LocalServicesDir <LocalServicesOnDocker のフォルダ>
+
 # 個別に比較する
 .\CompareResult.ps1 -Expected <HEAD 版> -Actual Golden\TestCode\Result48.txt
 .\CompareResult.ps1 -Expected <HEAD 版> -Actual Golden\TestBatch\ResultSimpleBatch48.txt -SkipLog4netTrace
 ```
 
 終了コードは `0` = 全 OK、`1` = NG あり、`2` = ファイル無し。
+
+- **コンテナを起動するのは `-Linux` / `-CrossDb` / `-Coverage` を付けたときだけ。** 付けなければ、今までどおり手元の DB を使うだけ
+- `-Coverage` は `-Only` / `-SkipBuild` / `-Linux` / `-CrossDb` と、`-Linux` は `-CrossDb` と、同時に指定できない
+- Linux のコンテナのイメージとメモリの上限は `-LinuxImage` / `-LinuxMemory` で変えられる（既定は `mcr.microsoft.com/dotnet/sdk:10.0` / `4g`）
+- **CI（GitHub Actions）は、オプション無しの通常の実行だけ**を回す（windows-latest は Linux のコンテナを動かせない）。
+  Linux・クロス DB・カバレッジは手元で回す
 
 ---
 
