@@ -37,6 +37,7 @@
      ----------  ----------------  -------------------------------------------------
      2026/10/19  玄人 幸道         新規作成（2_RunAllTests.ps1 -Coverage の結果を COVERAGE.md に残す）
      2026/10/19  玄人 幸道         行をフル パスで数えるようにした（計測ごとに <source> の根が違い、二重に数えていた）
+     2026/10/19  玄人 幸道         指定したアセンブリを、モジュールごとの行と計の行で出せるようにした（-Modules）
 #>
 
 # 書き換える範囲の印
@@ -153,7 +154,45 @@ function Get-CoverageUnion([object[]]$Files)
         $date = ([DateTimeOffset]::FromUnixTimeSeconds($latest)).ToLocalTime().ToString("yyyy/MM/dd HH:mm")
     }
 
-    return [pscustomobject]@{ Rows = $rows; Date = $date }
+    return [pscustomobject]@{ Rows = $rows; Date = $date; Acc = $acc }
+}
+
+# アセンブリのうち、指定したモジュール（ファイル）ごとの行を作る。最後に、それらの計の行を足す。
+#   Module : プロジェクトのフォルダからの相対パス（例 "Authentication/SAML2Client.cs"）。
+#            フル パスの末尾で照合する（大文字小文字は区別しない）。
+function Get-CoverageModuleRows([hashtable]$AssemblyAcc, [string]$Assembly, [string[]]$Modules)
+{
+    $rows = @()
+    $totLine = 0; $totLineValid = 0; $totBr = 0; $totBrValid = 0
+
+    foreach ($m in $Modules)
+    {
+        $suffix = "/" + ($m -replace '\\', '/').ToLowerInvariant() + "|"
+        $lineValid = 0; $lineCovered = 0; $brCovered = 0; $brValid = 0
+
+        foreach ($k in $AssemblyAcc.Lines.Keys)
+        {
+            # キーは「フル パス|行番号」。行番号の手前までが、モジュールのパスで終わるもの
+            $path = $k.Substring(0, $k.LastIndexOf('|') + 1)
+            if (-not $path.EndsWith($suffix)) { continue }
+
+            $lineValid++
+            if ($AssemblyAcc.Lines[$k]) { $lineCovered++ }
+            if ($AssemblyAcc.Branch.ContainsKey($k)) { $brCovered += $AssemblyAcc.Branch[$k][0]; $brValid += $AssemblyAcc.Branch[$k][1] }
+        }
+
+        $rows += [pscustomobject]@{
+            Assembly = ("{0} : {1}" -f $Assembly, $m)
+            LineCovered = $lineCovered; LineValid = $lineValid; BranchCovered = $brCovered; BranchValid = $brValid
+        }
+        $totLine += $lineCovered; $totLineValid += $lineValid; $totBr += $brCovered; $totBrValid += $brValid
+    }
+
+    $rows += [pscustomobject]@{
+        Assembly = ("**{0}（対象モジュールの計）**" -f $Assembly)
+        LineCovered = $totLine; LineValid = $totLineValid; BranchCovered = $totBr; BranchValid = $totBrValid
+    }
+    return $rows
 }
 
 # 通過 / 全体 → "76.6%"（全体が 0 なら "-"）
@@ -164,7 +203,9 @@ function Format-CoverageRate([int]$Covered, [int]$Valid)
 }
 
 # COVERAGE.md の BEGIN〜END を、今回のカバレッジで丸ごと置き換える。
-function Write-CoverageReport([object[]]$Files, [string]$Path, [string]$RepoRoot)
+#   Modules : アセンブリ名 → モジュールの一覧。ここに在るアセンブリは、全体の 1 行ではなく、
+#             モジュールごとの行と、その計の行で出す（一部の部品だけを測るアセンブリのため）。
+function Write-CoverageReport([object[]]$Files, [string]$Path, [string]$RepoRoot, [hashtable]$Modules)
 {
     if (-not $Files -or $Files.Count -eq 0) { return $false }
     if (-not (Test-Path $Path))
@@ -192,9 +233,24 @@ function Write-CoverageReport([object[]]$Files, [string]$Path, [string]$RepoRoot
     [void]$sb.AppendLine(("- コミット : {0}" -f (Get-CoverageCommit $RepoRoot)))
     [void]$sb.AppendLine(("- 合算した計測（{0} 件） : {1}" -f $Files.Count, (($Files | ForEach-Object { $_.Measure }) -join " / ")))
     [void]$sb.AppendLine("")
-    [void]$sb.AppendLine("| アセンブリ | 行 | 行数（通過／全体） | 分岐（下限） | 分岐数（通過／全体） |")
+    [void]$sb.AppendLine("| アセンブリ（: モジュール） | 行 | 行数（通過／全体） | 分岐（下限） | 分岐数（通過／全体） |")
     [void]$sb.AppendLine("|---|---:|---:|---:|---:|")
+
+    # モジュールごとに出すアセンブリは、全体の 1 行を、モジュールの行と計の行に置き換える
+    $tableRows = @()
     foreach ($r in $u.Rows)
+    {
+        if ($Modules -and $Modules.ContainsKey($r.Assembly))
+        {
+            $tableRows += Get-CoverageModuleRows $u.Acc[$r.Assembly] $r.Assembly @($Modules[$r.Assembly])
+        }
+        else
+        {
+            $tableRows += $r
+        }
+    }
+
+    foreach ($r in $tableRows)
     {
         [void]$sb.AppendLine(("| {0} | {1} | {2:N0} / {3:N0} | {4} | {5:N0} / {6:N0} |" -f `
             $r.Assembly,

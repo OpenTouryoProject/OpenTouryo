@@ -161,6 +161,7 @@
      2026/10/19  玄人 幸道         -Coverage を追加した（NUnit のカバレッジを合算して Tests\COVERAGE.md に書く）
      2026/10/19  玄人 幸道         Linux の回でもカバレッジを取るようにした（-Coverage にも含める）
      2026/10/19  玄人 幸道         NUnit の TestFramework（Framework の単体で使える部品）を加えた
+     2026/10/19  玄人 幸道         COVERAGE.md の Framework を、対象モジュールごとに出すようにした
 #>
 [CmdletBinding()]
 param(
@@ -373,6 +374,18 @@ $tests = @(
     @{
         Name = "NUnit TestFramework (net10.0)"; Bat = "y_Build_TestCode_NUnit.bat"
         Result = "NUnit\TestResults\TestFramework\TestFramework_net10.0.trx"; Kind = "NUnit"; Coverage = $true
+        # COVERAGE.md に、アセンブリ全体ではなくモジュールごとに出す（対象にした部品だけを測るため）。
+        # パスはプロジェクトのフォルダ（Infrastructure\Framework）からの相対。
+        CoverageModules = @{
+            "OpenTouryo.Framework" = @(
+                "Authentication/AuthenticationHeader.cs", "Authentication/SAML2Enum.cs",
+                "Authentication/SAML2Bindings.cs", "Authentication/SAML2Client.cs",
+                "Authentication/CmnJwtToken.cs", "Authentication/AccessToken.cs", "Authentication/IdToken.cs",
+                "Authentication/ResponseObject.cs", "Authentication/JwtAssertion.cs",
+                "Authentication/RequestObject.cs", "Authentication/ClaimsInRO.cs",
+                "Exceptions/BusinessApplicationException.cs", "Exceptions/BusinessSystemException.cs",
+                "Exceptions/FrameworkException.cs")
+        }
     }
     # Linux（#632）。Windows でビルドした net10.0 の出力を、そのまま Linux のコンテナで回す。
     @{
@@ -1173,12 +1186,19 @@ if ($Coverage)
     Write-Host ""
     Write-Host "=== -Coverage : カバレッジの合算 ===" -ForegroundColor Cyan
 
+    # モジュールごとに出すアセンブリ（テストの定義の CoverageModules）
+    $coverageModules = @{}
+    foreach ($t in $tests)
+    {
+        if ($t.CoverageModules) { foreach ($k in $t.CoverageModules.Keys) { $coverageModules[$k] = @($t.CoverageModules[$k]) } }
+    }
+
     $ngCov = @($results | Where-Object { $_.結果 -ne "OK" })
     if ($ngCov.Count -gt 0)
     {
         Write-Host ("  **NG が {0} 件あるため、COVERAGE.md は書きません。**" -f $ngCov.Count) -ForegroundColor Red
     }
-    elseif (Write-CoverageReport -Files $coverageFiles -Path $coverageMd -RepoRoot $repoRoot)
+    elseif (Write-CoverageReport -Files $coverageFiles -Path $coverageMd -RepoRoot $repoRoot -Modules $coverageModules)
     {
         Write-Host ("  {0} 件の計測を合算して書きました : {1}" -f $coverageFiles.Count, $coverageMd)
     }
