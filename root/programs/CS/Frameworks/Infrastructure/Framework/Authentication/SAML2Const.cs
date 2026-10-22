@@ -33,6 +33,9 @@
 //*  2026/10/22  玄人 幸道         XML署名の名前空間、AttributeStatementのXPath・属性名を追加（#634）
 //*  2026/10/22  玄人 幸道         メタデータのXPath、接頭辞、要素名・属性名、FriendlyName、WS-Federationのクレーム名を追加
 //*                                （SAML2Metadata / SAML2Attributes の直書きを寄せた）
+//*  2026/10/22  玄人 幸道         並びを整理した（属性の区分を urn の外へ出し、要素名・属性名を小区分に分けた）。
+//*                                接頭辞 samlp と、HTTP-Redirect のクエリ文字列のパラメタ名を追加。
+//*                                MetadataTemplate の use / xmlns:ds を定数から組み立てる（値は変えていない）
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Framework.Authentication
@@ -124,8 +127,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             + "  <md:IDPSSODescriptor"
             + "    WantAuthnRequestsSigned=\"{WantAuthnRequestsSigned}\""
             + "    protocolSupportEnumeration=\"{UrnProtocolSupportEnumeration}\">"
-            + "    <md:KeyDescriptor use=\"signing\">"
-            + "      <ds:KeyInfo xmlns:ds=\"http://www.w3.org/2000/09/xmldsig#\">"
+            + "    <md:KeyDescriptor use=\"" + SAML2Const.KeyUseSigning + "\">"
+            + "      <ds:KeyInfo xmlns:ds=\"" + SAML2Const.UrnDSig + "\">"
             + "        <ds:X509Data>"
             + "          <ds:X509Certificate>{X509CertificatePemString}</ds:X509Certificate>"
             + "        </ds:X509Data>"
@@ -237,6 +240,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>アサーション（saml）</summary>
         public const string PrefixAssertion = "saml";
 
+        /// <summary>プロトコル（samlp）</summary>
+        public const string PrefixProtocol = "samlp";
+
         /// <summary>メタデータ（md）</summary>
         public const string PrefixMetadata = "md";
 
@@ -245,6 +251,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #endregion
 
         #region 要素名・属性名
+
+        #region AttributeStatement
         /// <summary>要素名：Assertion</summary>
         public const string ElementAssertion = "Assertion";
 
@@ -265,7 +273,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>属性名：FriendlyName（Attribute）</summary>
         public const string AttrFriendlyName = "FriendlyName";
+        #endregion
 
+        #region Metadata
         /// <summary>属性名：entityID（EntityDescriptor）</summary>
         public const string AttrEntityID = "entityID";
 
@@ -280,6 +290,59 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>KeyDescriptor の use の値：signing（無ければ、どちらにも使える。Metadata 2.4.1.1）</summary>
         public const string KeyUseSigning = "signing";
+        #endregion
+
+        #endregion
+
+        #region HTTP-Redirect のクエリ文字列のパラメタ名（Bindings 3.4.4）
+        /// <summary>SAMLRequest</summary>
+        public const string QueryParamSAMLRequest = "SAMLRequest";
+
+        /// <summary>SAMLResponse</summary>
+        public const string QueryParamSAMLResponse = "SAMLResponse";
+
+        /// <summary>RelayState</summary>
+        public const string QueryParamRelayState = "RelayState";
+
+        /// <summary>SigAlg</summary>
+        public const string QueryParamSigAlg = "SigAlg";
+
+        /// <summary>Signature</summary>
+        public const string QueryParamSignature = "Signature";
+        #endregion
+
+        #region 属性（Attribute。SAML2Attributes）
+
+        #region attrname-format（SAML Core 8.2）
+        /// <summary>属性名の形式：URI（urn:oid:… などに使う）</summary>
+        public const string UrnAttrNameFormatUri = UrnHeader20 + "attrname-format:uri";
+
+        /// <summary>属性名の形式：basic</summary>
+        public const string UrnAttrNameFormatBasic = UrnHeader20 + "attrname-format:basic";
+        #endregion
+
+        #region X.500/LDAP Attribute Profile
+        /// <summary>メアド（mail）</summary>
+        public const string UrnOidMail = "urn:oid:0.9.2342.19200300.100.1.3";
+
+        /// <summary>利用者名（uid。OIDCのpreferred_usernameに対応）</summary>
+        public const string UrnOidUid = "urn:oid:0.9.2342.19200300.100.1.1";
+
+        /// <summary>メアドの FriendlyName（mail）</summary>
+        public const string FriendlyNameMail = "mail";
+
+        /// <summary>利用者名の FriendlyName（uid）</summary>
+        public const string FriendlyNameUid = "uid";
+        #endregion
+
+        #region ADFS / WS-Federation のクレーム（読む側の別名）
+        /// <summary>メアド</summary>
+        public const string WsFedClaimEmailAddress = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
+
+        /// <summary>名前</summary>
+        public const string WsFedClaimName = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name";
+        #endregion
+
         #endregion
 
         #region urn
@@ -311,45 +374,19 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public const string UrnMetadata = UrnHeader20 + "metadata";
 
         /// <summary>XML署名を意味する名前空間</summary>
+        /// <remarks>
+        /// 値は urn ではなく URL だが、XML の名前空間として UrnProtocol / UrnAssertion / UrnMetadata と並べている。
+        /// （署名アルゴリズムの識別子は url の Region に在る）
+        /// </remarks>
         public const string UrnDSig = "http://www.w3.org/2000/09/xmldsig#";
 
         #endregion
 
-        #region attrname-format（SAML Core 8.2）
-        /// <summary>属性名の形式：URI（urn:oid:… などに使う）</summary>
-        public const string UrnAttrNameFormatUri = UrnHeader20 + "attrname-format:uri";
-
-        /// <summary>属性名の形式：basic</summary>
-        public const string UrnAttrNameFormatBasic = UrnHeader20 + "attrname-format:basic";
-        #endregion
-
-        #region 属性名（X.500/LDAP Attribute Profile）
-        /// <summary>メアド（mail）</summary>
-        public const string UrnOidMail = "urn:oid:0.9.2342.19200300.100.1.3";
-
-        /// <summary>利用者名（uid。OIDCのpreferred_usernameに対応）</summary>
-        public const string UrnOidUid = "urn:oid:0.9.2342.19200300.100.1.1";
-
-        /// <summary>メアドの FriendlyName（mail）</summary>
-        public const string FriendlyNameMail = "mail";
-
-        /// <summary>利用者名の FriendlyName（uid）</summary>
-        public const string FriendlyNameUid = "uid";
-        #endregion
-
-        #region 属性名（ADFS / WS-Federation のクレーム。読む側の別名）
-        /// <summary>メアド</summary>
-        public const string WsFedClaimEmailAddress = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
-
-        /// <summary>名前</summary>
-        public const string WsFedClaimName = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name";
-        #endregion
-
         #region bindings
-        /// <summary>レスポンスのBindingをPOSTに指定する。</summary>
+        /// <summary>Binding：HTTP-POST（応答の送り方、メタデータの SingleSignOnService に使う）</summary>
         public const string UrnBindingsPost = UrnHeader20 + "bindings:HTTP-POST";
-        
-        /// <summary>レスポンスのBindingをRedirectに指定する。</summary>
+
+        /// <summary>Binding：HTTP-Redirect（応答の送り方、メタデータの SingleSignOnService に使う）</summary>
         public const string UrnBindingsRedirect = UrnHeader20 + "bindings:HTTP-Redirect";
         #endregion
 

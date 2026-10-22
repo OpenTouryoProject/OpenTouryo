@@ -40,6 +40,7 @@
 //*  2026/10/12  玄人 幸道         VerifyRedirectで、SigAlgが渡されたDigitalSignのアルゴリズムと
 //*                                一致することを確認するようにした。
 //*                                また、SigAlgからハッシュを選ぶ、RSAを受けるオーバーロードを追加（#604）
+//*  2026/10/22  玄人 幸道         クエリ文字列のパラメタ名と、名前空間の接頭辞・名前の直書きを SAML2Const に寄せた
 //**********************************************************************************
 
 using System;
@@ -361,10 +362,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 switch (type)
                 {
                     case SAML2Enum.RequestOrResponse.Request:
-                        queryStringTemplate += "SAMLRequest={SAML}";
+                        queryStringTemplate += SAML2Const.QueryParamSAMLRequest + "={SAML}";
                         break;
                     case SAML2Enum.RequestOrResponse.Response:
-                        queryStringTemplate += "SAMLResponse={SAML}";
+                        queryStringTemplate += SAML2Const.QueryParamSAMLResponse + "={SAML}";
                         break;
                 }
 
@@ -375,7 +376,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 }
                 else
                 {
-                    queryStringTemplate += "&RelayState={RelayState}";
+                    queryStringTemplate += "&" + SAML2Const.QueryParamRelayState + "={RelayState}";
                 }
 
                 // 第3 QSパラメタ
@@ -386,7 +387,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 else
                 {
                     // 第3 QSパラメタ（実際の署名アルゴリズム。#604）
-                    queryStringTemplate += "&SigAlg=" + CustomEncode.UrlEncode(SAML2Bindings.GetSigAlg(ds));
+                    queryStringTemplate += "&" + SAML2Const.QueryParamSigAlg + "=" + CustomEncode.UrlEncode(SAML2Bindings.GetSigAlg(ds));
                 }                
             }
             #endregion
@@ -424,7 +425,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     ds.Sign(CustomEncode.StringToByte(
                     	queryString, CustomEncode.us_ascii)))); // enc.CodePage))));
 
-                queryString = queryString + "&Signature=" + signature;
+                queryString = queryString + "&" + SAML2Const.QueryParamSignature + "=" + signature;
             }
             #endregion
 
@@ -498,13 +499,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // --------------------------------------------------
             // Samlの抽出
             string saml = "";
-            if (queryString.IndexOf("SAMLRequest") != -1)
+            if (queryString.IndexOf(SAML2Const.QueryParamSAMLRequest) != -1)
             {
-                saml = StringExtractor.GetParameterFromQueryString("SAMLRequest", queryString);
+                saml = StringExtractor.GetParameterFromQueryString(SAML2Const.QueryParamSAMLRequest, queryString);
             }
-            else if (queryString.IndexOf("SAMLResponse") != -1)
+            else if (queryString.IndexOf(SAML2Const.QueryParamSAMLResponse) != -1)
             {
-                saml = StringExtractor.GetParameterFromQueryString("SAMLResponse", queryString);
+                saml = StringExtractor.GetParameterFromQueryString(SAML2Const.QueryParamSAMLResponse, queryString);
             }
             else
             {
@@ -539,16 +540,16 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             // SigAlgの確認（#604）
             string sigAlg = CustomEncode.UrlDecode(
-                StringExtractor.GetParameterFromQueryString("SigAlg", queryString));
+                StringExtractor.GetParameterFromQueryString(SAML2Const.QueryParamSigAlg, queryString));
             if (sigAlg != SAML2Bindings.GetSigAlg(ds))
             {
                 return false;
             }
 
             // Signatureの抽出
-            string signature = StringExtractor.GetParameterFromQueryString("Signature", queryString);
+            string signature = StringExtractor.GetParameterFromQueryString(SAML2Const.QueryParamSignature, queryString);
             // Signatureの削除
-            queryString = queryString.Replace("&Signature=" + signature, "");
+            queryString = queryString.Replace("&" + SAML2Const.QueryParamSignature + "=" + signature, "");
 
             // queryString : ASCIIデコード
             // signature   : パラメタ → URLデコード →  Base64デコード
@@ -589,7 +590,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             // SigAlgの確認
             string sigAlg = CustomEncode.UrlDecode(
-                StringExtractor.GetParameterFromQueryString("SigAlg", queryString));
+                StringExtractor.GetParameterFromQueryString(SAML2Const.QueryParamSigAlg, queryString));
             if (Array.IndexOf(sigAlgs, sigAlg) == -1)
             {
                 return false;
@@ -603,9 +604,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
             else return false; // RSA 以外
 
             // Signatureの抽出
-            string signature = StringExtractor.GetParameterFromQueryString("Signature", queryString);
+            string signature = StringExtractor.GetParameterFromQueryString(SAML2Const.QueryParamSignature, queryString);
             // Signatureの削除
-            queryString = queryString.Replace("&Signature=" + signature, "");
+            queryString = queryString.Replace("&" + SAML2Const.QueryParamSignature + "=" + signature, "");
 
             // queryString : ASCIIデコード
             // signature   : パラメタ → URLデコード →  Base64デコード
@@ -1135,8 +1136,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public static XmlNamespaceManager CreateNamespaceManager(XmlDocument xmlDoc)
         {
             XmlNamespaceManager xmlnsManager = new XmlNamespaceManager(xmlDoc.NameTable);
-            xmlnsManager.AddNamespace("saml", "urn:oasis:names:tc:SAML:2.0:assertion");
-            xmlnsManager.AddNamespace("samlp", "urn:oasis:names:tc:SAML:2.0:protocol");
+            xmlnsManager.AddNamespace(SAML2Const.PrefixAssertion, SAML2Const.UrnAssertion);
+            xmlnsManager.AddNamespace(SAML2Const.PrefixProtocol, SAML2Const.UrnProtocol);
 
             return xmlnsManager;
         }

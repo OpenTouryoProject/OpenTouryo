@@ -37,6 +37,7 @@
 //*  2026/10/14  玄人 幸道         CreateRedirectRequest / CreatePostRequestに、署名に使う鍵を受けるオーバーロードを追加（#606）。
 //*                                CmnClientParams.RsaPfxFilePath固定で、相手（IdP）ごとに別の鍵で署名できなかった。
 //*  2026/10/22  玄人 幸道         理由を返すVerifyResponseWithReasonを追加（汎用認証サイトから移した。#634 の C-3）
+//*  2026/10/22  玄人 幸道         SigAlgの直書きをSAML2Const.QueryParamSigAlgに寄せた
 //**********************************************************************************
 
 using System;
@@ -565,7 +566,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 if (ret.IsRedirect)
                 {
                     ret.SigAlg = CustomEncode.UrlDecode(
-                        StringExtractor.GetParameterFromQueryString("SigAlg", queryString)) ?? "";
+                        StringExtractor.GetParameterFromQueryString(SAML2Const.QueryParamSigAlg, queryString)) ?? "";
 
                     if (string.IsNullOrEmpty(ret.SigAlg))
                     {
