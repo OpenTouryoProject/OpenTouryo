@@ -73,9 +73,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
-        #region クライアント側（A-2）
+        #region クライアント側（A-2）：DPoP証明の作成
 
-        /// <summary>証明を作る（/token などへの要求用）</summary>
+        /// <summary>DPoP証明（JWT）の生成（/token などへの要求用）</summary>
         /// <param name="signer">JWS（クライアントの秘密鍵。JwsFactory.CreateFromPrivateJwk など）</param>
         /// <param name="publicJwk">JObject（その鍵の公開鍵。JwkOperator.ToPublic で作れる）</param>
         /// <param name="htm">string（要求の HTTP メソッド。例 : POST）</param>
@@ -87,7 +87,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             return DPoPProof.Create(signer, publicJwk, htm, htu, null, null);
         }
 
-        /// <summary>証明を作る</summary>
+        /// <summary>DPoP証明（JWT）の生成</summary>
         /// <param name="signer">JWS（クライアントの秘密鍵）</param>
         /// <param name="publicJwk">JObject（その鍵の公開鍵）</param>
         /// <param name="htm">string（要求の HTTP メソッド）</param>
@@ -168,7 +168,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
         }
 
-        /// <summary>access_token の指紋（ath の値。RFC 9449 4.2）</summary>
+        /// <summary>
+        /// access_token のhash (ath) 計算（ath の値。RFC 9449 4.2）
+        /// </summary>
         /// <param name="accessToken">string</param>
         /// <returns>BASE64URL(SHA-256(ASCII(access_token)))。空なら空文字</returns>
         /// <remarks>自由に利用できる。</remarks>
@@ -185,7 +187,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
-        #region サーバ側（A-3）
+        #region サーバ側（A-3）: DPoP証明の検証
 
         /// <summary>証明を検証し、鍵の指紋（jkt）を返す（既定の窓と alg）</summary>
         /// <param name="proof">string（DPoP ヘッダの値）</param>
@@ -351,7 +353,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
         }
 
-        /// <summary>保護されたリソースで、証明とトークンの結び付きを照合する（既定の窓と alg）</summary>
+        /// <summary>Resource Serverで、証明とトークンの結び付きを照合（既定の窓と alg）</summary>
         /// <param name="proof">string（DPoP ヘッダの値）</param>
         /// <param name="htm">string（この要求の HTTP メソッド）</param>
         /// <param name="htu">string（この口の URL）</param>
@@ -364,8 +366,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// 自由に利用できる。Verify に、次の 2 つを足す（RFC 9449 7.1）。
         /// - ath が、提示された access_token の指紋と一致すること（別のトークンに付けた証明を使い回させない）
         /// - 証明の鍵が、トークンの cnf.jkt と同じであること（持ち主であることの確認）
-        /// Authorization のスキームが DPoP であることは、呼び出し側が確かめること
-        /// （AuthenticationHeader.GetAccessToken）。
+        /// Authorization のスキームが DPoP であることは、呼び出し側が確かめること（AuthenticationHeader.GetAccessToken）。
         /// </remarks>
         public static bool VerifyForResource(string proof, string htm, string htu,
             string accessToken, string boundJkt, out JObject payload, out string errDescription)
