@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/19  玄人 幸道         新規作成
+//*  2026/10/22  玄人 幸道         DPoP・チャレンジ・復号前後の照合のテストを追加（#634）
 //**********************************************************************************
 
 using System;
@@ -146,5 +147,89 @@ namespace TestFramework.Authentication
             string id, secret;
             Assert.That(AuthenticationHeader.GetCredentials(Basic("a:b:c"), out id, out secret), Is.False);
         }
+
+        #region #634（DPoP・チャレンジ・復号前後の照合）
+
+        /// <summary>
+        /// Basic（照合する版）：復号後で通らず、復号前で通るなら、復号前の値を返す（符号化しないクライアント）。
+        /// 英数字だけなら照合は 1 回で済む。照合の処理が null なら ArgumentNullException。
+        /// </summary>
+        [Test]
+        public void Basic_WithVerifier()
+        {
+            // 符号化しないクライアントが "a%2Fb" という秘密を、そのまま送ってきた。
+            string raw = Basic("client01:a%2Fb");
+            string id, secret;
+            Assert.That(AuthenticationHeader.GetCredentials(raw, (i, s) => s == "a%2Fb", out id, out secret), Is.True);
+            Assert.That(secret, Is.EqualTo("a%2Fb"));
+
+            // 符号化するクライアント（RFC 6749 §2.3.1）。
+            string encoded = AuthenticationHeader.CreateBasicAuthenticationHeaderValue("client01", "a/b").ToString();
+            Assert.That(AuthenticationHeader.GetCredentials(encoded, (i, s) => s == "a/b", out id, out secret), Is.True);
+            Assert.That(secret, Is.EqualTo("a/b"));
+
+            int calls = 0;
+            Assert.That(AuthenticationHeader.GetCredentials(Basic("client01:secret01"), (i, s) => { calls++; return false; }, out id, out secret), Is.True);
+            Assert.That(calls, Is.EqualTo(0), "英数字だけなら照合しない（どちらも同じ値）");
+            Assert.That(secret, Is.EqualTo("secret01"));
+
+            Assert.That(AuthenticationHeader.GetCredentials("Bearer x", (i, s) => true, out id, out secret), Is.False, "Basic でない");
+            Assert.Throws<ArgumentNullException>(() => AuthenticationHeader.GetCredentials(raw, null, out id, out secret));
+        }
+
+        /// <summary>GetAccessToken：Bearer / DPoP を読み、スキームを返す（大文字小文字を区別しない）。</summary>
+        [TestCase("Bearer at01", "Bearer", "at01")]
+        [TestCase("DPoP at01", "DPoP", "at01")]
+        [TestCase("dpop at01", "DPoP", "at01")]
+        [TestCase("bearer  at01 ", "Bearer", "at01")]
+        public void GetAccessToken(string header, string scheme, string token)
+        {
+            string t, s;
+            Assert.That(AuthenticationHeader.GetAccessToken(header, out t, out s), Is.True);
+            Assert.That(s, Is.EqualTo(scheme));
+            Assert.That(t, Is.EqualTo(token));
+        }
+
+        /// <summary>GetAccessToken：値が無い・空白を含む・他の方式は false。</summary>
+        [TestCase(null)]
+        [TestCase("")]
+        [TestCase("DPoP")]
+        [TestCase("DPoP ")]
+        [TestCase("DPoP a b")]
+        [TestCase("Basic YTpi")]
+        public void GetAccessToken_False(string header)
+        {
+            string t, s;
+            Assert.That(AuthenticationHeader.GetAccessToken(header, out t, out s), Is.False);
+            Assert.That(s, Is.Empty);
+        }
+
+        /// <summary>DPoP スキームのヘッダを作れる。チャレンジのスキームは、要求のスキームに合わせる。</summary>
+        [Test]
+        public void DPoP_HeaderAndChallengeScheme()
+        {
+            Assert.That(AuthenticationHeader.CreateDPoPAuthenticationHeaderValue("at01").ToString(), Is.EqualTo("DPoP at01"));
+            Assert.That(AuthenticationHeader.GetChallengeScheme("DPoP at01"), Is.EqualTo("DPoP"));
+            Assert.That(AuthenticationHeader.GetChallengeScheme("Bearer at01"), Is.EqualTo("Bearer"));
+            Assert.That(AuthenticationHeader.GetChallengeScheme(null), Is.EqualTo("Bearer"));
+        }
+
+        /// <summary>
+        /// CreateChallengeParameter：トークンが無ければ realm だけ。DPoP なら algs を付ける。
+        /// " と \ は逃がす。
+        /// </summary>
+        [Test]
+        public void CreateChallengeParameter()
+        {
+            Assert.That(AuthenticationHeader.CreateChallengeParameter("Bearer", "api", "", "x", null), Is.EqualTo("realm=\"api\""));
+            Assert.That(AuthenticationHeader.CreateChallengeParameter("Bearer", "api", "invalid_token", "expired", new string[] { "ES256" }),
+                Is.EqualTo("realm=\"api\", error=\"invalid_token\", error_description=\"expired\""));
+            Assert.That(AuthenticationHeader.CreateChallengeParameter("DPoP", null, "use_dpop_nonce", null, new string[] { "ES256", "RS256" }),
+                Is.EqualTo("error=\"use_dpop_nonce\", algs=\"ES256 RS256\""));
+            Assert.That(AuthenticationHeader.CreateChallengeParameter("Bearer", "a\"b\\c", null, null, null),
+                Is.EqualTo("realm=\"a\\\"b\\\\c\""));
+        }
+
+        #endregion
     }
 }

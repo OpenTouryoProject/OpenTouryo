@@ -174,7 +174,29 @@ UOC は `UOC_PreQuery` / `UOC_AfterQuery(sql)` / `UOC_AfterQuery(sql, ex)`。
   Refresh / UserInfo / Revoke / Introspect / JWT Bearer / Device AuthZ / CIBA / Request Object / JWK Set。
   **すべて `static async Task<string>`（生の JSON を返す）**。`HttpClient` は `static` プロパティで差し替えられる
 - `OAuth2AndOIDCConst` / `OAuth2AndOIDCEnum` / `OAuth2AndOIDCParams` / `CmnClientParams`
-- `JwkSetStore` … JWK Set のキャッシュ
+- `JwkSetStore` … JWK Set のキャッシュ（**設定の `JwkSetUri` 1 本**＝自分の認可サーバ）
+
+**#634 で、汎用認証サイト（MPAS）から次を移した**（どれも追加で、既存のシグネチャは変えていない）。
+
+| クラス | 何をするか | 使う側 |
+|---|---|---|
+| `DPoPProof` | **DPoP の証明（RFC 9449）を作る・検証する**。`VerifyForResource` は `ath` と `cnf.jkt` も照合する | クライアント / AS / RS |
+| `OAuth2AndOIDCClient` | `HttpClient` の get・`SendAsync`（H-1）、**`SendWithDPoPAsync`**（`DPoP-Nonce` を覚え、`use_dpop_nonce` なら 1 回だけ送り直す）・`TokenRequestWithDPoPAsync`・`GetUserInfoAsync`（DPoP 版）、**DCR**（`GetRegistrationEndpointAsync`・`RegisterClientAsync`・`Read` / `Update` / `DeleteClientRegistrationAsync`） | クライアント |
+| `RemoteJwkSetStore` | **相手の `jwks_uri`（discovery）から `kid` で鍵を引く**。URL ごとのキャッシュ、取得の下限（既定 1 分）と同時 1 本、**同期の経路は `PickJwksFromCache` で待たない**（背景で補充） | RP / AS |
+| `SAML2Metadata` | **相手のメタデータを読む**（`entityID` を必ず照合。署名鍵は複数） | SP |
+| `SAML2Attributes` | **`AttributeStatement` を書く（IdP）・読む（SP）**。メアド・利用者名・`email_verified` の別名を吸収 | IdP / SP |
+| `SAML2Client.VerifyResponseWithReason` / `SAML2VerifyResult` | **落ちた理由を返す**応答の検証（鍵は複数を順に試す） | SP |
+| `OAuth2AndOIDCSpec` | 仕様が決めている小物（`error` → HTTP ステータス、`response_type` の正規化、`prompt` の集合、`max_age`、認可応答の URL（`iss` を付ける）、空白区切り、`client_assertion` と `assertion` の両受け） | AS / RS |
+| `AuthenticationHeader` | `DPoP` スキームの読み書き（`GetAccessToken` はスキームも返す）、`WWW-Authenticate` の組み立て、**Basic を復号前後のどちらでも照合する版**（H-3） | AS / RS |
+
+**配備ごとの決めは持ち込んでいない**（MPAS 側に残る）。`jti` の使い回しを拒む台帳（`DPoPProof.CreateProofId` は鍵だけ作る）、
+`nonce` の作り方、`htu` の期待値の決め方（**要求の `Host` を信じず設定から作る**）、どの口で `cnf.jkt` / `dpop_jkt` を見るか、
+DCR の口の認可、クライアント登録の持ち方。
+
+- **`OAuth2AndOIDCConst.UrnCnfJktClaim` は `urn:oauth:claim:cnf:jkt`**（`UrnCnfX5tClaim` と同じ組み立て）。
+  MPAS の `Const.UrnCnfJktClaim`（`urn:oauth:cnf:jkt`）とは値が違う。プロセスの外に出ない値だが、置き換えるときは揃えること
+- `DPoPProof.Create` は `iat` を**数値**で入れる（`CmnJwtToken.CreateIatClaim` は文字列を返すので使わない）。`Verify` は文字列の `iat` を断る
+- `SendWithDPoPAsync` の `DPoP-Nonce` の記憶は `static`（オリジンごと）で、プロセス全体に効く
 
 **`CmnClientParams`（`SpRp_*`）と `JwkSetUri` は、クライアント役が読む設定である**（#602）。
 

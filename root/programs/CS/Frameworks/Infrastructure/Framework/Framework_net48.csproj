@@ -104,6 +104,12 @@
     <Compile Include="Authentication\SAML2Const.cs" />
     <Compile Include="Authentication\SAML2Enum.cs" />
     <Compile Include="Authentication\SAML2Params.cs" />
+    <Compile Include="Authentication\DPoPProof.cs" />
+    <Compile Include="Authentication\OAuth2AndOIDCSpec.cs" />
+    <Compile Include="Authentication\RemoteJwkSetStore.cs" />
+    <Compile Include="Authentication\SAML2Attributes.cs" />
+    <Compile Include="Authentication\SAML2Metadata.cs" />
+    <Compile Include="Authentication\SAML2VerifyResult.cs" />
     <Compile Include="Business\BaseLogic.cs" />
     <Compile Include="Business\TransactionControl.cs" />
     <Compile Include="Common\BaseParameterValue.cs" />

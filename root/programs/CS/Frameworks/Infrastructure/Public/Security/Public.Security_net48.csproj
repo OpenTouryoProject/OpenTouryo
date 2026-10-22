@@ -117,6 +117,9 @@
     <Compile Include="Aead\AeadA192CbcHS384.cs" />
     <Compile Include="Aead\AeadA256CbcHS512.cs" />
     <Compile Include="Jwt\JwtConst.cs" />
+    <Compile Include="Jwt\JwkOperator.cs" />
+    <Compile Include="Jwt\JwsFactory.cs" />
+    <Compile Include="Jwt\JwtReader.cs" />
     <Compile Include="Jwt\JWE.cs" />
     <Compile Include="Jwt\JWE_Header.cs" />
     <Compile Include="Jwt\JWE_Rsa15A128CbcHS256.cs" />

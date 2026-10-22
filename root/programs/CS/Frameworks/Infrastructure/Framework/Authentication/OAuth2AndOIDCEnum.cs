@@ -32,6 +32,7 @@
 //*  2020/02/27  西野 大介         FAPI CIBAのパラメタを追加
 //*  2020/12/18  西野 大介         Device AuthZのパラメタを追加
 //*  2020/12/21  西野 大介         ClientModeにdeviceとfapi_cibaを追加
+//*  2026/10/22  玄人 幸道         AuthTimeCheck（max_ageの照合の結果）を追加（#634）
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Framework.Authentication
@@ -236,6 +237,31 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             /// <summary>fapi-ciba</summary>
             fapi_ciba
+        }
+
+        #endregion
+
+        #region AuthTimeCheck
+
+        /// <summary>max_age と auth_time の照合の結果（OIDC Core 3.1.2.1）</summary>
+        /// <remarks>
+        /// bool では次の 3 つを区別できないため、列挙にしている（#634）。
+        /// | 結果 | あるべき応答 |
+        /// |---|---|
+        /// | Ok | そのまま続ける |
+        /// | InvalidMaxAge | invalid_request（RFC 6749 4.1.2.1） |
+        /// | NeedsReAuthentication | 再認証する（prompt=none なら login_required。OIDC Core 3.1.2.6） |
+        /// </remarks>
+        public enum AuthTimeCheck : int
+        {
+            /// <summary>そのまま続けてよい</summary>
+            Ok,
+
+            /// <summary>max_age が 0 以上の整数でない</summary>
+            InvalidMaxAge,
+
+            /// <summary>再認証が必要</summary>
+            NeedsReAuthentication
         }
 
         #endregion

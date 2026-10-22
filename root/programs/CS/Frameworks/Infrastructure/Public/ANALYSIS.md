@@ -25,7 +25,7 @@
 |---|---|---|---|
 | `Db/` | `Public.Db` | `BaseDam` `DamSqlSvr` `DamODBC` `DamOLEDB` `SQLUtility` `DbEnum` | データ アクセス制御（Dam）。4 節 |
 | `Dto/` | `Public.Dto` | `DTTables` `DTTable` `DTRow` `DTColumn`、`DataToPoco` `PocoToPoco` `DataToDictionary` | マーシャリングできる自前の DataTable と、詰め替え |
-| `Str/` | `Public.Str` | `CustomEncode` `StringChecker` `FormatChecker` `StringConverter` `FormatConverter` `CheckCharCode` `JIS2k4Checker` `StringVariableOperator` `StringExtractor` `ToStringExtension` | 文字列の符号化・検査・変換 |
+| `Str/` | `Public.Str` | `CustomEncode` `StringChecker` `FormatChecker` `StringConverter` `FormatConverter` `CheckCharCode` `JIS2k4Checker` `StringVariableOperator` `StringExtractor` `ToStringExtension` `UriOperator` `LogSanitizer` | 文字列の符号化・検査・変換。`UriOperator`（URL をクエリ抜きで比べる・https かループバックか）と `LogSanitizer`（ログに出す値の改行落とし・長さだけ出す）は #634。**`LogSanitizer` は `Log/` ではなく `Str/` に置いている**（`.gitignore` の `[Ll]og/` で、新しいファイルが黙って外れるため） |
 | `IO/` | `Public.IO` | `ResourceLoader` `EmbeddedResourceLoader` `DeflateCompression` `ExponentialBackoff` `ZipperV2` `UnZipperV2` `BinarySerialize` | ファイル・埋め込みリソースの読み込み、圧縮、再試行 |
 | `Log/` | `Public.Log` | `LogIF`、`Log_log4net` / `Log_nlog`、`CustomEventLog` `SecurityEventLog` | ログの窓口（5 節） |
 | `Util/` | `Public.Util` | `GetConfigParameter` `PerformanceRecorder` `RandomValueGenerator` `EnvInfo` `ArrayOperator` `CustomMarshaler` `PublicExceptionMessage` `PubLiteral` `PubCmnFunction` `SharedMemory` | 設定の読み取りほか（6 節） |

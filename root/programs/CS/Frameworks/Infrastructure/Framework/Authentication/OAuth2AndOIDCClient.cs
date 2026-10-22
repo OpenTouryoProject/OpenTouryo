@@ -36,19 +36,27 @@
 //*  2026/09/25  玄人 幸道         PAR（RFC 9126）とCIBAのRequest Object直接送信を追加
 //*  2026/09/25  玄人 幸道         FAPI 2.0向けにprivate_key_jwt / tls_client_authを追加
 //*  2026/09/26  玄人 幸道         private_key_jwtのトークン要求で、client_assertionも併せて送る
+//*  2026/10/22  玄人 幸道         HttpClientのget・SendAsync、DPoP（RFC 9449）で送る口、
+//*                                DCR（RFC 7591 / 7592）のクライアント側を追加（#634）
 //**********************************************************************************
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 
 using System.Web;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+
+using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Security;
+using Touryo.Infrastructure.Public.Security.Jwt;
 
 namespace Touryo.Infrastructure.Framework.Authentication
 {
@@ -61,12 +69,38 @@ namespace Touryo.Infrastructure.Framework.Authentication
         private static HttpClient _HttpClient = null;
 
         /// <summary>HttpClient</summary>
+        /// <remarks>
+        /// get は #634（H-1）で足した。利用側が、自分の渡した共有の HttpClient
+        /// （TLS・プロキシ・クライアント証明書の扱いを揃えたもの）を、他のサーバ間通信にも使えるように。
+        /// </remarks>
         public static HttpClient HttpClient
         {
+            get
+            {
+                return OAuth2AndOIDCClient._HttpClient;
+            }
             set
             {
                 OAuth2AndOIDCClient._HttpClient = value;
             }
+        }
+
+        /// <summary>この HttpClient で送る</summary>
+        /// <param name="httpRequestMessage">HttpRequestMessage</param>
+        /// <returns>HttpResponseMessage</returns>
+        /// <remarks>
+        /// 自由に利用できる（#634 の H-1）。
+        /// ライブラリが口を持たない要求（ヘッダを足したい・状態コードを見たいなど）を、
+        /// 同じ HttpClient で送るために使う。
+        /// </remarks>
+        public static async Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage)
+        {
+            if (httpRequestMessage == null)
+            {
+                throw new ArgumentNullException(nameof(httpRequestMessage));
+            }
+
+            return await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
         }
 
         #region 基本 4 フローのWebAPI
@@ -1068,6 +1102,335 @@ namespace Touryo.Infrastructure.Framework.Authentication
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
         #endregion
+
+        #endregion
+
+        #region DPoP（RFC 9449）
+
+        /// <summary>サーバから受け取った DPoP-Nonce（鍵はオリジン）</summary>
+        private static readonly Dictionary<string, string> _dpopNonces = new Dictionary<string, string>();
+
+        /// <summary>_dpopNonces の排他</summary>
+        private static readonly object _dpopNoncesLock = new object();
+
+        /// <summary>DPoP の証明を添えて送る</summary>
+        /// <param name="createRequest">Func（要求を作る。nonce を求められたら作り直して送り直すため、毎回新しく作ること）</param>
+        /// <param name="signer">JWS（クライアントの秘密鍵。JwsFactory.CreateFromPrivateJwk など）</param>
+        /// <param name="publicJwk">JObject（その鍵の公開鍵）</param>
+        /// <param name="accessToken">string（リソースへの要求なら access_token。Authorization: DPoP と ath を付ける。null なら付けない）</param>
+        /// <returns>HttpResponseMessage</returns>
+        /// <remarks>
+        /// 自由に利用できる（#634 の A-2）。
+        /// - 要求ごとに証明を作り、DPoP ヘッダに添える（htm / htu は要求から取る）
+        /// - 応答の DPoP-Nonce をオリジンごとに覚え、次の要求の証明に入れる（RFC 9449 8 / 9）
+        /// - use_dpop_nonce で断られたら、受け取った nonce を入れて 1 回だけ送り直す
+        /// 縛られたトークンを Bearer で送ると断られるので、リソースへの要求では accessToken を渡すこと。
+        /// </remarks>
+        public static async Task<HttpResponseMessage> SendWithDPoPAsync(
+            Func<HttpRequestMessage> createRequest, JWS signer, JObject publicJwk, string accessToken)
+        {
+            if (createRequest == null)
+            {
+                throw new ArgumentNullException(nameof(createRequest));
+            }
+
+            HttpResponseMessage httpResponseMessage = null;
+            string usedNonce = null;
+
+            for (int i = 0; i < 2; i++)
+            {
+                HttpRequestMessage httpRequestMessage = createRequest();
+                string origin = httpRequestMessage.RequestUri.GetLeftPart(UriPartial.Authority);
+
+                lock (OAuth2AndOIDCClient._dpopNoncesLock)
+                {
+                    OAuth2AndOIDCClient._dpopNonces.TryGetValue(origin, out usedNonce);
+                }
+
+                httpRequestMessage.Headers.Add(OAuth2AndOIDCConst.HttpHeader_DPoP,
+                    DPoPProof.Create(signer, publicJwk,
+                        httpRequestMessage.Method.Method, httpRequestMessage.RequestUri.AbsoluteUri,
+                        accessToken, usedNonce));
+
+                if (!string.IsNullOrEmpty(accessToken))
+                {
+                    httpRequestMessage.Headers.Authorization =
+                        AuthenticationHeader.CreateDPoPAuthenticationHeaderValue(accessToken);
+                }
+
+                httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+
+                // 応答の DPoP-Nonce を覚える（成功の応答にも付くことがある）。
+                string nonce = OAuth2AndOIDCClient.GetDPoPNonce(httpResponseMessage);
+
+                if (string.IsNullOrEmpty(nonce))
+                {
+                    break;
+                }
+
+                lock (OAuth2AndOIDCClient._dpopNoncesLock)
+                {
+                    OAuth2AndOIDCClient._dpopNonces[origin] = nonce;
+                }
+
+                if (nonce == usedNonce
+                    || !await OAuth2AndOIDCClient.IsUseDPoPNonceAsync(httpResponseMessage).ConfigureAwait(false))
+                {
+                    break;
+                }
+
+                // use_dpop_nonce : 新しい nonce を入れて、1 回だけ送り直す。
+            }
+
+            return httpResponseMessage;
+        }
+
+        /// <summary>DPoP の証明を添えて、Token エンドポイントへ要求する（パブリック クライアント）</summary>
+        /// <param name="tokenEndpointUri">Uri</param>
+        /// <param name="body">Dictionary（grant_type などの本文。client_id も入れること）</param>
+        /// <param name="signer">JWS（クライアントの秘密鍵）</param>
+        /// <param name="publicJwk">JObject（その鍵の公開鍵）</param>
+        /// <returns>結果のJSON文字列（token_type は DPoP になる）</returns>
+        /// <remarks>
+        /// 自由に利用できる。
+        /// 認可コード（PKCE）・refresh_token など、grant_type を問わない。引数の Dictionary は変えない。
+        /// 返る access_token は鍵に縛られる（cnf.jkt）ので、使うときも同じ鍵の証明が要る。
+        /// </remarks>
+        public static async Task<string> TokenRequestWithDPoPAsync(
+            Uri tokenEndpointUri, Dictionary<string, string> body, JWS signer, JObject publicJwk)
+        {
+            HttpResponseMessage httpResponseMessage = await OAuth2AndOIDCClient.SendWithDPoPAsync(
+                () => new HttpRequestMessage(HttpMethod.Post, tokenEndpointUri)
+                {
+                    Content = new FormUrlEncodedContent(new Dictionary<string, string>(body))
+                },
+                signer, publicJwk, null).ConfigureAwait(false);
+
+            return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+        }
+
+        /// <summary>DPoP の証明を添えて、Token エンドポイントへ要求する（クライアント認証あり）</summary>
+        /// <param name="tokenEndpointUri">Uri</param>
+        /// <param name="body">Dictionary（grant_type などの本文）</param>
+        /// <param name="client_id">client_id</param>
+        /// <param name="client_secret">client_secret（client_secret_basic / client_secret_postで使用）</param>
+        /// <param name="client_assertion">client_assertion（private_key_jwt / client_secret_jwtで使用）</param>
+        /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods</param>
+        /// <param name="signer">JWS（クライアントの DPoP の秘密鍵）</param>
+        /// <param name="publicJwk">JObject（その鍵の公開鍵）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>自由に利用できる。引数の Dictionary は変えない。</remarks>
+        public static async Task<string> TokenRequestWithDPoPAsync(
+            Uri tokenEndpointUri, Dictionary<string, string> body,
+            string client_id, string client_secret, string client_assertion,
+            OAuth2AndOIDCEnum.AuthMethods authMethod, JWS signer, JObject publicJwk)
+        {
+            HttpResponseMessage httpResponseMessage = await OAuth2AndOIDCClient.SendWithDPoPAsync(
+                () =>
+                {
+                    HttpRequestMessage httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, tokenEndpointUri);
+                    Dictionary<string, string> b = new Dictionary<string, string>(body);
+
+                    OAuth2AndOIDCClient.SetClientAuthentication(
+                        httpRequestMessage, b, client_id, client_secret, client_assertion, authMethod, false);
+
+                    httpRequestMessage.Content = new FormUrlEncodedContent(b);
+                    return httpRequestMessage;
+                },
+                signer, publicJwk, null).ConfigureAwait(false);
+
+            return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+        }
+
+        /// <summary>DPoP で縛られた access_token で、UserInfo を呼び出す</summary>
+        /// <param name="userInfoEndpointUri">Uri</param>
+        /// <param name="accessToken">string</param>
+        /// <param name="signer">JWS（トークンを縛った鍵の秘密鍵）</param>
+        /// <param name="publicJwk">JObject（その鍵の公開鍵）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>自由に利用できる。Authorization: DPoP と、ath を入れた証明を添える（RFC 9449 7.1）。</remarks>
+        public static async Task<string> GetUserInfoAsync(
+            Uri userInfoEndpointUri, string accessToken, JWS signer, JObject publicJwk)
+        {
+            HttpResponseMessage httpResponseMessage = await OAuth2AndOIDCClient.SendWithDPoPAsync(
+                () => new HttpRequestMessage(HttpMethod.Get, userInfoEndpointUri),
+                signer, publicJwk, accessToken).ConfigureAwait(false);
+
+            return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+        }
+
+        /// <summary>応答の DPoP-Nonce を読む</summary>
+        /// <param name="httpResponseMessage">HttpResponseMessage</param>
+        /// <returns>nonce（無ければ null）</returns>
+        private static string GetDPoPNonce(HttpResponseMessage httpResponseMessage)
+        {
+            IEnumerable<string> values = null;
+
+            if (httpResponseMessage.Headers.TryGetValues(OAuth2AndOIDCConst.HttpHeader_DPoPNonce, out values))
+            {
+                foreach (string value in values)
+                {
+                    return value;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>use_dpop_nonce で断られたか</summary>
+        /// <param name="httpResponseMessage">HttpResponseMessage</param>
+        /// <returns>断られたなら true</returns>
+        /// <remarks>
+        /// Token エンドポイントは本文（400）で、リソースは WWW-Authenticate（401）で返す（RFC 9449 8 / 9）。
+        /// </remarks>
+        private static async Task<bool> IsUseDPoPNonceAsync(HttpResponseMessage httpResponseMessage)
+        {
+            if (httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                foreach (AuthenticationHeaderValue value in httpResponseMessage.Headers.WwwAuthenticate)
+                {
+                    if (value.Parameter != null && 0 <= value.Parameter.IndexOf(
+                        OAuth2AndOIDCConst.use_dpop_nonce, StringComparison.Ordinal))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            if (httpResponseMessage.StatusCode == HttpStatusCode.BadRequest
+                || httpResponseMessage.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                try
+                {
+                    // 本文はバッファされるので、呼び出し側でも読める。
+                    string json = await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    JObject obj = JToken.Parse(json) as JObject;
+
+                    return obj != null
+                        && (string)obj[OAuth2AndOIDCConst.error] == OAuth2AndOIDCConst.use_dpop_nonce;
+                }
+                catch (Exception)
+                {
+                    // JSON でない。
+                }
+            }
+
+            return false;
+        }
+
+        #endregion
+
+        #region DCR（RFC 7591 / 7592）
+
+        /// <summary>Discovery から registration_endpoint を引く</summary>
+        /// <param name="discoveryUri">Uri（/.well-known/openid-configuration）</param>
+        /// <returns>registration_endpoint（広告が無い・読めなければ空文字）</returns>
+        /// <remarks>
+        /// 自由に利用できる（#634 の F-1）。
+        /// RegisterRequestObjectAsync は /ros（RFC 9101 の Request Object）で、DCR ではない。
+        /// </remarks>
+        public static async Task<string> GetRegistrationEndpointAsync(Uri discoveryUri)
+        {
+            try
+            {
+                JObject discovery = JToken.Parse(
+                    await OAuth2AndOIDCClient.GetJwkSetAsync(discoveryUri).ConfigureAwait(false)) as JObject;
+
+                JToken endpoint = (discovery == null) ? null : discovery[OAuth2AndOIDCConst.registration_endpoint];
+                return (endpoint != null && endpoint.Type == JTokenType.String) ? (string)endpoint : "";
+            }
+            catch (Exception)
+            {
+                return "";
+            }
+        }
+
+        /// <summary>クライアントを登録する（RFC 7591 3.1）</summary>
+        /// <param name="registrationEndpointUri">Uri（registration_endpoint）</param>
+        /// <param name="metadataJson">string（クライアント メタデータの JSON。redirect_uris など）</param>
+        /// <param name="initialAccessToken">string（登録の口が求めるアクセス トークン。null か空なら付けない）</param>
+        /// <returns>結果のJSON文字列（client_id・registration_access_token・registration_client_uri など）</returns>
+        /// <remarks>
+        /// 自由に利用できる（#634 の F-1）。
+        /// registration_access_token は**この応答で 1 回だけ返る**。受け取って保持するのは呼び出し側である。
+        /// software_statement を添えるなら、metadataJson に入れる（貰った文字列をそのまま入れる）。
+        /// </remarks>
+        public static async Task<string> RegisterClientAsync(
+            Uri registrationEndpointUri, string metadataJson, string initialAccessToken)
+        {
+            HttpResponseMessage httpResponseMessage = await OAuth2AndOIDCClient.SendRegistrationAsync(
+                HttpMethod.Post, registrationEndpointUri, initialAccessToken, metadataJson).ConfigureAwait(false);
+
+            return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+        }
+
+        /// <summary>登録を読む（RFC 7592 2.1）</summary>
+        /// <param name="registrationClientUri">Uri（registration_client_uri）</param>
+        /// <param name="registrationAccessToken">string（registration_access_token）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>自由に利用できる（#634 の F-2）。</remarks>
+        public static async Task<string> ReadClientRegistrationAsync(
+            Uri registrationClientUri, string registrationAccessToken)
+        {
+            HttpResponseMessage httpResponseMessage = await OAuth2AndOIDCClient.SendRegistrationAsync(
+                HttpMethod.Get, registrationClientUri, registrationAccessToken, null).ConfigureAwait(false);
+
+            return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+        }
+
+        /// <summary>登録を直す（RFC 7592 2.2。全置換）</summary>
+        /// <param name="registrationClientUri">Uri（registration_client_uri）</param>
+        /// <param name="registrationAccessToken">string（registration_access_token）</param>
+        /// <param name="metadataJson">string（クライアント メタデータの JSON。client_id を入れ、残したい項目も全て入れる）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>自由に利用できる（#634 の F-2）。PUT は全置換なので、入れなかった項目は消える。</remarks>
+        public static async Task<string> UpdateClientRegistrationAsync(
+            Uri registrationClientUri, string registrationAccessToken, string metadataJson)
+        {
+            HttpResponseMessage httpResponseMessage = await OAuth2AndOIDCClient.SendRegistrationAsync(
+                HttpMethod.Put, registrationClientUri, registrationAccessToken, metadataJson).ConfigureAwait(false);
+
+            return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+        }
+
+        /// <summary>登録を消す（RFC 7592 2.3）</summary>
+        /// <param name="registrationClientUri">Uri（registration_client_uri）</param>
+        /// <param name="registrationAccessToken">string（registration_access_token）</param>
+        /// <returns>消せたなら true（成功は 204 で、本文が無い）</returns>
+        /// <remarks>自由に利用できる（#634 の F-2）。</remarks>
+        public static async Task<bool> DeleteClientRegistrationAsync(
+            Uri registrationClientUri, string registrationAccessToken)
+        {
+            HttpResponseMessage httpResponseMessage = await OAuth2AndOIDCClient.SendRegistrationAsync(
+                HttpMethod.Delete, registrationClientUri, registrationAccessToken, null).ConfigureAwait(false);
+
+            return httpResponseMessage.IsSuccessStatusCode;
+        }
+
+        /// <summary>登録の口へ送る</summary>
+        /// <param name="method">HttpMethod</param>
+        /// <param name="uri">Uri</param>
+        /// <param name="accessToken">string（Bearer で付ける。null か空なら付けない。#634 の F-3）</param>
+        /// <param name="metadataJson">string（本文。null なら付けない）</param>
+        /// <returns>HttpResponseMessage</returns>
+        private static async Task<HttpResponseMessage> SendRegistrationAsync(
+            HttpMethod method, Uri uri, string accessToken, string metadataJson)
+        {
+            HttpRequestMessage httpRequestMessage = new HttpRequestMessage(method, uri);
+
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                httpRequestMessage.Headers.Authorization =
+                    AuthenticationHeader.CreateBearerAuthenticationHeaderValue(accessToken);
+            }
+
+            if (metadataJson != null)
+            {
+                httpRequestMessage.Content = new StringContent(metadataJson, Encoding.UTF8, "application/json");
+            }
+
+            return await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+        }
 
         #endregion
     }

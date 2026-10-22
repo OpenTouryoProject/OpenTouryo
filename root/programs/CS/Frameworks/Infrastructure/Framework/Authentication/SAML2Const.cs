@@ -30,6 +30,7 @@
 //*  2019/05/21  西野 大介         新規作成
 //*  2019/12/25  西野 大介         PPID対応による見直し
 //*  2026/10/12  玄人 幸道         RSAwithSHA256 / 384 / 512 を追加（#604）
+//*  2026/10/22  玄人 幸道         XML署名の名前空間、AttributeStatementのXPath・属性名を追加（#634）
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Framework.Authentication
@@ -196,8 +197,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #region AuthnStatement
         /// <summary>XPathAuthnContextClassRefInAssertion</summary>
-        public const string XPathAuthnContextClassRefInAssertion = 
+        public const string XPathAuthnContextClassRefInAssertion =
             XPathAssertionInResponse + @"/saml:AuthnStatement/saml:AuthnContext/saml:AuthnContextClassRef";
+        #endregion
+
+        #region AttributeStatement
+        /// <summary>XPathAttributeInAssertion</summary>
+        public const string XPathAttributeInAssertion =
+            XPathAssertionInResponse + @"/saml:AttributeStatement/saml:Attribute";
         #endregion
 
         #endregion
@@ -232,6 +239,25 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>メタデータを意味する名前空間</summary>
         public const string UrnMetadata = UrnHeader20 + "metadata";
 
+        /// <summary>XML署名を意味する名前空間</summary>
+        public const string UrnDSig = "http://www.w3.org/2000/09/xmldsig#";
+
+        #endregion
+
+        #region attrname-format（SAML Core 8.2）
+        /// <summary>属性名の形式：URI（urn:oid:… などに使う）</summary>
+        public const string UrnAttrNameFormatUri = UrnHeader20 + "attrname-format:uri";
+
+        /// <summary>属性名の形式：basic</summary>
+        public const string UrnAttrNameFormatBasic = UrnHeader20 + "attrname-format:basic";
+        #endregion
+
+        #region 属性名（X.500/LDAP Attribute Profile）
+        /// <summary>メアド（mail）</summary>
+        public const string UrnOidMail = "urn:oid:0.9.2342.19200300.100.1.3";
+
+        /// <summary>利用者名（uid。OIDCのpreferred_usernameに対応）</summary>
+        public const string UrnOidUid = "urn:oid:0.9.2342.19200300.100.1.1";
         #endregion
 
         #region bindings

@@ -29,7 +29,10 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/08/16  西野 大介         新規作成
 //*  2026/10/15  玄人 幸道         typ を設定できるようにした（readonly を外した。#611）
+//*  2026/10/22  玄人 幸道         jwk を追加（DPoP の証明はヘッダに公開鍵を持つ。#634）
 //**********************************************************************************
+
+using Newtonsoft.Json.Linq;
 
 namespace Touryo.Infrastructure.Public.Security.Jwt
 {
@@ -61,5 +64,16 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         /// 以前は readonly で、設定できず、検証時にもヘッダの値が読み込まれなかった。
         /// </remarks>
         public string typ = JwtConst.JWT;
+
+        /// <summary>
+        /// jwk=署名に使った鍵の公開鍵（RFC 7515 4.1.3）
+        /// </summary>
+        /// <remarks>
+        /// DPoP の証明（RFC 9449 4.2）が使う。既定は null で、ヘッダに出さない。（#634）
+        /// 型を JToken にしているのは、検証時の読み込みで、
+        /// オブジェクトでない値が来ても例外にしないため（従来どおり Verify が判定する）。
+        /// **公開鍵だけを入れること**（秘密鍵の項目を入れると、そのまま送られる）。
+        /// </remarks>
+        public JToken jwk = null;
     }
 }
