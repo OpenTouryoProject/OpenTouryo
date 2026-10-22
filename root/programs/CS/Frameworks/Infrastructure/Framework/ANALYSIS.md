@@ -276,6 +276,17 @@ XML 署名は `Public.Security` の `SignedXml2`。
 | `SAML2Client.VerifyResponse.cs` | 応答の検証（bool を返す従来の版） |
 | `SAML2Client.VerifyResponseWithReason.cs` | 応答の検証（理由を返す版。#634。結果は `SAML2VerifyResult`） |
 
+**`SAML2Bindings` も、処理区分（共通・SP 側・IdP 側）ごとに `partial` クラスのファイルへ分けている。**
+SAML の署名・検証は SP と IdP の双方が使うため、**IdP 側の処理も、例外として同じクラスに置いている**
+（MPAS からの移行は SP・RP 側が基本だが、この様に双方が使う処理は移行の対象に含める）。
+
+| ファイル | 区分 |
+|---|---|
+| `SAML2Bindings.cs` | 共通（`CreateNamespaceManager`・`GetIdIn*`・スキーマ検証） |
+| `SAML2Bindings.Encoding.cs` | 共通（符号化・署名 / 復号・検証。HTTP-Redirect / HTTP-POST） |
+| `SAML2Bindings.SP.cs` | SP 側（`CreateRequest`、応答を読む `Get*InResponse` / `Get*InAssertion`） |
+| `SAML2Bindings.IdP.cs` | IdP 側（`CreateResponse` / `CreateAssertion` / `CreateMetadata`、要求を読む `Get*InRequest`） |
+
 | 何の鍵 | 既定（引数の少ない版が読む設定） | 相手ごとに替えるなら |
 |---|---|---|
 | `VerifyResponse` の検証用証明書 | `CmnClientParams.RsaCerFilePath`（配備に 1 本） | `cerFilePath` を受けるオーバーロード（#600）。**null・空は受けない** |

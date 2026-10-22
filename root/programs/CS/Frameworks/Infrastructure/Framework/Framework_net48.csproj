@@ -110,6 +110,9 @@
     <Compile Include="Authentication\SAML2Client.VerifyResponse.cs" />
     <Compile Include="Authentication\SAML2Client.VerifyResponseWithReason.cs" />
     <Compile Include="Authentication\SAML2Bindings.cs" />
+    <Compile Include="Authentication\SAML2Bindings.Encoding.cs" />
+    <Compile Include="Authentication\SAML2Bindings.IdP.cs" />
+    <Compile Include="Authentication\SAML2Bindings.SP.cs" />
     <Compile Include="Authentication\SAML2Const.cs" />
     <Compile Include="Authentication\SAML2Enum.cs" />
     <Compile Include="Authentication\SAML2Params.cs" />
