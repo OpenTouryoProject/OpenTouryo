@@ -223,6 +223,21 @@ DCR の口の認可、クライアント登録の持ち方。
 | キー | フレームワークでの意味 |
 |---|---|
 | `SpRp_Isser` / `SpRp_*Uri` / `SpRp_*CerFilePath` / `JwkSetUri` | **相手（OP / IdP）の値**（Issuer・エンドポイント・検証用の公開鍵・JWK Set の URL） |
+| `SpRp_DiscoveryUri` / `SpRp_Saml2MetadataUri` / `SpRp_Saml2EntityId` | **相手（OP / IdP）の値**（Discovery・SAML2 メタデータの所在、期待する entityID）。#634 で追加 |
+| `SpRp_Saml2AcsUri` | **自分の ACS の URL**（SAML2 の Audience / Recipient に照合する。空なら照合しない）。#634 で追加 |
+
+**#634 の部品は、相手の値を引数で受ける版が基本である。** 設定を読む版（引数の少ない版）は、**相手が 1 つの配備**のための便宜で、
+次の表のキーを読む。**キーが空なら何もせずに null（検証は `NoKey`）を返す**（通信もしない）。相手が複数なら、引数で受ける版を使う。
+
+| 設定を読む版 | 読むキー |
+|---|---|
+| `RemoteJwkSetStore.GetJwkAsync(kid)` | `JwkSetUri` |
+| `RemoteJwkSetStore.GetJwkByDiscoveryAsync(kid)` | `SpRp_DiscoveryUri`・`SpRp_Isser` |
+| `SAML2Metadata.GetAsync()` | `SpRp_Saml2MetadataUri`・`SpRp_Saml2EntityId` |
+| `SAML2Client.VerifyResponseWithReason(queryString, samlResponse, expectedInResponseTo, relayState, expectedRelayState)` | `SpRp_RsaCerFilePath`・`SpRp_Saml2EntityId`・`SpRp_Saml2AcsUri` |
+
+**配布している設定ファイル（サンプルの `appsettings.json` / `app.config`）には、これらのキーを書いていない**（どのサンプルもこの口を使っていないため）。使うアプリが足すこと。
+調整値（取り直しの下限・DPoP の `iat` の窓・メタデータのキャッシュの期間）は設定にしていない。引数か static プロパティで変える
 | `SpRp_*PfxFilePath` / `SpRp_*PfxPassword` | **クライアント自身の鍵**（要求の署名・JWE の復号） |
 | `JwkSetFilePath` | **認可サーバ自身の JWK Set**（`CmnJwtToken.Verify` の分岐にも使われる） |
 

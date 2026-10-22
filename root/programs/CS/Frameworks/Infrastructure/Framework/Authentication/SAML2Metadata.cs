@@ -26,6 +26,7 @@
 //*  2026/10/22  玄人 幸道         新規作成（汎用認証サイトから移した。#634 の C）
 //*  2026/10/22  玄人 幸道         取得を OAuth2AndOIDCClient.GetStringAsync に変えた（GetJwkSetAsync の代用をやめた）
 //*  2026/10/22  玄人 幸道         XPath・接頭辞・属性名の直書きを SAML2Const に寄せた
+//*  2026/10/22  玄人 幸道         設定（SpRp_Saml2MetadataUri / SpRp_Saml2EntityId）を読む版を追加
 //**********************************************************************************
 
 using System;
@@ -144,6 +145,18 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #endregion
 
         #region 取得・解析
+
+        /// <summary>設定の SpRp_Saml2MetadataUri からメタデータを読む（キャッシュを使う）</summary>
+        /// <returns>SAML2Metadata（引けなければ null。設定が空でも null）</returns>
+        /// <remarks>
+        /// 自由に利用できる。GetAsync(metadataUrl, expectedEntityId) に、
+        /// CmnClientParams.SpRp_Saml2MetadataUri と CmnClientParams.SpRp_Saml2EntityId を渡す。
+        /// 相手が 1 つの配備向け。相手が複数なら、URL と entityID を受ける版を使う。
+        /// </remarks>
+        public static Task<SAML2Metadata> GetAsync()
+        {
+            return SAML2Metadata.GetAsync(CmnClientParams.SpRp_Saml2MetadataUri, CmnClientParams.SpRp_Saml2EntityId);
+        }
 
         /// <summary>メタデータを読む（キャッシュを使う）</summary>
         /// <param name="metadataUrl">string（相手のメタデータの URL）</param>

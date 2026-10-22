@@ -29,6 +29,8 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/06/07  西野 大介         新規作成（分割
 //*  2020/08/04  西野 大介         AuthZ(N) Uirの追加
+//*  2026/10/22  玄人 幸道         相手（OP / IdP）のメタデータの所在と、SAML2の期待するentityID・自分のACSを追加
+//*                                （汎用認証サイトで IdFederation* の設定だった値。#634）
 //**********************************************************************************
 
 using System.Collections.Generic;
@@ -93,6 +95,61 @@ namespace Touryo.Infrastructure.Framework.Authentication
             get
             {
                 return GetConfigParameter.GetConfigValue("SpRp_RedirectUri");
+            }
+        }
+        #endregion
+
+        #region 相手（OP / IdP）のメタデータ
+        /// <summary>SpRp_DiscoveryUri（相手の OP の Discovery の URL）</summary>
+        /// <remarks>
+        /// RemoteJwkSetStore.GetJwkByDiscoveryAsync(kid) が読む。期待する Issuer は SpRp_Isser。
+        /// Issuer にパスを含む OP（https://host/tenant など）もあるので、口の URL から組み立てず、URL を設定で与える。
+        /// 空なら、設定を読む版の口は使えない（null を返す）。
+        /// </remarks>
+        public static string SpRp_DiscoveryUri
+        {
+            get
+            {
+                return GetConfigParameter.GetConfigValue("SpRp_DiscoveryUri");
+            }
+        }
+
+        /// <summary>SpRp_Saml2MetadataUri（相手の IdP の SAML2 メタデータの URL）</summary>
+        /// <remarks>
+        /// SAML2Metadata.GetAsync() が読む。SAML2 にはメタデータの既知のパスが無いので、URL を設定で与える。
+        /// 空なら、設定を読む版の口は使えない（null を返す）。
+        /// </remarks>
+        public static string SpRp_Saml2MetadataUri
+        {
+            get
+            {
+                return GetConfigParameter.GetConfigValue("SpRp_Saml2MetadataUri");
+            }
+        }
+
+        /// <summary>SpRp_Saml2EntityId（相手の IdP の entityID。期待する Issuer）</summary>
+        /// <remarks>
+        /// SAML2Metadata.GetAsync() と、設定を読む版の SAML2Client.VerifyResponseWithReason が読む。
+        /// OIDC の SpRp_Isser に当たるものだが、OP の Issuer と IdP の entityID は違うことがあるので分けている。
+        /// </remarks>
+        public static string SpRp_Saml2EntityId
+        {
+            get
+            {
+                return GetConfigParameter.GetConfigValue("SpRp_Saml2EntityId");
+            }
+        }
+
+        /// <summary>SpRp_Saml2AcsUri（自分の ACS の URL）</summary>
+        /// <remarks>
+        /// 設定を読む版の SAML2Client.VerifyResponseWithReason が、Audience と Recipient に照合する。
+        /// 空なら照合しない。
+        /// </remarks>
+        public static string SpRp_Saml2AcsUri
+        {
+            get
+            {
+                return GetConfigParameter.GetConfigValue("SpRp_Saml2AcsUri");
             }
         }
         #endregion

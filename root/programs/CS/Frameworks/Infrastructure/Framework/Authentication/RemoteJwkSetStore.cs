@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（汎用認証サイトから移した。#634 の B）
 //*  2026/10/22  玄人 幸道         取得を OAuth2AndOIDCClient.GetStringAsync に変えた（discovery も読むため）
+//*  2026/10/22  玄人 幸道         設定（JwkSetUri / SpRp_DiscoveryUri / SpRp_Isser）を読む版を追加
 //**********************************************************************************
 
 using System;
@@ -114,6 +115,32 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #endregion
 
         #region 非同期（待てる経路）
+
+        /// <summary>設定の JwkSetUri から、kid の JWK を引く</summary>
+        /// <param name="kid">string（JWT のヘッダの kid）</param>
+        /// <returns>JWK（引けなければ null。JwkSetUri が空でも null）</returns>
+        /// <remarks>
+        /// 自由に利用できる。GetJwkAsync(jwkSetUrl, kid) に、OAuth2AndOIDCParams.JwkSetUri を渡す。
+        /// 相手が 1 つの配備向け。相手が複数なら、URL を受ける版を使う。
+        /// </remarks>
+        public static Task<JObject> GetJwkAsync(string kid)
+        {
+            return RemoteJwkSetStore.GetJwkAsync(OAuth2AndOIDCParams.JwkSetUri, kid);
+        }
+
+        /// <summary>設定の SpRp_DiscoveryUri から jwks_uri を引き、kid の JWK を引く</summary>
+        /// <param name="kid">string（JWT のヘッダの kid）</param>
+        /// <returns>JWK（引けなければ null。SpRp_DiscoveryUri / SpRp_Isser が空でも null）</returns>
+        /// <remarks>
+        /// 自由に利用できる。GetJwkByDiscoveryAsync(discoveryUrl, expectedIssuer, kid) に、
+        /// CmnClientParams.SpRp_DiscoveryUri と CmnClientParams.Isser（SpRp_Isser）を渡す。
+        /// 相手が 1 つの配備向け。相手が複数なら、URL と Issuer を受ける版を使う。
+        /// </remarks>
+        public static Task<JObject> GetJwkByDiscoveryAsync(string kid)
+        {
+            return RemoteJwkSetStore.GetJwkByDiscoveryAsync(
+                CmnClientParams.SpRp_DiscoveryUri, CmnClientParams.Isser, kid);
+        }
 
         /// <summary>JWK Set の URL から、kid の JWK を引く</summary>
         /// <param name="jwkSetUrl">string（相手の JWK Set の URL）</param>

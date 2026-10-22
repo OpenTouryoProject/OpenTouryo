@@ -38,6 +38,7 @@
 //*                                CmnClientParams.RsaPfxFilePath固定で、相手（IdP）ごとに別の鍵で署名できなかった。
 //*  2026/10/22  玄人 幸道         理由を返すVerifyResponseWithReasonを追加（汎用認証サイトから移した。#634 の C-3）
 //*  2026/10/22  玄人 幸道         SigAlgの直書きをSAML2Const.QueryParamSigAlgに寄せた
+//*  2026/10/22  玄人 幸道         VerifyResponseWithReasonに、相手と自分の値を設定から読む版を追加
 //**********************************************************************************
 
 using System;
@@ -498,6 +499,43 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
 
             return verified;
+        }
+
+        /// <summary>VerifyResponseWithReason（理由を返す応答の検証。相手と自分の値を設定から読む）</summary>
+        /// <param name="queryString">string（Redirect Binding のときのクエリ文字列。POST なら null か空文字）</param>
+        /// <param name="samlResponse">string（POST Binding のときの SAMLResponse）</param>
+        /// <param name="expectedInResponseTo">string（送った AuthnRequest の ID。空なら照合しない）</param>
+        /// <param name="relayState">string（受け取った RelayState）</param>
+        /// <param name="expectedRelayState">string（送った state。空なら照合しない）</param>
+        /// <returns>SAML2VerifyResult</returns>
+        /// <remarks>
+        /// 自由に利用できる。相手が 1 つの配備向け。設定から次を読む。
+        ///
+        /// | 引数 | 設定 |
+        /// |---|---|
+        /// | 署名を検証する鍵 | CmnClientParams.RsaCerFilePath（SpRp_RsaCerFilePath。VerifyResponse と同じ） |
+        /// | 期待する Issuer | CmnClientParams.SpRp_Saml2EntityId |
+        /// | 自分の ACS URL | CmnClientParams.SpRp_Saml2AcsUri（空なら Audience / Recipient を照合しない） |
+        ///
+        /// SpRp_RsaCerFilePath が空なら、鍵が無いものとして NoKey を返す。
+        /// メタデータの鍵（ロールオーバー中は複数）で検証するなら、
+        /// SAML2Metadata.GetAsync() の GetSigningKeys() を、鍵を受ける版に渡す。
+        /// </remarks>
+        public static SAML2VerifyResult VerifyResponseWithReason(
+            string queryString, string samlResponse,
+            string expectedInResponseTo, string relayState, string expectedRelayState)
+        {
+            List<RSA> keys = new List<RSA>();
+            string cerFilePath = CmnClientParams.RsaCerFilePath;
+
+            if (!string.IsNullOrEmpty(cerFilePath))
+            {
+                keys.Add(new DigitalSignX509(cerFilePath, "", HashAlgorithmName.SHA256).X509Certificate.GetRSAPublicKey());
+            }
+
+            return SAML2Client.VerifyResponseWithReason(queryString, samlResponse, keys,
+                CmnClientParams.SpRp_Saml2EntityId, CmnClientParams.SpRp_Saml2AcsUri,
+                expectedInResponseTo, relayState, expectedRelayState);
         }
 
         /// <summary>VerifyResponseWithReason（理由を返す応答の検証）</summary>
