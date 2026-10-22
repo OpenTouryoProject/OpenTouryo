@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/08/06  玄人 幸道         新規作成（#522）
+//*  2026/10/22  玄人 幸道         GetParameterFromQueryString の Obsolete 化（#634）で出る警告を抑止した（下位互換の確認として呼び続ける）
 //**********************************************************************************
 
 using System;
@@ -138,7 +139,9 @@ namespace TestCode
         {
             try
             {
+#pragma warning disable CS0618 // 下位互換の確認（UriOperator へ移し、転送だけ残したメソッドを、あえて呼ぶ）
                 string ret = StringExtractor.GetParameterFromQueryString(paramName, rawUrl);
+#pragma warning restore CS0618
 
                 MyDebug.OutputDebugAndConsole(
                     "[" + caseName + "] " + paramName + " → "

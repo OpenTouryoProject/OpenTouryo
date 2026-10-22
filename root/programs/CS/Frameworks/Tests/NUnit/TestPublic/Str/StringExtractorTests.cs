@@ -24,6 +24,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/16  玄人 幸道         新規作成（カバレッジの拡充）
+//*  2026/10/22  玄人 幸道         GetParameterFromQueryString を UriOperator へ移した（#634）。
+//*                                ここでは、転送だけ残したメソッドが移動先と同じ結果を返すことを確かめる
 //**********************************************************************************
 
 using NUnit.Framework;
@@ -36,16 +38,17 @@ namespace TestPublic.Str
     [TestFixture]
     public class StringExtractorTests
     {
-        /// <summary>QueryString の先頭・途中・末尾のパラメタ値を取り出す。無ければ空文字。</summary>
-        [TestCase("a", "http://x/y?a=1&b=2&c=3", ExpectedResult = "1")]
-        [TestCase("b", "http://x/y?a=1&b=2&c=3", ExpectedResult = "2")]
-        [TestCase("c", "http://x/y?a=1&b=2&c=3", ExpectedResult = "3")]
-        [TestCase("d", "http://x/y?a=1&b=2&c=3", ExpectedResult = "")]
-        [TestCase("code", "https://x/cb?code=abc%2Fdef&state=xyz", ExpectedResult = "abc%2Fdef")]
-        public string GetParameterFromQueryString(string paramName, string rawUrl)
+#pragma warning disable CS0618 // 互換のために残した転送用メソッドを、あえて呼ぶ。
+        /// <summary>UriOperator へ移したメソッドは、転送するだけ（#634）。結果は移動先と同じ。</summary>
+        [TestCase("a", "http://x/y?a=1&b=2&c=3")]
+        [TestCase("c", "http://x/y?a=1&b=2&c=3")]
+        [TestCase("d", "http://x/y?a=1&b=2&c=3")]
+        public void ObsoleteForwarder_SameAsUriOperator(string paramName, string rawUrl)
         {
-            return StringExtractor.GetParameterFromQueryString(paramName, rawUrl);
+            Assert.That(StringExtractor.GetParameterFromQueryString(paramName, rawUrl),
+                Is.EqualTo(UriOperator.GetParameterFromQueryString(paramName, rawUrl)));
         }
+#pragma warning restore CS0618
 
         /// <summary>XML 文字列から、最初に現れた属性の値を取り出す。</summary>
         [Test]

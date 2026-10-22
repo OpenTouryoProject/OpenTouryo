@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（SAML2Bindings.cs から処理区分ごとに分割した）
+//*  2026/10/22  玄人 幸道         StringExtractor.GetParameterFromQueryString（Obsolete）を UriOperator に置き換えた
 //**********************************************************************************
 
 using System;
@@ -174,11 +175,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string saml = "";
             if (queryString.IndexOf(SAML2Const.QueryParamSAMLRequest) != -1)
             {
-                saml = StringExtractor.GetParameterFromQueryString(SAML2Const.QueryParamSAMLRequest, queryString);
+                saml = UriOperator.GetParameterFromQueryString(SAML2Const.QueryParamSAMLRequest, queryString);
             }
             else if (queryString.IndexOf(SAML2Const.QueryParamSAMLResponse) != -1)
             {
-                saml = StringExtractor.GetParameterFromQueryString(SAML2Const.QueryParamSAMLResponse, queryString);
+                saml = UriOperator.GetParameterFromQueryString(SAML2Const.QueryParamSAMLResponse, queryString);
             }
             else
             {
@@ -213,14 +214,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             // SigAlgの確認（#604）
             string sigAlg = CustomEncode.UrlDecode(
-                StringExtractor.GetParameterFromQueryString(SAML2Const.QueryParamSigAlg, queryString));
+                UriOperator.GetParameterFromQueryString(SAML2Const.QueryParamSigAlg, queryString));
             if (sigAlg != SAML2Bindings.GetSigAlg(ds))
             {
                 return false;
             }
 
             // Signatureの抽出
-            string signature = StringExtractor.GetParameterFromQueryString(SAML2Const.QueryParamSignature, queryString);
+            string signature = UriOperator.GetParameterFromQueryString(SAML2Const.QueryParamSignature, queryString);
             // Signatureの削除
             queryString = queryString.Replace("&" + SAML2Const.QueryParamSignature + "=" + signature, "");
 
@@ -263,7 +264,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             // SigAlgの確認
             string sigAlg = CustomEncode.UrlDecode(
-                StringExtractor.GetParameterFromQueryString(SAML2Const.QueryParamSigAlg, queryString));
+                UriOperator.GetParameterFromQueryString(SAML2Const.QueryParamSigAlg, queryString));
             if (Array.IndexOf(sigAlgs, sigAlg) == -1)
             {
                 return false;
@@ -277,7 +278,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             else return false; // RSA 以外
 
             // Signatureの抽出
-            string signature = StringExtractor.GetParameterFromQueryString(SAML2Const.QueryParamSignature, queryString);
+            string signature = UriOperator.GetParameterFromQueryString(SAML2Const.QueryParamSignature, queryString);
             // Signatureの削除
             queryString = queryString.Replace("&" + SAML2Const.QueryParamSignature + "=" + signature, "");
 

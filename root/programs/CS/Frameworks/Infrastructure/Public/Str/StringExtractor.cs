@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/05/28  西野 大介         新規作成（分割
+//*  2026/10/22  玄人 幸道         GetParameterFromQueryString を UriOperator へ移し、ここは転送だけにして Obsolete にした（#634）
 //**********************************************************************************
 
 using System;
@@ -45,28 +46,10 @@ namespace Touryo.Infrastructure.Public.Str
         /// <param name="paramName">string</param>
         /// <param name="rawUrl">string</param>
         /// <returns>指定のパラメタ値</returns>
+        [Obsolete("UriOperator.GetParameterFromQueryString へ移動しました。")]
         public static string GetParameterFromQueryString(string paramName, string rawUrl)
         {
-            string retVal = "";
-            string cmnPattern = paramName + "=";
-
-            if (rawUrl.IndexOf(cmnPattern) != -1)
-            {
-                string regexPattern = "";
-
-                // 先頭 or 中間
-                regexPattern ="(" + cmnPattern + ")(?<" + paramName + ">.+?)(\\&)";
-                retVal = Regex.Match(rawUrl, regexPattern).Groups[paramName].Value;
-
-                // 末端
-                if (string.IsNullOrEmpty(retVal))
-                {
-                    regexPattern = "(" + cmnPattern + ")(?<" + paramName + ">.+?)($)";
-                    retVal = Regex.Match(rawUrl, regexPattern).Groups[paramName].Value;
-                }
-            }
-
-            return retVal;
+            return UriOperator.GetParameterFromQueryString(paramName, rawUrl);
         }
 
         /// <summary>XML文字列から最初に現れた任意の属性の属性値を返す</summary>

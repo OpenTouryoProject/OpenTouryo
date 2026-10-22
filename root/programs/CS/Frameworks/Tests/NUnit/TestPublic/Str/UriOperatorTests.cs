@@ -25,6 +25,9 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（#634）
 //*  2026/10/22  玄人 幸道         LogSanitizer の名前空間の変更（Public.Log）に追随した
+//*  2026/10/22  玄人 幸道         htu の比較のテストを DPoPProofTests へ移し（比較を DPoPProof へ移したため）、
+//*                                GetUrlWithoutQueryAndFragment（WithoutQuery を改名）と、
+//*                                StringExtractor から移した GetParameterFromQueryString のテストを足した
 //**********************************************************************************
 
 using System;
@@ -36,40 +39,35 @@ using Touryo.Infrastructure.Public.Str;
 
 namespace TestPublic.Str
 {
-    /// <summary>UriOperator（URL の比較・判定）と LogSanitizer（ログに出す値の衛生）の単体テスト</summary>
+    /// <summary>UriOperator（URL の判定・抽出）と LogSanitizer（ログに出す値の衛生）の単体テスト</summary>
     [TestFixture]
     public class UriOperatorTests
     {
-        /// <summary>クエリ・素片・末尾の "/"・大文字小文字・既定のポートの違いは同じとみなす。</summary>
-        [TestCase("https://as.example.com/token", "https://as.example.com/token")]
-        [TestCase("https://as.example.com/token?x=1#f", "https://as.example.com/token")]
-        [TestCase("https://as.example.com/token/", "https://as.example.com/token")]
-        [TestCase("HTTPS://AS.example.com/Token", "https://as.example.com/token")]
-        [TestCase("https://as.example.com:443/token", "https://as.example.com/token")]
-        public void IsSameWithoutQuery_Same(string actual, string expected)
+        /// <summary>QueryString の先頭・途中・末尾のパラメタ値を取り出す。無ければ空文字。デコードしない。</summary>
+        [TestCase("a", "http://x/y?a=1&b=2&c=3", ExpectedResult = "1")]
+        [TestCase("b", "http://x/y?a=1&b=2&c=3", ExpectedResult = "2")]
+        [TestCase("c", "http://x/y?a=1&b=2&c=3", ExpectedResult = "3")]
+        [TestCase("d", "http://x/y?a=1&b=2&c=3", ExpectedResult = "")]
+        [TestCase("code", "https://x/cb?code=abc%2Fdef&state=xyz", ExpectedResult = "abc%2Fdef")]
+        public string GetParameterFromQueryString(string paramName, string rawUrl)
         {
-            Assert.That(UriOperator.IsSameWithoutQuery(actual, expected), Is.True);
+            return UriOperator.GetParameterFromQueryString(paramName, rawUrl);
         }
 
-        /// <summary>パス・ホスト・ポート・スキームが違えば別。相対 URL・空は false。</summary>
-        [TestCase("https://as.example.com/token2", "https://as.example.com/token")]
-        [TestCase("https://evil.example.com/token", "https://as.example.com/token")]
-        [TestCase("https://as.example.com:8443/token", "https://as.example.com/token")]
-        [TestCase("http://as.example.com/token", "https://as.example.com/token")]
-        [TestCase("/token", "https://as.example.com/token")]
-        [TestCase("", "https://as.example.com/token")]
-        [TestCase(null, "https://as.example.com/token")]
-        public void IsSameWithoutQuery_Different(string actual, string expected)
+        /// <summary>
+        /// クエリと素片を落とす。末尾の "/"・パスの大文字小文字はそのまま。既定のポートは省き、スキームとホストは小文字。
+        /// 絶対 URL でなければ空文字。
+        /// </summary>
+        [TestCase("https://a.example.com/p/?q=1#f", ExpectedResult = "https://a.example.com/p/")]
+        [TestCase("https://a.example.com/p#f", ExpectedResult = "https://a.example.com/p")]
+        [TestCase("HTTPS://A.EXAMPLE.COM:443/P", ExpectedResult = "https://a.example.com/P")]
+        [TestCase("http://a.example.com:8080/p?q", ExpectedResult = "http://a.example.com:8080/p")]
+        [TestCase("/p?q", ExpectedResult = "")]
+        [TestCase("", ExpectedResult = "")]
+        [TestCase(null, ExpectedResult = "")]
+        public string GetUrlWithoutQueryAndFragment(string url)
         {
-            Assert.That(UriOperator.IsSameWithoutQuery(actual, expected), Is.False);
-        }
-
-        /// <summary>WithoutQuery：null は ArgumentNullException。</summary>
-        [Test]
-        public void WithoutQuery()
-        {
-            Assert.That(UriOperator.WithoutQuery(new Uri("https://a.example.com/p/?q#f")), Is.EqualTo("https://a.example.com/p"));
-            Assert.Throws<ArgumentNullException>(() => UriOperator.WithoutQuery(null));
+            return UriOperator.GetUrlWithoutQueryAndFragment(url);
         }
 
         /// <summary>https は可。http はループバックだけ可。</summary>

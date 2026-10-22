@@ -24,6 +24,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（汎用認証サイトから移した。#634 の A-2 / A-3）
+//*  2026/10/22  玄人 幸道         htu の比較（IsSameHtu）を UriOperator から移した（DPoP 専用のため。private）。
+//*                                クエリと素片を除くのは UriOperator.GetUrlWithoutQueryAndFragment で、作る側と共有する
 //**********************************************************************************
 
 using System;
@@ -120,7 +122,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 throw new ArgumentNullException(nameof(htm));
             }
 
-            if (!Uri.TryCreate(htu, UriKind.Absolute, out Uri uri))
+            if (!Uri.TryCreate(htu, UriKind.Absolute, out _))
             {
                 throw new ArgumentException(PublicExceptionMessage.ARGUMENT_INCORRECT, nameof(htu));
             }
@@ -136,7 +138,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 { OAuth2AndOIDCConst.jti, CmnJwtToken.CreateJitClaim() },
                 { OAuth2AndOIDCConst.htm, htm },
                 // RFC 9449 4.2 : クエリと素片を含まない。
-                { OAuth2AndOIDCConst.htu, uri.GetLeftPart(UriPartial.Path) },
+                { OAuth2AndOIDCConst.htu, UriOperator.GetUrlWithoutQueryAndFragment(htu) },
                 // NumericDate（数値）で入れる（CmnJwtToken.CreateIatClaim は文字列を返すので使わない）。
                 { OAuth2AndOIDCConst.iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
             };
@@ -319,7 +321,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     return false;
                 }
 
-                if (!UriOperator.IsSameWithoutQuery(DPoPProof.GetString(body, OAuth2AndOIDCConst.htu), htu))
+                if (!DPoPProof.IsSameHtu(DPoPProof.GetString(body, OAuth2AndOIDCConst.htu), htu))
                 {
                     errDescription = "The htu of the DPoP proof does not match the request.";
                     return false;
@@ -430,6 +432,32 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #endregion
 
         #region private
+
+        /// <summary>DPoP の証明の htu が、要求の URL と同じか（RFC 9449 4.3）</summary>
+        /// <param name="actual">string（DPoP の証明の htu）</param>
+        /// <param name="expected">string（要求を受けた口の URL）</param>
+        /// <returns>同じなら true（どちらかが絶対 URL でなければ false）</returns>
+        /// <remarks>
+        /// 次のとおり緩く比べる（redirect_uri の照合のような、完全一致の比較ではない）。
+        ///
+        /// - クエリ（?）と素片（#）を落とす（RFC 9449 4.3）
+        /// - 末尾の "/" を落とす（同じ口を指す書き方の違い）
+        /// - 大文字小文字を区別しない（スキームとホストは RFC 3986 でも区別しない。
+        ///   IIS / Kestrel はパスも区別しないので、区別すると実際に受けた要求を「違う」と言うことになる）
+        /// - 既定のポートは省いて比べる（Uri の正規化に従う）
+        /// </remarks>
+        private static bool IsSameHtu(string actual, string expected)
+        {
+            string a = UriOperator.GetUrlWithoutQueryAndFragment(actual);
+            string b = UriOperator.GetUrlWithoutQueryAndFragment(expected);
+
+            if (string.IsNullOrEmpty(a) || string.IsNullOrEmpty(b))
+            {
+                return false;
+            }
+
+            return string.Equals(a.TrimEnd('/'), b.TrimEnd('/'), StringComparison.OrdinalIgnoreCase);
+        }
 
         /// <summary>iat が窓の中か</summary>
         /// <param name="iat">JToken（NumericDate）</param>

@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（#634）
+//*  2026/10/22  玄人 幸道         htu の比較のテストを UriOperatorTests から移した（比較を DPoPProof の private へ移したため）
 //**********************************************************************************
 
 using System;
@@ -186,6 +187,47 @@ namespace TestFramework.Authentication
             // 受ける alg を絞れる。
             Assert.That(DPoPProof.Verify(ok, "POST", TokenEndpoint, DPoPProof.DefaultPastWindow, DPoPProof.DefaultFutureWindow,
                 new string[] { "RS256" }, out jkt, out payload, out err), Is.False, "algs に無い");
+        }
+
+        /// <summary>
+        /// htu の比較（RFC 9449 4.3）：クエリ・素片・末尾の "/"・大文字小文字・既定のポートの違いは同じとみなす。
+        /// 比較は private なので、Verify を通して確かめる（証明の htu と、期待する URL の両方を変える）。
+        /// </summary>
+        [TestCase("https://as.example.com/token", "https://as.example.com/token")]
+        [TestCase("https://as.example.com/token?x=1#f", "https://as.example.com/token")]
+        [TestCase("https://as.example.com/token/", "https://as.example.com/token")]
+        [TestCase("HTTPS://AS.example.com/Token", "https://as.example.com/token")]
+        [TestCase("https://as.example.com:443/token", "https://as.example.com/token")]
+        [TestCase("https://as.example.com/token", "https://as.example.com/token?x=1")]
+        public void Verify_Htu_Same(string proofHtu, string expectedHtu)
+        {
+            Assert.That(VerifyHtu(proofHtu, expectedHtu), Is.True);
+        }
+
+        /// <summary>htu の比較：パス・ホスト・ポート・スキームが違えば別。相対 URL・空は断る。</summary>
+        [TestCase("https://as.example.com/token2", "https://as.example.com/token")]
+        [TestCase("https://evil.example.com/token", "https://as.example.com/token")]
+        [TestCase("https://as.example.com:8443/token", "https://as.example.com/token")]
+        [TestCase("http://as.example.com/token", "https://as.example.com/token")]
+        [TestCase("/token", "https://as.example.com/token")]
+        [TestCase("", "https://as.example.com/token")]
+        [TestCase("https://as.example.com/token", "/token")]
+        [TestCase("https://as.example.com/token", null)]
+        public void Verify_Htu_Different(string proofHtu, string expectedHtu)
+        {
+            Assert.That(VerifyHtu(proofHtu, expectedHtu), Is.False);
+        }
+
+        /// <summary>証明の htu を差し替えて作り、期待する URL で検証する</summary>
+        private static bool VerifyHtu(string proofHtu, string expectedHtu)
+        {
+            Key key = CreateKey("ES256");
+            Dictionary<string, object> p = Payload(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+            p["htu"] = proofHtu;
+
+            string jkt, err;
+            JObject payload;
+            return DPoPProof.Verify(Craft(key, JwtConst.DPOP_JWT, key.Public, p), "POST", expectedHtu, out jkt, out payload, out err);
         }
 
         /// <summary>

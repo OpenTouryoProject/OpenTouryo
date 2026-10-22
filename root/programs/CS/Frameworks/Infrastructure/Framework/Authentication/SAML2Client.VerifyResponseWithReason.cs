@@ -26,6 +26,7 @@
 //*  2026/10/22  玄人 幸道         新規作成（SAML2Client.cs から処理区分ごとに分割した）
 //*  2026/10/22  玄人 幸道         NotOnOrAfter が読めなければ Expired で断るようにした（読めない方を無視して通していた）。
 //*                                Pick を bool 版と共有するため、null を空文字にしない形にした
+//*  2026/10/22  玄人 幸道         StringExtractor.GetParameterFromQueryString（Obsolete）を UriOperator に置き換えた
 //**********************************************************************************
 
 using System;
@@ -151,7 +152,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 if (ret.IsRedirect)
                 {
                     ret.SigAlg = CustomEncode.UrlDecode(
-                        StringExtractor.GetParameterFromQueryString(SAML2Const.QueryParamSigAlg, queryString)) ?? "";
+                        UriOperator.GetParameterFromQueryString(SAML2Const.QueryParamSigAlg, queryString)) ?? "";
 
                     if (string.IsNullOrEmpty(ret.SigAlg))
                     {
