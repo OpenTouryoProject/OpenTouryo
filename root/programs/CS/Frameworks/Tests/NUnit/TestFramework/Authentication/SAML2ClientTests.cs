@@ -175,6 +175,71 @@ namespace TestFramework.Authentication
             }
         }
 
+        #region 食い違いと期限（bool 版と理由つきの版）
+
+        /// <summary>応答を組み立て、Assertion を書き換えてから IdP の鍵で署名する</summary>
+        private static string SignedPostWith(Action<XmlDocument, XmlNamespaceManager> edit)
+        {
+            XmlDocument res = SAML2BindingsTests.CreateResponse(SAML2Enum.StatusCode.Success, true);
+            XmlNamespaceManager ns = SAML2Bindings.CreateNamespaceManager(res);
+            edit(res, ns);
+            string id = SAML2Bindings.GetIdInResponse(res, ns);
+            return SAML2Bindings.EncodeAndSignPost(res.OuterXml, id, TestCertificates.RsaPrivateKey());
+        }
+
+        /// <summary>理由つきの版で検証する（IdP の証明書）</summary>
+        private static SAML2VerifyResult VerifyWithReason(string saml)
+        {
+            return SAML2Client.VerifyResponseWithReason(null, saml, new RSA[] { TestCertificates.RsaPublicKey() },
+                SAML2BindingsTests.Issuer, "", "", null, null);
+        }
+
+        /// <summary>
+        /// NotOnOrAfter の片方（Conditions）が読めない応答。
+        /// 理由つきの版は Expired で断る（読めない方を無視して、もう片方で通さない）。
+        /// bool 版は従来どおり例外を投げる（振る舞いを変えていない）。
+        /// </summary>
+        [Test]
+        public void NotOnOrAfter_Unreadable()
+        {
+            string saml = SignedPostWith((res, ns) =>
+                ((XmlElement)res.SelectSingleNode(SAML2Const.XPathConditionsInAssertion, ns)).SetAttribute("NotOnOrAfter", "not-a-date"));
+
+            SAML2VerifyResult r = VerifyWithReason(saml);
+            Assert.That(r.IsValid, Is.False);
+            Assert.That(r.Reason, Is.EqualTo(SAML2VerifyResult.Reasons.Expired));
+            Assert.That(r.ReasonDescription, Does.Contain("could not be read"));
+
+            Assert.That(() => Verify(null, saml, TestCertificates.RsaCer), Throws.Exception, "bool 版は従来どおり例外");
+        }
+
+        /// <summary>
+        /// Issuer が Response と Assertion で食い違う応答。
+        /// bool 版は false（out の iss は空のまま）、理由つきの版は Conflicted。
+        /// 片方だけに Issuer が在る応答は、どちらの版もその値を採る。
+        /// </summary>
+        [Test]
+        public void Issuer_Conflicted()
+        {
+            string conflicted = SignedPostWith((res, ns) =>
+                res.SelectSingleNode(SAML2Const.XPathIssuerInAssertion, ns).InnerText = "https://other.example.com/");
+
+            Result r = Verify(null, conflicted, TestCertificates.RsaCer);
+            Assert.That(r.Ok, Is.False);
+            Assert.That(r.Iss, Is.Empty, "食い違ったら値を入れずに返す（従来どおり）");
+            Assert.That(VerifyWithReason(conflicted).Reason, Is.EqualTo(SAML2VerifyResult.Reasons.Conflicted));
+
+            string onlyAssertion = SignedPostWith((res, ns) =>
+                res.SelectSingleNode(SAML2Const.XPathIssuerInResponse, ns).InnerText = "");
+
+            Result r2 = Verify(null, onlyAssertion, TestCertificates.RsaCer);
+            Assert.That(r2.Ok, Is.True);
+            Assert.That(r2.Iss, Is.EqualTo(SAML2BindingsTests.Issuer));
+            Assert.That(VerifyWithReason(onlyAssertion).Issuer, Is.EqualTo(SAML2BindingsTests.Issuer));
+        }
+
+        #endregion
+
         #region 鍵を受ける版は設定へ倒さない
 
         /// <summary>

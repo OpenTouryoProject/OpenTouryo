@@ -24,6 +24,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（SAML2Client.cs から処理区分ごとに分割した）
+//*  2026/10/22  玄人 幸道         NotOnOrAfter が読めなければ Expired で断るようにした（読めない方を無視して通していた）。
+//*                                Pick を bool 版と共有するため、null を空文字にしない形にした
 //**********************************************************************************
 
 using System;
@@ -236,7 +238,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             ret.Issuer = SAML2Client.Pick(
                 SAML2Bindings.GetIssuerInResponse(samlResponse2, samlNsMgr),
-                SAML2Bindings.GetIssuerInAssertion(samlResponse2, samlNsMgr), ref conflicted);
+                SAML2Bindings.GetIssuerInAssertion(samlResponse2, samlNsMgr), ref conflicted) ?? "";
 
             string format = "";
             string nameId = "";
@@ -254,15 +256,18 @@ namespace Touryo.Infrastructure.Framework.Authentication
             ret.Recipient = recipient ?? "";
 
             ret.InResponseTo = SAML2Client.Pick(inResponseTo1,
-                SAML2Bindings.GetInResponseToInResponse(samlResponse2, samlNsMgr), ref conflicted);
+                SAML2Bindings.GetInResponseToInResponse(samlResponse2, samlNsMgr), ref conflicted) ?? "";
 
             ret.Audience = SAML2Bindings.GetAudienceInAssertion(samlResponse2, samlNsMgr) ?? "";
 
             // NotOnOrAfter は 2 か所に在る。短い方を採る（VerifyResponse と同じ）。
-            ret.NotOnOrAfter = SAML2Client.Earlier(notOnOrAfter1,
-                SAML2Bindings.GetConditionsNotOnOrAfterInAssertion(samlResponse2, samlNsMgr));
-            ret.NotExpired = (ret.NotOnOrAfter == null)
-                ? (bool?)null : (DateTime.UtcNow.Ticks <= ((DateTime)ret.NotOnOrAfter).Ticks);
+            // 値が在るのに読めなければ、使わない（読めない方を無視して、もう片方で通さない）。
+            DateTime? notOnOrAfter = null;
+            bool notOnOrAfterReadable = SAML2Client.TryGetEarlier(notOnOrAfter1,
+                SAML2Bindings.GetConditionsNotOnOrAfterInAssertion(samlResponse2, samlNsMgr), out notOnOrAfter);
+            ret.NotOnOrAfter = notOnOrAfter;
+            ret.NotExpired = (notOnOrAfter == null)
+                ? (bool?)null : (DateTime.UtcNow.Ticks <= ((DateTime)notOnOrAfter).Ticks);
 
             SAML2Enum.AuthnContextClassRef? authnContextClassRef = null;
             SAML2Enum.StringToEnum(
@@ -276,6 +281,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
             {
                 return SAML2Client.SetReason(ret, SAML2VerifyResult.Reasons.Conflicted,
                     "The Issuer or InResponseTo conflicts between the Response and the Assertion.");
+            }
+
+            if (!notOnOrAfterReadable)
+            {
+                return SAML2Client.SetReason(ret, SAML2VerifyResult.Reasons.Expired,
+                    "The NotOnOrAfter of the assertion could not be read.");
             }
 
             if (ret.NotExpired != true)
@@ -357,50 +368,75 @@ namespace Touryo.Infrastructure.Framework.Authentication
             return ret;
         }
 
-        /// <summary>2 か所に書かれた同じ値を 1 つに決める（VerifyResponse と同じ決め方）</summary>
+        /// <summary>2 か所に書かれた同じ値を 1 つに決める（Response と Assertion の Issuer / InResponseTo）</summary>
         /// <param name="value1">string</param>
         /// <param name="value2">string</param>
         /// <param name="conflicted">ref bool（両方に値が在って食い違っていたら true にする）</param>
-        /// <returns>採った値</returns>
+        /// <returns>
+        /// 採った値。同じなら value1（null なら null のまま）、片方だけ在ればその値、
+        /// どちらも空（null と空文字の組を含む）なら空文字。食い違っていたら value1。
+        /// </returns>
+        /// <remarks>
+        /// bool 版の VerifyResponse と、理由つきの版の両方が使う。
+        /// null を空文字にしないのは、bool 版の out の値（従来どおり null になりうる）を変えないため。
+        /// 理由つきの版は、受け取ったところで空文字にする。
+        /// </remarks>
         private static string Pick(string value1, string value2, ref bool conflicted)
         {
-            if (value1 == value2) return value1 ?? "";
-            if (string.IsNullOrEmpty(value1)) return value2 ?? "";
+            if (value1 == value2) return value1;
+            if (string.IsNullOrEmpty(value1)) return string.IsNullOrEmpty(value2) ? "" : value2;
             if (string.IsNullOrEmpty(value2)) return value1;
 
             conflicted = true;
             return value1;
         }
 
-        /// <summary>2 つの W3C タイムスタンプのうち、早い方を返す</summary>
+        /// <summary>2 つの W3C タイムスタンプのうち、早い方を求める</summary>
         /// <param name="value1">string</param>
         /// <param name="value2">string</param>
-        /// <returns>早い方（どちらも読めなければ null）</returns>
-        private static DateTime? Earlier(string value1, string value2)
+        /// <param name="earlier">out DateTime?（早い方。どちらも空なら null）</param>
+        /// <returns>読めたら true（値が在るのに読めないものが 1 つでも在れば false）</returns>
+        /// <remarks>
+        /// 読めない方を無視して、もう片方で通すことはしない（分からないものは通さない）。
+        /// bool 版の VerifyResponse は、読めなければ例外を投げる従来の振る舞いのまま、これを使わない。
+        /// </remarks>
+        private static bool TryGetEarlier(string value1, string value2, out DateTime? earlier)
         {
-            DateTime? time1 = SAML2Client.ToTime(value1);
-            DateTime? time2 = SAML2Client.ToTime(value2);
+            earlier = null;
 
-            if (time1 == null) return time2;
-            if (time2 == null) return time1;
+            DateTime? time1;
+            DateTime? time2;
 
-            return (((DateTime)time1).Ticks <= ((DateTime)time2).Ticks) ? time1 : time2;
+            if (!SAML2Client.TryToTime(value1, out time1) || !SAML2Client.TryToTime(value2, out time2))
+            {
+                return false;
+            }
+
+            if (time1 == null) { earlier = time2; }
+            else if (time2 == null) { earlier = time1; }
+            else { earlier = (((DateTime)time1).Ticks <= ((DateTime)time2).Ticks) ? time1 : time2; }
+
+            return true;
         }
 
-        /// <summary>W3C タイムスタンプを読む（読めなければ null）</summary>
+        /// <summary>W3C タイムスタンプを読む</summary>
         /// <param name="value">string</param>
-        /// <returns>DateTime?</returns>
-        private static DateTime? ToTime(string value)
+        /// <param name="time">out DateTime?（空なら null）</param>
+        /// <returns>空か、読めたら true</returns>
+        private static bool TryToTime(string value, out DateTime? time)
         {
-            if (string.IsNullOrEmpty(value)) return null;
+            time = null;
+
+            if (string.IsNullOrEmpty(value)) return true;
 
             try
             {
-                return FormatConverter.FromW3cTimestamp(value);
+                time = FormatConverter.FromW3cTimestamp(value);
+                return true;
             }
             catch (Exception)
             {
-                return null;
+                return false;
             }
         }
 

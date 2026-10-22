@@ -24,6 +24,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（SAML2Client.cs から処理区分ごとに分割した）
+//*  2026/10/22  玄人 幸道         メソッド内の #region の字下げを揃えた（0 桁目になっていた）
+//*  2026/10/22  玄人 幸道         Issuer / InResponseTo の食い違いの判定を、理由つきの版と同じ Pick に寄せた（振る舞いは変えていない）
 //**********************************************************************************
 
 using System;
@@ -163,7 +165,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // out XmlDocument
             samlResponse2 = null;
 
-#region 準備
+            #region 準備
             // Decode
             string decodeSaml = "";
             if (!string.IsNullOrEmpty(queryString))
@@ -192,9 +194,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
             SAML2Enum.StringToEnum(
                 SAML2Bindings.GetStatusCodeInResponse(
                     samlResponse2, samlNsMgr), out statusCode);
-#endregion
+            #endregion
 
-#region 検証
+            #region 検証
             // Metadata利用を検討
             // 証明書は引数で受ける（設定の1本は、cerFilePath を受けない版が渡す）。
             HashAlgorithmName han = hashAlgorithmName ?? HashAlgorithmName.SHA256;
@@ -221,7 +223,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                         samlResponse2, SAML2Enum.SamlSchema.Response, samlNsMgr);
                 }
             }
-#endregion
+            #endregion
 
             // 値のチェック
             if (verified)
@@ -232,32 +234,18 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 // StatusCode（準備の時点で設定済み）
                 if (statusCode == SAML2Enum.StatusCode.Success)
                 {
-                    // iss
-                    temp1 = SAML2Bindings.GetIssuerInResponse(samlResponse2, samlNsMgr);
-                    temp2 = SAML2Bindings.GetIssuerInAssertion(samlResponse2, samlNsMgr);
+                    // iss（Response と Assertion で食い違っていたら、Assertionは使用できない）
+                    bool conflicted = false;
+                    temp1 = SAML2Client.Pick(
+                        SAML2Bindings.GetIssuerInResponse(samlResponse2, samlNsMgr),
+                        SAML2Bindings.GetIssuerInAssertion(samlResponse2, samlNsMgr), ref conflicted);
 
-                    if (temp1 == temp2)
+                    if (conflicted)
                     {
-                        iss = temp1;
+                        return false;
                     }
-                    else
-                    {
-                        if (string.IsNullOrEmpty(temp1))
-                        {
-                            // temp2のみ値がある
-                            if (!string.IsNullOrEmpty(temp2)) iss = temp2;
-                        }
-                        else if (string.IsNullOrEmpty(temp2))
-                        {
-                            // temp1のみ値がある
-                            if (!string.IsNullOrEmpty(temp1)) iss = temp1;
-                        }
-                        else
-                        {
-                            // Assertionは使用できない。
-                            return false;
-                        } 
-                    }
+
+                    iss = temp1;
 
                     // NameID
                     string format = "";
@@ -272,31 +260,17 @@ namespace Touryo.Infrastructure.Framework.Authentication
                         SAML2Bindings.GetSubjectConfirmationDataInAssertion(
                             samlResponse2, samlNsMgr, out _inResponseTo, out _notOnOrAfter, out recipient);
 
-                    temp1 = _inResponseTo;
-                    temp2 = SAML2Bindings.GetInResponseToInResponse(samlResponse2, samlNsMgr);
+                    // inResponseTo（同上）
+                    temp1 = SAML2Client.Pick(
+                        _inResponseTo,
+                        SAML2Bindings.GetInResponseToInResponse(samlResponse2, samlNsMgr), ref conflicted);
 
-                    if (temp1 == temp2)
+                    if (conflicted)
                     {
-                        inResponseTo = temp1;
+                        return false;
                     }
-                    else
-                    {
-                        if (string.IsNullOrEmpty(temp1))
-                        {
-                            // temp2のみ値がある
-                            if (!string.IsNullOrEmpty(temp2)) inResponseTo = temp2;
-                        }
-                        else if (string.IsNullOrEmpty(temp2))
-                        {
-                            // temp1のみ値がある
-                            if (!string.IsNullOrEmpty(temp1)) inResponseTo = temp1;
-                        }
-                        else
-                        {
-                            // Assertionは使用できない。
-                            return false;
-                        }
-                    }
+
+                    inResponseTo = temp1;
 
                     // Conditions
 

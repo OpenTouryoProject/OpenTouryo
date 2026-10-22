@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（汎用認証サイトから移した。#634 の C-3）
+//*  2026/10/22  玄人 幸道         Expired に「NotOnOrAfter が読めない」を含めた
 //**********************************************************************************
 
 using System;
@@ -70,7 +71,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             /// <summary>Response と Assertion で、Issuer か InResponseTo が食い違っている</summary>
             Conflicted,
 
-            /// <summary>NotOnOrAfter が無い、または過ぎている</summary>
+            /// <summary>NotOnOrAfter が無い・読めない、または過ぎている（ReasonDescription で書き分ける）</summary>
             Expired,
 
             /// <summary>Issuer が期待値と違う</summary>
