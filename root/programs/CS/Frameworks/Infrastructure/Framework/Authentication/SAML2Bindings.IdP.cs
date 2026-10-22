@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（SAML2Bindings.cs から処理区分ごとに分割した）
+//*  2026/10/22  玄人 幸道         属性名・XPath・要素名・ID の接頭辞の直書きを SAML2Const に寄せた
 //**********************************************************************************
 
 using System;
@@ -58,7 +59,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             SAML2Enum.StatusCode statusCode, out string id)
         {
             // idの先頭は[A-Za-z]のみで、s2とするのが慣例っぽい。
-            id = "s2" + Guid.NewGuid().ToString("N");
+            id = SAML2Const.IdPrefix + Guid.NewGuid().ToString("N");
             string xmlString = SAML2Const.ResponseTemplate;
 
             #region enum 2 string
@@ -109,7 +110,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             out string id, RSA rsa = null)
         {
             // idの先頭は[A-Za-z]のみで、s2とするのが慣例っぽい。
-            id = "s2" + Guid.NewGuid().ToString("N");
+            id = SAML2Const.IdPrefix + Guid.NewGuid().ToString("N");
             string xmlString = SAML2Const.AssertionTemplate;
 
             #region enum 2 string
@@ -212,13 +213,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
             #region Append
             // 以下は可変要素
             XmlNode newNode = null;
-            XmlNode rootNode = xmlDoc.GetElementsByTagName("md:IDPSSODescriptor")[0];
+            XmlNode rootNode = xmlDoc.GetElementsByTagName(SAML2Const.PrefixMetadata + ":" + SAML2Const.ElementIDPSSODescriptor)[0];
             // NameIDFormat
             foreach (string text in urnNameIDFormatsString)
             {
                 newNode = xmlDoc.CreateNode(
                     XmlNodeType.Element,
-                    "md", "NameIDFormat",
+                    SAML2Const.PrefixMetadata, SAML2Const.ElementNameIDFormat,
                     SAML2Const.UrnMetadata);
                 // 空のxmlns属性 出力問題の抑止
 
@@ -262,7 +263,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
-                xmlDoc, SAML2Const.XPathNameIDPolicyInRequest, "Format", samlNsMgr);
+                xmlDoc, SAML2Const.XPathNameIDPolicyInRequest, SAML2Const.AttrFormat, samlNsMgr);
         }
 
         /// <summary>GetProtocolBindingInRequest</summary>
@@ -273,7 +274,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
-                xmlDoc, SAML2Const.XPathRequest, "ProtocolBinding", samlNsMgr);
+                xmlDoc, SAML2Const.XPathRequest, SAML2Const.AttrProtocolBinding, samlNsMgr);
         }
 
         /// <summary>GetAssertionConsumerServiceURLInRequest</summary>
@@ -284,7 +285,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
-                xmlDoc, SAML2Const.XPathRequest, "AssertionConsumerServiceURL", samlNsMgr);
+                xmlDoc, SAML2Const.XPathRequest, SAML2Const.AttrAssertionConsumerServiceURL, samlNsMgr);
         }
 
         #endregion

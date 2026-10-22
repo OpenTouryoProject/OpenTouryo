@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（SAML2Bindings.cs から処理区分ごとに分割した）
+//*  2026/10/22  玄人 幸道         属性名・XPath・要素名・ID の接頭辞の直書きを SAML2Const に寄せた
 //**********************************************************************************
 
 using System;
@@ -52,7 +53,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string assertionConsumerServiceURL, out string id)
         {
             // idの先頭は[A-Za-z]のみで、s2とするのが慣例っぽい。
-            id = "s2" + Guid.NewGuid().ToString("N");
+            id = SAML2Const.IdPrefix + Guid.NewGuid().ToString("N");
             string xmlString = SAML2Const.RequestTemplate;
 
             #region enum 2 string
@@ -82,19 +83,19 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             #region Append
             // 以下はオプション属性
-            XmlNode node = xmlDoc.GetElementsByTagName("samlp:AuthnRequest")[0];
+            XmlNode node = xmlDoc.GetElementsByTagName(SAML2Const.PrefixProtocol + ":" + SAML2Const.ElementAuthnRequest)[0];
             XmlAttribute attr = null;
             // - ProtocolBinding属性
             if (!string.IsNullOrEmpty(protocolBindingString))
             {
-                attr = xmlDoc.CreateAttribute("ProtocolBinding");
+                attr = xmlDoc.CreateAttribute(SAML2Const.AttrProtocolBinding);
                 attr.Value = protocolBindingString;
                 node.Attributes.Append(attr);
             }
             // - AssertionConsumerServiceURL属性
             if (!string.IsNullOrEmpty(assertionConsumerServiceURL))
             {
-                attr = xmlDoc.CreateAttribute("AssertionConsumerServiceURL");
+                attr = xmlDoc.CreateAttribute(SAML2Const.AttrAssertionConsumerServiceURL);
                 attr.Value = assertionConsumerServiceURL;
                 node.Attributes.Append(attr);
             }
@@ -115,7 +116,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeFromXmlNode(
-                xmlDoc.SelectSingleNode(SAML2Const.XPathResponse, samlNsMgr), "InResponseTo");
+                xmlDoc.SelectSingleNode(SAML2Const.XPathResponse, samlNsMgr), SAML2Const.AttrInResponseTo);
         }
 
         /// <summary>GetIssuerInResponse</summary>
@@ -146,7 +147,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
-                xmlDoc, SAML2Const.XPathStatusCodeInResponse, "Value", samlNsMgr);
+                xmlDoc, SAML2Const.XPathStatusCodeInResponse, SAML2Const.AttrValue, samlNsMgr);
         }
 
         #endregion
@@ -191,7 +192,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             if (nameID != null)
             {
-                format = XmlLib.GetAttributeFromXmlNode(nameID, "Format");
+                format = XmlLib.GetAttributeFromXmlNode(nameID, SAML2Const.AttrFormat);
                 innerText = nameID.InnerText;
             }
 
@@ -206,7 +207,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
-                xmlDoc, SAML2Const.XPathSubjectConfirmationInAssertion, "Method", samlNsMgr);
+                xmlDoc, SAML2Const.XPathSubjectConfirmationInAssertion, SAML2Const.AttrMethod, samlNsMgr);
         }
 
         /// <summary>GetSubjectConfirmationDataInAssertion</summary>
@@ -229,19 +230,19 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             if (subjectConfirmationData.Attributes != null)
             {
-                if (subjectConfirmationData.Attributes["InResponseTo"] != null)
+                if (subjectConfirmationData.Attributes[SAML2Const.AttrInResponseTo] != null)
                 {
-                    inResponseTo = subjectConfirmationData.Attributes["InResponseTo"].Value;
+                    inResponseTo = subjectConfirmationData.Attributes[SAML2Const.AttrInResponseTo].Value;
                 }
 
-                if (subjectConfirmationData.Attributes["NotOnOrAfter"] != null)
+                if (subjectConfirmationData.Attributes[SAML2Const.AttrNotOnOrAfter] != null)
                 {
-                    notOnOrAfter = subjectConfirmationData.Attributes["NotOnOrAfter"].Value;
+                    notOnOrAfter = subjectConfirmationData.Attributes[SAML2Const.AttrNotOnOrAfter].Value;
                 }
 
-                if (subjectConfirmationData.Attributes["Recipient"] != null)
+                if (subjectConfirmationData.Attributes[SAML2Const.AttrRecipient] != null)
                 {
-                    recipient = subjectConfirmationData.Attributes["Recipient"].Value;
+                    recipient = subjectConfirmationData.Attributes[SAML2Const.AttrRecipient].Value;
                 }
             }
 
@@ -256,7 +257,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
-                xmlDoc, SAML2Const.XPathConditionsInAssertion, "NotOnOrAfter", samlNsMgr);
+                xmlDoc, SAML2Const.XPathConditionsInAssertion, SAML2Const.AttrNotOnOrAfter, samlNsMgr);
         }
 
         /// <summary>GetAudienceInAssertion</summary>

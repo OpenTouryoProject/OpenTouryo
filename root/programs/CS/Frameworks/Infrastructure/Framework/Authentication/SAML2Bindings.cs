@@ -42,6 +42,7 @@
 //*                                また、SigAlgからハッシュを選ぶ、RSAを受けるオーバーロードを追加（#604）
 //*  2026/10/22  玄人 幸道         クエリ文字列のパラメタ名と、名前空間の接頭辞・名前の直書きを SAML2Const に寄せた
 //*  2026/10/22  玄人 幸道         処理区分（共通・SP 側・IdP 側）ごとに partial クラスへ分割した（SAML2Bindings.*.cs）
+//*  2026/10/22  玄人 幸道         属性名・XPath・要素名・ID の接頭辞の直書きを SAML2Const に寄せた
 //**********************************************************************************
 
 using System;
@@ -92,7 +93,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
-                xmlDoc, @"/samlp:AuthnRequest", "ID", samlNsMgr);
+                xmlDoc, SAML2Const.XPathRequest, SAML2Const.AttrID, samlNsMgr);
         }
 
         /// <summary>GetIdInResponse</summary>
@@ -103,7 +104,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
-                xmlDoc, @"/samlp:Response", "ID", samlNsMgr);
+                xmlDoc, SAML2Const.XPathResponse, SAML2Const.AttrID, samlNsMgr);
         }
 
         /// <summary>GetIdInAssertion</summary>
@@ -114,7 +115,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
         {
             return XmlLib.GetAttributeByXPath(
-                xmlDoc, @"/saml:Assertion", "ID", samlNsMgr);
+                xmlDoc, SAML2Const.XPathAssertion, SAML2Const.AttrID, samlNsMgr);
         }
 
         #endregion

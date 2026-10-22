@@ -36,6 +36,8 @@
 //*  2026/10/22  玄人 幸道         並びを整理した（属性の区分を urn の外へ出し、要素名・属性名を小区分に分けた）。
 //*                                接頭辞 samlp と、HTTP-Redirect のクエリ文字列のパラメタ名を追加。
 //*                                MetadataTemplate の use / xmlns:ds を定数から組み立てる（値は変えていない）
+//*  2026/10/22  玄人 幸道         SAML2Bindings の直書きを寄せるため、XPathAssertion、要求・応答・アサーション・
+//*                                メタデータの要素名・属性名、ID の接頭辞を追加
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Framework.Authentication
@@ -173,7 +175,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #endregion
 
         #region Assertion
-        
+
+        /// <summary>XPathAssertion（アサーション単体の文書。CreateAssertion の戻りなど）</summary>
+        public const string XPathAssertion = @"/saml:Assertion";
+
         /// <summary>XPathIssuerInAssertion</summary>
         public const string XPathIssuerInAssertion = XPathAssertionInResponse + @"/saml:Issuer";
 
@@ -275,7 +280,45 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public const string AttrFriendlyName = "FriendlyName";
         #endregion
 
+        #region Request / Response / Assertion
+        /// <summary>要素名：AuthnRequest</summary>
+        public const string ElementAuthnRequest = "AuthnRequest";
+
+        /// <summary>属性名：ID（AuthnRequest / Response / Assertion）</summary>
+        public const string AttrID = "ID";
+
+        /// <summary>属性名：Format（NameIDPolicy / NameID）</summary>
+        public const string AttrFormat = "Format";
+
+        /// <summary>属性名：ProtocolBinding（AuthnRequest）</summary>
+        public const string AttrProtocolBinding = "ProtocolBinding";
+
+        /// <summary>属性名：AssertionConsumerServiceURL（AuthnRequest）</summary>
+        public const string AttrAssertionConsumerServiceURL = "AssertionConsumerServiceURL";
+
+        /// <summary>属性名：InResponseTo（Response / SubjectConfirmationData）</summary>
+        public const string AttrInResponseTo = "InResponseTo";
+
+        /// <summary>属性名：NotOnOrAfter（SubjectConfirmationData / Conditions）</summary>
+        public const string AttrNotOnOrAfter = "NotOnOrAfter";
+
+        /// <summary>属性名：Recipient（SubjectConfirmationData）</summary>
+        public const string AttrRecipient = "Recipient";
+
+        /// <summary>属性名：Method（SubjectConfirmation）</summary>
+        public const string AttrMethod = "Method";
+
+        /// <summary>属性名：Value（StatusCode）</summary>
+        public const string AttrValue = "Value";
+        #endregion
+
         #region Metadata
+        /// <summary>要素名：IDPSSODescriptor</summary>
+        public const string ElementIDPSSODescriptor = "IDPSSODescriptor";
+
+        /// <summary>要素名：NameIDFormat</summary>
+        public const string ElementNameIDFormat = "NameIDFormat";
+
         /// <summary>属性名：entityID（EntityDescriptor）</summary>
         public const string AttrEntityID = "entityID";
 
@@ -292,6 +335,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public const string KeyUseSigning = "signing";
         #endregion
 
+        #endregion
+
+        #region ID
+        /// <summary>生成する ID（AuthnRequest / Response / Assertion の ID 属性）の接頭辞</summary>
+        /// <remarks>XML の ID 型は数字で始められない（xs:ID ＝ NCName）ので、GUID の前に付ける。</remarks>
+        public const string IdPrefix = "s2";
         #endregion
 
         #region HTTP-Redirect のクエリ文字列のパラメタ名（Bindings 3.4.4）

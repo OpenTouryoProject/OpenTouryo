@@ -287,6 +287,12 @@ SAML の署名・検証は SP と IdP の双方が使うため、**IdP 側の処
 | `SAML2Bindings.SP.cs` | SP 側（`CreateRequest`、応答を読む `Get*InResponse` / `Get*InAssertion`） |
 | `SAML2Bindings.IdP.cs` | IdP 側（`CreateResponse` / `CreateAssertion` / `CreateMetadata`、要求を読む `Get*InRequest`） |
 
+- XML の名前（XPath・要素名・属性名・接頭辞）と ID の接頭辞（`s2`）は `SAML2Const` に寄せてある。
+  **テンプレートの置換キー（`{ID}` など）は、`SAML2Const` のテンプレートと対の局所的な名前なので、直書きのまま**にしている
+- **`VerifyByXsd`（private）は中身の無い雛形**（XSD のファイル名と名前空間が `XXXX`）。呼ばれていないが、そのまま残している
+- **`CreateMetadata` は `WantAuthnRequestsSigned` を `true` で固定している**（引数で選べない）。
+  SP と IdP の双方が使う処理を移行するときに、合わせて扱う
+
 | 何の鍵 | 既定（引数の少ない版が読む設定） | 相手ごとに替えるなら |
 |---|---|---|
 | `VerifyResponse` の検証用証明書 | `CmnClientParams.RsaCerFilePath`（配備に 1 本） | `cerFilePath` を受けるオーバーロード（#600）。**null・空は受けない** |
