@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（汎用認証サイトから移した。#634 の B）
+//*  2026/10/22  玄人 幸道         取得を OAuth2AndOIDCClient.GetStringAsync に変えた（discovery も読むため）
 //**********************************************************************************
 
 using System;
@@ -453,7 +454,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         {
             try
             {
-                string json = await OAuth2AndOIDCClient.GetJwkSetAsync(new Uri(url)).ConfigureAwait(false);
+                string json = await OAuth2AndOIDCClient.GetStringAsync(new Uri(url)).ConfigureAwait(false);
 
                 if (string.IsNullOrEmpty(json))
                 {

@@ -95,6 +95,13 @@
     <Compile Include="Authentication\ResponseObject.cs" />
     <Compile Include="Authentication\JwtAssertion.cs" />
     <Compile Include="Authentication\OAuth2AndOIDCClient.cs" />
+    <Compile Include="Authentication\OAuth2AndOIDCClient.AuthZRequest.cs" />
+    <Compile Include="Authentication\OAuth2AndOIDCClient.ClientRegistration.cs" />
+    <Compile Include="Authentication\OAuth2AndOIDCClient.DPoP.cs" />
+    <Compile Include="Authentication\OAuth2AndOIDCClient.ExtensionGrants.cs" />
+    <Compile Include="Authentication\OAuth2AndOIDCClient.Grants.cs" />
+    <Compile Include="Authentication\OAuth2AndOIDCClient.OpenIDConnect.cs" />
+    <Compile Include="Authentication\OAuth2AndOIDCClient.TokenManagement.cs" />
     <Compile Include="Authentication\OAuth2AndOIDCConst.cs" />
     <Compile Include="Authentication\OAuth2AndOIDCEnum.cs" />
     <Compile Include="Authentication\CmnClientParams.cs" />

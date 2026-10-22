@@ -173,6 +173,26 @@ UOC は `UOC_PreQuery` / `UOC_AfterQuery(sql)` / `UOC_AfterQuery(sql, ex)`。
 - `OAuth2AndOIDCClient` … Authorization Code / PKCE(S256) / Client Credentials / ROPC /
   Refresh / UserInfo / Revoke / Introspect / JWT Bearer / Device AuthZ / CIBA / Request Object / JWK Set。
   **すべて `static async Task<string>`（生の JSON を返す）**。`HttpClient` は `static` プロパティで差し替えられる
+- **`OAuth2AndOIDCClient` は処理区分ごとに `partial` クラスのファイルへ分けている**（公開 API は 1 つの型のまま）。
+  **区分は RFC の役割で切り、「FAPI」では切らない**（FAPI は PAR・JAR・private_key_jwt・mTLS・DPoP などの組み合わせ方の profile で、部品は FAPI 以外でも使う）
+
+  | ファイル | 区分 | 中身 |
+  |---|---|---|
+  | `OAuth2AndOIDCClient.cs` | 共有基盤 | `HttpClient`・`SendAsync`、**クライアント認証 `SetClientAuthentication`**（PAR・CIBA・DPoP の Token 要求が共有する） |
+  | `.Grants.cs` | 基本フロー | 認可コード（PKCE・FAPI1 の版を含む）・`PKCE_S256_CodeChallengeMethod`・Client Credentials・ROPC |
+  | `.TokenManagement.cs` | トークン運用・管理 | Refresh・Revoke（RFC 7009）・Introspect（RFC 7662） |
+  | `.OpenIDConnect.cs` | OIDC・メタデータ・鍵 | UserInfo・JWK Set・Discovery |
+  | `.ExtensionGrants.cs` | 拡張グラント・分離フロー | JWT Bearer（RFC 7523）・Device AuthZ（RFC 8628）・CIBA |
+  | `.AuthZRequest.cs` | 認可要求の保護 | Request Object の預け先（RFC 9101）・PAR（RFC 9126） |
+  | `.DPoP.cs` | 送信者制約トークン | DPoP（RFC 9449） |
+  | `.ClientRegistration.cs` | 動的クライアント登録 | DCR（RFC 7591 / 7592） |
+
+  **新しい口は、区分の合うファイルに足す。** 置くのは **SP・RP（クライアント）側の処理だけ**で、IdP 側（発行・口の実装）は置かない。
+  **ログアウトは部品化を保留している**（Web Forms / MVC の SP・RP の口の共通化の観点から）。net48 の csproj は `Compile Include` を列挙しているので、ファイルを足したら並べること
+- **公開情報（JWK Set・Discovery・SAML2 メタデータ）の取得は `GetStringAsync`（`internal`）に集めている。** 失敗しても例外にせず空文字を返す。
+  `GetJwkSetAsync` と `GetDiscoveryDocumentAsync` はこれを呼ぶだけ（以前は `GetJwkSetAsync` を汎用の GET として代用していた）
+- **CIBA の Token 要求で `private_key_jwt` / `client_secret_jwt` / `tls_client_auth` を使うなら、`client_assertion` を受ける `GetAccessTokenByCibaAsync` を使う。**
+  受けない既存の版は Basic / post だけで、それ以外は従来どおり `ArgumentException`
 - `OAuth2AndOIDCConst` / `OAuth2AndOIDCEnum` / `OAuth2AndOIDCParams` / `CmnClientParams`
 - `JwkSetStore` … JWK Set のキャッシュ（**設定の `JwkSetUri` 1 本**＝自分の認可サーバ）
 

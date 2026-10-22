@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（汎用認証サイトから移した。#634 の C）
+//*  2026/10/22  玄人 幸道         取得を OAuth2AndOIDCClient.GetStringAsync に変えた（GetJwkSetAsync の代用をやめた）
 //**********************************************************************************
 
 using System;
@@ -173,7 +174,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             try
             {
-                string xml = await OAuth2AndOIDCClient.GetJwkSetAsync(new Uri(metadataUrl)).ConfigureAwait(false);
+                string xml = await OAuth2AndOIDCClient.GetStringAsync(new Uri(metadataUrl)).ConfigureAwait(false);
                 fetched = SAML2Metadata.Parse(xml);
             }
             catch (Exception ex)
