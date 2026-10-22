@@ -31,6 +31,7 @@
 | `NUnit` | `TestPublic` | `Public` 層の単体テスト（#610）。**1 つの csproj で net48 / net10.0 をマルチ ターゲット**にする。テスト自身が合否を出す | 本書 |
 | `NUnit` | `TestPublicNLog` | `LogIF` を NLog に切り替えた状態のテスト（#610）。**使うライブラリはプロセスで 1 回しか決まらない**ため、別プロジェクト（別プロセス）にしている | 本書 |
 | `NUnit` | `TestPublicDb` | Dam のクロス DB テスト（#610）。**DB に接続する**ので別プロジェクト。SQL Server は必須、他の DBMS は接続できなければスキップ | 本書 |
+| `NUnit` | `TestFramework` | `OpenTouryo.Framework` のうち**単体で使える部品**（`Authentication` の鍵・値を引数で受ける版、`Exceptions`）。親クラスは組み合わせて使うので疎通に任せる | 本書 |
 | `Else` | `TestTransmission` | 通信制御の接続オプション（#546）。**オリジンとプロキシを自前で立て**、`CallController` から呼んで、要求に反映されているかを見る。**期待値ファイルを持たず、自分で合否を出す**（疎通テストから呼ばれる） | [`SMOKETEST.md`](../../../SMOKETEST.md) 3 節 |
 | `Else` | `TestWebAPIClient` | Web API の非ブラウザ クライアント（疎通テストから呼ばれる） | [`SMOKETEST.md`](../../../SMOKETEST.md) |
 | `Else` | `TestLog` | ログ出力の確認（log4net / NLog、1〜3） | — |
@@ -119,6 +120,9 @@ y_Build_TestCode_NUnit.bat     … ビルド → net48 / net10.0 で実行 → T
   DBMS の差（Dam・接続文字列・囲い文字・パラメタ記号・型名）は `DbProvider.cs` に集める。
   **既存の表は使わず**、一意な名前の表を作って最後に落とす。数値は `Convert` で比べる（Oracle の NUMBER は decimal）。
   Oracle は空文字を NULL として扱うので、空文字を値に使わない
+- **Framework のテストは `TestFramework` に書く。対象は単体で使える部品だけ**（他の部品と組み合わせずに、鍵や値を引数で渡して呼べるもの）。
+  認証は**鍵・iss・aud・証明書を引数で受ける版**を使い、設定（`CmnClientParams`・`OAuth2AndOIDCParams`）を読む版は使わない
+  （配備の設定に依るため。Golden の `TestCode` が見ている）。サーバが要るもの（`OAuth2AndOIDCClient`・`JwkSetStore`）と親クラスは対象外
 - 埋め込みリソースの検証には、`OpenTouryo.Public` に埋め込まれている
   `Xml/TestXml.xml` / `Xml/TestXsd.xsd` を使える
 - **証明書が要るテスト（`Security/`）は、正本（`root/files/resource/X509`）を csproj のリンクで出力先の `X509` に複写して使う**
@@ -140,6 +144,9 @@ y_Build_TestCode_NUnit.bat     … ビルド → net48 / net10.0 で実行 → T
 `2_RunAllTests.ps1` が net10.0 の結果でアセンブリごとの行カバレッジを表示し、
 `coverage.cobertura.xml`（クラス・行の単位）の場所を出す。
 **計測するのは `OpenTouryo.*` だけ**（`coverlet.runsettings`）。
+
+**アセンブリごとの値は [`COVERAGE.md`](COVERAGE.md) にある。** `2_RunAllTests.ps1 -Coverage` が、
+NUnit の全部とクロス DB を 1 回で回して合算し、書き換える（普通の実行は書き換えない）。
 
 > **Golden のテストが通している行は数えていない。** コンソール EXE の出力比較であり、
 > カバレッジの計測には載っていない。低い数字は「NUnit で確かめていない」という意味である。

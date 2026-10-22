@@ -30,6 +30,8 @@
 //*  2018/08/30  西野 大介         新規作成
 //*  2026/10/03  玄人 幸道         PS256 / PS384 / PS512 を追加（#596）
 //*  2026/10/15  玄人 幸道         AT_JWT（at+jwt）を追加（#611）
+//*  2026/10/22  玄人 幸道         DPOP_JWT（dpop+jwt）、ヘッダの typ / jwk のキー名、oct を追加（#634）
+//*  2026/10/22  玄人 幸道         typ の値（JWT / AT_JWT / DPOP_JWT）を Header の Region へ移し、kty の値の説明を揃えた（値は変えていない）
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Public.Security.Jwt
@@ -37,11 +39,34 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
     /// <summary>JWT系定数</summary>
     public class JwtConst
     {
+        #region Header
+
+        // alg / kid はヘッダと JWK の両方で使う名前で、JWK の Region に置いている。
+
+        /// <summary>typ : ヘッダの typ のキー名</summary>
+        /// <remarks>
+        /// JWS_Header.typ はフィールドとして在るが、
+        /// ヘッダの JSON を直接読むときのキー名が無かった（#634）。
+        /// </remarks>
+        public const string typ = "typ";
+
+        #region typ
+
         /// <summary>type:JWT</summary>
         public const string JWT = "JWT";
 
         /// <summary>type:at+jwt（RFC 9068 の access_token）</summary>
         public const string AT_JWT = "at+jwt";
+
+        /// <summary>type:dpop+jwt（RFC 9449 の DPoP の証明）</summary>
+        public const string DPOP_JWT = "dpop+jwt";
+
+        #endregion
+
+        /// <summary>jwk : ヘッダに入れる公開鍵のキー名（RFC 7515 4.1.3、RFC 9449 4.2）</summary>
+        public const string jwk = "jwk";
+
+        #endregion
 
         #region JWS
 
@@ -124,6 +149,9 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
 
         #region Symmetric Keys
 
+        /// <summary>kty : oct（共通鍵）</summary>
+        public const string oct = "oct";
+
         /// <summary>Symmetric Keys: k</summary>
         public const string k = "k";
 
@@ -188,7 +216,7 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
 
         #region ECC  Keys
 
-        /// <summary>ktyパラメタ値 : EC</summary>
+        /// <summary>kty : EC</summary>
         public const string EC = "EC";
 
         /// <summary>crv : Curveパラメタ</summary>

@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/15  玄人 幸道         新規作成（#610）
+//*  2026/10/19  玄人 幸道         FxSqlTraceLog を ON にした（GetCurrentQueryForLog のテスト用）
 //**********************************************************************************
 
 using NUnit.Framework;
@@ -57,6 +58,7 @@ namespace TestPublicDb
                         { "connectionStrings:ConnectionString_ODP", "User Id=SCOTT;Password=tiger;Data Source=localhost/XE;" },
                         { "connectionStrings:ConnectionString_MCN", "Server=localhost;Database=test;User Id=root;Password=seigi@123" },
                         { "connectionStrings:ConnectionString_NPS", "HOST=localhost;DATABASE=postgres;USER ID=postgres;PASSWORD=seigi@123;" },
+                        { "appSettings:FxSqlTraceLog", "ON" },
                     })
                     .Build());
 #endif

@@ -212,6 +212,15 @@ namespace Touryo.Infrastructure.Framework.Resources {
                 return ResourceManager.GetString("ERROR_IN_WRITING_OF_FX_SWITCH2", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   The config value is not defined or is invalid. Config key: {0} に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string ERROR_IN_WRITING_OF_CONFIG_VALUE {
+            get {
+                return ResourceManager.GetString("ERROR_IN_WRITING_OF_CONFIG_VALUE", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   The unjust state was detected by framework processing. Supplementary information : {0} に類似しているローカライズされた文字列を検索します。

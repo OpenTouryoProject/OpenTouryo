@@ -33,6 +33,10 @@
 //*  2020/12/18  西野 大介         Device AuthZのパラメタを追加
 //*  2026/09/12  玄人 幸道         RFC 6750 / RFC 7662 / CIBA / OIDCの定数を追加
 //*  2026/09/25  玄人 幸道         client_assertion（RFC 7523）の定数を追加
+//*  2026/10/22  玄人 幸道         DPoP（RFC 9449）・DCR（RFC 7591 / 7592）・Discovery・promptの定数を追加（#634）
+//*  2026/10/22  玄人 幸道         DPoP・DCR・Discoveryの区分をparamの外（PKCE / Device AuthZ / CIBAの並び）へ出し、
+//*                                WWW-Authenticateのパラメタを Authorization の外へ移した。preferred_usernameを追加。
+//*                                responseのsummaryの誤記を直した
 //**********************************************************************************
 
 // urnはClaimのurnで、
@@ -81,7 +85,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>request</summary>
         public const string request = "request";
 
-        /// <summary>request</summary>
+        /// <summary>response</summary>
         public const string response = "response";
 
         /// <summary>request_uri</summary>
@@ -122,6 +126,23 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>login_hint</summary>
         public const string login_hint = "login_hint";
+
+        #region prompt の値（OIDC Core 3.1.2.1）
+
+        /// <summary>prompt の値 : none（対話しない）</summary>
+        public const string PromptNone = "none";
+
+        /// <summary>prompt の値 : login（再認証を求める）</summary>
+        public const string PromptLogin = "login";
+
+        /// <summary>prompt の値 : consent（同意を取り直す）</summary>
+        public const string PromptConsent = "consent";
+
+        /// <summary>prompt の値 : select_account（アカウントを選ばせる）</summary>
+        public const string PromptSelectAccount = "select_account";
+
+        #endregion
+
         #endregion
 
         #region 暗号的
@@ -244,6 +265,32 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>Bearer</summary>
         public const string Bearer = "Bearer";
 
+        /// <summary>DPoP（Authorization のスキームと、token_type の値。RFC 9449 5 / 7.1）</summary>
+        public const string DPoP = "DPoP";
+
+        #endregion
+
+        #region WWW-Authenticate（チャレンジ）
+
+        /// <summary>WWW-Authenticate（RFC 6750 3 / RFC 9449 7.1）</summary>
+        public const string HttpHeader_WWWAuthenticate = "WWW-Authenticate";
+
+        /// <summary>realm（RFC 6750 3）</summary>
+        public const string realm = "realm";
+
+        /// <summary>algs（証明の署名に使える alg。RFC 9449 7.1）</summary>
+        public const string algs = "algs";
+
+        #endregion
+
+        #region DPoP（RFC 9449）
+
+        /// <summary>DPoP（証明を運ぶ要求ヘッダ。RFC 9449 4.1）</summary>
+        public const string HttpHeader_DPoP = "DPoP";
+
+        /// <summary>DPoP-Nonce（サーバが渡す nonce。RFC 9449 8）</summary>
+        public const string HttpHeader_DPoPNonce = "DPoP-Nonce";
+
         #endregion
 
         #endregion
@@ -362,6 +409,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>phone_number_verified</summary>
         public const string phone_number_verified = "phone_number_verified";
 
+        /// <summary>preferred_username（OIDC Core 5.1）</summary>
+        public const string preferred_username = "preferred_username";
+
         #endregion
 
         #region urn
@@ -439,7 +489,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
-        #region FAPI
+        #region FAPI・送信者制約（cnf の x5t / jkt）
 
         #region 末端
 
@@ -454,6 +504,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>x5u</summary>
         public const string x5u = "x5u";
+
+        /// <summary>jkt（DPoP の鍵の指紋。cnf のメンバ。RFC 9449 6）</summary>
+        public const string jkt = "jkt";
 
         // 独自
 
@@ -475,6 +528,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>x5uクレームのurn</summary>
         public static readonly string UrnCnfX5uClaim = UrnCnfClaim + ":" + x5u;
+
+        /// <summary>jktクレームのurn（DPoP。RFC 9449 6）</summary>
+        public static readonly string UrnCnfJktClaim = UrnCnfClaim + ":" + jkt;
 
         //// 独自
 
@@ -590,6 +646,69 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
+        #region DPoP
+
+        // 証明のヘッダ（typ / jwk）は JwtConst、cnf.jkt は Claims の FAPI、
+        // HTTP ヘッダとスキームは HTTP Header、error 値は Error に置いている。
+
+        /// <summary>dpop_jkt（認可要求で、コードを縛る鍵の指紋を先に示す。RFC 9449 10）</summary>
+        public const string dpop_jkt = "dpop_jkt";
+
+        /// <summary>htm（証明の HTTP メソッド。RFC 9449 4.2）</summary>
+        public const string htm = "htm";
+
+        /// <summary>htu（証明の宛先。RFC 9449 4.2）</summary>
+        public const string htu = "htu";
+
+        /// <summary>ath（証明に入れる access_token の指紋。RFC 9449 4.2）</summary>
+        public const string ath = "ath";
+
+        #endregion
+
+        #region DCR
+
+        #region クライアント メタデータ
+        /// <summary>redirect_uris（RFC 7591 2）</summary>
+        public const string redirect_uris = "redirect_uris";
+
+        /// <summary>software_statement（RFC 7591 2.3）</summary>
+        public const string software_statement = "software_statement";
+        #endregion
+
+        #region 登録の応答
+        /// <summary>client_id_issued_at（RFC 7591 3.2.1）</summary>
+        public const string client_id_issued_at = "client_id_issued_at";
+
+        /// <summary>client_secret_expires_at（RFC 7591 3.2.1）</summary>
+        public const string client_secret_expires_at = "client_secret_expires_at";
+
+        /// <summary>registration_client_uri（登録を管理する口。RFC 7592 3）</summary>
+        public const string registration_client_uri = "registration_client_uri";
+
+        /// <summary>registration_access_token（登録を管理するトークン。RFC 7592 3）</summary>
+        public const string registration_access_token = "registration_access_token";
+        #endregion
+
+        #endregion
+
+        #region Discovery
+
+        /// <summary>Discovery の口のパス（OIDC Discovery 4.1）</summary>
+        public const string WellKnownOpenIdConfiguration = "/.well-known/openid-configuration";
+
+        #region メタデータの項目
+        /// <summary>issuer</summary>
+        public const string issuer = "issuer";
+
+        /// <summary>jwks_uri</summary>
+        public const string jwks_uri = "jwks_uri";
+
+        /// <summary>registration_endpoint（RFC 7591 / RFC 8414 2）</summary>
+        public const string registration_endpoint = "registration_endpoint";
+        #endregion
+
+        #endregion
+
         #region LoA(acr)
 
         #region urn
@@ -609,6 +728,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>error</summary>
         public const string error = "error";
+
+        /// <summary>error_description</summary>
+        public const string error_description = "error_description";
+
+        /// <summary>error_uri</summary>
+        public const string error_uri = "error_uri";
 
         #region error値
 
@@ -653,6 +778,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #region RFC 6750
         /// <summary>invalid_token（Bearerトークンが無効）</summary>
         public const string invalid_token = "invalid_token";
+
+        /// <summary>insufficient_scope（トークンのscopeが足りない）</summary>
+        public const string insufficient_scope = "insufficient_scope";
         #endregion
 
         #region OIDC Core
@@ -674,13 +802,29 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public const string unknown_user_id = "unknown_user_id";
         #endregion
 
+        #region RFC 9449（DPoP）
+        /// <summary>invalid_dpop_proof（DPoP の証明が使えない。RFC 9449 5）</summary>
+        public const string invalid_dpop_proof = "invalid_dpop_proof";
+
+        /// <summary>use_dpop_nonce（サーバの nonce を入れて出し直す。RFC 9449 8 / 9）</summary>
+        public const string use_dpop_nonce = "use_dpop_nonce";
         #endregion
 
-        /// <summary>error_description</summary>
-        public const string error_description = "error_description";
+        #region RFC 7591（DCR）
+        /// <summary>invalid_redirect_uri（RFC 7591 3.2.2）</summary>
+        public const string invalid_redirect_uri = "invalid_redirect_uri";
 
-        /// <summary>error_uri</summary>
-        public const string error_uri = "error_uri";
+        /// <summary>invalid_client_metadata（RFC 7591 3.2.2）</summary>
+        public const string invalid_client_metadata = "invalid_client_metadata";
+
+        /// <summary>invalid_software_statement（RFC 7591 3.2.2）</summary>
+        public const string invalid_software_statement = "invalid_software_statement";
+
+        /// <summary>unapproved_software_statement（RFC 7591 3.2.2）</summary>
+        public const string unapproved_software_statement = "unapproved_software_statement";
+        #endregion
+
+        #endregion
 
         // urnは無し。
 

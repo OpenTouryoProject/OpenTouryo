@@ -515,7 +515,7 @@ namespace Touryo.Infrastructure.Framework.Util
 
         /// <summary>インプロセス呼び出しで呼ぶメソッド名（非同期）</summary>
         public const string TRANSMISSION_INPROCESS_ASYNC_METHOD_NAME = "DoBusinessLogicAsync";
-        
+
         #endregion
 
         #endregion

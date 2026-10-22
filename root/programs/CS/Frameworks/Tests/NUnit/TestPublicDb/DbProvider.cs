@@ -24,9 +24,17 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/15  玄人 幸道         新規作成（#610）
+//*  2026/10/19  玄人 幸道         プロバイダ固有の型・使える分離レベルを足した（カバレッジの拡充）
 //**********************************************************************************
 
 using System;
+using System.Data;
+
+using MySql.Data.MySqlClient;
+#if NETCOREAPP
+using NpgsqlTypes;
+#endif
+using Oracle.ManagedDataAccess.Client;
 
 using Touryo.Infrastructure.Public.Db;
 using Touryo.Infrastructure.Public.Util;
@@ -126,6 +134,61 @@ namespace TestPublicDb
                 case "MCN": return "VARCHAR(20)";
                 case "NPS": return "varchar(20)";
                 default: return "nvarchar(20)";
+            }
+        }
+
+        /// <summary>
+        /// SetParameter の dbTypeInfo に渡す、整数のプロバイダ固有の型。
+        /// FxSqlDotnetTypeInfo を設定していない（既定）とき、Dam はこれを使う。
+        /// </summary>
+        public static object IntDbType(string dap)
+        {
+            switch (dap)
+            {
+                case "ODP": return OracleDbType.Int32;
+                case "MCN": return MySqlDbType.Int32;
+#if NETCOREAPP
+                case "NPS": return NpgsqlDbType.Integer;
+#endif
+                default: return SqlDbType.Int;
+            }
+        }
+
+        /// <summary>SetParameter の dbTypeInfo に渡す、文字列のプロバイダ固有の型。</summary>
+        public static object StrDbType(string dap)
+        {
+            switch (dap)
+            {
+                case "ODP": return OracleDbType.Varchar2;
+                case "MCN": return MySqlDbType.VarChar;
+#if NETCOREAPP
+                case "NPS": return NpgsqlDbType.Varchar;
+#endif
+                default: return SqlDbType.NVarChar;
+            }
+        }
+
+        /// <summary>
+        /// その分離レベルで BeginTransaction できるか。できないものは ArgumentException になる。
+        /// Dam*.BeginTransaction の分岐と合わせる（DBMS が持たない分離レベルは弾く）。
+        /// </summary>
+        public static bool CanBegin(string dap, DbEnum.IsolationLevelEnum iso)
+        {
+            switch (iso)
+            {
+                case DbEnum.IsolationLevelEnum.User:
+                case DbEnum.IsolationLevelEnum.NotConnect:
+                    return false;
+                case DbEnum.IsolationLevelEnum.ReadUncommitted:
+                case DbEnum.IsolationLevelEnum.RepeatableRead:
+                    // Oracle・PostgreSQL は持たない
+                    return dap == "SQL" || dap == "MCN";
+                case DbEnum.IsolationLevelEnum.Snapshot:
+                    // SQL Server だけ
+                    return dap == "SQL";
+                default:
+                    // NoTransaction / DefaultTransaction / ReadCommitted / Serializable
+                    return true;
             }
         }
     }

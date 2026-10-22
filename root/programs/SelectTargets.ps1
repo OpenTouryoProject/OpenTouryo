@@ -83,6 +83,7 @@
      2026/10/15  玄人 幸道         新規作成（#610）
      2026/10/15  玄人 幸道         -Stage（fixing / fixed）を追加（#610）
      2026/10/19  玄人 幸道         Public・Public.Security に触れたら、2_RunAllTests.ps1 に -Linux を付けるようにした（#632）
+     2026/10/19  玄人 幸道         CoverageReport.ps1 を 2 で確かめる対象に加えた
 #>
 [CmdletBinding()]
 param(
@@ -243,6 +244,7 @@ $scriptUses = @{
     "1_buildall.ps1"    = @(1)
     "2_runalltests.ps1" = @(2)
     "compareresult.ps1" = @(2)
+    "coveragereport.ps1" = @(2)
     "3_smoketest.ps1"   = @(3)
     "summarytable.ps1"  = @(1, 2, 3)
     "prerequisite.ps1"  = @(2, 3)

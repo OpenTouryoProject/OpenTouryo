@@ -1,0 +1,330 @@
+﻿#region Apache License
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License. 
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//
+#endregion
+
+//**********************************************************************************
+//* クラス名        ：SAML2Client（VerifyResponse）
+//* クラス日本語名  ：SAML2Client（ライブラリ）の応答の検証（bool を返す従来の版）
+//*
+//* 作成者          ：玄人 幸道
+//* 更新履歴        ：
+//*
+//*  日時        更新者            内容
+//*  ----------  ----------------  -------------------------------------------------
+//*  2026/10/22  玄人 幸道         新規作成（SAML2Client.cs から処理区分ごとに分割した）
+//*  2026/10/22  玄人 幸道         メソッド内の #region の字下げを揃えた（0 桁目になっていた）
+//*  2026/10/22  玄人 幸道         Issuer / InResponseTo の食い違いの判定を、理由つきの版と同じ Pick に寄せた（振る舞いは変えていない）
+//**********************************************************************************
+
+using System;
+using System.Xml;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
+
+using Touryo.Infrastructure.Public.Str;
+using Touryo.Infrastructure.Public.Security;
+
+namespace Touryo.Infrastructure.Framework.Authentication
+{
+    /// <summary>SAML2Client（ライブラリ）の応答の検証（bool を返す従来の版）</summary>
+    public partial class SAML2Client
+    {
+        #region 設定を読む版
+
+        /// <summary>VerifyResponse</summary>
+        /// <param name="queryString">string</param>
+        /// <param name="samlResponse">string</param>
+        /// <param name="nameId">out string</param>
+        /// <param name="iss">out string</param>
+        /// <param name="aud">out string</param>
+        /// <param name="inResponseTo">out string</param>
+        /// <param name="recipient">out string</param>
+        /// <param name="notOnOrAfter">out DateTime</param>
+        /// <param name="statusCode">SAML2Enum.StatusCode</param>
+        /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
+        /// <param name="authnContextClassRef">SAML2Enum.AuthnContextClassRef</param>
+        /// <param name="samlResponse2">XmlDocument</param>
+        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
+        /// <returns>bool</returns>
+        /// <remarks>
+        /// 署名の検証には CmnClientParams.RsaCerFilePath の証明書を使う。
+        /// 相手（IdP）ごとに証明書を替える場合は、cerFilePath を受けるオーバーロードを使う（#600）。
+        ///
+        /// statusCode は、応答を読めた時点（署名・構造の検証より前）で設定する（#598）。
+        /// false が返ったときに、呼び出し側が理由を切り分けるためである。
+        ///
+        /// したがって、false のときの statusCode は検証されていない値である。
+        /// 表示・ログによる切り分けにだけ使い、認証の判断には戻り値を使うこと。
+        /// </remarks>
+        public static bool VerifyResponse(
+            string queryString, string samlResponse,
+            out string nameId, out string iss, out string aud,
+            out string inResponseTo, out string recipient, out DateTime? notOnOrAfter,
+            out SAML2Enum.StatusCode? statusCode,
+            out SAML2Enum.NameIDFormat? nameIDFormat, 
+            out SAML2Enum.AuthnContextClassRef? authnContextClassRef,
+            out XmlDocument samlResponse2,
+            HashAlgorithmName? hashAlgorithmName = null) // 既定値の変更 SHA1 → SHA256
+        {
+            // 設定の証明書（CmnClientParams.RsaCerFilePath）を、ここで渡す。
+            return SAML2Client.VerifyResponse(
+                queryString, samlResponse, CmnClientParams.RsaCerFilePath,
+                out nameId, out iss, out aud,
+                out inResponseTo, out recipient, out notOnOrAfter,
+                out statusCode, out nameIDFormat, out authnContextClassRef,
+                out samlResponse2, hashAlgorithmName);
+        }
+
+        #endregion
+
+        #region 引数（証明書）で受ける版
+
+        /// <summary>VerifyResponse</summary>
+        /// <param name="queryString">string</param>
+        /// <param name="samlResponse">string</param>
+        /// <param name="cerFilePath">
+        /// 署名の検証に使う、相手（IdP）のX.509証明書(*.cer)へのパス。
+        /// null・空文字は受けない（ArgumentNullException）。
+        /// 設定（CmnClientParams.RsaCerFilePath）の証明書で検証するなら、cerFilePath を受けない版を使う。
+        /// </param>
+        /// <param name="nameId">out string</param>
+        /// <param name="iss">out string</param>
+        /// <param name="aud">out string</param>
+        /// <param name="inResponseTo">out string</param>
+        /// <param name="recipient">out string</param>
+        /// <param name="notOnOrAfter">out DateTime</param>
+        /// <param name="statusCode">SAML2Enum.StatusCode</param>
+        /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
+        /// <param name="authnContextClassRef">SAML2Enum.AuthnContextClassRef</param>
+        /// <param name="samlResponse2">XmlDocument</param>
+        /// <param name="hashAlgorithmName">
+        /// HashAlgorithmName（Redirect の署名の検証に使う）。
+        /// Redirect の SigAlg が、このハッシュの RSA を示していなければ失敗する（#604）。
+        /// POST の署名は、XML の SignatureMethod に従って検証する。
+        /// </param>
+        /// <returns>bool</returns>
+        /// <remarks>
+        /// 自由に利用できる。
+        ///
+        /// 検証できるのは「cerFilePath の証明書で署名されていること」までである。
+        /// その証明書の持ち主と、out iss が一致することは、呼び出し側で照合すること（#600）。
+        ///
+        /// statusCode は、応答を読めた時点（署名・構造の検証より前）で設定する（#598）。
+        /// false が返ったときに、呼び出し側が理由を切り分けるためである。
+        ///
+        /// したがって、false のときの statusCode は検証されていない値である。
+        /// 表示・ログによる切り分けにだけ使い、認証の判断には戻り値を使うこと。
+        /// </remarks>
+        public static bool VerifyResponse(
+            string queryString, string samlResponse, string cerFilePath,
+            out string nameId, out string iss, out string aud,
+            out string inResponseTo, out string recipient, out DateTime? notOnOrAfter,
+            out SAML2Enum.StatusCode? statusCode,
+            out SAML2Enum.NameIDFormat? nameIDFormat,
+            out SAML2Enum.AuthnContextClassRef? authnContextClassRef,
+            out XmlDocument samlResponse2,
+            HashAlgorithmName? hashAlgorithmName = null)
+        {
+            // 設定の証明書は、cerFilePath を受けない版が渡す。
+            // 応答を読む前に確かめる（呼び出しの誤りを、応答の中身に依らず同じ例外にするため）。
+            if (string.IsNullOrEmpty(cerFilePath))
+            {
+                throw new ArgumentNullException(nameof(cerFilePath));
+            }
+
+            bool verified = false;
+
+            // out string
+            nameId = "";
+            iss = "";
+            aud = "";
+
+            inResponseTo = "";
+            recipient = "";
+
+            // out DateTime?
+            notOnOrAfter = null;
+
+            // out SAML2Enum
+            statusCode = null;
+            nameIDFormat = null;
+            authnContextClassRef = null;
+
+            // out XmlDocument
+            samlResponse2 = null;
+
+            #region 準備
+            // Decode
+            string decodeSaml = "";
+            if (!string.IsNullOrEmpty(queryString))
+            {
+                decodeSaml = SAML2Bindings.DecodeRedirect(queryString);
+            }
+            else if (!string.IsNullOrEmpty(samlResponse))
+            {
+                decodeSaml = SAML2Bindings.DecodePost(samlResponse);
+            }
+            else
+            {
+                return false;
+            }
+
+            // XmlDocument
+            samlResponse2 = new XmlDocument();
+            samlResponse2.PreserveWhitespace = false;
+            samlResponse2.LoadXml(decodeSaml);
+
+            // XmlNamespaceManager
+            XmlNamespaceManager samlNsMgr = SAML2Bindings.CreateNamespaceManager(samlResponse2);
+
+            // StatusCode
+            // 検証に失敗しても呼び出し側が理由を切り分けられるよう、検証の前に設定する（#598）。
+            SAML2Enum.StringToEnum(
+                SAML2Bindings.GetStatusCodeInResponse(
+                    samlResponse2, samlNsMgr), out statusCode);
+            #endregion
+
+            #region 検証
+            // Metadata利用を検討
+            // 証明書は引数で受ける（設定の1本は、cerFilePath を受けない版が渡す）。
+            HashAlgorithmName han = hashAlgorithmName ?? HashAlgorithmName.SHA256;
+            DigitalSignX509 dsX509 = new DigitalSignX509(cerFilePath, "", han);
+
+            if (!string.IsNullOrEmpty(queryString))
+            {
+                // VerifyRedirect
+                if (SAML2Bindings.VerifyRedirect(queryString, dsX509))
+                {
+                    // XPathによる検証
+                    verified = SAML2Bindings.VerifyByXPath(
+                        samlResponse2, SAML2Enum.SamlSchema.Response, samlNsMgr);
+                }
+            }
+            else
+            {
+                // VerifyPost
+                string id = SAML2Bindings.GetIdInResponse(samlResponse2, samlNsMgr);
+                if (SAML2Bindings.VerifyPost(decodeSaml, id, dsX509.X509Certificate.GetRSAPublicKey()))
+                {
+                    // XPathによる検証
+                    verified = SAML2Bindings.VerifyByXPath(
+                        samlResponse2, SAML2Enum.SamlSchema.Response, samlNsMgr);
+                }
+            }
+            #endregion
+
+            // 値のチェック
+            if (verified)
+            {
+                string temp1 = "";
+                string temp2 = "";
+
+                // StatusCode（準備の時点で設定済み）
+                if (statusCode == SAML2Enum.StatusCode.Success)
+                {
+                    // iss（Response と Assertion で食い違っていたら、Assertionは使用できない）
+                    bool conflicted = false;
+                    temp1 = SAML2Client.Pick(
+                        SAML2Bindings.GetIssuerInResponse(samlResponse2, samlNsMgr),
+                        SAML2Bindings.GetIssuerInAssertion(samlResponse2, samlNsMgr), ref conflicted);
+
+                    if (conflicted)
+                    {
+                        return false;
+                    }
+
+                    iss = temp1;
+
+                    // NameID
+                    string format = "";
+                    SAML2Bindings.GetNameIDInAssertion(
+                        samlResponse2, samlNsMgr, out format, out nameId);
+                    SAML2Enum.StringToEnum(format, out nameIDFormat);
+
+                    // SubjectConfirmationData
+                    string _inResponseTo = "";
+                    string _notOnOrAfter = "";
+                    XmlNode subjectConfirmationData = 
+                        SAML2Bindings.GetSubjectConfirmationDataInAssertion(
+                            samlResponse2, samlNsMgr, out _inResponseTo, out _notOnOrAfter, out recipient);
+
+                    // inResponseTo（同上）
+                    temp1 = SAML2Client.Pick(
+                        _inResponseTo,
+                        SAML2Bindings.GetInResponseToInResponse(samlResponse2, samlNsMgr), ref conflicted);
+
+                    if (conflicted)
+                    {
+                        return false;
+                    }
+
+                    inResponseTo = temp1;
+
+                    // Conditions
+
+                    // - aud
+                    aud = SAML2Bindings.GetAudienceInAssertion(samlResponse2, samlNsMgr);
+
+                    // - notOnOrAfter
+                    temp1 = _notOnOrAfter;
+                    temp2 = SAML2Bindings.GetConditionsNotOnOrAfterInAssertion(samlResponse2, samlNsMgr);
+                    DateTime time1 = DateTime.MinValue;
+                    DateTime time2 = DateTime.MinValue;
+
+                    if (temp1 == temp2)
+                    {
+                        // 等しい場合
+                        notOnOrAfter = FormatConverter.FromW3cTimestamp(temp1);
+                    }
+                    else
+                    {
+                        // 等しくない場合
+                        time1 = FormatConverter.FromW3cTimestamp(temp1);
+                        time2 = FormatConverter.FromW3cTimestamp(temp2);
+
+                        // 短い値を使用
+                        if (time1.Ticks <= time2.Ticks)
+                        {
+                            notOnOrAfter = time1;
+                        }
+                        else
+                        {
+                            notOnOrAfter = time2;
+                        }
+                    }
+
+                    // 現在時刻と比較
+                    if (!(DateTime.UtcNow.Ticks <= notOnOrAfter.Value.Ticks))
+                    {
+                        return false; // Assertionは使用できない。
+                    }
+
+                    // AuthnContextClassRef
+                    SAML2Enum.StringToEnum(
+                        SAML2Bindings.GetAuthnContextClassRefInAssertion(
+                        samlResponse2, samlNsMgr), out authnContextClassRef);
+                }
+                else
+                {
+                    return false; // Assertionは使用できない。
+                }
+            }
+
+            return verified;
+        }
+
+        #endregion
+    }
+}

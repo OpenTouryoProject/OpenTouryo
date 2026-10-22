@@ -24,11 +24,16 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/15  玄人 幸道         新規作成（#610）
+//*  2026/10/19  玄人 幸道         プロパティ・分離レベル・ファイルの SQL・型付きパラメタ・LIST タグ・
+//*                                ExecGenerateSQL・GetCurrentQuery(ForLog) のケースを追加（カバレッジの拡充）
 //**********************************************************************************
 
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
+using System.Reflection;
+using System.Text;
 
 using NUnit.Framework;
 
@@ -149,6 +154,26 @@ namespace TestPublicDb
         {
             this._dam.SetSqlByCommand("SELECT COUNT(*) FROM " + this.T + " " + where);
             return Convert.ToInt32(this._dam.ExecSelectScalar());
+        }
+
+        /// <summary>
+        /// Dam 固有のプロパティ（DamSqlConnection / DamOracleCommand など）を、型で探して値を返す。
+        /// **プロパティ名は Dam ごとに違う**ので、名前ではなく型で引く。DamIDbCommand（共通）は除く。
+        /// </summary>
+        private T Prop<T>() where T : class
+        {
+            List<PropertyInfo> found = new List<PropertyInfo>();
+            foreach (PropertyInfo p in this._dam.GetType().GetProperties(
+                BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly))
+            {
+                if (p.Name != "DamIDbCommand" && typeof(T).IsAssignableFrom(p.PropertyType))
+                {
+                    found.Add(p);
+                }
+            }
+
+            Assert.That(found.Count, Is.EqualTo(1), typeof(T).Name + " を返すプロパティ");
+            return (T)found[0].GetValue(this._dam);
         }
 
         #endregion
@@ -299,6 +324,243 @@ namespace TestPublicDb
             this._dam.ExecSelectFill_DT(dt);
 
             Assert.That(Convert.ToInt32(dt.Rows[0][0]), Is.EqualTo(3));
+        }
+
+        /// <summary>LIST タグは、List&lt;T&gt; の値を IN 句に展開する（P_1, P_2 …）。</summary>
+        [Test]
+        public void DynamicQuery_List()
+        {
+            string xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><ROOT>"
+                + "SELECT COUNT(*) FROM " + this.T + " <WHERE>WHERE "
+                + "<LIST>AND " + this.Q("ID") + " IN (" + this.P("PLIST") + ")</LIST>"
+                + "</WHERE></ROOT>";
+
+            this._dam.SetSqlByCommand(xml);
+            this._dam.SetParameter("PLIST", new List<int> { 1, 3 });
+
+            Assert.That(Convert.ToInt32(this._dam.ExecSelectScalar()), Is.EqualTo(2));
+        }
+
+        /// <summary>
+        /// 動的 SQL でも、ユーザ パラメタは置き換え、型付きのパラメタは実行時にまとめて設定する。
+        /// **動的 SQL のユーザ パラメタは VAL タグで書く**（%名前% ではない）。
+        /// </summary>
+        [Test]
+        public void DynamicQuery_UserParameterAndTypedParameter()
+        {
+            string xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><ROOT>"
+                + "SELECT " + this.Q("ID") + " FROM " + this.T + " <WHERE>WHERE "
+                + "<IF>AND " + this.Q("QTY") + " >= " + this.P("P1") + "</IF>"
+                + "</WHERE> ORDER BY <VAL name=\"COL\"/> DESC</ROOT>";
+
+            this._dam.SetSqlByCommand(xml);
+            this._dam.SetParameter("P1", 10, DbProvider.IntDbType(this._dap), -1, ParameterDirection.Input);
+            this._dam.SetUserParameter("COL", this.Q("ID"));
+
+            DataTable dt = new DataTable();
+            this._dam.ExecSelectFill_DT(dt);
+
+            // QTY が NULL の 3 は外れ、ID の降順
+            Assert.That(dt.Rows.Count, Is.EqualTo(2));
+            Assert.That(Convert.ToInt32(dt.Rows[0][0]), Is.EqualTo(2));
+        }
+
+        #endregion
+
+        #region プロパティ・接続
+
+        /// <summary>
+        /// Dam 固有のプロパティは、内部のコネクション・コマンド・アダプタ・トランザクションを返す。
+        /// トランザクションは、開始していなければ null。
+        /// </summary>
+        [Test]
+        public void Properties_ReturnProviderObjects()
+        {
+            this._dam.SetSqlByCommand("SELECT COUNT(*) FROM " + this.T);
+
+            Assert.That(this.Prop<IDbConnection>().State, Is.EqualTo(ConnectionState.Open));
+            Assert.That(this.Prop<IDbCommand>(), Is.SameAs(this._dam.DamIDbCommand));
+            Assert.That(this.Prop<IDbDataAdapter>(), Is.Not.Null);
+            Assert.That(this.Prop<IDbTransaction>(), Is.Null, "トランザクションの外");
+
+            this._dam.BeginTransaction(DbEnum.IsolationLevelEnum.ReadCommitted);
+            try
+            {
+                Assert.That(this.Prop<IDbTransaction>(), Is.Not.Null, "トランザクションの中");
+            }
+            finally
+            {
+                this._dam.RollbackTransaction();
+            }
+
+            // Oracle だけ：配列バインドの件数（コマンドに委ねる）
+            DamManagedOdp odp = this._dam as DamManagedOdp;
+            if (odp != null)
+            {
+                odp.ArrayBindCount = 0;
+                Assert.That(odp.ArrayBindCount, Is.EqualTo(0));
+            }
+        }
+
+        /// <summary>接続していない Dam は、ConnectionClose で何もしない。GetParameter は null。</summary>
+        [Test]
+        public void NotOpened_CloseAndGetParameter()
+        {
+            BaseDam dam = DbProvider.CreateDam(this._dap);
+
+            Assert.DoesNotThrow(() => dam.ConnectionClose());
+            Assert.That(dam.GetParameter("P1"), Is.Null, "コマンドが無い");
+        }
+
+        #endregion
+
+        #region トランザクション（分離レベル）
+
+        /// <summary>
+        /// 分離レベルごとの BeginTransaction。**DBMS が持たない分離レベルは ArgumentException。**
+        /// NoTransaction はトランザクションを開始せず、Commit / Rollback は何もしない。
+        /// </summary>
+        [Test]
+        public void BeginTransaction_IsolationLevels()
+        {
+            foreach (DbEnum.IsolationLevelEnum iso in Enum.GetValues(typeof(DbEnum.IsolationLevelEnum)))
+            {
+                // **SQL Server の Snapshot は回さない。** Northwind はスナップショット分離を許可しておらず
+                //   （許可には ALTER DATABASE が要る。共有の DB は変えない）、
+                //   しかも分離レベルがセッションに残るので、後のテストまで失敗する。
+                if (this._dap == "SQL" && iso == DbEnum.IsolationLevelEnum.Snapshot) { continue; }
+
+                if (!DbProvider.CanBegin(this._dap, iso))
+                {
+                    Assert.Throws<ArgumentException>(() => this._dam.BeginTransaction(iso), iso.ToString());
+                    continue;
+                }
+
+                this._dam.BeginTransaction(iso);
+                try
+                {
+                    if (iso == DbEnum.IsolationLevelEnum.NoTransaction)
+                    {
+                        Assert.That(this.Prop<IDbTransaction>(), Is.Null, iso.ToString());
+                        // 開始していないので、何もしない
+                        this._dam.CommitTransaction();
+                    }
+                    else
+                    {
+                        Assert.That(this.Prop<IDbTransaction>(), Is.Not.Null, iso.ToString());
+                    }
+                }
+                finally
+                {
+                    this._dam.RollbackTransaction();
+                }
+            }
+
+            // SQL Server・MySQL は、分離レベルがセッションに残る。既定に戻して、後のテストに持ち込まない。
+            //   既定は SQL Server が READ COMMITTED、MySQL が REPEATABLE READ（Oracle・PostgreSQL はトランザクションごと）。
+            this._dam.BeginTransaction(this._dap == "MCN"
+                ? DbEnum.IsolationLevelEnum.RepeatableRead : DbEnum.IsolationLevelEnum.ReadCommitted);
+            this._dam.RollbackTransaction();
+
+            Assert.That(this.Count(), Is.EqualTo(3), "どの回も何も変えていない");
+        }
+
+        #endregion
+
+        #region SQL の設定・パラメタ
+
+        /// <summary>SetSqlByFile はファイルの SQL を読む（既定のエンコードは UTF-8）。</summary>
+        [Test]
+        public void SetSqlByFile()
+        {
+            string path = Path.Combine(Path.GetTempPath(), "nunit_dam_" + Guid.NewGuid().ToString("N") + ".sql");
+            File.WriteAllText(path, "SELECT COUNT(*) FROM " + this.T, new UTF8Encoding(false));
+            try
+            {
+                this._dam.SetSqlByFile(path);
+                Assert.That(Convert.ToInt32(this._dam.ExecSelectScalar()), Is.EqualTo(3));
+
+                this._dam.SetSqlByFile(path, CommandType.Text);
+                Assert.That(Convert.ToInt32(this._dam.ExecSelectScalar()), Is.EqualTo(3));
+            }
+            finally
+            {
+                File.Delete(path);
+            }
+        }
+
+        /// <summary>GetParameter は、設定したパラメタの値を返す。</summary>
+        [Test]
+        public void GetParameter()
+        {
+            this._dam.SetSqlByCommand("SELECT COUNT(*) FROM " + this.T + " WHERE " + this.Q("ID") + " = " + this.P("P1"));
+            this._dam.SetParameter("P1", 2);
+
+            Assert.That(this._dam.GetParameter("P1"), Is.EqualTo(2));
+            Assert.That(Convert.ToInt32(this._dam.ExecSelectScalar()), Is.EqualTo(1));
+        }
+
+        /// <summary>
+        /// 型（プロバイダ固有の型）・サイズを指定した SetParameter。
+        /// FxSqlDotnetTypeInfo を設定していないので、dbTypeInfo はプロバイダ固有の型として扱われる。
+        /// </summary>
+        [Test]
+        public void SetParameter_WithTypeAndSize()
+        {
+            this._dam.SetSqlByCommand("INSERT INTO " + this.T + " (" + this.Q("ID") + ", " + this.Q("NAME") + ", " + this.Q("QTY")
+                + ") VALUES (" + this.P("P1") + ", " + this.P("P2") + ", " + this.P("P3") + ")");
+            this._dam.SetParameter("P1", 11, DbProvider.IntDbType(this._dap));
+            this._dam.SetParameter("P2", "y", DbProvider.StrDbType(this._dap), 20);
+            this._dam.SetParameter("P3", 5, DbProvider.IntDbType(this._dap), -1, ParameterDirection.Input);
+
+            Assert.That(this._dam.ExecInsUpDel_NonQuery(), Is.EqualTo(1));
+            Assert.That(this.Count("WHERE " + this.Q("ID") + " = 11 AND " + this.Q("NAME") + " = 'y' AND "
+                + this.Q("QTY") + " = 5"), Is.EqualTo(1));
+        }
+
+        #endregion
+
+        #region SQL の生成・取得
+
+        /// <summary>
+        /// ExecGenerateSQL は、SQL Server ではパラメタを埋め込んだ SQL を返す（実行はしない）。
+        /// **Oracle・MySQL・PostgreSQL は実装していない**（NotImplementedException）。
+        /// </summary>
+        [Test]
+        public void ExecGenerateSQL()
+        {
+            this._dam.SetSqlByCommand("SELECT COUNT(*) FROM " + this.T + " WHERE " + this.Q("ID") + " = " + this.P("P1"));
+            this._dam.SetParameter("P1", 2);
+            SQLUtility util = new SQLUtility(DbEnum.DBMSType.SQLServer);
+
+            if (this._dap == "SQL")
+            {
+                string sql = this._dam.ExecGenerateSQL(util);
+                Assert.That(sql, Does.Contain("= 2").And.Not.Contain(this.P("P1")));
+            }
+            else
+            {
+                Assert.Throws<NotImplementedException>(() => this._dam.ExecGenerateSQL(util));
+            }
+        }
+
+        /// <summary>
+        /// GetCurrentQuery は設定した SQL を返す。
+        /// GetCurrentQueryForLog は、FxSqlTraceLog が ON なら SQL とパラメタ（null・DBNull を含む）を返す。
+        /// </summary>
+        [Test]
+        public void GetCurrentQuery_AndForLog()
+        {
+            string sql = "SELECT COUNT(*) FROM " + this.T + " WHERE " + this.Q("ID") + " = " + this.P("P1");
+            this._dam.SetSqlByCommand(sql);
+            this._dam.SetParameter("P1", 2);
+            this._dam.SetParameter("P2", DBNull.Value);
+            this._dam.SetParameter("P3", null);
+
+            Assert.That(this._dam.GetCurrentQuery(), Is.EqualTo(sql));
+
+            string log = this._dam.GetCurrentQueryForLog();
+            Assert.That(log, Does.Contain("P1=2").And.Contain("P2=DBNull").And.Contain("P3=null"));
         }
 
         #endregion

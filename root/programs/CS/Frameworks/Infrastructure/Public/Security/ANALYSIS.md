@@ -97,6 +97,16 @@ JWE（抽象。JWEHeader / Create / Decrypt / Decrypt(jwt, typ, out payload)）
 - `JwkSet` … JWK Set（`keys` の配列）の読み書き
 - `RsaPublicKeyConverter` / `RsaPrivateKeyConverter` / `EccPublicKeyConverter` / `EccPrivateKeyConverter` …
   JWK と `RSAParameters` / `ECParameters` / 証明書の相互変換
+- `JwkOperator`（#634）… **任意の JWK の RFC 7638 の指紋**（`Thumbprint`。既定は SHA-256）、公開鍵だけか（`IsPublicOnly`）、秘密鍵の項目を落とす（`ToPublic`）。
+  **変換器が作る `kid` はハッシュが変換器に連動する**（`RS384` なら SHA-384）ので、DPoP の `jkt`（常に SHA-256）に `kid` を流用しないこと
+
+### 4.4 alg から作る・検証せずに読む（#634）
+
+- `JwsFactory` … **alg の文字列から JWS を作る**（JWK・パラメタ・証明書・秘密鍵の JWK）。扱うのは `RS*` / `PS*` / `ES*` の 9 つで、`HS*` と `none` は扱わない。
+  **`IsSameKeyType` で alg と鍵の種類（EC は `crv` まで）を照合してから作る**（アルゴリズムの取り違えの防止）。読めない JWK は `null`
+- `JwtReader` … **検証の前に**ヘッダ・ペイロード・`alg` / `kid` / `typ` を読む。読めなければ `null`（例外にしない）。読んだ値を検証の代わりにしない
+- `JWS_Header.jwk`（`JToken`）… DPoP の証明がヘッダに公開鍵を持つため。既定の `null` ではヘッダに出ない（既存の JWS は変わらない）
+- `JwsFactory.CreateFromPfx` の鍵の格納先は `JWS_*_X509` の既定（`MachineKeySet` を含む）。管理者でない環境の試験では、フラグを渡して直に作る
 
 ---
 

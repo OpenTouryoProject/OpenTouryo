@@ -173,20 +173,107 @@ UOC は `UOC_PreQuery` / `UOC_AfterQuery(sql)` / `UOC_AfterQuery(sql, ex)`。
 - `OAuth2AndOIDCClient` … Authorization Code / PKCE(S256) / Client Credentials / ROPC /
   Refresh / UserInfo / Revoke / Introspect / JWT Bearer / Device AuthZ / CIBA / Request Object / JWK Set。
   **すべて `static async Task<string>`（生の JSON を返す）**。`HttpClient` は `static` プロパティで差し替えられる
-- `OAuth2AndOIDCConst` / `OAuth2AndOIDCEnum` / `OAuth2AndOIDCParams` / `CmnClientParams`
-- `JwkSetStore` … JWK Set のキャッシュ
+- **`OAuth2AndOIDCClient` は処理区分ごとに `partial` クラスのファイルへ分けている**（公開 API は 1 つの型のまま）。
+  **区分は RFC の役割で切り、「FAPI」では切らない**（FAPI は PAR・JAR・private_key_jwt・mTLS・DPoP などの組み合わせ方の profile で、部品は FAPI 以外でも使う）
+
+  | ファイル | 区分 | 中身 |
+  |---|---|---|
+  | `OAuth2AndOIDCClient.cs` | 共有基盤 | `HttpClient`・`SendAsync`、**クライアント認証 `SetClientAuthentication`**（PAR・CIBA・DPoP の Token 要求が共有する） |
+  | `.Grants.cs` | 基本フロー | 認可コード（PKCE・FAPI1 の版を含む）・`PKCE_S256_CodeChallengeMethod`・Client Credentials・ROPC |
+  | `.TokenManagement.cs` | トークン運用・管理 | Refresh・Revoke（RFC 7009）・Introspect（RFC 7662） |
+  | `.OpenIDConnect.cs` | OIDC・メタデータ・鍵 | UserInfo・JWK Set・Discovery |
+  | `.ExtensionGrants.cs` | 拡張グラント・分離フロー | JWT Bearer（RFC 7523）・Device AuthZ（RFC 8628）・CIBA |
+  | `.AuthZRequest.cs` | 認可要求の保護 | Request Object の預け先（RFC 9101）・PAR（RFC 9126） |
+  | `.DPoP.cs` | 送信者制約トークン | DPoP（RFC 9449） |
+  | `.ClientRegistration.cs` | 動的クライアント登録 | DCR（RFC 7591 / 7592） |
+
+  **新しい口は、区分の合うファイルに足す。** 置くのは **SP・RP（クライアント）側の処理が基本**で、IdP 側の処理（発行・口の実装）は置かない。
+  **ただし、SP・RP 側の処理と対になる IdP 側の処理**（同じ形式を作る / 読む、署名する / 検証する）は、例外として含める（下の表）。
+  **ログアウトは部品化を保留している**（Web Forms / MVC の SP・RP の口の共通化の観点から）。net48 の csproj は `Compile Include` を列挙しているので、ファイルを足したら並べること
+- **公開情報（JWK Set・Discovery・SAML2 メタデータ）の取得は `GetStringAsync`（`internal`）に集めている。** 失敗しても例外にせず空文字を返す。
+  `GetJwkSetAsync` と `GetDiscoveryDocumentAsync` はこれを呼ぶだけ（以前は `GetJwkSetAsync` を汎用の GET として代用していた）
+- **CIBA の Token 要求で `private_key_jwt` / `client_secret_jwt` / `tls_client_auth` を使うなら、`client_assertion` を受ける `GetAccessTokenByCibaAsync` を使う。**
+  受けない既存の版は Basic / post だけで、それ以外は従来どおり `ArgumentException`
+- `OAuth2AndOIDCConst` / `OAuth2AndOIDCEnum` / `OAuth2AndOIDCParams` / `CmnClientParams` / `CmnServerParams`（#634）
+- `JwkSetStore` … JWK Set のキャッシュ（**設定の `JwkSetUri` 1 本**＝自分の認可サーバ）
+
+**#634 で、汎用認証サイト（MPAS）から次を移した**（どれも追加で、既存のシグネチャは変えていない）。
+
+| クラス | 何をするか | 使う側 |
+|---|---|---|
+| `DPoPProof` | **DPoP の証明（RFC 9449）を作る・検証する**。`VerifyForResource` は `ath` と `cnf.jkt` も照合する | クライアント / AS / RS |
+| `OAuth2AndOIDCClient` | `HttpClient` の get・`SendAsync`（H-1）、**`SendWithDPoPAsync`**（`DPoP-Nonce` を覚え、`use_dpop_nonce` なら 1 回だけ送り直す）・`TokenRequestWithDPoPAsync`・`GetUserInfoAsync`（DPoP 版）、**DCR**（`GetRegistrationEndpointAsync`・`RegisterClientAsync`・`Read` / `Update` / `DeleteClientRegistrationAsync`） | クライアント |
+| `RemoteJwkSetStore` | **相手の `jwks_uri`（discovery）から `kid` で鍵を引く**。URL ごとのキャッシュ、取得の下限（既定 1 分）と同時 1 本、**同期の経路は `PickJwksFromCache` で待たない**（背景で補充） | RP / AS |
+| `SAML2Metadata` | **相手のメタデータを読む**（`entityID` を必ず照合。署名鍵は複数） | SP |
+| `SAML2Attributes` | **`AttributeStatement` を書く（IdP）・読む（SP）**。メアド・利用者名・`email_verified` の別名を吸収 | IdP / SP |
+| `SAML2Client.VerifyResponseWithReason` / `SAML2VerifyResult` | **落ちた理由を返す**応答の検証（鍵は複数を順に試す） | SP |
+| `OAuth2AndOIDCSpec` | 仕様が決めている小物（`error` → HTTP ステータス、`response_type` の正規化、`prompt` の集合、`max_age`、認可応答の URL（`iss` を付ける）、空白区切り、`client_assertion` と `assertion` の両受け） | AS / RS |
+| `AuthenticationHeader` | `DPoP` スキームの読み書き（`GetAccessToken` はスキームも返す）、`WWW-Authenticate` の組み立て、**Basic を復号前後のどちらでも照合する版**（H-3） | AS / RS |
+
+**SP・RP 側と対になる IdP 側の処理**（#634 の続き。例外として同じ所に置く）。どれも、配備の決めは引数で受ける
+（自分の値と鍵を設定から読む版もある。下の `CmnServerParams`）。
+
+| 置き場 | IdP 側の処理 | 対になる SP・RP 側の処理 | 呼び出し側に残す決め |
+|---|---|---|---|
+| `SAML2Client.VerifyRequest` | 要求の検証（Issuer から鍵を選ぶ版と、鍵を固定で渡す版） | `SAML2Client.VerifyResponse` | 鍵をどこから引くか。**鍵が無い SP をどう扱うか**（部品は通さない）。ACS URL の登録値との照合 |
+| `SAML2Client.CreateRedirectResponse` / `CreatePostResponse` | 応答の作成・署名（成功のときだけ Assertion。属性も足せる） | `SAML2Client.CreateRedirectRequest` / `CreatePostRequest` | 返す先（事前登録の ACS URL）・NameID（PPID など）・出す属性・Binding・鍵 |
+| `SAML2Bindings.AppendSigningCertificates` | メタデータに署名用の証明書を書き足す（鍵の入れ替え中に新旧を並べる） | `SAML2Metadata.GetSigningKeys`（複数を読む） | どの証明書を並べるか |
+| `ResponseObject.Create` | JARM の ResponseObject を作る | `ResponseObject.Verify` | 鍵（alg・kid）・有効期限 |
+| `OAuth2AndOIDCSpec.VerifyPkce` | PKCE の検証 | `OAuth2AndOIDCClient.PKCE_S256_CodeChallengeMethod` | `plain` を受けるか |
+| `JwkSetDocument` | 自分の JWK Set を出す（ファイルの変更を検知して読み直す。ETag） | `RemoteJwkSetStore`（相手の JWK Set を読む） | `Cache-Control` の秒数・304 の返し方 |
+
+**移していないもの**（対にはなるが、汎用の部分を切り出せない、または保留）:
+id_token / access_token の発行（汎用認証サイトの作り（access_token からの作り替え・利用者ストア・鍵の表）と絡み合っている）、
+logout_token（ログアウトは保留）、DCR・Discovery・PAR などの受け口（配備の決めそのもの）。
+
+**配備ごとの決めは持ち込んでいない**（MPAS 側に残る）。`jti` の使い回しを拒む台帳（`DPoPProof.CreateProofId` は鍵だけ作る）、
+`nonce` の作り方、`htu` の期待値の決め方（**要求の `Host` を信じず設定から作る**）、どの口で `cnf.jkt` / `dpop_jkt` を見るか、
+DCR の口の認可、クライアント登録の持ち方。
+
+- **`OAuth2AndOIDCConst.UrnCnfJktClaim` は `urn:oauth:claim:cnf:jkt`**（`UrnCnfX5tClaim` と同じ組み立て）。
+  MPAS の `Const.UrnCnfJktClaim`（`urn:oauth:cnf:jkt`）とは値が違う。プロセスの外に出ない値だが、置き換えるときは揃えること
+- `DPoPProof.Create` は `iat` を**数値**で入れる（`CmnJwtToken.CreateIatClaim` は文字列を返すので使わない）。`Verify` は文字列の `iat` を断る
+- `SendWithDPoPAsync` の `DPoP-Nonce` の記憶は `static`（オリジンごと）で、プロセス全体に効く
 
 **`CmnClientParams`（`SpRp_*`）と `JwkSetUri` は、クライアント役が読む設定である**（#602）。
 
 | キー | フレームワークでの意味 |
 |---|---|
 | `SpRp_Isser` / `SpRp_*Uri` / `SpRp_*CerFilePath` / `JwkSetUri` | **相手（OP / IdP）の値**（Issuer・エンドポイント・検証用の公開鍵・JWK Set の URL） |
+| `SpRp_DiscoveryUri` / `SpRp_Saml2MetadataUri` / `SpRp_Saml2EntityId` | **相手（OP / IdP）の値**（Discovery・SAML2 メタデータの所在、期待する entityID）。#634 で追加 |
+| `SpRp_Saml2AcsUri` | **自分の ACS の URL**（SAML2 の Audience / Recipient に照合する。空なら照合しない）。#634 で追加 |
 | `SpRp_*PfxFilePath` / `SpRp_*PfxPassword` | **クライアント自身の鍵**（要求の署名・JWE の復号） |
 | `JwkSetFilePath` | **認可サーバ自身の JWK Set**（`CmnJwtToken.Verify` の分岐にも使われる） |
 
-**認可サーバを作るアプリが、これらを「自分の値」（自分の Issuer・`/jwkcerts` の口・署名鍵の対）として
+**#634 の部品は、相手の値を引数で受ける版が基本である。** 設定を読む版（引数の少ない版）は、**相手が 1 つの配備**のための便宜で、
+次の表のキーを読む。**キーが空なら何もせずに null（検証は `NoKey`）を返す**（通信もしない）。相手が複数なら、引数で受ける版を使う。
+
+| 設定を読む版 | 読むキー |
+|---|---|
+| `RemoteJwkSetStore.GetJwkAsync(kid)` | `JwkSetUri` |
+| `RemoteJwkSetStore.GetJwkByDiscoveryAsync(kid)` | `SpRp_DiscoveryUri`・`SpRp_Isser` |
+| `SAML2Metadata.GetAsync()` | `SpRp_Saml2MetadataUri`・`SpRp_Saml2EntityId` |
+| `SAML2Client.VerifyResponseWithReason(queryString, samlResponse, expectedInResponseTo, relayState, expectedRelayState)` | `SpRp_RsaCerFilePath`・`SpRp_Saml2EntityId`・`SpRp_Saml2AcsUri` |
+
+**配布している設定ファイル（サンプルの `appsettings.json` / `app.config`）には、これらのキーを書いていない**（どのサンプルもこの口を使っていないため）。使うアプリが足すこと。
+調整値（取り直しの下限・DPoP の `iat` の窓・メタデータのキャッシュの期間）は設定にしていない。引数か static プロパティで変える。
+
+**認可サーバを作るアプリが、`SpRp_*` を「自分の値」（自分の Issuer・`/jwkcerts` の口・署名鍵の対）として
 流用すると、同じ配備でクライアント役を兼ねたときに、相手の値を置けなくなる。**
-サーバ役の値は、アプリ側で別のキーを持つこと。
+サーバ役の値は、`SpRp_*` とは別のキーに置く。上の IdP 側の処理が読むキーは、次の `CmnServerParams` にまとめた。
+
+**`CmnServerParams` は、IdP / 認可サーバ自身の値である**（#634）。**キー名は汎用認証サイトの設定と同じ**（`SpRp_` を付けない）で、
+汎用認証サイトの設定がそのまま効く。読むのは、上の IdP 側の処理の**設定を読む版（引数の少ない版）だけ**で、引数で受ける版は設定を読まない。
+
+| 設定を読む版 | 読むキー | 無いとき |
+|---|---|---|
+| `ResponseObject.Create(responseParams, aud, expires)` | `IssuerId`・`RsaPfxFilePath`・`RsaPfxPassword`（RS256。`kid` はその鍵の JWK の `kid`） | `FrameworkException` |
+| `SAML2Client.CreateRedirectResponse` / `CreatePostResponse`（issuer・有効期間・鍵を受けない版） | `IssuerId`・`Saml2AssertionExpireTimeSpanFromMinutes`（分）・`RsaPfxFilePath`・`RsaPfxPassword` | `FrameworkException`（**有効期間を、id_token の期間などで黙って補わない**） |
+| `OAuth2AndOIDCSpec.VerifyPkce(method, challenge, verifier, out usedS256)` | `RequirePkceS256`（`true` なら S256 だけ） | `plain` も受ける。`true` / `false` 以外は `FrameworkException` |
+| `SAML2Bindings.AppendSigningCertificates(metadata)` | `PreviousSigningCerFilePaths`（*.cer。空白・カンマ・タブ区切り） | 何も足さない。**読めないファイルは飛ばす**（汎用認証サイトの従来の扱い。並べた本数は戻り値で分かる） |
+
+`JwkSetDocument.Get(out etag)` は、従来からの `JwkSetFilePath`（`OAuth2AndOIDCParams`）を読む。
+これらのキーも、配布している設定ファイルには書いていない。
 
 ### 8.2 トークンの検証
 
@@ -210,13 +297,46 @@ UOC は `UOC_PreQuery` / `UOC_AfterQuery(sql)` / `UOC_AfterQuery(sql, ex)`。
 `SAML2Client`（`CreateRedirectRequest` / `CreatePostRequest` / `VerifyResponse`）、`SAML2Bindings` `SAML2Const` `SAML2Enum` `SAML2Params`。
 XML 署名は `Public.Security` の `SignedXml2`。
 
-| 何の鍵 | 既定 | 相手ごとに替えるなら |
-|---|---|---|
-| `VerifyResponse` の検証用証明書 | `CmnClientParams.RsaCerFilePath`（配備に 1 本） | `cerFilePath` を受けるオーバーロード（#600） |
-| 要求（`AuthnRequest`）の署名鍵 | `CmnClientParams.RsaPfxFilePath`（配備に 1 本） | `CreateRedirectRequest` は `digitalSign`、`CreatePostRequest` は `rsa` を受けるオーバーロード（#606） |
+**`SAML2Client` は処理区分ごとに `partial` クラスのファイルへ分けている**（公開 API は 1 つの型のまま）。
+各ファイルの Region は「**設定を読む版 → 引数で受ける版 → private**」の順に並べる。
 
-- #606 の引数は `out id` の手前に置く。**`null` なら設定の鍵で署名する**
-  （**`SAML2Bindings.EncodeAndSign*` の「`null` なら署名しない」とは違う**）
+| ファイル | 区分 |
+|---|---|
+| `SAML2Client.cs` | 要求の作成（SP → IdP。`CreateRedirectRequest` / `CreatePostRequest`） |
+| `SAML2Client.VerifyResponse.cs` | 応答の検証（bool を返す従来の版） |
+| `SAML2Client.VerifyResponseWithReason.cs` | 応答の検証（理由を返す版。#634。結果は `SAML2VerifyResult`） |
+| `SAML2Client.VerifyRequest.cs` | 要求の検証（**IdP 側**。SP → IdP。#634） |
+| `SAML2Client.CreateResponse.cs` | 応答の作成（**IdP 側**。IdP → SP。Redirect / POST。#634） |
+
+IdP 側の 2 つは、SP 側の処理と対になるので、例外として同じクラスに置いている（`SAML2Bindings` と同じ扱い）。
+
+**`SAML2Bindings` も、処理区分（共通・SP 側・IdP 側）ごとに `partial` クラスのファイルへ分けている。**
+SAML の署名・検証は SP と IdP の双方が使うため、**IdP 側の処理も、例外として同じクラスに置いている**
+（MPAS からの移行は SP・RP 側が基本だが、この様に双方が使う処理は移行の対象に含める）。
+
+| ファイル | 区分 |
+|---|---|
+| `SAML2Bindings.cs` | 共通（`CreateNamespaceManager`・`GetIdIn*`・スキーマ検証） |
+| `SAML2Bindings.Encoding.cs` | 共通（符号化・署名 / 復号・検証。HTTP-Redirect / HTTP-POST） |
+| `SAML2Bindings.SP.cs` | SP 側（`CreateRequest`、応答を読む `Get*InResponse` / `Get*InAssertion`） |
+| `SAML2Bindings.IdP.cs` | IdP 側（`CreateResponse` / `CreateAssertion` / `CreateMetadata`、要求を読む `Get*InRequest`） |
+
+- XML の名前（XPath・要素名・属性名・接頭辞）と ID の接頭辞（`s2`）は `SAML2Const` に寄せてある。
+  **テンプレートの置換キー（`{ID}` など）は、`SAML2Const` のテンプレートと対の局所的な名前なので、直書きのまま**にしている
+- **`VerifyByXsd`（private）は中身の無い雛形**（XSD のファイル名と名前空間が `XXXX`）。呼ばれていないが、そのまま残している
+- **`CreateMetadata` は `WantAuthnRequestsSigned` を `true` で固定している**（引数で選べない）。
+  SP と IdP の双方が使う処理を移行するときに、合わせて扱う
+
+| 何の鍵 | 既定（引数の少ない版が読む設定） | 相手ごとに替えるなら |
+|---|---|---|
+| `VerifyResponse` の検証用証明書 | `CmnClientParams.RsaCerFilePath`（配備に 1 本） | `cerFilePath` を受けるオーバーロード（#600）。**null・空は受けない** |
+| 要求（`AuthnRequest`）の署名鍵 | `CmnClientParams.RsaPfxFilePath`（配備に 1 本） | `CreateRedirectRequest` は `digitalSign`、`CreatePostRequest` は `rsa` を受けるオーバーロード（#606）。**null は受けない** |
+
+- **設定を読むのは、鍵を受けない版（引数の少ない版）だけである。** そこで設定から鍵を作り、鍵を受ける版へ渡す
+- **鍵を受ける版は、null・空を `ArgumentNullException` にする。** 設定へは倒さない。
+  `SAML2Bindings.EncodeAndSign*` は `null` なら**署名しない**ので、素通しにすると**黙って無署名の要求を出す**ことになるため。
+  （#600 / #606 の時点では「null・空なら設定の鍵」だった。リリース前に、オーバーロードの形へ揃えた）
+- #606 の引数は `out id` の手前に置く
 - 省略可能な引数ではなくオーバーロードにしたのは、既存の版のシグネチャを変えると、
   **ビルド済みの呼び出し元が `MissingMethodException` で落ちる**ため
 - Redirect の `SigAlg` は、`EncodeAndSignRedirect` に渡した `DigitalSign` のアルゴリズムで書く
@@ -277,6 +397,7 @@ net10.0 のフレームワーク参照（`Microsoft.AspNetCore.App`）ではな�
 4. **`CallController` はスレッド間で共有できない**（3.3 節）。
 5. **`BaseController` は巨大**。`#region` に閉じた修正に留め、全体のリファクタリングは避ける（互換性の維持が最優先）。
 6. **認証の公開 API はオーバーロードで足す**（8.3 節）。既存の版のシグネチャ・引数名を変えると、ビルド済みの呼び出し元が壊れる。
+   **設定は、引数の少ない版だけが読む。** 引数で受ける版は、受けた値だけを使い、null・空で設定へ倒さない（8.1 節・8.3 節）。
 
 ---
 

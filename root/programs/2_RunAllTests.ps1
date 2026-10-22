@@ -47,6 +47,7 @@
     ＜副作用＞
       ワーキング ツリーの Result*.txt が書き換わる。これは従来のバッチ運用と同じで、
       内容の検収（コミットするか戻すか）は人が git diff で判断する。
+      -Coverage の回は、Tests\COVERAGE.md（カバレッジの表）も書き換わる（CoverageReport.ps1）。
 
 .PARAMETER OutputDir
     HEAD 版の期待値とビルド ログの出力先。既定は %TEMP%\OpenTouryoTestResults。
@@ -79,8 +80,25 @@
 
     **始める前から動いていた DBMS は、起動も停止もしない。**
     **起動したのに、その DBMS のテストが 1 件も実行されなければ NG にする**（スキップのまま OK にしない）。
+.PARAMETER Coverage
+    **カバレッジを測る専用の実行。** 結果を Tests\COVERAGE.md に書く。**-LocalServicesDir が必須。**
+
+    ＜流れ＞
+      1. NUnit の 4 プロジェクト（TestPublic・TestPublicNLog・TestPublicDb・TestFramework）を 1 回のバッチで回して判定する
+      2. -Linux と同じく、TestPublic を Linux のコンテナで回す（OpenSSL 系など、Linux でしか通らない行を数える）。
+         **docker が要る**
+      3. -CrossDb と同じく、Oracle → MySQL → PostgreSQL を 1 つずつ「起動 → TestPublicDb → 停止」する
+      4. **全部 OK なら**、この実行で作られた net10.0 のカバレッジを、アセンブリごとに通った行の
+         和集合で数え、COVERAGE.md の表を丸ごと置き換える（CoverageReport.ps1）
+
+    ＜なぜ専用にするか＞
+      OpenTouryo.Public は TestPublic だけでなく、TestPublicNLog（NLog の経路）と
+      TestPublicDb（BaseDam・DamSqlSvr など）でも通る。合算は同じ実行の結果どうしでしか取れない。
+      **普通の実行は COVERAGE.md を書かない**（画面に表示するだけ）。
+
+    -Only / -SkipBuild / -Linux / -CrossDb とは同時に指定できない（全部をそろえて測るため）。
 .PARAMETER LocalServicesDir
-    LocalServicesOnDocker のフォルダ（-CrossDb で使う）。
+    LocalServicesOnDocker のフォルダ（-CrossDb / -Coverage で使う）。
     **docker コマンドが使えれば Rancher Desktop 版（*.ps1）、使えなければ WSL2 版（*_wsl2.ps1）を使う。**
 .PARAMETER Linux
     Windows でのビルドとテストの後に、**net10.0 の出力をそのまま Linux のコンテナで回す**（#632）。
@@ -95,6 +113,11 @@
     ＜コンテナ＞
       **1 つだけ、--rm で起動する**（終われば消える）。メモリは -LinuxMemory で抑える。
       同じ名前のコンテナが既にあれば、触らずに止める。
+
+    ＜カバレッジ＞
+      TestPublic の回はカバレッジも取る（表示する。COVERAGE.md に残すのは -Coverage の回）。
+      **基盤の DLL だけは、この回のために portable の PDB でビルドし直したものに差し替える**
+      （Linux の coverlet は Windows 形式の PDB を読めない。詳しくは本文の「Linux」の節）。
 .PARAMETER LinuxImage
     -Linux で使うイメージ。既定は mcr.microsoft.com/dotnet/sdk:10.0（dotnet test に SDK が要る）。
 .PARAMETER LinuxMemory
@@ -115,6 +138,9 @@
 .EXAMPLE
     .\2_RunAllTests.ps1 -Linux
 
+.EXAMPLE
+    .\2_RunAllTests.ps1 -Coverage -LocalServicesDir D:\git\LocalServicesOnDocker
+
 .NOTES
     作成者          ：玄人 幸道
     更新履歴        ：
@@ -132,6 +158,11 @@
      2026/10/18  玄人 幸道         -CrossDb / -LocalServicesDir を追加した（#623）
      2026/10/18  玄人 幸道         NUnit のカバレッジを、別のプロジェクトの結果から表示していたのを修正（#623 の後）
      2026/10/19  玄人 幸道         -Linux / -LinuxImage / -LinuxMemory を追加した（#632）
+     2026/10/19  玄人 幸道         -Coverage を追加した（NUnit のカバレッジを合算して Tests\COVERAGE.md に書く）
+     2026/10/19  玄人 幸道         Linux の回でもカバレッジを取るようにした（-Coverage にも含める）
+     2026/10/19  玄人 幸道         NUnit の TestFramework（Framework の単体で使える部品）を加えた
+     2026/10/19  玄人 幸道         COVERAGE.md の Framework を、対象モジュールごとに出すようにした
+     2026/10/22  玄人 幸道         Framework の対象モジュールに、#634 で足したクラスと partial に分けたファイルを加えた
 #>
 [CmdletBinding()]
 param(
@@ -141,6 +172,7 @@ param(
     [switch]$PassThru,
     [switch]$SkipBuild,
     [switch]$CrossDb,
+    [switch]$Coverage,
     [string]$LocalServicesDir,
     [switch]$Linux,
     [string]$LinuxImage = "mcr.microsoft.com/dotnet/sdk:10.0",
@@ -173,6 +205,12 @@ New-Item -ItemType Directory -Force $OutputDir | Out-Null
 # サマリの整形。Format-Table は 5.1 で全角の桁を数えないため、自前で揃える。
 . (Join-Path $PSScriptRoot "SummaryTable.ps1")
 . (Join-Path $PSScriptRoot "Prerequisite.ps1")
+# NUnit のカバレッジを合算して Tests\COVERAGE.md に書く（-Coverage）
+. (Join-Path $PSScriptRoot "CoverageReport.ps1")
+
+# 今回の実行で作られたカバレッジ ファイル（Get-NUnitResult が積む。-Coverage の最後に合算する）
+$coverageFiles = @()
+$coverageMd    = Join-Path $testsRoot "COVERAGE.md"
 
 # ------------------------------------------------------------------
 # コンソールのコード ページを先に UTF-8 にしておく
@@ -329,6 +367,40 @@ $tests = @(
         Result = "NUnit\TestResults\TestPublicDb\TestPublicDb_net10.0.trx"; Kind = "NUnit"; Coverage = $true
         NeedDb = $true
     }
+    # Framework の、単体で使える部品（認証・例外）。親クラスは組み合わせて使うので疎通に任せる。
+    @{
+        Name = "NUnit TestFramework (net48)";   Bat = "y_Build_TestCode_NUnit.bat"
+        Result = "NUnit\TestResults\TestFramework\TestFramework_net48.trx";   Kind = "NUnit"
+    }
+    @{
+        Name = "NUnit TestFramework (net10.0)"; Bat = "y_Build_TestCode_NUnit.bat"
+        Result = "NUnit\TestResults\TestFramework\TestFramework_net10.0.trx"; Kind = "NUnit"; Coverage = $true
+        # COVERAGE.md に、アセンブリ全体ではなくモジュールごとに出す（対象にした部品だけを測るため）。
+        # パスはプロジェクトのフォルダ（Infrastructure\Framework）からの相対。
+        CoverageModules = @{
+            "OpenTouryo.Framework" = @(
+                "Authentication/AuthenticationHeader.cs", "Authentication/SAML2Enum.cs",
+                # partial に分けたクラスは、ファイルごとに出す（#634）
+                "Authentication/SAML2Bindings.cs", "Authentication/SAML2Bindings.Encoding.cs",
+                "Authentication/SAML2Bindings.SP.cs", "Authentication/SAML2Bindings.IdP.cs",
+                "Authentication/SAML2Client.cs", "Authentication/SAML2Client.VerifyResponse.cs",
+                "Authentication/SAML2Client.VerifyResponseWithReason.cs", "Authentication/SAML2Client.VerifyRequest.cs",
+                "Authentication/SAML2Client.CreateResponse.cs",
+                "Authentication/SAML2VerifyResult.cs", "Authentication/SAML2Metadata.cs", "Authentication/SAML2Attributes.cs",
+                "Authentication/OAuth2AndOIDCClient.cs", "Authentication/OAuth2AndOIDCClient.Grants.cs",
+                "Authentication/OAuth2AndOIDCClient.TokenManagement.cs", "Authentication/OAuth2AndOIDCClient.ExtensionGrants.cs",
+                "Authentication/OAuth2AndOIDCClient.AuthZRequest.cs", "Authentication/OAuth2AndOIDCClient.OpenIDConnect.cs",
+                "Authentication/OAuth2AndOIDCClient.ClientRegistration.cs", "Authentication/OAuth2AndOIDCClient.DPoP.cs",
+                "Authentication/OAuth2AndOIDCSpec.cs", "Authentication/DPoPProof.cs",
+                "Authentication/RemoteJwkSetStore.cs", "Authentication/JwkSetDocument.cs",
+                "Authentication/CmnClientParams.cs", "Authentication/CmnServerParams.cs",
+                "Authentication/CmnJwtToken.cs", "Authentication/AccessToken.cs", "Authentication/IdToken.cs",
+                "Authentication/ResponseObject.cs", "Authentication/JwtAssertion.cs",
+                "Authentication/RequestObject.cs", "Authentication/ClaimsInRO.cs",
+                "Exceptions/BusinessApplicationException.cs", "Exceptions/BusinessSystemException.cs",
+                "Exceptions/FrameworkException.cs")
+        }
+    }
     # Linux（#632）。Windows でビルドした net10.0 の出力を、そのまま Linux のコンテナで回す。
     @{
         Name = "EncAndDecUtilCUI (Linux)";   Bat = "y_Build_TestCode_SecCUI.bat"
@@ -337,7 +409,7 @@ $tests = @(
     }
     @{
         Name = "NUnit TestPublic (Linux)";   Bat = "y_Build_TestCode_NUnit.bat"
-        Result = "NUnit\TestResults\Linux\TestPublic_linux.trx"; Kind = "NUnit"
+        Result = "NUnit\TestResults\Linux\TestPublic_linux.trx"; Kind = "NUnit"; Coverage = $true
         Linux = $true
     }
 )
@@ -368,9 +440,9 @@ if ($List)
     exit 0
 }
 
-# **Linux の対象は -Linux のときだけ。**（#632）
+# **Linux の対象は -Linux（と -Coverage）のときだけ。**（#632）
 #   -Only より先に外す。外さないと、-Only "EncAndDecUtilCUI" が Linux の分まで拾う。
-if (-not $Linux)
+if (-not ($Linux -or $Coverage))
 {
     $tests = @($tests | Where-Object { -not $_.Linux })
 }
@@ -410,23 +482,44 @@ $crossDbServices = @(
 )
 $crossDbProject = "TestPublicDb"
 
-if ($CrossDb)
+# **-Coverage は、全部をそろえて測る。**（合算は同じ実行の結果どうしでしか取れない）
+if ($Coverage -and ($Only -or $SkipBuild -or $Linux -or $CrossDb))
+{
+    Write-Host "  **-Coverage は -Only / -SkipBuild / -Linux / -CrossDb と同時に指定できません。**" -ForegroundColor Red
+    Write-Host "  NUnit の全部とクロス DB を 1 回で回して合算するためです（-CrossDb の回も含みます）。" -ForegroundColor Yellow
+    exit 1
+}
+
+# クロス DB の回（DBMS ごとの起動 → TestPublicDb → 停止）を回すか。-Coverage も回す。
+$crossDbRun  = ($CrossDb -or $Coverage)
+$crossDbMode = $(if ($Coverage) { "-Coverage" } else { "-CrossDb" })
+
+if ($crossDbRun)
 {
     if (-not $LocalServicesDir -or -not (Test-Path (Join-Path $LocalServicesDir "Start-Services.ps1")))
     {
-        Write-Host "  **-CrossDb には -LocalServicesDir（LocalServicesOnDocker のフォルダ）が要ります。**" -ForegroundColor Red
+        Write-Host ("  **{0} には -LocalServicesDir（LocalServicesOnDocker のフォルダ）が要ります。**" -f $crossDbMode) -ForegroundColor Red
         Write-Host ("  指定 : '{0}'（Start-Services.ps1 が見つかりません）" -f $LocalServicesDir) -ForegroundColor Yellow
         exit 1
     }
 
-    # **対象は TestPublicDb だけにする。** 他のテストは DBMS を切り替えても結果が変わらない。
-    $tests = @($tests | Where-Object { $_.Name -like "*$crossDbProject*" })
-    if ($tests.Count -eq 0)
+    if ($Coverage)
     {
-        Write-Host "  **-CrossDb の対象（TestPublicDb）が、-Only で外れています。**" -ForegroundColor Red
-        exit 1
+        # **対象は NUnit の全部**（Linux の回を含む）。カバレッジを取るのは NUnit だけなので、Golden は回さない。
+        $tests = @($tests | Where-Object { $_.Kind -eq "NUnit" })
+        Write-Host ("  -Coverage : 対象を NUnit の {0} 件に絞りました（Linux の回を含む。続けてクロス DB を回します）" -f $tests.Count) -ForegroundColor Yellow
     }
-    Write-Host ("  -CrossDb : 対象を {0} の {1} 件に絞りました" -f $crossDbProject, $tests.Count) -ForegroundColor Yellow
+    else
+    {
+        # **対象は TestPublicDb だけにする。** 他のテストは DBMS を切り替えても結果が変わらない。
+        $tests = @($tests | Where-Object { $_.Name -like "*$crossDbProject*" })
+        if ($tests.Count -eq 0)
+        {
+            Write-Host "  **-CrossDb の対象（TestPublicDb）が、-Only で外れています。**" -ForegroundColor Red
+            exit 1
+        }
+        Write-Host ("  -CrossDb : 対象を {0} の {1} 件に絞りました" -f $crossDbProject, $tests.Count) -ForegroundColor Yellow
+    }
 
     # **docker コマンドが使えれば Rancher Desktop 版、使えなければ WSL2 版。**
     #   2 つは別の Docker を見るので、混ぜると同じサービスが二重に立つ。
@@ -438,7 +531,7 @@ if ($CrossDb)
     }
     $svcStart = Join-Path $LocalServicesDir ("Start-Services{0}.ps1" -f $suffix)
     $svcStop  = Join-Path $LocalServicesDir ("Stop-Services{0}.ps1" -f $suffix)
-    Write-Host ("  -CrossDb : {0} を使います" -f $(if ($suffix) { "WSL2 版（*_wsl2.ps1）" } else { "Rancher Desktop 版（*.ps1）" })) -ForegroundColor Yellow
+    Write-Host ("  {0} : {1} を使います" -f $crossDbMode, $(if ($suffix) { "WSL2 版（*_wsl2.ps1）" } else { "Rancher Desktop 版（*.ps1）" })) -ForegroundColor Yellow
 
     foreach ($s in @($svcStart, $svcStop))
     {
@@ -456,13 +549,16 @@ if ($CrossDb)
 #   **docker が要る。** 無ければ、回さずに止める（黙って Windows の分だけ OK にしない）。
 $linuxContainer = "opentouryo-linuxtest"
 
-if ($Linux)
+if ($Linux -or $Coverage)
 {
-    if ($CrossDb)
+    if ($Linux -and $CrossDb)
     {
         Write-Host "  **-Linux と -CrossDb は同時に指定できません。** 別々に実行してください。" -ForegroundColor Red
         exit 1
     }
+
+    # -Coverage も Linux の回を含む（OpenSSL 系など、Linux でしか通らない行を数えるため）
+    $linuxMode = $(if ($Coverage) { "-Coverage" } else { "-Linux" })
 
     $dockerOk = $false
     if (Get-Command docker -EA SilentlyContinue)
@@ -472,7 +568,7 @@ if ($Linux)
     }
     if (-not $dockerOk)
     {
-        Write-Host "  **-Linux には docker コマンドが要ります**（Rancher Desktop が動いているか確かめてください）。" -ForegroundColor Red
+        Write-Host ("  **{0} には docker コマンドが要ります**（Rancher Desktop が動いているか確かめてください）。" -f $linuxMode) -ForegroundColor Red
         exit 1
     }
 
@@ -484,7 +580,7 @@ if ($Linux)
         exit 1
     }
 
-    if (@($tests | Where-Object { $_.Linux }).Count -eq 0)
+    if ($Linux -and @($tests | Where-Object { $_.Linux }).Count -eq 0)
     {
         Write-Host "  **-Linux の対象が、-Only で外れています。**" -ForegroundColor Red
         exit 1
@@ -534,10 +630,10 @@ $needDb = @($tests | Where-Object { $_.NeedDb }).Count -gt 0
 
 $dbConfig = Join-Path $testsRoot "Golden\TestDataAccess\App.config"
 
-# **-CrossDb では、SQL Server（必須）が動いていなければ起動する。**（#623）
+# **-CrossDb / -Coverage では、SQL Server（必須）が動いていなければ起動する。**（#623）
 #   起動したものだけを、終わったら止める（始める前から動いていれば、そのまま）。
 $startedSqlServer = $false
-if ($CrossDb -and -not (Test-SqlServer (Get-ConnectionStringFromConfig $dbConfig)).Ok)
+if ($crossDbRun -and -not (Test-SqlServer (Get-ConnectionStringFromConfig $dbConfig)).Ok)
 {
     Write-Host "=== クロス DB : SQL Server を起動します ===" -ForegroundColor Cyan
     if (-not (Invoke-LocalService $svcStart "sqlserver"))
@@ -677,6 +773,56 @@ if (-not $SkipBuild)
 #   （テストが出力のフォルダに書いても、ワーキング ツリーは変わらない）。
 #   結果はいったん $OutputDir\linux に受け、Windows の回と同じ場所へ置く
 #   （Golden はワーキング ツリーの ResultCore100OnLinux.txt。Windows の回と同じく、書き換わる）。
+#
+#   ＜カバレッジ＞
+#   Windows の回と同じ coverlet で取る。ただし Linux では、次の 2 つが要る。
+#     1. **基盤の DLL の PDB が portable であること。** 基盤は既定で full（Windows 形式）の PDB で
+#        ビルドされ、Linux の coverlet はそれを読めない（何も計測されない）。
+#        そこで、この回のためだけに基盤（Public・Public.Security）を portable でビルドし直し、
+#        コンテナの中で差し替える。**--artifacts-path で中間ファイルも別にする**
+#        （-o だけだと基盤の obj に portable の中間ファイルが残り、後の差分ビルドで Build_netcore100 に混ざる）。
+#     2. **ExcludeAssembliesWithoutSources を None にすること。** PDB のソースのパス（C:\...）は
+#        コンテナに無く、既定ではソースの無いアセンブリを計測から外す。
+#   コレクタは NuGet のキャッシュ（TestPublic が参照する版の coverlet.collector）を読み取り専用でマウントする。
+#   **用意できなければ、カバレッジ無しで回す**（テストの合否は変わらない）。
+function Get-LinuxCoverageSetup([string]$LinuxOut)
+{
+    $csproj = Join-Path $testsRoot "NUnit\TestPublic\TestPublic.csproj"
+    $ver = @(([xml](Get-Content $csproj -Encoding UTF8 -Raw)).Project.ItemGroup.PackageReference |
+             Where-Object { $_.Include -eq "coverlet.collector" } | ForEach-Object { $_.Version }) | Select-Object -First 1
+    $gp  = (@(& dotnet nuget locals global-packages --list 2>$null) -join "") -replace '^.*?global-packages:\s*', ''
+    $collector = $null
+    if ($ver -and $gp)
+    {
+        $root = Join-Path $gp.Trim() ("coverlet.collector\{0}\build" -f $ver)
+        # 版によって置き場所が違う（netstandard2.0 / net10.0 など）。コレクタの DLL がある所を使う。
+        $collector = @(Get-ChildItem $root -Recurse -Filter "coverlet.collector.dll" -EA SilentlyContinue |
+                       Sort-Object { $_.DirectoryName -notlike "*net10.0*" } | Select-Object -First 1)
+    }
+    if (-not $collector)
+    {
+        Write-Host ("  coverlet.collector {0} が NuGet のキャッシュに見つかりません。Linux の回はカバレッジ無しで回します。" -f $ver) -ForegroundColor Yellow
+        return $null
+    }
+
+    $base = Join-Path $LinuxOut "base"
+    $blog = Join-Path $LinuxOut "build_base_portable.log"
+    $proj = Join-Path $csRoot "Frameworks\Infrastructure\Public\Security\Public.Security_netcore100.csproj"
+    & dotnet build $proj -c Debug -f net10.0 /p:DebugType=portable --artifacts-path (Join-Path $LinuxOut "base_artifacts") -o $base *>&1 |
+        Out-File $blog -Encoding UTF8
+    if (-not (Test-Path (Join-Path $base "OpenTouryo.Public.pdb")))
+    {
+        Write-Host ("  基盤を portable でビルドできませんでした（ログ : {0}）。Linux の回はカバレッジ無しで回します。" -f $blog) -ForegroundColor Yellow
+        return $null
+    }
+
+    $rs = [IO.File]::ReadAllText((Join-Path $testsRoot "NUnit\TestPublic\coverlet.runsettings"), [Text.Encoding]::UTF8) -replace
+        '</Include>', "</Include>`n          <ExcludeAssembliesWithoutSources>None</ExcludeAssembliesWithoutSources>"
+    [IO.File]::WriteAllText((Join-Path $LinuxOut "coverlet.runsettings"), $rs, (New-Object Text.UTF8Encoding $false))
+
+    return [pscustomobject]@{ Base = $base; Collector = $collector[0].DirectoryName }
+}
+
 $linuxTests = @($tests | Where-Object { $_.Linux -and -not $buildFailed.ContainsKey($_.Bat) })
 $linuxFailed = @{}
 if ($linuxTests.Count -gt 0)
@@ -700,7 +846,17 @@ if ($linuxTests.Count -gt 0)
     {
         $dockerArgs += @("-v", ("{0}:/nunit:ro" -f $nunitBin))
         $sh += "cp -r /nunit /tmp/nunit"
-        $sh += "dotnet test /tmp/nunit/TestPublic.dll --logger 'trx;LogFileName=/out/TestPublic_linux.trx' > /out/nunit.log 2>&1"
+
+        # カバレッジ（上の＜カバレッジ＞）。portable の基盤で差し替えてから回す。
+        $covArgs = ""
+        $linuxCov = Get-LinuxCoverageSetup $linuxOut
+        if ($linuxCov)
+        {
+            $dockerArgs += @("-v", ("{0}:/base:ro" -f $linuxCov.Base), "-v", ("{0}:/coverlet:ro" -f $linuxCov.Collector))
+            $sh += "cp /base/OpenTouryo.* /tmp/nunit/"
+            $covArgs = " --test-adapter-path /coverlet --collect 'XPlat Code Coverage' --settings /out/coverlet.runsettings --results-directory /out/cov"
+        }
+        $sh += "dotnet test /tmp/nunit/TestPublic.dll --logger 'trx;LogFileName=/out/TestPublic_linux.trx'$covArgs > /out/nunit.log 2>&1"
     }
     if ($golden)
     {
@@ -746,6 +902,9 @@ if ($linuxTests.Count -gt 0)
         if (Test-Path $dstDir) { Remove-Item $dstDir -Recurse -Force }
         New-Item -ItemType Directory -Force $dstDir | Out-Null
         if (Test-Path $src) { Copy-Item $src $dst -Force }
+        # カバレッジは trx の隣に置く（Get-NUnitResult が trx の隣を探す）
+        $covSrc = Join-Path $linuxOut "cov"
+        if (Test-Path $covSrc) { Copy-Item $covSrc (Join-Path $dstDir "cov") -Recurse -Force }
         Write-Host ("  NUnit のログ : {0}" -f (Join-Path $linuxOut "nunit.log"))
     }
 }
@@ -759,7 +918,9 @@ if ($linuxTests.Count -gt 0)
 #   -RequireDbms : その DBMS のテストが 1 件以上実行されたことも求める（-CrossDb。#623）。
 #                  **起動したのにスキップされたら、接続できていない。** OK にしない。
 #                  DBMS は TestFixtureSource の引数で、trx の className に DamTests("ODP") のように出る。
-function Get-NUnitResult([string]$Name, [string]$Trx, [bool]$Coverage, [string]$RequireDbms)
+#   **カバレッジの引数は $ShowCoverage。** スクリプトのスイッチ -Coverage と同じ名前にすると、
+#   PowerShell は大文字・小文字を区別しないので紛らわしい（$trx / $Trx で実際に踏んだ。#623 の後）。
+function Get-NUnitResult([string]$Name, [string]$Trx, [bool]$ShowCoverage, [string]$RequireDbms)
 {
     if (-not (Test-Path $Trx))
     {
@@ -816,7 +977,7 @@ function Get-NUnitResult([string]$Name, [string]$Trx, [bool]$Coverage, [string]$
     # カバレッジ（表示のみ。判定はしない）
     # ------------------------------------------------------------------
     #   coverlet は実行ごとに GUID のフォルダを作るため、trx の隣を探す。
-    if ($Coverage)
+    if ($ShowCoverage)
     {
         $cov = Get-ChildItem (Split-Path $Trx) -Recurse -Filter "coverage.cobertura.xml" -EA SilentlyContinue |
                Sort-Object LastWriteTime -Descending | Select-Object -First 1
@@ -830,6 +991,9 @@ function Get-NUnitResult([string]$Name, [string]$Trx, [bool]$Coverage, [string]$
                 Write-Host ("    {0,-28} {1,6:P1}" -f $p.name, [double]$p.'line-rate')
             }
             Write-Host ("    詳細 : {0}" -f $cov.FullName)
+
+            # -Coverage の最後に合算するため、ファイルを積む（合算するかは最後に全体の結果で決める）
+            $script:coverageFiles += [pscustomobject]@{ Measure = $Name; File = $cov.FullName }
         }
         else
         {
@@ -882,7 +1046,7 @@ foreach ($t in $tests)
     # NUnit（#610）。判定は Get-NUnitResult（クロス DB の各回と共通。#623）
     if ($t.Kind -eq "NUnit")
     {
-        $results += Get-NUnitResult -Name $t.Name -Trx $actual -Coverage ([bool]$t.Coverage)
+        $results += Get-NUnitResult -Name $t.Name -Trx $actual -ShowCoverage ([bool]$t.Coverage)
         continue
     }
 
@@ -929,12 +1093,12 @@ foreach ($t in $tests)
 #   ビルドは上のバッチで済んでいるので、ここは --no-build で TestPublicDb だけを回す。
 #   **結果のフォルダを回ごとに分ける。** バッチは実行のたびに TestResults を消すが、
 #   ここでは消さないので、回ごとのカバレッジが残る。
-if ($CrossDb -and $buildFailed.ContainsKey("y_Build_TestCode_NUnit.bat"))
+if ($crossDbRun -and $buildFailed.ContainsKey("y_Build_TestCode_NUnit.bat"))
 {
     Write-Host ""
     Write-Host "  **NUnit のビルドに失敗しているため、クロス DB は回しません。**" -ForegroundColor Red
 }
-elseif ($CrossDb)
+elseif ($crossDbRun)
 {
     $nunitDir  = Join-Path $testsRoot "NUnit"
     $csproj    = Join-Path $nunitDir ("{0}\{0}.csproj" -f $crossDbProject)
@@ -1003,7 +1167,7 @@ elseif ($CrossDb)
                 & dotnet @testArgs *>&1 | Out-File $log -Encoding UTF8
 
                 $results += Get-NUnitResult -Name $name -Trx (Join-Path $resDir $trxName) `
-                    -Coverage ($tfm -eq "net10.0") -RequireDbms $db.Dbms
+                    -ShowCoverage ($tfm -eq "net10.0") -RequireDbms $db.Dbms
             }
         }
         finally
@@ -1023,6 +1187,35 @@ if ($startedSqlServer)
     Write-Host ""
     Write-Host "=== クロス DB : 起動した SQL Server を停止します ===" -ForegroundColor Cyan
     Invoke-LocalService $svcStop "sqlserver" | Out-Null
+}
+
+# ------------------------------------------------------------------
+# -Coverage : カバレッジを合算して COVERAGE.md に書く
+# ------------------------------------------------------------------
+#   **全部 OK のときだけ書く。** 1 つでも NG・起動失敗・ビルド失敗があれば、途中で止まった回の数字が
+#   混ざるので書かない（前の COVERAGE.md のまま）。
+#   ワーキング ツリーの COVERAGE.md が書き換わる（Result*.txt と同じく、コミットは人が決める）。
+if ($Coverage)
+{
+    Write-Host ""
+    Write-Host "=== -Coverage : カバレッジの合算 ===" -ForegroundColor Cyan
+
+    # モジュールごとに出すアセンブリ（テストの定義の CoverageModules）
+    $coverageModules = @{}
+    foreach ($t in $tests)
+    {
+        if ($t.CoverageModules) { foreach ($k in $t.CoverageModules.Keys) { $coverageModules[$k] = @($t.CoverageModules[$k]) } }
+    }
+
+    $ngCov = @($results | Where-Object { $_.結果 -ne "OK" })
+    if ($ngCov.Count -gt 0)
+    {
+        Write-Host ("  **NG が {0} 件あるため、COVERAGE.md は書きません。**" -f $ngCov.Count) -ForegroundColor Red
+    }
+    elseif (Write-CoverageReport -Files $coverageFiles -Path $coverageMd -RepoRoot $repoRoot -Modules $coverageModules)
+    {
+        Write-Host ("  {0} 件の計測を合算して書きました : {1}" -f $coverageFiles.Count, $coverageMd)
+    }
 }
 
 # ------------------------------------------------------------------

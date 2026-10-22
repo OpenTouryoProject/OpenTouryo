@@ -27,6 +27,7 @@
 //*  2026/10/11  玄人 幸道         SAML2Client.VerifyResponseの、証明書を渡す版のテストを追加（#600）
 //*  2026/10/12  玄人 幸道         EncodeAndSignRedirectのSigAlgと、VerifyRedirectのSigAlgの扱いのテストを追加（#604）
 //*  2026/10/14  玄人 幸道         SAML2Client.CreateRedirectRequest / CreatePostRequestの、鍵を渡す版のテストを追加（#606）
+//*  2026/10/22  玄人 幸道         StringExtractor.GetParameterFromQueryString（Obsolete）を UriOperator に置き換えた（#634）
 //**********************************************************************************
 
 using System;
@@ -446,7 +447,7 @@ namespace TestCode
                     SAML2Enum.RequestOrResponse.Response, saml, "", ds);
 
                 string sigAlg = Touryo.Infrastructure.Public.Str.CustomEncode.UrlDecode(
-                    Touryo.Infrastructure.Public.Str.StringExtractor.GetParameterFromQueryString("SigAlg", queryString));
+                    Touryo.Infrastructure.Public.Str.UriOperator.GetParameterFromQueryString("SigAlg", queryString));
 
                 bool byRsa = false;
                 using (RSA rsa = RSA.Create())
@@ -489,7 +490,7 @@ namespace TestCode
                     TestSAML2.Recipient, TestSAML2.Recipient, "state", ds, out id);
 
                 string sigAlg = Touryo.Infrastructure.Public.Str.CustomEncode.UrlDecode(
-                    Touryo.Infrastructure.Public.Str.StringExtractor.GetParameterFromQueryString("SigAlg", queryString));
+                    Touryo.Infrastructure.Public.Str.UriOperator.GetParameterFromQueryString("SigAlg", queryString));
 
                 // 署名の対象（Signature より前）と、署名
                 const string signatureKey = "&Signature=";

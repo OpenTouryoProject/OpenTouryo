@@ -168,6 +168,9 @@
   <data name="ERROR_IN_WRITING_OF_FX_SWITCH2" xml:space="preserve">
     <value>スイッチは、"true" or "false"で指定してください。Configキー：{0}</value>
   </data>
+  <data name="ERROR_IN_WRITING_OF_CONFIG_VALUE" xml:space="preserve">
+    <value>設定値が定義されていないか、正しくありません。Configキー：{0}</value>
+  </data>
   <data name="FX_PROCESSING_STATUS_ERROR" xml:space="preserve">
     <value>フレームワーク処理で不正な状態を検出しました。補足情報：{0}</value>
   </data>

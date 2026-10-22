@@ -50,6 +50,7 @@
 //*  2014/01/22  Rituparna.Biswas  Changes from ConfigurationManager.AppSettings to GetConfigParameter.GetConfigValue in CmnFunc
 //*  2014/02/03  西野 大介         取り込み：リソースファイル名とスイッチ名の変更、#pragma warning disableの追加。
 //*  2018/04/09  西野 大介         .NET Standard対応で、通信制御機能のメッセージを追加
+//*  2026/10/22  玄人 幸道         設定値が無い・正しくない場合のメッセージ（ERROR_IN_WRITING_OF_CONFIG_VALUE）を追加（#634）
 //**********************************************************************************
 
 using System;
@@ -889,6 +890,23 @@ namespace Touryo.Infrastructure.Framework.Exceptions
 
                 // Returns the specified string resource for the specified culture or current UI culture.
                 return new string[] { "ErrorInWritingOfFxSwitch2", temp };
+            }
+        }
+
+        /// <summary>設定値が定義されていないか、正しくない場合（Fx で始まらない、部品が読む設定）。</summary>
+        public static string[] ERROR_IN_WRITING_OF_CONFIG_VALUE
+        {
+            get
+            {
+                string temp = "";
+                // Get current property name.
+                string key = StackFrameOperator.GetCurrentPropertyName();
+
+                // Stores the specified string resource for the specified culture or current UI culture.
+                temp = FrameworkExceptionMessage.CmnFunc(key);
+
+                // Returns the specified string resource for the specified culture or current UI culture.
+                return new string[] { "ErrorInWritingOfConfigValue", temp };
             }
         }
 

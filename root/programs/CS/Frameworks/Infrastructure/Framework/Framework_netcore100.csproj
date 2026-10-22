@@ -44,6 +44,21 @@
     <None Remove="app.config" />
   </ItemGroup>
 
+  <!--処理区分ごとに分けた partial クラスのファイルを、IDE で本体の下に並べる（ビルドには影響しない）。
+      本体 X.cs の区分は X.＜区分＞.cs の名前で置く。区分のファイルを足しても、ここは書き換えなくてよい。
+      net48 は Framework_net48.csproj の Compile Include に、ファイルごとに DependentUpon を付けている。-->
+  <ItemGroup>
+    <Compile Update="Authentication\OAuth2AndOIDCClient.*.cs">
+      <DependentUpon>OAuth2AndOIDCClient.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Authentication\SAML2Client.*.cs">
+      <DependentUpon>SAML2Client.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Authentication\SAML2Bindings.*.cs">
+      <DependentUpon>SAML2Bindings.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.3.0" />

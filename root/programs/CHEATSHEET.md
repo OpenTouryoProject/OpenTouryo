@@ -7,6 +7,59 @@
 
 ---
 
+## 0. ワンライナー集
+
+**すべて `root\programs` で実行する**（`cd root\programs`）。詳しくは右端の節。
+
+### 検証する
+
+| やりたいこと | コマンド | 節 |
+|---|---|---|
+| 全部を通しで（ビルド → 単体テスト → 疎通） | `.\0_RunAll.ps1` | 1 |
+| 変えた所に必要な分だけ回す | `.\SelectTargets.ps1 -Run` | 1 |
+| 何が回るかだけ見る | `.\SelectTargets.ps1` | 1 |
+| 全ビルドだけ | `.\1_BuildAll.ps1 -IgnoreErrors 'error MSB(3482\|3325\|3321):.*WSClientWinCone_sample\.csproj'` | 1 |
+| 単体テストだけ | `.\2_RunAllTests.ps1` | 1 |
+| 疎通だけ | `.\3_SmokeTest.ps1` | 1 |
+| VB 側を通しで | `.\0_RunAll.ps1 -Lang VB` | 3 |
+
+### 単体テストを絞る・広げる
+
+| やりたいこと | コマンド | 節 |
+|---|---|---|
+| 一部だけ回す（名前は部分一致・複数可） | `.\2_RunAllTests.ps1 -Only "TestBatch", "NUnit"` | 1 |
+| 指定できる名前を見る | `.\2_RunAllTests.ps1 -List` | 1 |
+| Linux でも回す（docker が要る） | `.\2_RunAllTests.ps1 -Linux` | 1 |
+| DB を Oracle / MySQL / PostgreSQL でも回す | `.\2_RunAllTests.ps1 -CrossDb -LocalServicesDir D:\path\to\LocalServicesOnDocker` | 1 |
+| カバレッジを測って COVERAGE.md を更新する | `.\2_RunAllTests.ps1 -Coverage -LocalServicesDir D:\path\to\LocalServicesOnDocker` | 1 |
+
+### 依存パッケージを点検する
+
+| やりたいこと | コマンド | 節 |
+|---|---|---|
+| 脆弱性のある依存を見る（ビルドの後に） | `.\CheckVulnerability.ps1 -Detail` | 1 |
+| packages.config と csproj の版を突き合わせる | `.\ComparePackage.ps1 -Check` | 1 |
+| bindingRedirect と配布物の版を突き合わせる | `.\CompareRedirect.ps1 -Check` | 1 |
+
+### リリースする
+
+| やりたいこと | コマンド | 節 |
+|---|---|---|
+| 版を上げる（変更内容の確認） | `.\0_SetVersion.ps1 -Version 3.3.0 -WhatIf` | 2 |
+| 版を上げる | `.\0_SetVersion.ps1 -Version 3.3.0` | 2 |
+| NuGet 用にビルドする | `CS\0_Release4Nuget.bat` | 2 |
+| パッケージを作る | `CS\NuGet\_NuGetPack.bat` | 2 |
+| 作ったパッケージを消す | `CS\NuGet\_Cleanup.bat` | 2 |
+
+### その他
+
+| やりたいこと | コマンド | 節 |
+|---|---|---|
+| エージェント用のスキルを取ってくる | `.\GetAgentSkills.ps1` | [`AGENTS.md`](../../AGENTS.md) |
+| 2 つの結果ファイルを比べる | `.\CompareResult.ps1 -Expected <期待> -Actual <実測>` | [`TESTING.md`](TESTING.md) 1 節 |
+
+---
+
 ## 1. 検証（変更したら必ず）
 
 ```powershell
@@ -25,10 +78,24 @@ cd root\programs
 | | 合格の目安 | 詳細 |
 |---|---|---|
 | ビルド | 全ステップ OK | [`BUILDING.md`](BUILDING.md) |
-| 単体テスト | 14/14 OK、差分 0（NUnit は失敗 0） | [`TESTING.md`](TESTING.md) |
+| 単体テスト | 16/16 OK、差分 0（Golden 8 ＋ NUnit 8。NUnit は失敗 0） | [`TESTING.md`](TESTING.md) |
 | 疎通 | 30/30 OK | [`SMOKETEST.md`](SMOKETEST.md) |
 
 **既定は C# 側。VB 側は `-Lang` で回す**（3 節）。
+
+**`2_RunAllTests.ps1` のオプション**（詳細は [`TESTING.md`](TESTING.md)。**コンテナを使うものは、付けたときだけ起動する**）
+
+| オプション | 何をするか | 要るもの |
+|---|---|---|
+| `-Only <名前>[, …]` / `-List` | 対象を絞る（部分一致・複数可）／指定できる名前を出す | — |
+| `-SkipBuild` | バッチを回さず、手元の結果だけを判定する | — |
+| `-Linux` | Golden の EncAndDecUtilCUI と NUnit の TestPublic を、Linux のコンテナでも回す（＋2 ケース） | `docker` |
+| `-CrossDb -LocalServicesDir <dir>` | TestPublicDb を Oracle → MySQL → PostgreSQL の順に 1 つずつ「起動 → 回す → 停止」 | `docker` か WSL2 |
+| `-Coverage -LocalServicesDir <dir>` | NUnit の全部・Linux の回・クロス DB を 1 回で回し、全部 OK なら [`Tests/COVERAGE.md`](CS/Frameworks/Tests/COVERAGE.md) を書き直す | `docker` |
+| `-LinuxImage` / `-LinuxMemory` | Linux のコンテナのイメージ（既定 `mcr.microsoft.com/dotnet/sdk:10.0`）／メモリ上限（既定 `4g`） | — |
+
+- `-Coverage` は `-Only` / `-SkipBuild` / `-Linux` / `-CrossDb` と同時に指定できない（全部をそろえて測るため）。`-Linux` と `-CrossDb` も同時には指定できない
+- **普通の実行は COVERAGE.md を書かない**（カバレッジは画面に出すだけ）
 
 - **`1_BuildAll.ps1` を単体で回すときは `-IgnoreErrors` を付ける。**
   ClickOnce の署名（`MSB3482`）で、証明書が無い環境では必ず出る
@@ -121,6 +188,9 @@ dotnet test CS\Frameworks\Tests\NUnit\TestPublic\TestPublic.csproj -f net10.0 --
 - **クロス DB（`TestPublicDb`）は `.\2_RunAllTests.ps1 -CrossDb -LocalServicesDir <LocalServicesOnDocker>` で回す**（#623）。
   DBMS を 1 つずつ起動 → 回す → 停止まで自動で行う（`docker` が使えれば Rancher 版、使えなければ WSL2 版）。
   始める前から動いていた DBMS には触らない。`-CrossDb` を付けなければ、コンテナは起動も停止もしない
+- **カバレッジを [`Tests/COVERAGE.md`](CS/Frameworks/Tests/COVERAGE.md) に残すなら `.\2_RunAllTests.ps1 -Coverage -LocalServicesDir <LocalServicesOnDocker>`。**
+  NUnit の全部（Linux の回を含む）とクロス DB を 1 回で回し、全部 OK ならアセンブリごとに合算して書く
+  （`OpenTouryo.Framework` だけは、TestFramework の対象モジュールごと）。`docker` が要る。普通の実行は COVERAGE.md を書かない
 - **Linux（Golden の EncAndDecUtilCUI と NUnit の TestPublic）は `.\2_RunAllTests.ps1 -Linux` で回す**（#632）。
   Windows でビルドした net10.0 の出力を、Linux のコンテナ（1 つ、`--rm`）でそのまま動かす。`docker` が要る（[`TESTING.md`](TESTING.md) 2 節）。
   **Public・Public.Security に触れた fixed では、`SelectTargets.ps1` が自動で付ける**（fixing では後回し）

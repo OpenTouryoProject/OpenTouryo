@@ -25,9 +25,9 @@
 |---|---|---|---|
 | `Db/` | `Public.Db` | `BaseDam` `DamSqlSvr` `DamODBC` `DamOLEDB` `SQLUtility` `DbEnum` | データ アクセス制御（Dam）。4 節 |
 | `Dto/` | `Public.Dto` | `DTTables` `DTTable` `DTRow` `DTColumn`、`DataToPoco` `PocoToPoco` `DataToDictionary` | マーシャリングできる自前の DataTable と、詰め替え |
-| `Str/` | `Public.Str` | `CustomEncode` `StringChecker` `FormatChecker` `StringConverter` `FormatConverter` `CheckCharCode` `JIS2k4Checker` `StringVariableOperator` `StringExtractor` `ToStringExtension` | 文字列の符号化・検査・変換 |
+| `Str/` | `Public.Str` | `CustomEncode` `StringChecker` `FormatChecker` `StringConverter` `FormatConverter` `CheckCharCode` `JIS2k4Checker` `StringVariableOperator` `StringExtractor` `ToStringExtension` `UriOperator` | 文字列の符号化・検査・変換。`UriOperator`（https かループバックか・クエリと素片を除いた URL・クエリからの値の抽出）は #634。**URL を扱う汎用の処理は `UriOperator` に寄せる**（`StringExtractor.GetParameterFromQueryString` は移し、転送だけ残して `Obsolete`）。**プロトコル専用の比較は置かない**（DPoP の htu の緩い比較は `DPoPProof` の private） |
 | `IO/` | `Public.IO` | `ResourceLoader` `EmbeddedResourceLoader` `DeflateCompression` `ExponentialBackoff` `ZipperV2` `UnZipperV2` `BinarySerialize` | ファイル・埋め込みリソースの読み込み、圧縮、再試行 |
-| `Log/` | `Public.Log` | `LogIF`、`Log_log4net` / `Log_nlog`、`CustomEventLog` `SecurityEventLog` | ログの窓口（5 節） |
+| `Log/` | `Public.Log` | `LogIF`、`Log_log4net` / `Log_nlog`、`CustomEventLog` `SecurityEventLog` `LogSanitizer` | ログの窓口（5 節）。`LogSanitizer`（ログに出す値の改行落とし・長さだけ出す）は #634。**`Log/` に新しいファイルを足すときは `git status -uall` で確かめる**（`.gitignore` の `[Ll]og/` に当たり、黙って外れることがある） |
 | `Util/` | `Public.Util` | `GetConfigParameter` `PerformanceRecorder` `RandomValueGenerator` `EnvInfo` `ArrayOperator` `CustomMarshaler` `PublicExceptionMessage` `PubLiteral` `PubCmnFunction` `SharedMemory` | 設定の読み取りほか（6 節） |
 | `Reflection/` | `Public.Reflection` | `Latebind` `MyAssemblies` | **フレームワークの動的呼び出しの心臓部**（7 節） |
 | `FastReflection/` | `Public.FastReflection` | `AccessorCacher` `CompiledExpressionCreater` `InstanceCreator<T>` `EnumToString*Extensions` | 式木・Emit による高速なリフレクション |
