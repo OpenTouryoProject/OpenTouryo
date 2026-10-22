@@ -28,6 +28,7 @@
 //*  2026/10/22  玄人 幸道         htu の比較のテストを DPoPProofTests へ移し（比較を DPoPProof へ移したため）、
 //*                                GetUrlWithoutQueryAndFragment（WithoutQuery を改名）と、
 //*                                StringExtractor から移した GetParameterFromQueryString のテストを足した
+//*  2026/10/22  玄人 幸道         GetUrlWithoutQueryAndFragment が http / https 以外を空文字にすること（file:// を含む）のケースを足した
 //**********************************************************************************
 
 using System;
@@ -63,6 +64,8 @@ namespace TestPublic.Str
         [TestCase("HTTPS://A.EXAMPLE.COM:443/P", ExpectedResult = "https://a.example.com/P")]
         [TestCase("http://a.example.com:8080/p?q", ExpectedResult = "http://a.example.com:8080/p")]
         [TestCase("/p?q", ExpectedResult = "")]
+        [TestCase("file:///p?q", ExpectedResult = "")]
+        [TestCase("ftp://a.example.com/p?q", ExpectedResult = "")]
         [TestCase("", ExpectedResult = "")]
         [TestCase(null, ExpectedResult = "")]
         public string GetUrlWithoutQueryAndFragment(string url)

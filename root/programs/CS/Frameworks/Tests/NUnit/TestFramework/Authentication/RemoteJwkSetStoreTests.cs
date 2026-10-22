@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（#634）
+//*  2026/10/22  玄人 幸道         取れない・壊れた応答の扱いのテストを足した（カバレッジの拡充）
 //**********************************************************************************
 
 using System;
@@ -260,6 +261,105 @@ namespace TestFramework.Authentication
                 OAuth2AndOIDCClient.RegisterClientAsync(new Uri("https://op.example.com/register"), "{}", null).Wait();
                 Assert.That(http.Requests[1].Item1.Headers.Authorization, Is.Null);
             }
+        }
+
+        #endregion
+
+        #region 取れない・壊れた応答
+
+        /// <summary>ResolveJwksUriAsync：discovery が取れない・JSON でない・配列なら空文字。issuer が合えば jwks_uri。</summary>
+        [Test]
+        public void ResolveJwksUriAsync_Unreadable()
+        {
+            foreach (string body in new string[] { "", "not json", "[]" })
+            {
+                using (StubHttp http = new StubHttp((req, b) => StubHttp.Json(HttpStatusCode.OK, body)))
+                {
+                    Assert.That(RemoteJwkSetStore.ResolveJwksUriAsync(Discovery, Issuer).Result, Is.Empty, "本文 : " + body);
+                }
+            }
+
+            using (StubHttp http = new StubHttp((req, b) => { throw new HttpRequestException("down"); }))
+            {
+                Assert.That(RemoteJwkSetStore.ResolveJwksUriAsync(Discovery, Issuer).Result, Is.Empty, "通信の失敗");
+            }
+
+            using (StubHttp http = this.Server(Issuer))
+            {
+                Assert.That(RemoteJwkSetStore.ResolveJwksUriAsync(Discovery, Issuer).Result, Is.EqualTo(JwksUri));
+            }
+
+            Assert.That(RemoteJwkSetStore.ResolveJwksUriAsync("not a url", Issuer).Result, Is.Empty, "URL でない");
+        }
+
+        /// <summary>URL が空なら、何もせずに「無い」を返す（取りに行かない）。</summary>
+        [Test]
+        public void EmptyUrl()
+        {
+            using (StubHttp http = this.Server(Issuer))
+            {
+                Assert.That(RemoteJwkSetStore.WarmUpAsync("").Result, Is.False);
+                Assert.That(RemoteJwkSetStore.PickJwksFromCache("", "", 5), Is.Empty);
+                Assert.That(RemoteJwkSetStore.HasKeysInCache(""), Is.False);
+                RemoteJwkSetStore.RefillInBackground("");
+                RemoteJwkSetStore.RefillInBackground(null);
+
+                Assert.That(http.Requests, Is.Empty);
+            }
+        }
+
+        /// <summary>
+        /// JWK Set に keys が無い・配列でない・要素がオブジェクトでないなら、その分は使わない。
+        /// kid が空のときは、上限の本数まで順に返す。
+        /// </summary>
+        [Test]
+        public void PickJwksFromCache_MalformedJwkSet()
+        {
+            JObject second = (JObject)this._jwk.DeepClone();
+            second["kid"] = "second";
+
+            foreach (string jwkSet in new string[] { "{}", "{\"keys\":\"x\"}" })
+            {
+                RemoteJwkSetStore.Clear();
+
+                using (StubHttp http = new StubHttp((req, b) => StubHttp.Json(HttpStatusCode.OK, jwkSet)))
+                {
+                    Assert.That(RemoteJwkSetStore.WarmUpAsync(JwksUri).Result, Is.False, jwkSet);
+                    Assert.That(RemoteJwkSetStore.PickJwksFromCache(JwksUri, "", 5), Is.Empty, jwkSet);
+                }
+            }
+
+            RemoteJwkSetStore.Clear();
+            string mixed = new JObject(new JProperty("keys", new JArray("not an object", this._jwk, second))).ToString();
+
+            using (StubHttp http = new StubHttp((req, b) => StubHttp.Json(HttpStatusCode.OK, mixed)))
+            {
+                Assert.That(RemoteJwkSetStore.WarmUpAsync(JwksUri).Result, Is.True);
+            }
+
+            Assert.That(RemoteJwkSetStore.PickJwksFromCache(JwksUri, "", 5).Count, Is.EqualTo(2), "オブジェクトでない要素は飛ばす");
+            Assert.That(RemoteJwkSetStore.PickJwksFromCache(JwksUri, "", 1).Count, Is.EqualTo(1), "上限の本数まで");
+            Assert.That((string)RemoteJwkSetStore.PickJwksFromCache(JwksUri, "second", 5)[0]["kid"], Is.EqualTo("second"));
+        }
+
+        /// <summary>取り直しに失敗しても、前に取れた JWK Set を残す（相手の一時的な障害で、鍵を失わない）。</summary>
+        [Test]
+        public void FailedRefetch_KeepsPreviousJwkSet()
+        {
+            string kid = (string)this._jwk["kid"];
+
+            using (StubHttp http = this.Server(Issuer))
+            {
+                Assert.That(RemoteJwkSetStore.WarmUpAsync(JwksUri).Result, Is.True);
+            }
+
+            using (StubHttp http = new StubHttp((req, b) => { throw new HttpRequestException("down"); }))
+            {
+                Assert.That(RemoteJwkSetStore.WarmUpAsync(JwksUri).Result, Is.True, "前の鍵が残る");
+                Assert.That(RemoteJwkSetStore.PickJwksFromCache(JwksUri, kid, 1).Count, Is.EqualTo(1));
+            }
+
+            Assert.That(RemoteJwkSetStore.MinRefetchInterval, Is.EqualTo(TimeSpan.FromMinutes(1)));
         }
 
         #endregion

@@ -27,6 +27,7 @@
 //*  2026/10/22  玄人 幸道         StringExtractor.GetParameterFromQueryString を移した（StringExtractor 側は転送して Obsolete）
 //*  2026/10/22  玄人 幸道         DPoP の htu の比較（IsSameWithoutQuery）を DPoPProof へ移した（DPoP 専用で、汎用の部品ではないため）。
 //*                                WithoutQuery は GetUrlWithoutQueryAndFragment に改名し、末尾の "/" を落とすのをやめた（htu の比較の側で行う）
+//*  2026/10/22  玄人 幸道         GetUrlWithoutQueryAndFragment を http / https に限った（Linux でパスが file:// の絶対 URI として読め、OS で結果が変わったため）
 //**********************************************************************************
 
 using System;
@@ -70,16 +71,19 @@ namespace Touryo.Infrastructure.Public.Str
 
         /// <summary>クエリ（?）と素片（#）を除いた URL を返す</summary>
         /// <param name="url">URL</param>
-        /// <returns>クエリと素片を除いた URL（絶対 URL でなければ空文字）</returns>
+        /// <returns>クエリと素片を除いた URL（http / https の絶対 URL でなければ空文字）</returns>
         /// <remarks>
         /// 自由に利用できる。
         /// スキーム・ホスト・ポート・パスを残す（Uri.GetLeftPart(UriPartial.Path)）。
         /// 既定のポートは省かれ、スキームとホストは小文字になる（Uri の正規化に従う）。
         /// 末尾の "/" は落とさない。
+        /// http / https だけを扱う。Linux では "/p" のようなパスも絶対 URI（file:///p）として読めてしまい、
+        /// OS で結果が変わるため。
         /// </remarks>
         public static string GetUrlWithoutQueryAndFragment(string url)
         {
-            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri uri))
+            if (!Uri.TryCreate(url, UriKind.Absolute, out Uri uri)
+                || (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
             {
                 return "";
             }

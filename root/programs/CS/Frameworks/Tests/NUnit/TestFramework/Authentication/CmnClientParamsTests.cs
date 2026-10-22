@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成
+//*  2026/10/22  玄人 幸道         各プロパティが対応するキーを読むことのテストを足した（カバレッジの拡充）
 //**********************************************************************************
 
 using System;
@@ -176,6 +177,47 @@ namespace TestFramework.Authentication
             });
 
             SAML2Metadata.Clear();
+        }
+
+        /// <summary>各プロパティは、対応する SpRp_* のキーを読む（キー名の取り違えが無いこと）。</summary>
+        [Test]
+        public void Properties_ReadTheirKeys()
+        {
+            Dictionary<string, Func<string>> props = new Dictionary<string, Func<string>>
+            {
+                { "SpRp_Isser", () => CmnClientParams.Isser },
+                { "SpRp_AuthRequestUri", () => CmnClientParams.SpRp_AuthRequestUri },
+                { "SpRp_TokenRequestUri", () => CmnClientParams.SpRp_TokenRequestUri },
+                { "SpRp_UserInfoUri", () => CmnClientParams.SpRp_UserInfoUri },
+                { "SpRp_RedirectUri", () => CmnClientParams.SpRp_RedirectUri },
+                { "SpRp_DiscoveryUri", () => CmnClientParams.SpRp_DiscoveryUri },
+                { "SpRp_Saml2MetadataUri", () => CmnClientParams.SpRp_Saml2MetadataUri },
+                { "SpRp_Saml2EntityId", () => CmnClientParams.SpRp_Saml2EntityId },
+                { "SpRp_Saml2AcsUri", () => CmnClientParams.SpRp_Saml2AcsUri },
+                { "SpRp_RsaCerFilePath", () => CmnClientParams.RsaCerFilePath },
+                { "SpRp_EcdsaCerFilePath", () => CmnClientParams.EcdsaCerFilePath },
+                { "SpRp_RsaPfxPassword", () => CmnClientParams.RsaPfxPassword },
+                { "SpRp_RsaPfxFilePath", () => CmnClientParams.RsaPfxFilePath },
+                { "SpRp_EcdsaPfxPassword", () => CmnClientParams.EcdsaPfxPassword },
+                { "SpRp_EcdsaPfxFilePath", () => CmnClientParams.EcdsaPfxFilePath },
+                { "SpRp_ClientCertPfxPassword", () => CmnClientParams.ClientCertPfxPassword },
+                { "SpRp_ClientCertPfxFilePath", () => CmnClientParams.ClientCertPfxFilePath }
+            };
+
+            // 値はキー名そのものにする（違うキーを読んでいれば、別の値になる）。
+            Dictionary<string, string> config = new Dictionary<string, string>();
+            foreach (string key in props.Keys)
+            {
+                config.Add(key, "value-of-" + key);
+            }
+
+            WithConfig(config, () =>
+            {
+                foreach (KeyValuePair<string, Func<string>> p in props)
+                {
+                    Assert.That(p.Value(), Is.EqualTo("value-of-" + p.Key), p.Key);
+                }
+            });
         }
 #endif
     }

@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（#634）
 //*  2026/10/22  玄人 幸道         htu の比較のテストを UriOperatorTests から移した（比較を DPoPProof の private へ移したため）
+//*  2026/10/22  玄人 幸道         引数の境界と、送り直さない応答のテストを足した（カバレッジの拡充）
 //**********************************************************************************
 
 using System;
@@ -143,6 +144,7 @@ namespace TestFramework.Authentication
 
             Assert.Throws<ArgumentException>(() => DPoPProof.Create(key.Signer, key.Private, "POST", TokenEndpoint));
             Assert.Throws<ArgumentException>(() => DPoPProof.Create(key.Signer, key.Public, "POST", "/token"));
+            Assert.Throws<ArgumentException>(() => DPoPProof.Create(key.Signer, key.Public, "POST", "ftp://as.example.com/token"), "http / https でない");
             Assert.Throws<ArgumentNullException>(() => DPoPProof.Create(null, key.Public, "POST", TokenEndpoint));
             Assert.Throws<ArgumentNullException>(() => DPoPProof.Create(key.Signer, key.Public, "", TokenEndpoint));
         }
@@ -187,6 +189,29 @@ namespace TestFramework.Authentication
             // 受ける alg を絞れる。
             Assert.That(DPoPProof.Verify(ok, "POST", TokenEndpoint, DPoPProof.DefaultPastWindow, DPoPProof.DefaultFutureWindow,
                 new string[] { "RS256" }, out jkt, out payload, out err), Is.False, "algs に無い");
+        }
+
+        /// <summary>
+        /// 引数の境界：Create は publicJwk が null なら ArgumentNullException、CreateAth は空なら空文字。
+        /// VerifyForResource は、証明そのものが通らなければ false（鍵や ath を見る前に断る）。
+        /// </summary>
+        [Test]
+        public void Arguments()
+        {
+            Key key = CreateKey("ES256");
+
+            Assert.Throws<ArgumentNullException>(() => DPoPProof.Create(key.Signer, null, "POST", TokenEndpoint));
+            Assert.That(DPoPProof.CreateAth(""), Is.Empty);
+            Assert.That(DPoPProof.CreateAth(null), Is.Empty);
+
+            string proof = DPoPProof.Create(key.Signer, key.Public, "POST", TokenEndpoint, "at01", null);
+            JObject payload;
+            string err;
+            Assert.That(DPoPProof.VerifyForResource(proof, "GET", TokenEndpoint, "at01", JwkOperator.Thumbprint(key.Public),
+                out payload, out err), Is.False, "htm が違う");
+            Assert.That(err, Does.Contain("htm"));
+            Assert.That(DPoPProof.VerifyForResource(proof, "POST", TokenEndpoint, "at01", "",
+                out payload, out err), Is.False, "cnf.jkt が空");
         }
 
         /// <summary>
@@ -364,6 +389,55 @@ namespace TestFramework.Authentication
             }
         }
 
+
+        /// <summary>
+        /// 送り直さない応答：use_dpop_nonce 以外の 401・JSON でない 400・成功（nonce 付き）は、1 回で終える。
+        /// 同じ nonce で再び断られたら、それ以上は送り直さない（1 回だけ）。
+        /// </summary>
+        [TestCase(HttpStatusCode.Unauthorized, "", "DPoP error=\"invalid_token\"", 1, TestName = "SendWithDPoP_NoRetry(401 invalid_token)")]
+        [TestCase(HttpStatusCode.BadRequest, "not json", null, 1, TestName = "SendWithDPoP_NoRetry(400 not json)")]
+        [TestCase(HttpStatusCode.BadRequest, "{\"error\":\"invalid_grant\"}", null, 1, TestName = "SendWithDPoP_NoRetry(400 invalid_grant)")]
+        [TestCase(HttpStatusCode.OK, "{}", null, 1, TestName = "SendWithDPoP_NoRetry(200 with nonce)")]
+        [TestCase(HttpStatusCode.BadRequest, "{\"error\":\"use_dpop_nonce\"}", null, 2, TestName = "SendWithDPoP_NoRetry(same nonce twice)")]
+        public void SendWithDPoP_NoRetry(HttpStatusCode status, string body, string wwwAuthenticate, int expectedRequests)
+        {
+            Key key = CreateKey("ES256");
+
+            // nonce の記憶はオリジンごとで、プロセス全体に効くので、テストごとにホストを変える。
+            string url = "https://" + Guid.NewGuid().ToString("N") + ".example.com/token";
+
+            using (StubHttp http = new StubHttp((req, b) =>
+            {
+                HttpResponseMessage res = StubHttp.Json(status, body);
+                res.Headers.Add("DPoP-Nonce", "fixed");
+
+                if (wwwAuthenticate != null)
+                {
+                    res.Headers.Add("WWW-Authenticate", wwwAuthenticate);
+                }
+
+                return res;
+            }))
+            {
+                HttpResponseMessage res = OAuth2AndOIDCClient.SendWithDPoPAsync(
+                    () => new HttpRequestMessage(HttpMethod.Post, url), key.Signer, key.Public, null).Result;
+
+                Assert.That(res.StatusCode, Is.EqualTo(status), "最後の応答をそのまま返す");
+                Assert.That(http.Requests.Count, Is.EqualTo(expectedRequests));
+                Assert.That(http.Requests[0].Item1.Headers.Authorization, Is.Null, "accessToken が無ければ Authorization を付けない");
+            }
+        }
+
+        /// <summary>SendWithDPoPAsync：要求を作る処理が null なら ArgumentNullException。</summary>
+        [Test]
+        public void SendWithDPoP_NullRequest()
+        {
+            Key key = CreateKey("ES256");
+
+            AggregateException ex = Assert.Throws<AggregateException>(() =>
+                OAuth2AndOIDCClient.SendWithDPoPAsync(null, key.Signer, key.Public, null).Wait());
+            Assert.That(ex.InnerException, Is.InstanceOf<ArgumentNullException>());
+        }
         #endregion
     }
 }

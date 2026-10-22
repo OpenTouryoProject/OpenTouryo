@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（#634）
+//*  2026/10/22  玄人 幸道         種類の合わない alg・読めない JWT の境界のテストを足した（カバレッジの拡充）
 //**********************************************************************************
 
 using System;
@@ -181,6 +182,24 @@ namespace TestPublic.Security.Jwt
             Assert.That(JwtReader.TryReadPayload(CustomEncode.ToBase64UrlString(new byte[] { 0x5b, 0x5d }) + "." +
                 CustomEncode.ToBase64UrlString(new byte[] { 0x5b, 0x5d }) + ".x"), Is.Null, "オブジェクトでない");
             Assert.That(JwtReader.TryReadKid(header.Replace(header, "e30") + ".e30.x"), Is.Null, "kid が無い");
+            Assert.That(JwtReader.TryReadHeader(".e30.x"), Is.Null, "ヘッダが空");
+            Assert.That(JwtReader.TryReadKid(null), Is.Null, "読めなければ null");
+            Assert.That(JwtReader.TryReadAlg("abc"), Is.Null);
+        }
+
+        /// <summary>鍵の種類と alg が合わなければ null（RSA の鍵で ES*、EC の鍵で RS* を作らない）。</summary>
+        [Test]
+        public void CreateFromParameters_WrongAlg()
+        {
+            using (RSA rsa = RSA.Create(2048))
+            using (ECDsa ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP256))
+            {
+                Assert.That(JwsFactory.CreateFromRsaParameters("ES256", rsa.ExportParameters(false)), Is.Null);
+                Assert.That(JwsFactory.CreateFromRsaParameters("HS256", rsa.ExportParameters(false)), Is.Null);
+                Assert.That(JwsFactory.CreateFromEcParameters("RS256", ecdsa.ExportParameters(false)), Is.Null);
+                Assert.That(JwsFactory.CreateFromRsaParameters("PS512", rsa.ExportParameters(false)), Is.Not.Null);
+                Assert.That(JwsFactory.CreateFromEcParameters("ES256", ecdsa.ExportParameters(false)), Is.Not.Null);
+            }
         }
     }
 }

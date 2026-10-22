@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（#634）
 //*  2026/10/22  玄人 幸道         設定（CmnServerParams）を読む版のテストを追加
+//*  2026/10/22  玄人 幸道         境界（鍵の並び・空の issuer・aud の配列・JwkSetDocument の設定とファイル無し）のテストを足した
 //**********************************************************************************
 
 using System;
@@ -318,6 +319,109 @@ namespace TestFramework.Authentication
                 File.Delete(path);
             }
         }
+
+        #endregion
+
+        #region 境界
+
+        /// <summary>
+        /// VerifyRequest（鍵を固定で渡す版）：鍵の並びが null なら ArgumentNullException。
+        /// 並びの中の null は飛ばし、次の鍵を試す。
+        /// </summary>
+        [Test]
+        public void VerifyRequest_KeyList()
+        {
+            using (RSA sp = RSA.Create(2048))
+            {
+                string id, iss, reqId;
+                XmlDocument doc;
+                string post = SAML2Client.CreatePostRequest(SAML2Enum.ProtocolBinding.HttpPost, SAML2Enum.NameIDFormat.Unspecified,
+                    SpEntityId, Acs, "relay01", sp, out id);
+
+                Assert.That(SAML2Client.VerifyRequest(null, post, new RSA[] { null, sp }, out iss, out reqId, out doc), Is.True,
+                    "null は飛ばす");
+                Assert.That(reqId, Is.EqualTo(id));
+
+                Assert.Throws<ArgumentNullException>(() =>
+                    SAML2Client.VerifyRequest(null, post, (IEnumerable<RSA>)null, out iss, out reqId, out doc));
+            }
+        }
+
+        /// <summary>CreatePostResponse / CreateRedirectResponse：issuer が空なら ArgumentNullException。</summary>
+        [Test]
+        public void CreateResponse_EmptyIssuer()
+        {
+            RSA idp = TestCertificates.RsaPrivateKey();
+
+            Assert.Throws<ArgumentNullException>(() => SAML2Client.CreatePostResponse("", Acs, "req01",
+                SAML2Enum.StatusCode.Success, "u", SAML2Enum.NameIDFormat.Unspecified, SAML2Enum.AuthnContextClassRef.Unspecified,
+                3600, null, idp));
+            Assert.Throws<ArgumentNullException>(() => SAML2Client.CreateRedirectResponse(null, Acs, "req01",
+                SAML2Enum.StatusCode.Success, "u", SAML2Enum.NameIDFormat.Unspecified, SAML2Enum.AuthnContextClassRef.Unspecified,
+                3600, null, "", Signer(idp)));
+        }
+
+        /// <summary>
+        /// ResponseObject：responseParams が null なら ArgumentNullException。
+        /// aud が配列の ResponseObject は、配列に期待する aud を含めば通る（RFC 7519 4.1.3）。
+        /// </summary>
+        [Test]
+        public void ResponseObject_Boundaries()
+        {
+            using (RSA rsa = RSA.Create(2048))
+            {
+                JWS signer = new JWS_RS256_Param(rsa.ExportParameters(true));
+                JWS verifier = new JWS_RS256_Param(rsa.ExportParameters(false));
+
+                Assert.Throws<ArgumentNullException>(() =>
+                    ResponseObject.Create(null, signer, "https://as.example.com", "client01", DateTimeOffset.UtcNow));
+
+                string arrayAud = signer.Create(new JObject(
+                    new JProperty("code", "c1"),
+                    new JProperty("iss", "https://as.example.com"),
+                    new JProperty("aud", new JArray("other", "client01")),
+                    new JProperty("exp", DateTimeOffset.UtcNow.AddMinutes(5).ToUnixTimeSeconds())).ToString());
+
+                JObject jobj;
+                Assert.That(ResponseObject.Verify(arrayAud, verifier, "https://as.example.com", "client01", out jobj), Is.True);
+                Assert.That(ResponseObject.Verify(arrayAud, verifier, "https://as.example.com", "client02", out jobj), Is.False);
+            }
+        }
+
+        /// <summary>JwkSetDocument：ファイルが無ければ例外（設定の誤りを黙って通さない）。</summary>
+        [Test]
+        public void JwkSetDocument_MissingFile()
+        {
+            string etag;
+            string path = Path.Combine(Path.GetTempPath(), "missing_" + Guid.NewGuid().ToString("N") + ".json");
+
+            Assert.That(() => JwkSetDocument.Get(path, out etag), Throws.Exception);
+        }
+
+#if NETCOREAPP
+        /// <summary>JwkSetDocument（設定を読む版）：JwkSetFilePath のファイルを返す（net10.0 だけ。構成を差し替える）。</summary>
+        [Test]
+        public void JwkSetDocument_ReadsConfig()
+        {
+            string path = Path.Combine(Path.GetTempPath(), "jwkset_" + Guid.NewGuid().ToString("N") + ".json");
+
+            try
+            {
+                File.WriteAllText(path, "{\"keys\":[]}");
+
+                WithConfig(new Dictionary<string, string> { { "JwkSetFilePath", path } }, () =>
+                {
+                    string etag;
+                    Assert.That(JwkSetDocument.Get(out etag), Is.EqualTo("{\"keys\":[]}"));
+                    Assert.That(etag, Is.Not.Empty);
+                });
+            }
+            finally
+            {
+                File.Delete(path);
+            }
+        }
+#endif
 
         #endregion
 

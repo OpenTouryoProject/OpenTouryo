@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（#634）
+//*  2026/10/22  玄人 幸道         メタデータの鍵の選び方・取り直しの失敗・属性の境界のテストを足した（カバレッジの拡充）
 //**********************************************************************************
 
 using System;
@@ -225,7 +226,171 @@ namespace TestFramework.Authentication
 
         #endregion
 
+        #region SAML2Metadata（境界）
+
+        /// <summary>
+        /// Parse：暗号化用（use="encryption"）の鍵と、証明書の無い KeyDescriptor は飛ばす。use の無いものは署名用とみなす。
+        /// 証明書の改行・空白は落とす。SSO の口が無ければ空文字。
+        /// GetSigningKeys：読めない証明書は飛ばす（例外にしない）。
+        /// </summary>
+        [Test]
+        public void Parse_KeySelection()
+        {
+            string cert = CertBase64();
+            string xml =
+                "<md:EntityDescriptor xmlns:md=\"" + SAML2Const.UrnMetadata + "\" xmlns:ds=\"" + SAML2Const.UrnDSig + "\""
+                + " entityID=\"https://idp.example.com/\">"
+                + "<md:IDPSSODescriptor>"
+                + KeyDescriptor("encryption", cert)
+                + KeyDescriptor("signing", "")
+                + KeyDescriptor("signing", "!!not base64!!")
+                + KeyDescriptor(null, "\r\n  " + cert.Substring(0, 10) + "\n" + cert.Substring(10) + "\t ")
+                + "</md:IDPSSODescriptor></md:EntityDescriptor>";
+
+            SAML2Metadata md = SAML2Metadata.Parse(xml);
+
+            Assert.That(md.EntityId, Is.EqualTo("https://idp.example.com/"));
+            Assert.That(md.SsoRedirectLocation, Is.Empty);
+            Assert.That(md.SsoPostLocation, Is.Empty);
+            Assert.That(md.SigningCertificates, Is.EqualTo(new string[] { "!!notbase64!!", cert }), "暗号化用・空は飛ばし、空白は落とす");
+            Assert.That(md.GetSigningKeys().Count, Is.EqualTo(1), "読めない証明書は飛ばす");
+            Assert.That(md.GetFirstSigningKey(), Is.Not.Null);
+
+            // entityID が無ければ null
+            Assert.That(SAML2Metadata.Parse("<md:EntityDescriptor xmlns:md=\"" + SAML2Const.UrnMetadata + "\"/>"), Is.Null);
+
+            // 鍵が 1 本も無ければ、GetFirstSigningKey は null
+            SAML2Metadata noKey = SAML2Metadata.Parse(
+                "<md:EntityDescriptor xmlns:md=\"" + SAML2Const.UrnMetadata + "\" entityID=\"x\"/>");
+            Assert.That(noKey.GetSigningKeys(), Is.Empty);
+            Assert.That(noKey.GetFirstSigningKey(), Is.Null);
+        }
+
+        /// <summary>
+        /// GetAsync：期限が切れて取り直しに失敗したら、前に取れたものを使い続ける（entityID が合うときだけ）。
+        /// キャッシュが無いまま失敗したら null。URL・entityID が空なら取りに行かずに null。
+        /// </summary>
+        [Test]
+        public void GetAsync_FailedRefetch()
+        {
+            TimeSpan lifetime = SAML2Metadata.CacheLifetime;
+            SAML2Metadata.Clear();
+
+            try
+            {
+                using (StubHttp http = new StubHttp((req, body) => StubHttp.Json(HttpStatusCode.OK, Metadata())))
+                {
+                    Assert.That(SAML2Metadata.GetAsync(MetadataUrl, SAML2BindingsTests.Issuer).Result, Is.Not.Null);
+                }
+
+                SAML2Metadata.CacheLifetime = TimeSpan.Zero;
+                System.Threading.Thread.Sleep(20);
+
+                using (StubHttp http = new StubHttp((req, body) => { throw new System.Net.Http.HttpRequestException("down"); }))
+                {
+                    Assert.That(SAML2Metadata.GetAsync(MetadataUrl, SAML2BindingsTests.Issuer).Result, Is.Not.Null, "前のものを使い続ける");
+                    Assert.That(SAML2Metadata.GetAsync(MetadataUrl, "https://other.example.com/").Result, Is.Null, "entityID が違えば使わない");
+                    Assert.That(http.Requests.Count, Is.EqualTo(2), "期限切れなので、毎回取りに行く");
+                }
+
+                SAML2Metadata.Clear();
+
+                using (StubHttp http = new StubHttp((req, body) => StubHttp.Json(HttpStatusCode.OK, "not xml")))
+                {
+                    Assert.That(SAML2Metadata.GetAsync(MetadataUrl, SAML2BindingsTests.Issuer).Result, Is.Null, "キャッシュが無い");
+                    Assert.That(SAML2Metadata.GetAsync("", SAML2BindingsTests.Issuer).Result, Is.Null);
+                    Assert.That(SAML2Metadata.GetAsync(MetadataUrl, "").Result, Is.Null);
+                    Assert.That(http.Requests.Count, Is.EqualTo(1), "空なら取りに行かない");
+                }
+            }
+            finally
+            {
+                SAML2Metadata.CacheLifetime = lifetime;
+                SAML2Metadata.Clear();
+            }
+        }
+
+        #endregion
+
+        #region SAML2Attributes（境界）
+
+        /// <summary>
+        /// AppendStatement（並びを受ける版）：null の並び・Assertion が無い文書は false。
+        /// 名前か値が空の属性は飛ばし、NameFormat / FriendlyName は空なら付けない。
+        /// </summary>
+        [Test]
+        public void Attributes_AppendStatement_Boundaries()
+        {
+            Assert.That(SAML2Attributes.AppendStatement(CreateAssertion(), null), Is.False);
+
+            XmlDocument notAssertion = new XmlDocument();
+            notAssertion.LoadXml("<a/>");
+            Assert.That(SAML2Attributes.AppendStatement(notAssertion, new Tuple<string, string, string, string>[]
+            {
+                Tuple.Create("n", "f", "", "v")
+            }), Is.False);
+
+            XmlDocument assertion = CreateAssertion();
+            Assert.That(SAML2Attributes.AppendStatement(assertion, new Tuple<string, string, string, string>[]
+            {
+                Tuple.Create("", "f", "", "v"),       // 名前が空
+                Tuple.Create("n0", "f", "", ""),      // 値が空
+                Tuple.Create("n1", "", "", "v1")      // FriendlyName・NameFormat が空
+            }), Is.True);
+
+            XmlNodeList attributes = assertion.GetElementsByTagName(SAML2Const.ElementAttribute, SAML2Const.UrnAssertion);
+            Assert.That(attributes.Count, Is.EqualTo(1));
+            Assert.That(attributes[0].Attributes[SAML2Const.AttrName].Value, Is.EqualTo("n1"));
+            Assert.That(attributes[0].Attributes[SAML2Const.AttrFriendlyName], Is.Null);
+            Assert.That(attributes[0].Attributes[SAML2Const.AttrNameFormat], Is.Null);
+
+            // 全部飛ばしたら、AttributeStatement を足さない
+            XmlDocument empty = CreateAssertion();
+            Assert.That(SAML2Attributes.AppendStatement(empty, new Tuple<string, string, string, string>[]
+            {
+                Tuple.Create("", "", "", "")
+            }), Is.False);
+            Assert.That(empty.GetElementsByTagName(SAML2Const.ElementAttributeStatement, SAML2Const.UrnAssertion).Count, Is.EqualTo(0));
+        }
+
+        /// <summary>Read：null は空の辞書。AttributeValue の無い属性は飛ばす。同じ名前は最初のものを採る。</summary>
+        [Test]
+        public void Attributes_Read_Boundaries()
+        {
+            Assert.That(SAML2Attributes.Read(null, null), Is.Empty);
+
+            XmlDocument res = CreateResponseWithAttributes("a@example.com", "user01", false);
+            XmlNamespaceManager ns = SAML2Bindings.CreateNamespaceManager(res);
+            Assert.That(SAML2Attributes.Read(res, null), Is.Empty);
+
+            // 値の無い属性と、同じ名前の 2 つめを足す
+            XmlNode statement = res.GetElementsByTagName(SAML2Const.ElementAttributeStatement, SAML2Const.UrnAssertion)[0];
+            XmlElement noValue = res.CreateElement(statement.Prefix, SAML2Const.ElementAttribute, SAML2Const.UrnAssertion);
+            noValue.SetAttribute(SAML2Const.AttrName, "novalue");
+            statement.AppendChild(noValue);
+
+            XmlElement dup = (XmlElement)statement.FirstChild.CloneNode(true);
+            dup.FirstChild.InnerText = "second@example.com";
+            statement.AppendChild(dup);
+
+            Dictionary<string, string> attrs = SAML2Attributes.Read(res, ns);
+            Assert.That(attrs.ContainsKey("novalue"), Is.False);
+            Assert.That(SAML2Attributes.GetEmail(attrs), Is.EqualTo("a@example.com"), "最初のものを採る");
+            Assert.That(SAML2Attributes.GetEmailVerified(attrs), Is.EqualTo("false"));
+            Assert.That(SAML2Attributes.GetEmailVerified(new Dictionary<string, string>()), Is.Empty, "言っていなければ空文字");
+        }
+
+        #endregion
+
         #region private
+
+        /// <summary>KeyDescriptor（use が null なら付けない）</summary>
+        private static string KeyDescriptor(string use, string cert)
+        {
+            return "<md:KeyDescriptor" + (use == null ? "" : " use=\"" + use + "\"") + ">"
+                + "<ds:KeyInfo><ds:X509Data><ds:X509Certificate>" + cert + "</ds:X509Certificate></ds:X509Data></ds:KeyInfo>"
+                + "</md:KeyDescriptor>";
+        }
 
         /// <summary>アサーションだけを作る</summary>
         private static XmlDocument CreateAssertion()

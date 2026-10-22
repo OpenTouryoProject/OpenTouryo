@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/19  玄人 幸道         新規作成
 //*  2026/10/22  玄人 幸道         鍵を受ける版が null・空を受けないこと、鍵を受けない版が設定の鍵を使うことのテストを追加
+//*  2026/10/22  玄人 幸道         NotOnOrAfter の比較・期限切れ・InResponseTo の食い違い・エラー応答・Recipient・SigAlg のテストを足した（カバレッジの拡充）
 //**********************************************************************************
 
 using System;
@@ -238,6 +239,122 @@ namespace TestFramework.Authentication
             Assert.That(VerifyWithReason(onlyAssertion).Issuer, Is.EqualTo(SAML2BindingsTests.Issuer));
         }
 
+
+        /// <summary>W3C 形式の時刻（今から minutes 分後）</summary>
+        private static string W3c(int minutes)
+        {
+            return Touryo.Infrastructure.Public.Str.FormatConverter.ToW3cTimestamp(DateTime.UtcNow.AddMinutes(minutes));
+        }
+
+        /// <summary>
+        /// NotOnOrAfter が SubjectConfirmationData と Conditions で違えば、短い方を採る（bool 版）。
+        /// どちらが短くても、その値が out に返る。
+        /// </summary>
+        [Test]
+        public void NotOnOrAfter_PicksShorter()
+        {
+            foreach (bool conditionsShorter in new bool[] { true, false })
+            {
+                string shorter = W3c(5);
+                string longer = W3c(30);
+
+                string saml = SignedPostWith((res, ns) =>
+                {
+                    ((XmlElement)res.SelectSingleNode(SAML2Const.XPathConditionsInAssertion, ns))
+                        .SetAttribute("NotOnOrAfter", conditionsShorter ? shorter : longer);
+                    ((XmlElement)res.SelectSingleNode(SAML2Const.XPathSubjectConfirmationDataInAssertion, ns))
+                        .SetAttribute("NotOnOrAfter", conditionsShorter ? longer : shorter);
+                });
+
+                Result r = Verify(null, saml, TestCertificates.RsaCer);
+                Assert.That(r.Ok, Is.True, "Conditions が短い : " + conditionsShorter);
+                Assert.That(r.NotOnOrAfter,
+                    Is.EqualTo(Touryo.Infrastructure.Public.Str.FormatConverter.FromW3cTimestamp(shorter)), "短い方");
+
+                Assert.That(VerifyWithReason(saml).IsValid, Is.True, VerifyWithReason(saml).ReasonDescription);
+            }
+        }
+
+        /// <summary>期限が切れた Assertion：bool 版は false、理由つきの版は Expired。</summary>
+        [Test]
+        public void NotOnOrAfter_Expired()
+        {
+            string expired = W3c(-5);
+            string saml = SignedPostWith((res, ns) =>
+            {
+                ((XmlElement)res.SelectSingleNode(SAML2Const.XPathConditionsInAssertion, ns)).SetAttribute("NotOnOrAfter", expired);
+                ((XmlElement)res.SelectSingleNode(SAML2Const.XPathSubjectConfirmationDataInAssertion, ns)).SetAttribute("NotOnOrAfter", expired);
+            });
+
+            Assert.That(Verify(null, saml, TestCertificates.RsaCer).Ok, Is.False);
+
+            SAML2VerifyResult r = VerifyWithReason(saml);
+            Assert.That(r.Reason, Is.EqualTo(SAML2VerifyResult.Reasons.Expired));
+            Assert.That(r.NotExpired, Is.False);
+        }
+
+        /// <summary>InResponseTo が SubjectConfirmationData と Response で食い違えば、bool 版は false、理由つきの版は Conflicted。</summary>
+        [Test]
+        public void InResponseTo_Conflicted()
+        {
+            string saml = SignedPostWith((res, ns) =>
+                ((XmlElement)res.SelectSingleNode(SAML2Const.XPathSubjectConfirmationDataInAssertion, ns)).SetAttribute("InResponseTo", "other"));
+
+            Result r = Verify(null, saml, TestCertificates.RsaCer);
+            Assert.That(r.Ok, Is.False);
+            Assert.That(r.InResponseTo, Is.Null.Or.Empty, "食い違ったら値を入れずに返す");
+            Assert.That(VerifyWithReason(saml).Reason, Is.EqualTo(SAML2VerifyResult.Reasons.Conflicted));
+        }
+
+        /// <summary>
+        /// 署名もスキーマも正しいエラー応答（Assertion 付き）：理由つきの版は ErrorStatus で、SignatureVerified は false にする
+        /// （エラー応答の中身を使わせない）。
+        /// </summary>
+        [Test]
+        public void ErrorStatus_WithAssertion()
+        {
+            XmlDocument res = SAML2BindingsTests.CreateResponse(SAML2Enum.StatusCode.Requester, true);
+            string id = SAML2Bindings.GetIdInResponse(res, SAML2Bindings.CreateNamespaceManager(res));
+            string saml = SAML2Bindings.EncodeAndSignPost(res.OuterXml, id, TestCertificates.RsaPrivateKey());
+
+            SAML2VerifyResult r = VerifyWithReason(saml);
+            Assert.That(r.Reason, Is.EqualTo(SAML2VerifyResult.Reasons.ErrorStatus));
+            Assert.That(r.SignatureVerified, Is.False);
+            Assert.That(r.ReasonDescription, Does.Contain("Requester"));
+        }
+
+        /// <summary>Recipient だけが ACS URL と違えば RecipientMismatch（Audience は一致）。</summary>
+        [Test]
+        public void RecipientMismatch()
+        {
+            string saml = SignedPostWith((res, ns) =>
+                ((XmlElement)res.SelectSingleNode(SAML2Const.XPathSubjectConfirmationDataInAssertion, ns))
+                    .SetAttribute("Recipient", "https://other.example.com/acs"));
+
+            SAML2VerifyResult r = SAML2Client.VerifyResponseWithReason(null, saml, new RSA[] { TestCertificates.RsaPublicKey() },
+                SAML2BindingsTests.Issuer, SAML2BindingsTests.Recipient, "", null, null);
+
+            Assert.That(r.AudienceMatched, Is.True);
+            Assert.That(r.RecipientMatched, Is.False);
+            Assert.That(r.Reason, Is.EqualTo(SAML2VerifyResult.Reasons.RecipientMismatch));
+        }
+
+        /// <summary>Redirect で SigAlg が無ければ NoSigAlg（署名を検証できない）。</summary>
+        [Test]
+        public void Redirect_NoSigAlg()
+        {
+            DigitalSign ds = new DigitalSignParam(
+                TestCertificates.RsaPrivateKey().ExportParameters(true), HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+            string query = SAML2Bindings.EncodeAndSignRedirect(SAML2Enum.RequestOrResponse.Response,
+                SAML2BindingsTests.CreateResponse(SAML2Enum.StatusCode.Success, true).OuterXml, "relay01", ds);
+
+            string noSigAlg = System.Text.RegularExpressions.Regex.Replace(query, "&?" + SAML2Const.QueryParamSigAlg + "=[^&]*", "");
+            Assert.That(noSigAlg, Does.Not.Contain(SAML2Const.QueryParamSigAlg + "="));
+
+            SAML2VerifyResult r = SAML2Client.VerifyResponseWithReason(noSigAlg, null, new RSA[] { TestCertificates.RsaPublicKey() },
+                SAML2BindingsTests.Issuer, "", "", "relay01", "relay01");
+            Assert.That(r.Reason, Is.EqualTo(SAML2VerifyResult.Reasons.NoSigAlg));
+        }
         #endregion
 
         #region 鍵を受ける版は設定へ倒さない

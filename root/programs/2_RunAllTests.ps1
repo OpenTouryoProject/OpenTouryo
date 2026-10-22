@@ -162,6 +162,7 @@
      2026/10/19  玄人 幸道         Linux の回でもカバレッジを取るようにした（-Coverage にも含める）
      2026/10/19  玄人 幸道         NUnit の TestFramework（Framework の単体で使える部品）を加えた
      2026/10/19  玄人 幸道         COVERAGE.md の Framework を、対象モジュールごとに出すようにした
+     2026/10/22  玄人 幸道         Framework の対象モジュールに、#634 で足したクラスと partial に分けたファイルを加えた
 #>
 [CmdletBinding()]
 param(
@@ -379,7 +380,20 @@ $tests = @(
         CoverageModules = @{
             "OpenTouryo.Framework" = @(
                 "Authentication/AuthenticationHeader.cs", "Authentication/SAML2Enum.cs",
-                "Authentication/SAML2Bindings.cs", "Authentication/SAML2Client.cs",
+                # partial に分けたクラスは、ファイルごとに出す（#634）
+                "Authentication/SAML2Bindings.cs", "Authentication/SAML2Bindings.Encoding.cs",
+                "Authentication/SAML2Bindings.SP.cs", "Authentication/SAML2Bindings.IdP.cs",
+                "Authentication/SAML2Client.cs", "Authentication/SAML2Client.VerifyResponse.cs",
+                "Authentication/SAML2Client.VerifyResponseWithReason.cs", "Authentication/SAML2Client.VerifyRequest.cs",
+                "Authentication/SAML2Client.CreateResponse.cs",
+                "Authentication/SAML2VerifyResult.cs", "Authentication/SAML2Metadata.cs", "Authentication/SAML2Attributes.cs",
+                "Authentication/OAuth2AndOIDCClient.cs", "Authentication/OAuth2AndOIDCClient.Grants.cs",
+                "Authentication/OAuth2AndOIDCClient.TokenManagement.cs", "Authentication/OAuth2AndOIDCClient.ExtensionGrants.cs",
+                "Authentication/OAuth2AndOIDCClient.AuthZRequest.cs", "Authentication/OAuth2AndOIDCClient.OpenIDConnect.cs",
+                "Authentication/OAuth2AndOIDCClient.ClientRegistration.cs", "Authentication/OAuth2AndOIDCClient.DPoP.cs",
+                "Authentication/OAuth2AndOIDCSpec.cs", "Authentication/DPoPProof.cs",
+                "Authentication/RemoteJwkSetStore.cs", "Authentication/JwkSetDocument.cs",
+                "Authentication/CmnClientParams.cs", "Authentication/CmnServerParams.cs",
                 "Authentication/CmnJwtToken.cs", "Authentication/AccessToken.cs", "Authentication/IdToken.cs",
                 "Authentication/ResponseObject.cs", "Authentication/JwtAssertion.cs",
                 "Authentication/RequestObject.cs", "Authentication/ClaimsInRO.cs",

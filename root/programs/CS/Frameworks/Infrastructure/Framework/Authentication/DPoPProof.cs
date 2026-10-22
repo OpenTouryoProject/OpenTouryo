@@ -26,6 +26,7 @@
 //*  2026/10/22  玄人 幸道         新規作成（汎用認証サイトから移した。#634 の A-2 / A-3）
 //*  2026/10/22  玄人 幸道         htu の比較（IsSameHtu）を UriOperator から移した（DPoP 専用のため。private）。
 //*                                クエリと素片を除くのは UriOperator.GetUrlWithoutQueryAndFragment で、作る側と共有する
+//*  2026/10/22  玄人 幸道         Create の htu を http / https の絶対 URL に限った（それ以外は ArgumentException）
 //**********************************************************************************
 
 using System;
@@ -122,7 +123,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 throw new ArgumentNullException(nameof(htm));
             }
 
-            if (!Uri.TryCreate(htu, UriKind.Absolute, out _))
+            // RFC 9449 4.2 : htu は HTTP の URI（クエリと素片を含まない）。
+            string htuWithoutQuery = UriOperator.GetUrlWithoutQueryAndFragment(htu);
+
+            if (string.IsNullOrEmpty(htuWithoutQuery))
             {
                 throw new ArgumentException(PublicExceptionMessage.ARGUMENT_INCORRECT, nameof(htu));
             }
@@ -137,8 +141,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             {
                 { OAuth2AndOIDCConst.jti, CmnJwtToken.CreateJitClaim() },
                 { OAuth2AndOIDCConst.htm, htm },
-                // RFC 9449 4.2 : クエリと素片を含まない。
-                { OAuth2AndOIDCConst.htu, UriOperator.GetUrlWithoutQueryAndFragment(htu) },
+                { OAuth2AndOIDCConst.htu, htuWithoutQuery },
                 // NumericDate（数値）で入れる（CmnJwtToken.CreateIatClaim は文字列を返すので使わない）。
                 { OAuth2AndOIDCConst.iat, DateTimeOffset.UtcNow.ToUnixTimeSeconds() }
             };

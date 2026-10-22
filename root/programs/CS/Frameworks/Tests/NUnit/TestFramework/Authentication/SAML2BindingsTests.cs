@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/19  玄人 幸道         新規作成
+//*  2026/10/22  玄人 幸道         SigAlg（ハッシュ別・DSA・PSS）・空の入力・暗号化用の鍵を飛ばすことのテストを足した（#634。カバレッジの拡充）
 //**********************************************************************************
 
 using System.Security.Cryptography;
@@ -33,6 +34,7 @@ using NUnit.Framework;
 
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Public.Security;
+using Touryo.Infrastructure.Public.Str;
 
 namespace TestFramework.Authentication
 {
@@ -239,6 +241,130 @@ namespace TestFramework.Authentication
             Assert.That(xml, Does.Contain("https://idp.example.com/post"));
             Assert.That(xml, Does.Contain("MIIBpem"));
             Assert.That(xml, Does.Contain(SAML2Enum.EnumToString(SAML2Enum.NameIDFormat.EmailAddress)));
+        }
+
+        /// <summary>Redirect の SigAlg を読む（URL デコード済み）</summary>
+        private static string SigAlgOf(string query)
+        {
+            return CustomEncode.UrlDecode(UriOperator.GetParameterFromQueryString(SAML2Const.QueryParamSigAlg, query));
+        }
+
+        /// <summary>
+        /// Redirect：SigAlg は DigitalSign のハッシュで決まる（SHA1 / 256 / 384 / 512）。
+        /// RSA 版の VerifyRedirect は SigAlg に従って検証し、受け入れる一覧に無ければ通さない。
+        /// </summary>
+        [TestCase("SHA1", SAML2Const.RSAwithSHA1)]
+        [TestCase("SHA256", SAML2Const.RSAwithSHA256)]
+        [TestCase("SHA384", SAML2Const.RSAwithSHA384)]
+        [TestCase("SHA512", SAML2Const.RSAwithSHA512)]
+        public void Redirect_SigAlgByHash(string hash, string expectedSigAlg)
+        {
+            string saml = CreateResponse(SAML2Enum.StatusCode.Success, true).OuterXml;
+
+            using (RSA rsa = RSA.Create(2048))
+            {
+                DigitalSignParam ds = new DigitalSignParam(rsa.ExportParameters(true), new HashAlgorithmName(hash), RSASignaturePadding.Pkcs1);
+                string query = SAML2Bindings.EncodeAndSignRedirect(SAML2Enum.RequestOrResponse.Response, saml, "", ds);
+
+                Assert.That(SigAlgOf(query), Is.EqualTo(expectedSigAlg));
+                Assert.That(SAML2Bindings.VerifyRedirect(query, ds), Is.True, "DigitalSign 版");
+                Assert.That(SAML2Bindings.VerifyRedirect(query, rsa, new string[] { expectedSigAlg }), Is.True, "RSA 版（一覧に在る）");
+
+                // 既定の一覧は SHA256 / 384 / 512（SHA1 は受けない）
+                Assert.That(SAML2Bindings.VerifyRedirect(query, rsa), Is.EqualTo(hash != "SHA1"));
+            }
+        }
+
+        /// <summary>
+        /// Redirect：RSA 以外の SigAlg は、受け入れる一覧に在っても RSA 版では通さない。
+        /// DigitalSign 版は、DigitalSign のアルゴリズムと SigAlg が食い違えば通さない。
+        /// </summary>
+        [Test]
+        public void Redirect_SigAlgMismatch()
+        {
+            string saml = CreateResponse(SAML2Enum.StatusCode.Success, true).OuterXml;
+
+            using (RSA rsa = RSA.Create(2048))
+            {
+                DigitalSignParam sha256 = new DigitalSignParam(rsa.ExportParameters(true), HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+                DigitalSignParam sha512 = new DigitalSignParam(rsa.ExportParameters(true), HashAlgorithmName.SHA512, RSASignaturePadding.Pkcs1);
+                string query = SAML2Bindings.EncodeAndSignRedirect(SAML2Enum.RequestOrResponse.Response, saml, "", sha256);
+
+                Assert.That(SAML2Bindings.VerifyRedirect(query, sha512), Is.False, "SigAlg と DigitalSign のハッシュが違う");
+
+                string dsaSigAlg = query.Replace(
+                    CustomEncode.UrlEncode(SAML2Const.RSAwithSHA256), CustomEncode.UrlEncode(SAML2Const.DSAwithSHA1));
+                Assert.That(SAML2Bindings.VerifyRedirect(dsaSigAlg, rsa, new string[] { SAML2Const.DSAwithSHA1 }), Is.False, "RSA 以外");
+            }
+        }
+
+        /// <summary>
+        /// Redirect：PSS の RSA は、従来どおり SigAlg を RSAwithSHA1 にする（DigitalSign 版の検証とは合う）。
+        /// DSA は DSAwithSHA1。
+        /// </summary>
+        [Test]
+        public void Redirect_SigAlgOfOtherAlgorithms()
+        {
+            string saml = CreateResponse(SAML2Enum.StatusCode.Success, true).OuterXml;
+
+            using (RSA rsa = RSA.Create(2048))
+            {
+                DigitalSignParam pss = new DigitalSignParam(rsa.ExportParameters(true), HashAlgorithmName.SHA256, RSASignaturePadding.Pss);
+                string query = SAML2Bindings.EncodeAndSignRedirect(SAML2Enum.RequestOrResponse.Response, saml, "", pss);
+                Assert.That(SigAlgOf(query), Is.EqualTo(SAML2Const.RSAwithSHA1));
+            }
+
+            DigitalSignParam dsa = new DigitalSignParam(EnumDigitalSignAlgorithm.DsaCSP_SHA1);
+            string dsaQuery = SAML2Bindings.EncodeAndSignRedirect(SAML2Enum.RequestOrResponse.Response, saml, "", dsa);
+            Assert.That(SigAlgOf(dsaQuery), Is.EqualTo(SAML2Const.DSAwithSHA1));
+        }
+
+        /// <summary>
+        /// 空の入力：EncodeAndSignRedirect は空文字、DecodeRedirect は SAMLRequest / SAMLResponse が無ければ空文字。
+        /// 各 Get*In* は、要素が無ければ空文字。
+        /// </summary>
+        [Test]
+        public void EmptyInputs()
+        {
+            Assert.That(SAML2Bindings.EncodeAndSignRedirect(SAML2Enum.RequestOrResponse.Response, "", "relay01"), Is.Empty);
+            Assert.That(SAML2Bindings.DecodeRedirect("RelayState=relay01"), Is.Empty);
+
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml("<a/>");
+            XmlNamespaceManager ns = SAML2Bindings.CreateNamespaceManager(doc);
+
+            Assert.That(SAML2Bindings.GetIssuerInResponse(doc, ns), Is.Empty);
+            Assert.That(SAML2Bindings.GetIssuerInAssertion(doc, ns), Is.Empty);
+            Assert.That(SAML2Bindings.GetAudienceInAssertion(doc, ns), Is.Empty);
+            Assert.That(SAML2Bindings.GetAuthnContextClassRefInAssertion(doc, ns), Is.Empty);
+            Assert.That(SAML2Bindings.GetIssuerInRequest(doc, ns), Is.Empty);
+        }
+
+        /// <summary>メタデータ：署名用の証明書は、1 本目の use="signing" の KeyDescriptor の後ろに足す（暗号化用は飛ばす）。</summary>
+        [Test]
+        public void AppendSigningCertificates_SkipsEncryptionKey()
+        {
+            XmlDocument md = SAML2Bindings.CreateMetadata("https://idp.example.com/", "CURRENT",
+                new[] { SAML2Enum.NameIDFormat.Unspecified }, "https://idp.example.com/redirect", "https://idp.example.com/post");
+
+            XmlNamespaceManager ns = new XmlNamespaceManager(md.NameTable);
+            ns.AddNamespace(SAML2Const.PrefixMetadata, SAML2Const.UrnMetadata);
+            ns.AddNamespace(SAML2Const.PrefixDSig, SAML2Const.UrnDSig);
+
+            // 先頭に暗号化用の KeyDescriptor を置く
+            XmlNode signing = md.SelectSingleNode(SAML2Const.XPathKeyDescriptorInMetadata, ns);
+            XmlElement encryption = (XmlElement)signing.CloneNode(true);
+            encryption.SetAttribute(SAML2Const.AttrUse, "encryption");
+            encryption.SelectSingleNode(SAML2Const.XPathX509CertificateInKeyDescriptor, ns).InnerText = "ENC";
+            signing.ParentNode.InsertBefore(encryption, signing);
+
+            Assert.That(SAML2Bindings.AppendSigningCertificates(md, new string[] { "OLD" }), Is.EqualTo(1));
+
+            XmlNodeList keys = md.SelectNodes(SAML2Const.XPathKeyDescriptorInMetadata, ns);
+            Assert.That(keys.Count, Is.EqualTo(3));
+            Assert.That(keys[0].SelectSingleNode(SAML2Const.XPathX509CertificateInKeyDescriptor, ns).InnerText, Is.EqualTo("ENC"));
+            Assert.That(keys[1].SelectSingleNode(SAML2Const.XPathX509CertificateInKeyDescriptor, ns).InnerText, Is.EqualTo("CURRENT"));
+            Assert.That(keys[2].SelectSingleNode(SAML2Const.XPathX509CertificateInKeyDescriptor, ns).InnerText, Is.EqualTo("OLD"));
         }
     }
 }

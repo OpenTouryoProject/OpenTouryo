@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（#634）
+//*  2026/10/22  玄人 幸道         EC・oct の指紋の値を固定した（正規化の JSON の組み立てを変えても、値が変わらないことを見る）
 //**********************************************************************************
 
 using System;
@@ -99,11 +100,25 @@ namespace TestPublic.Security.Jwt
         [Test]
         public void Thumbprint_OctAndInvalid()
         {
-            Assert.That(JwkOperator.Thumbprint(JObject.Parse("{\"kty\":\"oct\",\"k\":\"AAEC\"}")), Is.Not.Empty);
+            Assert.That(JwkOperator.Thumbprint(JObject.Parse("{\"kty\":\"oct\",\"k\":\"AAEC\"}")),
+                Is.EqualTo("sQkHMlK8faQw7yzSCq6DCmYD-4TIIloQ3jcJ4QMV9Zg"), "値の固定（後退の検知）");
+            Assert.That(JwkOperator.Thumbprint(JObject.Parse("{\"kty\":\"oct\"}")), Is.Empty, "k が無い");
             Assert.That(JwkOperator.Thumbprint(null), Is.Empty);
             Assert.That(JwkOperator.Thumbprint(JObject.Parse("{\"kty\":\"RSA\",\"e\":\"AQAB\"}")), Is.Empty, "n が無い");
             Assert.That(JwkOperator.Thumbprint(JObject.Parse("{\"kty\":\"EC\",\"crv\":\"P-256\",\"x\":1,\"y\":\"a\"}")), Is.Empty, "文字列でない");
             Assert.That(JwkOperator.Thumbprint(JObject.Parse("{\"kty\":\"OKP\",\"x\":\"a\"}")), Is.Empty, "扱わない kty");
+        }
+
+        /// <summary>EC の指紋（RFC 7517 付録 A.1 の EC の公開鍵）。値を固定して、正規化の後退を検知する。</summary>
+        [Test]
+        public void Thumbprint_EcFixedValue()
+        {
+            JObject jwk = JObject.Parse(
+                "{\"kty\":\"EC\",\"crv\":\"P-256\",\"x\":\"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU\","
+                + "\"y\":\"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0\",\"kid\":\"Public key used in JWS spec Appendix A.3 example\"}");
+
+            Assert.That(JwkOperator.Thumbprint(jwk), Is.EqualTo("oKIywvGUpTVTyxMQ3bwIIeQUudfr_CkLMjCE19ECD-U"),
+                "kid などの余計な項目は指紋に入らない");
         }
 
         /// <summary>IsPublicOnly / ToPublic：秘密鍵の項目を見分け、落とす（引数は変えない）。</summary>
