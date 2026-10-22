@@ -107,6 +107,8 @@
     <Compile Include="Authentication\CmnClientParams.cs" />
     <Compile Include="Authentication\OAuth2AndOIDCParams.cs" />
     <Compile Include="Authentication\SAML2Client.cs" />
+    <Compile Include="Authentication\SAML2Client.VerifyResponse.cs" />
+    <Compile Include="Authentication\SAML2Client.VerifyResponseWithReason.cs" />
     <Compile Include="Authentication\SAML2Bindings.cs" />
     <Compile Include="Authentication\SAML2Const.cs" />
     <Compile Include="Authentication\SAML2Enum.cs" />

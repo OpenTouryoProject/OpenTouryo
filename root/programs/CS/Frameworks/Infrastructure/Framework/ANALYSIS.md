@@ -267,6 +267,15 @@ DCR の口の認可、クライアント登録の持ち方。
 `SAML2Client`（`CreateRedirectRequest` / `CreatePostRequest` / `VerifyResponse`）、`SAML2Bindings` `SAML2Const` `SAML2Enum` `SAML2Params`。
 XML 署名は `Public.Security` の `SignedXml2`。
 
+**`SAML2Client` は処理区分ごとに `partial` クラスのファイルへ分けている**（公開 API は 1 つの型のまま）。
+各ファイルの Region は「**設定を読む版 → 引数で受ける版 → private**」の順に並べる。
+
+| ファイル | 区分 |
+|---|---|
+| `SAML2Client.cs` | 要求の作成（SP → IdP。`CreateRedirectRequest` / `CreatePostRequest`） |
+| `SAML2Client.VerifyResponse.cs` | 応答の検証（bool を返す従来の版） |
+| `SAML2Client.VerifyResponseWithReason.cs` | 応答の検証（理由を返す版。#634。結果は `SAML2VerifyResult`） |
+
 | 何の鍵 | 既定（引数の少ない版が読む設定） | 相手ごとに替えるなら |
 |---|---|---|
 | `VerifyResponse` の検証用証明書 | `CmnClientParams.RsaCerFilePath`（配備に 1 本） | `cerFilePath` を受けるオーバーロード（#600）。**null・空は受けない** |
