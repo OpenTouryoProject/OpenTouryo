@@ -26,6 +26,7 @@
 //*  2026/10/22  玄人 幸道         新規作成（SAML2Bindings.cs から処理区分ごとに分割した）
 //*  2026/10/22  玄人 幸道         属性名・XPath・要素名・ID の接頭辞の直書きを SAML2Const に寄せた
 //*  2026/10/22  玄人 幸道         メタデータに署名用の証明書を書き足す AppendSigningCertificates を追加（汎用認証サイトから移した。#634）
+//*  2026/10/22  玄人 幸道         AppendSigningCertificates に、証明書を設定（CmnServerParams.PreviousSigningCerFilePaths）から読む版を追加
 //**********************************************************************************
 
 using System;
@@ -36,6 +37,7 @@ using System.Security.Cryptography;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Xml;
 using Touryo.Infrastructure.Public.Util;
+using Touryo.Infrastructure.Public.Security;
 using Touryo.Infrastructure.Public.Security.Xml;
 
 namespace Touryo.Infrastructure.Framework.Authentication
@@ -231,6 +233,49 @@ namespace Touryo.Infrastructure.Framework.Authentication
             #endregion
 
             return xmlDoc;
+        }
+
+        /// <summary>メタデータに、署名用の証明書（KeyDescriptor use="signing"）を書き足す（設定を読む版）</summary>
+        /// <param name="metadata">XmlDocument（CreateMetadata の戻り）</param>
+        /// <returns>書き足した本数</returns>
+        /// <remarks>
+        /// 自由に利用できる。CmnServerParams.PreviousSigningCerFilePaths（*.cer。空白・カンマ・タブ区切り）を、書いた順に並べる。
+        /// 設定が空なら何もしない（0 を返す）。
+        ///
+        /// 読めないファイルは飛ばす（汎用認証サイトの従来の扱い。退役させる途中の証明書のために、
+        /// メタデータそのものが出せなくなる方が困るため）。並べた本数は戻り値で確かめられる。
+        /// </remarks>
+        public static int AppendSigningCertificates(XmlDocument metadata)
+        {
+            if (metadata == null)
+            {
+                throw new ArgumentNullException(nameof(metadata));
+            }
+
+            string paths = CmnServerParams.PreviousSigningCerFilePaths;
+
+            if (string.IsNullOrEmpty(paths))
+            {
+                return 0;
+            }
+
+            List<string> certificates = new List<string>();
+
+            foreach (string path in paths.Split(
+                new char[] { ' ', ',', '\t' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                try
+                {
+                    certificates.Add(PrivacyEnhancedMail.GetBase64StringFromPemFilePath(
+                        path, PrivacyEnhancedMail.RFC7468Label.Certificate));
+                }
+                catch (Exception)
+                {
+                    // 読めないものは飛ばす（remarks）。
+                }
+            }
+
+            return SAML2Bindings.AppendSigningCertificates(metadata, certificates);
         }
 
         /// <summary>メタデータに、署名用の証明書（KeyDescriptor use="signing"）を書き足す</summary>

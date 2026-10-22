@@ -168,6 +168,9 @@
   <data name="ERROR_IN_WRITING_OF_FX_SWITCH2" xml:space="preserve">
     <value>Please specify switch by "true" or "false". Config key: {0}</value>
   </data>
+  <data name="ERROR_IN_WRITING_OF_CONFIG_VALUE" xml:space="preserve">
+    <value>The config value is not defined or is invalid. Config key: {0}</value>
+  </data>
   <data name="FX_PROCESSING_STATUS_ERROR" xml:space="preserve">
     <value>The unjust state was detected by framework processing. Supplementary information : {0}</value>
   </data>

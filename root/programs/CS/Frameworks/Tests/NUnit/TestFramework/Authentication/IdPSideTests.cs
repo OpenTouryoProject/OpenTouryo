@@ -24,19 +24,29 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（#634）
+//*  2026/10/22  玄人 幸道         設定（CmnServerParams）を読む版のテストを追加
 //**********************************************************************************
 
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
+using System.Text;
 using System.Xml;
 
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
 
+#if NETCOREAPP
+using Microsoft.Extensions.Configuration;
+
+using Touryo.Infrastructure.Public.Util;
+#endif
+
 using Touryo.Infrastructure.Framework.Authentication;
+using Touryo.Infrastructure.Framework.Exceptions;
+using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Security;
 using Touryo.Infrastructure.Public.Security.Jwt;
 
@@ -308,6 +318,163 @@ namespace TestFramework.Authentication
                 File.Delete(path);
             }
         }
+
+        #endregion
+
+        #region 設定（CmnServerParams）を読む版
+
+        /// <summary>
+        /// 設定が空のとき：必須の値（IssuerId 等）が無ければ FrameworkException。
+        /// RequirePkceS256 が無ければ plain も受ける。PreviousSigningCerFilePaths が無ければ何も足さない。
+        /// </summary>
+        [Test]
+        public void ConfigOverloads_EmptyConfig()
+        {
+            Dictionary<string, string> p = new Dictionary<string, string> { { "code", "c1" } };
+
+            Assert.Throws<FrameworkException>(() => ResponseObject.Create(p, "client01", DateTimeOffset.UtcNow.AddMinutes(5)));
+            Assert.Throws<FrameworkException>(() => SAML2Client.CreatePostResponse(Acs, "req01", SAML2Enum.StatusCode.Success,
+                "user01", SAML2Enum.NameIDFormat.Unspecified, SAML2Enum.AuthnContextClassRef.Unspecified, null));
+            Assert.Throws<FrameworkException>(() => SAML2Client.CreateRedirectResponse(Acs, "req01", SAML2Enum.StatusCode.Success,
+                "user01", SAML2Enum.NameIDFormat.Unspecified, SAML2Enum.AuthnContextClassRef.Unspecified, null, "relay01"));
+
+            const string verifier = "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";
+            bool usedS256;
+            Assert.That(OAuth2AndOIDCSpec.VerifyPkce("plain", verifier, verifier, out usedS256), Is.True, "既定は plain も受ける");
+
+            XmlDocument metadata = SAML2Bindings.CreateMetadata(IdPEntityId, "CURRENT",
+                new SAML2Enum.NameIDFormat[] { SAML2Enum.NameIDFormat.Unspecified },
+                "https://idp.example.com/sso", "https://idp.example.com/sso");
+            Assert.That(SAML2Bindings.AppendSigningCertificates(metadata), Is.EqualTo(0));
+            Assert.Throws<ArgumentNullException>(() => SAML2Bindings.AppendSigningCertificates(null));
+        }
+
+#if NETCOREAPP
+        /// <summary>構成を差し替えて、テストの後で空に戻す</summary>
+        private static void WithConfig(Dictionary<string, string> appSettings, Action action)
+        {
+            Dictionary<string, string> values = new Dictionary<string, string>();
+
+            foreach (KeyValuePair<string, string> kv in appSettings)
+            {
+                values.Add("appSettings:" + kv.Key, kv.Value);
+            }
+
+            try
+            {
+                GetConfigParameter.InitConfiguration(new ConfigurationBuilder().AddInMemoryCollection(values).Build());
+                action();
+            }
+            finally
+            {
+                GetConfigParameter.InitConfiguration(
+                    new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string>()).Build());
+            }
+        }
+
+        /// <summary>汎用認証サイトと同じキーの、IdP / 認可サーバの設定</summary>
+        private static Dictionary<string, string> ServerConfig()
+        {
+            return new Dictionary<string, string>
+            {
+                { "IssuerId", IdPEntityId },
+                { "RsaPfxFilePath", TestCertificates.RsaPfx },
+                { "RsaPfxPassword", TestCertificates.Password },
+                { "Saml2AssertionExpireTimeSpanFromMinutes", "10" },
+                { "RequirePkceS256", "true" },
+                { "PreviousSigningCerFilePaths", TestCertificates.RsaCer + ", " + TestCertificates.PathOf("missing.cer") }
+            };
+        }
+
+        /// <summary>
+        /// 設定を読む版は、IssuerId・RsaPfxFilePath の鍵・有効期間・RequirePkceS256・PreviousSigningCerFilePaths を使う
+        /// （net10.0 だけ。構成を差し替える）。
+        /// </summary>
+        [Test]
+        public void ConfigOverloads_UseServerConfig()
+        {
+            WithConfig(ServerConfig(), () =>
+            {
+                RSA[] idpPublic = new RSA[] { TestCertificates.RsaPublicKey() };
+
+                // ResponseObject：iss と鍵（kid 付き）
+                string response = ResponseObject.Create(
+                    new Dictionary<string, string> { { "code", "c1" } }, "client01", DateTimeOffset.UtcNow.AddMinutes(5));
+
+                JObject jobj;
+                Assert.That(ResponseObject.Verify(response, new JWS_RS256_X509(TestCertificates.RsaCer, ""),
+                    IdPEntityId, "client01", out jobj), Is.True);
+
+                JObject header = JObject.Parse(Encoding.UTF8.GetString(
+                    CustomEncode.FromBase64UrlString(response.Split('.')[0])));
+                Assert.That((string)header[JwtConst.kid], Is.Not.Null.And.Not.Empty, "kid で鍵を引かせる");
+                Assert.That(header["jku"], Is.Null, "jku は入れない");
+
+                // SAML2 の応答：issuer・鍵・有効期間（10 分）
+                string query = SAML2Client.CreateRedirectResponse(Acs, "req01", SAML2Enum.StatusCode.Success,
+                    "user01", SAML2Enum.NameIDFormat.Unspecified, SAML2Enum.AuthnContextClassRef.PasswordProtectedTransport,
+                    null, "relay01");
+                SAML2VerifyResult r = SAML2Client.VerifyResponseWithReason(query, null, idpPublic,
+                    IdPEntityId, Acs, "req01", "relay01", "relay01");
+                Assert.That(r.IsValid, Is.True, r.ReasonDescription);
+                Assert.That(r.NotOnOrAfter, Is.GreaterThan(DateTime.UtcNow.AddMinutes(9))
+                    .And.LessThan(DateTime.UtcNow.AddMinutes(11)), "Saml2AssertionExpireTimeSpanFromMinutes（分）");
+
+                string post = SAML2Client.CreatePostResponse(Acs, "req01", SAML2Enum.StatusCode.Success,
+                    "user01", SAML2Enum.NameIDFormat.Unspecified, SAML2Enum.AuthnContextClassRef.PasswordProtectedTransport, null);
+                SAML2VerifyResult r2 = SAML2Client.VerifyResponseWithReason(null, post, idpPublic,
+                    IdPEntityId, Acs, "req01", null, null);
+                Assert.That(r2.IsValid, Is.True, r2.ReasonDescription);
+
+                // PKCE：RequirePkceS256 = true なら plain を断る
+                const string verifier = "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";
+                bool usedS256;
+                Assert.That(OAuth2AndOIDCSpec.VerifyPkce("plain", verifier, verifier, out usedS256), Is.False);
+                Assert.That(OAuth2AndOIDCSpec.VerifyPkce("S256",
+                    OAuth2AndOIDCClient.PKCE_S256_CodeChallengeMethod(verifier), verifier, out usedS256), Is.True);
+
+                // メタデータ：読めるものだけ足す（読めないファイルは飛ばす）
+                XmlDocument metadata = SAML2Bindings.CreateMetadata(IdPEntityId, "CURRENT",
+                    new SAML2Enum.NameIDFormat[] { SAML2Enum.NameIDFormat.Unspecified },
+                    "https://idp.example.com/sso", "https://idp.example.com/sso");
+                Assert.That(SAML2Bindings.AppendSigningCertificates(metadata), Is.EqualTo(1));
+            });
+        }
+
+        /// <summary>
+        /// 有効期間が無い・数値でない、RequirePkceS256 が true / false でなければ FrameworkException
+        /// （黙って既定値で動かさない）。
+        /// </summary>
+        [Test]
+        public void ConfigOverloads_InvalidValues()
+        {
+            foreach (string minutes in new string[] { null, "abc", "0" })
+            {
+                Dictionary<string, string> config = ServerConfig();
+                config.Remove("Saml2AssertionExpireTimeSpanFromMinutes");
+                if (minutes != null)
+                {
+                    config.Add("Saml2AssertionExpireTimeSpanFromMinutes", minutes);
+                }
+
+                WithConfig(config, () =>
+                {
+                    Assert.Throws<FrameworkException>(() => SAML2Client.CreatePostResponse(Acs, "req01", SAML2Enum.StatusCode.Success,
+                        "user01", SAML2Enum.NameIDFormat.Unspecified, SAML2Enum.AuthnContextClassRef.Unspecified, null),
+                        "Saml2AssertionExpireTimeSpanFromMinutes = " + (minutes ?? "(なし)"));
+                });
+            }
+
+            Dictionary<string, string> pkce = ServerConfig();
+            pkce["RequirePkceS256"] = "yes";
+
+            WithConfig(pkce, () =>
+            {
+                bool usedS256;
+                Assert.Throws<FrameworkException>(() => OAuth2AndOIDCSpec.VerifyPkce("plain", "v", "v", out usedS256));
+            });
+        }
+#endif
 
         #endregion
     }

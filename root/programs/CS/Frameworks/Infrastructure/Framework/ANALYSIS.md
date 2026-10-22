@@ -194,7 +194,7 @@ UOC は `UOC_PreQuery` / `UOC_AfterQuery(sql)` / `UOC_AfterQuery(sql, ex)`。
   `GetJwkSetAsync` と `GetDiscoveryDocumentAsync` はこれを呼ぶだけ（以前は `GetJwkSetAsync` を汎用の GET として代用していた）
 - **CIBA の Token 要求で `private_key_jwt` / `client_secret_jwt` / `tls_client_auth` を使うなら、`client_assertion` を受ける `GetAccessTokenByCibaAsync` を使う。**
   受けない既存の版は Basic / post だけで、それ以外は従来どおり `ArgumentException`
-- `OAuth2AndOIDCConst` / `OAuth2AndOIDCEnum` / `OAuth2AndOIDCParams` / `CmnClientParams`
+- `OAuth2AndOIDCConst` / `OAuth2AndOIDCEnum` / `OAuth2AndOIDCParams` / `CmnClientParams` / `CmnServerParams`（#634）
 - `JwkSetStore` … JWK Set のキャッシュ（**設定の `JwkSetUri` 1 本**＝自分の認可サーバ）
 
 **#634 で、汎用認証サイト（MPAS）から次を移した**（どれも追加で、既存のシグネチャは変えていない）。
@@ -208,8 +208,10 @@ UOC は `UOC_PreQuery` / `UOC_AfterQuery(sql)` / `UOC_AfterQuery(sql, ex)`。
 | `SAML2Attributes` | **`AttributeStatement` を書く（IdP）・読む（SP）**。メアド・利用者名・`email_verified` の別名を吸収 | IdP / SP |
 | `SAML2Client.VerifyResponseWithReason` / `SAML2VerifyResult` | **落ちた理由を返す**応答の検証（鍵は複数を順に試す） | SP |
 | `OAuth2AndOIDCSpec` | 仕様が決めている小物（`error` → HTTP ステータス、`response_type` の正規化、`prompt` の集合、`max_age`、認可応答の URL（`iss` を付ける）、空白区切り、`client_assertion` と `assertion` の両受け） | AS / RS |
+| `AuthenticationHeader` | `DPoP` スキームの読み書き（`GetAccessToken` はスキームも返す）、`WWW-Authenticate` の組み立て、**Basic を復号前後のどちらでも照合する版**（H-3） | AS / RS |
 
-**SP・RP 側と対になる IdP 側の処理**（#634 の続き。例外として同じ所に置く）。どれも、配備の決めは引数で受ける。
+**SP・RP 側と対になる IdP 側の処理**（#634 の続き。例外として同じ所に置く）。どれも、配備の決めは引数で受ける
+（自分の値と鍵を設定から読む版もある。下の `CmnServerParams`）。
 
 | 置き場 | IdP 側の処理 | 対になる SP・RP 側の処理 | 呼び出し側に残す決め |
 |---|---|---|---|
@@ -223,7 +225,6 @@ UOC は `UOC_PreQuery` / `UOC_AfterQuery(sql)` / `UOC_AfterQuery(sql, ex)`。
 **移していないもの**（対にはなるが、汎用の部分を切り出せない、または保留）:
 id_token / access_token の発行（汎用認証サイトの作り（access_token からの作り替え・利用者ストア・鍵の表）と絡み合っている）、
 logout_token（ログアウトは保留）、DCR・Discovery・PAR などの受け口（配備の決めそのもの）。
-| `AuthenticationHeader` | `DPoP` スキームの読み書き（`GetAccessToken` はスキームも返す）、`WWW-Authenticate` の組み立て、**Basic を復号前後のどちらでも照合する版**（H-3） | AS / RS |
 
 **配備ごとの決めは持ち込んでいない**（MPAS 側に残る）。`jti` の使い回しを拒む台帳（`DPoPProof.CreateProofId` は鍵だけ作る）、
 `nonce` の作り方、`htu` の期待値の決め方（**要求の `Host` を信じず設定から作る**）、どの口で `cnf.jkt` / `dpop_jkt` を見るか、
@@ -241,6 +242,8 @@ DCR の口の認可、クライアント登録の持ち方。
 | `SpRp_Isser` / `SpRp_*Uri` / `SpRp_*CerFilePath` / `JwkSetUri` | **相手（OP / IdP）の値**（Issuer・エンドポイント・検証用の公開鍵・JWK Set の URL） |
 | `SpRp_DiscoveryUri` / `SpRp_Saml2MetadataUri` / `SpRp_Saml2EntityId` | **相手（OP / IdP）の値**（Discovery・SAML2 メタデータの所在、期待する entityID）。#634 で追加 |
 | `SpRp_Saml2AcsUri` | **自分の ACS の URL**（SAML2 の Audience / Recipient に照合する。空なら照合しない）。#634 で追加 |
+| `SpRp_*PfxFilePath` / `SpRp_*PfxPassword` | **クライアント自身の鍵**（要求の署名・JWE の復号） |
+| `JwkSetFilePath` | **認可サーバ自身の JWK Set**（`CmnJwtToken.Verify` の分岐にも使われる） |
 
 **#634 の部品は、相手の値を引数で受ける版が基本である。** 設定を読む版（引数の少ない版）は、**相手が 1 つの配備**のための便宜で、
 次の表のキーを読む。**キーが空なら何もせずに null（検証は `NoKey`）を返す**（通信もしない）。相手が複数なら、引数で受ける版を使う。
@@ -253,13 +256,24 @@ DCR の口の認可、クライアント登録の持ち方。
 | `SAML2Client.VerifyResponseWithReason(queryString, samlResponse, expectedInResponseTo, relayState, expectedRelayState)` | `SpRp_RsaCerFilePath`・`SpRp_Saml2EntityId`・`SpRp_Saml2AcsUri` |
 
 **配布している設定ファイル（サンプルの `appsettings.json` / `app.config`）には、これらのキーを書いていない**（どのサンプルもこの口を使っていないため）。使うアプリが足すこと。
-調整値（取り直しの下限・DPoP の `iat` の窓・メタデータのキャッシュの期間）は設定にしていない。引数か static プロパティで変える
-| `SpRp_*PfxFilePath` / `SpRp_*PfxPassword` | **クライアント自身の鍵**（要求の署名・JWE の復号） |
-| `JwkSetFilePath` | **認可サーバ自身の JWK Set**（`CmnJwtToken.Verify` の分岐にも使われる） |
+調整値（取り直しの下限・DPoP の `iat` の窓・メタデータのキャッシュの期間）は設定にしていない。引数か static プロパティで変える。
 
-**認可サーバを作るアプリが、これらを「自分の値」（自分の Issuer・`/jwkcerts` の口・署名鍵の対）として
+**認可サーバを作るアプリが、`SpRp_*` を「自分の値」（自分の Issuer・`/jwkcerts` の口・署名鍵の対）として
 流用すると、同じ配備でクライアント役を兼ねたときに、相手の値を置けなくなる。**
-サーバ役の値は、アプリ側で別のキーを持つこと。
+サーバ役の値は、`SpRp_*` とは別のキーに置く。上の IdP 側の処理が読むキーは、次の `CmnServerParams` にまとめた。
+
+**`CmnServerParams` は、IdP / 認可サーバ自身の値である**（#634）。**キー名は汎用認証サイトの設定と同じ**（`SpRp_` を付けない）で、
+汎用認証サイトの設定がそのまま効く。読むのは、上の IdP 側の処理の**設定を読む版（引数の少ない版）だけ**で、引数で受ける版は設定を読まない。
+
+| 設定を読む版 | 読むキー | 無いとき |
+|---|---|---|
+| `ResponseObject.Create(responseParams, aud, expires)` | `IssuerId`・`RsaPfxFilePath`・`RsaPfxPassword`（RS256。`kid` はその鍵の JWK の `kid`） | `FrameworkException` |
+| `SAML2Client.CreateRedirectResponse` / `CreatePostResponse`（issuer・有効期間・鍵を受けない版） | `IssuerId`・`Saml2AssertionExpireTimeSpanFromMinutes`（分）・`RsaPfxFilePath`・`RsaPfxPassword` | `FrameworkException`（**有効期間を、id_token の期間などで黙って補わない**） |
+| `OAuth2AndOIDCSpec.VerifyPkce(method, challenge, verifier, out usedS256)` | `RequirePkceS256`（`true` なら S256 だけ） | `plain` も受ける。`true` / `false` 以外は `FrameworkException` |
+| `SAML2Bindings.AppendSigningCertificates(metadata)` | `PreviousSigningCerFilePaths`（*.cer。空白・カンマ・タブ区切り） | 何も足さない。**読めないファイルは飛ばす**（汎用認証サイトの従来の扱い。並べた本数は戻り値で分かる） |
+
+`JwkSetDocument.Get(out etag)` は、従来からの `JwkSetFilePath`（`OAuth2AndOIDCParams`）を読む。
+これらのキーも、配布している設定ファイルには書いていない。
 
 ### 8.2 トークンの検証
 

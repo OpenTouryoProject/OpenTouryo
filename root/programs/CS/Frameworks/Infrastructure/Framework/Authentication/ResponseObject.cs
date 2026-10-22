@@ -32,6 +32,7 @@
 //*  2026/10/12  玄人 幸道         Verifyに、検証鍵（JWS）と期待するiss / audを受けるオーバーロードを追加（#601）。
 //*  2026/10/12  玄人 幸道         設定で判定するVerifyでも、認可サーバを兼ねる配備でaudを確認するようにした（#603）。
 //*  2026/10/22  玄人 幸道         Verifyの対となるCreateを追加（汎用認証サイトから移した。#634）
+//*  2026/10/22  玄人 幸道         Createに、iss と鍵を設定（CmnServerParams）から読む版を追加
 //**********************************************************************************
 
 using System;
@@ -54,6 +55,33 @@ namespace Touryo.Infrastructure.Framework.Authentication
     public class ResponseObject
     {
         #region Create
+
+        /// <summary>ResponseObject（JARM の response パラメタの値）を作る（設定を読む版）。</summary>
+        /// <param name="responseParams">Dictionary（認可応答のパラメタ。code / state、または error など）</param>
+        /// <param name="aud">aud（応答を受け取るクライアントの client_id）</param>
+        /// <param name="expires">exp（有効期限）</param>
+        /// <returns>ResponseObject（JWS）</returns>
+        /// <remarks>
+        /// 自由に利用できる。iss は CmnServerParams.IssuerId、
+        /// 鍵は CmnServerParams.RsaPfxFilePath / RsaPfxPassword（RS256。kid は、その鍵の JWK の kid）。
+        /// IssuerId / RsaPfxFilePath が無ければ FrameworkException。
+        /// 鍵を替えるなら、jws を受ける版を使う。
+        /// </remarks>
+        public static string Create(Dictionary<string, string> responseParams, string aud, DateTimeOffset expires)
+        {
+            string iss = CmnServerParams.Required("IssuerId", CmnServerParams.IssuerId);
+            string pfxFilePath = CmnServerParams.Required("RsaPfxFilePath", CmnServerParams.RsaPfxFilePath);
+            string pfxPassword = CmnServerParams.RsaPfxPassword;
+
+            JWS_RS256_X509 jws = new JWS_RS256_X509(pfxFilePath, pfxPassword);
+
+            // jku は入れない。鍵は kid で引かせる。
+            Dictionary<string, string> jwk = JsonConvert.DeserializeObject<Dictionary<string, string>>(
+                new RsaPublicKeyConverter(JWS_RSA.RS._256).X509PfxToJwk(pfxFilePath, pfxPassword));
+            jws.JWSHeader.kid = jwk[JwtConst.kid];
+
+            return ResponseObject.Create(responseParams, jws, iss, aud, expires);
+        }
 
         /// <summary>ResponseObject（JARM の response パラメタの値）を作る。</summary>
         /// <param name="responseParams">Dictionary（認可応答のパラメタ。code / state、または error など）</param>

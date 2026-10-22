@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（汎用認証サイトから移した。#634 の G / H-2）
 //*  2026/10/22  玄人 幸道         PKCE の検証（認可サーバ側）を追加（汎用認証サイトから移した。#634）
+//*  2026/10/22  玄人 幸道         PKCE の検証に、plain を受けるかを設定（CmnServerParams.RequirePkceS256）から読む版を追加
 //**********************************************************************************
 
 using System;
@@ -209,6 +210,23 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #endregion
 
         #region PKCE（RFC 7636）
+
+        /// <summary>PKCE を検証する（認可サーバ側。設定を読む版）</summary>
+        /// <param name="code_challenge_method">string（認可要求で受け取った code_challenge_method）</param>
+        /// <param name="code_challenge">string（認可要求で受け取った code_challenge）</param>
+        /// <param name="code_verifier">string（トークン要求で受け取った code_verifier）</param>
+        /// <param name="usedS256">out bool（S256 で検証できたか）</param>
+        /// <returns>検証できれば true</returns>
+        /// <remarks>
+        /// 自由に利用できる。plain を受けるかは CmnServerParams.RequirePkceS256 で決める
+        /// （true なら S256 だけ。無ければ plain も受ける）。
+        /// </remarks>
+        public static bool VerifyPkce(string code_challenge_method, string code_challenge,
+            string code_verifier, out bool usedS256)
+        {
+            return OAuth2AndOIDCSpec.VerifyPkce(code_challenge_method, code_challenge,
+                code_verifier, !CmnServerParams.RequirePkceS256, out usedS256);
+        }
 
         /// <summary>PKCE を検証する（認可サーバ側）</summary>
         /// <param name="code_challenge_method">string（認可要求で受け取った code_challenge_method）</param>

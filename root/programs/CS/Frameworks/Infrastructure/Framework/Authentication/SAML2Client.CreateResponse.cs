@@ -24,12 +24,14 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（汎用認証サイトから移した。#634）
+//*  2026/10/22  玄人 幸道         issuer・有効期間・鍵を設定（CmnServerParams）から読む版を追加
 //**********************************************************************************
 
 using System;
 using System.Collections.Generic;
 using System.Xml;
 using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 
 using Touryo.Infrastructure.Public.Security;
 
@@ -52,6 +54,73 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// </remarks>
     public partial class SAML2Client
     {
+        #region 設定を読む版
+
+        /// <summary>CreateRedirectResponse（HTTP-Redirect で返す応答を作る。設定を読む版）</summary>
+        /// <param name="acsUrl">string（応答を返す先。事前登録の ACS URL）</param>
+        /// <param name="inResponseTo">string（要求の ID）</param>
+        /// <param name="statusCode">SAML2Enum.StatusCode</param>
+        /// <param name="nameId">string（Assertion の NameID）</param>
+        /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
+        /// <param name="authnContextClassRef">SAML2Enum.AuthnContextClassRef</param>
+        /// <param name="attributes">属性の並び（SAML2Attributes.AppendStatement と同じ形）。null なら出さない</param>
+        /// <param name="relayState">string（要求の RelayState をそのまま返す）</param>
+        /// <param name="hashAlgorithmName">HashAlgorithmName（既定は SHA256）</param>
+        /// <returns>queryString（SAMLResponse・RelayState・SigAlg・Signature）</returns>
+        /// <remarks>
+        /// 自由に利用できる。issuer は CmnServerParams.IssuerId、
+        /// 有効期間は CmnServerParams.Saml2AssertionExpireTimeSpanFromMinutes、
+        /// 鍵は CmnServerParams.RsaPfxFilePath / RsaPfxPassword。どれかが無ければ FrameworkException。
+        /// </remarks>
+        public static string CreateRedirectResponse(
+            string acsUrl, string inResponseTo, SAML2Enum.StatusCode statusCode,
+            string nameId, SAML2Enum.NameIDFormat nameIDFormat, SAML2Enum.AuthnContextClassRef authnContextClassRef,
+            IEnumerable<Tuple<string, string, string, string>> attributes, string relayState,
+            HashAlgorithmName? hashAlgorithmName = null)
+        {
+            string issuer = CmnServerParams.Required("IssuerId", CmnServerParams.IssuerId);
+            double expiresInSeconds = CmnServerParams.Saml2AssertionExpireTimeSpanFromMinutes * 60;
+
+            DigitalSignX509 dsX509 = new DigitalSignX509(
+                CmnServerParams.Required("RsaPfxFilePath", CmnServerParams.RsaPfxFilePath),
+                CmnServerParams.RsaPfxPassword, hashAlgorithmName ?? HashAlgorithmName.SHA256);
+
+            return SAML2Client.CreateRedirectResponse(issuer, acsUrl, inResponseTo, statusCode,
+                nameId, nameIDFormat, authnContextClassRef, expiresInSeconds, attributes, relayState, dsX509);
+        }
+
+        /// <summary>CreatePostResponse（HTTP-POST で返す応答を作る。設定を読む版）</summary>
+        /// <param name="acsUrl">string（応答を返す先。事前登録の ACS URL）</param>
+        /// <param name="inResponseTo">string（要求の ID）</param>
+        /// <param name="statusCode">SAML2Enum.StatusCode</param>
+        /// <param name="nameId">string（Assertion の NameID）</param>
+        /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
+        /// <param name="authnContextClassRef">SAML2Enum.AuthnContextClassRef</param>
+        /// <param name="attributes">属性の並び（SAML2Attributes.AppendStatement と同じ形）。null なら出さない</param>
+        /// <returns>SAMLResponse（XML 署名して Base64 にしたもの）</returns>
+        /// <remarks>
+        /// 自由に利用できる。読む設定は CreateRedirectResponse（設定を読む版）と同じ。
+        /// </remarks>
+        public static string CreatePostResponse(
+            string acsUrl, string inResponseTo, SAML2Enum.StatusCode statusCode,
+            string nameId, SAML2Enum.NameIDFormat nameIDFormat, SAML2Enum.AuthnContextClassRef authnContextClassRef,
+            IEnumerable<Tuple<string, string, string, string>> attributes)
+        {
+            string issuer = CmnServerParams.Required("IssuerId", CmnServerParams.IssuerId);
+            double expiresInSeconds = CmnServerParams.Saml2AssertionExpireTimeSpanFromMinutes * 60;
+            string pfxFilePath = CmnServerParams.Required("RsaPfxFilePath", CmnServerParams.RsaPfxFilePath);
+
+#if NETSTD
+            X509Certificate2 x509 = X509CertificateLoader.LoadPkcs12FromFile(pfxFilePath, CmnServerParams.RsaPfxPassword);
+#else
+            X509Certificate2 x509 = new X509Certificate2(pfxFilePath, CmnServerParams.RsaPfxPassword);
+#endif
+            return SAML2Client.CreatePostResponse(issuer, acsUrl, inResponseTo, statusCode,
+                nameId, nameIDFormat, authnContextClassRef, expiresInSeconds, attributes, x509.GetRSAPrivateKey());
+        }
+
+        #endregion
+
         #region 引数（鍵）で受ける版
 
         /// <summary>CreateRedirectResponse（HTTP-Redirect で返す応答を作る）</summary>
