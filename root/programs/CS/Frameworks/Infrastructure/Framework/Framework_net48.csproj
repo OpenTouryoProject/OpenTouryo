@@ -95,24 +95,48 @@
     <Compile Include="Authentication\ResponseObject.cs" />
     <Compile Include="Authentication\JwtAssertion.cs" />
     <Compile Include="Authentication\OAuth2AndOIDCClient.cs" />
-    <Compile Include="Authentication\OAuth2AndOIDCClient.AuthZRequest.cs" />
-    <Compile Include="Authentication\OAuth2AndOIDCClient.ClientRegistration.cs" />
-    <Compile Include="Authentication\OAuth2AndOIDCClient.DPoP.cs" />
-    <Compile Include="Authentication\OAuth2AndOIDCClient.ExtensionGrants.cs" />
-    <Compile Include="Authentication\OAuth2AndOIDCClient.Grants.cs" />
-    <Compile Include="Authentication\OAuth2AndOIDCClient.OpenIDConnect.cs" />
-    <Compile Include="Authentication\OAuth2AndOIDCClient.TokenManagement.cs" />
+    <Compile Include="Authentication\OAuth2AndOIDCClient.AuthZRequest.cs">
+      <DependentUpon>OAuth2AndOIDCClient.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Authentication\OAuth2AndOIDCClient.ClientRegistration.cs">
+      <DependentUpon>OAuth2AndOIDCClient.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Authentication\OAuth2AndOIDCClient.DPoP.cs">
+      <DependentUpon>OAuth2AndOIDCClient.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Authentication\OAuth2AndOIDCClient.ExtensionGrants.cs">
+      <DependentUpon>OAuth2AndOIDCClient.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Authentication\OAuth2AndOIDCClient.Grants.cs">
+      <DependentUpon>OAuth2AndOIDCClient.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Authentication\OAuth2AndOIDCClient.OpenIDConnect.cs">
+      <DependentUpon>OAuth2AndOIDCClient.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Authentication\OAuth2AndOIDCClient.TokenManagement.cs">
+      <DependentUpon>OAuth2AndOIDCClient.cs</DependentUpon>
+    </Compile>
     <Compile Include="Authentication\OAuth2AndOIDCConst.cs" />
     <Compile Include="Authentication\OAuth2AndOIDCEnum.cs" />
     <Compile Include="Authentication\CmnClientParams.cs" />
     <Compile Include="Authentication\OAuth2AndOIDCParams.cs" />
     <Compile Include="Authentication\SAML2Client.cs" />
-    <Compile Include="Authentication\SAML2Client.VerifyResponse.cs" />
-    <Compile Include="Authentication\SAML2Client.VerifyResponseWithReason.cs" />
+    <Compile Include="Authentication\SAML2Client.VerifyResponse.cs">
+      <DependentUpon>SAML2Client.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Authentication\SAML2Client.VerifyResponseWithReason.cs">
+      <DependentUpon>SAML2Client.cs</DependentUpon>
+    </Compile>
     <Compile Include="Authentication\SAML2Bindings.cs" />
-    <Compile Include="Authentication\SAML2Bindings.Encoding.cs" />
-    <Compile Include="Authentication\SAML2Bindings.IdP.cs" />
-    <Compile Include="Authentication\SAML2Bindings.SP.cs" />
+    <Compile Include="Authentication\SAML2Bindings.Encoding.cs">
+      <DependentUpon>SAML2Bindings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Authentication\SAML2Bindings.IdP.cs">
+      <DependentUpon>SAML2Bindings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Authentication\SAML2Bindings.SP.cs">
+      <DependentUpon>SAML2Bindings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Authentication\SAML2Const.cs" />
     <Compile Include="Authentication\SAML2Enum.cs" />
     <Compile Include="Authentication\SAML2Params.cs" />
