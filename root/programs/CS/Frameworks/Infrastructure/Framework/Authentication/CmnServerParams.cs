@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（汎用認証サイトから移した IdP 側の処理が読む設定。#634）
+//*  2026/10/22  玄人 幸道         必須の IssuerId / RsaPfxFilePath は、プロパティ側で FrameworkException にした（呼び出し側のキー名の直書きを無くした）
 //**********************************************************************************
 
 using System;
@@ -48,11 +49,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #region 自分（IdP / 認可サーバ）の値
 
         /// <summary>IssuerId（自分の Issuer。SAML2 では entityID）</summary>
+        /// <remarks>無ければ FrameworkException（必須）。</remarks>
         public static string IssuerId
         {
             get
             {
-                return GetConfigParameter.GetConfigValue("IssuerId");
+                return CmnServerParams.Required("IssuerId");
             }
         }
 
@@ -61,15 +63,16 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #region 鍵
 
         /// <summary>RsaPfxFilePath（署名に使う、自分の秘密鍵の *.pfx）</summary>
+        /// <remarks>無ければ FrameworkException（必須）。</remarks>
         public static string RsaPfxFilePath
         {
             get
             {
-                return GetConfigParameter.GetConfigValue("RsaPfxFilePath");
+                return CmnServerParams.Required("RsaPfxFilePath");
             }
         }
 
-        /// <summary>RsaPfxPassword（RsaPfxFilePath のパスワード）</summary>
+        /// <summary>RsaPfxPassword（RsaPfxFilePath のパスワード。空でもよい）</summary>
         public static string RsaPfxPassword
         {
             get
@@ -150,14 +153,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #endregion
 
-        #region 必須の値
+        #region private
 
         /// <summary>必須の設定値を読む（無ければ FrameworkException）</summary>
         /// <param name="key">string（設定キー）</param>
-        /// <param name="value">string（読んだ値）</param>
         /// <returns>値</returns>
-        internal static string Required(string key, string value)
+        private static string Required(string key)
         {
+            string value = GetConfigParameter.GetConfigValue(key);
+
             if (string.IsNullOrEmpty(value))
             {
                 throw new FrameworkException(

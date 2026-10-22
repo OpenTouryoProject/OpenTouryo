@@ -78,11 +78,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
             IEnumerable<Tuple<string, string, string, string>> attributes, string relayState,
             HashAlgorithmName? hashAlgorithmName = null)
         {
-            string issuer = CmnServerParams.Required("IssuerId", CmnServerParams.IssuerId);
+            string issuer = CmnServerParams.IssuerId;
             double expiresInSeconds = CmnServerParams.Saml2AssertionExpireTimeSpanFromMinutes * 60;
 
             DigitalSignX509 dsX509 = new DigitalSignX509(
-                CmnServerParams.Required("RsaPfxFilePath", CmnServerParams.RsaPfxFilePath),
+                CmnServerParams.RsaPfxFilePath,
                 CmnServerParams.RsaPfxPassword, hashAlgorithmName ?? HashAlgorithmName.SHA256);
 
             return SAML2Client.CreateRedirectResponse(issuer, acsUrl, inResponseTo, statusCode,
@@ -106,9 +106,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string nameId, SAML2Enum.NameIDFormat nameIDFormat, SAML2Enum.AuthnContextClassRef authnContextClassRef,
             IEnumerable<Tuple<string, string, string, string>> attributes)
         {
-            string issuer = CmnServerParams.Required("IssuerId", CmnServerParams.IssuerId);
+            string issuer = CmnServerParams.IssuerId;
             double expiresInSeconds = CmnServerParams.Saml2AssertionExpireTimeSpanFromMinutes * 60;
-            string pfxFilePath = CmnServerParams.Required("RsaPfxFilePath", CmnServerParams.RsaPfxFilePath);
+            string pfxFilePath = CmnServerParams.RsaPfxFilePath;
 
 #if NETSTD
             X509Certificate2 x509 = X509CertificateLoader.LoadPkcs12FromFile(pfxFilePath, CmnServerParams.RsaPfxPassword);

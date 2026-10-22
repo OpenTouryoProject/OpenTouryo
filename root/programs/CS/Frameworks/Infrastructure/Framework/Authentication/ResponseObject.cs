@@ -69,8 +69,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// </remarks>
         public static string Create(Dictionary<string, string> responseParams, string aud, DateTimeOffset expires)
         {
-            string iss = CmnServerParams.Required("IssuerId", CmnServerParams.IssuerId);
-            string pfxFilePath = CmnServerParams.Required("RsaPfxFilePath", CmnServerParams.RsaPfxFilePath);
+            string iss = CmnServerParams.IssuerId;
+            string pfxFilePath = CmnServerParams.RsaPfxFilePath;
             string pfxPassword = CmnServerParams.RsaPfxPassword;
 
             JWS_RS256_X509 jws = new JWS_RS256_X509(pfxFilePath, pfxPassword);

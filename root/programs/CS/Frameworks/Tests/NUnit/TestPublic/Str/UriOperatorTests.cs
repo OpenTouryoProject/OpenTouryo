@@ -24,12 +24,14 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（#634）
+//*  2026/10/22  玄人 幸道         LogSanitizer の名前空間の変更（Public.Log）に追随した
 //**********************************************************************************
 
 using System;
 
 using NUnit.Framework;
 
+using Touryo.Infrastructure.Public.Log;
 using Touryo.Infrastructure.Public.Str;
 
 namespace TestPublic.Str

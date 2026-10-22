@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（汎用認証サイトから移した。#634 の A-4）
+//*  2026/10/22  玄人 幸道         指紋の JSON のキー名の直書きを JwtConst に寄せた
 //**********************************************************************************
 
 using System;
@@ -117,9 +118,9 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
                     return null;
                 }
 
-                return "{\"e\":" + JsonConvert.ToString(e)
-                    + ",\"kty\":" + JsonConvert.ToString(kty)
-                    + ",\"n\":" + JsonConvert.ToString(n) + "}";
+                return "{" + JwkOperator.Member(JwtConst.e, e)
+                    + "," + JwkOperator.Member(JwtConst.kty, kty)
+                    + "," + JwkOperator.Member(JwtConst.n, n) + "}";
             }
             else if (kty == JwtConst.EC)
             {
@@ -132,10 +133,10 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
                     return null;
                 }
 
-                return "{\"crv\":" + JsonConvert.ToString(crv)
-                    + ",\"kty\":" + JsonConvert.ToString(kty)
-                    + ",\"x\":" + JsonConvert.ToString(x)
-                    + ",\"y\":" + JsonConvert.ToString(y) + "}";
+                return "{" + JwkOperator.Member(JwtConst.crv, crv)
+                    + "," + JwkOperator.Member(JwtConst.kty, kty)
+                    + "," + JwkOperator.Member(JwtConst.x, x)
+                    + "," + JwkOperator.Member(JwtConst.y, y) + "}";
             }
             else if (kty == JwtConst.oct)
             {
@@ -146,12 +147,22 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
                     return null;
                 }
 
-                return "{\"k\":" + JsonConvert.ToString(k)
-                    + ",\"kty\":" + JsonConvert.ToString(kty) + "}";
+                return "{" + JwkOperator.Member(JwtConst.k, k)
+                    + "," + JwkOperator.Member(JwtConst.kty, kty) + "}";
             }
 
             // 扱わない鍵の種類
             return null;
+        }
+
+        /// <summary>正規化した JSON の 1 メンバ（"名前":"値"）</summary>
+        /// <param name="name">メンバ名</param>
+        /// <param name="value">値</param>
+        /// <returns>"名前":"値"</returns>
+        /// <remarks>メンバの並び（辞書順。RFC 7638 3.3）は、呼び出し側の連結の順で決まる。</remarks>
+        private static string Member(string name, string value)
+        {
+            return JsonConvert.ToString(name) + ":" + JsonConvert.ToString(value);
         }
 
         #endregion
