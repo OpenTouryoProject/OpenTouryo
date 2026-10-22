@@ -39,6 +39,9 @@
 //*  2026/10/22  玄人 幸道         理由を返すVerifyResponseWithReasonを追加（汎用認証サイトから移した。#634 の C-3）
 //*  2026/10/22  玄人 幸道         SigAlgの直書きをSAML2Const.QueryParamSigAlgに寄せた
 //*  2026/10/22  玄人 幸道         VerifyResponseWithReasonに、相手と自分の値を設定から読む版を追加
+//*  2026/10/22  玄人 幸道         鍵・証明書を受ける版（CreateRedirectRequest / CreatePostRequest / VerifyResponse）から、
+//*                                null・空なら設定を読む分岐を外し、設定を読む版（引数の少ない版）へ移した。
+//*                                鍵を受ける版は null・空を ArgumentNullException にする（黙って無署名にしないため）
 //**********************************************************************************
 
 using System;
@@ -96,15 +99,16 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="relayState">string</param>
         /// <param name="digitalSign">
         /// 署名に使う DigitalSign（自分の秘密鍵）。SigAlg も、この DigitalSign のアルゴリズムから決まる。
-        /// null なら、CmnClientParams.RsaPfxFilePath の鍵と SHA256 を使う。
+        /// null は受けない（ArgumentNullException）。
         /// </param>
         /// <param name="id">out string</param>
         /// <returns>queryString</returns>
         /// <remarks>
         /// 自由に利用できる。
         ///
-        /// SAML2Bindings.EncodeAndSignRedirect は null なら署名しないが、
-        /// こちらは null でも署名する（設定の鍵を使う。#606）。
+        /// 設定（CmnClientParams.RsaPfxFilePath）の鍵で署名するなら、digitalSign を受けない版を使う。
+        /// SAML2Bindings.EncodeAndSignRedirect は null なら署名しないので、
+        /// null を素通しにすると、黙って無署名の要求を出すことになる。そのため null は例外にする。
         /// </remarks>
         public static string CreateRedirectRequest(
             SAML2Enum.RequestOrResponse createRoR,
@@ -113,11 +117,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string iss, string assertionConsumerService, string relayState,
             DigitalSign digitalSign, out string id)
         {
-            // 鍵の指定が無ければ、従来どおり設定の1本を使う（#606）。
+            // 設定の鍵は、digitalSign を受けない版が作って渡す。
             if (digitalSign == null)
             {
-                digitalSign = new DigitalSignX509(
-                    CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword, HashAlgorithmName.SHA256);
+                throw new ArgumentNullException(nameof(digitalSign));
             }
 
             // SamlRequestの生成
@@ -147,9 +150,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
             SAML2Enum.NameIDFormat nameIDFormat,
             string iss, string assertionConsumerService, string relayState, out string id)
         {
+            // 設定の鍵（CmnClientParams.RsaPfxFilePath）を、ここで作って渡す。
+#if NETSTD
+            X509Certificate2 x509 = X509CertificateLoader.LoadPkcs12FromFile(CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword);
+#else
+            X509Certificate2 x509 = new X509Certificate2(CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword);
+#endif
             return SAML2Client.CreatePostRequest(
                 protocolBinding, nameIDFormat,
-                iss, assertionConsumerService, relayState, null, out id);
+                iss, assertionConsumerService, relayState, x509.GetRSAPrivateKey(), out id);
         }
 
         /// <summary>CreatePostRequest</summary>
@@ -160,15 +169,16 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="relayState">string</param>
         /// <param name="rsa">
         /// 署名に使う RSA（自分の秘密鍵）。
-        /// null なら、CmnClientParams.RsaPfxFilePath の鍵を使う。
+        /// null は受けない（ArgumentNullException）。
         /// </param>
         /// <param name="id">out string</param>
         /// <returns>samlRequest</returns>
         /// <remarks>
         /// 自由に利用できる。
         ///
-        /// SAML2Bindings.EncodeAndSignPost は null なら署名しないが、
-        /// こちらは null でも署名する（設定の鍵を使う。#606）。
+        /// 設定（CmnClientParams.RsaPfxFilePath）の鍵で署名するなら、rsa を受けない版を使う。
+        /// SAML2Bindings.EncodeAndSignPost は null なら署名しないので、
+        /// null を素通しにすると、黙って無署名の要求を出すことになる。そのため null は例外にする。
         /// </remarks>
         public static string CreatePostRequest(
             SAML2Enum.ProtocolBinding protocolBinding,
@@ -176,15 +186,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string iss, string assertionConsumerService, string relayState,
             RSA rsa, out string id)
         {
-            // 鍵の指定が無ければ、従来どおり設定の1本を使う（#606）。
+            // 設定の鍵は、rsa を受けない版が作って渡す。
             if (rsa == null)
             {
-#if NETSTD
-                X509Certificate2 x509 = X509CertificateLoader.LoadPkcs12FromFile(CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword);
-#else
-                X509Certificate2 x509 = new X509Certificate2(CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword);
-#endif
-                rsa = x509.GetRSAPrivateKey();
+                throw new ArgumentNullException(nameof(rsa));
             }
 
             // SamlRequestの生成
@@ -234,8 +239,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
             out XmlDocument samlResponse2,
             HashAlgorithmName? hashAlgorithmName = null) // 既定値の変更 SHA1 → SHA256
         {
+            // 設定の証明書（CmnClientParams.RsaCerFilePath）を、ここで渡す。
             return SAML2Client.VerifyResponse(
-                queryString, samlResponse, null,
+                queryString, samlResponse, CmnClientParams.RsaCerFilePath,
                 out nameId, out iss, out aud,
                 out inResponseTo, out recipient, out notOnOrAfter,
                 out statusCode, out nameIDFormat, out authnContextClassRef,
@@ -247,7 +253,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="samlResponse">string</param>
         /// <param name="cerFilePath">
         /// 署名の検証に使う、相手（IdP）のX.509証明書(*.cer)へのパス。
-        /// null か空文字なら、CmnClientParams.RsaCerFilePath を使う。
+        /// null・空文字は受けない（ArgumentNullException）。
+        /// 設定（CmnClientParams.RsaCerFilePath）の証明書で検証するなら、cerFilePath を受けない版を使う。
         /// </param>
         /// <param name="nameId">out string</param>
         /// <param name="iss">out string</param>
@@ -287,6 +294,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
             out XmlDocument samlResponse2,
             HashAlgorithmName? hashAlgorithmName = null)
         {
+            // 設定の証明書は、cerFilePath を受けない版が渡す。
+            // 応答を読む前に確かめる（呼び出しの誤りを、応答の中身に依らず同じ例外にするため）。
+            if (string.IsNullOrEmpty(cerFilePath))
+            {
+                throw new ArgumentNullException(nameof(cerFilePath));
+            }
+
             bool verified = false;
 
             // out string
@@ -341,12 +355,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
 #region 検証
             // Metadata利用を検討
-            // 証明書の指定が無ければ、従来どおり設定の1本を使う（#600）。
-            if (string.IsNullOrEmpty(cerFilePath))
-            {
-                cerFilePath = CmnClientParams.RsaCerFilePath;
-            }
-
+            // 証明書は引数で受ける（設定の1本は、cerFilePath を受けない版が渡す）。
             HashAlgorithmName han = hashAlgorithmName ?? HashAlgorithmName.SHA256;
             DigitalSignX509 dsX509 = new DigitalSignX509(cerFilePath, "", han);
 

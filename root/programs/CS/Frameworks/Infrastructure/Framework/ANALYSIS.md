@@ -267,13 +267,16 @@ DCR の口の認可、クライアント登録の持ち方。
 `SAML2Client`（`CreateRedirectRequest` / `CreatePostRequest` / `VerifyResponse`）、`SAML2Bindings` `SAML2Const` `SAML2Enum` `SAML2Params`。
 XML 署名は `Public.Security` の `SignedXml2`。
 
-| 何の鍵 | 既定 | 相手ごとに替えるなら |
+| 何の鍵 | 既定（引数の少ない版が読む設定） | 相手ごとに替えるなら |
 |---|---|---|
-| `VerifyResponse` の検証用証明書 | `CmnClientParams.RsaCerFilePath`（配備に 1 本） | `cerFilePath` を受けるオーバーロード（#600） |
-| 要求（`AuthnRequest`）の署名鍵 | `CmnClientParams.RsaPfxFilePath`（配備に 1 本） | `CreateRedirectRequest` は `digitalSign`、`CreatePostRequest` は `rsa` を受けるオーバーロード（#606） |
+| `VerifyResponse` の検証用証明書 | `CmnClientParams.RsaCerFilePath`（配備に 1 本） | `cerFilePath` を受けるオーバーロード（#600）。**null・空は受けない** |
+| 要求（`AuthnRequest`）の署名鍵 | `CmnClientParams.RsaPfxFilePath`（配備に 1 本） | `CreateRedirectRequest` は `digitalSign`、`CreatePostRequest` は `rsa` を受けるオーバーロード（#606）。**null は受けない** |
 
-- #606 の引数は `out id` の手前に置く。**`null` なら設定の鍵で署名する**
-  （**`SAML2Bindings.EncodeAndSign*` の「`null` なら署名しない」とは違う**）
+- **設定を読むのは、鍵を受けない版（引数の少ない版）だけである。** そこで設定から鍵を作り、鍵を受ける版へ渡す
+- **鍵を受ける版は、null・空を `ArgumentNullException` にする。** 設定へは倒さない。
+  `SAML2Bindings.EncodeAndSign*` は `null` なら**署名しない**ので、素通しにすると**黙って無署名の要求を出す**ことになるため。
+  （#600 / #606 の時点では「null・空なら設定の鍵」だった。リリース前に、オーバーロードの形へ揃えた）
+- #606 の引数は `out id` の手前に置く
 - 省略可能な引数ではなくオーバーロードにしたのは、既存の版のシグネチャを変えると、
   **ビルド済みの呼び出し元が `MissingMethodException` で落ちる**ため
 - Redirect の `SigAlg` は、`EncodeAndSignRedirect` に渡した `DigitalSign` のアルゴリズムで書く
@@ -334,6 +337,7 @@ net10.0 のフレームワーク参照（`Microsoft.AspNetCore.App`）ではな�
 4. **`CallController` はスレッド間で共有できない**（3.3 節）。
 5. **`BaseController` は巨大**。`#region` に閉じた修正に留め、全体のリファクタリングは避ける（互換性の維持が最優先）。
 6. **認証の公開 API はオーバーロードで足す**（8.3 節）。既存の版のシグネチャ・引数名を変えると、ビルド済みの呼び出し元が壊れる。
+   **設定は、引数の少ない版だけが読む。** 引数で受ける版は、受けた値だけを使い、null・空で設定へ倒さない（8.1 節・8.3 節）。
 
 ---
 

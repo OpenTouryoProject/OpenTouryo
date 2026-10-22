@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/19  玄人 幸道         新規作成
+//*  2026/10/22  玄人 幸道         鍵を受ける版が null・空を受けないこと、鍵を受けない版が設定の鍵を使うことのテストを追加
 //**********************************************************************************
 
 using System;
@@ -31,6 +32,10 @@ using System.Security.Cryptography;
 using System.Xml;
 
 using NUnit.Framework;
+
+#if NETCOREAPP
+using Microsoft.Extensions.Configuration;
+#endif
 
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Public.Security;
@@ -169,5 +174,86 @@ namespace TestFramework.Authentication
                 Assert.That(SAML2Bindings.VerifyPost(SAML2Bindings.DecodePost(encoded), id, rsa), Is.True);
             }
         }
+
+        #region 鍵を受ける版は設定へ倒さない
+
+        /// <summary>
+        /// 鍵・証明書を受ける版は、null・空を ArgumentNullException にする（設定へは倒さない）。
+        /// 素通しにすると、SAML2Bindings.EncodeAndSign* が黙って無署名の要求を出すため。
+        /// </summary>
+        [Test]
+        public void KeyOverloads_RejectNull()
+        {
+            string id;
+
+            Assert.Throws<ArgumentNullException>(() => SAML2Client.CreateRedirectRequest(
+                SAML2Enum.RequestOrResponse.Request, SAML2Enum.ProtocolBinding.HttpRedirect, SAML2Enum.NameIDFormat.Unspecified,
+                "https://sp.example.com/", SAML2BindingsTests.Recipient, "relay01", (DigitalSign)null, out id));
+
+            Assert.Throws<ArgumentNullException>(() => SAML2Client.CreatePostRequest(
+                SAML2Enum.ProtocolBinding.HttpPost, SAML2Enum.NameIDFormat.Unspecified,
+                "https://sp.example.com/", SAML2BindingsTests.Recipient, "relay01", (RSA)null, out id));
+
+            string saml = PostResponse(SAML2Enum.StatusCode.Success, true);
+            Assert.Throws<ArgumentNullException>(() => Verify(null, saml, null));
+            Assert.Throws<ArgumentNullException>(() => Verify(null, saml, ""));
+            Assert.Throws<ArgumentNullException>(() => Verify(null, null, null), "応答が無くても、引数の誤りは例外");
+        }
+
+#if NETCOREAPP
+        /// <summary>
+        /// 鍵を受けない版は、設定（SpRp_RsaPfxFilePath / SpRp_RsaPfxPassword / SpRp_RsaCerFilePath）の鍵を使う（net10.0 だけ。構成を差し替える）。
+        /// </summary>
+        [Test]
+        public void ConfigOverloads_UseConfiguredKeys()
+        {
+            System.Collections.Generic.Dictionary<string, string> values = new System.Collections.Generic.Dictionary<string, string>
+            {
+                { "appSettings:SpRp_RsaPfxFilePath", TestCertificates.RsaPfx },
+                { "appSettings:SpRp_RsaPfxPassword", TestCertificates.Password },
+                { "appSettings:SpRp_RsaCerFilePath", TestCertificates.RsaCer }
+            };
+
+            try
+            {
+                Touryo.Infrastructure.Public.Util.GetConfigParameter.InitConfiguration(
+                    new Microsoft.Extensions.Configuration.ConfigurationBuilder().AddInMemoryCollection(values).Build());
+
+                string id;
+                RSA pub = TestCertificates.RsaPublicKey();
+
+                // Redirect（設定の鍵で署名）
+                string query = SAML2Client.CreateRedirectRequest(
+                    SAML2Enum.RequestOrResponse.Request, SAML2Enum.ProtocolBinding.HttpRedirect, SAML2Enum.NameIDFormat.Unspecified,
+                    "https://sp.example.com/", SAML2BindingsTests.Recipient, "relay01", out id);
+                Assert.That(SAML2Bindings.VerifyRedirect(query, pub), Is.True);
+
+                // POST（設定の鍵で署名）
+                string encoded = SAML2Client.CreatePostRequest(
+                    SAML2Enum.ProtocolBinding.HttpPost, SAML2Enum.NameIDFormat.Unspecified,
+                    "https://sp.example.com/", SAML2BindingsTests.Recipient, "relay01", out id);
+                Assert.That(SAML2Bindings.VerifyPost(SAML2Bindings.DecodePost(encoded), id, pub), Is.True);
+
+                // 検証（設定の証明書）
+                string nameId, iss, aud, inResponseTo, recipient;
+                DateTime? notOnOrAfter;
+                SAML2Enum.StatusCode? statusCode;
+                SAML2Enum.NameIDFormat? nameIDFormat;
+                SAML2Enum.AuthnContextClassRef? authnContextClassRef;
+                XmlDocument doc;
+                Assert.That(SAML2Client.VerifyResponse(null, PostResponse(SAML2Enum.StatusCode.Success, true),
+                    out nameId, out iss, out aud, out inResponseTo, out recipient, out notOnOrAfter,
+                    out statusCode, out nameIDFormat, out authnContextClassRef, out doc), Is.True);
+            }
+            finally
+            {
+                Touryo.Infrastructure.Public.Util.GetConfigParameter.InitConfiguration(
+                    new Microsoft.Extensions.Configuration.ConfigurationBuilder()
+                        .AddInMemoryCollection(new System.Collections.Generic.Dictionary<string, string>()).Build());
+            }
+        }
+#endif
+
+        #endregion
     }
 }
