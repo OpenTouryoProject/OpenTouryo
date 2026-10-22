@@ -31,6 +31,8 @@
 //*  2019/12/25  西野 大介         PPID対応による見直し
 //*  2026/10/12  玄人 幸道         RSAwithSHA256 / 384 / 512 を追加（#604）
 //*  2026/10/22  玄人 幸道         XML署名の名前空間、AttributeStatementのXPath・属性名を追加（#634）
+//*  2026/10/22  玄人 幸道         メタデータのXPath、接頭辞、要素名・属性名、FriendlyName、WS-Federationのクレーム名を追加
+//*                                （SAML2Metadata / SAML2Attributes の直書きを寄せた）
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Framework.Authentication
@@ -205,10 +207,79 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>XPathAttributeInAssertion</summary>
         public const string XPathAttributeInAssertion =
             XPathAssertionInResponse + @"/saml:AttributeStatement/saml:Attribute";
+
+        /// <summary>XPathAttributeValueInAttribute（Attribute からの相対）</summary>
+        public const string XPathAttributeValueInAttribute = @"saml:AttributeValue";
         #endregion
 
         #endregion
 
+        #region Metadata（相手のメタデータを読む。SAML2Metadata）
+        /// <summary>XPathEntityDescriptor</summary>
+        public const string XPathEntityDescriptor = @"/md:EntityDescriptor";
+
+        /// <summary>XPathIDPSSODescriptorInMetadata</summary>
+        public const string XPathIDPSSODescriptorInMetadata = XPathEntityDescriptor + @"/md:IDPSSODescriptor";
+
+        /// <summary>XPathKeyDescriptorInMetadata</summary>
+        public const string XPathKeyDescriptorInMetadata = XPathIDPSSODescriptorInMetadata + @"/md:KeyDescriptor";
+
+        /// <summary>XPathSingleSignOnServiceInMetadata</summary>
+        public const string XPathSingleSignOnServiceInMetadata = XPathIDPSSODescriptorInMetadata + @"/md:SingleSignOnService";
+
+        /// <summary>XPathX509CertificateInKeyDescriptor（KeyDescriptor からの相対）</summary>
+        public const string XPathX509CertificateInKeyDescriptor = @"ds:KeyInfo/ds:X509Data/ds:X509Certificate";
+        #endregion
+
+        #endregion
+
+        #region 名前空間の接頭辞（XPath の中で使う）
+        /// <summary>アサーション（saml）</summary>
+        public const string PrefixAssertion = "saml";
+
+        /// <summary>メタデータ（md）</summary>
+        public const string PrefixMetadata = "md";
+
+        /// <summary>XML署名（ds）</summary>
+        public const string PrefixDSig = "ds";
+        #endregion
+
+        #region 要素名・属性名
+        /// <summary>要素名：Assertion</summary>
+        public const string ElementAssertion = "Assertion";
+
+        /// <summary>要素名：AttributeStatement</summary>
+        public const string ElementAttributeStatement = "AttributeStatement";
+
+        /// <summary>要素名：Attribute</summary>
+        public const string ElementAttribute = "Attribute";
+
+        /// <summary>要素名：AttributeValue</summary>
+        public const string ElementAttributeValue = "AttributeValue";
+
+        /// <summary>属性名：Name（Attribute）</summary>
+        public const string AttrName = "Name";
+
+        /// <summary>属性名：NameFormat（Attribute）</summary>
+        public const string AttrNameFormat = "NameFormat";
+
+        /// <summary>属性名：FriendlyName（Attribute）</summary>
+        public const string AttrFriendlyName = "FriendlyName";
+
+        /// <summary>属性名：entityID（EntityDescriptor）</summary>
+        public const string AttrEntityID = "entityID";
+
+        /// <summary>属性名：use（KeyDescriptor）</summary>
+        public const string AttrUse = "use";
+
+        /// <summary>属性名：Binding（SingleSignOnService）</summary>
+        public const string AttrBinding = "Binding";
+
+        /// <summary>属性名：Location（SingleSignOnService）</summary>
+        public const string AttrLocation = "Location";
+
+        /// <summary>KeyDescriptor の use の値：signing（無ければ、どちらにも使える。Metadata 2.4.1.1）</summary>
+        public const string KeyUseSigning = "signing";
         #endregion
 
         #region urn
@@ -258,6 +329,20 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>利用者名（uid。OIDCのpreferred_usernameに対応）</summary>
         public const string UrnOidUid = "urn:oid:0.9.2342.19200300.100.1.1";
+
+        /// <summary>メアドの FriendlyName（mail）</summary>
+        public const string FriendlyNameMail = "mail";
+
+        /// <summary>利用者名の FriendlyName（uid）</summary>
+        public const string FriendlyNameUid = "uid";
+        #endregion
+
+        #region 属性名（ADFS / WS-Federation のクレーム。読む側の別名）
+        /// <summary>メアド</summary>
+        public const string WsFedClaimEmailAddress = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress";
+
+        /// <summary>名前</summary>
+        public const string WsFedClaimName = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name";
         #endregion
 
         #region bindings

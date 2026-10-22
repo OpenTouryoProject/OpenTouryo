@@ -24,13 +24,15 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（OAuth2AndOIDCClient.cs から処理区分ごとに分割した）
+//*  2026/10/22  玄人 幸道         Content-Typeの直書きをPubLiteral.HTTP_CONTENT_TYPE_JSONに寄せた
 //**********************************************************************************
 
 using System;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-
-using System.Net.Http;
+using Touryo.Infrastructure.Framework.Util;
+using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.Authentication
 {
@@ -120,7 +122,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             if (metadataJson != null)
             {
-                httpRequestMessage.Content = new StringContent(metadataJson, Encoding.UTF8, "application/json");
+                httpRequestMessage.Content = new StringContent(metadataJson, Encoding.UTF8, PubLiteral.HTTP_CONTENT_TYPE_JSON);
             }
 
             return await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);

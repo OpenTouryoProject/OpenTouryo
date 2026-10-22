@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（汎用認証サイトから移した。#634 の C）
 //*  2026/10/22  玄人 幸道         取得を OAuth2AndOIDCClient.GetStringAsync に変えた（GetJwkSetAsync の代用をやめた）
+//*  2026/10/22  玄人 幸道         XPath・接頭辞・属性名の直書きを SAML2Const に寄せた
 //**********************************************************************************
 
 using System;
@@ -232,10 +233,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 }
 
                 XmlNamespaceManager ns = new XmlNamespaceManager(doc.NameTable);
-                ns.AddNamespace("md", SAML2Const.UrnMetadata);
-                ns.AddNamespace("ds", SAML2Const.UrnDSig);
+                ns.AddNamespace(SAML2Const.PrefixMetadata, SAML2Const.UrnMetadata);
+                ns.AddNamespace(SAML2Const.PrefixDSig, SAML2Const.UrnDSig);
 
-                XmlNode entity = doc.SelectSingleNode("/md:EntityDescriptor", ns);
+                XmlNode entity = doc.SelectSingleNode(SAML2Const.XPathEntityDescriptor, ns);
 
                 if (entity == null)
                 {
@@ -244,27 +245,26 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
                 SAML2Metadata ret = new SAML2Metadata()
                 {
-                    EntityId = SAML2Metadata.Attr(entity, "entityID"),
+                    EntityId = SAML2Metadata.Attr(entity, SAML2Const.AttrEntityID),
                     SsoRedirectLocation = SAML2Metadata.SsoLocation(doc, ns, SAML2Const.UrnBindingsRedirect),
                     SsoPostLocation = SAML2Metadata.SsoLocation(doc, ns, SAML2Const.UrnBindingsPost),
                     SigningCertificates = new List<string>(),
                     FetchedAt = DateTime.UtcNow
                 };
 
-                XmlNodeList keys = doc.SelectNodes(
-                    "/md:EntityDescriptor/md:IDPSSODescriptor/md:KeyDescriptor", ns);
+                XmlNodeList keys = doc.SelectNodes(SAML2Const.XPathKeyDescriptorInMetadata, ns);
 
                 foreach (XmlNode key in keys)
                 {
-                    string use = SAML2Metadata.Attr(key, "use");
+                    string use = SAML2Metadata.Attr(key, SAML2Const.AttrUse);
 
                     // 暗号化用の鍵は使わない。
-                    if (use != "" && use != "signing")
+                    if (use != "" && use != SAML2Const.KeyUseSigning)
                     {
                         continue;
                     }
 
-                    XmlNode cer = key.SelectSingleNode("ds:KeyInfo/ds:X509Data/ds:X509Certificate", ns);
+                    XmlNode cer = key.SelectSingleNode(SAML2Const.XPathX509CertificateInKeyDescriptor, ns);
 
                     if (cer == null || string.IsNullOrEmpty(cer.InnerText))
                     {
@@ -296,12 +296,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <returns>Location（無ければ空文字）</returns>
         private static string SsoLocation(XmlDocument doc, XmlNamespaceManager ns, string binding)
         {
-            foreach (XmlNode node in doc.SelectNodes(
-                "/md:EntityDescriptor/md:IDPSSODescriptor/md:SingleSignOnService", ns))
+            foreach (XmlNode node in doc.SelectNodes(SAML2Const.XPathSingleSignOnServiceInMetadata, ns))
             {
-                if (SAML2Metadata.Attr(node, "Binding") == binding)
+                if (SAML2Metadata.Attr(node, SAML2Const.AttrBinding) == binding)
                 {
-                    return SAML2Metadata.Attr(node, "Location");
+                    return SAML2Metadata.Attr(node, SAML2Const.AttrLocation);
                 }
             }
 

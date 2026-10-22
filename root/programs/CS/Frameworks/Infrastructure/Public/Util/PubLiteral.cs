@@ -39,6 +39,7 @@
 //*  2013/12/23  西野 大介         アクセス修飾子をすべてpublicに変更した。
 //*  2014/02/03  西野 大介         国際化対応のスイッチ（app.config）を追加した。
 //*  2020/06/19  西野 大介         コンテナ化のスイッチ（app.config）を追加した。
+//*  2026/10/22  玄人 幸道         Content-Type（application/json）を追加した
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Public.Util
@@ -176,6 +177,13 @@ namespace Touryo.Infrastructure.Public.Util
         public const string SQLTRACELOG_COMMAND_PARAM_HEADER = "[commandParameter]:";
 
         #endregion
+
+        #endregion
+
+        #region HTTP
+
+        /// <summary>Content-Type : JSON（RFC 8259）</summary>
+        public const string HTTP_CONTENT_TYPE_JSON = "application/json";
 
         #endregion
     }

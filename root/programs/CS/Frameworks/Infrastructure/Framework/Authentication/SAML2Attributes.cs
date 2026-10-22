@@ -24,6 +24,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（汎用認証サイトから移した。#634 の C-2）
+//*  2026/10/22  玄人 幸道         要素名・属性名・FriendlyName などの直書きを SAML2Const / OAuth2AndOIDCConst に寄せた
+//*                                （FriendlyNameEmail / FriendlyNameUserName は SAML2Const.FriendlyNameMail / FriendlyNameUid へ移した）
 //**********************************************************************************
 
 using System;
@@ -53,38 +55,33 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// </remarks>
     public class SAML2Attributes
     {
-        #region 定数
+        #region 別名の表（読む側だけが使う）
 
-        /// <summary>FriendlyName : mail</summary>
-        public const string FriendlyNameEmail = "mail";
+        // 標準の名前は SAML2Const / OAuth2AndOIDCConst から引く。
+        // 定数に無いもの（他の実装が使う非標準の名前）は、この表だけが持つデータとして直に書く。
 
-        /// <summary>FriendlyName : uid</summary>
-        public const string FriendlyNameUserName = "uid";
-
-        /// <summary>メアドの別名（読む側だけが使う。優先順）</summary>
+        /// <summary>メアドの別名（優先順）</summary>
         private static readonly string[] EmailAliases = new string[]
         {
             SAML2Const.UrnOidMail,
-            SAML2Attributes.FriendlyNameEmail,
-            "email",
+            SAML2Const.FriendlyNameMail,
+            OAuth2AndOIDCConst.Scope_Email, // OIDC の email クレーム（scope と同じ名前）
             "emailAddress",
-            // ADFS / WS-Federation
-            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
+            SAML2Const.WsFedClaimEmailAddress
         };
 
-        /// <summary>利用者名の別名（同上）</summary>
+        /// <summary>利用者名の別名（優先順）</summary>
         private static readonly string[] UserNameAliases = new string[]
         {
             SAML2Const.UrnOidUid,
-            SAML2Attributes.FriendlyNameUserName,
-            "preferred_username",
+            SAML2Const.FriendlyNameUid,
+            OAuth2AndOIDCConst.preferred_username,
             "username",
             "displayName",
-            // ADFS / WS-Federation
-            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+            SAML2Const.WsFedClaimName
         };
 
-        /// <summary>メアドが検証済みかの別名（同上）</summary>
+        /// <summary>メアドが検証済みかの別名（優先順）</summary>
         private static readonly string[] EmailVerifiedAliases = new string[]
         {
             OAuth2AndOIDCConst.email_verified,
@@ -110,7 +107,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             if (!string.IsNullOrEmpty(email))
             {
                 attributes.Add(Tuple.Create(SAML2Const.UrnOidMail,
-                    SAML2Attributes.FriendlyNameEmail, SAML2Const.UrnAttrNameFormatUri, email));
+                    SAML2Const.FriendlyNameMail, SAML2Const.UrnAttrNameFormatUri, email));
 
                 attributes.Add(Tuple.Create(OAuth2AndOIDCConst.email_verified,
                     "", SAML2Const.UrnAttrNameFormatBasic, emailVerified ? "true" : "false"));
@@ -119,7 +116,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             if (!string.IsNullOrEmpty(userName))
             {
                 attributes.Add(Tuple.Create(SAML2Const.UrnOidUid,
-                    SAML2Attributes.FriendlyNameUserName, SAML2Const.UrnAttrNameFormatUri, userName));
+                    SAML2Const.FriendlyNameUid, SAML2Const.UrnAttrNameFormatUri, userName));
             }
 
             return SAML2Attributes.AppendStatement(assertion, attributes);
@@ -152,7 +149,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 return false;
             }
 
-            XmlNodeList nodes = assertion.GetElementsByTagName("Assertion", SAML2Const.UrnAssertion);
+            XmlNodeList nodes = assertion.GetElementsByTagName(SAML2Const.ElementAssertion, SAML2Const.UrnAssertion);
 
             if (nodes.Count == 0)
             {
@@ -160,9 +157,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
 
             XmlNode root = nodes[0];
-            string prefix = string.IsNullOrEmpty(root.Prefix) ? "saml" : root.Prefix;
+            string prefix = string.IsNullOrEmpty(root.Prefix) ? SAML2Const.PrefixAssertion : root.Prefix;
 
-            XmlElement statement = assertion.CreateElement(prefix, "AttributeStatement", SAML2Const.UrnAssertion);
+            XmlElement statement = assertion.CreateElement(prefix, SAML2Const.ElementAttributeStatement, SAML2Const.UrnAssertion);
 
             foreach (Tuple<string, string, string, string> a in attributes)
             {
@@ -171,20 +168,20 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     continue;
                 }
 
-                XmlElement attribute = assertion.CreateElement(prefix, "Attribute", SAML2Const.UrnAssertion);
-                attribute.SetAttribute("Name", a.Item1);
+                XmlElement attribute = assertion.CreateElement(prefix, SAML2Const.ElementAttribute, SAML2Const.UrnAssertion);
+                attribute.SetAttribute(SAML2Const.AttrName, a.Item1);
 
                 if (!string.IsNullOrEmpty(a.Item3))
                 {
-                    attribute.SetAttribute("NameFormat", a.Item3);
+                    attribute.SetAttribute(SAML2Const.AttrNameFormat, a.Item3);
                 }
 
                 if (!string.IsNullOrEmpty(a.Item2))
                 {
-                    attribute.SetAttribute("FriendlyName", a.Item2);
+                    attribute.SetAttribute(SAML2Const.AttrFriendlyName, a.Item2);
                 }
 
-                XmlElement value = assertion.CreateElement(prefix, "AttributeValue", SAML2Const.UrnAssertion);
+                XmlElement value = assertion.CreateElement(prefix, SAML2Const.ElementAttributeValue, SAML2Const.UrnAssertion);
                 value.InnerText = a.Item4;
                 attribute.AppendChild(value);
 
@@ -234,7 +231,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             foreach (XmlNode attribute in attributes)
             {
-                XmlNode value = attribute.SelectSingleNode("saml:AttributeValue", samlNsMgr);
+                XmlNode value = attribute.SelectSingleNode(SAML2Const.XPathAttributeValueInAttribute, samlNsMgr);
 
                 if (value == null)
                 {
@@ -243,8 +240,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
                 foreach (string key in new string[]
                 {
-                    SAML2Attributes.Attr(attribute, "Name"),
-                    SAML2Attributes.Attr(attribute, "FriendlyName")
+                    SAML2Attributes.Attr(attribute, SAML2Const.AttrName),
+                    SAML2Attributes.Attr(attribute, SAML2Const.AttrFriendlyName)
                 })
                 {
                     if (!string.IsNullOrEmpty(key) && !ret.ContainsKey(key))

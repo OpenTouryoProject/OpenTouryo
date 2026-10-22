@@ -29,18 +29,18 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/08/14  西野 大介         新規作成
+//*  2026/10/22  玄人 幸道         Content-Typeの直書きをPubLiteral.HTTP_CONTENT_TYPE_JSONに寄せた
 //**********************************************************************************
 
+using Newtonsoft.Json;
 using System.IO;
-using System.Threading.Tasks;
-
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-
-using Newtonsoft.Json;
-
+using System.Threading.Tasks;
+using Touryo.Infrastructure.Framework.Util;
 using Touryo.Infrastructure.Public.Str;
+using Touryo.Infrastructure.Public.Util;
 
 namespace Touryo.Infrastructure.Framework.Presentation
 {
@@ -56,7 +56,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
         /// <param name="json">string</param>
         public JsonContent(string json)
         {
-            Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            Headers.ContentType = new MediaTypeHeaderValue(PubLiteral.HTTP_CONTENT_TYPE_JSON);
 
             this._Stream = new MemoryStream(CustomEncode.StringToByte(json, CustomEncode.UTF_8));
             this._Stream.Position = 0;
@@ -67,7 +67,7 @@ namespace Touryo.Infrastructure.Framework.Presentation
         /// <param name="settings">JsonSerializerSettings</param>
         public JsonContent(object obj, JsonSerializerSettings settings)
         {
-            Headers.ContentType = new MediaTypeHeaderValue("application/json");
+            Headers.ContentType = new MediaTypeHeaderValue(PubLiteral.HTTP_CONTENT_TYPE_JSON);
 
             this._Stream = new MemoryStream();
             JsonTextWriter jsonTextWriter = new JsonTextWriter(new StreamWriter(this._Stream));

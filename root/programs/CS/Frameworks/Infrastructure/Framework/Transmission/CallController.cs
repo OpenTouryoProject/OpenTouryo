@@ -74,6 +74,7 @@
 //*  2021/08/14  西野 大介         デッドコードの整理、メソッド切り出しなど（#546）
 //*  2026/08/17  玄人 幸道         WCF_TCPIPの呼び出しを戻した（#561）。#546で実装を
 //*                                メソッドに切り出した際、呼び出しが欠落していた。
+//*  2026/10/22  玄人 幸道         Content-Typeの直書きをPubLiteral.HTTP_CONTENT_TYPE_JSONに寄せた
 //**********************************************************************************
 
 using System;
@@ -109,6 +110,7 @@ using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Str;
+using Touryo.Infrastructure.Public.Util;
 //using Org.BouncyCastle.Ocsp;
 
 #pragma warning disable 1591
@@ -740,7 +742,7 @@ namespace Touryo.Infrastructure.Framework.Transmission
                         ContextObject = CustomEncode.ToBase64String(contextObject),
                         ParameterValueObject = CustomEncode.ToBase64String(parameterValueObject)
                     }),
-                    Encoding.UTF8, "application/json"),
+                    Encoding.UTF8, PubLiteral.HTTP_CONTENT_TYPE_JSON),
             };
 
             #region タイムアウト
