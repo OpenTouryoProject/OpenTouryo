@@ -43,6 +43,7 @@
 //*                                null・空なら設定を読む分岐を外し、設定を読む版（引数の少ない版）へ移した。
 //*                                鍵を受ける版は null・空を ArgumentNullException にする（黙って無署名にしないため）
 //*  2026/10/22  玄人 幸道         処理区分ごとに partial クラスへ分割した（SAML2Client.*.cs）
+//*  2026/10/22  玄人 幸道         IdP 側の要求の検証・応答の作成を追加（SAML2Client.VerifyRequest.cs / CreateResponse.cs。#634）
 //**********************************************************************************
 
 using System;
@@ -64,6 +65,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// | SAML2Client.cs | 要求の作成（SP → IdP。Redirect / POST） |
     /// | SAML2Client.VerifyResponse.cs | 応答の検証（bool を返す従来の版） |
     /// | SAML2Client.VerifyResponseWithReason.cs | 応答の検証（理由を返す版。#634） |
+    /// | SAML2Client.VerifyRequest.cs | 要求の検証（IdP 側。SP → IdP。#634） |
+    /// | SAML2Client.CreateResponse.cs | 応答の作成（IdP 側。IdP → SP。Redirect / POST。#634） |
+    ///
+    /// IdP 側の 2 つは、SP 側の処理（要求の作成・応答の検証）と対になるので、例外として同じクラスに置いている
+    /// （SAML2Bindings と同じ扱い）。
     ///
     /// 応答の検証の結果クラスは SAML2VerifyResult.cs、低水準の符号化・署名・XPath は SAML2Bindings.cs。
     /// </remarks>

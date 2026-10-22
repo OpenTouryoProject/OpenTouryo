@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（SAML2Bindings.cs から処理区分ごとに分割した）
 //*  2026/10/22  玄人 幸道         属性名・XPath・要素名・ID の接頭辞の直書きを SAML2Const に寄せた
+//*  2026/10/22  玄人 幸道         メタデータに署名用の証明書を書き足す AppendSigningCertificates を追加（汎用認証サイトから移した。#634）
 //**********************************************************************************
 
 using System;
@@ -34,6 +35,7 @@ using System.Security.Cryptography;
 
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Xml;
+using Touryo.Infrastructure.Public.Util;
 using Touryo.Infrastructure.Public.Security.Xml;
 
 namespace Touryo.Infrastructure.Framework.Authentication
@@ -229,6 +231,78 @@ namespace Touryo.Infrastructure.Framework.Authentication
             #endregion
 
             return xmlDoc;
+        }
+
+        /// <summary>メタデータに、署名用の証明書（KeyDescriptor use="signing"）を書き足す</summary>
+        /// <param name="metadata">XmlDocument（CreateMetadata の戻り）</param>
+        /// <param name="certificates">証明書（base64 の DER）の並び。空のものは飛ばす</param>
+        /// <returns>書き足した本数</returns>
+        /// <remarks>
+        /// 自由に利用できる。SAML2Metadata.GetSigningKeys（複数の署名用の証明書を読む）の対である
+        /// （汎用認証サイトから移した。#634）。
+        ///
+        /// CreateMetadata は証明書を 1 本しか受けない。鍵を入れ替える（ロールオーバーする）とき、
+        /// 1 本しか広告していないと、メタデータをキャッシュしている SP が、入れ替えた瞬間に検証できなくなる。
+        /// そこで、新旧の証明書を並べて広告する。
+        ///
+        /// 1 本目（CreateMetadata で入れた、いまの鍵）の KeyDescriptor を複製し、証明書だけを差し替えて、
+        /// 渡された順に、1 本目の後ろへ並べる。どの証明書を並べるか（ファイルの場所など）は、呼び出し側で決める。
+        /// </remarks>
+        public static int AppendSigningCertificates(XmlDocument metadata, IEnumerable<string> certificates)
+        {
+            if (metadata == null)
+            {
+                throw new ArgumentNullException(nameof(metadata));
+            }
+
+            if (certificates == null)
+            {
+                return 0;
+            }
+
+            XmlNamespaceManager ns = new XmlNamespaceManager(metadata.NameTable);
+            ns.AddNamespace(SAML2Const.PrefixMetadata, SAML2Const.UrnMetadata);
+            ns.AddNamespace(SAML2Const.PrefixDSig, SAML2Const.UrnDSig);
+
+            // 1 本目の署名用の KeyDescriptor を複製元にする。
+            XmlNode signing = null;
+
+            foreach (XmlNode key in metadata.SelectNodes(SAML2Const.XPathKeyDescriptorInMetadata, ns))
+            {
+                XmlAttribute use = key.Attributes[SAML2Const.AttrUse];
+
+                if (use != null && use.Value == SAML2Const.KeyUseSigning)
+                {
+                    signing = key;
+                    break;
+                }
+            }
+
+            if (signing == null || signing.ParentNode == null)
+            {
+                throw new ArgumentException(PublicExceptionMessage.ARGUMENT_INCORRECT, nameof(metadata));
+            }
+
+            int added = 0;
+            XmlNode last = signing;
+
+            foreach (string certificate in certificates)
+            {
+                if (string.IsNullOrEmpty(certificate))
+                {
+                    continue;
+                }
+
+                XmlNode clone = signing.CloneNode(true);
+                XmlNode cer = clone.SelectSingleNode(SAML2Const.XPathX509CertificateInKeyDescriptor, ns);
+                cer.InnerText = certificate;
+
+                signing.ParentNode.InsertAfter(clone, last);
+                last = clone;
+                added++;
+            }
+
+            return added;
         }
 
         #endregion

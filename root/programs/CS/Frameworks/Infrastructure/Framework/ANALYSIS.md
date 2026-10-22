@@ -187,7 +187,8 @@ UOC は `UOC_PreQuery` / `UOC_AfterQuery(sql)` / `UOC_AfterQuery(sql, ex)`。
   | `.DPoP.cs` | 送信者制約トークン | DPoP（RFC 9449） |
   | `.ClientRegistration.cs` | 動的クライアント登録 | DCR（RFC 7591 / 7592） |
 
-  **新しい口は、区分の合うファイルに足す。** 置くのは **SP・RP（クライアント）側の処理だけ**で、IdP 側（発行・口の実装）は置かない。
+  **新しい口は、区分の合うファイルに足す。** 置くのは **SP・RP（クライアント）側の処理が基本**で、IdP 側の処理（発行・口の実装）は置かない。
+  **ただし、SP・RP 側の処理と対になる IdP 側の処理**（同じ形式を作る / 読む、署名する / 検証する）は、例外として含める（下の表）。
   **ログアウトは部品化を保留している**（Web Forms / MVC の SP・RP の口の共通化の観点から）。net48 の csproj は `Compile Include` を列挙しているので、ファイルを足したら並べること
 - **公開情報（JWK Set・Discovery・SAML2 メタデータ）の取得は `GetStringAsync`（`internal`）に集めている。** 失敗しても例外にせず空文字を返す。
   `GetJwkSetAsync` と `GetDiscoveryDocumentAsync` はこれを呼ぶだけ（以前は `GetJwkSetAsync` を汎用の GET として代用していた）
@@ -207,6 +208,21 @@ UOC は `UOC_PreQuery` / `UOC_AfterQuery(sql)` / `UOC_AfterQuery(sql, ex)`。
 | `SAML2Attributes` | **`AttributeStatement` を書く（IdP）・読む（SP）**。メアド・利用者名・`email_verified` の別名を吸収 | IdP / SP |
 | `SAML2Client.VerifyResponseWithReason` / `SAML2VerifyResult` | **落ちた理由を返す**応答の検証（鍵は複数を順に試す） | SP |
 | `OAuth2AndOIDCSpec` | 仕様が決めている小物（`error` → HTTP ステータス、`response_type` の正規化、`prompt` の集合、`max_age`、認可応答の URL（`iss` を付ける）、空白区切り、`client_assertion` と `assertion` の両受け） | AS / RS |
+
+**SP・RP 側と対になる IdP 側の処理**（#634 の続き。例外として同じ所に置く）。どれも、配備の決めは引数で受ける。
+
+| 置き場 | IdP 側の処理 | 対になる SP・RP 側の処理 | 呼び出し側に残す決め |
+|---|---|---|---|
+| `SAML2Client.VerifyRequest` | 要求の検証（Issuer から鍵を選ぶ版と、鍵を固定で渡す版） | `SAML2Client.VerifyResponse` | 鍵をどこから引くか。**鍵が無い SP をどう扱うか**（部品は通さない）。ACS URL の登録値との照合 |
+| `SAML2Client.CreateRedirectResponse` / `CreatePostResponse` | 応答の作成・署名（成功のときだけ Assertion。属性も足せる） | `SAML2Client.CreateRedirectRequest` / `CreatePostRequest` | 返す先（事前登録の ACS URL）・NameID（PPID など）・出す属性・Binding・鍵 |
+| `SAML2Bindings.AppendSigningCertificates` | メタデータに署名用の証明書を書き足す（鍵の入れ替え中に新旧を並べる） | `SAML2Metadata.GetSigningKeys`（複数を読む） | どの証明書を並べるか |
+| `ResponseObject.Create` | JARM の ResponseObject を作る | `ResponseObject.Verify` | 鍵（alg・kid）・有効期限 |
+| `OAuth2AndOIDCSpec.VerifyPkce` | PKCE の検証 | `OAuth2AndOIDCClient.PKCE_S256_CodeChallengeMethod` | `plain` を受けるか |
+| `JwkSetDocument` | 自分の JWK Set を出す（ファイルの変更を検知して読み直す。ETag） | `RemoteJwkSetStore`（相手の JWK Set を読む） | `Cache-Control` の秒数・304 の返し方 |
+
+**移していないもの**（対にはなるが、汎用の部分を切り出せない、または保留）:
+id_token / access_token の発行（汎用認証サイトの作り（access_token からの作り替え・利用者ストア・鍵の表）と絡み合っている）、
+logout_token（ログアウトは保留）、DCR・Discovery・PAR などの受け口（配備の決めそのもの）。
 | `AuthenticationHeader` | `DPoP` スキームの読み書き（`GetAccessToken` はスキームも返す）、`WWW-Authenticate` の組み立て、**Basic を復号前後のどちらでも照合する版**（H-3） | AS / RS |
 
 **配備ごとの決めは持ち込んでいない**（MPAS 側に残る）。`jti` の使い回しを拒む台帳（`DPoPProof.CreateProofId` は鍵だけ作る）、
@@ -275,6 +291,10 @@ XML 署名は `Public.Security` の `SignedXml2`。
 | `SAML2Client.cs` | 要求の作成（SP → IdP。`CreateRedirectRequest` / `CreatePostRequest`） |
 | `SAML2Client.VerifyResponse.cs` | 応答の検証（bool を返す従来の版） |
 | `SAML2Client.VerifyResponseWithReason.cs` | 応答の検証（理由を返す版。#634。結果は `SAML2VerifyResult`） |
+| `SAML2Client.VerifyRequest.cs` | 要求の検証（**IdP 側**。SP → IdP。#634） |
+| `SAML2Client.CreateResponse.cs` | 応答の作成（**IdP 側**。IdP → SP。Redirect / POST。#634） |
+
+IdP 側の 2 つは、SP 側の処理と対になるので、例外として同じクラスに置いている（`SAML2Bindings` と同じ扱い）。
 
 **`SAML2Bindings` も、処理区分（共通・SP 側・IdP 側）ごとに `partial` クラスのファイルへ分けている。**
 SAML の署名・検証は SP と IdP の双方が使うため、**IdP 側の処理も、例外として同じクラスに置いている**

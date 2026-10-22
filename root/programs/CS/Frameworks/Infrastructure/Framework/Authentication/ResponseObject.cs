@@ -31,6 +31,7 @@
 //*  2019/06/26  西野 大介         新規作成
 //*  2026/10/12  玄人 幸道         Verifyに、検証鍵（JWS）と期待するiss / audを受けるオーバーロードを追加（#601）。
 //*  2026/10/12  玄人 幸道         設定で判定するVerifyでも、認可サーバを兼ねる配備でaudを確認するようにした（#603）。
+//*  2026/10/22  玄人 幸道         Verifyの対となるCreateを追加（汎用認証サイトから移した。#634）
 //**********************************************************************************
 
 using System;
@@ -53,7 +54,60 @@ namespace Touryo.Infrastructure.Framework.Authentication
     public class ResponseObject
     {
         #region Create
-        // AuthZに実装（パラメタ体系が違うため）
+
+        /// <summary>ResponseObject（JARM の response パラメタの値）を作る。</summary>
+        /// <param name="responseParams">Dictionary（認可応答のパラメタ。code / state、または error など）</param>
+        /// <param name="jws">署名に使う、自分（認可サーバ）の鍵。kid は呼び出し側で JWSHeader に入れておく</param>
+        /// <param name="iss">iss（自分の Issuer）</param>
+        /// <param name="aud">aud（応答を受け取るクライアントの client_id）</param>
+        /// <param name="expires">exp（有効期限）</param>
+        /// <returns>ResponseObject（JWS）</returns>
+        /// <remarks>
+        /// 自由に利用できる。Verify の対である（汎用認証サイトから移した。#634）。
+        ///
+        /// - 応答のパラメタは文字列のまま入れ、iss / aud / exp を足す（JARM 2.1）
+        /// - exp は NumericDate（JSON の数値）で入れる（RFC 7519 2。文字列にしない）
+        /// - jku はヘッダに入れない（鍵は kid で引かせる）
+        /// - 引数の Dictionary は変えない。iss / aud / exp を持っていても、引数の値で上書きする
+        /// 鍵の選び方（どの alg・どの証明書）は、配備の決めなので呼び出し側で持つ。
+        /// </remarks>
+        public static string Create(Dictionary<string, string> responseParams,
+            JWS jws, string iss, string aud, DateTimeOffset expires)
+        {
+            if (responseParams == null)
+            {
+                throw new ArgumentNullException(nameof(responseParams));
+            }
+
+            if (jws == null)
+            {
+                throw new ArgumentNullException(nameof(jws));
+            }
+
+            if (string.IsNullOrEmpty(iss))
+            {
+                throw new ArgumentNullException(nameof(iss));
+            }
+
+            if (string.IsNullOrEmpty(aud))
+            {
+                throw new ArgumentNullException(nameof(aud));
+            }
+
+            Dictionary<string, object> payload = new Dictionary<string, object>();
+
+            foreach (KeyValuePair<string, string> item in responseParams)
+            {
+                payload[item.Key] = item.Value;
+            }
+
+            payload[OAuth2AndOIDCConst.iss] = iss;
+            payload[OAuth2AndOIDCConst.aud] = aud;
+            payload[OAuth2AndOIDCConst.exp] = expires.ToUnixTimeSeconds();
+
+            return jws.Create(JsonConvert.SerializeObject(payload));
+        }
+
         #endregion
 
         #region Verify

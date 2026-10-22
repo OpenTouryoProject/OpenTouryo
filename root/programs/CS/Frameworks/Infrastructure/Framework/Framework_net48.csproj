@@ -127,6 +127,12 @@
     <Compile Include="Authentication\SAML2Client.VerifyResponseWithReason.cs">
       <DependentUpon>SAML2Client.cs</DependentUpon>
     </Compile>
+    <Compile Include="Authentication\SAML2Client.VerifyRequest.cs">
+      <DependentUpon>SAML2Client.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Authentication\SAML2Client.CreateResponse.cs">
+      <DependentUpon>SAML2Client.cs</DependentUpon>
+    </Compile>
     <Compile Include="Authentication\SAML2Bindings.cs" />
     <Compile Include="Authentication\SAML2Bindings.Encoding.cs">
       <DependentUpon>SAML2Bindings.cs</DependentUpon>
@@ -143,6 +149,7 @@
     <Compile Include="Authentication\DPoPProof.cs" />
     <Compile Include="Authentication\OAuth2AndOIDCSpec.cs" />
     <Compile Include="Authentication\RemoteJwkSetStore.cs" />
+    <Compile Include="Authentication\JwkSetDocument.cs" />
     <Compile Include="Authentication\SAML2Attributes.cs" />
     <Compile Include="Authentication\SAML2Metadata.cs" />
     <Compile Include="Authentication\SAML2VerifyResult.cs" />

@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（汎用認証サイトから移した。#634 の G / H-2）
+//*  2026/10/22  玄人 幸道         PKCE の検証（認可サーバ側）を追加（汎用認証サイトから移した。#634）
 //**********************************************************************************
 
 using System;
@@ -203,6 +204,56 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             return (elapsedSeconds <= maxAge)
                 ? OAuth2AndOIDCEnum.AuthTimeCheck.Ok : OAuth2AndOIDCEnum.AuthTimeCheck.NeedsReAuthentication;
+        }
+
+        #endregion
+
+        #region PKCE（RFC 7636）
+
+        /// <summary>PKCE を検証する（認可サーバ側）</summary>
+        /// <param name="code_challenge_method">string（認可要求で受け取った code_challenge_method）</param>
+        /// <param name="code_challenge">string（認可要求で受け取った code_challenge）</param>
+        /// <param name="code_verifier">string（トークン要求で受け取った code_verifier）</param>
+        /// <param name="allowPlain">bool（plain を受けるか。OAuth 2.1 / FAPI は S256 だけ）</param>
+        /// <param name="usedS256">out bool（S256 で検証できたか）</param>
+        /// <returns>検証できれば true</returns>
+        /// <remarks>
+        /// 自由に利用できる。クライアント側の OAuth2AndOIDCClient.PKCE_S256_CodeChallengeMethod の対である
+        /// （汎用認証サイトから移した。#634）。
+        ///
+        /// - 認可要求で PKCE を使っていない（code_challenge_method / code_challenge が空）なら false
+        /// - S256 : BASE64URL(SHA256(ASCII(code_verifier))) が code_challenge と一致すること（RFC 7636 4.6）
+        /// - plain : allowPlain のときだけ、code_verifier が code_challenge と一致すること
+        /// - 未知のメソッドは false
+        /// - メソッド名の大文字小文字は区別しない（汎用認証サイトの従来の扱い）
+        /// クライアント認証とは別の検証なので、呼び出し側は認証の成否と併せて判断すること。
+        /// </remarks>
+        public static bool VerifyPkce(string code_challenge_method, string code_challenge,
+            string code_verifier, bool allowPlain, out bool usedS256)
+        {
+            usedS256 = false;
+
+            if (string.IsNullOrEmpty(code_challenge_method)
+                || string.IsNullOrEmpty(code_challenge)
+                || string.IsNullOrEmpty(code_verifier))
+            {
+                return false;
+            }
+
+            if (string.Equals(code_challenge_method, OAuth2AndOIDCConst.PKCE_S256, StringComparison.OrdinalIgnoreCase))
+            {
+                usedS256 = string.Equals(code_challenge,
+                    OAuth2AndOIDCClient.PKCE_S256_CodeChallengeMethod(code_verifier), StringComparison.Ordinal);
+
+                return usedS256;
+            }
+
+            if (string.Equals(code_challenge_method, OAuth2AndOIDCConst.PKCE_plain, StringComparison.OrdinalIgnoreCase))
+            {
+                return allowPlain && string.Equals(code_challenge, code_verifier, StringComparison.Ordinal);
+            }
+
+            return false;
         }
 
         #endregion
