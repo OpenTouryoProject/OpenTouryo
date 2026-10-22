@@ -26,7 +26,7 @@
 //*  2026/10/22  玄人 幸道         新規作成（汎用認証サイトから移した。#634 の E-3）
 //**********************************************************************************
 
-namespace Touryo.Infrastructure.Public.Str
+namespace Touryo.Infrastructure.Public.Log
 {
     /// <summary>ログに出す値の衛生</summary>
     /// <remarks>
