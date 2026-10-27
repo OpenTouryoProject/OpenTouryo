@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
+//*  2026/10/28  玄人 幸道         モード・パディングの指定が効いていることを、.NET の API で組み直して確かめるテストを追加
 //**********************************************************************************
 
 using System;
@@ -52,18 +53,39 @@ namespace TestPublic.Security
         /// <summary>パスワード</summary>
         private const string Password = "p@ssw0rd";
 
-        /// <summary>同じ導出（PBKDF2-HMAC-SHA1、鍵 → IV の順）と、.NET の既定のモード（CBC / PKCS7）で暗号化する。</summary>
-        private static byte[] EncryptByBcl(SymmetricAlgorithm sa, byte[] plain, string password, byte[] salt, int stretching)
+        /// <summary>同じ導出（PBKDF2-HMAC-SHA1、鍵 → IV の順）で、sa に鍵と IV を設定する。</summary>
+        private static void DeriveByBcl(SymmetricAlgorithm sa, string password, byte[] salt, int stretching)
         {
             using (Rfc2898DeriveBytes db = new Rfc2898DeriveBytes(password, salt, stretching, HashAlgorithmName.SHA1))
             {
                 sa.Key = db.GetBytes(sa.KeySize / 8);
                 sa.IV = db.GetBytes(sa.BlockSize / 8);
             }
+        }
+
+        /// <summary>同じ導出で暗号化する。モードとパディングは sa に設定したもの（既定は CBC / PKCS7）。</summary>
+        private static byte[] EncryptByBcl(SymmetricAlgorithm sa, byte[] plain, string password, byte[] salt, int stretching)
+        {
+            DeriveByBcl(sa, password, salt, stretching);
 
             using (ICryptoTransform t = sa.CreateEncryptor())
             {
                 return t.TransformFinalBlock(plain, 0, plain.Length);
+            }
+        }
+
+        /// <summary>既定のソルトと回数で導出し、AES（CBC）・パディング無しで復号する（詰めたバイトがそのまま残る）。</summary>
+        private static byte[] DecryptByBclWithoutPadding(byte[] cipher)
+        {
+            using (Aes aes = Aes.Create())
+            {
+                DeriveByBcl(aes, Password, SymmetricCryptography.DefaultSalt, SymmetricCryptography.DefaultStretching);
+                aes.Padding = PaddingMode.None;
+
+                using (ICryptoTransform t = aes.CreateDecryptor())
+                {
+                    return t.TransformFinalBlock(cipher, 0, cipher.Length);
+                }
             }
         }
 
@@ -198,6 +220,77 @@ namespace TestPublic.Security
 
             Assert.That(b, Is.Not.EqualTo(a));
             Assert.That(c, Is.Not.EqualTo(a));
+        }
+
+        #endregion
+
+        #region モードとパディング（.NET の API で組み直して比べる）
+
+        // 往復（ModeAndPadding_RoundTrip）だけでは、指定を無視して既定（CBC / PKCS7）で
+        // 暗号化・復号しても通ってしまう。指定が暗号文に効いていることは、値で確かめる。
+
+        /// <summary>
+        /// **モードの指定は暗号文に効いている。** 同じ導出・同じモードで .NET の API が作る暗号文と一致する。
+        /// CFB のフィードバック サイズは、どちらも .NET の既定のまま。
+        /// </summary>
+#pragma warning disable CS0618 // CipherMode_ECB は非推奨だが、指定された場合の動作（下位互換）を確かめる。
+        [TestCase(EnumSymmetricAlgorithm.AES | EnumSymmetricAlgorithm.CipherMode_CBC, CipherMode.CBC)]
+        [TestCase(EnumSymmetricAlgorithm.AES | EnumSymmetricAlgorithm.CipherMode_CFB, CipherMode.CFB)]
+        [TestCase(EnumSymmetricAlgorithm.AES | EnumSymmetricAlgorithm.CipherMode_ECB, CipherMode.ECB)]
+        [TestCase(EnumSymmetricAlgorithm.TDES | EnumSymmetricAlgorithm.CipherMode_CFB, CipherMode.CFB)]
+#pragma warning restore CS0618
+        public void Mode_SameAsBcl(EnumSymmetricAlgorithm esa, CipherMode mode)
+        {
+            byte[] plain = Encoding.UTF8.GetBytes(Plain);
+            byte[] expected;
+            using (SymmetricAlgorithm sa = esa.HasFlag(EnumSymmetricAlgorithm.TDES) ? (SymmetricAlgorithm)TripleDES.Create() : Aes.Create())
+            {
+                sa.Mode = mode;
+                expected = EncryptByBcl(sa, plain, Password,
+                    SymmetricCryptography.DefaultSalt, SymmetricCryptography.DefaultStretching);
+            }
+
+            Assert.That(new SymmetricCryptography(esa).EncryptBytes(plain, Password), Is.EqualTo(expected));
+        }
+
+        /// <summary>
+        /// **パディングの指定は、末尾の詰め方に効いている。** パディング無しで復号し、詰めたバイトを規格どおりか見る。
+        /// 平文 5 バイトを AES（16 バイト）で暗号化するので、11（0x0B）バイト詰める。
+        /// PKCS7 は 0x0B を 11 個、ANSI X9.23 は 0x00 を 10 個の後に 0x0B、Zeros は 0x00 を 11 個。
+        /// </summary>
+        [TestCase(EnumSymmetricAlgorithm.PaddingMode_PKCS7, (byte)0x0B, (byte)0x0B)]
+        [TestCase(EnumSymmetricAlgorithm.PaddingMode_ANSIX923, (byte)0x00, (byte)0x0B)]
+        [TestCase(EnumSymmetricAlgorithm.PaddingMode_Zeros, (byte)0x00, (byte)0x00)]
+        public void Padding_TailAsSpecified(EnumSymmetricAlgorithm padding, byte fill, byte last)
+        {
+            byte[] plain = new byte[] { 1, 2, 3, 4, 5 };
+            byte[] cipher = new SymmetricCryptography(EnumSymmetricAlgorithm.AES | padding).EncryptBytes(plain, Password);
+
+            byte[] expected = new byte[16];
+            Array.Copy(plain, expected, plain.Length);
+            for (int i = plain.Length; i < 15; i++) { expected[i] = fill; }
+            expected[15] = last;
+
+            Assert.That(DecryptByBclWithoutPadding(cipher), Is.EqualTo(expected));
+        }
+
+        /// <summary>
+        /// ISO 10126 は、最後の 1 バイトが詰めた長さで、残りは乱数。
+        /// **乱数なので、同じ鍵・IV・平文でも暗号文が毎回違う**（PKCS7 等なら同じになる）。
+        /// </summary>
+        [Test]
+        public void Padding_Iso10126_LastByteIsLengthAndRestIsRandom()
+        {
+            byte[] plain = new byte[] { 1, 2, 3, 4, 5 };
+            SymmetricCryptography sc = new SymmetricCryptography(EnumSymmetricAlgorithm.AES | EnumSymmetricAlgorithm.PaddingMode_ISO10126);
+
+            byte[] a = sc.EncryptBytes(plain, Password);
+            byte[] b = sc.EncryptBytes(plain, Password);
+            byte[] raw = DecryptByBclWithoutPadding(a);
+
+            Assert.That(raw.Length, Is.EqualTo(16));
+            Assert.That(raw[15], Is.EqualTo(0x0B));
+            Assert.That(b, Is.Not.EqualTo(a));
         }
 
         #endregion

@@ -26,6 +26,7 @@
 //*  2026/10/15  玄人 幸道         新規作成（#610）
 //*  2026/10/19  玄人 幸道         プロパティ・分離レベル・ファイルの SQL・型付きパラメタ・LIST タグ・
 //*                                ExecGenerateSQL・GetCurrentQuery(ForLog) のケースを追加（カバレッジの拡充）
+//*  2026/10/28  玄人 幸道         SQLUtility で組み立てた INSERT / UPDATE を実行し、' と \ を含む値を読み戻すケースを追加
 //**********************************************************************************
 
 using System;
@@ -561,6 +562,66 @@ namespace TestPublicDb
 
             string log = this._dam.GetCurrentQueryForLog();
             Assert.That(log, Does.Contain("P1=2").And.Contain("P2=DBNull").And.Contain("P3=null"));
+        }
+
+        #endregion
+
+        #region SQLUtility で組み立てた SQL の実行
+
+        /// <summary>' と \ を含む値（NAME 列は 20 文字まで。Oracle は空文字を NULL にするので使わない）</summary>
+        private static readonly string[] TrickyNames = { "it's", "C:\\new\\table", "x\\", "a\\'b", "\\\\'--" };
+
+        /// <summary>ID → NAME を読む。</summary>
+        private string Name(int id)
+        {
+            this._dam.SetSqlByCommand("SELECT " + this.Q("NAME") + " FROM " + this.T + " WHERE " + this.Q("ID") + " = " + id);
+            return Convert.ToString(this._dam.ExecSelectScalar());
+        }
+
+        /// <summary>
+        /// SQLUtility.GetInsertSQLParts / GetUpdateSQLParts で組み立てた SQL を実行し、**同じ値で読み戻せる。**
+        /// 値は文字列リテラルとして SQL に埋め込まれるので、' と \ の扱いが DBMS の規則と合っていないと、
+        /// 値が変わるか、リテラルが閉じずに SQL が壊れる（MySQL は既定で \ をエスケープ文字として扱う）。
+        /// </summary>
+        [Test]
+        public void SQLUtility_InsertAndUpdate_RoundTrip()
+        {
+            SQLUtility util = new SQLUtility(DbProvider.GetDbmsType(this._dap));
+            int n = TrickyNames.Length;
+
+            DataTable dt = new DataTable();
+            dt.Columns.Add("ID", typeof(int));
+            dt.Columns.Add("NAME", typeof(string));
+            dt.Columns.Add("QTY", typeof(int));
+            for (int i = 0; i < n; i++)
+            {
+                dt.Rows.Add(100 + i, TrickyNames[i], i);
+            }
+
+            // INSERT（1 行 1 文）
+            string[] ins = util.GetInsertSQLParts(dt);
+            for (int i = 1; i < ins.Length; i++)
+            {
+                Assert.That(this.Exec("INSERT INTO " + this.T + " " + ins[0] + " VALUES " + ins[i]), Is.EqualTo(1));
+            }
+            for (int i = 0; i < n; i++)
+            {
+                Assert.That(this.Name(100 + i), Is.EqualTo(TrickyNames[i]), "INSERT " + i);
+            }
+
+            // UPDATE（値を逆順に入れ替える。PostgreSQL・MySQL は 1 文、他は 1 行 1 文）
+            for (int i = 0; i < n; i++)
+            {
+                dt.Rows[i]["NAME"] = TrickyNames[n - 1 - i];
+            }
+            foreach (string part in util.GetUpdateSQLParts(dt, new[] { "ID" }))
+            {
+                this.Exec("UPDATE " + this.T + " " + part);
+            }
+            for (int i = 0; i < n; i++)
+            {
+                Assert.That(this.Name(100 + i), Is.EqualTo(TrickyNames[n - 1 - i]), "UPDATE " + i);
+            }
         }
 
         #endregion
