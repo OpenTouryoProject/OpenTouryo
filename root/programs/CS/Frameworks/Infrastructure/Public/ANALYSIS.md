@@ -23,7 +23,7 @@
 
 | フォルダ | 名前空間 | 主なクラス | 一言で |
 |---|---|---|---|
-| `Db/` | `Public.Db` | `BaseDam` `DamSqlSvr` `DamODBC` `DamOLEDB` `SQLUtility` `DbEnum` | データ アクセス制御（Dam）。4 節 |
+| `Db/` | `Public.Db` | `BaseDam` `DamSqlSvr` `DamODBC` `DamOLEDB` `SQLUtility` `SQLSanitizer` `DbEnum` | データ アクセス制御（Dam）。4 節 |
 | `Dto/` | `Public.Dto` | `DTTables` `DTTable` `DTRow` `DTColumn`、`DataToPoco` `PocoToPoco` `DataToDictionary` | マーシャリングできる自前の DataTable と、詰め替え |
 | `Str/` | `Public.Str` | `CustomEncode` `StringChecker` `FormatChecker` `StringConverter` `FormatConverter` `CheckCharCode` `JIS2k4Checker` `StringVariableOperator` `StringExtractor` `ToStringExtension` `UriOperator` | 文字列の符号化・検査・変換。`UriOperator`（https かループバックか・クエリと素片を除いた URL・クエリからの値の抽出）は #634。**URL を扱う汎用の処理は `UriOperator` に寄せる**（`StringExtractor.GetParameterFromQueryString` は移し、転送だけ残して `Obsolete`）。**プロトコル専用の比較は置かない**（DPoP の htu の緩い比較は `DPoPProof` の private） |
 | `IO/` | `Public.IO` | `ResourceLoader` `EmbeddedResourceLoader` `DeflateCompression` `ExponentialBackoff` `ZipperV2` `UnZipperV2` `BinarySerialize` | ファイル・埋め込みリソースの読み込み、圧縮、再試行 |
@@ -99,6 +99,18 @@ DBMS の差を `BaseDam` と各 `Dam*` に閉じ込め、上位（`BaseDao`）�
 | 確認 | `ExecGenerateSQL(SQLUtility)` / `GetCurrentQuery` / `GetCurrentQueryForLog` | `ExecGenerateSQL` は組み立てた SQL を返すだけで、**接続を使わない** |
 
 `SQLUtility` は SQL の生成を助ける（DBMS ごとの囲い文字、`DataTable` から INSERT / UPDATE の部品を作る、値を SQL のリテラルにする）。
+
+**値を SQL に直接埋め込むので、文字列リテラルと識別子は `SQLSanitizer` で作る**
+（`ToStringLiteral` / `QuoteIdentifier`。利用者も単独で使える）。規則は DBMS ごとに違う。
+
+| DBMS | 文字列リテラル | 理由 |
+|---|---|---|
+| SQL Server / Oracle / DB2 | `'` を `''` にして `'～'` | `\` は特別な文字ではない |
+| PostgreSQL | `E'～'`（`\` を `\\`、`'` を `''`） | `standard_conforming_strings` の on / off に依らず同じ値になる |
+| MySQL | `_utf8mb4 0x～`（UTF-8 の 16 進） | 既定（`sql_mode` に `NO_BACKSLASH_ESCAPES` が無い）で `\` をエスケープ文字として扱うので、`'` を `''` にするだけではリテラルが正しく閉じない。16 進は `sql_mode` に依らない |
+
+**`SQLUtility` に文字列を埋め込む処理を足すときは、`Replace("'", "''")` を書かずに `SQLSanitizer` を通す。**
+実際の DB で値を読み戻せることは `TestPublicDb` の `SQLUtility_InsertAndUpdate_RoundTrip` が確かめる（クロス DB）。
 
 ### 4.3 動的パラメタライズド クエリ（DPQ）
 

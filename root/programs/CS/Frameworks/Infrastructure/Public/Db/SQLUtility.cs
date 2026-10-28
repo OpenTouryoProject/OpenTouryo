@@ -38,6 +38,8 @@
 //*  2026/08/02  玄人 幸道         GetUpdateSQLParts：複合主キーで誤ったUPDATE文を生成する問題を修正
 //*  2026/10/15  玄人 幸道         ConvertParameterToSQL：null で落ちる、PostgreSQL の byte で落ちる、
 //*                                char の ' をエスケープしない、の 3 点を修正（#612）
+//*  2026/10/28  玄人 幸道         文字列リテラルと識別子を SQLSanitizer で作るように変更
+//*                                （MySQL で \ を含む値のリテラルが正しく閉じない問題を修正）
 //**********************************************************************************
 
 using System;
@@ -305,7 +307,7 @@ namespace Touryo.Infrastructure.Public.Db
 
             foreach (DataColumn dc in dt.Columns)
             {
-                sb.Append(this.OpeningBracket + dc.ColumnName + this.ClosingBracket + ", ");
+                sb.Append(SQLSanitizer.QuoteIdentifier(dc.ColumnName, this._dbms) + ", ");
             }
 
             // 最後の文字を置き換える（[,]→[)]）。
@@ -441,7 +443,7 @@ namespace Touryo.Infrastructure.Public.Db
                     }
                     isFirstSet = false;
 
-                    sbSet.Append(this.OpeningBracket + set + this.ClosingBracket + " = CASE");
+                    sbSet.Append(SQLSanitizer.QuoteIdentifier(set, this._dbms) + " = CASE");
 
                     // 行ごとに「主キーの組み合わせ ＝ その行の値」を条件とする。
                     foreach (DataRow dr in dt.Rows)
@@ -451,7 +453,7 @@ namespace Touryo.Infrastructure.Public.Db
                     }
 
                     // どのWHENにも一致しない行は、現在の値を保つ。
-                    sbSet.Append("\r\n        ELSE " + this.OpeningBracket + set + this.ClosingBracket);
+                    sbSet.Append("\r\n        ELSE " + SQLSanitizer.QuoteIdentifier(set, this._dbms));
                     sbSet.Append("\r\n      END");
                 }
 
@@ -488,7 +490,7 @@ namespace Touryo.Infrastructure.Public.Db
                     {
                         // パラメタをSQLに変換する。
                         sbWhere.Append(
-                            this.OpeningBracket + where + this.ClosingBracket
+                            SQLSanitizer.QuoteIdentifier(where, this._dbms)
                             + " = " + this.ConvertParameterToSQL(dr[where]) + " AND ");
                     }
 
@@ -496,7 +498,7 @@ namespace Touryo.Infrastructure.Public.Db
                     foreach (string set in colSet)
                     {
                         sbSet.Append(
-                            this.OpeningBracket + set + this.ClosingBracket
+                            SQLSanitizer.QuoteIdentifier(set, this._dbms)
                             + " = " + this.ConvertParameterToSQL(dr[set]) + ", ");
                     }
 
@@ -538,7 +540,7 @@ namespace Touryo.Infrastructure.Public.Db
                 }
                 isFirst = false;
 
-                sb.Append(this.OpeningBracket + pk + this.ClosingBracket
+                sb.Append(SQLSanitizer.QuoteIdentifier(pk, this._dbms)
                     + " = " + this.ConvertParameterToSQL(dr[pk]));
             }
 
@@ -548,6 +550,10 @@ namespace Touryo.Infrastructure.Public.Db
         /// <summary>パラメタをSQLに変換する。</summary>
         /// <param name="obj">パラメタ</param>
         /// <returns>SQL化したパラメタ</returns>
+        /// <remarks>
+        /// 文字列（string・char）は SQLSanitizer.ToStringLiteral で DBMS ごとの文字列リテラルにする
+        /// （PostgreSQL は E'～'、MySQL は 16 進リテラル。理由は SQLSanitizer の remarks）。
+        /// </remarks>
         public string ConvertParameterToSQL(object obj)
         {
             StringBuilder sb = new StringBuilder();
@@ -577,27 +583,27 @@ namespace Touryo.Infrastructure.Public.Db
             }
             else if (obj.GetType() == typeof(char))
             {
-                // サニタイジング（string と同じく ' を '' にする。#612）
-                string c = obj.ToString().Replace("'", "''");
+                // サニタイジング（string と同じく SQLSanitizer で文字列リテラルにする）
+                string c = SQLSanitizer.ToStringLiteral(obj.ToString(), this._dbms);
 
                 switch (this._dbms)
                 {
                     case DbEnum.DBMSType.SQLServer:
                         // コンバート
-                        sb.Append("Convert(" + this._convertString + ", '" + c + "')");
+                        sb.Append("Convert(" + this._convertString + ", " + c + ")");
                         break;
 
                     case DbEnum.DBMSType.MySQL:
                     case DbEnum.DBMSType.PstGrS:
-                        sb.Append("Cast('" + c + "' as " + this._convertString + ")");
+                        sb.Append("Cast(" + c + " as " + this._convertString + ")");
                         break;
 
                     case DbEnum.DBMSType.Oracle:
-                        sb.Append("TO_CHAR('" + c + "')");
+                        sb.Append("TO_CHAR(" + c + ")");
                         break;
 
                     case DbEnum.DBMSType.DB2:
-                        sb.Append("CHAR('" + c + "')");
+                        sb.Append("CHAR(" + c + ")");
                         break;
 
                     default:
@@ -624,8 +630,8 @@ namespace Touryo.Infrastructure.Public.Db
                             // 30文字以上はサイズ指定する（エスケープ前の文字数）。
                             sb.Append(
                                 "Convert("
-                                + this._convertString + "(" + obj.ToString().Length + "), '"
-                                + obj.ToString().Replace("'", "''") + "')");
+                                + this._convertString + "(" + obj.ToString().Length + "), "
+                                + SQLSanitizer.ToStringLiteral(obj.ToString(), this._dbms) + ")");
                         }
 
                         break;
@@ -639,8 +645,8 @@ namespace Touryo.Infrastructure.Public.Db
                         else
                         {
                             sb.Append(
-                                "Cast('"
-                                + obj.ToString().Replace("'", "''") + "' as "
+                                "Cast("
+                                + SQLSanitizer.ToStringLiteral(obj.ToString(), this._dbms) + " as "
                                 + this._convertString + ")");
                         }
 
@@ -658,8 +664,8 @@ namespace Touryo.Infrastructure.Public.Db
                         {
                             //use CAST to 
                             sb.Append(
-                                "CAST('"
-                                + obj.ToString().Replace("'", "''") + "' AS "
+                                "CAST("
+                                + SQLSanitizer.ToStringLiteral(obj.ToString(), this._dbms) + " AS "
                                 + this._convertString + "(" + obj.ToString().Length + ")" + ")");
                         }
 
@@ -674,8 +680,8 @@ namespace Touryo.Infrastructure.Public.Db
                         else
                         {
                             sb.Append(
-                                "Cast('"
-                                + obj.ToString().Replace("'", "''") + "' as "
+                                "Cast("
+                                + SQLSanitizer.ToStringLiteral(obj.ToString(), this._dbms) + " as "
                                 + this._convertString + "(" + obj.ToString().Length + "))");
                         }
                         break;
@@ -689,8 +695,8 @@ namespace Touryo.Infrastructure.Public.Db
                         else
                         {
                             sb.Append(
-                                "CAST('"
-                                + obj.ToString().Replace("'", "''") + "' AS "
+                                "CAST("
+                                + SQLSanitizer.ToStringLiteral(obj.ToString(), this._dbms) + " AS "
                                 + this._convertString + "(" + obj.ToString().Length + ")" + ")");
                         }
                         break;
