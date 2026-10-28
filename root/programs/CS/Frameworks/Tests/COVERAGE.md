@@ -57,8 +57,8 @@ cd root\programs
 
 <!-- COVERAGE:BEGIN -->
 
-- 計測した日時 : 2026/10/22 18:24
-- コミット : 1505b9d2+
+- 計測した日時 : 2026/10/29 02:16
+- コミット : cf7da234
 - 合算した計測（8 件） : NUnit TestPublic (net10.0) / NUnit TestPublicNLog (net10.0) / NUnit TestPublicDb (net10.0) / NUnit TestFramework (net10.0) / NUnit TestPublic (Linux) / TestPublicDb (net10.0) [oracle] / TestPublicDb (net10.0) [mysql] / TestPublicDb (net10.0) [postgres]
 
 | アセンブリ（: モジュール） | 行 | 行数（通過／全体） | 分岐（下限） | 分岐数（通過／全体） |
@@ -105,7 +105,7 @@ cd root\programs
 | OpenTouryo.Framework : Exceptions/BusinessSystemException.cs | 100.0% | 11 / 11 | - | 0 / 0 |
 | OpenTouryo.Framework : Exceptions/FrameworkException.cs | 100.0% | 11 / 11 | - | 0 / 0 |
 | **OpenTouryo.Framework（対象モジュールの計）** | 94.6% | 3,480 / 3,680 | 86.3% | 967 / 1,120 |
-| OpenTouryo.Public | 80.6% | 6,181 / 7,668 | 68.6% | 1,430 / 2,084 |
+| OpenTouryo.Public | 81.3% | 6,267 / 7,711 | 69.8% | 1,485 / 2,128 |
 | OpenTouryo.Public.Security | 93.3% | 3,303 / 3,542 | 85.0% | 600 / 706 |
 
 <!-- COVERAGE:END -->
