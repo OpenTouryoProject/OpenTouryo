@@ -40,6 +40,7 @@
 //*                                char の ' をエスケープしない、の 3 点を修正（#612）
 //*  2026/10/28  玄人 幸道         文字列リテラルと識別子を SQLSanitizer で作るように変更
 //*                                （MySQL で \ を含む値のリテラルが正しく閉じない問題を修正）
+//*  2026/10/28  玄人 幸道         SQL Server の文字列リテラルを N'～' にする（SQLSanitizer 側。#636）
 //**********************************************************************************
 
 using System;
@@ -552,7 +553,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// <returns>SQL化したパラメタ</returns>
         /// <remarks>
         /// 文字列（string・char）は SQLSanitizer.ToStringLiteral で DBMS ごとの文字列リテラルにする
-        /// （PostgreSQL は E'～'、MySQL は 16 進リテラル。理由は SQLSanitizer の remarks）。
+        /// （SQL Server は N'～'、PostgreSQL は E'～'、MySQL は 16 進リテラル。理由は SQLSanitizer の remarks）。
         /// </remarks>
         public string ConvertParameterToSQL(object obj)
         {

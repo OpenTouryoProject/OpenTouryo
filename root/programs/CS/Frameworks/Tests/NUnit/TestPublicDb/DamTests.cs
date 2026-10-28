@@ -27,6 +27,7 @@
 //*  2026/10/19  玄人 幸道         プロパティ・分離レベル・ファイルの SQL・型付きパラメタ・LIST タグ・
 //*                                ExecGenerateSQL・GetCurrentQuery(ForLog) のケースを追加（カバレッジの拡充）
 //*  2026/10/28  玄人 幸道         SQLUtility で組み立てた INSERT / UPDATE を実行し、' と \ を含む値を読み戻すケースを追加
+//*  2026/10/28  玄人 幸道         SQL Server でコード ページに無い文字を読み戻すケースを追加（#636）
 //**********************************************************************************
 
 using System;
@@ -622,6 +623,31 @@ namespace TestPublicDb
             {
                 Assert.That(this.Name(100 + i), Is.EqualTo(TrickyNames[n - 1 - i]), "UPDATE " + i);
             }
+        }
+
+        /// <summary>
+        /// SQL Server で、照合順序のコード ページに無い文字（アクセント付き文字・絵文字・ハングル）が**化けずに読み戻せる。**
+        /// N の無いリテラルはコード ページの文字列として解釈され、無い文字が ? などに置き換わる（#636）。
+        /// 他の DBMS は、列の文字セットが DB の設定に依るので対象外。
+        /// </summary>
+        [Test]
+        public void SQLUtility_SQLServer_KeepsNonCodePageChars()
+        {
+            if (DbProvider.GetDbmsType(this._dap) != DbEnum.DBMSType.SQLServer)
+            {
+                Assert.Ignore("SQL Server だけが対象");
+            }
+
+            const string value = "café 😀 한";
+            DataTable dt = new DataTable();
+            dt.Columns.Add("ID", typeof(int));
+            dt.Columns.Add("NAME", typeof(string));
+            dt.Columns.Add("QTY", typeof(int));
+            dt.Rows.Add(100, value, 0);
+
+            string[] ins = new SQLUtility(DbEnum.DBMSType.SQLServer).GetInsertSQLParts(dt);
+            Assert.That(this.Exec("INSERT INTO " + this.T + " " + ins[0] + " VALUES " + ins[1]), Is.EqualTo(1));
+            Assert.That(this.Name(100), Is.EqualTo(value));
         }
 
         #endregion

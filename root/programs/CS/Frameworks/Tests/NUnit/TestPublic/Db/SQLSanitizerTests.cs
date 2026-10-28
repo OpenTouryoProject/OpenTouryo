@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/28  玄人 幸道         新規作成
+//*  2026/10/28  玄人 幸道         SQL Server の文字列リテラルを N'～' にする（#636）
 //**********************************************************************************
 
 using System;
@@ -46,9 +47,24 @@ namespace TestPublic.Db
         #region 文字列リテラル
 
         /// <summary>
-        /// SQL Server / Oracle / DB2 は、' を '' にして ' で囲う。**\ は特別な文字ではないので、そのまま。**
+        /// SQL Server は、' を '' にして N'～' で囲う。**\ は特別な文字ではないので、そのまま。**
+        /// N が無いと照合順序のコード ページで解釈され、そこに無い文字が化ける（#636）。
         /// </summary>
-        [TestCase(DbEnum.DBMSType.SQLServer)]
+        [Test]
+        public void ToStringLiteral_SQLServer()
+        {
+            const DbEnum.DBMSType ss = DbEnum.DBMSType.SQLServer;
+
+            Assert.That(SQLSanitizer.ToStringLiteral("it's", ss), Is.EqualTo("N'it''s'"));
+            Assert.That(SQLSanitizer.ToStringLiteral("a\\b", ss), Is.EqualTo("N'a\\b'"));
+            Assert.That(SQLSanitizer.ToStringLiteral("x\\'", ss), Is.EqualTo("N'x\\'''"));
+            Assert.That(SQLSanitizer.ToStringLiteral("", ss), Is.EqualTo("N''"));
+            Assert.That(SQLSanitizer.ToStringLiteral("café 😀 한", ss), Is.EqualTo("N'café 😀 한'"));
+        }
+
+        /// <summary>
+        /// Oracle / DB2 は、' を '' にして ' で囲う。**\ は特別な文字ではないので、そのまま。**
+        /// </summary>
         [TestCase(DbEnum.DBMSType.Oracle)]
         [TestCase(DbEnum.DBMSType.DB2)]
         public void ToStringLiteral_Standard(DbEnum.DBMSType dbms)

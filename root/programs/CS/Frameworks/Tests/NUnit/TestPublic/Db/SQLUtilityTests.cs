@@ -26,6 +26,7 @@
 //*  2026/10/15  玄人 幸道         新規作成（#610）
 //*  2026/10/15  玄人 幸道         #612 の修正に合わせ、修正後の挙動を確かめるケースを追加
 //*  2026/10/28  玄人 幸道         文字列リテラル・識別子を SQLSanitizer で作るようにした変更に合わせて期待値を変更
+//*  2026/10/28  玄人 幸道         SQL Server の文字列リテラルを N'～' にした変更に合わせて期待値を変更（#636）
 //**********************************************************************************
 
 using System;
@@ -76,10 +77,10 @@ namespace TestPublic.Db
 
         /// <summary>
         /// 文字列は DBMS ごとの型変換で包み、中身は SQLSanitizer.ToStringLiteral の文字列リテラルにする
-        /// （' を '' にする。PostgreSQL は E'～'、MySQL は UTF-8 の 16 進リテラル。規則は SQLSanitizerTests）。
+        /// （' を '' にする。SQL Server は N'～'、PostgreSQL は E'～'、MySQL は UTF-8 の 16 進リテラル。規則は SQLSanitizerTests）。
         /// 長さ（エスケープ前の文字数）を型に付ける。
         /// </summary>
-        [TestCase(DbEnum.DBMSType.SQLServer, "Convert(nvarchar(4), 'it''s')")]
+        [TestCase(DbEnum.DBMSType.SQLServer, "Convert(nvarchar(4), N'it''s')")]
         [TestCase(DbEnum.DBMSType.Oracle, "CAST('it''s' AS varchar2(4))")]
         [TestCase(DbEnum.DBMSType.PstGrS, "Cast(E'it''s' as text)")]
         [TestCase(DbEnum.DBMSType.MySQL, "Cast(_utf8mb4 0x69742773 as char(4))")]
@@ -105,7 +106,7 @@ namespace TestPublic.Db
         public void String_CustomConvertType()
         {
             Assert.That(new SQLUtility(DbEnum.DBMSType.SQLServer, "varchar").ConvertParameterToSQL("ab"),
-                Is.EqualTo("Convert(varchar(2), 'ab')"));
+                Is.EqualTo("Convert(varchar(2), N'ab')"));
         }
 
         #endregion
@@ -189,7 +190,7 @@ namespace TestPublic.Db
         /// char も string と同じ規則で文字列リテラルにする。
         /// **以前はエスケープせず、引用符が閉じない SQL になっていた**（#612 で修正）。
         /// </summary>
-        [TestCase(DbEnum.DBMSType.SQLServer, "Convert(nvarchar, '''')", "Convert(nvarchar, '\\')")]
+        [TestCase(DbEnum.DBMSType.SQLServer, "Convert(nvarchar, N'''')", "Convert(nvarchar, N'\\')")]
         [TestCase(DbEnum.DBMSType.MySQL, "Cast(_utf8mb4 0x27 as char)", "Cast(_utf8mb4 0x5C as char)")]
         [TestCase(DbEnum.DBMSType.PstGrS, "Cast(E'''' as text)", "Cast(E'\\\\' as text)")]
         [TestCase(DbEnum.DBMSType.Oracle, "TO_CHAR('''')", "TO_CHAR('\\')")]
@@ -225,7 +226,7 @@ namespace TestPublic.Db
             Assert.That(parts, Is.EqualTo(new[]
             {
                 "([OrderID], [Qty], [Note])",
-                "(1, 100, Convert(nvarchar(1), 'a'))",
+                "(1, 100, Convert(nvarchar(1), N'a'))",
                 "(2, 200, NULL)"
             }));
         }
@@ -241,7 +242,7 @@ namespace TestPublic.Db
 
             Assert.That(parts.Length, Is.EqualTo(2));
             Assert.That(parts[0].Trim(),
-                Is.EqualTo("SET [Qty] = 100, [Note] = Convert(nvarchar(1), 'a') WHERE [OrderID] = 1"));
+                Is.EqualTo("SET [Qty] = 100, [Note] = Convert(nvarchar(1), N'a') WHERE [OrderID] = 1"));
             Assert.That(parts[1].Trim(),
                 Is.EqualTo("SET [Qty] = 200, [Note] = NULL WHERE [OrderID] = 2"));
         }
