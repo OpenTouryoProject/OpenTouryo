@@ -321,6 +321,13 @@ __pycache__/
 /root/programs/*/Frameworks/Tests/NUnit/TestResults/
 
 # --------------------------------------------------
+# Open棟梁 NUnit coverage HTML
+#   2_RunAllTests.ps1 -Coverage が ReportGenerator で書き出す HTML。
+#   TestResults のカバレッジから作り直せる生成物なので、共有しない（表は COVERAGE.md）。
+# --------------------------------------------------
+/root/programs/*/Frameworks/Tests/CoverageHtml/
+
+# --------------------------------------------------
 # Open棟梁 verified commit (#610)
 #   SelectTargets.ps1 が記録する「検証の済んだコミット」。
 #   手元の検証の状態なので、共有しない。

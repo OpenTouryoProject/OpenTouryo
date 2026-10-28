@@ -47,7 +47,13 @@ cd root\programs
 - **コミット**：計測したときの HEAD。ワーキング ツリーに未コミットの変更があれば `+` が付く
   （テストの副産物の `Result*.txt` と、本書の変更は数えない）
 
-クラス・行の単位の詳細は、各計測の `coverage.cobertura.xml`（`NUnit\TestResults` の下。`2_RunAllTests.ps1` が場所を表示する）を見る。
+クラス・行の単位の詳細は、HTML の [`CoverageHtml/index.html`](./CoverageHtml/index.html) で見る。
+
+- `-Coverage` の回に、表と同じカバレッジ ファイルから ReportGenerator が作る（`dotnet tool install -g dotnet-reportgenerator-globaltool` が要る。無ければ作らない）
+- **Git 管理外**（`.gitignore`）なので、リンクは手元で `-Coverage` を回した後にだけ開ける
+- 合算は ReportGenerator が行うため、**割合は上の表と一致しないことがある**（Framework を対象モジュールに絞らない、分岐の数え方が違う）
+
+元のデータは、各計測の `coverage.cobertura.xml`（`NUnit\TestResults` の下。`2_RunAllTests.ps1` が場所を表示する）である。
 
 <!-- COVERAGE:BEGIN -->
 
