@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/15  玄人 幸道         新規作成（#610）
 //*  2026/10/15  玄人 幸道         #612 の修正に合わせ、修正後の挙動を確かめるケースを追加
+//*  2026/10/28  玄人 幸道         文字列リテラル・識別子を SQLSanitizer で作るようにした変更に合わせて期待値を変更
 //**********************************************************************************
 
 using System;
@@ -74,13 +75,14 @@ namespace TestPublic.Db
         #region 文字列
 
         /// <summary>
-        /// 文字列は DBMS ごとの型変換で包み、**' を '' にエスケープする。**
+        /// 文字列は DBMS ごとの型変換で包み、中身は SQLSanitizer.ToStringLiteral の文字列リテラルにする
+        /// （' を '' にする。PostgreSQL は E'～'、MySQL は UTF-8 の 16 進リテラル。規則は SQLSanitizerTests）。
         /// 長さ（エスケープ前の文字数）を型に付ける。
         /// </summary>
         [TestCase(DbEnum.DBMSType.SQLServer, "Convert(nvarchar(4), 'it''s')")]
         [TestCase(DbEnum.DBMSType.Oracle, "CAST('it''s' AS varchar2(4))")]
-        [TestCase(DbEnum.DBMSType.PstGrS, "Cast('it''s' as text)")]
-        [TestCase(DbEnum.DBMSType.MySQL, "Cast('it''s' as char(4))")]
+        [TestCase(DbEnum.DBMSType.PstGrS, "Cast(E'it''s' as text)")]
+        [TestCase(DbEnum.DBMSType.MySQL, "Cast(_utf8mb4 0x69742773 as char(4))")]
         [TestCase(DbEnum.DBMSType.DB2, "CAST('it''s' AS varchar(4))")]
         public void String_EscapesQuote(DbEnum.DBMSType dbms, string expected)
         {
@@ -184,18 +186,18 @@ namespace TestPublic.Db
         }
 
         /// <summary>
-        /// char も ' を '' にエスケープする（string と同じ）。
+        /// char も string と同じ規則で文字列リテラルにする。
         /// **以前はエスケープせず、引用符が閉じない SQL になっていた**（#612 で修正）。
         /// </summary>
-        [TestCase(DbEnum.DBMSType.SQLServer, "Convert(nvarchar, '''')")]
-        [TestCase(DbEnum.DBMSType.MySQL, "Cast('''' as char)")]
-        [TestCase(DbEnum.DBMSType.PstGrS, "Cast('''' as text)")]
-        [TestCase(DbEnum.DBMSType.Oracle, "TO_CHAR('''')")]
-        [TestCase(DbEnum.DBMSType.DB2, "CHAR('''')")]
-        public void Char_EscapesQuote(DbEnum.DBMSType dbms, string expected)
+        [TestCase(DbEnum.DBMSType.SQLServer, "Convert(nvarchar, '''')", "Convert(nvarchar, '\\')")]
+        [TestCase(DbEnum.DBMSType.MySQL, "Cast(_utf8mb4 0x27 as char)", "Cast(_utf8mb4 0x5C as char)")]
+        [TestCase(DbEnum.DBMSType.PstGrS, "Cast(E'''' as text)", "Cast(E'\\\\' as text)")]
+        [TestCase(DbEnum.DBMSType.Oracle, "TO_CHAR('''')", "TO_CHAR('\\')")]
+        [TestCase(DbEnum.DBMSType.DB2, "CHAR('''')", "CHAR('\\')")]
+        public void Char_EscapesQuoteAndBackslash(DbEnum.DBMSType dbms, string quote, string backslash)
         {
-            Assert.That(new SQLUtility(dbms).ConvertParameterToSQL('\''), Is.EqualTo(expected));
-            Assert.That(new SQLUtility(dbms).ConvertParameterToSQL('a'), Does.Contain("'a'"));
+            Assert.That(new SQLUtility(dbms).ConvertParameterToSQL('\''), Is.EqualTo(quote));
+            Assert.That(new SQLUtility(dbms).ConvertParameterToSQL('\\'), Is.EqualTo(backslash));
         }
 
         #endregion
@@ -242,6 +244,23 @@ namespace TestPublic.Db
                 Is.EqualTo("SET [Qty] = 100, [Note] = Convert(nvarchar(1), 'a') WHERE [OrderID] = 1"));
             Assert.That(parts[1].Trim(),
                 Is.EqualTo("SET [Qty] = 200, [Note] = NULL WHERE [OrderID] = 2"));
+        }
+
+        /// <summary>
+        /// 列名は SQLSanitizer.QuoteIdentifier で囲う。**名前に含まれる閉じ側の囲い文字は二重にする**
+        /// （そのまま囲うと、名前の途中で識別子が閉じる）。
+        /// </summary>
+        [TestCase(DbEnum.DBMSType.SQLServer, "([Order]]ID], [Qty])")]
+        [TestCase(DbEnum.DBMSType.PstGrS, "(\"Order]ID\", \"Qty\")")]
+        [TestCase(DbEnum.DBMSType.MySQL, "(`Order]ID`, `Qty`)")]
+        public void GetInsertSQLParts_QuotesColumnNames(DbEnum.DBMSType dbms, string expected)
+        {
+            DataTable dt = new DataTable("Orders");
+            dt.Columns.Add("Order]ID", typeof(int));
+            dt.Columns.Add("Qty", typeof(int));
+            dt.Rows.Add(1, 100);
+
+            Assert.That(new SQLUtility(dbms).GetInsertSQLParts(dt)[0], Is.EqualTo(expected));
         }
 
         /// <summary>主キーが無い、または全列が主キーなら、何も返さない。</summary>

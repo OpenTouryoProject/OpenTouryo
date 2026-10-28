@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/15  玄人 幸道         新規作成（#610）
+//*  2026/10/28  玄人 幸道         仕様の根拠が無い期待値のテストに Observed の分類を付けた
 //**********************************************************************************
 
 using NUnit.Framework;
@@ -77,10 +78,12 @@ namespace TestPublic.Str
         }
 
         /// <summary>
-        /// **全角数字も通る。** 判定の正規表現が \d（Unicode の数字）を使うため。
+        /// （観察）**全角数字も通る。** 判定の正規表現が \d（Unicode の数字）を使うため。
+        /// 仕様の根拠は無い（実装のコメントは「xは10進数」で、全角を受けるとは書いていない）。
         /// 半角に限りたいときは、先に StringChecker.IsHankaku などで絞る。
         /// </summary>
         [Test]
+        [Category("Observed")]
         public void IsJpZipCode7_AcceptsZenkakuDigits()
         {
             Assert.That(FormatChecker.IsJpZipCode7_Hyphen("１００-０００１"), Is.True);

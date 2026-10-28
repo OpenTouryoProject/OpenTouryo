@@ -17,8 +17,8 @@ UPDATE Orders SET "Qty" = CASE
         ELSE "Qty"
       END,
     "Note" = CASE
-        WHEN "OrderID" = 1 THEN Cast('a' as text)
-        WHEN "OrderID" = 2 THEN Cast('b' as text)
+        WHEN "OrderID" = 1 THEN Cast(E'a' as text)
+        WHEN "OrderID" = 2 THEN Cast(E'b' as text)
         ELSE "Note"
       END 
 WHERE ("OrderID" = 1)
@@ -30,8 +30,8 @@ UPDATE Orders SET `Qty` = CASE
         ELSE `Qty`
       END,
     `Note` = CASE
-        WHEN `OrderID` = 1 THEN Cast('a' as char(1))
-        WHEN `OrderID` = 2 THEN Cast('b' as char(1))
+        WHEN `OrderID` = 1 THEN Cast(_utf8mb4 0x61 as char(1))
+        WHEN `OrderID` = 2 THEN Cast(_utf8mb4 0x62 as char(1))
         ELSE `Note`
       END 
 WHERE (`OrderID` = 1)
@@ -50,8 +50,8 @@ UPDATE Orders SET "Qty" = CASE
         ELSE "Qty"
       END,
     "Note" = CASE
-        WHEN "OrderID" = 1 AND "ProductID" = 10 THEN Cast('a' as text)
-        WHEN "OrderID" = 2 AND "ProductID" = 20 THEN Cast('b' as text)
+        WHEN "OrderID" = 1 AND "ProductID" = 10 THEN Cast(E'a' as text)
+        WHEN "OrderID" = 2 AND "ProductID" = 20 THEN Cast(E'b' as text)
         ELSE "Note"
       END 
 WHERE ("OrderID" = 1 AND "ProductID" = 10)
@@ -63,8 +63,8 @@ UPDATE Orders SET `Qty` = CASE
         ELSE `Qty`
       END,
     `Note` = CASE
-        WHEN `OrderID` = 1 AND `ProductID` = 10 THEN Cast('a' as char(1))
-        WHEN `OrderID` = 2 AND `ProductID` = 20 THEN Cast('b' as char(1))
+        WHEN `OrderID` = 1 AND `ProductID` = 10 THEN Cast(_utf8mb4 0x61 as char(1))
+        WHEN `OrderID` = 2 AND `ProductID` = 20 THEN Cast(_utf8mb4 0x62 as char(1))
         ELSE `Note`
       END 
 WHERE (`OrderID` = 1 AND `ProductID` = 10)
@@ -99,12 +99,12 @@ SQLUtility.GetInsertSQLParts
 (2, 20, 200, CAST('b' AS varchar2(1)))
 - PstGrS
 ("OrderID", "ProductID", "Qty", "Note")
-(1, 10, 100, Cast('a' as text))
-(2, 20, 200, Cast('b' as text))
+(1, 10, 100, Cast(E'a' as text))
+(2, 20, 200, Cast(E'b' as text))
 - MySQL
 (`OrderID`, `ProductID`, `Qty`, `Note`)
-(1, 10, 100, Cast('a' as char(1)))
-(2, 20, 200, Cast('b' as char(1)))
+(1, 10, 100, Cast(_utf8mb4 0x61 as char(1)))
+(2, 20, 200, Cast(_utf8mb4 0x62 as char(1)))
 ----------------------------------------------------------------------------------------------------
 [SQL]
 - ExecSelectScalar        : 3
