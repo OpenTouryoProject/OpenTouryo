@@ -41,11 +41,14 @@
 //*  2026/10/28  玄人 幸道         文字列リテラルと識別子を SQLSanitizer で作るように変更
 //*                                （MySQL で \ を含む値のリテラルが正しく閉じない問題を修正）
 //*  2026/10/28  玄人 幸道         SQL Server の文字列リテラルを N'～' にする（SQLSanitizer 側。#636）
+//*  2026/10/28  玄人 幸道         ConvertParameterToSQL：数値・日時をカルチャに依らず文字列化する、
+//*                                bool を DBMS ごとの値にする（#637）
 //**********************************************************************************
 
 using System;
 using System.Text;
 using System.Data;
+using System.Globalization;
 using System.Collections.Generic;
 
 using Touryo.Infrastructure.Public.Str;
@@ -554,6 +557,8 @@ namespace Touryo.Infrastructure.Public.Db
         /// <remarks>
         /// 文字列（string・char）は SQLSanitizer.ToStringLiteral で DBMS ごとの文字列リテラルにする
         /// （SQL Server は N'～'、PostgreSQL は E'～'、MySQL は 16 進リテラル。理由は SQLSanitizer の remarks）。
+        /// 数値・日時は InvariantCulture で文字列化する（カルチャに依らない。#637）。
+        /// bool は SQL Server・Oracle・DB2 で 1 / 0、PostgreSQL・MySQL で TRUE / FALSE。
         /// </remarks>
         public string ConvertParameterToSQL(object obj)
         {
@@ -768,11 +773,12 @@ namespace Touryo.Infrastructure.Public.Db
                     case DbEnum.DBMSType.MySQL:
                     case DbEnum.DBMSType.DB2:
                         // DateTime文字列化
-                        sb.Append("'" + ((DateTime)(obj)).ToString(this._dateTimeFormatString) + "'");
+                        // InvariantCulture で書式化する（書式の / はカルチャの日付区切りに置き換わるため。#637）
+                        sb.Append("'" + ((DateTime)(obj)).ToString(this._dateTimeFormatString, CultureInfo.InvariantCulture) + "'");
                         break;
-		    
+
                     case DbEnum.DBMSType.PstGrS:
-                        sb.Append("Cast('" + ((DateTime)(obj)).ToString(this._dateTimeFormatString) + "' as date)");
+                        sb.Append("Cast('" + ((DateTime)(obj)).ToString(this._dateTimeFormatString, CultureInfo.InvariantCulture) + "' as date)");
                         break;
 
                     default:
@@ -796,12 +802,71 @@ namespace Touryo.Infrastructure.Public.Db
                         throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
                 }
             }
+            else if (obj.GetType() == typeof(bool))
+            {
+                // 以前は ToString() の True / False で、SQL として解釈できない DBMS があった（#637）。
+                switch (this._dbms)
+                {
+                    case DbEnum.DBMSType.SQLServer:
+                    case DbEnum.DBMSType.Oracle:
+                    case DbEnum.DBMSType.DB2:
+                        // bit・NUMBER(1) などの 1 / 0
+                        sb.Append((bool)obj ? "1" : "0");
+                        break;
+
+                    case DbEnum.DBMSType.PstGrS:
+                    case DbEnum.DBMSType.MySQL:
+                        // boolean（MySQL は TRUE = 1、FALSE = 0）
+                        sb.Append((bool)obj ? "TRUE" : "FALSE");
+                        break;
+
+                    default:
+                        throw new NotImplementedException(PublicExceptionMessage.NOT_IMPLEMENTED);
+                }
+            }
             else
             {
-                sb.Append(obj.ToString());
+                sb.Append(SQLUtility.ToNumberOrString(obj));
             }
 
             return sb.ToString();
+        }
+
+        /// <summary>数値は InvariantCulture で、それ以外は ToString() で文字列化する。</summary>
+        /// <param name="obj">値</param>
+        /// <returns>文字列</returns>
+        /// <remarks>
+        /// 数値の ToString() はカルチャに従い、小数点が , のカルチャ（de-DE など）では 1.5 が 1,5 になる。
+        /// SQL では , は区切りなので、値の数がずれる（#637）。
+        /// double・float は "R"（往復できる桁）にする。.NET Framework の既定の書式は 15 桁で丸める。
+        /// </remarks>
+        private static string ToNumberOrString(object obj)
+        {
+            // 列挙型は GetTypeCode が基になる整数型を返すので、先に除く（従来どおり名前になる）。
+            if (obj.GetType().IsEnum)
+            {
+                return obj.ToString();
+            }
+
+            switch (Type.GetTypeCode(obj.GetType()))
+            {
+                case TypeCode.SByte:
+                case TypeCode.Int16:
+                case TypeCode.UInt16:
+                case TypeCode.Int32:
+                case TypeCode.UInt32:
+                case TypeCode.Int64:
+                case TypeCode.UInt64:
+                case TypeCode.Decimal:
+                    return ((IFormattable)obj).ToString(null, CultureInfo.InvariantCulture);
+
+                case TypeCode.Single:
+                case TypeCode.Double:
+                    return ((IFormattable)obj).ToString("R", CultureInfo.InvariantCulture);
+
+                default:
+                    return obj.ToString();
+            }
         }
     }
 }
