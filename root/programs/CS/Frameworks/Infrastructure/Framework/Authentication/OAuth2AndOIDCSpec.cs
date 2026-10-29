@@ -26,6 +26,7 @@
 //*  2026/10/22  玄人 幸道         新規作成（汎用認証サイトから移した。#634 の G / H-2）
 //*  2026/10/22  玄人 幸道         PKCE の検証（認可サーバ側）を追加（汎用認証サイトから移した。#634）
 //*  2026/10/22  玄人 幸道         PKCE の検証に、plain を受けるかを設定（CmnServerParams.RequirePkceS256）から読む版を追加
+//*  2026/10/29  玄人 幸道         response_type の仕様の節番号の誤りを直した（3 → 1.2。#640）
 //**********************************************************************************
 
 using System;
@@ -94,7 +95,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <remarks>
         /// 自由に利用できる。
         /// response_type は順不同の空白区切りの集合である
-        /// （OAuth 2.0 Multiple Response Type Encoding Practices 3）。
+        /// （OAuth 2.0 Multiple Response Type Encoding Practices 1.2）。
         /// 辞書順は OAuth2AndOIDCConst の並び（code &lt; id_token &lt; token）と一致するので、
         /// 正規化した値は、OidcHybrid3_ResponseType などと文字列で比べられる。
         /// 値は小文字にする（仕様では大文字小文字を区別するが、寛容に受ける実装が多いため）。

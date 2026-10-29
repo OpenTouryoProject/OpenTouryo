@@ -24,12 +24,15 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（#634）
+//*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
 using System.Collections.Generic;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Framework.Authentication;
 
@@ -41,6 +44,8 @@ namespace TestFramework.Authentication
     {
         /// <summary>空白区切り：半角・全角の空白・タブ・改行で切り、空を捨てる。カンマでは切らない。</summary>
         [Test]
+        [Basis("RFC 6749 3.3（scope は空白区切りの列挙）")]
+        [Basis("設計：OAuth2AndOIDCSpec.SplitSpaceDelimited の remarks（全角の空白・タブ・改行でも切る。カンマでは切らない）")]
         public void SplitSpaceDelimited()
         {
             Assert.That(OAuth2AndOIDCSpec.SplitSpaceDelimited(" a\tb\r\nc　d  a "), Is.EqualTo(new string[] { "a", "b", "c", "d", "a" }));
@@ -56,6 +61,8 @@ namespace TestFramework.Authentication
         [TestCase("CODE code", OAuth2AndOIDCConst.AuthorizationCodeResponseType)]
         [TestCase("", "")]
         [TestCase(null, null)]
+        [Basis("OAuth 2.0 Multiple Response Type Encoding Practices 1.2（Multiple-Valued Response Types は順不同の空白区切りとして比べる）")]
+        [Basis("設計：OAuth2AndOIDCSpec.NormalizeResponseType の remarks（小文字にする。仕様は大文字小文字を区別するが寛容に受ける）")]
         public void NormalizeResponseType(string value, string expected)
         {
             Assert.That(OAuth2AndOIDCSpec.NormalizeResponseType(value), Is.EqualTo(expected));
@@ -63,6 +70,8 @@ namespace TestFramework.Authentication
 
         /// <summary>prompt：集合として扱う（部分一致しない）。none と他の値の併記は invalid_request。</summary>
         [Test]
+        [Basis("OIDC Core 3.1.2.1（prompt は空白区切りの列挙。none と他の値を併記したらエラー）")]
+        [Basis("設計：OAuth2AndOIDCSpec.CheckPrompt の remarks（既知でない値だけではエラーにしない）")]
         public void Prompt()
         {
             Assert.That(OAuth2AndOIDCSpec.HasPrompt("login consent", OAuth2AndOIDCConst.PromptConsent), Is.True);
@@ -78,6 +87,8 @@ namespace TestFramework.Authentication
 
         /// <summary>max_age：数値でなければ InvalidMaxAge。秒で比べる（max_age=0 で直後は Ok）。</summary>
         [Test]
+        [Basis("OIDC Core 3.1.2.1（max_age は秒。経過が超えたら再認証する）")]
+        [Basis("設計：OAuth2AndOIDCSpec.CheckAuthTime の remarks（秒で切り捨てて比べる。数値でなければ InvalidMaxAge）")]
         public void CheckAuthTime()
         {
             Assert.That(OAuth2AndOIDCSpec.CheckAuthTime("", null), Is.EqualTo(OAuth2AndOIDCEnum.AuthTimeCheck.Ok));
@@ -94,6 +105,8 @@ namespace TestFramework.Authentication
         /// iss を付ける（JARM の response のときは付けない）。空の値は付けない。引数は変えない。
         /// </summary>
         [Test]
+        [Basis("RFC 9207 2（成功・失敗の応答に iss を付ける）・2.4（JARM なら付けない）")]
+        [Basis("設計：OAuth2AndOIDCSpec.BuildRedirectUrl の remarks（値は URL エンコード。既存のクエリ・素片に繋ぐ。引数は変えない）")]
         public void BuildRedirectUrl()
         {
             Dictionary<string, string> p = new Dictionary<string, string>
@@ -119,6 +132,9 @@ namespace TestFramework.Authentication
 
         /// <summary>HTTP ステータス：/token とリソースで、use_dpop_nonce の扱いが違う。</summary>
         [Test]
+        [Basis("RFC 6749 5.2（エラーは 400。invalid_client は 401）")]
+        [Basis("RFC 6750 3.1（invalid_request は 400、invalid_token は 401、insufficient_scope は 403）")]
+        [Basis("RFC 9449 8（/token の use_dpop_nonce は 400）・9（リソースの use_dpop_nonce は 401）")]
         public void ErrorStatusCode()
         {
             Assert.That(OAuth2AndOIDCSpec.GetErrorStatusCode(OAuth2AndOIDCConst.invalid_client), Is.EqualTo(401));
@@ -134,6 +150,8 @@ namespace TestFramework.Authentication
 
         /// <summary>GetClientAssertion：client_assertion を優先し、型が違えば受けない。無ければ assertion。</summary>
         [Test]
+        [Basis("RFC 7523 2.2（client_assertion と client_assertion_type）")]
+        [Basis("設計：OAuth2AndOIDCSpec.GetClientAssertion の remarks（無ければ assertion を読む。#634 の H-2）")]
         public void GetClientAssertion()
         {
             string type = OAuth2AndOIDCConst.JwtBearerClientAssertionType;
