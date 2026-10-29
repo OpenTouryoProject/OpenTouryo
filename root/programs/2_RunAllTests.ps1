@@ -92,7 +92,7 @@
       4. **全部 OK なら**、この実行で作られた net10.0 のカバレッジを、アセンブリごとに通った行の
          和集合で数え、COVERAGE.md の表を丸ごと置き換える（CoverageReport.ps1）
       5. 同じカバレッジから、ReportGenerator の HTML を Tests\CoverageHtml に作り直す
-         （ReportGenerator が無ければ、導入方法を表示して作らない。判定には影響しない）
+         （ReportGenerator は .config\dotnet-tools.json のローカル ツール。用意できなければ作らない。判定には影響しない）
 
     ＜なぜ専用にするか＞
       OpenTouryo.Public は TestPublic だけでなく、TestPublicNLog（NLog の経路）と

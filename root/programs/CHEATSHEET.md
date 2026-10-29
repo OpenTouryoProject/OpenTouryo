@@ -32,7 +32,6 @@
 | Linux でも回す（docker が要る） | `.\2_RunAllTests.ps1 -Linux` | 1 |
 | DB を Oracle / MySQL / PostgreSQL でも回す | `.\2_RunAllTests.ps1 -CrossDb -LocalServicesDir D:\path\to\LocalServicesOnDocker` | 1 |
 | カバレッジを測って COVERAGE.md と HTML（`Tests/CoverageHtml`）を更新する | `.\2_RunAllTests.ps1 -Coverage -LocalServicesDir D:\path\to\LocalServicesOnDocker` | 1 |
-| ↑ の HTML に要る ReportGenerator を入れる（初回だけ） | `dotnet tool install -g dotnet-reportgenerator-globaltool` | — |
 
 ### 依存パッケージを点検する
 
@@ -98,7 +97,8 @@ cd root\programs
 - `-Coverage` は `-Only` / `-SkipBuild` / `-Linux` / `-CrossDb` と同時に指定できない（全部をそろえて測るため）。`-Linux` と `-CrossDb` も同時には指定できない
 - **普通の実行は COVERAGE.md を書かない**（カバレッジは画面に出すだけ）
 - `-Coverage` は、表と同じ計測から ReportGenerator の HTML（[`Tests/CoverageHtml/index.html`](CS/Frameworks/Tests/CoverageHtml/index.html)）も作り直す。
-  **Git 管理外**。ReportGenerator が無ければ作らない（判定には影響しない）。割合は表と一致しないことがある（Framework を対象モジュールに絞らない）
+  **Git 管理外**。ReportGenerator は `.config/dotnet-tools.json` のローカル ツールで、`dotnet tool restore` で自動的に用意する（グローバルの導入は要らない）。
+  用意できなければ作らない（判定には影響しない）。割合は表と一致しないことがある（Framework を対象モジュールに絞らない）
 
 - **`1_BuildAll.ps1` を単体で回すときは `-IgnoreErrors` を付ける。**
   ClickOnce の署名（`MSB3482`）で、証明書が無い環境では必ず出る
@@ -194,7 +194,7 @@ dotnet test CS\Frameworks\Tests\NUnit\TestPublic\TestPublic.csproj -f net10.0 --
 - **カバレッジを [`Tests/COVERAGE.md`](CS/Frameworks/Tests/COVERAGE.md) に残すなら `.\2_RunAllTests.ps1 -Coverage -LocalServicesDir <LocalServicesOnDocker>`。**
   NUnit の全部（Linux の回を含む）とクロス DB を 1 回で回し、全部 OK ならアセンブリごとに合算して書く
   （`OpenTouryo.Framework` だけは、TestFramework の対象モジュールごと）。`docker` が要る。普通の実行は COVERAGE.md を書かない。
-  同じ計測から HTML（`Tests/CoverageHtml`。Git 管理外）も作る。要 `dotnet tool install -g dotnet-reportgenerator-globaltool`
+  同じ計測から HTML（`Tests/CoverageHtml`。Git 管理外）も作る。ReportGenerator はローカル ツール（`.config/dotnet-tools.json`）で、導入は要らない
 - **Linux（Golden の EncAndDecUtilCUI と NUnit の TestPublic）は `.\2_RunAllTests.ps1 -Linux` で回す**（#632）。
   Windows でビルドした net10.0 の出力を、Linux のコンテナ（1 つ、`--rm`）でそのまま動かす。`docker` が要る（[`TESTING.md`](TESTING.md) 2 節）。
   **Public・Public.Security に触れた fixed では、`SelectTargets.ps1` が自動で付ける**（fixing では後回し）

@@ -41,7 +41,7 @@ cd root\programs
 # クロス DB（2 節「NUnit のテスト」の TestPublicDb）。DBMS を 1 つずつ起動 → 回す → 停止
 .\2_RunAllTests.ps1 -CrossDb -LocalServicesDir <LocalServicesOnDocker のフォルダ>
 
-# カバレッジを測って Tests\COVERAGE.md を書き直す（NUnit の全部・Linux の回・クロス DB。docker が要る）
+# カバレッジを測って Tests\COVERAGE.md と Tests\CoverageHtml を書き直す（NUnit の全部・Linux の回・クロス DB。docker が要る）
 .\2_RunAllTests.ps1 -Coverage -LocalServicesDir <LocalServicesOnDocker のフォルダ>
 
 # 個別に比較する
@@ -164,6 +164,12 @@ HEAD とは比較せず、バッチが書き出す `*.trx` の集計で判定す
   `.\2_RunAllTests.ps1 -Coverage -LocalServicesDir <LocalServicesOnDocker のフォルダ>` は、NUnit の全部（Linux の回を含む）とクロス DB を 1 回で回し、
   全部 OK なら、アセンブリごとに通った行の和集合で表を作り直す（`OpenTouryo.Public` には NLog・DB の回で通った行も入る）。
   **普通の実行は COVERAGE.md を書かない。** `-Coverage` の回は `Result*.txt` と同じく**ワーキング ツリーが書き換わる**（コミットは人が決める）
+- **同じ計測から、ReportGenerator の HTML（[`Tests/CoverageHtml/index.html`](CS/Frameworks/Tests/CoverageHtml/index.html)）も作り直す。**
+  クラス・行の単位で、通っていない行を色で見るためのもの。**Git 管理外**（`.gitignore`）で、手元で `-Coverage` を回した後にだけ在る。
+  ReportGenerator は [`.config/dotnet-tools.json`](.config/dotnet-tools.json)（ローカル ツール）で版を固定しており、
+  `CoverageReport.ps1` が `dotnet tool restore` で用意する（**グローバルの導入は要らない**。初回だけ NuGet から取得する）。
+  用意できなければ HTML だけ作らない（判定には影響しない）。
+  合算は ReportGenerator が行うため、**割合は表と一致しないことがある**（`OpenTouryo.Framework` を対象モジュールに絞らない、分岐の数え方が違う）
 
 テストの書き方と置き場は [`Tests/README.md`](CS/Frameworks/Tests/README.md) を参照。
 

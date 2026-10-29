@@ -49,7 +49,7 @@ cd root\programs
 
 クラス・行の単位の詳細は、HTML の [`CoverageHtml/index.html`](./CoverageHtml/index.html) で見る。
 
-- `-Coverage` の回に、表と同じカバレッジ ファイルから ReportGenerator が作る（`dotnet tool install -g dotnet-reportgenerator-globaltool` が要る。無ければ作らない）
+- `-Coverage` の回に、表と同じカバレッジ ファイルから ReportGenerator が作る（[`.config/dotnet-tools.json`](../../../.config/dotnet-tools.json) のローカル ツールを `dotnet tool restore` で用意する。用意できなければ作らない）
 - **Git 管理外**（`.gitignore`）なので、リンクは手元で `-Coverage` を回した後にだけ開ける
 - 合算は ReportGenerator が行うため、**割合は上の表と一致しないことがある**（Framework を対象モジュールに絞らない、分岐の数え方が違う）
 
@@ -57,8 +57,8 @@ cd root\programs
 
 <!-- COVERAGE:BEGIN -->
 
-- 計測した日時 : 2026/10/29 02:16
-- コミット : cf7da234
+- 計測した日時 : 2026/10/29 13:01
+- コミット : f84e1192+
 - 合算した計測（8 件） : NUnit TestPublic (net10.0) / NUnit TestPublicNLog (net10.0) / NUnit TestPublicDb (net10.0) / NUnit TestFramework (net10.0) / NUnit TestPublic (Linux) / TestPublicDb (net10.0) [oracle] / TestPublicDb (net10.0) [mysql] / TestPublicDb (net10.0) [postgres]
 
 | アセンブリ（: モジュール） | 行 | 行数（通過／全体） | 分岐（下限） | 分岐数（通過／全体） |
@@ -68,7 +68,7 @@ cd root\programs
 | OpenTouryo.DamPstGrS | 89.0% | 259 / 291 | 83.3% | 55 / 66 |
 | OpenTouryo.Framework : Authentication/AuthenticationHeader.cs | 99.4% | 157 / 158 | 95.3% | 61 / 64 |
 | OpenTouryo.Framework : Authentication/SAML2Enum.cs | 100.0% | 142 / 142 | 100.0% | 56 / 56 |
-| OpenTouryo.Framework : Authentication/SAML2Bindings.cs | 88.6% | 101 / 114 | 56.2% | 36 / 64 |
+| OpenTouryo.Framework : Authentication/SAML2Bindings.cs | 88.6% | 101 / 114 | 56.3% | 36 / 64 |
 | OpenTouryo.Framework : Authentication/SAML2Bindings.Encoding.cs | 99.2% | 129 / 130 | 98.0% | 49 / 50 |
 | OpenTouryo.Framework : Authentication/SAML2Bindings.SP.cs | 100.0% | 117 / 117 | 68.2% | 15 / 22 |
 | OpenTouryo.Framework : Authentication/SAML2Bindings.IdP.cs | 100.0% | 162 / 162 | 96.9% | 31 / 32 |
