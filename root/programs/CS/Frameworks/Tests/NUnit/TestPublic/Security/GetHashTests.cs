@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
+//*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた。既定（Default）を観測として分けた（#640）
 //**********************************************************************************
 
 using System;
@@ -31,6 +32,8 @@ using System.Security.Cryptography;
 using System.Text;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security;
 
@@ -54,18 +57,27 @@ namespace TestPublic.Security
             return BitConverter.ToString(b).Replace("-", "").ToLowerInvariant();
         }
 
-        /// <summary>"abc" のハッシュ（テスト ベクタ）。ストレッチ無し（1 回）。</summary>
+        /// <summary>"abc" のハッシュ（テスト ベクタ）。ストレッチ無し（1 回）。既定（Default）は GetHashBytes_Default で見る。</summary>
         [TestCase(EnumHashAlgorithm.MD5, "900150983cd24fb0d6963f7d28e17f72")]
         [TestCase(EnumHashAlgorithm.SHA1, "a9993e364706816aba3e25717850c26c9cd0d89d")]
         [TestCase(EnumHashAlgorithm.SHA256, "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad")]
         [TestCase(EnumHashAlgorithm.SHA384, "cb00753f45a35e8bb5a03d699ac65007272c32ab0eded1631a8b605a43ff5bed8086072ba1e7cc2358baeca134c825a7")]
         [TestCase(EnumHashAlgorithm.SHA512, "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f")]
         [TestCase(EnumHashAlgorithm.RIPEMD160_M, "8eb208f7e05d987a9b044a8e98c6b087f15a0bfc")]
-        // 既定は SHA256
-        [TestCase(EnumHashAlgorithm.Default, "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad")]
+        [Basis("RFC 6234 8.5（テスト ドライバの TEST1 \"abc\"。SHA-1・SHA-256・SHA-384・SHA-512）")]
+        [Basis("RFC 1321 A.5（MD5 のテスト スイート）")]
+        [Basis("The RIPEMD-160 page（著者の Bosselaers による公表値。\"abc\"）")]
         public void GetHashBytes_TestVector(EnumHashAlgorithm eha, string expected)
         {
             Assert.That(Hex(GetHash.GetHashBytes(Abc, eha)), Is.EqualTo(expected));
+        }
+
+        /// <summary>既定（Default）は SHA256 と同じ値になる。</summary>
+        [Test]
+        [Observation("Default が SHA256 になることは、EnumHashAlgorithm に約束が書かれていない（今の振る舞いを写した）")]
+        public void GetHashBytes_Default()
+        {
+            Assert.That(GetHash.GetHashBytes(Abc, EnumHashAlgorithm.Default), Is.EqualTo(GetHash.GetHashBytes(Abc, EnumHashAlgorithm.SHA256)));
         }
 
 #if !NETCOREAPP

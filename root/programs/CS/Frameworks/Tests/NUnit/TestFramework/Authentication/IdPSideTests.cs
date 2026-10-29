@@ -26,6 +26,7 @@
 //*  2026/10/22  玄人 幸道         新規作成（#634）
 //*  2026/10/22  玄人 幸道         設定（CmnServerParams）を読む版のテストを追加
 //*  2026/10/22  玄人 幸道         境界（鍵の並び・空の issuer・aud の配列・JwkSetDocument の設定とファイル無し）のテストを足した
+//*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -38,6 +39,8 @@ using System.Xml;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 #if NETCOREAPP
 using Microsoft.Extensions.Configuration;
@@ -366,6 +369,7 @@ namespace TestFramework.Authentication
         /// aud が配列の ResponseObject は、配列に期待する aud を含めば通る（RFC 7519 4.1.3）。
         /// </summary>
         [Test]
+        [Basis("RFC 7519 4.1.3（aud は配列でもよい。自分を含まなければ拒否する）")]
         public void ResponseObject_Boundaries()
         {
             using (RSA rsa = RSA.Create(2048))

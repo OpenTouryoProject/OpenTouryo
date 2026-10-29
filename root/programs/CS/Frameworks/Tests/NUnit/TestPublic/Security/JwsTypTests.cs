@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/15  玄人 幸道         新規作成（#611）
 //*  2026/10/16  玄人 幸道         JWSHeader が基底（JWS）に移ったので、リフレクションをやめた（#615）
+//*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -34,6 +35,8 @@ using System.Text;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security.Jwt;
 using Touryo.Infrastructure.Public.Str;
@@ -108,6 +111,7 @@ namespace TestPublic.Security
         /// **Verify(jwt) は typ を照合しない。** どの typ でも、typ が無くても通る（以前の実際の振る舞い）。
         /// </summary>
         [TestCaseSource(nameof(Algorithms))]
+        [Basis("設計：JWS.Verify(jwtString) の remarks（typ は照合しない。以前の振る舞いを保つ。#611）")]
         public void Verify_WithoutTyp_DoesNotCheckTyp(Func<JWS> factory)
         {
             JWS jws = factory();
@@ -125,6 +129,7 @@ namespace TestPublic.Security
 
         /// <summary>期待値と一致すれば通る（大文字・小文字、application/ の有無を問わない）。</summary>
         [TestCaseSource(nameof(Algorithms))]
+        [Basis("RFC 7515 4.1.9（メディア タイプは大文字小文字を区別しない。application/ が無ければ付けたものとして扱う）")]
         public void Verify_AtJwt_Match(Func<JWS> factory)
         {
             JWS jws = factory();
@@ -138,6 +143,7 @@ namespace TestPublic.Security
 
         /// <summary>トークン側が application/ 付きでも同じ。</summary>
         [Test]
+        [Basis("RFC 7515 4.1.9（application/ が無ければ付けたものとして扱う）")]
         public void Verify_TokenWithApplicationPrefix_Match()
         {
             JWS_HS256 jws = new JWS_HS256(Encoding.UTF8.GetBytes("0123456789abcdef0123456789abcdef"));
@@ -150,6 +156,7 @@ namespace TestPublic.Security
         /// 期待値と違えば通らない（RFC 9068 の「at+jwt 以外を拒否する」）。
         /// </summary>
         [TestCaseSource(nameof(Algorithms))]
+        [Basis("RFC 9068 4（typ が at+jwt・application/at+jwt でなければ拒否する）")]
         public void Verify_Mismatch_Rejected(Func<JWS> factory)
         {
             JWS jws = factory();
@@ -165,6 +172,8 @@ namespace TestPublic.Security
 
         /// <summary>**期待値を指定したとき、typ が無ければ不一致。** JWT を期待しても通らない。</summary>
         [TestCaseSource(nameof(Algorithms))]
+        [Basis("RFC 9068 4（typ が at+jwt・application/at+jwt でなければ拒否する）")]
+        [Basis("設計：JWS.Verify(jwtString, typ) の remarks（期待値を指定したとき、typ が無ければ不一致）")]
         public void Verify_NoTyp_WithExpected_Rejected(Func<JWS> factory)
         {
             JWS jws = factory();

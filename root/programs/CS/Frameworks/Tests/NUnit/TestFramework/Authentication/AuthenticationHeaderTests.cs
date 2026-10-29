@@ -25,12 +25,15 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/19  玄人 幸道         新規作成
 //*  2026/10/22  玄人 幸道         DPoP・チャレンジ・復号前後の照合のテストを追加（#634）
+//*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
 using System.Text;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Framework.Authentication;
 
@@ -64,6 +67,7 @@ namespace TestFramework.Authentication
         /// 復号ありの版は、符号化を戻した値と、ヘッダに載っていたままの値の両方を返す。
         /// </summary>
         [Test]
+        [Basis("RFC 6749 2.3.1（client_id・client_secret は application/x-www-form-urlencoded で符号化してから Basic にする）")]
         public void Basic_UrlEncoded()
         {
             string header = AuthenticationHeader.CreateBasicAuthenticationHeaderValue("client:01", "se cret/+").ToString();

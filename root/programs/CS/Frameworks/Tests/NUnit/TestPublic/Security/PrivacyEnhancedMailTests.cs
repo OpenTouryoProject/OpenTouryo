@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
+//*  2026/10/29  玄人 幸道         ラベルのテストを出どころごとに分け、期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -31,6 +32,8 @@ using System.IO;
 using System.Security.Cryptography.X509Certificates;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security;
 
@@ -66,32 +69,58 @@ namespace TestPublic.Security
             return "-----BEGIN " + label + "-----\n" + b64 + "\n-----END " + label + "-----\n";
         }
 
-        /// <summary>ラベルの列挙値は、RFC 7468 のラベルの文字列になる。</summary>
+        /// <summary>
+        /// ラベルの列挙値は、PEM のラベルの文字列になる。
+        /// 列挙は RFC7468Label という名前だが、RFC 7468 に無いラベルも含むので、出どころごとにメソッドを分けた（#640）。
+        /// </summary>
+        /// <remarks>RFC 7468 の標準のラベル。</remarks>
         [TestCase(PrivacyEnhancedMail.RFC7468Label.Certificate, "CERTIFICATE")]
-        [TestCase(PrivacyEnhancedMail.RFC7468Label.X509Certificate, "X509 CERTIFICATE")]
-        [TestCase(PrivacyEnhancedMail.RFC7468Label.X509Certificate2, "X.509 CERTIFICATE")]
-        [TestCase(PrivacyEnhancedMail.RFC7468Label.TrustedCertificate, "TRUSTED CERTIFICATE")]
-        [TestCase(PrivacyEnhancedMail.RFC7468Label.NetscapeCertificateSequence, "NETSCAPE CERTIFICATE SEQUENCE")]
-        [TestCase(PrivacyEnhancedMail.RFC7468Label.AttributeCertificate, "ATTRIBUTE CERTIFICATE")]
+        [TestCase(PrivacyEnhancedMail.RFC7468Label.X509CRL, "X509 CRL")]
+        [TestCase(PrivacyEnhancedMail.RFC7468Label.CertificateRequest, "CERTIFICATE REQUEST")]
         [TestCase(PrivacyEnhancedMail.RFC7468Label.PKCS7, "PKCS7")]
-        [TestCase(PrivacyEnhancedMail.RFC7468Label.CertificateChain, "CERTIFICATE CHAIN")]
-        [TestCase(PrivacyEnhancedMail.RFC7468Label.PKCS7CertificateChain, "PKCS7 CERTIFICATE CHAIN")]
         [TestCase(PrivacyEnhancedMail.RFC7468Label.CMS, "CMS")]
         [TestCase(PrivacyEnhancedMail.RFC7468Label.PrivateKey, "PRIVATE KEY")]
+        [TestCase(PrivacyEnhancedMail.RFC7468Label.EncryptedPrivateKey, "ENCRYPTED PRIVATE KEY")]
+        [TestCase(PrivacyEnhancedMail.RFC7468Label.AttributeCertificate, "ATTRIBUTE CERTIFICATE")]
         [TestCase(PrivacyEnhancedMail.RFC7468Label.PublicKey, "PUBLIC KEY")]
+        [Basis("RFC 7468 4（Figure 4）・5〜13（標準のラベル）")]
+        public void EnumToString_Rfc7468(PrivacyEnhancedMail.RFC7468Label label, string expected)
+        {
+            Assert.That(PrivacyEnhancedMail.EnumToString(label), Is.EqualTo(expected));
+        }
+
+        /// <summary>RFC 7468 が過去のものとして挙げるラベル（作る側は使ってはならない）。</summary>
+        [TestCase(PrivacyEnhancedMail.RFC7468Label.X509Certificate, "X509 CERTIFICATE")]
+        [TestCase(PrivacyEnhancedMail.RFC7468Label.X509Certificate2, "X.509 CERTIFICATE")]
+        [TestCase(PrivacyEnhancedMail.RFC7468Label.CRL, "CRL")]
+        [TestCase(PrivacyEnhancedMail.RFC7468Label.NewCertificateRequest, "NEW CERTIFICATE REQUEST")]
+        [TestCase(PrivacyEnhancedMail.RFC7468Label.CertificateChain, "CERTIFICATE CHAIN")]
+        [Basis("RFC 7468 5.1・6・7・8・付録 A（過去のラベル）")]
+        public void EnumToString_Rfc7468Legacy(PrivacyEnhancedMail.RFC7468Label label, string expected)
+        {
+            Assert.That(PrivacyEnhancedMail.EnumToString(label), Is.EqualTo(expected));
+        }
+
+        /// <summary>RFC 7468 に無く、OpenSSL が使うラベル。</summary>
+        [TestCase(PrivacyEnhancedMail.RFC7468Label.TrustedCertificate, "TRUSTED CERTIFICATE")]
         [TestCase(PrivacyEnhancedMail.RFC7468Label.RsaPrivateKey, "RSA PRIVATE KEY")]
         [TestCase(PrivacyEnhancedMail.RFC7468Label.RsaPublicKey, "RSA PUBLIC KEY")]
         [TestCase(PrivacyEnhancedMail.RFC7468Label.DsaPrivateKey, "DSA PRIVATE KEY")]
         [TestCase(PrivacyEnhancedMail.RFC7468Label.DsaPublicKey, "DSA PUBLIC KEY")]
-        [TestCase(PrivacyEnhancedMail.RFC7468Label.EncryptedPrivateKey, "ENCRYPTED PRIVATE KEY")]
-        [TestCase(PrivacyEnhancedMail.RFC7468Label.CertificateRequest, "CERTIFICATE REQUEST")]
-        [TestCase(PrivacyEnhancedMail.RFC7468Label.NewCertificateRequest, "NEW CERTIFICATE REQUEST")]
-        [TestCase(PrivacyEnhancedMail.RFC7468Label.CRL, "CRL")]
-        [TestCase(PrivacyEnhancedMail.RFC7468Label.X509CRL, "X509 CRL")]
         [TestCase(PrivacyEnhancedMail.RFC7468Label.EcParameters, "EC PARAMETERS")]
         [TestCase(PrivacyEnhancedMail.RFC7468Label.DhParameters, "DH PARAMETERS")]
+        [Basis("別実装：OpenSSL の include/openssl/pem.h（PEM_STRING_*）")]
+        public void EnumToString_OpenSsl(PrivacyEnhancedMail.RFC7468Label label, string expected)
+        {
+            Assert.That(PrivacyEnhancedMail.EnumToString(label), Is.EqualTo(expected));
+        }
+
+        /// <summary>出どころが見つからないラベルと、範囲外の値（空文字）。</summary>
+        [TestCase(PrivacyEnhancedMail.RFC7468Label.NetscapeCertificateSequence, "NETSCAPE CERTIFICATE SEQUENCE")]
+        [TestCase(PrivacyEnhancedMail.RFC7468Label.PKCS7CertificateChain, "PKCS7 CERTIFICATE CHAIN")]
         [TestCase((PrivacyEnhancedMail.RFC7468Label)999, "")]
-        public void EnumToString(PrivacyEnhancedMail.RFC7468Label label, string expected)
+        [Observation("RFC 7468 にも OpenSSL の pem.h にも無いラベル。範囲外の値が空文字になる約束も無い")]
+        public void EnumToString_Unsourced(PrivacyEnhancedMail.RFC7468Label label, string expected)
         {
             Assert.That(PrivacyEnhancedMail.EnumToString(label), Is.EqualTo(expected));
         }

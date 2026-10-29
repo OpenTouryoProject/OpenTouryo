@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/19  玄人 幸道         新規作成
+//*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -33,6 +34,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Public.Security.Jwt;
@@ -192,6 +195,7 @@ namespace TestFramework.Authentication
         /// VerifyHash はその値と照合する。
         /// </summary>
         [Test]
+        [Basis("OpenID Connect Core 1.0 3.1.3.6（at_hash）・付録 A.3（access_token と at_hash の例）")]
         public void IdToken_Hash()
         {
             Assert.That(IdToken.CreateHash("jHkWEdUXMU1BwAsC4vtUsZwnNvTIxEl0z9K3vx5KF0Y"), Is.EqualTo("77QmUPtjPfzWtF2AnpK9RQ"));
