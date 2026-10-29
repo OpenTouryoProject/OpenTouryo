@@ -59,6 +59,9 @@
   - 検証：仕様に照らして、正しいと言える値を確かめる
   - 観測：仕様に幅がある、または根拠を確かめていない値を、変わったことに気付くために残す
   - **観測から検証へ上げるのは、人が根拠を確かめてから**
+  - **汎用認証サイトとの違い：Open棟梁 の観測は落ちる。** 汎用認証サイトの E2E は観測を判定しないが、
+    Open棟梁 は部品のライブラリで、**振る舞いが変わること自体が利用者への影響**（後方互換性）になる。
+    落ちたときの意味が違う（検証＝不具合、観測＝変わってよいかを判断する）。書き方は 7 節
 - **外部の基準を、最終的な正とする。** CodeQL などの静的解析、相互運用（汎用認証サイトの E2E）
 
 ---
@@ -75,7 +78,7 @@
 | 対象 | 期待値の変更に当たるもの |
 |---|---|
 | Golden（`root/programs/*/Frameworks/Tests/Golden/**/Result*.txt`） | **正規化しても差分が残る変更**（正規化は `CompareResult.ps1`。`2_RunAllTests.ps1` が判定に使うものと同じ） |
-| NUnit（`root/programs/*/Frameworks/Tests/NUnit/**/*.cs`） | テストの削除（`[Test]`・`[TestCase]`・`[TestCaseSource]` の行の削除）、`[Ignore]`・`[Explicit]`・`Assert.Ignore` の追加 |
+| NUnit（`root/programs/*/Frameworks/Tests/NUnit/**/*.cs`） | テストの削除（`[Test]`・`[TestCase]`・`[TestCaseSource]` の行の削除）、`[Ignore]`・`[Explicit]`・`Assert.Ignore` の追加、**`[Basis]` の削除**（検証から観測への格下げ。7 節） |
 
 - **Golden は、実行のたびに書き換わる。** 日時・スレッド ID・署名値などの揺れは、期待値の変更に数えない。
   数えると、ほぼ毎回の `fixed` のコミットに承認が要り、**承認が形だけになる**
@@ -198,7 +201,45 @@ git config core.hooksPath .githooks
 
 ## 7. 期待値の根拠の書き方
 
-**未定（#640 で、`Public.Security`・`Framework.Authentication` から入れる）。**
+**NUnit は属性で書く。Golden は観測とする。**
+
+### NUnit：`[Basis]`（検証）と `[Observation]`（観測）
+
+属性は [`Tests/NUnit/Common/QualityAttributes.cs`](root/programs/CS/Frameworks/Tests/NUnit/Common/QualityAttributes.cs)
+（`TestPublic`・`TestFramework` がリンクで共有する。名前空間は `TestCommon`）。
+NUnit のプロパティ（`Basis`・`Observation`）になる。**trx には出ない**ので、6 節の計測はソースの属性を数える
+（属性で書くので、`[Basis(` を数えれば拾える）。
+
+```csharp
+[Test]
+[Basis("RFC 7638 3.1（JWK Thumbprint の計算の例）")]
+public void Thumbprint_Rfc7638Example() { ... }
+
+[Test]
+[Observation("RFC 7517 付録 A.1 の鍵の指紋を、今の値で固定した（RFC に、この鍵の指紋の値は載っていない）")]
+public void Thumbprint_EcFixedValue() { ... }
+```
+
+| 根拠の種類 | 書き方の例 | 備考 |
+|---|---|---|
+| 仕様 | `RFC 4231 4.3（Test Case 2）`、`RFC 9449 7.1（…）` | **節まで書く。** 何の例・どの規定かを括弧で |
+| 別実装 | `別実装：.NET の SHA256 と一致` | 独立した実装と突き合わせたもの |
+| 設計 | `設計：<文書や XML コメントの場所>` | Open棟梁 自身の文書に書いた約束。**書かれていない約束は観測** |
+| Issue | `#634` | 不具合の回帰 |
+
+- **節番号は、原典で確かめてから書く。** 誤った節は、書かないより悪い
+- **1 つのテストに複数の `[Basis]` を書いてよい**（RFC が複数にまたがるテスト ベクタなど）。クラスに付ければ全テストに掛かる
+- **`[TestCase]` の一部だけ根拠が違う**ときは、XML コメントの `<remarks>` に書く。分けられるならメソッドを分ける
+- **付いていないテストは「未分類」。** 既存のテストは、リスクが「高」の名前空間（1 節）から順に付ける
+- **`[Basis]` を消すのは期待値の変更**（3 節）。`[Observation]` を足すだけなら当たらない
+- **観測から検証へ上げる（`[Observation]` を `[Basis]` に替える）のは、人が根拠を確かめてから**（2 節）
+
+### Golden：観測とする
+
+Golden（`Result*.txt`）は、コンソール EXE の出力を丸ごと写したもので、**全体が観測**である。
+
+- 行ごとの根拠は書かない。**仕様に照らせる値（テスト ベクタなど）は、NUnit に `[Basis]` 付きで書く**
+- Golden の役割は、net48・net10.0・Linux の**出力が変わらないこと**の確認（後方互換性）である
 
 ---
 
@@ -209,5 +250,6 @@ git config core.hooksPath .githooks
 - [ ] 作業の対象が、品質マップ（1 節）のどの名前空間で、リスクはどれか
 - [ ] 「人が必ず見る箇所」に触れたか。触れたなら、報告の冒頭に書いたか
 - [ ] 期待値の変更（3 節）を含むか。含むなら、報告の冒頭に書き、トレーラーの文面を提案したか
+- [ ] テストを足したなら、`[Basis]`（根拠を原典で確かめて）か `[Observation]`（理由を書いて）を付けたか（7 節）
 - [ ] リスクが「高」なら、4 節の観点で見直したか。別のセッション・別のモデルのレビューを人に勧めたか
 - [ ] 見つけた問題を、5 節の 3 か所に戻したか（セキュリティの弱点なら、まず人に報告したか）

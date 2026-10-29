@@ -10,7 +10,7 @@
       Edit・Write・MultiEdit
         - Golden の期待値（Tests/Golden/**/Result*.txt）の編集
         - NUnit（Tests/NUnit/**/*.cs）の編集で、テストの属性（[Test]・[TestCase]・[TestCaseSource]）の行が減るもの、
-          [Ignore]・[Explicit]・Assert.Ignore( の行が増えるもの
+          [Ignore]・[Explicit]・Assert.Ignore( の行が増えるもの、[Basis(...)] の行が減るもの（QUALITY.md 7 節）
       Bash・PowerShell
         - Tests/Golden を指していて、書き込む操作（リダイレクト・Set-Content・Copy-Item・cp・sed -i・git checkout など）を含むもの
           （**推測である。** 漏れは段 2・段 3 が塞ぐ。2_RunAllTests.ps1 の実行のような、パスを書かない書き換えは対象にしない）
@@ -26,12 +26,14 @@
      日時        更新者            内容
      ----------  ----------------  -------------------------------------------------
      2026/10/29  玄人 幸道         新規作成（#640 段 1）
+     2026/10/29  玄人 幸道         期待値の根拠（[Basis]）が減る編集も確認付きにした（QUALITY.md 7 節）
 #>
 
 $goldenPattern = '/root/programs/[^/]+/Frameworks/Tests/Golden/.+/Result[^/]*\.txt$'
 $nunitPattern  = '/root/programs/[^/]+/Frameworks/Tests/NUnit/.+\.cs$'
 $testAttrPattern   = '[\[,]\s*(Test|TestCase|TestCaseSource)\s*[\],(]'
 $ignoreAttrPattern = '[\[,]\s*(Ignore|Explicit)\s*[\],(]|\bAssert\s*\.\s*Ignore\s*\('
+$basisAttrPattern  = '[\[,]\s*Basis\s*\('
 
 # コマンドで Golden を書き換えそうな操作（2>$null・*>&1 のような、捨てるだけのリダイレクトは除く）
 $goldenInCommand = 'Tests[\\/]+Golden'
@@ -112,6 +114,8 @@ try
     $ignAdd  = (Get-AttrCount $a $ignoreAttrPattern) - (Get-AttrCount $b $ignoreAttrPattern)
     if ($testDel -gt 0) { $reasons += ("テストの属性が {0} 件減ります" -f $testDel) }
     if ($ignAdd -gt 0)  { $reasons += ("Ignore・Explicit が {0} 件増えます" -f $ignAdd) }
+    $basisDel = (Get-AttrCount $b $basisAttrPattern) - (Get-AttrCount $a $basisAttrPattern)
+    if ($basisDel -gt 0) { $reasons += ("期待値の根拠（Basis）が {0} 件減ります" -f $basisDel) }
 
     if ($reasons.Count -gt 0)
     {

@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
+//*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -32,6 +33,8 @@ using System.Text;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security.Jwt;
 using Touryo.Infrastructure.Public.Str;
@@ -108,6 +111,7 @@ namespace TestPublic.Security.Jwt
 
         /// <summary>RFC 7515 付録 A.1 の例（HS256）の JWS は、例の鍵で検証できる。</summary>
         [Test]
+        [Basis("RFC 7515 付録 A.1（HS256 の JWS の例）")]
         public void Rfc7515_A1()
         {
             const string k = "AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow";

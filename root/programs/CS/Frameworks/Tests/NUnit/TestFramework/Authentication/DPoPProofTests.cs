@@ -26,6 +26,7 @@
 //*  2026/10/22  玄人 幸道         新規作成（#634）
 //*  2026/10/22  玄人 幸道         htu の比較のテストを UriOperatorTests から移した（比較を DPoPProof の private へ移したため）
 //*  2026/10/22  玄人 幸道         引数の境界と、送り直さない応答のテストを足した（カバレッジの拡充）
+//*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -39,6 +40,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Public.Security.Jwt;
@@ -238,6 +241,7 @@ namespace TestFramework.Authentication
         [TestCase("", "https://as.example.com/token")]
         [TestCase("https://as.example.com/token", "/token")]
         [TestCase("https://as.example.com/token", null)]
+        [Basis("RFC 9449 4.3 の 9（htu は要求の URI と一致する）")]
         public void Verify_Htu_Different(string proofHtu, string expectedHtu)
         {
             Assert.That(VerifyHtu(proofHtu, expectedHtu), Is.False);
@@ -260,6 +264,7 @@ namespace TestFramework.Authentication
         /// ath は RFC 9449 7.1 の例と一致する。
         /// </summary>
         [Test]
+        [Basis("RFC 9449 7.1（ath と鍵の紐付け。ath の値は Figure 14 の例）")]
         public void VerifyForResource()
         {
             const string token = "Kz~8mXK1EalYznwH-LC-1fBAo.4Ljp~zsPE_NeO.gxU";

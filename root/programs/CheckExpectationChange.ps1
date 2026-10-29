@@ -19,6 +19,7 @@
       root/programs/*/Frameworks/Tests/NUnit/**/*.cs の差分で、ファイルごとに次を数える。
         テストの削除   … [Test]・[TestCase]・[TestCaseSource] の行が、足した数より多く消えた
         Ignore の追加  … [Ignore]・[Explicit]・Assert.Ignore( の行が、消した数より多く足された
+        根拠の削除     … [Basis(...)] の行が、足した数より多く消えた（検証から観測への格下げ。QUALITY.md 7 節）
       消えた行と足した行を差し引くので、書き直し（属性の引数を変えるなど）は数えない。
       // で始まる行は数えない（コメント アウトは「消えた」と数える）。
       **アサーションの緩和は見ない**（機械的に判定できない）。レビューの観点で拾う（QUALITY.md 4 節）。
@@ -67,6 +68,7 @@
      2026/10/29  玄人 幸道         新規作成（#640 段 2・段 3 の検出器）
      2026/10/29  玄人 幸道         -Range と、仕組み自体の変更の検出を追加（#640 段 3）
      2026/10/29  玄人 幸道         出力がパイプのとき UTF-8 で書くようにした（フックの表示が 5.1 で化けていた）
+     2026/10/29  玄人 幸道         期待値の根拠（[Basis]）の削除を、期待値の変更に加えた（QUALITY.md 7 節）
 #>
 [CmdletBinding()]
 param(
@@ -87,6 +89,8 @@ $guardPattern  = '^(\.githooks/|\.claude/settings\.json$|\.claude/hooks/|root/pr
 #   [TestFixture] は Test の直後が F なので当たらない。
 $testAttrPattern   = '[\[,]\s*(Test|TestCase|TestCaseSource)\s*[\],(]'
 $ignoreAttrPattern = '[\[,]\s*(Ignore|Explicit)\s*[\],(]|\bAssert\s*\.\s*Ignore\s*\('
+# 期待値の根拠（QUALITY.md 7 節）。消すのは、検証から観測への格下げ。
+$basisAttrPattern  = '[\[,]\s*Basis\s*\('
 
 # 空の木（親の無いコミットの比較元）
 $emptyTree = "4b825dc642cb6eb9a060e54bf8d69288fbee4904"
@@ -311,7 +315,7 @@ try
         {
             $file = $Matches[1]
             if ($file -notmatch $nunitPattern) { $file = $null; continue }
-            $count[$file] = @{ TestDel = 0; TestAdd = 0; IgnDel = 0; IgnAdd = 0 }
+            $count[$file] = @{ TestDel = 0; TestAdd = 0; IgnDel = 0; IgnAdd = 0; BasisDel = 0; BasisAdd = 0 }
             continue
         }
         if (-not $file) { continue }
@@ -323,12 +327,14 @@ try
         $sign = $l.Substring(0, 1)
         if ($body -match $testAttrPattern)   { if ($sign -eq "-") { $count[$file].TestDel++ } else { $count[$file].TestAdd++ } }
         if ($body -match $ignoreAttrPattern) { if ($sign -eq "-") { $count[$file].IgnDel++ }  else { $count[$file].IgnAdd++ } }
+        if ($body -match $basisAttrPattern)  { if ($sign -eq "-") { $count[$file].BasisDel++ } else { $count[$file].BasisAdd++ } }
     }
     foreach ($k in ($count.Keys | Sort-Object))
     {
         $c = $count[$k]
         if ($c.TestDel -gt $c.TestAdd) { $findings += ("テストの削除      : {0}（{1} 件）" -f $k, ($c.TestDel - $c.TestAdd)) }
         if ($c.IgnAdd -gt $c.IgnDel)   { $findings += ("Ignore の追加     : {0}（{1} 件）" -f $k, ($c.IgnAdd - $c.IgnDel)) }
+        if ($c.BasisDel -gt $c.BasisAdd) { $findings += ("根拠の削除       : {0}（{1} 件）" -f $k, ($c.BasisDel - $c.BasisAdd)) }
     }
 
     # --- 判定 -----------------------------------------------------------

@@ -80,6 +80,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!--期待値の根拠（Basis）と観測（Observation）の属性。TestFramework と共有する（QUALITY.md 7 節。#640）。-->
+    <Compile Include="..\Common\QualityAttributes.cs" Link="Common\QualityAttributes.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!--署名・暗号のテストが使う証明書（Security/TestCertificates.cs）。
         正本（root/files/resource/X509）をリンクで出力先の X509 フォルダへ複写する。
         Golden の EncAndDecUtilCUI と同じ証明書で、*.pfx のパスワードは "test"。-->

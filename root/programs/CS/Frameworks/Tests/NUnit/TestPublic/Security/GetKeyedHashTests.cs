@@ -24,12 +24,15 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
+//*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
 using System.Text;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security;
 using Touryo.Infrastructure.Public.Util;
@@ -59,6 +62,7 @@ namespace TestPublic.Security
         }
 
         /// <summary>HMAC のテスト ベクタ（RFC の Test Case 2）。既定は HMACSHA1。</summary>
+        /// <remarks>既定（Default）が HMACSHA1 であることは**観測**（EnumKeyedHashAlgorithm に約束が書かれていない）。</remarks>
         [TestCase(EnumKeyedHashAlgorithm.HMACMD5, "750c783e6ab0b503eaa86e310a5db738")]
         [TestCase(EnumKeyedHashAlgorithm.HMACSHA1, "effcdf6ae5eb2fa2d27416d5f184df9c259a7c79")]
         [TestCase(EnumKeyedHashAlgorithm.HMACSHA256, "5bdcc146bf60754e6a042426089575c75a003f089d2739839dec58b964ec3843")]
@@ -66,6 +70,9 @@ namespace TestPublic.Security
         [TestCase(EnumKeyedHashAlgorithm.HMACSHA512, "164b7a7bfcf819e2e395fbe73b56e0a387bd64222e831fd610270cd7ea2505549758bf75c05a994a6d034f65f8f0e6fdcaeab1a34d4a6b4b636e070a38bce737")]
         [TestCase(EnumKeyedHashAlgorithm.HMACRIPEMD160, "dda6c0213a485a9e24f4742064a7f033b43c4069")]
         [TestCase(EnumKeyedHashAlgorithm.Default, "effcdf6ae5eb2fa2d27416d5f184df9c259a7c79")]
+        [Basis("RFC 2202 2・3（HMAC-MD5・HMAC-SHA-1 の test_case 2）")]
+        [Basis("RFC 4231 4.3（Test Case 2。HMAC-SHA-256・384・512）")]
+        [Basis("RFC 2286 2（HMAC-RIPEMD160 の test_case 2）")]
         public void GetKeyedHashBytes_TestVector(EnumKeyedHashAlgorithm ekha, string expected)
         {
             Assert.That(Hex(GetKeyedHash.GetKeyedHashBytes(Encoding.UTF8.GetBytes(Data), ekha, Jefe)), Is.EqualTo(expected));
