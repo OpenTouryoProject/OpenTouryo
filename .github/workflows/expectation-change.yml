@@ -53,6 +53,8 @@ jobs:
           path: _base
           persist-credentials: false
 
+      # **run: の中は ASCII だけにする。** Windows PowerShell 5.1 は、Actions が書き出す BOM 無しの一時ファイルを
+      # ANSI（Shift_JIS）として読み、日本語の文字列で構文エラーになる（CODING.md 5 節。#640 の最初の実行で踏んだ）。
       - name: Check expectation changes
         shell: powershell
         env:
@@ -62,7 +64,7 @@ jobs:
           $checker = Join-Path $env:GITHUB_WORKSPACE "_base\root\programs\CheckExpectationChange.ps1"
           if (-not (Test-Path $checker))
           {
-            Write-Host "::warning::ベースに CheckExpectationChange.ps1 が無いため、PR の側の版を使います（導入の PR）。"
+            Write-Host "::warning::CheckExpectationChange.ps1 is not in the base; using the PR's version (introducing PR)."
             $checker = Join-Path $env:GITHUB_WORKSPACE "root\programs\CheckExpectationChange.ps1"
           }
           & $checker -Range "$env:BASE_SHA..$env:HEAD_SHA"
