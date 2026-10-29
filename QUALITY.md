@@ -216,8 +216,8 @@ NUnit のプロパティ（`Basis`・`Observation`）になる。**trx には出
 public void Thumbprint_Rfc7638Example() { ... }
 
 [Test]
-[Observation("RFC 7517 付録 A.1 の鍵の指紋を、今の値で固定した（RFC に、この鍵の指紋の値は載っていない）")]
-public void Thumbprint_EcFixedValue() { ... }
+[Observation("Default が HMACSHA1 になることは、EnumKeyedHashAlgorithm に約束が書かれていない（今の振る舞いを写した）")]
+public void GetKeyedHashBytes_Default() { ... }
 ```
 
 | 根拠の種類 | 書き方の例 | 備考 |
