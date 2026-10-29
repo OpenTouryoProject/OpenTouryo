@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/28  玄人 幸道         新規作成（SQLUtility の文字列リテラルを DBMS ごとに正しく作るため）
+//*  2026/10/28  玄人 幸道         SQL Server の文字列リテラルを N'～' にする（#636）
 //**********************************************************************************
 
 using System;
@@ -40,7 +41,10 @@ namespace Touryo.Infrastructure.Public.Db
     /// （SQLUtility による一括 INSERT / UPDATE の生成など）のための部品である。
     ///
     /// ＜文字列リテラル＞
-    ///   SQL Server / Oracle / DB2 … ' を '' にして ' で囲う（\ は特別な文字ではない）。
+    ///   SQL Server … ' を '' にして N'～' で囲う（\ は特別な文字ではない）。
+    ///                 N の無いリテラルは照合順序のコード ページの文字列として解釈され、
+    ///                 そこに無い文字（絵文字・ハングルなど）が ? などに置き換わる（#636）。
+    ///   Oracle / DB2 … ' を '' にして ' で囲う（\ は特別な文字ではない）。
     ///   PostgreSQL … E'～' にして、\ を \\ に、' を '' にする。
     ///                 E'～' は standard_conforming_strings の設定によらず \ をエスケープ文字として扱うので、
     ///                 設定が on でも off でも同じ値になる。
@@ -59,7 +63,7 @@ namespace Touryo.Infrastructure.Public.Db
         /// <summary>文字列を、SQL の文字列リテラルにする。</summary>
         /// <param name="value">文字列（空文字可）</param>
         /// <param name="dbms">DBMSの種類</param>
-        /// <returns>文字列リテラル（例：SQL Server なら 'it''s'）</returns>
+        /// <returns>文字列リテラル（例：SQL Server なら N'it''s'）</returns>
         /// <remarks>自由に利用できる。</remarks>
         public static string ToStringLiteral(string value, DbEnum.DBMSType dbms)
         {
@@ -71,6 +75,9 @@ namespace Touryo.Infrastructure.Public.Db
             switch (dbms)
             {
                 case DbEnum.DBMSType.SQLServer:
+                    // N の無いリテラルは照合順序のコード ページで解釈され、そこに無い文字が化ける（#636）。
+                    return "N'" + value.Replace("'", "''") + "'";
+
                 case DbEnum.DBMSType.Oracle:
                 case DbEnum.DBMSType.DB2:
                     return "'" + value.Replace("'", "''") + "'";

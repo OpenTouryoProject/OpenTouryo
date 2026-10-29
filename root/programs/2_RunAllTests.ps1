@@ -48,6 +48,7 @@
       ワーキング ツリーの Result*.txt が書き換わる。これは従来のバッチ運用と同じで、
       内容の検収（コミットするか戻すか）は人が git diff で判断する。
       -Coverage の回は、Tests\COVERAGE.md（カバレッジの表）も書き換わる（CoverageReport.ps1）。
+    Tests\CoverageHtml（ReportGenerator の HTML）も作り直す。こちらは Git 管理外（.gitignore）。
 
 .PARAMETER OutputDir
     HEAD 版の期待値とビルド ログの出力先。既定は %TEMP%\OpenTouryoTestResults。
@@ -90,6 +91,8 @@
       3. -CrossDb と同じく、Oracle → MySQL → PostgreSQL を 1 つずつ「起動 → TestPublicDb → 停止」する
       4. **全部 OK なら**、この実行で作られた net10.0 のカバレッジを、アセンブリごとに通った行の
          和集合で数え、COVERAGE.md の表を丸ごと置き換える（CoverageReport.ps1）
+      5. 同じカバレッジから、ReportGenerator の HTML を Tests\CoverageHtml に作り直す
+         （ReportGenerator が無ければ、導入方法を表示して作らない。判定には影響しない）
 
     ＜なぜ専用にするか＞
       OpenTouryo.Public は TestPublic だけでなく、TestPublicNLog（NLog の経路）と
@@ -163,6 +166,7 @@
      2026/10/19  玄人 幸道         NUnit の TestFramework（Framework の単体で使える部品）を加えた
      2026/10/19  玄人 幸道         COVERAGE.md の Framework を、対象モジュールごとに出すようにした
      2026/10/22  玄人 幸道         Framework の対象モジュールに、#634 で足したクラスと partial に分けたファイルを加えた
+     2026/10/29  玄人 幸道         -Coverage の回に、ReportGenerator の HTML（Tests\CoverageHtml）も作るようにした
 #>
 [CmdletBinding()]
 param(
@@ -211,6 +215,7 @@ New-Item -ItemType Directory -Force $OutputDir | Out-Null
 # 今回の実行で作られたカバレッジ ファイル（Get-NUnitResult が積む。-Coverage の最後に合算する）
 $coverageFiles = @()
 $coverageMd    = Join-Path $testsRoot "COVERAGE.md"
+$coverageHtml  = Join-Path $testsRoot "CoverageHtml"
 
 # ------------------------------------------------------------------
 # コンソールのコード ページを先に UTF-8 にしておく
@@ -1215,6 +1220,11 @@ if ($Coverage)
     elseif (Write-CoverageReport -Files $coverageFiles -Path $coverageMd -RepoRoot $repoRoot -Modules $coverageModules)
     {
         Write-Host ("  {0} 件の計測を合算して書きました : {1}" -f $coverageFiles.Count, $coverageMd)
+
+        if (Write-CoverageHtml -Files $coverageFiles -TargetDir $coverageHtml)
+        {
+            Write-Host ("  HTML を作りました : {0}" -f (Join-Path $coverageHtml "index.html"))
+        }
     }
 }
 

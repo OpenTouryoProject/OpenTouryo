@@ -27,6 +27,8 @@
 //*  2026/10/19  玄人 幸道         プロパティ・分離レベル・ファイルの SQL・型付きパラメタ・LIST タグ・
 //*                                ExecGenerateSQL・GetCurrentQuery(ForLog) のケースを追加（カバレッジの拡充）
 //*  2026/10/28  玄人 幸道         SQLUtility で組み立てた INSERT / UPDATE を実行し、' と \ を含む値を読み戻すケースを追加
+//*  2026/10/28  玄人 幸道         SQL Server でコード ページに無い文字を読み戻すケースを追加（#636）
+//*  2026/10/28  玄人 幸道         de-DE で bool と小数を読み戻すケースを追加（#637）
 //**********************************************************************************
 
 using System;
@@ -622,6 +624,100 @@ namespace TestPublicDb
             {
                 Assert.That(this.Name(100 + i), Is.EqualTo(TrickyNames[n - 1 - i]), "UPDATE " + i);
             }
+        }
+
+        /// <summary>
+        /// SQL Server で、照合順序のコード ページに無い文字（アクセント付き文字・絵文字・ハングル）が**化けずに読み戻せる。**
+        /// N の無いリテラルはコード ページの文字列として解釈され、無い文字が ? などに置き換わる（#636）。
+        /// 他の DBMS は、列の文字セットが DB の設定に依るので対象外。
+        /// </summary>
+        [Test]
+        public void SQLUtility_SQLServer_KeepsNonCodePageChars()
+        {
+            if (DbProvider.GetDbmsType(this._dap) != DbEnum.DBMSType.SQLServer)
+            {
+                Assert.Ignore("SQL Server だけが対象");
+            }
+
+            const string value = "café 😀 한";
+            DataTable dt = new DataTable();
+            dt.Columns.Add("ID", typeof(int));
+            dt.Columns.Add("NAME", typeof(string));
+            dt.Columns.Add("QTY", typeof(int));
+            dt.Rows.Add(100, value, 0);
+
+            string[] ins = new SQLUtility(DbEnum.DBMSType.SQLServer).GetInsertSQLParts(dt);
+            Assert.That(this.Exec("INSERT INTO " + this.T + " " + ins[0] + " VALUES " + ins[1]), Is.EqualTo(1));
+            Assert.That(this.Name(100), Is.EqualTo(value));
+        }
+
+        /// <summary>
+        /// 小数点が , のカルチャ（de-DE）で、bool と小数を SQLUtility の INSERT / UPDATE で入れ、**同じ値で読み戻せる。**
+        /// 以前は 1.5 が 1,5 に（値の数がずれる）、bool が True / False になっていた（#637）。
+        /// bool の列の型は DBMS ごとに違う（SQL Server は bit、Oracle は NUMBER(1)、MySQL・PostgreSQL は boolean）。
+        /// </summary>
+        [Test]
+        [SetCulture("de-DE")]
+        public void SQLUtility_BoolAndDecimal_DeDE()
+        {
+            string boolType;
+            switch (this._dap)
+            {
+                case "SQL": boolType = "bit"; break;
+                case "ODP": boolType = "NUMBER(1)"; break;
+                default: boolType = "boolean"; break;
+            }
+            string decType = this._dap == "ODP" ? "NUMBER(10,4)" : "decimal(10,4)";
+
+            string t = DbProvider.Quote(this._dap, this._table + "_B");
+            this.Exec("CREATE TABLE " + t + " ("
+                + this.Q("ID") + " " + DbProvider.IntType(this._dap) + " NOT NULL, "
+                + this.Q("FLAG") + " " + boolType + ", "
+                + this.Q("PRICE") + " " + decType + ", "
+                + "PRIMARY KEY (" + this.Q("ID") + "))");
+            try
+            {
+                SQLUtility util = new SQLUtility(DbProvider.GetDbmsType(this._dap));
+
+                DataTable dt = new DataTable();
+                dt.Columns.Add("ID", typeof(int));
+                dt.Columns.Add("FLAG", typeof(bool));
+                dt.Columns.Add("PRICE", typeof(decimal));
+                dt.Rows.Add(1, true, 1.5m);
+                dt.Rows.Add(2, false, -0.25m);
+
+                string[] ins = util.GetInsertSQLParts(dt);
+                for (int i = 1; i < ins.Length; i++)
+                {
+                    Assert.That(this.Exec("INSERT INTO " + t + " " + ins[0] + " VALUES " + ins[i]), Is.EqualTo(1));
+                }
+                this.AssertFlagAndPrice(t, 1, true, 1.5m);
+                this.AssertFlagAndPrice(t, 2, false, -0.25m);
+
+                // UPDATE（値を入れ替える。PostgreSQL・MySQL は CASE の 1 文、他は 1 行 1 文）
+                dt.Rows[0]["FLAG"] = false; dt.Rows[0]["PRICE"] = 123.4567m;
+                dt.Rows[1]["FLAG"] = true; dt.Rows[1]["PRICE"] = 0.5m;
+                foreach (string part in util.GetUpdateSQLParts(dt, new[] { "ID" }))
+                {
+                    this.Exec("UPDATE " + t + " " + part);
+                }
+                this.AssertFlagAndPrice(t, 1, false, 123.4567m);
+                this.AssertFlagAndPrice(t, 2, true, 0.5m);
+            }
+            finally
+            {
+                this.Exec("DROP TABLE " + t);
+            }
+        }
+
+        /// <summary>ID の行の FLAG と PRICE を比べる（型は DBMS で違うので Convert で揃える）。</summary>
+        private void AssertFlagAndPrice(string t, int id, bool flag, decimal price)
+        {
+            this._dam.SetSqlByCommand("SELECT " + this.Q("FLAG") + " FROM " + t + " WHERE " + this.Q("ID") + " = " + id);
+            Assert.That(Convert.ToBoolean(this._dam.ExecSelectScalar()), Is.EqualTo(flag), "FLAG " + id);
+
+            this._dam.SetSqlByCommand("SELECT " + this.Q("PRICE") + " FROM " + t + " WHERE " + this.Q("ID") + " = " + id);
+            Assert.That(Convert.ToDecimal(this._dam.ExecSelectScalar()), Is.EqualTo(price), "PRICE " + id);
         }
 
         #endregion

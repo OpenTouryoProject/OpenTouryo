@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/15  玄人 幸道         新規作成（#610）
+//*  2026/10/28  玄人 幸道         SQL Server の文字列リテラルを N'～' にした変更に合わせて期待値を変更（#636）
 //**********************************************************************************
 
 using System;
@@ -87,7 +88,7 @@ namespace TestPublic.Db
 
             Assert.That(dam.IsDPQ, Is.False);
             Assert.That(Generate(dam),
-                Is.EqualTo("SELECT * FROM [Orders] WHERE [OrderID] = 10 AND [Note] = Convert(nvarchar(1), 'x')"));
+                Is.EqualTo("SELECT * FROM [Orders] WHERE [OrderID] = 10 AND [Note] = Convert(nvarchar(1), N'x')"));
         }
 
         /// <summary>静的 SQL のユーザ パラメタ（%名前%）は、文字列のまま埋め込む。</summary>
@@ -143,7 +144,7 @@ namespace TestPublic.Db
             dam.SetParameter("P2", "a");
 
             Assert.That(Generate(dam),
-                Is.EqualTo("SELECT [OrderID] FROM [Orders] WHERE [Qty] = 1 AND [Note] = Convert(nvarchar(1), 'a')"));
+                Is.EqualTo("SELECT [OrderID] FROM [Orders] WHERE [Qty] = 1 AND [Note] = Convert(nvarchar(1), N'a')"));
         }
 
         /// <summary>後ろの IF だけ有効でも、先頭の AND は取り除かれる。</summary>
@@ -154,7 +155,7 @@ namespace TestPublic.Db
             dam.SetParameter("P2", "a");
 
             Assert.That(Generate(dam),
-                Is.EqualTo("SELECT [OrderID] FROM [Orders] WHERE [Note] = Convert(nvarchar(1), 'a')"));
+                Is.EqualTo("SELECT [OrderID] FROM [Orders] WHERE [Note] = Convert(nvarchar(1), N'a')"));
         }
 
         /// <summary>**IF が 1 つも残らなければ、WHERE ごと消える。**</summary>

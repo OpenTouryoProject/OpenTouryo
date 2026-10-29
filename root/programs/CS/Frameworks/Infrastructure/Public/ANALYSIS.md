@@ -105,9 +105,14 @@ DBMS の差を `BaseDam` と各 `Dam*` に閉じ込め、上位（`BaseDao`）�
 
 | DBMS | 文字列リテラル | 理由 |
 |---|---|---|
-| SQL Server / Oracle / DB2 | `'` を `''` にして `'～'` | `\` は特別な文字ではない |
+| SQL Server | `'` を `''` にして `N'～'` | `N` が無いと照合順序のコード ページで解釈され、そこに無い文字（絵文字・ハングルなど）が `?` などに化ける（#636）。`\` は特別な文字ではない |
+| Oracle / DB2 | `'` を `''` にして `'～'` | `\` は特別な文字ではない |
 | PostgreSQL | `E'～'`（`\` を `\\`、`'` を `''`） | `standard_conforming_strings` の on / off に依らず同じ値になる |
 | MySQL | `_utf8mb4 0x～`（UTF-8 の 16 進） | 既定（`sql_mode` に `NO_BACKSLASH_ESCAPES` が無い）で `\` をエスケープ文字として扱うので、`'` を `''` にするだけではリテラルが正しく閉じない。16 進は `sql_mode` に依らない |
+
+**数値・日時は `InvariantCulture` で文字列化する**（#637）。`ToString()` はカルチャに従い、
+de-DE などでは `1.5` が `1,5` に（SQL の区切りと衝突して値の数がずれる）、日時の書式の `/` が `.` になる。
+`bool` は SQL Server・Oracle・DB2 で `1` / `0`、PostgreSQL・MySQL で `TRUE` / `FALSE`。
 
 **`SQLUtility` に文字列を埋め込む処理を足すときは、`Replace("'", "''")` を書かずに `SQLSanitizer` を通す。**
 実際の DB で値を読み戻せることは `TestPublicDb` の `SQLUtility_InsertAndUpdate_RoundTrip` が確かめる（クロス DB）。

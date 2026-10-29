@@ -69,7 +69,7 @@ log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.Level
 log4net: Created Appender [OPERATION2]
 log4net: Adding appender named [OPERATION2] to logger [OPERATION].
 log4net: Hierarchy Threshold []
-[2026/10/22 18:26:26,358],[INFO ],[2],,,,----->>,C:\OpenTouryo\root\programs\CS\Frameworks\Tests\Golden\TestBatch\SimpleBatchCore\bin\Debug\net10.0\SimpleBatchCore.dll,-,SelectCount,SQL%individual%static%-
+[2026/10/28 12:53:24,919],[INFO ],[2],,,,----->>,C:\OpenTouryo\root\programs\CS\Frameworks\Tests\Golden\TestBatch\SimpleBatchCore\bin\Debug\net10.0\SimpleBatchCore.dll,-,SelectCount,SQL%individual%static%-
 log4net: configuring repository [log4net-default-repository] using stream
 log4net: loading XML configuration
 log4net: Configuring Repository [log4net-default-repository]
@@ -144,6 +144,6 @@ log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.Level
 log4net: Created Appender [OPERATION2]
 log4net: Adding appender named [OPERATION2] to logger [OPERATION].
 log4net: Hierarchy Threshold []
-[2026/10/22 18:26:26,421],[INFO ],[2],36,,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
-[2026/10/22 18:26:26,422],[INFO ],[2],,,,<<-----,C:\OpenTouryo\root\programs\CS\Frameworks\Tests\Golden\TestBatch\SimpleBatchCore\bin\Debug\net10.0\SimpleBatchCore.dll,-,SelectCount,SQL%individual%static%-,53,
+[2026/10/28 12:53:24,983],[INFO ],[2],37,,[commandText]:SELECT COUNT(*) FROM Shippers [commandParameter]:
+[2026/10/28 12:53:24,983],[INFO ],[2],,,,<<-----,C:\OpenTouryo\root\programs\CS\Frameworks\Tests\Golden\TestBatch\SimpleBatchCore\bin\Debug\net10.0\SimpleBatchCore.dll,-,SelectCount,SQL%individual%static%-,54,
 3件のデータがあります

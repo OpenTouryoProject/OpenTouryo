@@ -26,6 +26,8 @@
 //*  2026/10/15  玄人 幸道         新規作成（#610）
 //*  2026/10/15  玄人 幸道         #612 の修正に合わせ、修正後の挙動を確かめるケースを追加
 //*  2026/10/28  玄人 幸道         文字列リテラル・識別子を SQLSanitizer で作るようにした変更に合わせて期待値を変更
+//*  2026/10/28  玄人 幸道         SQL Server の文字列リテラルを N'～' にした変更に合わせて期待値を変更（#636）
+//*  2026/10/28  玄人 幸道         bool・列挙型と、de-DE で数値・日時がカルチャに依らないことを確かめるケースを追加（#637）
 //**********************************************************************************
 
 using System;
@@ -41,7 +43,7 @@ namespace TestPublic.Db
     /// <remarks>
     /// INSERT / UPDATE の組み立て結果を 4 DBMS 分並べて見るのは Golden の TestSQLUtility。
     /// ここでは**値を SQL リテラルにする規則**（ConvertParameterToSQL）を型・DBMS ごとに確かめる。
-    /// 数値・日時の文字列化はカルチャに依存するため、ja-JP に固定する。
+    /// フィクスチャは ja-JP に固定し、カルチャに依らないことは de-DE のケースで確かめる（#637）。
     /// </remarks>
     [TestFixture]
     [SetCulture("ja-JP")]
@@ -76,10 +78,10 @@ namespace TestPublic.Db
 
         /// <summary>
         /// 文字列は DBMS ごとの型変換で包み、中身は SQLSanitizer.ToStringLiteral の文字列リテラルにする
-        /// （' を '' にする。PostgreSQL は E'～'、MySQL は UTF-8 の 16 進リテラル。規則は SQLSanitizerTests）。
+        /// （' を '' にする。SQL Server は N'～'、PostgreSQL は E'～'、MySQL は UTF-8 の 16 進リテラル。規則は SQLSanitizerTests）。
         /// 長さ（エスケープ前の文字数）を型に付ける。
         /// </summary>
-        [TestCase(DbEnum.DBMSType.SQLServer, "Convert(nvarchar(4), 'it''s')")]
+        [TestCase(DbEnum.DBMSType.SQLServer, "Convert(nvarchar(4), N'it''s')")]
         [TestCase(DbEnum.DBMSType.Oracle, "CAST('it''s' AS varchar2(4))")]
         [TestCase(DbEnum.DBMSType.PstGrS, "Cast(E'it''s' as text)")]
         [TestCase(DbEnum.DBMSType.MySQL, "Cast(_utf8mb4 0x69742773 as char(4))")]
@@ -105,7 +107,7 @@ namespace TestPublic.Db
         public void String_CustomConvertType()
         {
             Assert.That(new SQLUtility(DbEnum.DBMSType.SQLServer, "varchar").ConvertParameterToSQL("ab"),
-                Is.EqualTo("Convert(varchar(2), 'ab')"));
+                Is.EqualTo("Convert(varchar(2), N'ab')"));
         }
 
         #endregion
@@ -189,7 +191,7 @@ namespace TestPublic.Db
         /// char も string と同じ規則で文字列リテラルにする。
         /// **以前はエスケープせず、引用符が閉じない SQL になっていた**（#612 で修正）。
         /// </summary>
-        [TestCase(DbEnum.DBMSType.SQLServer, "Convert(nvarchar, '''')", "Convert(nvarchar, '\\')")]
+        [TestCase(DbEnum.DBMSType.SQLServer, "Convert(nvarchar, N'''')", "Convert(nvarchar, N'\\')")]
         [TestCase(DbEnum.DBMSType.MySQL, "Cast(_utf8mb4 0x27 as char)", "Cast(_utf8mb4 0x5C as char)")]
         [TestCase(DbEnum.DBMSType.PstGrS, "Cast(E'''' as text)", "Cast(E'\\\\' as text)")]
         [TestCase(DbEnum.DBMSType.Oracle, "TO_CHAR('''')", "TO_CHAR('\\')")]
@@ -198,6 +200,87 @@ namespace TestPublic.Db
         {
             Assert.That(new SQLUtility(dbms).ConvertParameterToSQL('\''), Is.EqualTo(quote));
             Assert.That(new SQLUtility(dbms).ConvertParameterToSQL('\\'), Is.EqualTo(backslash));
+        }
+
+        /// <summary>
+        /// bool は DBMS ごとの値にする（SQL Server・Oracle・DB2 は 1 / 0、PostgreSQL・MySQL は TRUE / FALSE）。
+        /// **以前は ToString() の True / False で、SQL として解釈できない DBMS があった**（#637 で修正）。
+        /// </summary>
+        [TestCase(DbEnum.DBMSType.SQLServer, "1", "0")]
+        [TestCase(DbEnum.DBMSType.Oracle, "1", "0")]
+        [TestCase(DbEnum.DBMSType.DB2, "1", "0")]
+        [TestCase(DbEnum.DBMSType.PstGrS, "TRUE", "FALSE")]
+        [TestCase(DbEnum.DBMSType.MySQL, "TRUE", "FALSE")]
+        public void Bool(DbEnum.DBMSType dbms, string t, string f)
+        {
+            Assert.That(new SQLUtility(dbms).ConvertParameterToSQL(true), Is.EqualTo(t));
+            Assert.That(new SQLUtility(dbms).ConvertParameterToSQL(false), Is.EqualTo(f));
+        }
+
+        /// <summary>列挙型は従来どおり ToString()（名前）。数値の扱いに巻き込まない。</summary>
+        [Test]
+        public void EnumValue_Unchanged()
+        {
+            Assert.That(new SQLUtility(DbEnum.DBMSType.SQLServer).ConvertParameterToSQL(DayOfWeek.Monday), Is.EqualTo("Monday"));
+        }
+
+        #endregion
+
+        #region カルチャに依らない（#637）
+
+        // 小数点が , のカルチャ（de-DE）で、数値と日時が SQL のリテラルとして正しいこと。
+        // 以前は 1.5 が 1,5 に、日時の / が . になっていた。
+
+        /// <summary>数値は InvariantCulture（小数点は .）。</summary>
+        [Test]
+        [SetCulture("de-DE")]
+        public void Number_DeDE()
+        {
+            SQLUtility u = new SQLUtility(DbEnum.DBMSType.SQLServer);
+
+            Assert.That(u.ConvertParameterToSQL(1.5m), Is.EqualTo("1.5"));
+            Assert.That(u.ConvertParameterToSQL(-1.5d), Is.EqualTo("-1.5"));
+            Assert.That(u.ConvertParameterToSQL(0.25f), Is.EqualTo("0.25"));
+            Assert.That(u.ConvertParameterToSQL(1234567L), Is.EqualTo("1234567"));
+        }
+
+        /// <summary>
+        /// double は往復できる桁で出す（.NET Framework の既定の書式は 15 桁で丸め、0.1 + 0.2 が 0.3 になる）。
+        /// </summary>
+        [Test]
+        [SetCulture("de-DE")]
+        public void Double_RoundTrips()
+        {
+            double d = 0.1 + 0.2;
+            string sql = new SQLUtility(DbEnum.DBMSType.SQLServer).ConvertParameterToSQL(d);
+
+            Assert.That(double.Parse(sql, System.Globalization.CultureInfo.InvariantCulture), Is.EqualTo(d));
+        }
+
+        /// <summary>日時の書式の / は、カルチャの日付区切りではなく / のまま。</summary>
+        [Test]
+        [SetCulture("de-DE")]
+        public void DateTime_DeDE()
+        {
+            DateTime dt = new DateTime(2026, 10, 15, 13, 4, 5, 6);
+
+            Assert.That(new SQLUtility(DbEnum.DBMSType.SQLServer).ConvertParameterToSQL(dt),
+                Is.EqualTo("'2026/10/15 13:04:05.006'"));
+            Assert.That(new SQLUtility(DbEnum.DBMSType.PstGrS).ConvertParameterToSQL(dt),
+                Is.EqualTo("Cast('2026/10/15 13:04:05.006' as date)"));
+        }
+
+        /// <summary>**値の数がずれない。** de-DE で 1.5 が 1,5 になると、VALUES の値が 1 つ増える。</summary>
+        [Test]
+        [SetCulture("de-DE")]
+        public void GetInsertSQLParts_DeDE()
+        {
+            DataTable dt = new DataTable("Products");
+            dt.Columns.Add("ID", typeof(int));
+            dt.Columns.Add("Price", typeof(decimal));
+            dt.Rows.Add(1, 1.5m);
+
+            Assert.That(new SQLUtility(DbEnum.DBMSType.SQLServer).GetInsertSQLParts(dt)[1], Is.EqualTo("(1, 1.5)"));
         }
 
         #endregion
@@ -225,7 +308,7 @@ namespace TestPublic.Db
             Assert.That(parts, Is.EqualTo(new[]
             {
                 "([OrderID], [Qty], [Note])",
-                "(1, 100, Convert(nvarchar(1), 'a'))",
+                "(1, 100, Convert(nvarchar(1), N'a'))",
                 "(2, 200, NULL)"
             }));
         }
@@ -241,7 +324,7 @@ namespace TestPublic.Db
 
             Assert.That(parts.Length, Is.EqualTo(2));
             Assert.That(parts[0].Trim(),
-                Is.EqualTo("SET [Qty] = 100, [Note] = Convert(nvarchar(1), 'a') WHERE [OrderID] = 1"));
+                Is.EqualTo("SET [Qty] = 100, [Note] = Convert(nvarchar(1), N'a') WHERE [OrderID] = 1"));
             Assert.That(parts[1].Trim(),
                 Is.EqualTo("SET [Qty] = 200, [Note] = NULL WHERE [OrderID] = 2"));
         }
