@@ -61,8 +61,6 @@ namespace TestFramework.Authentication
         [TestCase("CODE code", OAuth2AndOIDCConst.AuthorizationCodeResponseType)]
         [TestCase("", "")]
         [TestCase(null, null)]
-        [Basis("OAuth 2.0 Multiple Response Type Encoding Practices 1.2（Multiple-Valued Response Types は順不同の空白区切りとして比べる）")]
-        [Basis("設計：OAuth2AndOIDCSpec.NormalizeResponseType の remarks（小文字にする。仕様は大文字小文字を区別するが寛容に受ける）")]
         public void NormalizeResponseType(string value, string expected)
         {
             Assert.That(OAuth2AndOIDCSpec.NormalizeResponseType(value), Is.EqualTo(expected));
@@ -70,8 +68,6 @@ namespace TestFramework.Authentication
 
         /// <summary>prompt：集合として扱う（部分一致しない）。none と他の値の併記は invalid_request。</summary>
         [Test]
-        [Basis("OIDC Core 3.1.2.1（prompt は空白区切りの列挙。none と他の値を併記したらエラー）")]
-        [Basis("設計：OAuth2AndOIDCSpec.CheckPrompt の remarks（既知でない値だけではエラーにしない）")]
         public void Prompt()
         {
             Assert.That(OAuth2AndOIDCSpec.HasPrompt("login consent", OAuth2AndOIDCConst.PromptConsent), Is.True);

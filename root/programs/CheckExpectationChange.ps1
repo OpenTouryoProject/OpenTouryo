@@ -69,6 +69,7 @@
      2026/10/29  玄人 幸道         -Range と、仕組み自体の変更の検出を追加（#640 段 3）
      2026/10/29  玄人 幸道         出力がパイプのとき UTF-8 で書くようにした（フックの表示が 5.1 で化けていた）
      2026/10/29  玄人 幸道         期待値の根拠（[Basis]）の削除を、期待値の変更に加えた（QUALITY.md 7 節）
+     2026/10/29  玄人 幸道         root\programs で実行すると NUnit の変更を拾わなかった（パスがカレントからだった）のを修正
 #>
 [CmdletBinding()]
 param(
@@ -306,7 +307,9 @@ try
 
     # --- NUnit ----------------------------------------------------------
     #   1 回の diff を「diff --git」の行でファイルに分け、消えた行・足した行を数える。
-    $diff = (Invoke-GitChecked (@("diff", "-M", "-U0", "--no-color") + $diffEnds + @("--", "root/programs/"))).Lines
+    #   パスはリポジトリのルートからにする（:(top)）。カレントは変えないので、root\programs で実行すると、
+    #   相対の root/programs/ は root/programs/root/programs/ を指し、何も拾わなくなる。
+    $diff = (Invoke-GitChecked (@("diff", "-M", "-U0", "--no-color") + $diffEnds + @("--", ":(top)root/programs/"))).Lines
     $file = $null
     $count = @{}
     foreach ($l in $diff)
