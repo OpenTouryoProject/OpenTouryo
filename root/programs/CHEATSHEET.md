@@ -57,6 +57,9 @@
 |---|---|---|
 | エージェント用のスキルを取ってくる | `.\GetAgentSkills.ps1` | [`AGENTS.md`](../../AGENTS.md) |
 | 2 つの結果ファイルを比べる | `.\CompareResult.ps1 -Expected <期待> -Actual <実測>` | [`TESTING.md`](TESTING.md) 1 節 |
+| 期待値の変更の commit-msg フックを有効にする（手元で 1 回） | `git config core.hooksPath .githooks` | [`QUALITY.md`](../../QUALITY.md) 3 節 |
+| コミットに、トレーラーの無い期待値の変更が無いかを見る | `.\CheckExpectationChange.ps1 -Commit <コミット>` | [`QUALITY.md`](../../QUALITY.md) 3 節 |
+| PR を出す前に、ブランチのコミットをまとめて見る（CI と同じ） | `.\CheckExpectationChange.ps1 -Range develop..HEAD` | [`QUALITY.md`](../../QUALITY.md) 3 節 |
 
 ---
 

@@ -167,6 +167,7 @@
      2026/10/19  玄人 幸道         COVERAGE.md の Framework を、対象モジュールごとに出すようにした
      2026/10/22  玄人 幸道         Framework の対象モジュールに、#634 で足したクラスと partial に分けたファイルを加えた
      2026/10/29  玄人 幸道         -Coverage の回に、ReportGenerator の HTML（Tests\CoverageHtml）も作るようにした
+     2026/10/29  玄人 幸道         -List -PassThru に Result・Kind・SkipLog4net・NormBase64 を加え、-List では chcp しないようにした（#640）
 #>
 [CmdletBinding()]
 param(
@@ -226,7 +227,8 @@ $coverageHtml  = Join-Path $testsRoot "CoverageHtml"
 # 画面が再描画されて**それまでの表示が消える**。
 # 何も表示していない今のうちに切り替えておけば、実行中は変化しない。
 # 戻さないのは、戻す操作でも再描画が起きてサマリが消えるため。
-if ((cmd /c chcp) -notmatch '65001')
+# **-List では切り替えない。** バッチを動かさず、commit-msg フック（#640）からも呼ばれるため。
+if (-not $List -and ((cmd /c chcp) -notmatch '65001'))
 {
     cmd /c chcp 65001 | Out-Null
 }
@@ -440,7 +442,14 @@ if ($List)
     {
         # NeedDb は SelectTargets.ps1 -Stage fixing が DB を使う対象を後回しにするのに使う（#610）。
         # Linux は -Linux のときだけ回る対象の印（#632）。SelectTargets.ps1 は、これを -Linux を付けるときにだけ -Only に入れる。
-        foreach ($x in $tests) { [pscustomobject]@{ Name = $x.Name; Bat = $x.Bat; Dir = "CS"; NeedDb = [bool]$x.NeedDb; Linux = [bool]$x.Linux } }
+        # Result・Kind・SkipLog4net・NormBase64 は CheckExpectationChange.ps1 が、Golden を同じ正規化で比べるのに使う（#640）。
+        foreach ($x in $tests)
+        {
+            [pscustomobject]@{
+                Name = $x.Name; Bat = $x.Bat; Dir = "CS"; NeedDb = [bool]$x.NeedDb; Linux = [bool]$x.Linux
+                Result = $x.Result; Kind = $x.Kind; SkipLog4net = [bool]$x.SkipLog4net; NormBase64 = [bool]$x.NormBase64
+            }
+        }
     }
     exit 0
 }

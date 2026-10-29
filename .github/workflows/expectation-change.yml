@@ -1,0 +1,69 @@
+# PR のコミットに、トレーラーの無い期待値の変更が無いかを確かめる（#640 の段 3。QUALITY.md 3 節）。
+#
+# ＜位置づけ＞
+#   段 1（Claude Code の PreToolUse フック）と段 2（commit-msg フック）は、手元の設定に頼る。
+#   フックを有効にしていない、--no-verify で迂回した、別のエージェントを使った、を最終的に塞ぐのがここ。
+#   何を期待値の変更と数えるかの正は root/programs/CheckExpectationChange.ps1 にある。ここには判定を書かない。
+#
+# ＜検出器は、ベース側の版を使う＞
+#   PR の側の CheckExpectationChange.ps1 を使うと、PR が検出器を緩めれば素通りになる。
+#   そこでベースのコミットを別のフォルダへ取り出し、その版で PR のコミットを調べる。
+#   PR のコミットは git のオブジェクトとして読むだけで、PR の側のスクリプトは実行しない。
+#   **ベースに検出器が無いとき（導入する PR）だけ、PR の側の版を使う。**
+#   なお、このワークフロー自体は pull_request なので PR の側の定義で動く。
+#   書き換えれば検出器の「仕組みの変更」として数えられ（ベース側の版が見る）、人のレビューにも現れる。
+#   pull_request_target にはしない（書き込み権限の文脈で PR を扱うことになる。GitHubUsage.md 3 節）。
+#
+# ＜対象＞
+#   develop・master 宛の PR。数秒で終わる（ビルドしない）。
+#   ブランチ保護の必須のチェックにするかは人が決める（GitHubUsage.md 2 節）。チェック名はジョブ名の expectation-change。
+#
+# ＜Windows で動かす理由＞
+#   検出器は 2_RunAllTests.ps1 -List からテストの定義（正規化のオプション）を受け取る。
+#   2_RunAllTests.ps1 は Windows 前提であり、利用者と同じ Windows PowerShell 5.1 で動かす。
+
+name: Expectation change
+
+on:
+  pull_request:
+    branches: [develop, master]
+
+permissions:
+  contents: read
+
+jobs:
+  expectation-change:
+    runs-on: windows-latest
+    timeout-minutes: 15
+
+    steps:
+      # PR のコミットを範囲で辿るので、履歴をすべて取る。
+      - name: Checkout (PR)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      # 検出器はベース側の版を使う（上の＜検出器は、ベース側の版を使う＞）。
+      - name: Checkout (base, for the checker)
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: _base
+          persist-credentials: false
+
+      - name: Check expectation changes
+        shell: powershell
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          $checker = Join-Path $env:GITHUB_WORKSPACE "_base\root\programs\CheckExpectationChange.ps1"
+          if (-not (Test-Path $checker))
+          {
+            Write-Host "::warning::ベースに CheckExpectationChange.ps1 が無いため、PR の側の版を使います（導入の PR）。"
+            $checker = Join-Path $env:GITHUB_WORKSPACE "root\programs\CheckExpectationChange.ps1"
+          }
+          & $checker -Range "$env:BASE_SHA..$env:HEAD_SHA"
+          exit $LASTEXITCODE

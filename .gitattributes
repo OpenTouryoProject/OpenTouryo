@@ -1,4 +1,7 @@
 # Windows batch files want to use CRLF by default.
 *.bat text eol=crlf
 
+# Git hooks are run by sh, which does not accept CRLF (#640).
+.githooks/* text eol=lf
+
 # Visual Studio files want to use CRLF by default.

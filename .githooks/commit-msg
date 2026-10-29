@@ -1,0 +1,28 @@
+#!/bin/sh
+# Expectation-change guard (#640, QUALITY.md section 3).
+#   Rejects a commit that changes test expectations (Golden Result*.txt, NUnit test removal / Ignore)
+#   without an "Expectation-Change: <reason>" trailer in the commit message.
+#   The detection itself is root/programs/CheckExpectationChange.ps1 (shared with the CI check).
+#
+#   Enable : git config core.hooksPath .githooks
+#   Note   : keep this file ASCII and LF (see .gitattributes). sh runs it on every platform.
+
+root=$(git rev-parse --show-toplevel) || exit 1
+script="$root/root/programs/CheckExpectationChange.ps1"
+
+# Windows PowerShell 5.1 first (what users run on Windows), then PowerShell 7.
+if command -v powershell.exe >/dev/null 2>&1; then
+    ps=powershell.exe
+elif command -v pwsh >/dev/null 2>&1; then
+    ps=pwsh
+else
+    echo "commit-msg: PowerShell not found; cannot check expectation changes (QUALITY.md section 3)." >&2
+    exit 1
+fi
+
+"$ps" -NoProfile -ExecutionPolicy Bypass -File "$script" -Staged -MessageFile "$1"
+status=$?
+if [ $status -ne 0 ]; then
+    echo "commit-msg: rejected by CheckExpectationChange.ps1 (exit $status). See QUALITY.md section 3." >&2
+fi
+exit $status
