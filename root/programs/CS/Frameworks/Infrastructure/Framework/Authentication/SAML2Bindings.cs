@@ -43,6 +43,7 @@
 //*  2026/10/22  玄人 幸道         クエリ文字列のパラメタ名と、名前空間の接頭辞・名前の直書きを SAML2Const に寄せた
 //*  2026/10/22  玄人 幸道         処理区分（共通・SP 側・IdP 側）ごとに partial クラスへ分割した（SAML2Bindings.*.cs）
 //*  2026/10/22  玄人 幸道         属性名・XPath・要素名・ID の接頭辞の直書きを SAML2Const に寄せた
+//*  2026/10/30  玄人 幸道         VerifyByXPath の remarks の節番号を直した（4.1.4.2 は Core ではなく Profiles。#640）
 //**********************************************************************************
 
 using System;
@@ -129,7 +130,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <returns>bool</returns>
         /// <remarks>
         /// Response の Assertion は、StatusCode が Success のときだけ必須（#598）。
-        /// SAML 2.0 Core 3.2.2 / 4.1.4.2 のとおり、エラー応答は Status だけで正当である。
+        /// SAML 2.0 Core 3.2.2（Status は必須）・Profiles 4.1.4.2（エラーを返すなら Assertion を含めない）のとおり、
+        /// エラー応答は Status だけで正当である。
         ///
         /// そのため、Response で true が返っても Assertion があるとは限らない。
         /// Assertion を読む前に、StatusCode が Success であることを確かめること。

@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（汎用認証サイトから移した。#634）
 //*  2026/10/22  玄人 幸道         issuer・有効期間・鍵を設定（CmnServerParams）から読む版を追加
+//*  2026/10/30  玄人 幸道         remarks の節番号を直した（ACS URL は Core 3.4.1・Profiles 4.1.4.1。#640）
 //**********************************************************************************
 
 using System;
@@ -46,7 +47,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
     ///
     /// | 決め | 呼び出し側で行うこと |
     /// |---|---|
-    /// | 応答を返す先（ACS URL） | **事前登録の値を使う。** 要求に書かれた値は、登録値との照合にだけ使う（SAML Core 3.2.1） |
+    /// | 応答を返す先（ACS URL） | **事前登録の値を使う。** 要求に書かれた値は、登録値との照合にだけ使う（SAML Core 3.4.1・Profiles 4.1.4.1） |
     /// | NameID | 要求の NameIDPolicy の Format に合わせて決める（PPID など） |
     /// | 属性 | 何を出すか（SAML2Attributes.AppendStatement の形で渡す） |
     /// | Binding | 要求の ProtocolBinding に合わせて、どちらの版を呼ぶかを決める |
@@ -206,7 +207,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="id">out string（Response の ID）</param>
         /// <returns>XmlDocument（Response）</returns>
         /// <remarks>
-        /// Assertion は、成功のときだけ組み込む（エラー応答は Status だけで正当。SAML Core 3.2.2）。
+        /// Assertion は、成功のときだけ組み込む（エラー応答は Status だけで正当。SAML Core 3.2.2・Profiles 4.1.4.2）。
         /// 属性は、署名の前に Assertion へ足す（後から足すと署名が合わなくなる）。
         /// </remarks>
         private static XmlDocument BuildResponse(

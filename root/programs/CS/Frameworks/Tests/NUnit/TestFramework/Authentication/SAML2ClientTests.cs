@@ -26,6 +26,7 @@
 //*  2026/10/19  玄人 幸道         新規作成
 //*  2026/10/22  玄人 幸道         鍵を受ける版が null・空を受けないこと、鍵を受けない版が設定の鍵を使うことのテストを追加
 //*  2026/10/22  玄人 幸道         NotOnOrAfter の比較・期限切れ・InResponseTo の食い違い・エラー応答・Recipient・SigAlg のテストを足した（カバレッジの拡充）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -33,6 +34,8 @@ using System.Security.Cryptography;
 using System.Xml;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 #if NETCOREAPP
 using Microsoft.Extensions.Configuration;
@@ -120,6 +123,9 @@ namespace TestFramework.Authentication
         /// 応答が無ければ false。statusCode は、検証に失敗しても切り分けのために返る（#598）。
         /// </summary>
         [Test]
+        [Basis("SAML 2.0 Profiles 4.1.4.3（応答・アサーションの署名を検証する）")]
+        [Basis("SAML 2.0 Profiles 4.1.4.2（エラーを返すなら Assertion を含めない）")]
+        [Basis("#598")]
         public void VerifyResponse_Rejected()
         {
             using (RSA other = RSA.Create(2048))
@@ -201,6 +207,7 @@ namespace TestFramework.Authentication
         /// bool 版は従来どおり例外を投げる（振る舞いを変えていない）。
         /// </summary>
         [Test]
+        [Basis("設計：SAML2Client.TryGetEarlier の remarks（読めない方を無視して、もう片方で通すことはしない）")]
         public void NotOnOrAfter_Unreadable()
         {
             string saml = SignedPostWith((res, ns) =>
@@ -220,6 +227,7 @@ namespace TestFramework.Authentication
         /// 片方だけに Issuer が在る応答は、どちらの版もその値を採る。
         /// </summary>
         [Test]
+        [Basis("SAML 2.0 Profiles 4.1.4.2（Response の Issuer は省いてよいが、在れば IdP を示す。各 Assertion の Issuer も IdP を示す）")]
         public void Issuer_Conflicted()
         {
             string conflicted = SignedPostWith((res, ns) =>
@@ -251,6 +259,8 @@ namespace TestFramework.Authentication
         /// どちらが短くても、その値が out に返る。
         /// </summary>
         [Test]
+        [Basis("SAML 2.0 Profiles 4.1.4.3（SubjectConfirmationData の NotOnOrAfter が過ぎていない）")]
+        [Basis("SAML 2.0 Core 2.5.1.2（Conditions の NotOnOrAfter で、有効な期間が終わる）")]
         public void NotOnOrAfter_PicksShorter()
         {
             foreach (bool conditionsShorter in new bool[] { true, false })
@@ -277,6 +287,8 @@ namespace TestFramework.Authentication
 
         /// <summary>期限が切れた Assertion：bool 版は false、理由つきの版は Expired。</summary>
         [Test]
+        [Basis("SAML 2.0 Profiles 4.1.4.3（SubjectConfirmationData の NotOnOrAfter が過ぎていない）")]
+        [Basis("SAML 2.0 Core 2.5.1.2（Conditions の NotOnOrAfter で、有効な期間が終わる）")]
         public void NotOnOrAfter_Expired()
         {
             string expired = W3c(-5);
@@ -295,6 +307,8 @@ namespace TestFramework.Authentication
 
         /// <summary>InResponseTo が SubjectConfirmationData と Response で食い違えば、bool 版は false、理由つきの版は Conflicted。</summary>
         [Test]
+        [Basis("SAML 2.0 Profiles 4.1.4.3（SubjectConfirmationData の InResponseTo は、元の AuthnRequest の ID と等しい）")]
+        [Basis("SAML 2.0 Core 3.2.2（Response の InResponseTo は、要求の ID と一致する）")]
         public void InResponseTo_Conflicted()
         {
             string saml = SignedPostWith((res, ns) =>
@@ -311,6 +325,7 @@ namespace TestFramework.Authentication
         /// （エラー応答の中身を使わせない）。
         /// </summary>
         [Test]
+        [Basis("SAML 2.0 Profiles 4.1.4.2（エラーを返すなら Assertion を含めない）")]
         public void ErrorStatus_WithAssertion()
         {
             XmlDocument res = SAML2BindingsTests.CreateResponse(SAML2Enum.StatusCode.Requester, true);
@@ -325,6 +340,7 @@ namespace TestFramework.Authentication
 
         /// <summary>Recipient だけが ACS URL と違えば RecipientMismatch（Audience は一致）。</summary>
         [Test]
+        [Basis("SAML 2.0 Profiles 4.1.4.3（SubjectConfirmationData の Recipient は、届いた ACS URL と一致する）")]
         public void RecipientMismatch()
         {
             string saml = SignedPostWith((res, ns) =>
@@ -341,6 +357,7 @@ namespace TestFramework.Authentication
 
         /// <summary>Redirect で SigAlg が無ければ NoSigAlg（署名を検証できない）。</summary>
         [Test]
+        [Basis("SAML 2.0 Bindings 3.4.4.1（署名するなら SigAlg を含める）")]
         public void Redirect_NoSigAlg()
         {
             DigitalSign ds = new DigitalSignParam(
@@ -364,6 +381,7 @@ namespace TestFramework.Authentication
         /// 素通しにすると、SAML2Bindings.EncodeAndSign* が黙って無署名の要求を出すため。
         /// </summary>
         [Test]
+        [Basis("設計：SAML2Client.CreateRedirectRequest・CreatePostRequest（鍵を受ける版）の remarks（null を素通しにすると無署名の要求を出すので、例外にする。#606）")]
         public void KeyOverloads_RejectNull()
         {
             string id;
@@ -387,6 +405,7 @@ namespace TestFramework.Authentication
         /// 鍵を受けない版は、設定（SpRp_RsaPfxFilePath / SpRp_RsaPfxPassword / SpRp_RsaCerFilePath）の鍵を使う（net10.0 だけ。構成を差し替える）。
         /// </summary>
         [Test]
+        [Basis("設計：SAML2Client.CreateRedirectRequest・CreatePostRequest・VerifyResponse（鍵を受けない版）の remarks（CmnClientParams の鍵を使う）")]
         public void ConfigOverloads_UseConfiguredKeys()
         {
             System.Collections.Generic.Dictionary<string, string> values = new System.Collections.Generic.Dictionary<string, string>

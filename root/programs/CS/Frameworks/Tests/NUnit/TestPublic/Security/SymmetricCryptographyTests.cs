@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
 //*  2026/10/28  玄人 幸道         モード・パディングの指定が効いていることを、.NET の API で組み直して確かめるテストを追加
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -32,6 +33,8 @@ using System.Security.Cryptography;
 using System.Text;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security;
 
@@ -178,6 +181,9 @@ namespace TestPublic.Security
         /// net48 と net10.0 で同じ暗号文になる（#608 の前は net10.0 だけ食い違っていた）。
         /// </summary>
         [Test]
+        [Basis("設計：Public/Security/ANALYSIS.md 6 節（PBKDF2-HMAC-SHA1。共有キー → 初期化ベクタの順に、同じ導出から続けて取り出す）")]
+        [Basis("別実装：.NET の Rfc2898DeriveBytes（SHA-1）と Aes で組み立てた暗号文と一致")]
+        [Basis("#608")]
         public void Default_SameAsPbkdf2Sha1()
         {
             byte[] plain = Encoding.UTF8.GetBytes(Plain);
@@ -193,6 +199,8 @@ namespace TestPublic.Security
 
         /// <summary>ソルトと回数を指定した場合も、同じ導出で暗号化する（TripleDES）。</summary>
         [Test]
+        [Basis("設計：Public/Security/ANALYSIS.md 6 節（PBKDF2-HMAC-SHA1。共有キー → 初期化ベクタの順に、同じ導出から続けて取り出す）")]
+        [Basis("別実装：.NET の Rfc2898DeriveBytes（SHA-1）と TripleDES で組み立てた暗号文と一致")]
         public void SaltAndStretching_SameAsPbkdf2Sha1()
         {
             byte[] plain = Encoding.UTF8.GetBytes(Plain);
@@ -239,6 +247,7 @@ namespace TestPublic.Security
         [TestCase(EnumSymmetricAlgorithm.AES | EnumSymmetricAlgorithm.CipherMode_ECB, CipherMode.ECB)]
         [TestCase(EnumSymmetricAlgorithm.TDES | EnumSymmetricAlgorithm.CipherMode_CFB, CipherMode.CFB)]
 #pragma warning restore CS0618
+        [Basis("別実装：.NET の Aes・TripleDES に同じモードを設定して作った暗号文と一致")]
         public void Mode_SameAsBcl(EnumSymmetricAlgorithm esa, CipherMode mode)
         {
             byte[] plain = Encoding.UTF8.GetBytes(Plain);
@@ -258,6 +267,11 @@ namespace TestPublic.Security
         /// 平文 5 バイトを AES（16 バイト）で暗号化するので、11（0x0B）バイト詰める。
         /// PKCS7 は 0x0B を 11 個、ANSI X9.23 は 0x00 を 10 個の後に 0x0B、Zeros は 0x00 を 11 個。
         /// </summary>
+        /// <remarks>
+        /// 根拠はケースごとに違うので、属性（Basis）にせずここに書く（QUALITY.md 7 節）。
+        /// ・PKCS7 … RFC 5652 6.3（k-(lth mod k) 個のバイトを、どれも k-(lth mod k) の値で詰める）
+        /// ・ANSI X9.23・Zeros … .NET の PaddingMode の説明による（規格の原典は確かめていない。観測）
+        /// </remarks>
         [TestCase(EnumSymmetricAlgorithm.PaddingMode_PKCS7, (byte)0x0B, (byte)0x0B)]
         [TestCase(EnumSymmetricAlgorithm.PaddingMode_ANSIX923, (byte)0x00, (byte)0x0B)]
         [TestCase(EnumSymmetricAlgorithm.PaddingMode_Zeros, (byte)0x00, (byte)0x00)]
