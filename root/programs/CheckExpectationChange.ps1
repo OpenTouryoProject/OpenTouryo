@@ -66,6 +66,7 @@
      ----------  ----------------  -------------------------------------------------
      2026/10/29  玄人 幸道         新規作成（#640 段 2・段 3 の検出器）
      2026/10/29  玄人 幸道         -Range と、仕組み自体の変更の検出を追加（#640 段 3）
+     2026/10/29  玄人 幸道         出力がパイプのとき UTF-8 で書くようにした（フックの表示が 5.1 で化けていた）
 #>
 [CmdletBinding()]
 param(
@@ -135,6 +136,25 @@ function Invoke-Git([string[]]$Arguments, [string]$OutFile)
     return [pscustomobject]@{ ExitCode = $p.ExitCode; Lines = $lines; Error = $errTask.Result }
 }
 
+# 表示。**出力がパイプなら、UTF-8 のバイトを直接書く。**
+#   フックを mintty・TortoiseGit・CI から動かすと、出力はパイプになる。5.1 はパイプへ、
+#   コンソールのコード ページ（日本語の Windows では 932）で書き出すため、受け取る側（UTF-8）で化ける。
+#   [Console]::OutputEncoding を変えると人のコンソールの表示まで変わるので、使わない（Invoke-Git と同じ）。
+#   コンソールなら Write-Host のまま（色が付く）。
+$script:rawOut = $null
+function Write-Msg([string]$Text = "", [ConsoleColor]$ForegroundColor)
+{
+    if (-not [Console]::IsOutputRedirected)
+    {
+        if ($PSBoundParameters.ContainsKey("ForegroundColor")) { Write-Host $Text -ForegroundColor $ForegroundColor } else { Write-Host $Text }
+        return
+    }
+    if (-not $script:rawOut) { $script:rawOut = [Console]::OpenStandardOutput() }
+    $bytes = (New-Object Text.UTF8Encoding $false).GetBytes($Text + "`n")
+    $script:rawOut.Write($bytes, 0, $bytes.Length)
+    $script:rawOut.Flush()
+}
+
 # 失敗したら止める版
 function Invoke-GitChecked([string[]]$Arguments, [string]$OutFile)
 {
@@ -182,7 +202,7 @@ try
 {
     if (@(@($Staged.IsPresent, [bool]$Commit, [bool]$Range) | Where-Object { $_ }).Count -ne 1)
     {
-        Write-Host "  -Staged・-Commit・-Range のどれか 1 つを指定してください。" -ForegroundColor Red
+        Write-Msg "  -Staged・-Commit・-Range のどれか 1 つを指定してください。" -ForegroundColor Red
         exit 2
     }
 
@@ -190,7 +210,7 @@ try
     if ($Range)
     {
         $commits = @((Invoke-GitChecked @("rev-list", "--no-merges", "--reverse", $Range)).Lines)
-        Write-Host ("  {0} の {1} 件のコミットを見ます" -f $Range, $commits.Count)
+        Write-Msg ("  {0} の {1} 件のコミットを見ます" -f $Range, $commits.Count)
         $worst = 0
         $skipped = 0
         foreach ($c in $commits)
@@ -201,10 +221,10 @@ try
             & $PSCommandPath -Commit $c
             if ($LASTEXITCODE -gt $worst) { $worst = $LASTEXITCODE }
         }
-        if ($skipped -gt 0) { Write-Host ("  導入より前のコミット {0} 件は見ていません" -f $skipped) }
+        if ($skipped -gt 0) { Write-Msg ("  導入より前のコミット {0} 件は見ていません" -f $skipped) }
         if ($worst -eq 1)
         {
-            Write-Host "  既にあるコミットは、メッセージを書き直す（git rebase -i で reword）。push 済みなら force push になるので、人が判断する。"
+            Write-Msg "  既にあるコミットは、メッセージを書き直す（git rebase -i で reword）。push 済みなら force push になるので、人が判断する。"
         }
         exit $worst
     }
@@ -214,7 +234,7 @@ try
     {
         if (-not $MessageFile -or -not (Test-Path $MessageFile))
         {
-            Write-Host ("  -MessageFile が見つかりません : {0}" -f $MessageFile) -ForegroundColor Red
+            Write-Msg ("  -MessageFile が見つかりません : {0}" -f $MessageFile) -ForegroundColor Red
             exit 2
         }
         if ((Invoke-Git @("rev-parse", "-q", "--verify", "MERGE_HEAD")).ExitCode -eq 0) { exit 0 }
@@ -317,22 +337,22 @@ try
     $trailers = Get-ExpectationTrailer $message
     if ($trailers.Count -gt 0)
     {
-        Write-Host ("  期待値の変更 {0} 件（{1}）。トレーラーで承認済み : {2}" -f $findings.Count, $label, ($trailers -join " / "))
+        Write-Msg ("  期待値の変更 {0} 件（{1}）。トレーラーで承認済み : {2}" -f $findings.Count, $label, ($trailers -join " / "))
         exit 0
     }
 
-    Write-Host ""
-    Write-Host ("  **トレーラーの無い期待値の変更があります**（{0}。QUALITY.md 3 節）" -f $label) -ForegroundColor Red
-    foreach ($x in $findings) { Write-Host ("    " + $x) -ForegroundColor Yellow }
-    Write-Host ""
-    Write-Host "  差分を確かめたうえで、コミット メッセージの末尾に理由を書いてください。"
-    Write-Host "    Expectation-Change: <何が・なぜ変わったか（仕様の該当箇所・Issue 番号）>"
-    Write-Host ""
+    Write-Msg ""
+    Write-Msg ("  **トレーラーの無い期待値の変更があります**（{0}。QUALITY.md 3 節）" -f $label) -ForegroundColor Red
+    foreach ($x in $findings) { Write-Msg ("    " + $x) -ForegroundColor Yellow }
+    Write-Msg ""
+    Write-Msg "  差分を確かめたうえで、コミット メッセージの末尾に理由を書いてください。"
+    Write-Msg "    Expectation-Change: <何が・なぜ変わったか（仕様の該当箇所・Issue 番号）>"
+    Write-Msg ""
     exit 1
 }
 catch
 {
-    Write-Host ("  期待値の変更を確かめられませんでした : {0}" -f $_.Exception.Message) -ForegroundColor Red
+    Write-Msg ("  期待値の変更を確かめられませんでした : {0}" -f $_.Exception.Message) -ForegroundColor Red
     exit 2
 }
 finally
