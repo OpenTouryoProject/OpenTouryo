@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
 //*  2026/10/18  玄人 幸道         生成した秘密鍵を取り出すケースを追加（#627）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -34,6 +35,8 @@ using System.Text;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security.Jwt;
 using Touryo.Infrastructure.Public.Str;
@@ -70,6 +73,8 @@ namespace TestPublic.Security.Jwt
         /// 鍵を生成した側で作り、**公開鍵の ECParameters だけを渡した側**で検証できる。alg は方式どおり。
         /// </summary>
         [Test]
+        [Basis("RFC 7518 3.1・3.4（ES256 は P-256 と SHA-256 の ECDSA）")]
+        [Basis("RFC 7515 5.2 の手順 8・10（署名を検証し、通らなければ無効）")]
         public void Es256_Param()
         {
             JWS_ES256_Param signer = new JWS_ES256_Param();
@@ -83,6 +88,9 @@ namespace TestPublic.Security.Jwt
 
         /// <summary>ES384（#595 で、SHA-384 が効くよう直した）</summary>
         [Test]
+        [Basis("RFC 7518 3.1・3.4（ES384 は P-384 と SHA-384 の ECDSA）")]
+        [Basis("RFC 7515 5.2 の手順 8・10（署名を検証し、通らなければ無効）")]
+        [Basis("#595")]
         public void Es384_Param()
         {
             JWS_ES384_Param signer = new JWS_ES384_Param();
@@ -96,6 +104,9 @@ namespace TestPublic.Security.Jwt
 
         /// <summary>ES512（#595 で、SHA-512 が効くよう直した）</summary>
         [Test]
+        [Basis("RFC 7518 3.1・3.4（ES512 は P-521 と SHA-512 の ECDSA）")]
+        [Basis("RFC 7515 5.2 の手順 8・10（署名を検証し、通らなければ無効）")]
+        [Basis("#595")]
         public void Es512_Param()
         {
             JWS_ES512_Param signer = new JWS_ES512_Param();
@@ -131,6 +142,7 @@ namespace TestPublic.Security.Jwt
         /// 2026/10/18 まで、Windows（CNG）では例外になった（#627。鍵が平文でのエクスポートを許していなかった）。
         /// </summary>
         [Test]
+        [Basis("#627")]
         public void PrivateParameters_Exportable()
         {
             JWS_ES256_Param es256 = new JWS_ES256_Param();
