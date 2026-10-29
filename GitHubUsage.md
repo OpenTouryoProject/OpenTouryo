@@ -642,6 +642,52 @@ DB の導入と初期化が入るため。**リリース時はこれを見込む
 > **`.github/secret_scanning.yml` の除外は Push protection には効かない。**
 > あちらはアラート（Secret scanning）の抑制であり、push の判定は見ていない。
 
+### 2026-10-29 : develop・master に必須チェック `expectation-change` を追加（#640）
+
+`expectation-change.yml` が PR #641 で 1 度動いた後に実施した。**チェック名と app を実測で確かめてから**設定する。
+
+```bash
+gh api repos/OpenTouryoProject/OpenTouryo/commits/<head_sha>/check-runs \
+  --jq '.check_runs[] | select(.name=="expectation-change") | {name, app: .app.slug, conclusion}'
+# → expectation-change / github-actions（app_id 15368。master の build と同じ）
+```
+
+**master は既に必須チェックがあるので、`required_status_checks` だけを PATCH する**（他の項目は変わらない）。
+
+```bash
+cat > master_checks.json <<'JSON'
+{ "strict": false,
+  "checks": [ { "context": "build", "app_id": 15368 },
+              { "context": "expectation-change", "app_id": 15368 } ] }
+JSON
+gh api -X PATCH repos/OpenTouryoProject/OpenTouryo/branches/master/protection/required_status_checks --input master_checks.json
+```
+
+**develop は必須チェックが無かったので、保護全体を PUT する**（上の「master に必須チェックを設定」と同じ理由。既存の値を明示する）。
+develop にはレビュー必須が無いので、`required_pull_request_reviews` は `null` のまま。
+
+```bash
+cat > develop_prot.json <<'JSON'
+{ "required_status_checks": { "strict": false, "checks": [ { "context": "expectation-change", "app_id": 15368 } ] },
+  "enforce_admins": false,
+  "required_pull_request_reviews": null,
+  "restrictions": null,
+  "required_linear_history": false,
+  "allow_force_pushes": false,
+  "allow_deletions": false,
+  "block_creations": false,
+  "required_conversation_resolution": false,
+  "lock_branch": false,
+  "allow_fork_syncing": false }
+JSON
+gh api -X PUT repos/OpenTouryoProject/OpenTouryo/branches/develop/protection --input develop_prot.json
+```
+
+設定の後、両方の保護を取り直して全項目を照合した（master はレビュー 1 名・`build` が残り、`expectation-change` が増えただけ）。
+PR #641 の `mergeStateStatus` は `CLEAN` のまま（必須のチェックを満たしている）。
+
+> **develop・master へ直接 push すると、拒否されるようになった**（`enforce_admins` は無効なので、管理者は通る）。
+
 ---
 
 ## 8. 未着手の提案
