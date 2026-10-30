@@ -28,6 +28,7 @@
 //*  2026/10/12  玄人 幸道         EncodeAndSignRedirectのSigAlgと、VerifyRedirectのSigAlgの扱いのテストを追加（#604）
 //*  2026/10/14  玄人 幸道         SAML2Client.CreateRedirectRequest / CreatePostRequestの、鍵を渡す版のテストを追加（#606）
 //*  2026/10/22  玄人 幸道         StringExtractor.GetParameterFromQueryString（Obsolete）を UriOperator に置き換えた（#634）
+//*  2026/10/30  玄人 幸道         RSA-PSS の SigAlg を、RFC 9231 の sha256-rsa-MGF1 にした（#643）
 //**********************************************************************************
 
 using System;
@@ -208,10 +209,10 @@ namespace TestCode
                 TestSAML2.OutputSigAlg("RSA・SHA512", saml, key,
                     HashAlgorithmName.SHA512, RSASignaturePadding.Pkcs1, SAML2Const.RSAwithSHA512, true);
 
-                // 対応する値を持たないもの（PSS）は、従来どおり rsa-sha1 と書く。
-                // RSA 版は PKCS#1 v1.5 で検証するので、通らない。
-                TestSAML2.OutputSigAlg("RSA-PSS・SHA256（従来どおり）", saml, key,
-                    HashAlgorithmName.SHA256, RSASignaturePadding.Pss, SAML2Const.RSAwithSHA1, false);
+                // PSS は、RFC 9231 2.3.10 の sha256-rsa-MGF1 と書く（2026/10/30 まで rsa-sha1。#643）。
+                // RSA 版は、既定の一覧に PSS を入れないので、通らない。
+                TestSAML2.OutputSigAlg("RSA-PSS・SHA256", saml, key,
+                    HashAlgorithmName.SHA256, RSASignaturePadding.Pss, SAML2Const.RSAPSSwithSHA256, false);
 
                 Touryo.Infrastructure.Public.Security.DigitalSignParam ds1 =
                     new Touryo.Infrastructure.Public.Security.DigitalSignParam(

@@ -354,13 +354,16 @@ SAML の署名・検証は SP と IdP の双方が使うため、**IdP 側の処
   **ビルド済みの呼び出し元が `MissingMethodException` で落ちる**ため
 - Redirect の `SigAlg` は、`EncodeAndSignRedirect` に渡した `DigitalSign` のアルゴリズムで書く
   （既定の SHA256 なら `rsa-sha256`。#604 まで `rsa-sha1` 固定だった）
+- **RSA-PSS・ECDSA も、RFC 9231 の URI で書く**（`sha256-rsa-MGF1`・`ecdsa-sha256` など。2.3.10・2.3.6。#643）。
+  **決められないアルゴリズム（RSA-PSS の SHA1 など）は `ArgumentException`**。2026/10/30 までは、どちらも `rsa-sha1` と書いていた。
+  **RSA-PSS・ECDSA で署名し、`DigitalSign` 版の `VerifyRedirect` で受けている相手とは、版を揃える**（古い版の `rsa-sha1` は照合で落ちる）
 
 **`VerifyRedirect` は 2 つ在る**（#604）。
 
 | 版 | 検証のしかた |
 |---|---|
 | `DigitalSign` を受ける | 渡された `DigitalSign` で検証し、**`SigAlg` がそのアルゴリズムと一致しなければ失敗する**（`SAML2Client.VerifyResponse` はこちら。ハッシュは `hashAlgorithmName`、既定は SHA256） |
-| `RSA` を受ける | **許可リスト（`sigAlgs`）の中から `SigAlg` でハッシュを選ぶ**（既定は SHA256 / 384 / 512 で、SHA1 は受けない） |
+| `RSA` を受ける | **許可リスト（`sigAlgs`）の中から `SigAlg` でハッシュとパディングを選ぶ**（既定は SHA256 / 384 / 512 で、SHA1 は受けない。**RSA-PSS は既定では受けず、`RSAPSSwithSHA256` などを並べたときだけ**。#643） |
 
 - **#604 より前の Open棟梁 が送った要求・応答（`rsa-sha1` と名乗る SHA256 の署名）は、どちらでも失敗する。**
   受け手で `SigAlg` が `rsa-sha1` であることを確かめていると、#604 以降の送り手の要求・応答で落ちる

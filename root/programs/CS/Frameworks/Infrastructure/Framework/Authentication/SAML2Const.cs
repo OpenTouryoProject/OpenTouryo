@@ -38,6 +38,7 @@
 //*                                MetadataTemplate の use / xmlns:ds を定数から組み立てる（値は変えていない）
 //*  2026/10/22  玄人 幸道         SAML2Bindings の直書きを寄せるため、XPathAssertion、要求・応答・アサーション・
 //*                                メタデータの要素名・属性名、ID の接頭辞を追加
+//*  2026/10/30  玄人 幸道         RSA-PSS・ECDSA の SigAlg の URI を追加し、RSA の注記を RFC 9231 にした（#643）
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Framework.Authentication
@@ -499,14 +500,32 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>DSAwithSHA1</summary>
         public const string DSAwithSHA1 = "http://www.w3.org/2000/09/xmldsig#dsa-sha1";
 
-        /// <summary>RSAwithSHA256（RFC 6931）</summary>
+        /// <summary>RSAwithSHA256（RFC 9231 2.3.2）</summary>
         public const string RSAwithSHA256 = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256";
 
-        /// <summary>RSAwithSHA384（RFC 6931）</summary>
+        /// <summary>RSAwithSHA384（RFC 9231 2.3.3）</summary>
         public const string RSAwithSHA384 = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha384";
 
-        /// <summary>RSAwithSHA512（RFC 6931）</summary>
+        /// <summary>RSAwithSHA512（RFC 9231 2.3.4）</summary>
         public const string RSAwithSHA512 = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512";
+
+        /// <summary>RSA-PSS with SHA256（RFC 9231 2.3.10。ソルト長はハッシュ長）</summary>
+        public const string RSAPSSwithSHA256 = "http://www.w3.org/2007/05/xmldsig-more#sha256-rsa-MGF1";
+
+        /// <summary>RSA-PSS with SHA384（RFC 9231 2.3.10。ソルト長はハッシュ長）</summary>
+        public const string RSAPSSwithSHA384 = "http://www.w3.org/2007/05/xmldsig-more#sha384-rsa-MGF1";
+
+        /// <summary>RSA-PSS with SHA512（RFC 9231 2.3.10。ソルト長はハッシュ長）</summary>
+        public const string RSAPSSwithSHA512 = "http://www.w3.org/2007/05/xmldsig-more#sha512-rsa-MGF1";
+
+        /// <summary>ECDSA with SHA256（RFC 9231 2.3.6）</summary>
+        public const string ECDSAwithSHA256 = "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256";
+
+        /// <summary>ECDSA with SHA384（RFC 9231 2.3.6）</summary>
+        public const string ECDSAwithSHA384 = "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384";
+
+        /// <summary>ECDSA with SHA512（RFC 9231 2.3.6）</summary>
+        public const string ECDSAwithSHA512 = "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512";
         #endregion
     }
 }
