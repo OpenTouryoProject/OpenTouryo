@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（#634）
 //*  2026/10/22  玄人 幸道         種類の合わない alg・読めない JWT の境界のテストを足した（カバレッジの拡充）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -34,6 +35,8 @@ using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security.Jwt;
 using Touryo.Infrastructure.Public.Str;
@@ -81,6 +84,7 @@ namespace TestPublic.Security.Jwt
 
         /// <summary>秘密鍵の JWK で署名し、公開鍵の JWK で検証できる（alg ごと）。</summary>
         [TestCaseSource(nameof(Algorithms))]
+        [Basis("設計：JwsFactory の remarks（扱うのは RS* / PS* / ES* だけ。HS* と none は扱わない。alg と kty・crv の表）")]
         public void SignWithPrivateJwk_VerifyWithPublicJwk(string alg)
         {
             JObject priv = PrivateJwk(alg);
@@ -96,6 +100,10 @@ namespace TestPublic.Security.Jwt
 
         /// <summary>表：扱うのは RS* / PS* / ES* の 9 つ。HS* と none は扱わない。配列は複製を返す。</summary>
         [Test]
+        [Basis("設計：JwsFactory の remarks（扱うのは RS* / PS* / ES* だけ。HS* と none は扱わない。alg と kty・crv の表）")]
+        [Basis("設計：JwsFactory.SupportedAlgs の remarks（毎回、新しい配列を返す）")]
+        [Basis("RFC 7515 4.1.1（alg は大文字小文字を区別する）")]
+        [Basis("RFC 7518 3.4（ES512 は P-521）")]
         public void SupportedAlgs()
         {
             Assert.That(JwsFactory.SupportedAlgs.Length, Is.EqualTo(9));
@@ -118,6 +126,8 @@ namespace TestPublic.Security.Jwt
         /// 合わなければ CreateFromJwk も null。
         /// </summary>
         [Test]
+        [Basis("設計：JwsFactory.IsSameKeyType の remarks（EC は crv まで見る。JWK の alg とは照合しない）・CreateFromJwk の remarks（合わなければ・読めなければ null）")]
+        [Basis("RFC 7518 3.4（ES256 は P-256、ES384 は P-384、ES512 は P-521）")]
         public void IsSameKeyType_RejectsAlgorithmConfusion()
         {
             JObject p256 = JwkOperator.ToPublic(PrivateJwk("ES256"));
@@ -136,6 +146,7 @@ namespace TestPublic.Security.Jwt
 
         /// <summary>公開鍵だけの JWK では、秘密鍵の版は作れない。</summary>
         [Test]
+        [Basis("設計：JwsFactory.CreateFromPrivateJwk の remarks（自分の鍵なので、読めなければ例外にする）")]
         public void CreateFromPrivateJwk_RequiresPrivateKey()
         {
             JObject pub = JwkOperator.ToPublic(PrivateJwk("RS256"));
@@ -147,6 +158,7 @@ namespace TestPublic.Security.Jwt
         /// 署名側は、管理者でなくても読めるフラグで直に作る（CreateFromPfx の既定は MachineKeySet を含む）。
         /// </summary>
         [Test]
+        [Basis("設計：JwsFactory の remarks（扱うのは RS* / PS* / ES* だけ。HS* と none は扱わない。alg と kty・crv の表）")]
         public void CreateFromCertificate()
         {
             JWS signer = new JWS_RS256_X509(TestCertificates.RsaPfx, TestCertificates.Password, TestCertificates.Flags);
@@ -161,6 +173,8 @@ namespace TestPublic.Security.Jwt
         /// 読めない値は null（例外にしない）。JWE（5 区切り）はヘッダだけ読める。
         /// </summary>
         [Test]
+        [Basis("設計：JwtReader の remarks（読めなければ null を返し、例外にしない。JWE のペイロードは読めない）")]
+        [Basis("RFC 7515 4.1.4（kid は任意）")]
         public void JwtReader_TryRead()
         {
             JWS signer = JwsFactory.CreateFromPrivateJwk("ES256", PrivateJwk("ES256"));
@@ -189,6 +203,7 @@ namespace TestPublic.Security.Jwt
 
         /// <summary>鍵の種類と alg が合わなければ null（RSA の鍵で ES*、EC の鍵で RS* を作らない）。</summary>
         [Test]
+        [Basis("設計：JwsFactory の remarks（扱うのは RS* / PS* / ES* だけ。HS* と none は扱わない。alg と kty・crv の表）")]
         public void CreateFromParameters_WrongAlg()
         {
             using (RSA rsa = RSA.Create(2048))

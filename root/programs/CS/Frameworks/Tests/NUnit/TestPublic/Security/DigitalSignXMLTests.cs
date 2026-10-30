@@ -25,12 +25,15 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
 //*  2026/10/18  玄人 幸道         DSA の Sign / Verify のケースを追加（#625）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
 using System.Text;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security;
 
@@ -75,6 +78,7 @@ namespace TestPublic.Security
 
         /// <summary>DSA：秘密鍵の XML で署名し（Formatter）、公開鍵の XML で検証できる。</summary>
         [Test]
+        [Basis("#625")]
         public void Dsa_XmlKeys()
         {
             using (DigitalSignXML generated = new DigitalSignXML(EnumDigitalSignAlgorithm.DsaCSP_SHA1))

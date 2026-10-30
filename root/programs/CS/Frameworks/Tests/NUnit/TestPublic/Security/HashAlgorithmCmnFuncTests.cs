@@ -24,12 +24,15 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
+//*  2026/10/30  玄人 幸道         期待値の観測（Observation）を付けた（既定値。#640）
 //**********************************************************************************
 
 using System;
 using System.Security.Cryptography;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security;
 
@@ -61,6 +64,7 @@ namespace TestPublic.Security
 
         /// <summary>名前から HashAlgorithm を作る。名前を省くと SHA256。</summary>
         [Test]
+        [Observation("名前を省くと SHA256 になることは、GetHashAlgorithmFromNameString の XML コメントに書かれていない（今の振る舞いを写した）")]
         public void GetHashAlgorithmFromNameString()
         {
             Assert.That(HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(), Is.InstanceOf<SHA256>());
@@ -74,6 +78,7 @@ namespace TestPublic.Security
 
         /// <summary>列挙値に対応するハッシュを作る。既定（Default）は SHA256。</summary>
         [Test]
+        [Observation("Default が SHA256 になることは、EnumHashAlgorithm に約束が書かれていない（今の振る舞いを写した）")]
         public void CreateHashAlgorithmSP()
         {
             Assert.That(HashAlgorithmCmnFunc.CreateHashAlgorithmSP(EnumHashAlgorithm.Default), Is.InstanceOf<SHA256>());
@@ -86,6 +91,7 @@ namespace TestPublic.Security
 
         /// <summary>**列挙に無い値は、例外にならずに既定（SHA256）になる。**</summary>
         [Test]
+        [Observation("列挙に無い値が、例外にならずに SHA256 になることは、CreateHashAlgorithmSP の XML コメントに書かれていない（今の振る舞いを写した）")]
         public void CreateHashAlgorithmSP_Unknown_DefaultsToSha256()
         {
             Assert.That(HashAlgorithmCmnFunc.CreateHashAlgorithmSP((EnumHashAlgorithm)999), Is.InstanceOf<SHA256>());
@@ -123,6 +129,7 @@ namespace TestPublic.Security
 
         /// <summary>列挙値に対応する HMAC を作る。既定（Default）は HMACSHA1。鍵はそのまま使う。</summary>
         [Test]
+        [Observation("Default が HMACSHA1 になることは、EnumKeyedHashAlgorithm に約束が書かれていない（今の振る舞いを写した）")]
         public void CreateKeyedHashAlgorithmSP()
         {
             byte[] key = new byte[] { 1, 2, 3 };
@@ -157,6 +164,7 @@ namespace TestPublic.Security
 
         /// <summary>キー付きは、列挙に無い値なら ArgumentException（キー無しと違い、既定に倒さない）。</summary>
         [Test]
+        [Observation("列挙に無い値が ArgumentException になることは、CreateKeyedHashAlgorithmSP の XML コメントに書かれていない（今の振る舞いを写した）")]
         public void CreateKeyedHashAlgorithmSP_Unknown_Throws()
         {
             Assert.Throws<ArgumentException>(() =>

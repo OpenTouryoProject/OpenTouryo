@@ -25,11 +25,14 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
 //*  2026/10/18  玄人 幸道         RsaCng で OAEP-SHA256 を使うケースと、.NET の RsaCsp の互換のケースを追加（#628）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）と観測（Observation）を付けた（#640）
 //**********************************************************************************
 
 using System.Security.Cryptography;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security;
 
@@ -77,6 +80,7 @@ namespace TestPublic.Security
 
         /// <summary>パディングを指定できる（OAEP-SHA1）。指定しなければ PKCS#1 v1.5。</summary>
         [Test]
+        [Observation("既定のパディングが PKCS#1 v1.5 であることは、EncryptBytes / DecryptBytes の XML コメントに書かれていない（今の振る舞いを写した）")]
         public void OaepSha1()
         {
             ASymmetricCryptography ac = new ASymmetricCryptography(EnumASymmetricAlgorithm.RsaCsp);
@@ -93,6 +97,8 @@ namespace TestPublic.Security
         /// </summary>
         [Test]
         [Platform("Win")]
+        [Basis("#628")]
+        [Basis("設計：Public/Security/ANALYSIS.md 9 節の 8（RsaCng は new RSACng()、RsaCsp は RSA.Create() のまま）")]
         public void RsaCng_OaepSha256()
         {
             ASymmetricCryptography ac = new ASymmetricCryptography(EnumASymmetricAlgorithm.RsaCng);
@@ -108,6 +114,8 @@ namespace TestPublic.Security
         /// RSACryptoServiceProvider に寄せると、これが例外になる。
         /// </summary>
         [Test]
+        [Basis("#628")]
+        [Basis("設計：Public/Security/ANALYSIS.md 9 節の 8（RsaCng は new RSACng()、RsaCsp は RSA.Create() のまま）")]
         public void RsaCsp_OaepSha256_OnDotNet()
         {
             ASymmetricCryptography ac = new ASymmetricCryptography(EnumASymmetricAlgorithm.RsaCsp);

@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）と観測（Observation）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -32,6 +33,8 @@ using System.IO;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security.Jwt;
 
@@ -67,6 +70,7 @@ namespace TestPublic.Security.Jwt
 
         /// <summary>**同じ kid の JWK は足さない**（先に入っていたものが残る）。kid で引ける。無ければ null。</summary>
         [Test]
+        [Observation("同じ kid を足さずに先のものを残すことは、AddJwkToJwkSet の XML コメントに書かれていない（RFC 7517 4.5 は、JWK Set の中で kid を分けることを SHOULD とするだけ。今の振る舞いを写した）")]
         public void Add_And_Get()
         {
             JwkSet set = new JwkSet();
@@ -83,6 +87,7 @@ namespace TestPublic.Security.Jwt
 
         /// <summary>ファイルに保存して読み戻せる。保存は keys（小文字）の JSON。</summary>
         [Test]
+        [Basis("RFC 7517 5（JWK Set は keys の配列を持つ）")]
         public void Save_And_Load()
         {
             string path = Path.Combine(this._dir, "jwks.json");

@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/19  玄人 幸道         新規作成（カバレッジの拡充）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -33,6 +34,8 @@ using System.Text;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security.Jwt;
 using Touryo.Infrastructure.Public.Str;
@@ -108,6 +111,7 @@ namespace TestPublic.Security.Jwt
         /// 署名した JWT は、公開鍵だけを持つ側で検証できる。改ざんすると失敗する。alg は方式どおり。
         /// </summary>
         [TestCaseSource(nameof(Cases))]
+        [Basis("RFC 7518 3.1（alg の値。RS* は 3.3 の RSASSA-PKCS1-v1_5、PS* は 3.5 の RSASSA-PSS）")]
         public void SignAndVerify(string alg, Func<JWS> signerFactory, Func<JWS, JWS> verifierFactory)
         {
             JWS signer = signerFactory();

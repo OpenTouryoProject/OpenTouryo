@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
 //*  2026/10/18  玄人 幸道         DSA の証明書で署名・検証するケースを追加（#626）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -32,6 +33,8 @@ using System.Security.Cryptography;
 using System.Text;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security;
 
@@ -104,6 +107,8 @@ namespace TestPublic.Security
         /// 2026/10/18 まで、net48 は *.pfx（秘密鍵の写し直し）、net10.0 は *.cer（公開鍵の取り出し）で例外になった（#626）。
         /// </summary>
         [Test]
+        [Basis("#626")]
+        [Basis("設計：Public/Security/ANALYSIS.md 9 節の 7（DSA の公開鍵は PublicKey（SubjectPublicKeyInfo）から読む）")]
         public void Dsa_PfxSign_CerVerify()
         {
             using (DigitalSignX509 signer = new DigitalSignX509(TestCertificates.DsaPfx, TestCertificates.Password, HashAlgorithmName.SHA256, TestCertificates.Flags))
