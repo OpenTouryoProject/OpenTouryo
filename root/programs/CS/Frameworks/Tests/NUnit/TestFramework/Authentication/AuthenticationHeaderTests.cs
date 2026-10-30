@@ -28,6 +28,7 @@
 //*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を広げた（#640）
 //*  2026/10/30  玄人 幸道         Basic：最初の ":" で分けることにした（Basic_TooManyParts_False を Basic_ColonInSecret にした。#643）
+//*  2026/10/30  玄人 幸道         Basic：復号前の値で通ったかを返す版のテストを足し、Basic_WithVerifier に根拠を付けた（#643）
 //**********************************************************************************
 
 using System;
@@ -177,8 +178,11 @@ namespace TestFramework.Authentication
         /// <summary>
         /// Basic（照合する版）：復号後で通らず、復号前で通るなら、復号前の値を返す（符号化しないクライアント）。
         /// 英数字だけなら照合は 1 回で済む。照合の処理が null なら ArgumentNullException。
+        /// 復号前の値での照合は、4.0 で既定ではやめる予定（#643。それまでは設計どおりに受ける）。
         /// </summary>
         [Test]
+        [Basis("RFC 6749 2.3.1（client_id・client_secret は application/x-www-form-urlencoded で符号化してから Basic にする）")]
+        [Basis("設計：AuthenticationHeader.GetCredentials(authHeader, verifier, …) の remarks（符号化しないクライアントのため、復号前の値でも照合する。#634 の H-3。4.0 でやめる予定）")]
         public void Basic_WithVerifier()
         {
             // 符号化しないクライアントが "a%2Fb" という秘密を、そのまま送ってきた。
@@ -199,6 +203,42 @@ namespace TestFramework.Authentication
 
             Assert.That(AuthenticationHeader.GetCredentials("Bearer x", (i, s) => true, out id, out secret), Is.False, "Basic でない");
             Assert.Throws<ArgumentNullException>(() => AuthenticationHeader.GetCredentials(raw, null, out id, out secret));
+        }
+
+        /// <summary>
+        /// Basic（照合し、復号前の値で通ったかを返す版）：符号化しないクライアントが記号を含む値を送ってきたときだけ true。
+        /// 振る舞い（返す値）は、usedRawValue を受けない版と同じ。4.0 で復号前の照合をやめる前の、見つけるための版（#643）。
+        /// </summary>
+        [Test]
+        [Basis("設計：AuthenticationHeader.GetCredentials(authHeader, verifier, …, out usedRawValue) の remarks（復号前の値で通ったときだけ true）")]
+        [Basis("#643")]
+        public void Basic_WithVerifier_UsedRawValue()
+        {
+            string id, secret;
+            bool usedRaw;
+
+            // 符号化しないクライアント（記号を含む値を、そのまま送ってきた）
+            Assert.That(AuthenticationHeader.GetCredentials(Basic("client01:a%2Fb"), (i, s) => s == "a%2Fb", out id, out secret, out usedRaw), Is.True);
+            Assert.That(secret, Is.EqualTo("a%2Fb"));
+            Assert.That(usedRaw, Is.True, "復号前の値で通った");
+
+            // 符号化するクライアント（RFC 6749 §2.3.1）
+            string encoded = AuthenticationHeader.CreateBasicAuthenticationHeaderValue("client01", "a/b").ToString();
+            Assert.That(AuthenticationHeader.GetCredentials(encoded, (i, s) => s == "a/b", out id, out secret, out usedRaw), Is.True);
+            Assert.That(usedRaw, Is.False, "復号後の値で通った");
+
+            // 英数字だけ（どちらも同じ値なので、照合しない）
+            Assert.That(AuthenticationHeader.GetCredentials(Basic("client01:secret01"), (i, s) => true, out id, out secret, out usedRaw), Is.True);
+            Assert.That(usedRaw, Is.False);
+
+            // どちらでも通らない（返すのは復号後の値）
+            Assert.That(AuthenticationHeader.GetCredentials(Basic("client01:a%2Fb"), (i, s) => false, out id, out secret, out usedRaw), Is.True);
+            Assert.That(secret, Is.EqualTo("a/b"));
+            Assert.That(usedRaw, Is.False);
+
+            Assert.That(AuthenticationHeader.GetCredentials("Bearer x", (i, s) => true, out id, out secret, out usedRaw), Is.False, "Basic でない");
+            Assert.That(usedRaw, Is.False);
+            Assert.Throws<ArgumentNullException>(() => AuthenticationHeader.GetCredentials(Basic("a:b"), null, out id, out secret, out usedRaw));
         }
 
         /// <summary>GetAccessToken：Bearer / DPoP を読み、スキームを返す（大文字小文字を区別しない）。</summary>
