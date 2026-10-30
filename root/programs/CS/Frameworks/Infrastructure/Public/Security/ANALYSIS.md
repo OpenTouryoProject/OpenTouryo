@@ -80,6 +80,9 @@ JWS（抽象。JWSHeader / Create / Verify / Verify(jwt, typ)）
   照合は RFC 7515 4.1.9 の規則（大文字小文字を区別しない、`/` が無ければ `application/` を補う）。
   **ヘッダに `typ` が無ければ不一致**
 - RFC 9068 の access_token を検証するリソース サーバは `JwtConst.AT_JWT` で照合する
+- **`alg`（JWS・JWE）・`enc`・`kty`・`use` は、大文字小文字を区別して比べる**（RFC 7515 4.1.1・RFC 7516 4.1.1・4.1.2・RFC 7517 4.1・4.2・4.4。#643）。
+  2026/10/30 までは、`ToUpper` / `ToLower` で揃えてから比べていた（`rs256`・`"kty":"rsa"` を受けていた）。
+  **`typ` だけは区別しない**（メディア タイプなので。上の `Verify(jwt, typ)`）
 
 ### 4.2 JWE（暗号化）
 

@@ -27,9 +27,12 @@
 //*  2026/10/22  玄人 幸道         htu の比較（IsSameHtu）を UriOperator から移した（DPoP 専用のため。private）。
 //*                                クエリと素片を除くのは UriOperator.GetUrlWithoutQueryAndFragment で、作る側と共有する
 //*  2026/10/22  玄人 幸道         Create の htu を http / https の絶対 URL に限った（それ以外は ArgumentException）
+//*  2026/10/30  玄人 幸道         htu の比較を RFC 9449 4.3 どおりにした（末尾の "/"・パスの大文字小文字を区別する。
+//*                                %エンコードを RFC 3986 6.2.2 で正規化し、net48 と net10.0 で結果を揃えた。#642）
 //**********************************************************************************
 
 using System;
+using System.Text;
 using System.Collections.Generic;
 
 using Newtonsoft.Json;
@@ -233,7 +236,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// | jwk | 在ること。公開鍵だけであること。alg と鍵の種類が合っていること |
         /// | 署名 | その jwk で検証できること |
         /// | jti | 在ること（使い回しの検出は、呼び出し側の台帳で行う） |
-        /// | htm / htu | 期待どおりであること（htu はクエリと素片を除いて比べる） |
+        /// | htm / htu | 期待どおりであること（htu はクエリと素片を除き、RFC 3986 の正規化の後に完全一致で比べる。末尾の "/"・パスの大文字小文字は区別する） |
         /// | iat | 数値で、窓の中であること |
         ///
         /// **nonce と jti の使い回しは見ない**（配備の決めである）。通った後で、
@@ -441,13 +444,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="expected">string（要求を受けた口の URL）</param>
         /// <returns>同じなら true（どちらかが絶対 URL でなければ false）</returns>
         /// <remarks>
-        /// 次のとおり緩く比べる（redirect_uri の照合のような、完全一致の比較ではない）。
+        /// クエリ（?）と素片（#）を落とし（RFC 9449 4.3 の 9）、RFC 3986 の正規化をしてから、完全一致で比べる。
         ///
-        /// - クエリ（?）と素片（#）を落とす（RFC 9449 4.3）
-        /// - 末尾の "/" を落とす（同じ口を指す書き方の違い）
-        /// - 大文字小文字を区別しない（スキームとホストは RFC 3986 でも区別しない。
-        ///   IIS / Kestrel はパスも区別しないので、区別すると実際に受けた要求を「違う」と言うことになる）
-        /// - 既定のポートは省いて比べる（Uri の正規化に従う）
+        /// - スキーム・ホストの大文字小文字、既定のポート、空のパス（"/"）、ドット セグメント
+        ///   （RFC 3986 6.2.2.1・6.2.2.3・6.2.3。Uri の正規化に従う）
+        /// - %エンコードの 16 進を大文字にし、予約外文字（英数字と "-" "." "_" "~"）は戻す（RFC 3986 6.2.2.1・6.2.2.2）。
+        ///   Uri は、net10.0 では予約外文字を戻すが net48 では戻さないので、ここで揃える
+        /// - **末尾の "/" と、パスの大文字小文字は区別する**（別の URI である）
+        ///
+        /// 2026/10/30 まで、末尾の "/" を落とし、パスの大文字小文字も区別せずに比べていた（#642）。
         /// </remarks>
         private static bool IsSameHtu(string actual, string expected)
         {
@@ -459,7 +464,48 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 return false;
             }
 
-            return string.Equals(a.TrimEnd('/'), b.TrimEnd('/'), StringComparison.OrdinalIgnoreCase);
+            return string.Equals(
+                DPoPProof.NormalizePercentEncoding(a),
+                DPoPProof.NormalizePercentEncoding(b),
+                StringComparison.Ordinal);
+        }
+
+        /// <summary>%エンコードを正規化する（RFC 3986 6.2.2.1・6.2.2.2）</summary>
+        /// <param name="url">string（Uri で正規化した URL）</param>
+        /// <returns>16 進を大文字にし、予約外文字の %エンコードを戻した URL</returns>
+        private static string NormalizePercentEncoding(string url)
+        {
+            StringBuilder sb = new StringBuilder(url.Length);
+
+            for (int i = 0; i < url.Length; i++)
+            {
+                if (url[i] == '%' && i + 2 < url.Length
+                    && Uri.IsHexDigit(url[i + 1]) && Uri.IsHexDigit(url[i + 2]))
+                {
+                    char c = (char)Convert.ToInt32(url.Substring(i + 1, 2), 16);
+
+                    // 予約外文字（RFC 3986 2.3）
+                    if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || (c >= '0' && c <= '9')
+                        || c == '-' || c == '.' || c == '_' || c == '~')
+                    {
+                        sb.Append(c);
+                    }
+                    else
+                    {
+                        sb.Append('%')
+                            .Append(char.ToUpperInvariant(url[i + 1]))
+                            .Append(char.ToUpperInvariant(url[i + 2]));
+                    }
+
+                    i += 2;
+                }
+                else
+                {
+                    sb.Append(url[i]);
+                }
+            }
+
+            return sb.ToString();
         }
 
         /// <summary>iat が窓の中か</summary>

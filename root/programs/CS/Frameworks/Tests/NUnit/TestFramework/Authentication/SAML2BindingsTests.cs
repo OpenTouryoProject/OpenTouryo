@@ -26,8 +26,11 @@
 //*  2026/10/19  玄人 幸道         新規作成
 //*  2026/10/22  玄人 幸道         SigAlg（ハッシュ別・DSA・PSS）・空の入力・暗号化用の鍵を飛ばすことのテストを足した（#634。カバレッジの拡充）
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
+//*  2026/10/30  玄人 幸道         Redirect の SigAlg：RSA-PSS・ECDSA を RFC 9231 の URI にし、決められないものは例外にした（#643）
+//*  2026/10/31  玄人 幸道         Redirect：ECDSA でハッシュを渡さないときに SHA-256 で署名していることを、SHA-256 を明示した検証で確かめるテストを足した（#643）
 //**********************************************************************************
 
+using System;
 using System.Security.Cryptography;
 using System.Xml;
 
@@ -313,24 +316,128 @@ namespace TestFramework.Authentication
         }
 
         /// <summary>
-        /// Redirect：PSS の RSA は、従来どおり SigAlg を RSAwithSHA1 にする（DigitalSign 版の検証とは合う）。
-        /// DSA は DSAwithSHA1。
+        /// Redirect：RSA-PSS は、SigAlg を RFC 9231 の sha*-rsa-MGF1 にする。DigitalSign 版で検証でき、
+        /// RSA 版は、一覧に並べたときだけ PSS で検証する（**既定の一覧には PSS を入れない**）。
+        /// 2026/10/30 まで、SigAlg を RSAwithSHA1 と書いていた（#643）。
         /// </summary>
-        [Test]
-        public void Redirect_SigAlgOfOtherAlgorithms()
+        [TestCase("SHA256", SAML2Const.RSAPSSwithSHA256)]
+        [TestCase("SHA384", SAML2Const.RSAPSSwithSHA384)]
+        [TestCase("SHA512", SAML2Const.RSAPSSwithSHA512)]
+        [Basis("SAML 2.0 Bindings 3.4.4.1（SigAlg は、署名に使ったアルゴリズムを示す URI）")]
+        [Basis("RFC 9231 2.3.10（RSASSA-PSS の URI。ソルト長はハッシュ長）")]
+        [Basis("設計：SAML2Bindings.VerifyRedirect(queryString, rsa, sigAlgs) の remarks（RSA-PSS は既定では受け入れない）")]
+        [Basis("#643")]
+        public void Redirect_SigAlgOfPss(string hash, string expectedSigAlg)
         {
             string saml = CreateResponse(SAML2Enum.StatusCode.Success, true).OuterXml;
 
             using (RSA rsa = RSA.Create(2048))
             {
-                DigitalSignParam pss = new DigitalSignParam(rsa.ExportParameters(true), HashAlgorithmName.SHA256, RSASignaturePadding.Pss);
+                DigitalSignParam pss = new DigitalSignParam(rsa.ExportParameters(true), new HashAlgorithmName(hash), RSASignaturePadding.Pss);
                 string query = SAML2Bindings.EncodeAndSignRedirect(SAML2Enum.RequestOrResponse.Response, saml, "", pss);
-                Assert.That(SigAlgOf(query), Is.EqualTo(SAML2Const.RSAwithSHA1));
+
+                Assert.That(SigAlgOf(query), Is.EqualTo(expectedSigAlg));
+                Assert.That(SAML2Bindings.VerifyRedirect(query, pss), Is.True, "DigitalSign 版");
+                Assert.That(SAML2Bindings.VerifyRedirect(query, rsa, new string[] { expectedSigAlg }), Is.True, "RSA 版（一覧に在る）");
+                Assert.That(SAML2Bindings.VerifyRedirect(query, rsa), Is.False, "RSA 版（既定の一覧に PSS は無い）");
+
+                // PKCS#1 v1.5 の SigAlg に書き換えると、署名の対象が変わるので通らない
+                string pkcs1 = query.Replace(CustomEncode.UrlEncode(expectedSigAlg), CustomEncode.UrlEncode(SAML2Const.RSAwithSHA256));
+                Assert.That(SAML2Bindings.VerifyRedirect(pkcs1, rsa), Is.False, "SigAlg の書き換え");
             }
+        }
+
+        /// <summary>
+        /// Redirect：ECDSA は、SigAlg を RFC 9231 の ecdsa-sha* にする（Windows の CNG）。
+        /// 公開鍵だけの DigitalSign でも検証できる。ハッシュを渡さなければ SHA-256（ECDsaCng の既定）。
+        /// 2026/10/30 まで、SigAlg を RSAwithSHA1 と書いていた（#643）。
+        /// </summary>
+        [TestCase(EnumDigitalSignAlgorithm.ECDsaCng_P256, null, SAML2Const.ECDSAwithSHA256)]
+        [TestCase(EnumDigitalSignAlgorithm.ECDsaCng_P256, "SHA256", SAML2Const.ECDSAwithSHA256)]
+        [TestCase(EnumDigitalSignAlgorithm.ECDsaCng_P384, "SHA384", SAML2Const.ECDSAwithSHA384)]
+        [TestCase(EnumDigitalSignAlgorithm.ECDsaCng_P521, "SHA512", SAML2Const.ECDSAwithSHA512)]
+        [Platform("Win")]
+        [Basis("SAML 2.0 Bindings 3.4.4.1（SigAlg は、署名に使ったアルゴリズムを示す URI）")]
+        [Basis("RFC 9231 2.3.6（ECDSA の URI）")]
+        [Basis("#643")]
+        public void Redirect_SigAlgOfEcdsa(EnumDigitalSignAlgorithm eaa, string hash, string expectedSigAlg)
+        {
+            string saml = CreateResponse(SAML2Enum.StatusCode.Success, true).OuterXml;
+
+            HashAlgorithm ha = hash == null ? null : HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(hash);
+            HashAlgorithm ha2 = hash == null ? null : HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(hash);
+
+            using (DigitalSignECDsaCng signer = new DigitalSignECDsaCng(eaa, ha))
+            using (DigitalSignECDsaCng verifier = new DigitalSignECDsaCng(signer.PublicKey, ha2))
+            {
+                string query = SAML2Bindings.EncodeAndSignRedirect(SAML2Enum.RequestOrResponse.Response, saml, "", signer);
+
+                Assert.That(SigAlgOf(query), Is.EqualTo(expectedSigAlg));
+                Assert.That(SAML2Bindings.VerifyRedirect(query, verifier), Is.True, "公開鍵だけの DigitalSign");
+            }
+        }
+
+        /// <summary>
+        /// Redirect：ECDSA でハッシュを渡さないときの署名は、SHA-256 で検証できる（SigAlg の ecdsa-sha256 と合う）。
+        /// GetSigAlg は、ハッシュの無い DigitalSignECDsaCng を SHA-256 とみなす。その前提を、SHA-256 を明示した検証で確かめる
+        /// （Redirect_SigAlgOfEcdsa は署名と検証で同じ設定を使うので、この前提までは確かめていない。#643）。
+        /// </summary>
+        [Test]
+        [Platform("Win")]
+        [Basis("RFC 9231 2.3.6（ecdsa-sha256 は、SHA-256 で計算した ECDSA の署名）")]
+        [Basis("#643")]
+        public void Redirect_SigAlgOfEcdsa_DefaultHashIsSha256()
+        {
+            string saml = CreateResponse(SAML2Enum.StatusCode.Success, true).OuterXml;
+
+            using (DigitalSignECDsaCng signer = new DigitalSignECDsaCng(EnumDigitalSignAlgorithm.ECDsaCng_P256, null))
+            using (DigitalSignECDsaCng sha256 = new DigitalSignECDsaCng(
+                signer.PublicKey, HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString("SHA256")))
+            using (DigitalSignECDsaCng sha384 = new DigitalSignECDsaCng(
+                signer.PublicKey, HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString("SHA384")))
+            {
+                string query = SAML2Bindings.EncodeAndSignRedirect(SAML2Enum.RequestOrResponse.Response, saml, "", signer);
+
+                Assert.That(SigAlgOf(query), Is.EqualTo(SAML2Const.ECDSAwithSHA256));
+                Assert.That(SAML2Bindings.VerifyRedirect(query, sha256), Is.True, "SHA-256 を明示した検証");
+
+                // SigAlg の照合を通さずに、ハッシュの違いだけで結果が分かれることも見る
+                byte[] data = CustomEncode.StringToByte("Redirect_SigAlgOfEcdsa_DefaultHashIsSha256", CustomEncode.UTF_8);
+                byte[] sign = signer.Sign(data);
+                Assert.That(sha256.Verify(data, sign), Is.True, "SHA-256");
+                Assert.That(sha384.Verify(data, sign), Is.False, "SHA-384");
+            }
+        }
+
+        /// <summary>
+        /// Redirect：DSA は DSAwithSHA1。SigAlg を決められないアルゴリズム（RSA-PSS の SHA1 など）は、
+        /// EncodeAndSignRedirect が ArgumentException（誤った SigAlg を出さない）、VerifyRedirect は false。
+        /// 2026/10/30 まで、決められないものは RSAwithSHA1 と書いていた（#643）。
+        /// </summary>
+        [Test]
+        [Basis("SAML 2.0 Bindings 3.4.4.1（SigAlg は、署名に使ったアルゴリズムを示す URI）")]
+        [Basis("RFC 9231 2.3.10（RSASSA-PSS の URI に SHA-1 の版は無い）")]
+        [Basis("設計：SAML2Bindings.EncodeAndSignRedirect の remarks（それ以外のアルゴリズムは ArgumentException）")]
+        [Basis("#643")]
+        public void Redirect_SigAlgOfOtherAlgorithms()
+        {
+            string saml = CreateResponse(SAML2Enum.StatusCode.Success, true).OuterXml;
 
             DigitalSignParam dsa = new DigitalSignParam(EnumDigitalSignAlgorithm.DsaCSP_SHA1);
             string dsaQuery = SAML2Bindings.EncodeAndSignRedirect(SAML2Enum.RequestOrResponse.Response, saml, "", dsa);
             Assert.That(SigAlgOf(dsaQuery), Is.EqualTo(SAML2Const.DSAwithSHA1));
+            Assert.That(SAML2Bindings.VerifyRedirect(dsaQuery, dsa), Is.True);
+
+            using (RSA rsa = RSA.Create(2048))
+            {
+                DigitalSignParam pssSha1 = new DigitalSignParam(rsa.ExportParameters(true), HashAlgorithmName.SHA1, RSASignaturePadding.Pss);
+                Assert.Throws<ArgumentException>(() =>
+                    SAML2Bindings.EncodeAndSignRedirect(SAML2Enum.RequestOrResponse.Response, saml, "", pssSha1));
+
+                DigitalSignParam sha256 = new DigitalSignParam(rsa.ExportParameters(true), HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+                string query = SAML2Bindings.EncodeAndSignRedirect(SAML2Enum.RequestOrResponse.Response, saml, "", sha256);
+                Assert.That(SAML2Bindings.VerifyRedirect(query, pssSha1), Is.False, "決められないアルゴリズムでは検証しない");
+            }
         }
 
         /// <summary>

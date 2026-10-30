@@ -34,6 +34,8 @@
 //*                                符号化・復号するようにした
 //*  2026/10/22  玄人 幸道         DPoPスキーム（RFC 9449）の読み書き、WWW-Authenticateの組み立て、
 //*                                Basicの復号前後のどちらでも照合する版を追加（#634）
+//*  2026/10/30  玄人 幸道         Basicの資格情報を、最初の ":" で分けるようにした（password は ":" を含みうる。RFC 7617 2。#643）
+//*  2026/10/30  玄人 幸道         Basicの照合する版に、復号前の値で通ったかを返す版を追加（4.0 で復号前の照合をやめる前の段階。#643）
 //**********************************************************************************
 
 using System;
@@ -56,6 +58,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <returns>AuthenticationScheme</returns>
         /// <remarks>
         /// 資格情報を取り出せない場合は、空の配列と "" を返す。
+        /// Basic は、**最初の ":" で 2 つに分ける**（user-id は ":" を含まず、最初の ":" より後ろはすべて password。RFC 7617 2）。
+        /// ":" が無ければ 1 つ。2026/10/30 まで、すべての ":" で分けていた（#643）。
         /// </remarks>
         public static string GetCredentials(string authHeader, out string[] credentials)
         {
@@ -71,8 +75,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     {
                         try
                         {
+                            // 最初の ":" で分ける（password は ":" を含みうる。RFC 7617 2。#643）
                             credentials = CustomEncode.ByteToString(
-                                CustomEncode.FromBase64String(temp[1]), CustomEncode.us_ascii).Split(':');
+                                CustomEncode.FromBase64String(temp[1]), CustomEncode.us_ascii).Split(new char[] { ':' }, 2);
 
                             return OAuth2AndOIDCConst.Basic;
                         }
@@ -183,10 +188,42 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// そこで、まず復号後の値で照合し、通らなければ復号前の値で照合する（#634 の H-3）。
         /// 英数字だけの値は、どちらも同じ文字列なので、照合は 1 回で済む。
         /// 照合の結果は、呼び出し側が返された値で改めて判断すること。
+        ///
+        /// **復号前の値での照合は、4.0 で既定ではやめる予定である**（RFC 6749 §2.3.1 に合わせる。#643）。
+        /// それまでに、符号化しないクライアントを見つけて直すには、usedRawValue を受ける版を使う。
         /// </remarks>
         public static bool GetCredentials(string authHeader,
             Func<string, string, bool> verifier, out string client_id, out string client_secret)
         {
+            return AuthenticationHeader.GetCredentials(
+                authHeader, verifier, out client_id, out client_secret, out bool _);
+        }
+
+        /// <summary>
+        /// GetCredentials(Basic、復号前後のどちらでも照合し、復号前の値で通ったかを返す)
+        /// </summary>
+        /// <param name="authHeader">string</param>
+        /// <param name="verifier">
+        /// 照合する処理（client_id, client_secret → 認証できれば true）。
+        /// 設定やストアを読むだけの、副作用の無い処理を渡すこと（最大 2 回呼ばれる）。
+        /// </param>
+        /// <param name="client_id">string（照合に通った方。どちらも通らなければ復号後）</param>
+        /// <param name="client_secret">string（同上）</param>
+        /// <param name="usedRawValue">
+        /// bool（**復号前の値で通ったか**。符号化しないクライアントが、記号を含む値を送ってきたとき true）
+        /// </param>
+        /// <returns>Basicの資格情報が在ったか（照合の結果ではない）</returns>
+        /// <remarks>
+        /// 自由に利用できる。振る舞いは、usedRawValue を受けない版と同じである。
+        /// **復号前の値での照合は、4.0 で既定ではやめる予定である**（RFC 6749 §2.3.1。#643）。
+        /// usedRawValue が true なら、ログに出すなどして、そのクライアントに符号化を求めること。
+        /// </remarks>
+        public static bool GetCredentials(string authHeader,
+            Func<string, string, bool> verifier, out string client_id, out string client_secret,
+            out bool usedRawValue)
+        {
+            usedRawValue = false;
+
             if (verifier == null)
             {
                 throw new ArgumentNullException(nameof(verifier));
@@ -205,6 +242,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 // 符号化しないクライアントが、記号を含む値を送ってきた。
                 client_id = rawClientId;
                 client_secret = rawClientSecret;
+                usedRawValue = true;
             }
 
             return true;

@@ -34,6 +34,7 @@
 //*                                下位がExportableである必要性があった、また、ASP.NET上で実行する可能性もある。
 //*  2019/06/25  西野 大介         インスタンス・メソッド化（RS256, 384, 512対応）
 //*  2026/10/03  玄人 幸道         PS（RSASSA-PSS）のコンストラクタを追加（#596）
+//*  2026/10/30  玄人 幸道         JwkToParam で、kty の大文字小文字を区別するようにした（RFC 7517 4.1。#643）
 //**********************************************************************************
 
 using System;
@@ -435,7 +436,8 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         /// <returns>RSAParameters（公開鍵）</returns>
         public RSAParameters JwkToParam(JObject jwkObject)
         {
-            if (jwkObject[JwtConst.kty].ToString().ToUpper() == JwtConst.RSA)
+            // kty の大文字小文字を区別する（RFC 7517 4.1。#643）
+            if (jwkObject[JwtConst.kty].ToString() == JwtConst.RSA)
             {
                 // RSAParameters
                 // FromBase64Stringだとエラーになる。

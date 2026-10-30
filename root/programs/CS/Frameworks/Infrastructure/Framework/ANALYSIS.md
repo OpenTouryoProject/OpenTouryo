@@ -210,6 +210,14 @@ UOC は `UOC_PreQuery` / `UOC_AfterQuery(sql)` / `UOC_AfterQuery(sql, ex)`。
 | `OAuth2AndOIDCSpec` | 仕様が決めている小物（`error` → HTTP ステータス、`response_type` の正規化、`prompt` の集合、`max_age`、認可応答の URL（`iss` を付ける）、空白区切り、`client_assertion` と `assertion` の両受け） | AS / RS |
 | `AuthenticationHeader` | `DPoP` スキームの読み書き（`GetAccessToken` はスキームも返す）、`WWW-Authenticate` の組み立て、**Basic を復号前後のどちらでも照合する版**（H-3） | AS / RS |
 
+- **`response_type`・`prompt`・PKCE のメソッド名は、大文字小文字を区別する**（RFC 6749 1.9・OIDC Core 3.1.2.1・RFC 7636 6.2.1。#643）。
+  2026/10/30 までは、小文字にしてから比べていた（`CODE`・`NONE`・`s256` を受けていた）。MPAS から移したときの扱いである
+- **Basic の資格情報は、最初の `:` で分ける**（`password` は `:` を含みうる。RFC 7617 2。#643）。
+  2026/10/30 までは、3 つ以上に分かれると `false` だった
+- **Basic の復号前の値での照合（H-3）は、4.0 で既定ではやめる予定である**（RFC 6749 2.3.1 に合わせる。#643）。
+  3.3 では振る舞いを変えず、**`out bool usedRawValue` を受ける版**を足した（復号前の値で通ったときだけ `true`）。
+  利用側は、これでログを出すなどして、**符号化しないクライアント（#592 より前の Open棟梁 など）を見つけて直す**
+
 **SP・RP 側と対になる IdP 側の処理**（#634 の続き。例外として同じ所に置く）。どれも、配備の決めは引数で受ける
 （自分の値と鍵を設定から読む版もある。下の `CmnServerParams`）。
 
@@ -229,6 +237,10 @@ logout_token（ログアウトは保留）、DCR・Discovery・PAR などの受�
 **配備ごとの決めは持ち込んでいない**（MPAS 側に残る）。`jti` の使い回しを拒む台帳（`DPoPProof.CreateProofId` は鍵だけ作る）、
 `nonce` の作り方、`htu` の期待値の決め方（**要求の `Host` を信じず設定から作る**）、どの口で `cnf.jkt` / `dpop_jkt` を見るか、
 DCR の口の認可、クライアント登録の持ち方。
+
+- **`DPoPProof.Verify` の `htu` は、RFC 3986 の正規化の後に完全一致で比べる**（RFC 9449 4.3。#642）。
+  **末尾の `/` と、パスの大文字小文字は区別する。** 2026/10/30 までは、どちらも区別せずに比べていた。
+  設定から作る `htu` の期待値は、**クライアントが使う URL（ディスカバリで広告した値）と同じ書き方にする**
 
 - **`OAuth2AndOIDCConst.UrnCnfJktClaim` は `urn:oauth:claim:cnf:jkt`**（`UrnCnfX5tClaim` と同じ組み立て）。
   MPAS の `Const.UrnCnfJktClaim`（`urn:oauth:cnf:jkt`）とは値が違う。プロセスの外に出ない値だが、置き換えるときは揃えること
@@ -286,6 +298,10 @@ DCR の口の認可、クライアント登録の持ち方。
   （`OAuth2AndOidcClientID` / `OAuth2AndOidcClientIDs` のいずれかを含むこと。#603）。
   **認可サーバ兼クライアントの自己テストでは、テスト用クライアントの `client_id` を `OAuth2AndOidcClientIDs` に並べる。**
   鍵の選び方（`JwkSetFilePath` の有無）は変えていない
+- **`ResponseObject.Verify` は、`error` の応答も `iss`・`aud`・`exp` を確認する**（JARM 2.1・2.4。#644）。
+  2026/10/30 までは、`error` の応答は署名だけを確かめて `true` を返していた。
+  **認可サーバ側は、`error` の応答にも `iss`・`aud`・`exp` を入れること**（`ResponseObject.Create` は入れる）。
+  入れない認可サーバの `error` の応答は、`false`（検証の失敗）として届く。署名が正しければ、`false` でも `jobj` は返る（検証されていない値）
 - `AccessToken.Verify` の既存の版は `aud` を確認しない（Keycloak 互換）。
   **`aud` を確認するなら `jws` / `iss` / `auds`（期待する `aud` の集合）を受ける版を使う。**
   `aud` に `client_id` が入る形式では、受け付けるクライアントの `client_id` の一覧を渡す
@@ -341,13 +357,16 @@ SAML の署名・検証は SP と IdP の双方が使うため、**IdP 側の処
   **ビルド済みの呼び出し元が `MissingMethodException` で落ちる**ため
 - Redirect の `SigAlg` は、`EncodeAndSignRedirect` に渡した `DigitalSign` のアルゴリズムで書く
   （既定の SHA256 なら `rsa-sha256`。#604 まで `rsa-sha1` 固定だった）
+- **RSA-PSS・ECDSA も、RFC 9231 の URI で書く**（`sha256-rsa-MGF1`・`ecdsa-sha256` など。2.3.10・2.3.6。#643）。
+  **決められないアルゴリズム（RSA-PSS の SHA1 など）は `ArgumentException`**。2026/10/30 までは、どちらも `rsa-sha1` と書いていた。
+  **RSA-PSS・ECDSA で署名し、`DigitalSign` 版の `VerifyRedirect` で受けている相手とは、版を揃える**（古い版の `rsa-sha1` は照合で落ちる）
 
 **`VerifyRedirect` は 2 つ在る**（#604）。
 
 | 版 | 検証のしかた |
 |---|---|
 | `DigitalSign` を受ける | 渡された `DigitalSign` で検証し、**`SigAlg` がそのアルゴリズムと一致しなければ失敗する**（`SAML2Client.VerifyResponse` はこちら。ハッシュは `hashAlgorithmName`、既定は SHA256） |
-| `RSA` を受ける | **許可リスト（`sigAlgs`）の中から `SigAlg` でハッシュを選ぶ**（既定は SHA256 / 384 / 512 で、SHA1 は受けない） |
+| `RSA` を受ける | **許可リスト（`sigAlgs`）の中から `SigAlg` でハッシュとパディングを選ぶ**（既定は SHA256 / 384 / 512 で、SHA1 は受けない。**RSA-PSS は既定では受けず、`RSAPSSwithSHA256` などを並べたときだけ**。#643） |
 
 - **#604 より前の Open棟梁 が送った要求・応答（`rsa-sha1` と名乗る SHA256 の署名）は、どちらでも失敗する。**
   受け手で `SigAlg` が `rsa-sha1` であることを確かめていると、#604 以降の送り手の要求・応答で落ちる

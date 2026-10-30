@@ -35,6 +35,7 @@
 //*  2026/10/15  玄人 幸道         JWSHeader を追加し typ を設定できるようにした。
 //*                                Verify で typ を照合しないことを明示（照合は JWS.Verify(jwt, typ)。#611）
 //*  2026/10/16  玄人 幸道         JWSHeader を基底（JWS）へ移し、Init で作るようにした（#615）
+//*  2026/10/30  玄人 幸道         Verify・JWK を受けるコンストラクタで、alg・kty・use の大文字小文字を区別するようにした（RFC 7515 4.1.1・RFC 7517 4.1・4.2・4.4。#643）
 //**********************************************************************************
 
 using System;
@@ -96,9 +97,10 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
                 && jwk.ContainsKey(JwtConst.k))
             {
                 // 正しいキー
-                if (jwk[JwtConst.kty].ToLower() == "oct"
-                && jwk[JwtConst.use].ToLower() == "sig"
-                && jwk[JwtConst.alg].ToUpper() == this.JwtConstHSnnn
+                // kty・use・alg の大文字小文字を区別する（RFC 7517 4.1・4.2・4.4。#643）
+                if (jwk[JwtConst.kty] == JwtConst.oct
+                && jwk[JwtConst.use] == "sig"
+                && jwk[JwtConst.alg] == this.JwtConstHSnnn
                 && !string.IsNullOrEmpty(jwk[JwtConst.k]))
                 {
                     // 正しい値
@@ -168,7 +170,8 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             // **typ は照合しない。**（#611）
             //   以前も JWS_Header.typ が readonly で読み込まれず、照合は常に真だった。
             //   その振る舞いを保つ。照合は JWS.Verify(jwtString, typ) で行う。
-            if (headerObject.alg.ToUpper() == this.JwtConstHSnnn)
+            // alg の大文字小文字を区別する（RFC 7515 4.1.1。#643）
+            if (headerObject.alg == this.JwtConstHSnnn)
             {
                 byte[] data = CustomEncode.StringToByte(temp[0] + "." + temp[1], CustomEncode.UTF_8);
                 byte[] sign = CustomEncode.FromBase64UrlString(temp[2]);

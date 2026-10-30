@@ -28,6 +28,7 @@
 //*  2026/10/22  玄人 幸道         引数の境界と、送り直さない応答のテストを足した（カバレッジの拡充）
 //*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を広げた（#640）
+//*  2026/10/30  玄人 幸道         htu の比較を RFC 9449 4.3 どおりにした（末尾の "/"・パスの大文字小文字は別。#642）
 //**********************************************************************************
 
 using System;
@@ -158,6 +159,9 @@ namespace TestFramework.Authentication
 
         /// <summary>Verify は、RFC 9449 4.3 の各項目で断る（例外にしない）。</summary>
         [Test]
+        [Basis("RFC 9449 4.3 の 2〜9・11（JWT の形・必須のクレーム・typ・alg・署名・秘密鍵の jwk・htm・htu・iat の窓）")]
+        [Basis("RFC 9449 4.2（jti・htm・htu・iat は必須）・RFC 7519 4.1.6（iat は NumericDate）")]
+        [Basis("#642")]
         public void Verify_Rejects()
         {
             Key key = CreateKey("ES256");
@@ -172,7 +176,7 @@ namespace TestFramework.Authentication
             string ok = DPoPProof.Create(key.Signer, key.Public, "POST", TokenEndpoint);
             Assert.That(verify(ok, "GET", TokenEndpoint), Is.False, "htm");
             Assert.That(verify(ok, "POST", "https://as.example.com/other"), Is.False, "htu");
-            Assert.That(verify(ok, "POST", TokenEndpoint + "/"), Is.True, "末尾の / は同じ");
+            Assert.That(verify(ok, "POST", TokenEndpoint + "/"), Is.False, "末尾の / は別（#642）");
 
             Assert.That(verify(Craft(key, "JWT", key.Public, Payload(now)), "POST", TokenEndpoint), Is.False, "typ");
             Assert.That(verify(Craft(key, "dpop+jwt", null, Payload(now)), "POST", TokenEndpoint), Is.False, "jwk が無い");
@@ -222,21 +226,35 @@ namespace TestFramework.Authentication
         }
 
         /// <summary>
-        /// htu の比較（RFC 9449 4.3）：クエリ・素片・末尾の "/"・大文字小文字・既定のポートの違いは同じとみなす。
+        /// htu の比較（RFC 9449 4.3）：クエリ・素片を除き、RFC 3986 の正規化の後に完全一致で比べる。
+        /// スキーム・ホストの大文字小文字、既定のポート、空のパス、ドット セグメント、%エンコードの書き方の違いは同じとみなす。
         /// 比較は private なので、Verify を通して確かめる（証明の htu と、期待する URL の両方を変える）。
         /// </summary>
         [TestCase("https://as.example.com/token", "https://as.example.com/token")]
         [TestCase("https://as.example.com/token?x=1#f", "https://as.example.com/token")]
-        [TestCase("https://as.example.com/token/", "https://as.example.com/token")]
-        [TestCase("HTTPS://AS.example.com/Token", "https://as.example.com/token")]
+        [TestCase("HTTPS://AS.example.com/token", "https://as.example.com/token")]
         [TestCase("https://as.example.com:443/token", "https://as.example.com/token")]
         [TestCase("https://as.example.com/token", "https://as.example.com/token?x=1")]
+        [TestCase("https://as.example.com", "https://as.example.com/")]
+        [TestCase("https://as.example.com/a/./b/../token", "https://as.example.com/a/token")]
+        [TestCase("https://as.example.com/%7Etoken", "https://as.example.com/~token")]
+        [TestCase("https://as.example.com/a%2fb", "https://as.example.com/a%2Fb")]
+        [Basis("RFC 9449 4.3 の 9（htu は要求の URI と一致する。クエリと素片は無視する）と、その後の段落（比べる前に RFC 3986 の正規化をする）")]
+        [Basis("RFC 3986 6.2.2.1（スキーム・ホスト・%エンコードの 16 進の大文字小文字）・6.2.2.2（予約外文字の %エンコード）・6.2.2.3（ドット セグメント）・6.2.3（既定のポート・空のパスは \"/\"）")]
+        [Basis("#642")]
         public void Verify_Htu_Same(string proofHtu, string expectedHtu)
         {
             Assert.That(VerifyHtu(proofHtu, expectedHtu), Is.True);
         }
 
-        /// <summary>htu の比較：パス・ホスト・ポート・スキームが違えば別。相対 URL・空は断る。</summary>
+        /// <summary>
+        /// htu の比較：パス・ホスト・ポート・スキームが違えば別。相対 URL・空は断る。
+        /// **末尾の "/" と、パスの大文字小文字も別**（#642）。予約文字の %エンコードは、戻した文字と別。
+        /// </summary>
+        [TestCase("https://as.example.com/token/", "https://as.example.com/token")]
+        [TestCase("https://as.example.com/token", "https://as.example.com/token/")]
+        [TestCase("https://as.example.com/Token", "https://as.example.com/token")]
+        [TestCase("https://as.example.com/a%2Fb", "https://as.example.com/a/b")]
         [TestCase("https://as.example.com/token2", "https://as.example.com/token")]
         [TestCase("https://evil.example.com/token", "https://as.example.com/token")]
         [TestCase("https://as.example.com:8443/token", "https://as.example.com/token")]
@@ -246,6 +264,8 @@ namespace TestFramework.Authentication
         [TestCase("https://as.example.com/token", "/token")]
         [TestCase("https://as.example.com/token", null)]
         [Basis("RFC 9449 4.3 の 9（htu は要求の URI と一致する）")]
+        [Basis("RFC 3986 6.2.2.1（スキーム・ホスト以外は大文字小文字を区別する）・2.2（予約文字と、その %エンコードは別）")]
+        [Basis("#642")]
         public void Verify_Htu_Different(string proofHtu, string expectedHtu)
         {
             Assert.That(VerifyHtu(proofHtu, expectedHtu), Is.False);

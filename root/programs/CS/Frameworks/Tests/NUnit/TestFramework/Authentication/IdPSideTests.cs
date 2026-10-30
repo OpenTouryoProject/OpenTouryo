@@ -28,6 +28,8 @@
 //*  2026/10/22  玄人 幸道         境界（鍵の並び・空の issuer・aud の配列・JwkSetDocument の設定とファイル無し）のテストを足した
 //*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を広げた（#640）
+//*  2026/10/30  玄人 幸道         VerifyPkce：メソッド名の大文字小文字を区別することにした（#643）
+//*  2026/10/31  玄人 幸道         VerifyPkce：大文字小文字の根拠を RFC 6749 1.9 を主にして書き分けた（RFC 7636 6.2.1 は登録名の規定。#643）
 //**********************************************************************************
 
 using System;
@@ -269,8 +271,15 @@ namespace TestFramework.Authentication
 
         #region PKCE
 
-        /// <summary>S256 はクライアントの計算と一致すれば通る。plain は許したときだけ。未知のメソッド・空は通さない。</summary>
+        /// <summary>
+        /// S256 はクライアントの計算と一致すれば通る。plain は許したときだけ。未知のメソッド・空は通さない。
+        /// **メソッド名の大文字小文字は区別する**（s256・PLAIN は通さない）。2026/10/30 まで、区別しなかった（#643）。
+        /// </summary>
         [Test]
+        [Basis("RFC 7636 4.6（S256 は BASE64URL(SHA256(ASCII(code_verifier))) == code_challenge）・付録 B（値の例）")]
+        [Basis("RFC 6749 1.9（パラメタの名前と値は、断りが無ければ大文字小文字を区別する）")]
+        [Basis("RFC 7636 6.2.1（登録するメソッド名は大文字小文字を区別する。比べ方の規定ではないので、1.9 を補う根拠）")]
+        [Basis("#643")]
         public void VerifyPkce()
         {
             const string verifier = "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";
@@ -280,7 +289,8 @@ namespace TestFramework.Authentication
             bool usedS256;
             Assert.That(OAuth2AndOIDCSpec.VerifyPkce("S256", challenge, verifier, false, out usedS256), Is.True);
             Assert.That(usedS256, Is.True);
-            Assert.That(OAuth2AndOIDCSpec.VerifyPkce("s256", challenge, verifier, false, out usedS256), Is.True, "大文字小文字は区別しない");
+            Assert.That(OAuth2AndOIDCSpec.VerifyPkce("s256", challenge, verifier, false, out usedS256), Is.False, "大文字小文字は区別する（#643）");
+            Assert.That(OAuth2AndOIDCSpec.VerifyPkce("PLAIN", verifier, verifier, true, out usedS256), Is.False, "大文字小文字は区別する（#643）");
             Assert.That(OAuth2AndOIDCSpec.VerifyPkce("S256", challenge, verifier + "x", false, out usedS256), Is.False);
 
             Assert.That(OAuth2AndOIDCSpec.VerifyPkce("plain", verifier, verifier, true, out usedS256), Is.True);

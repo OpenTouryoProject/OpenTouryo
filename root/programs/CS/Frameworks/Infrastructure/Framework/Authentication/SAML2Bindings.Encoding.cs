@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（SAML2Bindings.cs から処理区分ごとに分割した）
 //*  2026/10/22  玄人 幸道         StringExtractor.GetParameterFromQueryString（Obsolete）を UriOperator に置き換えた
+//*  2026/10/30  玄人 幸道         Redirect の SigAlg を、RSA-PSS・ECDSA でも署名のアルゴリズムどおりに書くようにした。決められなければ例外（#643）
 //**********************************************************************************
 
 using System;
@@ -54,7 +55,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <remarks>
         /// SigAlg（SAML 2.0 Bindings 3.4.4.1）は、実際の署名アルゴリズムを示す。
         /// 2026/10/12 まで rsa-sha1 固定で、既定の SHA256 の署名にも rsa-sha1 と書いていた（#604）。
-        /// RSA（PKCS#1 v1.5）の SHA1 / SHA256 / SHA384 / SHA512 と DSA 以外は、従来どおり rsa-sha1 と書く。
+        /// RSA（PKCS#1 v1.5）の SHA1 / SHA256 / SHA384 / SHA512、RSA-PSS と ECDSA の SHA256 / SHA384 / SHA512、DSA を書く
+        /// （RFC 9231 2.3.2〜2.3.4・2.3.10・2.3.6）。
+        /// **それ以外のアルゴリズムは ArgumentException**（誤った SigAlg を出さない）。
+        /// 2026/10/30 まで、それ以外（RSA-PSS・ECDSA を含む）は rsa-sha1 と書いていた（#643）。
         /// </remarks>
         public static string EncodeAndSignRedirect(
             SAML2Enum.RequestOrResponse type,
@@ -116,7 +120,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 else
                 {
                     // 第3 QSパラメタ（実際の署名アルゴリズム。#604）
-                    queryStringTemplate += "&" + SAML2Const.QueryParamSigAlg + "=" + CustomEncode.UrlEncode(SAML2Bindings.GetSigAlg(ds));
+                    // 決められなければ例外にする（誤った SigAlg を出さない。#643）
+                    string sigAlg = SAML2Bindings.GetSigAlg(ds);
+                    if (string.IsNullOrEmpty(sigAlg))
+                    {
+                        throw new ArgumentException(
+                            "The signature algorithm of the DigitalSign has no SigAlg URI (RFC 9231).", nameof(ds));
+                    }
+
+                    queryStringTemplate += "&" + SAML2Const.QueryParamSigAlg + "=" + CustomEncode.UrlEncode(sigAlg);
                 }                
             }
             #endregion
@@ -206,6 +218,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// 渡された DigitalSign のアルゴリズムで検証する（アルゴリズムは呼び出し側が決める）。
         /// SigAlg が、そのアルゴリズムを示していなければ失敗にする（#604 の案 (2)）。
         /// 2026/10/12 まで SigAlg を見ておらず、以前の EncodeAndSignRedirect はココで失敗する可能性がある。
+        /// SigAlg を決められないアルゴリズム（EncodeAndSignRedirect が例外にするもの）は、失敗にする。
+        /// RSA-PSS・ECDSA は、2026/10/30 から RFC 9231 の URI と照合する。**それより前の版で作った**
+        /// （rsa-sha1 と書いた）クエリは、ココで失敗する（#643）。
         /// SigAlg に従って検証するなら、RSA を受けるオーバーロードを使う（#604 の案 (3)）。
         /// </remarks>
         public static bool VerifyRedirect(string queryString, DigitalSign ds)
@@ -215,7 +230,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // SigAlgの確認（#604）
             string sigAlg = CustomEncode.UrlDecode(
                 UriOperator.GetParameterFromQueryString(SAML2Const.QueryParamSigAlg, queryString));
-            if (sigAlg != SAML2Bindings.GetSigAlg(ds))
+            string expectedSigAlg = SAML2Bindings.GetSigAlg(ds);
+            if (string.IsNullOrEmpty(expectedSigAlg) || sigAlg != expectedSigAlg)
             {
                 return false;
             }
@@ -245,12 +261,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="queryString">string</param>
         /// <param name="rsa">検証に使う RSA の公開鍵</param>
         /// <param name="sigAlgs">
-        /// 受け入れる SigAlg（SAML2Const.RSAwithSHA1 / 256 / 384 / 512 から選ぶ）。
-        /// null なら、RSAwithSHA256 / 384 / 512（SHA1 は受け入れない）。
+        /// 受け入れる SigAlg（SAML2Const.RSAwithSHA1 / 256 / 384 / 512、RSAPSSwithSHA256 / 384 / 512 から選ぶ）。
+        /// null なら、RSAwithSHA256 / 384 / 512（SHA1 と RSA-PSS は受け入れない）。
         /// </param>
         /// <returns>bool</returns>
         /// <remarks>
-        /// SigAlg からハッシュを選び、RSA（PKCS#1 v1.5）で検証する（#604 の案 (3)）。
+        /// SigAlg からハッシュとパディングを選び、RSA（PKCS#1 v1.5、または RSA-PSS）で検証する（#604 の案 (3)）。
+        /// **RSA-PSS は、既定では受け入れない**。受けるなら sigAlgs に RSAPSSwithSHA256 などを並べる（#643）。
         /// SigAlg は署名の検証前に読む値なので、sigAlgs に無い値なら検証せずに失敗にする。
         /// 相手（IdP / SP）ごとにハッシュが違うときに使う。
         /// </remarks>
@@ -271,10 +288,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
 
             HashAlgorithmName han;
+            RSASignaturePadding padding = RSASignaturePadding.Pkcs1;
             if (sigAlg == SAML2Const.RSAwithSHA1) han = HashAlgorithmName.SHA1;
             else if (sigAlg == SAML2Const.RSAwithSHA256) han = HashAlgorithmName.SHA256;
             else if (sigAlg == SAML2Const.RSAwithSHA384) han = HashAlgorithmName.SHA384;
             else if (sigAlg == SAML2Const.RSAwithSHA512) han = HashAlgorithmName.SHA512;
+            // RSA-PSS（RFC 9231 2.3.10。ソルト長はハッシュ長で、RSASignaturePadding.Pss と同じ。#643）
+            else if (sigAlg == SAML2Const.RSAPSSwithSHA256) { han = HashAlgorithmName.SHA256; padding = RSASignaturePadding.Pss; }
+            else if (sigAlg == SAML2Const.RSAPSSwithSHA384) { han = HashAlgorithmName.SHA384; padding = RSASignaturePadding.Pss; }
+            else if (sigAlg == SAML2Const.RSAPSSwithSHA512) { han = HashAlgorithmName.SHA512; padding = RSASignaturePadding.Pss; }
             else return false; // RSA 以外
 
             // Signatureの抽出
@@ -287,12 +309,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
             return rsa.VerifyData(
                 CustomEncode.StringToByte(queryString, CustomEncode.us_ascii),
                 CustomEncode.FromBase64String(CustomEncode.UrlDecode(signature)),
-                han, RSASignaturePadding.Pkcs1);
+                han, padding);
         }
 
-        /// <summary>DigitalSign のアルゴリズムから、SigAlg の値を決める（#604）</summary>
+        /// <summary>DigitalSign のアルゴリズムから、SigAlg の値を決める（#604・#643）</summary>
         /// <param name="ds">DigitalSign</param>
-        /// <returns>SigAlg</returns>
+        /// <returns>SigAlg（RFC 9231 の URI。決められなければ null）</returns>
+        /// <remarks>
+        /// 2026/10/30 まで、決められないもの（RSA-PSS・ECDSA を含む）は rsa-sha1 を返していた（#643）。
+        /// </remarks>
         private static string GetSigAlg(DigitalSign ds)
         {
             if (ds.AsymmetricAlgorithm is RSA && ds.Padding == RSASignaturePadding.Pkcs1)
@@ -304,15 +329,35 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 if (hashName == HashAlgorithmName.SHA384.Name) return SAML2Const.RSAwithSHA384;
                 if (hashName == HashAlgorithmName.SHA512.Name) return SAML2Const.RSAwithSHA512;
             }
+            else if (ds.AsymmetricAlgorithm is RSA && ds.Padding == RSASignaturePadding.Pss)
+            {
+                // RSA-PSS（RFC 9231 2.3.10）
+                string hashName = ds.HashAlgorithmName.Name;
+
+                if (hashName == HashAlgorithmName.SHA256.Name) return SAML2Const.RSAPSSwithSHA256;
+                if (hashName == HashAlgorithmName.SHA384.Name) return SAML2Const.RSAPSSwithSHA384;
+                if (hashName == HashAlgorithmName.SHA512.Name) return SAML2Const.RSAPSSwithSHA512;
+            }
+            else if (ds.AsymmetricAlgorithm is ECDsa || ds is DigitalSignECDsaCng)
+            {
+                // ECDSA（RFC 9231 2.3.6）。
+                // DigitalSignECDsaCng の公開鍵だけの版は AsymmetricAlgorithm を持たないので、型でも見る。
+                // ハッシュを渡していなければ、ECDsaCng の既定（SHA-256）で署名している。
+                string hashName = (ds.HashAlgorithm == null)
+                    ? HashAlgorithmName.SHA256.Name : ds.HashAlgorithmName.Name;
+
+                if (hashName == HashAlgorithmName.SHA256.Name) return SAML2Const.ECDSAwithSHA256;
+                if (hashName == HashAlgorithmName.SHA384.Name) return SAML2Const.ECDSAwithSHA384;
+                if (hashName == HashAlgorithmName.SHA512.Name) return SAML2Const.ECDSAwithSHA512;
+            }
             else if (ds.AsymmetricAlgorithm is DSA)
             {
                 // DigitalSign.Sign の DSA は SHA1
                 return SAML2Const.DSAwithSHA1;
             }
 
-            // 上記以外（PSS・ECDSA など）は、従来どおり。
-            // VerifyRedirect（DigitalSign 版）も、この値と照合するので、Open棟梁 同士では通る。
-            return SAML2Const.RSAwithSHA1;
+            // 上記以外は、決められない（呼び出し側が、例外か失敗にする）
+            return null;
         }
 
         #endregion

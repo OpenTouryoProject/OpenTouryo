@@ -31,6 +31,7 @@
 //*  2026/10/15  玄人 幸道         JWEHeader を公開し typ を設定できるようにした。
 //*                                typ を照合する Decrypt(jwtString, typ, out payloadJson) を追加し、
 //*                                既存の Decrypt では typ を照合しないことを明示（#615）
+//*  2026/10/30  玄人 幸道         Decrypt で、alg・enc の大文字小文字を区別するようにした（RFC 7516 4.1.1・4.1.2。#643）
 //**********************************************************************************
 
 using Newtonsoft.Json;
@@ -134,8 +135,9 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
                 // **typ は照合しない。**（#615）
                 //   以前も JWE_Header.typ が readonly で読み込まれず、照合は常に真だった。
                 //   その振る舞いを保つ。照合は Decrypt(jwtString, typ, out payloadJson) で行う。
-                if (headerObject.alg.ToUpper() == JWEHeader.alg.ToUpper() &&
-                    headerObject.enc.ToUpper() == JWEHeader.enc.ToUpper())
+                // alg・enc の大文字小文字を区別する（RFC 7516 4.1.1・4.1.2。#643）
+                if (headerObject.alg == JWEHeader.alg &&
+                    headerObject.enc == JWEHeader.enc)
                 {
                     // コンテンツ暗号化キー（CEK）
                     byte[] encryptedCekBytes = CustomEncode.FromBase64UrlString(temp[1]);

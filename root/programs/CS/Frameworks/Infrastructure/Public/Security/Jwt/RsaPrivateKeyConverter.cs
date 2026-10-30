@@ -30,6 +30,7 @@
 //*  2018/11/27  西野 大介         新規作成（秘密鍵 <---> JWKサポート追加
 //*  2019/06/25  西野 大介         新規作成（分割
 //*  2026/10/03  玄人 幸道         PS（RSASSA-PSS）のコンストラクタを追加（#596）
+//*  2026/10/30  玄人 幸道         JwkToParam で、kty の大文字小文字を区別するようにした（RFC 7517 4.1。#643）
 //**********************************************************************************
 
 using System;
@@ -126,7 +127,8 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
         /// <returns>RSAParameters（公開鍵）</returns>
         public RSAParameters JwkToParam(JObject jwkObject)
         {
-            if (jwkObject[JwtConst.kty].ToString().ToUpper() == JwtConst.RSA)
+            // kty の大文字小文字を区別する（RFC 7517 4.1。#643）
+            if (jwkObject[JwtConst.kty].ToString() == JwtConst.RSA)
             {
                 // RSAParameters
                 // FromBase64Stringだとエラーになる。

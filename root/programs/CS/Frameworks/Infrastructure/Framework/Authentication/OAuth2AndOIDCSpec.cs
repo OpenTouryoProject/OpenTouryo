@@ -27,6 +27,8 @@
 //*  2026/10/22  玄人 幸道         PKCE の検証（認可サーバ側）を追加（汎用認証サイトから移した。#634）
 //*  2026/10/22  玄人 幸道         PKCE の検証に、plain を受けるかを設定（CmnServerParams.RequirePkceS256）から読む版を追加
 //*  2026/10/29  玄人 幸道         response_type の仕様の節番号の誤りを直した（3 → 1.2。#640）
+//*  2026/10/30  玄人 幸道         response_type・prompt・PKCE のメソッド名の大文字小文字を区別するようにした（RFC・OIDC どおり。#643）
+//*  2026/10/31  玄人 幸道         VerifyPkce の remarks：大文字小文字の根拠を RFC 6749 1.9 を主にして書き分けた（#643）
 //**********************************************************************************
 
 using System;
@@ -98,8 +100,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// （OAuth 2.0 Multiple Response Type Encoding Practices 1.2）。
         /// 辞書順は OAuth2AndOIDCConst の並び（code &lt; id_token &lt; token）と一致するので、
         /// 正規化した値は、OidcHybrid3_ResponseType などと文字列で比べられる。
-        /// 値は小文字にする（仕様では大文字小文字を区別するが、寛容に受ける実装が多いため）。
-        /// 厳密に扱うなら、呼び出し側で大文字を含む値を先に断ること。
+        /// **値の大文字小文字は区別する**（RFC 6749 1.9。CODE は code ではない）。
+        /// 2026/10/30 まで、値を小文字にしてから並べていた（#643）。
         /// </remarks>
         public static string NormalizeResponseType(string response_type)
         {
@@ -108,7 +110,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 return response_type;
             }
 
-            List<string> normalized = OAuth2AndOIDCSpec.ToDistinctList(response_type.ToLowerInvariant());
+            List<string> normalized = OAuth2AndOIDCSpec.ToDistinctList(response_type);
             normalized.Sort(StringComparer.Ordinal);
 
             return string.Join(" ", normalized);
@@ -120,17 +122,17 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>prompt を空白区切りの集合として分ける</summary>
         /// <param name="prompt">string</param>
-        /// <returns>値の一覧（重複なし・小文字。空なら 0 件）</returns>
+        /// <returns>値の一覧（重複なし。空なら 0 件）</returns>
         /// <remarks>
         /// 自由に利用できる。
-        /// prompt は空白区切りの集合である（OIDC Core 3.1.2.1）。
+        /// prompt は空白区切りの、大文字小文字を区別する集合である（OIDC Core 3.1.2.1）。
         /// 部分文字列で探す（Contains("none")）と prompt=nonexistent で真になり、
         /// 完全一致で比べる（== "none"）と prompt=none login で偽になる。集合として扱うこと。
+        /// 2026/10/30 まで、値を小文字にしてから分けていた（NONE を none として扱っていた。#643）。
         /// </remarks>
         public static List<string> SplitPrompt(string prompt)
         {
-            return OAuth2AndOIDCSpec.ToDistinctList(
-                string.IsNullOrEmpty(prompt) ? prompt : prompt.ToLowerInvariant());
+            return OAuth2AndOIDCSpec.ToDistinctList(prompt);
         }
 
         /// <summary>prompt に、その値が入っているか</summary>
@@ -244,7 +246,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// - S256 : BASE64URL(SHA256(ASCII(code_verifier))) が code_challenge と一致すること（RFC 7636 4.6）
         /// - plain : allowPlain のときだけ、code_verifier が code_challenge と一致すること
         /// - 未知のメソッドは false
-        /// - メソッド名の大文字小文字は区別しない（汎用認証サイトの従来の扱い）
+        /// - **メソッド名の大文字小文字は区別する**（RFC 6749 1.9。登録する名前も区別する：RFC 7636 6.2.1。s256 は S256 ではない）。
+        ///   2026/10/30 まで、区別せずに比べていた（汎用認証サイトの従来の扱い。#643）
         /// クライアント認証とは別の検証なので、呼び出し側は認証の成否と併せて判断すること。
         /// </remarks>
         public static bool VerifyPkce(string code_challenge_method, string code_challenge,
@@ -259,7 +262,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 return false;
             }
 
-            if (string.Equals(code_challenge_method, OAuth2AndOIDCConst.PKCE_S256, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(code_challenge_method, OAuth2AndOIDCConst.PKCE_S256, StringComparison.Ordinal))
             {
                 usedS256 = string.Equals(code_challenge,
                     OAuth2AndOIDCClient.PKCE_S256_CodeChallengeMethod(code_verifier), StringComparison.Ordinal);
@@ -267,7 +270,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 return usedS256;
             }
 
-            if (string.Equals(code_challenge_method, OAuth2AndOIDCConst.PKCE_plain, StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(code_challenge_method, OAuth2AndOIDCConst.PKCE_plain, StringComparison.Ordinal))
             {
                 return allowPlain && string.Equals(code_challenge, code_verifier, StringComparison.Ordinal);
             }
