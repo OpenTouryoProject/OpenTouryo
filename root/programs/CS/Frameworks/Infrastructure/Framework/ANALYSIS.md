@@ -286,6 +286,10 @@ DCR の口の認可、クライアント登録の持ち方。
   （`OAuth2AndOidcClientID` / `OAuth2AndOidcClientIDs` のいずれかを含むこと。#603）。
   **認可サーバ兼クライアントの自己テストでは、テスト用クライアントの `client_id` を `OAuth2AndOidcClientIDs` に並べる。**
   鍵の選び方（`JwkSetFilePath` の有無）は変えていない
+- **`ResponseObject.Verify` は、`error` の応答も `iss`・`aud`・`exp` を確認する**（JARM 2.1・2.4。#644）。
+  2026/10/30 までは、`error` の応答は署名だけを確かめて `true` を返していた。
+  **認可サーバ側は、`error` の応答にも `iss`・`aud`・`exp` を入れること**（`ResponseObject.Create` は入れる）。
+  入れない認可サーバの `error` の応答は、`false`（検証の失敗）として届く。署名が正しければ、`false` でも `jobj` は返る（検証されていない値）
 - `AccessToken.Verify` の既存の版は `aud` を確認しない（Keycloak 互換）。
   **`aud` を確認するなら `jws` / `iss` / `auds`（期待する `aud` の集合）を受ける版を使う。**
   `aud` に `client_id` が入る形式では、受け付けるクライアントの `client_id` の一覧を渡す

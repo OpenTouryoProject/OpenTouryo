@@ -153,6 +153,7 @@ git config core.hooksPath .githooks
 - [ ] SAML2：署名の対象と消費する要素の一致、`InResponseTo`・リプレイ、`Audience`、`NotBefore` / `NotOnOrAfter`、アルゴリズム
 - [ ] OIDC / OAuth2：`state`・`nonce`、`redirect_uri` の完全一致、PKCE、トークンの紐付け（mTLS・DPoP）、`alg` の固定（`none` を受けない）
 - [ ] 検証を省く分岐（設定やパラメタで検証を飛ばせる経路）が増えていないか
+- [ ] 署名付きの応答（JARM など）で、**エラーの応答だけ検証を省いていないか**。エラーの応答も `iss`・`aud`・`exp` を確かめる（#644）
 - [ ] 公開 API のパラメタ・既定値を変えていないか
 
 ### DB（`Public.Db`）

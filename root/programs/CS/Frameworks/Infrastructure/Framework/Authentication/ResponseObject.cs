@@ -33,6 +33,8 @@
 //*  2026/10/12  玄人 幸道         設定で判定するVerifyでも、認可サーバを兼ねる配備でaudを確認するようにした（#603）。
 //*  2026/10/22  玄人 幸道         Verifyの対となるCreateを追加（汎用認証サイトから移した。#634）
 //*  2026/10/22  玄人 幸道         Createに、iss と鍵を設定（CmnServerParams）から読む版を追加
+//*  2026/10/30  玄人 幸道         Verifyで、error の応答も iss / aud / exp を確かめるようにした（JARM 2.4。#644）
+//*  2026/10/30  玄人 幸道         Verifyで、exp が無い・読めない応答を、例外にせず false にした
 //**********************************************************************************
 
 using System;
@@ -143,7 +145,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         // SPRP → (1) → 下流IdP → (2) → 上流IdP
         // SPRP ← (4) ← 下流IdP ← (3) ← 上流IdP
         // (3)で後者のVerifyを使い、(4)で前者のVerifyを使う。
-        // （JARM を要求した場合のみ。error の応答は iss / aud を確認せずに true を返す）
+        // （JARM を要求した場合のみ。error の応答も iss / aud / exp を確かめる。JARM 2.4。#644）
 
         /// <summary>汎用認証サイトの発行したResponseObjectを検証する。</summary>
         /// <param name="response">string</param>
@@ -155,6 +157,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// 2026/10/12 まで、OAuth2AndOIDCParams.JwkSetFilePath が在る配備（認可サーバ兼クライアント）では
         /// aud を確認していなかった（#603）。
         /// 相手（認可サーバ）の ResponseObject を検証する場合は、jws / iss / aud を受けるオーバーロードを使う（#601）。
+        ///
+        /// **error の応答も、iss・aud・exp を確かめる**（JARM 2.1・2.4）。通れば true で、エラーの内容は jobj で受け取る。
+        /// 2026/10/30 まで、error の応答は署名だけを確かめ、iss・aud・exp を見ずに true を返していた（#644）。
+        /// exp が無い・読めない応答は false（例外にしない）。
+        /// 署名が正しければ、false のときも jobj を返す。**その値は検証されていない**（iss・aud・exp のどれかが合わない）。
         /// </remarks>
         public static bool Verify(string response, out JObject jobj)
         {
@@ -181,6 +188,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// 設定（CmnClientParams.Isser / OAuth2AndOIDCParams.ClientID / JwkSetFilePath）は見ない。
         /// aud は、認可サーバを兼ねる配備でも必ず確認する（JARM 4.4）。
         /// aud が array の場合は、期待する aud を含むことを確認する。
+        /// error の応答・exp・false のときの jobj の扱いは、Verify(response, out jobj) と同じ（#644）。
         /// </remarks>
         public static bool Verify(string response,
             JWS jws, string iss, string aud, out JObject jobj)
@@ -230,38 +238,36 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
                 #region クレーム検証
 
-                if (jobj.ContainsKey(OAuth2AndOIDCConst.error))
+                // error の応答も、iss・aud・exp を確かめる（JARM 2.1・2.4。#644）。
+                //   2026/10/30 まで、error の応答は署名だけを確かめて true を返していた。
+                //   それでは、別のクライアント宛て（aud）・期限の過ぎた（exp）error の応答も受けてしまう。
+                // error の応答なら、エラーの内容は jobj で呼び出し側に渡す。
+
+                string iss = (string)jobj[OAuth2AndOIDCConst.iss];
+                JToken aud = jobj[OAuth2AndOIDCConst.aud];
+                //string iat = (string)jobj[OAuth2AndOIDCConst.iat];
+                string exp = (string)jobj[OAuth2AndOIDCConst.exp];
+
+                long unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
+                long expUnixTimeSeconds;
+
+                // exp が無い・読めない場合は、例外にせず検証の失敗にする（以前は long.Parse が例外を投げた）。
+                if (iss == expectedIss &&
+                    long.TryParse(exp, out expUnixTimeSeconds) &&
+                    expUnixTimeSeconds >= unixTimeSeconds)
                 {
-                    // errorの場合
-                    return true;
-                }
-                else
-                {
-                    // errorでない場合
-
-                    string iss = (string)jobj[OAuth2AndOIDCConst.iss];
-                    JToken aud = jobj[OAuth2AndOIDCConst.aud];
-                    //string iat = (string)jobj[OAuth2AndOIDCConst.iat];
-                    string exp = (string)jobj[OAuth2AndOIDCConst.exp];
-
-                    long unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
-
-                    if (iss == expectedIss &&
-                        long.Parse(exp) >= unixTimeSeconds)
+                    if (verifyAud(aud))
                     {
-                        if (verifyAud(aud))
-                        {
-                            return true;
-                        }
-                        else
-                        {
-                            // JWTの内容検証に失敗
-                        }
+                        return true;
                     }
                     else
                     {
                         // JWTの内容検証に失敗
                     }
+                }
+                else
+                {
+                    // JWTの内容検証に失敗
                 }
 
                 #endregion

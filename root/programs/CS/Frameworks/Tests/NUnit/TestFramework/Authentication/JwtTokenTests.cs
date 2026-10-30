@@ -26,6 +26,7 @@
 //*  2026/10/19  玄人 幸道         新規作成
 //*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を広げた（#640）
+//*  2026/10/30  玄人 幸道         ResponseObject_Verify：error の応答も iss・aud・exp を照合することにした（#644）
 //**********************************************************************************
 
 using System;
@@ -259,9 +260,14 @@ namespace TestFramework.Authentication
 
         /// <summary>
         /// ResponseObject.Verify（jws / iss / aud）：iss・aud・exp を照合する。
-        /// error を持つ応答は、署名が正しければ true（エラーの内容を呼び出し側に渡すため）。
+        /// **error を持つ応答も、iss・aud・exp を照合する**（通れば true で、エラーの内容は jobj で受け取る）。
+        /// 2026/10/30 まで、error を持つ応答は、署名が正しければ iss・aud・exp を見ずに true だった（#644）。
+        /// false でも、署名が正しければ jobj を返す。exp が無い応答は、例外にせず false。
         /// </summary>
         [Test]
+        [Basis("JARM 2.1（JWT は常に iss・aud・exp を持つ）・2.1.1（error の応答の例にも iss・aud・exp がある）")]
+        [Basis("JARM 2.4 の 2・3・4（iss・aud・exp が合わなければ、応答を断る）")]
+        [Basis("#644")]
         public void ResponseObject_Verify()
         {
             JObject p = new JObject
@@ -281,9 +287,34 @@ namespace TestFramework.Authentication
             Assert.That(ResponseObject.Verify(response, this._opPublic, Iss, "client02", out jobj), Is.False, "aud");
             Assert.That(ResponseObject.Verify(this.Sign(p, true), this._opPublic, Iss, Aud, out jobj), Is.False, "exp");
 
-            JObject error = new JObject { [OAuth2AndOIDCConst.error] = "access_denied" };
+            // exp が無い応答は、例外にせず false
+            JObject noExp = new JObject
+            {
+                [OAuth2AndOIDCConst.iss] = Iss,
+                [OAuth2AndOIDCConst.aud] = Aud,
+                [OAuth2AndOIDCConst.code] = "code01"
+            };
+            Assert.That(ResponseObject.Verify(this._op.Create(noExp.ToString(Formatting.None)), this._opPublic, Iss, Aud, out jobj), Is.False, "exp が無い");
+
+            // error の応答も、iss・aud・exp を照合する（#644）
+            JObject error = new JObject
+            {
+                [OAuth2AndOIDCConst.iss] = Iss,
+                [OAuth2AndOIDCConst.aud] = Aud,
+                [OAuth2AndOIDCConst.error] = "access_denied"
+            };
             Assert.That(ResponseObject.Verify(this.Sign(error), this._opPublic, Iss, Aud, out jobj), Is.True, "error の応答");
             Assert.That((string)jobj[OAuth2AndOIDCConst.error], Is.EqualTo("access_denied"));
+
+            Assert.That(ResponseObject.Verify(this.Sign(error), this._opPublic, Iss, "client02", out jobj), Is.False, "error の応答：aud が違う");
+            Assert.That((string)jobj[OAuth2AndOIDCConst.error], Is.EqualTo("access_denied"), "false でも、署名が正しければ jobj を返す");
+            Assert.That(ResponseObject.Verify(this.Sign(error), this._opPublic, "https://other/", Aud, out jobj), Is.False, "error の応答：iss が違う");
+            Assert.That(ResponseObject.Verify(this.Sign(error, true), this._opPublic, Iss, Aud, out jobj), Is.False, "error の応答：exp");
+
+            JObject bareError = new JObject { [OAuth2AndOIDCConst.error] = "access_denied" };
+            Assert.That(ResponseObject.Verify(this.Sign(bareError), this._opPublic, Iss, Aud, out jobj), Is.False, "error の応答：iss・aud が無い");
+            Assert.That(ResponseObject.Verify(this.Sign(bareError), this._otherPublic, Iss, Aud, out jobj), Is.False, "error の応答：別の鍵");
+            Assert.That(jobj, Is.Null, "署名が通らなければ jobj は null");
 
             Assert.Throws<ArgumentNullException>(() => ResponseObject.Verify(response, this._opPublic, "", Aud, out jobj));
             Assert.Throws<ArgumentNullException>(() => ResponseObject.Verify(response, this._opPublic, Iss, "", out jobj));
