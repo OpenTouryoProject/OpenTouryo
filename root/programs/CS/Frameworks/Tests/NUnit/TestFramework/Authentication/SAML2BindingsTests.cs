@@ -27,6 +27,7 @@
 //*  2026/10/22  玄人 幸道         SigAlg（ハッシュ別・DSA・PSS）・空の入力・暗号化用の鍵を飛ばすことのテストを足した（#634。カバレッジの拡充）
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //*  2026/10/30  玄人 幸道         Redirect の SigAlg：RSA-PSS・ECDSA を RFC 9231 の URI にし、決められないものは例外にした（#643）
+//*  2026/10/31  玄人 幸道         Redirect：ECDSA でハッシュを渡さないときに SHA-256 で署名していることを、SHA-256 を明示した検証で確かめるテストを足した（#643）
 //**********************************************************************************
 
 using System;
@@ -373,6 +374,38 @@ namespace TestFramework.Authentication
 
                 Assert.That(SigAlgOf(query), Is.EqualTo(expectedSigAlg));
                 Assert.That(SAML2Bindings.VerifyRedirect(query, verifier), Is.True, "公開鍵だけの DigitalSign");
+            }
+        }
+
+        /// <summary>
+        /// Redirect：ECDSA でハッシュを渡さないときの署名は、SHA-256 で検証できる（SigAlg の ecdsa-sha256 と合う）。
+        /// GetSigAlg は、ハッシュの無い DigitalSignECDsaCng を SHA-256 とみなす。その前提を、SHA-256 を明示した検証で確かめる
+        /// （Redirect_SigAlgOfEcdsa は署名と検証で同じ設定を使うので、この前提までは確かめていない。#643）。
+        /// </summary>
+        [Test]
+        [Platform("Win")]
+        [Basis("RFC 9231 2.3.6（ecdsa-sha256 は、SHA-256 で計算した ECDSA の署名）")]
+        [Basis("#643")]
+        public void Redirect_SigAlgOfEcdsa_DefaultHashIsSha256()
+        {
+            string saml = CreateResponse(SAML2Enum.StatusCode.Success, true).OuterXml;
+
+            using (DigitalSignECDsaCng signer = new DigitalSignECDsaCng(EnumDigitalSignAlgorithm.ECDsaCng_P256, null))
+            using (DigitalSignECDsaCng sha256 = new DigitalSignECDsaCng(
+                signer.PublicKey, HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString("SHA256")))
+            using (DigitalSignECDsaCng sha384 = new DigitalSignECDsaCng(
+                signer.PublicKey, HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString("SHA384")))
+            {
+                string query = SAML2Bindings.EncodeAndSignRedirect(SAML2Enum.RequestOrResponse.Response, saml, "", signer);
+
+                Assert.That(SigAlgOf(query), Is.EqualTo(SAML2Const.ECDSAwithSHA256));
+                Assert.That(SAML2Bindings.VerifyRedirect(query, sha256), Is.True, "SHA-256 を明示した検証");
+
+                // SigAlg の照合を通さずに、ハッシュの違いだけで結果が分かれることも見る
+                byte[] data = CustomEncode.StringToByte("Redirect_SigAlgOfEcdsa_DefaultHashIsSha256", CustomEncode.UTF_8);
+                byte[] sign = signer.Sign(data);
+                Assert.That(sha256.Verify(data, sign), Is.True, "SHA-256");
+                Assert.That(sha384.Verify(data, sign), Is.False, "SHA-384");
             }
         }
 

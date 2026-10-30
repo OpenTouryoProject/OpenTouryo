@@ -28,6 +28,7 @@
 //*  2026/10/22  玄人 幸道         PKCE の検証に、plain を受けるかを設定（CmnServerParams.RequirePkceS256）から読む版を追加
 //*  2026/10/29  玄人 幸道         response_type の仕様の節番号の誤りを直した（3 → 1.2。#640）
 //*  2026/10/30  玄人 幸道         response_type・prompt・PKCE のメソッド名の大文字小文字を区別するようにした（RFC・OIDC どおり。#643）
+//*  2026/10/31  玄人 幸道         VerifyPkce の remarks：大文字小文字の根拠を RFC 6749 1.9 を主にして書き分けた（#643）
 //**********************************************************************************
 
 using System;
@@ -245,7 +246,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// - S256 : BASE64URL(SHA256(ASCII(code_verifier))) が code_challenge と一致すること（RFC 7636 4.6）
         /// - plain : allowPlain のときだけ、code_verifier が code_challenge と一致すること
         /// - 未知のメソッドは false
-        /// - **メソッド名の大文字小文字は区別する**（RFC 7636 6.2.1、RFC 6749 1.9。s256 は S256 ではない）。
+        /// - **メソッド名の大文字小文字は区別する**（RFC 6749 1.9。登録する名前も区別する：RFC 7636 6.2.1。s256 は S256 ではない）。
         ///   2026/10/30 まで、区別せずに比べていた（汎用認証サイトの従来の扱い。#643）
         /// クライアント認証とは別の検証なので、呼び出し側は認証の成否と併せて判断すること。
         /// </remarks>
