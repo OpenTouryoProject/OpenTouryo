@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（#634。partial に分けたファイルのカバレッジの拡充）
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
+//*  2026/10/30  玄人 幸道         CibaAuthZRequest を、request_uri の版と Request Object の版に分けた（根拠が違うため。#640）
 //**********************************************************************************
 
 using System;
@@ -339,19 +340,28 @@ namespace TestFramework.Authentication
             Assert.That(form[OAuth2AndOIDCConst.device_code], Is.EqualTo("device01"));
         }
 
-        /// <summary>
-        /// CIBA の認可要求：request_uri を送る版と、Request Object を送る版。
-        /// 後者の client_secret_post は本文に client_id / client_secret を載せ、Basic（既定）は client_id を本文に載せない（CIBA Core 7.1.1）。
-        /// </summary>
+        /// <summary>CIBA の認可要求（request_uri を送る版）：request_uri を本文に載せる。</summary>
         [Test]
-        public void CibaAuthZRequest()
+        [Observation("CIBA Core 1.0 に request_uri は無い。OAuth2AndOIDCClient.CibaAuthZRequestAsync(cibaAuthZUri, requestObjectUri) の remarks のとおり独自の形（今の振る舞いを写した）")]
+        public void CibaAuthZRequest_RequestUri()
         {
             Uri ciba = new Uri("https://as.example.com/bc-authorize");
 
             Tuple<HttpRequestMessage, string> r = Send(() => OAuth2AndOIDCClient.CibaAuthZRequestAsync(ciba, "urn:req01").Result);
             Assert.That(Form(r.Item2)[OAuth2AndOIDCConst.request_uri], Is.EqualTo("urn:req01"));
+        }
 
-            r = Send(() => OAuth2AndOIDCClient.CibaAuthZRequestAsync(ciba, "ro01", "client01", "secret01").Result);
+        /// <summary>
+        /// CIBA の認可要求（Request Object を送る版）：client_secret_post は本文に client_id / client_secret を載せ、
+        /// Basic（既定）は client_id を本文に載せない（CIBA Core 7.1.1）。
+        /// </summary>
+        [Test]
+        [Basis("CIBA Core 7.1.1（Request Object は request で送り、JWT の外には、クライアント認証の方式が要求するパラメタしか置かない）")]
+        public void CibaAuthZRequest_RequestObject()
+        {
+            Uri ciba = new Uri("https://as.example.com/bc-authorize");
+
+            Tuple<HttpRequestMessage, string> r = Send(() => OAuth2AndOIDCClient.CibaAuthZRequestAsync(ciba, "ro01", "client01", "secret01").Result);
             AssertBasic(r.Item1);
             Assert.That(Form(r.Item2), Is.EqualTo(new Dictionary<string, string> { { OAuth2AndOIDCConst.request, "ro01" } }));
 
@@ -382,8 +392,9 @@ namespace TestFramework.Authentication
 
         #region Request Object の預け先・PAR（RFC 9126）
 
-        /// <summary>Request Object の預け先（RFC 9101 5.2.1）：生の本文として POST する。</summary>
+        /// <summary>Request Object の預け先（RFC 9101 5.2.1 の例）：生の本文として POST する。</summary>
         [Test]
+        [Observation("RFC 9101 5.2.1 は、認可サーバが用意した URL へ POST する形を例として挙げるだけで、登録の方式・形式は範囲外（今の振る舞いを写した）")]
         public void RegisterRequestObject()
         {
             Tuple<HttpRequestMessage, string> r = Send(() => OAuth2AndOIDCClient.RegisterRequestObjectAsync(

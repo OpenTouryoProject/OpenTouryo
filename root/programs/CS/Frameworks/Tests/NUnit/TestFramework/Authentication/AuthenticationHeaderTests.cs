@@ -84,6 +84,7 @@ namespace TestFramework.Authentication
 
         /// <summary>Basic：secret の無い形（"id" だけ）も受ける。secret を null で作ると空文字になる。</summary>
         [Test]
+        [Observation("RFC 7617 2 では \":\" が要る。\":\" の無い形を id だけとして受けるのは、GetCredentials(Basic) の「Length == 1 の ケースもサポート」による後方互換（今の振る舞いを写した）")]
         public void Basic_IdOnly()
         {
             string id, secret;
