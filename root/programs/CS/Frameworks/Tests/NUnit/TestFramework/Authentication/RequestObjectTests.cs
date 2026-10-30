@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/19  玄人 幸道         新規作成
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -35,6 +36,8 @@ using System.Text;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Public.Security.Jwt;
@@ -61,6 +64,7 @@ namespace TestFramework.Authentication
 
         /// <summary>ClaimsInRO：userinfo・id_token（acr を含む）に分けて持つ。どちらも無ければ空。</summary>
         [Test]
+        [Basis("OIDC Core 5.5（claims は userinfo と id_token に分ける）・5.5.1.1（acr は id_token で求める）")]
         public void ClaimsInRO()
         {
             ClaimsInRO claims = new ClaimsInRO(
@@ -81,6 +85,8 @@ namespace TestFramework.Authentication
         /// 渡したクレーム（claims を含む）が入り、空の任意項目は入らない。
         /// </summary>
         [Test]
+        [Basis("RFC 9101 4（認可要求のパラメタを、Request Object のクレームにする）")]
+        [Basis("RFC 9101 6.2（署名を検証する）")]
         public void Oidc_Rsa()
         {
             using (RSA rsa = RSA.Create(2048))
@@ -133,6 +139,7 @@ namespace TestFramework.Authentication
         /// </summary>
         [Test]
         [Platform("Win")]
+        [Basis("CIBA Core 7.1.1（署名した認証要求。iss は client_id）")]
         public void Ciba()
         {
             string ro = RequestObject.CreateCiba("client01", "https://op.example.com/",

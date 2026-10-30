@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成
 //*  2026/10/22  玄人 幸道         各プロパティが対応するキーを読むことのテストを足した（カバレッジの拡充）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -36,6 +37,8 @@ using System.Xml;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 #if NETCOREAPP
 using Microsoft.Extensions.Configuration;
@@ -58,6 +61,8 @@ namespace TestFramework.Authentication
     {
         /// <summary>設定が空なら、どの版も null / NoKey を返し、通信しない。</summary>
         [Test]
+        [Basis("設計：SAML2Client.VerifyResponseWithReason（設定の版）の remarks（SpRp_RsaCerFilePath が空なら NoKey）")]
+        [Basis("設計：RemoteJwkSetStore・SAML2Metadata の remarks（引けなければ null を返し、例外にしない）")]
         public void EmptyConfig_ReturnsNothing()
         {
             using (StubHttp http = new StubHttp((req, body) => StubHttp.Json(HttpStatusCode.OK, "{}")))
@@ -98,6 +103,7 @@ namespace TestFramework.Authentication
 
         /// <summary>RemoteJwkSetStore：JwkSetUri / SpRp_DiscoveryUri ＋ SpRp_Isser を読む。</summary>
         [Test]
+        [Basis("設計：RemoteJwkSetStore.GetJwkAsync(kid)・GetJwkByDiscoveryAsync(kid) の remarks（JwkSetUri・SpRp_DiscoveryUri・SpRp_Isser を渡す）")]
         public void RemoteJwkSetStore_ReadsConfig()
         {
             JObject jwk;
@@ -135,6 +141,7 @@ namespace TestFramework.Authentication
         /// VerifyResponseWithReason（設定の版）：SpRp_RsaCerFilePath ＋ SpRp_Saml2EntityId ＋ SpRp_Saml2AcsUri を読む。
         /// </summary>
         [Test]
+        [Basis("設計：SAML2Metadata.GetAsync()・SAML2Client.VerifyResponseWithReason（設定の版）の remarks（読む設定の表）")]
         public void Saml2_ReadsConfig()
         {
             SAML2Metadata.Clear();

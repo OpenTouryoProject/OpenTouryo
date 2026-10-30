@@ -28,6 +28,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/06/06  西野 大介         新規作成
+//*  2026/10/29  玄人 幸道         DSA の鍵の説明の誤り（PKCS #1 は RSA の規格）を直した（#640）
 //**********************************************************************************
 
 using System;
@@ -113,9 +114,9 @@ namespace Touryo.Infrastructure.Public.Security
             RsaPrivateKey,
             /// <summary> RSA 公開鍵 (PKCS #1)</summary>
             RsaPublicKey,
-            /// <summary> DSA 秘密鍵 (PKCS #1)</summary>
+            /// <summary> DSA 秘密鍵 (OpenSSL の伝統的な形式。RFC 7468 には無い)</summary>
             DsaPrivateKey,
-            /// <summary> DSA 公開鍵 (PKCS #1)</summary>
+            /// <summary> DSA 公開鍵 (OpenSSL の伝統的な形式。RFC 7468 には無い)</summary>
             DsaPublicKey,
             /// <summary>暗号化された秘密鍵 (PKCS #8) </summary>
             EncryptedPrivateKey,

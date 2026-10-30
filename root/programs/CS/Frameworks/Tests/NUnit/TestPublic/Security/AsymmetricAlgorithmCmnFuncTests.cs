@@ -28,12 +28,15 @@
 //*  2026/10/18  玄人 幸道         RsaCng が RSACng になるケースを追加（#628）
 //*  2026/10/19  玄人 幸道         DsaOpenSsl_SHA256 が SHA256 になるケースを追加（#631。Linux のみ）
 //*  2026/10/19  玄人 幸道         Factories：1024 の鍵長リテラルをやめた（CodeQL cs/insufficient-key-size）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security;
 
@@ -66,6 +69,8 @@ namespace TestPublic.Security
         /// 2026/10/18 まで、net10.0（Windows）では公開鍵の取り出しで例外になった（#626）。
         /// </summary>
         [Test]
+        [Basis("#626")]
+        [Basis("設計：Public/Security/ANALYSIS.md 9 節の 7（DSA の公開鍵は PublicKey（SubjectPublicKeyInfo）から読む）")]
         public void GetPublicKey_GetPrivateKey_Dsa()
         {
             using (X509Certificate2 cer = TestCertificates.LoadCer(TestCertificates.DsaCer))
@@ -105,6 +110,8 @@ namespace TestPublic.Security
         /// </summary>
         [Test]
         [Platform("Win")]
+        [Basis("#628")]
+        [Basis("設計：Public/Security/ANALYSIS.md 9 節の 8（RsaCng は new RSACng()、RsaCsp は RSA.Create() のまま）")]
         public void CreateCryptographySP_AsSpecified()
         {
             Assert.That(AsymmetricAlgorithmCmnFunc.CreateCryptographySP(EnumASymmetricAlgorithm.RsaCng), Is.InstanceOf<RSACng>());
@@ -165,6 +172,7 @@ namespace TestPublic.Security
         /// </summary>
         [Test]
         [Platform("Linux")]
+        [Basis("#631")]
         public void CreateDigitalSignSP_DsaOpenSsl()
         {
             AsymmetricAlgorithm aa;

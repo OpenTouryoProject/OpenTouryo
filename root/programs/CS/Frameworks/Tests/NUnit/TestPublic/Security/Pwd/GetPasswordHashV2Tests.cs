@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
 //*  2026/10/28  玄人 幸道         キー無し・キー付きの形式とストレッチを、.NET の API で組み直して確かめるテストを追加
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -32,6 +33,8 @@ using System.Security.Cryptography;
 using System.Text;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security;
 using Touryo.Infrastructure.Public.Security.Pwd;
@@ -107,6 +110,7 @@ namespace TestPublic.Security.Pwd
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(3)]
+        [Basis("別実装：.NET の SHA256 で、ソルト＋パスワードに 1 回＋回数分かけて組み直したハッシュと一致")]
         public void Hash_SameAsBcl(int stretch)
         {
             string[] parts = GetPasswordHashV2.GetSaltedPassword(Raw, EnumHashAlgorithm.SHA256, 16, stretch).Split('.');
@@ -180,6 +184,8 @@ namespace TestPublic.Security.Pwd
         /// （ストレッチのかかり方は、GetSaltedPassword の remarks のとおり）。
         /// </summary>
         [Test]
+        [Basis("別実装：.NET の Rfc2898DeriveBytes（SHA256）で導いた鍵による HMACSHA256 と一致")]
+        [Basis("設計：GetPasswordHashV2.GetSaltedPassword（キー付き）の remarks（ストレッチは、key と salt から PBKDF2 で導く HMAC の鍵にだけかかる）")]
         public void KeyedHash_SameAsBcl()
         {
             string[] parts = GetPasswordHashV2.GetSaltedPassword(

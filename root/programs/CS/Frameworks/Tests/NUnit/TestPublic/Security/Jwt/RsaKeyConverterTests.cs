@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
+//*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -33,6 +34,8 @@ using System.Text;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security.Jwt;
 
@@ -63,6 +66,7 @@ namespace TestPublic.Security.Jwt
 
         /// <summary>**kid は RFC 7638 の JWK Thumbprint と一致する**（RS256 は SHA-256）。kty / alg / n / e も入る。</summary>
         [Test]
+        [Basis("RFC 7638 3.1（JWK Thumbprint の計算の例）")]
         public void ParamToJwk_KidIsThumbprint()
         {
             RsaPublicKeyConverter conv = new RsaPublicKeyConverter();

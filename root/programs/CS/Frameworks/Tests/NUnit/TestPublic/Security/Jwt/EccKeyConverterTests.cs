@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
+//*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -33,6 +34,8 @@ using System.Text;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security.Jwt;
 
@@ -56,6 +59,7 @@ namespace TestPublic.Security.Jwt
         [TestCase(JWS_ECDSA.ES._256, "P-256", "ES256")]
         [TestCase(JWS_ECDSA.ES._384, "P-384", "ES384")]
         [TestCase(JWS_ECDSA.ES._512, "P-521", "ES512")]
+        [Basis("RFC 7518 3.4（ES256・ES384・ES512 と曲線 P-256・P-384・P-521 の対応）・6.1（kty は EC）・6.2.1.1（crv の値）")]
         public void Public_RoundTrip(JWS_ECDSA.ES es, string crv, string alg)
         {
             EccPublicKeyConverter conv = new EccPublicKeyConverter(es);
@@ -75,6 +79,7 @@ namespace TestPublic.Security.Jwt
 
         /// <summary>kid は、{"crv","kty","x","y"} を JSON にしたもののハッシュ（ES256 は SHA-256）。</summary>
         [Test]
+        [Basis("RFC 7638 3.2（EC で使うメンバは crv・kty・x・y）・3.3（メンバ名の順に並べる）")]
         public void Kid_IsThumbprint()
         {
             EccPublicKeyConverter conv = new EccPublicKeyConverter();
@@ -112,6 +117,7 @@ namespace TestPublic.Security.Jwt
 
         /// <summary>X 座標の長さから曲線を決める（32 / 48 / 66 バイト）。それ以外は ArgumentException。</summary>
         [Test]
+        [Basis("RFC 7518 6.2.1.2（x は曲線の座標の大きさそのもの。P-521 なら 66 オクテット）")]
         public void GetCrvStringFromXCoordinate()
         {
             EccPublicKeyConverter conv = new EccPublicKeyConverter();

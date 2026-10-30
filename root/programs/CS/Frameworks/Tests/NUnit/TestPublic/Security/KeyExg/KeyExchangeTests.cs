@@ -26,12 +26,15 @@
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
 //*  2026/10/18  玄人 幸道         文字列版の Encrypt / Decrypt のケースを追加（#629）
 //*  2026/10/18  玄人 幸道         フラグを省いた版（証明書）の Bob のケースを追加（#630）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
 using System.Text;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security.KeyExg;
 
@@ -81,6 +84,7 @@ namespace TestPublic.Security.KeyExg
         /// 2026/10/18 まで、暗号文を UTF-8 の文字列にしていて、戻せなかった（#629）。
         /// </summary>
         [Test]
+        [Basis("#629")]
         public void StringOverloads_RoundTrip()
         {
             RsaOaepBob bob = new RsaOaepBob();
@@ -116,6 +120,7 @@ namespace TestPublic.Security.KeyExg
         /// 2026/10/18 まで、既定の DefaultKeySet では秘密鍵を写し直せず、必ず例外になった（#630）。
         /// </summary>
         [Test]
+        [Basis("#630")]
         public void BobFromPfx_DefaultFlags()
         {
             RsaOaepBob bob = new RsaOaepBob(TestCertificates.RsaPfx, TestCertificates.Password);

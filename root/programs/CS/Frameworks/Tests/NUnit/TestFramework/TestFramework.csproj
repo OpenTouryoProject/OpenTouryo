@@ -63,6 +63,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!--期待値の根拠（Basis）と観測（Observation）の属性。TestPublic と共有する（QUALITY.md 7 節。#640）。-->
+    <Compile Include="..\Common\QualityAttributes.cs" Link="Common\QualityAttributes.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <!--SAML2 の署名・検証が使う証明書（TestCertificates.cs）。TestPublic と同じ正本をリンクする。
         *.pfx のパスワードは "test"。-->
     <None Include="..\..\..\..\..\..\files\resource\X509\SHA256RSA.cer" Link="X509\SHA256RSA.cer" CopyToOutputDirectory="PreserveNewest" />

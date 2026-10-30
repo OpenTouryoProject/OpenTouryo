@@ -25,12 +25,15 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/19  玄人 幸道         新規作成
 //*  2026/10/22  玄人 幸道         SigAlg（ハッシュ別・DSA・PSS）・空の入力・暗号化用の鍵を飛ばすことのテストを足した（#634。カバレッジの拡充）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System.Security.Cryptography;
 using System.Xml;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Public.Security;
@@ -147,6 +150,8 @@ namespace TestFramework.Authentication
         /// エラー応答（Success 以外）は Assertion が無くても通る（#598）。
         /// </summary>
         [Test]
+        [Basis("SAML 2.0 Profiles 4.1.4.2（エラーを返すなら Assertion を含めない。成功なら 1 つ以上含める）")]
+        [Basis("#598")]
         public void VerifyByXPath_Response()
         {
             XmlDocument noAssertion = CreateResponse(SAML2Enum.StatusCode.Success, false);
@@ -160,6 +165,7 @@ namespace TestFramework.Authentication
 
         /// <summary>Redirect：署名せずに符号化したものは、そのまま復号できる。</summary>
         [Test]
+        [Basis("SAML 2.0 Bindings 3.4.4.1（DEFLATE → Base64 → URL エンコードして SAMLResponse に載せる。RelayState は別のパラメタ）")]
         public void Redirect_EncodeAndDecode()
         {
             string saml = CreateResponse(SAML2Enum.StatusCode.Success, true).OuterXml;
@@ -175,6 +181,7 @@ namespace TestFramework.Authentication
         /// 別の鍵や、書き換えた値では通らない。
         /// </summary>
         [Test]
+        [Basis("SAML 2.0 Bindings 3.4.4.1（SAMLResponse・RelayState・SigAlg を連ねた文字列に署名する）")]
         public void Redirect_SignAndVerify()
         {
             string saml = CreateResponse(SAML2Enum.StatusCode.Success, true).OuterXml;
@@ -200,6 +207,7 @@ namespace TestFramework.Authentication
 
         /// <summary>POST：XML 署名した応答は、Base64 を戻して、同じ鍵で検証できる。別の鍵では通らない。</summary>
         [Test]
+        [Basis("SAML 2.0 Core 3.2.2（署名があれば、受け手は検証し、無効なら内容に頼らない）")]
         public void Post_SignAndVerify()
         {
             XmlDocument res = CreateResponse(SAML2Enum.StatusCode.Success, true);
@@ -220,6 +228,7 @@ namespace TestFramework.Authentication
 
         /// <summary>POST：鍵を渡さなければ署名しない（Base64 にするだけ）。</summary>
         [Test]
+        [Basis("SAML 2.0 Bindings 3.5.4（XML を Base64 にしてフォームに載せる）")]
         public void Post_WithoutKey_NotSigned()
         {
             string saml = CreateResponse(SAML2Enum.StatusCode.Success, true).OuterXml;
@@ -257,6 +266,9 @@ namespace TestFramework.Authentication
         [TestCase("SHA256", SAML2Const.RSAwithSHA256)]
         [TestCase("SHA384", SAML2Const.RSAwithSHA384)]
         [TestCase("SHA512", SAML2Const.RSAwithSHA512)]
+        [Basis("SAML 2.0 Bindings 3.4.4.1（SigAlg は、署名に使ったアルゴリズムを示す URI）")]
+        [Basis("設計：SAML2Bindings.VerifyRedirect(queryString, rsa, sigAlgs) の remarks（SigAlg からハッシュを選ぶ。sigAlgs に無ければ検証せずに失敗）")]
+        [Basis("#604")]
         public void Redirect_SigAlgByHash(string hash, string expectedSigAlg)
         {
             string saml = CreateResponse(SAML2Enum.StatusCode.Success, true).OuterXml;
@@ -280,6 +292,8 @@ namespace TestFramework.Authentication
         /// DigitalSign 版は、DigitalSign のアルゴリズムと SigAlg が食い違えば通さない。
         /// </summary>
         [Test]
+        [Basis("設計：SAML2Bindings.VerifyRedirect(queryString, ds) の remarks（SigAlg が DigitalSign のアルゴリズムを示していなければ失敗）")]
+        [Basis("#604")]
         public void Redirect_SigAlgMismatch()
         {
             string saml = CreateResponse(SAML2Enum.StatusCode.Success, true).OuterXml;
@@ -342,6 +356,7 @@ namespace TestFramework.Authentication
 
         /// <summary>メタデータ：署名用の証明書は、1 本目の use="signing" の KeyDescriptor の後ろに足す（暗号化用は飛ばす）。</summary>
         [Test]
+        [Basis("設計：SAML2Bindings.AppendSigningCertificates(metadata, certificates) の summary・remarks（use=\"signing\" の 1 本目を複製し、その後ろに並べる）")]
         public void AppendSigningCertificates_SkipsEncryptionKey()
         {
             XmlDocument md = SAML2Bindings.CreateMetadata("https://idp.example.com/", "CURRENT",

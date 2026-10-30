@@ -28,7 +28,8 @@
     ＜HTML＞
       Write-CoverageHtml は、同じカバレッジ ファイルから ReportGenerator の HTML を作る（クラス・行の単位で見るため）。
       合算は ReportGenerator が行うので、**割合は COVERAGE.md の表と一致しないことがある。**
-      ReportGenerator が無ければ、導入方法を表示して何もしない。
+      ReportGenerator は .config\dotnet-tools.json（ローカル ツール）で版を固定し、dotnet tool restore で用意する。
+      **グローバルの導入は要らない。** 用意できなければ（オフライン等）、表示して何もしない。
 
 .EXAMPLE
     . (Join-Path $PSScriptRoot "CoverageReport.ps1")
@@ -44,6 +45,7 @@
      2026/10/19  玄人 幸道         行をフル パスで数えるようにした（計測ごとに <source> の根が違い、二重に数えていた）
      2026/10/19  玄人 幸道         指定したアセンブリを、モジュールごとの行と計の行で出せるようにした（-Modules）
      2026/10/29  玄人 幸道         ReportGenerator の HTML を作る Write-CoverageHtml を追加
+     2026/10/29  玄人 幸道         ReportGenerator をローカル ツール（.config\dotnet-tools.json）で用意するようにした
 #>
 
 # 書き換える範囲の印
@@ -281,29 +283,34 @@ function Write-CoverageHtml([object[]]$Files, [string]$TargetDir)
     $paths = @($Files | ForEach-Object { $_.File } | Where-Object { $_ -and (Test-Path $_) })
     if ($paths.Count -eq 0) { return $false }
 
-    # PATH に無くても、dotnet tool の既定の場所を見る（導入した直後のシェルは PATH が古い）
-    $rg = Get-Command reportgenerator -ErrorAction SilentlyContinue | Select-Object -First 1 -ExpandProperty Source
-    if (-not $rg -and $env:USERPROFILE)
+    # ReportGenerator は、.config\dotnet-tools.json（ローカル ツール）で版を固定している。
+    #   dotnet はマニフェストをカレントから上へ探すので、本ファイルの場所で restore → run する。
+    #   restore は、未取得のときだけ NuGet から取ってくる（取得済みなら何もしない）。
+    Push-Location $PSScriptRoot
+    try
     {
-        $cand = Join-Path $env:USERPROFILE ".dotnet\tools\reportgenerator.exe"
-        if (Test-Path $cand) { $rg = $cand }
-    }
-    if (-not $rg)
-    {
-        Write-Host "  ReportGenerator が見つかりません。HTML は作りません。" -ForegroundColor Yellow
-        Write-Host "    導入 : dotnet tool install -g dotnet-reportgenerator-globaltool" -ForegroundColor Yellow
-        return $false
-    }
+        $out = & dotnet tool restore 2>&1
+        if ($LASTEXITCODE -ne 0)
+        {
+            Write-Host "  ReportGenerator を用意できません（dotnet tool restore）。HTML は作りません。" -ForegroundColor Yellow
+            $out | Select-Object -Last 10 | ForEach-Object { Write-Host "    $_" -ForegroundColor Yellow }
+            return $false
+        }
 
-    # 前回の HTML を消す（クラスが減ると、古いページが残るため）
-    if (Test-Path $TargetDir) { Remove-Item $TargetDir -Recurse -Force }
+        # 前回の HTML を消す（クラスが減ると、古いページが残るため）
+        if (Test-Path $TargetDir) { Remove-Item $TargetDir -Recurse -Force }
 
-    $out = & $rg ("-reports:" + ($paths -join ';')) ("-targetdir:" + $TargetDir) "-reporttypes:Html" 2>&1
-    if ($LASTEXITCODE -ne 0)
-    {
-        Write-Host "  ReportGenerator が失敗しました。" -ForegroundColor Yellow
-        $out | Select-Object -Last 10 | ForEach-Object { Write-Host "    $_" -ForegroundColor Yellow }
-        return $false
+        $out = & dotnet tool run reportgenerator ("-reports:" + ($paths -join ';')) ("-targetdir:" + $TargetDir) "-reporttypes:Html" 2>&1
+        if ($LASTEXITCODE -ne 0)
+        {
+            Write-Host "  ReportGenerator が失敗しました。" -ForegroundColor Yellow
+            $out | Select-Object -Last 10 | ForEach-Object { Write-Host "    $_" -ForegroundColor Yellow }
+            return $false
+        }
+        return $true
     }
-    return $true
+    finally
+    {
+        Pop-Location
+    }
 }

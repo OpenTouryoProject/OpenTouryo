@@ -27,6 +27,7 @@
 //*  2026/10/22  玄人 幸道         取得を OAuth2AndOIDCClient.GetStringAsync に変えた（GetJwkSetAsync の代用をやめた）
 //*  2026/10/22  玄人 幸道         XPath・接頭辞・属性名の直書きを SAML2Const に寄せた
 //*  2026/10/22  玄人 幸道         設定（SpRp_Saml2MetadataUri / SpRp_Saml2EntityId）を読む版を追加
+//*  2026/10/30  玄人 幸道         remarks に、use の無い KeyDescriptor の根拠（Errata E62）を書き足した（#640）
 //**********************************************************************************
 
 using System;
@@ -67,7 +68,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>署名用の証明書（base64 の DER。並んでいる順）</summary>
         /// <remarks>
         /// 鍵のロールオーバー中は 2 本以上並ぶ（新旧）ので、一覧で持つ。
-        /// use="signing" と、use の無い KeyDescriptor（どちらにも使える。Metadata 2.4.1.1）を採る。
+        /// use="signing" と、use の無い KeyDescriptor（どちらにも使える。Metadata 2.4.1.1、SAML 2.0 Errata の E62）を採る。
         /// </remarks>
         public List<string> SigningCertificates { get; private set; }
 

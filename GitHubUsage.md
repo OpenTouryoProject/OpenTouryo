@@ -15,7 +15,7 @@
 | Secret scanning の除外パス | [`.github/secret_scanning.yml`](.github/secret_scanning.yml) |
 | 手順の早見 | [`CHEATSHEET.md`](root/programs/CHEATSHEET.md) |
 
-最終更新: 2026-08-10
+最終更新: 2026-10-29
 
 ---
 
@@ -233,8 +233,8 @@ fixed 12 件  ≠  12 件が直った
 
 | ブランチ | 役割 | 保護 |
 |---|---|---|
-| `develop` | 既定ブランチ。開発の集約先 | force-push 禁止 / 削除禁止 |
-| `master` | リリース | 上記 ＋ **レビュー 1 名必須** ＋ **必須チェック `build`** |
+| `develop` | 既定ブランチ。開発の集約先 | force-push 禁止 / 削除禁止 ＋ **必須チェック `expectation-change`**（#640） |
+| `master` | リリース | force-push 禁止 / 削除禁止 ＋ **レビュー 1 名必須** ＋ **必須チェック `build`・`expectation-change`** |
 | `deps` | Dependabot PR の受け先 | なし |
 
 ブランチ運用は git-flow。**規約は [`Contributing.ja.md`](Contributing.ja.md)。**
@@ -270,9 +270,11 @@ gh api repos/OpenTouryoProject/OpenTouryo/invitations   # 承諾待ちの招待
 **弱点に見えるが、この運用では正しい**もの。理由を書いておかないと、また提案が出る。
 
 
-- **`develop` に必須ステータス チェックは置かない**（意図的）。
-  `deps` ⇔ `develop` ⇔ feature と往復が多く、毎回のマージが CI 待ちになるため。
-  代わりに **`master` 宛の PR で CI を動かす**（3 節・7 節）
+- **`develop` の必須ステータス チェックは `expectation-change` だけにする**（意図的）。
+  `deps` ⇔ `develop` ⇔ feature と往復が多く、ビルドを待つと毎回のマージが CI 待ちになるため、
+  **ビルド（`build`）は `master` 宛の PR で動かす**（3 節・7 節）。
+  `expectation-change` はビルドせず数秒で終わるので、この理由に当たらない。
+  期待値の変更の承認（[`QUALITY.md`](QUALITY.md) 3 節）は、リリースまで待たずに develop で止める（#640 で決定）
 - `master` の `enforce_admins` は無効（少人数運用のため意図的）
 - **`delete_branch_on_merge` は無効にしておく**（意図的）。
   **作業ブランチを継続利用する運用**のため。`3rd_agent` は 4 回、`2nd_agent` は 6 回と、
@@ -312,6 +314,7 @@ allow_rebase_merge   false   … 同上
 | [`workflows/build-windows.yml`](.github/workflows/build-windows.yml) | 検証 3 本（ビルド・単体テスト・疎通）を windows-latest で |
 | [`workflows/build-windows-vb.yml`](.github/workflows/build-windows-vb.yml) | **VB 版**のビルドと疎通を windows-latest で（手動のみ） |
 | [`workflows/dependabot-retarget.yml`](.github/workflows/dependabot-retarget.yml) | Dependabot PR の向き先を `deps` へ変更 |
+| [`workflows/expectation-change.yml`](.github/workflows/expectation-change.yml) | PR のコミットに、トレーラーの無い期待値の変更が無いかを確かめる（#640。[`QUALITY.md`](QUALITY.md) 3 節の段 3） |
 | [`secret_scanning.yml`](.github/secret_scanning.yml) | Secret scanning のアラートから除外するパス（1 節） |
 | [`ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE) | Issue テンプレート 3 種 ＋ `config.yml`（5 節） |
 | [`pull_request_template.md`](.github/pull_request_template.md) | PR テンプレート（5 節） |
@@ -325,6 +328,7 @@ allow_rebase_merge   false   … 同上
 | `build-windows.yml` | `push: [deps]` / **`pull_request: [master]`** / 手動 | `contents: read` |
 | `build-windows-vb.yml` | **手動のみ**（`workflow_dispatch`） | `contents: read` |
 | `dependabot-retarget.yml` | `pull_request_target`（`opened`） | `pull-requests: write` |
+| `expectation-change.yml` | **`pull_request: [develop, master]`** | `contents: read` |
 | CodeQL（既定セットアップ） | GitHub 管理。`push` / `pull_request` / 週次 | ワークフロー ファイルを持たない |
 
 `build-windows.yml` は既知の署名エラー（`MSB3482` / `MSB3325` / `MSB3321`）を除外する。
@@ -345,6 +349,17 @@ allow_rebase_merge   false   … 同上
 > 共通化するには composite action か再利用可能ワークフローへ切り出すことになるが、
 > それは **master の必須チェックである `build-windows.yml` にも手を入れる**ことを意味する。
 > 実際に CI を回して確かめるまでは触らない方針とし、まずは独立した形で置いた。
+
+**`expectation-change.yml` は数秒で終わる**（ビルドしない）。ジョブ名（チェック名）は `expectation-change`。
+
+- **検出器はベース側の版を使う。** PR の側の `CheckExpectationChange.ps1` を使うと、PR が検出器を緩めれば素通りになる。
+  ベースのコミットを `_base` へ取り出し、その版で PR のコミットを git のオブジェクトとして読む（PR の側のスクリプトは実行しない）
+- **`pull_request` であり、`pull_request_target` ではない。** 権限は `contents: read` だけ
+- `actions/checkout` は**このワークフローだけ SHA で固定した**（8 節の方針の先取り。他のワークフローは `@v7` のまま）
+
+> **develop・master の両方で必須のチェックにする**（#640 で決定。2 節）。
+> **必須のチェックに足すのは、このワークフローが 1 度動いた後。** 名前は実測で確かめる（7 節「master に必須チェックを設定」と同じ）。
+> **develop へ直接 push すると拒否されるようになる**（`enforce_admins` は無効なので、管理者は通る）。
 
 > **`dependabot-retarget.yml` は `pull_request_target` を使う。**
 > これは**ベース ブランチ側の定義を、書き込み権限付きで動かす**トリガである。
@@ -626,6 +641,52 @@ DB の導入と初期化が入るため。**リリース時はこれを見込む
 
 > **`.github/secret_scanning.yml` の除外は Push protection には効かない。**
 > あちらはアラート（Secret scanning）の抑制であり、push の判定は見ていない。
+
+### 2026-10-29 : develop・master に必須チェック `expectation-change` を追加（#640）
+
+`expectation-change.yml` が PR #641 で 1 度動いた後に実施した。**チェック名と app を実測で確かめてから**設定する。
+
+```bash
+gh api repos/OpenTouryoProject/OpenTouryo/commits/<head_sha>/check-runs \
+  --jq '.check_runs[] | select(.name=="expectation-change") | {name, app: .app.slug, conclusion}'
+# → expectation-change / github-actions（app_id 15368。master の build と同じ）
+```
+
+**master は既に必須チェックがあるので、`required_status_checks` だけを PATCH する**（他の項目は変わらない）。
+
+```bash
+cat > master_checks.json <<'JSON'
+{ "strict": false,
+  "checks": [ { "context": "build", "app_id": 15368 },
+              { "context": "expectation-change", "app_id": 15368 } ] }
+JSON
+gh api -X PATCH repos/OpenTouryoProject/OpenTouryo/branches/master/protection/required_status_checks --input master_checks.json
+```
+
+**develop は必須チェックが無かったので、保護全体を PUT する**（上の「master に必須チェックを設定」と同じ理由。既存の値を明示する）。
+develop にはレビュー必須が無いので、`required_pull_request_reviews` は `null` のまま。
+
+```bash
+cat > develop_prot.json <<'JSON'
+{ "required_status_checks": { "strict": false, "checks": [ { "context": "expectation-change", "app_id": 15368 } ] },
+  "enforce_admins": false,
+  "required_pull_request_reviews": null,
+  "restrictions": null,
+  "required_linear_history": false,
+  "allow_force_pushes": false,
+  "allow_deletions": false,
+  "block_creations": false,
+  "required_conversation_resolution": false,
+  "lock_branch": false,
+  "allow_fork_syncing": false }
+JSON
+gh api -X PUT repos/OpenTouryoProject/OpenTouryo/branches/develop/protection --input develop_prot.json
+```
+
+設定の後、両方の保護を取り直して全項目を照合した（master はレビュー 1 名・`build` が残り、`expectation-change` が増えただけ）。
+PR #641 の `mergeStateStatus` は `CLEAN` のまま（必須のチェックを満たしている）。
+
+> **develop・master へ直接 push すると、拒否されるようになった**（`enforce_admins` は無効なので、管理者は通る）。
 
 ---
 

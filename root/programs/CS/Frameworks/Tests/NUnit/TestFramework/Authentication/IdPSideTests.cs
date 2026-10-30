@@ -26,6 +26,8 @@
 //*  2026/10/22  玄人 幸道         新規作成（#634）
 //*  2026/10/22  玄人 幸道         設定（CmnServerParams）を読む版のテストを追加
 //*  2026/10/22  玄人 幸道         境界（鍵の並び・空の issuer・aud の配列・JwkSetDocument の設定とファイル無し）のテストを足した
+//*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を広げた（#640）
 //**********************************************************************************
 
 using System;
@@ -38,6 +40,8 @@ using System.Xml;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 #if NETCOREAPP
 using Microsoft.Extensions.Configuration;
@@ -78,6 +82,7 @@ namespace TestFramework.Authentication
         /// iss と ID（応答の InResponseTo に使う）が返る。
         /// </summary>
         [Test]
+        [Basis("設計：SAML2Client.VerifyRequest（鍵を Issuer から返す処理を受ける版）の remarks（要求の Issuer から鍵を引き、複数なら署名が通るまで順に試す）")]
         public void VerifyRequest_RoundTrip()
         {
             using (RSA sp = RSA.Create(2048))
@@ -112,6 +117,7 @@ namespace TestFramework.Authentication
         /// 鍵を返す処理が null なら ArgumentNullException。
         /// </summary>
         [Test]
+        [Basis("設計：SAML2Client.VerifyRequest（鍵を Issuer から返す処理を受ける版）の remarks（読めなくても例外にせず false。false のときの iss は検証されていない値）")]
         public void VerifyRequest_Rejected()
         {
             using (RSA sp = RSA.Create(2048))
@@ -173,6 +179,7 @@ namespace TestFramework.Authentication
 
         /// <summary>エラー応答は Assertion を持たない（SP 側では ErrorStatus）。鍵・必須の値が無ければ例外。</summary>
         [Test]
+        [Basis("SAML 2.0 Profiles 4.1.4.2（エラーを返すなら Assertion を含めない）")]
         public void CreateResponse_ErrorAndArguments()
         {
             RSA idp = TestCertificates.RsaPrivateKey();
@@ -204,6 +211,7 @@ namespace TestFramework.Authentication
 
         /// <summary>書き足した証明書は、いまの鍵の後ろに、渡した順で並び、SP 側で全部読める。空は飛ばす。</summary>
         [Test]
+        [Basis("設計：SAML2Bindings.AppendSigningCertificates(metadata, certificates) の remarks（1 本目の後ろに、渡された順に並べる）")]
         public void AppendSigningCertificates()
         {
             XmlDocument metadata = SAML2Bindings.CreateMetadata(IdPEntityId, "CURRENT",
@@ -229,6 +237,7 @@ namespace TestFramework.Authentication
 
         /// <summary>Create で作った ResponseObject を、Verify（鍵・iss・aud を受ける版）で検証できる。exp は数値で入る。</summary>
         [Test]
+        [Basis("JARM 2.1（iss・aud・exp を持つ）・2.4 の 3・4（aud が client_id と一致し、exp が過ぎていなければ受ける）")]
         public void ResponseObject_RoundTrip()
         {
             using (RSA rsa = RSA.Create(2048))
@@ -366,6 +375,7 @@ namespace TestFramework.Authentication
         /// aud が配列の ResponseObject は、配列に期待する aud を含めば通る（RFC 7519 4.1.3）。
         /// </summary>
         [Test]
+        [Basis("RFC 7519 4.1.3（aud は配列でもよい。自分を含まなければ拒否する）")]
         public void ResponseObject_Boundaries()
         {
             using (RSA rsa = RSA.Create(2048))
@@ -432,6 +442,7 @@ namespace TestFramework.Authentication
         /// RequirePkceS256 が無ければ plain も受ける。PreviousSigningCerFilePaths が無ければ何も足さない。
         /// </summary>
         [Test]
+        [Basis("設計：SAML2Client.CreateRedirectResponse・CreatePostResponse（設定を読む版）の remarks（CmnServerParams の値を使う。どれかが無ければ FrameworkException）")]
         public void ConfigOverloads_EmptyConfig()
         {
             Dictionary<string, string> p = new Dictionary<string, string> { { "code", "c1" } };
@@ -495,6 +506,7 @@ namespace TestFramework.Authentication
         /// （net10.0 だけ。構成を差し替える）。
         /// </summary>
         [Test]
+        [Basis("設計：SAML2Client.CreateRedirectResponse・CreatePostResponse（設定を読む版）の remarks（CmnServerParams の値を使う。どれかが無ければ FrameworkException）")]
         public void ConfigOverloads_UseServerConfig()
         {
             WithConfig(ServerConfig(), () =>
@@ -550,6 +562,7 @@ namespace TestFramework.Authentication
         /// （黙って既定値で動かさない）。
         /// </summary>
         [Test]
+        [Basis("設計：SAML2Client.CreateRedirectResponse・CreatePostResponse（設定を読む版）の remarks（CmnServerParams の値を使う。どれかが無ければ FrameworkException）")]
         public void ConfigOverloads_InvalidValues()
         {
             foreach (string minutes in new string[] { null, "abc", "0" })

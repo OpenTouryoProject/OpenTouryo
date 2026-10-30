@@ -16,8 +16,11 @@
 | やりたいこと | コマンド | 節 |
 |---|---|---|
 | 全部を通しで（ビルド → 単体テスト → 疎通） | `.\0_RunAll.ps1` | 1 |
-| 変えた所に必要な分だけ回す | `.\SelectTargets.ps1 -Run` | 1 |
+| 変えた所に必要な分だけ回す（完了の `fixed` の前。通れば記録が進む） | `.\SelectTargets.ps1 -Run` | 1 |
+| 途中の `fixing` のコミットの前に、重いものを後回しにして回す（記録は進まない） | `.\SelectTargets.ps1 -Stage fixing -Run` | 1 |
 | 何が回るかだけ見る | `.\SelectTargets.ps1` | 1 |
+| 記録ではなく、develop からの差分で割り出す | `.\SelectTargets.ps1 -Since develop` | 1 |
+| 通しが通った後に、いまの HEAD を検証済みとして記録する | `.\SelectTargets.ps1 -Record` | 1 |
 | 全ビルドだけ | `.\1_BuildAll.ps1 -IgnoreErrors 'error MSB(3482\|3325\|3321):.*WSClientWinCone_sample\.csproj'` | 1 |
 | 単体テストだけ | `.\2_RunAllTests.ps1` | 1 |
 | 疎通だけ | `.\3_SmokeTest.ps1` | 1 |
@@ -29,16 +32,36 @@
 |---|---|---|
 | 一部だけ回す（名前は部分一致・複数可） | `.\2_RunAllTests.ps1 -Only "TestBatch", "NUnit"` | 1 |
 | 指定できる名前を見る | `.\2_RunAllTests.ps1 -List` | 1 |
+| 実行せずに、いま手元にある結果ファイルだけを比べる | `.\2_RunAllTests.ps1 -SkipBuild` | 1 |
 | Linux でも回す（docker が要る） | `.\2_RunAllTests.ps1 -Linux` | 1 |
 | DB を Oracle / MySQL / PostgreSQL でも回す | `.\2_RunAllTests.ps1 -CrossDb -LocalServicesDir D:\path\to\LocalServicesOnDocker` | 1 |
 | カバレッジを測って COVERAGE.md と HTML（`Tests/CoverageHtml`）を更新する | `.\2_RunAllTests.ps1 -Coverage -LocalServicesDir D:\path\to\LocalServicesOnDocker` | 1 |
-| ↑ の HTML に要る ReportGenerator を入れる（初回だけ） | `dotnet tool install -g dotnet-reportgenerator-globaltool` | — |
+
+### ビルド・疎通を絞る
+
+| やりたいこと | コマンド | 節 |
+|---|---|---|
+| 一部だけビルドする（Clean を挟まない分だけ速い） | `.\1_BuildAll.ps1 -Only "WSSrv" -SkipClean` | 1 |
+| 一部だけ疎通を見る（ビルドは済んでいる前提） | `.\3_SmokeTest.ps1 -Only "MVC_Sample" -SkipBuild` | 1 |
+| 指定できる名前を見る（`-Lang` が効く） | `.\1_BuildAll.ps1 -List` / `.\3_SmokeTest.ps1 -List` | 1 |
+
+### 結果ファイルを比べる
+
+| やりたいこと | コマンド | 節 |
+|---|---|---|
+| 2 つの結果ファイルを比べる（終了コード `0` = 差分無し、`1` = 差分あり、`2` = ファイル無し） | `.\CompareResult.ps1 -Expected <期待> -Actual <実測>` | [`TESTING.md`](TESTING.md) 1 節 |
+| 書き換わった Golden の、コミット済みの版を取り出す（**`cmd /c` で、バイトのまま。** PowerShell の `>` は 5.1 で UTF-16 になる） | `cmd /c "git show HEAD:./CS/Frameworks/Tests/Golden/TestCode/Result48.txt > %TEMP%\Result48.txt"` | [`TESTING.md`](TESTING.md) 1 節 |
+| 取り出した版と比べる（OK なら揺れだけ。期待値の変更に数えない） | `.\CompareResult.ps1 -Expected $env:TEMP\Result48.txt -Actual CS\Frameworks\Tests\Golden\TestCode\Result48.txt` | [`QUALITY.md`](../../QUALITY.md) 3 節 |
+| TestBatch：log4net の内部トレースを除く | 上の比べる行に `-SkipLog4netTrace` を足す | [`TESTING.md`](TESTING.md) 4 節 |
+| EncAndDecUtilCUI：Base64 らしき値（鍵・署名・IV）を伏せる | 上の比べる行に `-NormalizeBase64` を足す | `Get-Help .\CompareResult.ps1 -Detailed` |
+| 差分を全件出す（既定は先頭 20 件） | 上の比べる行に `-ShowAll` を足す | `Get-Help .\CompareResult.ps1 -Detailed` |
 
 ### 依存パッケージを点検する
 
 | やりたいこと | コマンド | 節 |
 |---|---|---|
 | 脆弱性のある依存を見る（ビルドの後に） | `.\CheckVulnerability.ps1 -Detail` | 1 |
+| その場で直せないときに、Issue の文面の下書きを書き出す（投稿はしない） | `.\CheckVulnerability.ps1 -Detail -IssueDraft "$env:TEMP\vuln_issue.md"` | [`BUILDING.md`](BUILDING.md) 13 節 |
 | packages.config と csproj の版を突き合わせる | `.\ComparePackage.ps1 -Check` | 1 |
 | bindingRedirect と配布物の版を突き合わせる | `.\CompareRedirect.ps1 -Check` | 1 |
 
@@ -57,7 +80,12 @@
 | やりたいこと | コマンド | 節 |
 |---|---|---|
 | エージェント用のスキルを取ってくる | `.\GetAgentSkills.ps1` | [`AGENTS.md`](../../AGENTS.md) |
-| 2 つの結果ファイルを比べる | `.\CompareResult.ps1 -Expected <期待> -Actual <実測>` | [`TESTING.md`](TESTING.md) 1 節 |
+| 期待値の変更の commit-msg フックを有効にする（手元で 1 回） | `git config core.hooksPath .githooks` | [`QUALITY.md`](../../QUALITY.md) 3 節 |
+| コミットに、トレーラーの無い期待値の変更が無いかを見る | `.\CheckExpectationChange.ps1 -Commit <コミット>` | [`QUALITY.md`](../../QUALITY.md) 3 節 |
+| コミットの前に、ステージした変更を見る（commit-msg フックと同じ判定） | `.\CheckExpectationChange.ps1 -Staged -MessageFile <メッセージのファイル>` | [`QUALITY.md`](../../QUALITY.md) 3 節 |
+| CS 版と VB 版の設定ファイルを突き合わせる（想定外の差分があれば 1） | `.\CompareConfig.ps1 -Check` | [`CONFIGURATION.md`](CONFIGURATION.md) 11 節 |
+| 設定ファイルの差分の内訳を見る | `.\CompareConfig.ps1 -Detail -Only "WebApp_sample"` | [`CONFIGURATION.md`](CONFIGURATION.md) 11 節 |
+| PR を出す前に、ブランチのコミットをまとめて見る（CI と同じ） | `.\CheckExpectationChange.ps1 -Range develop..HEAD` | [`QUALITY.md`](../../QUALITY.md) 3 節 |
 
 ---
 
@@ -98,7 +126,8 @@ cd root\programs
 - `-Coverage` は `-Only` / `-SkipBuild` / `-Linux` / `-CrossDb` と同時に指定できない（全部をそろえて測るため）。`-Linux` と `-CrossDb` も同時には指定できない
 - **普通の実行は COVERAGE.md を書かない**（カバレッジは画面に出すだけ）
 - `-Coverage` は、表と同じ計測から ReportGenerator の HTML（[`Tests/CoverageHtml/index.html`](CS/Frameworks/Tests/CoverageHtml/index.html)）も作り直す。
-  **Git 管理外**。ReportGenerator が無ければ作らない（判定には影響しない）。割合は表と一致しないことがある（Framework を対象モジュールに絞らない）
+  **Git 管理外**。ReportGenerator は `.config/dotnet-tools.json` のローカル ツールで、`dotnet tool restore` で自動的に用意する（グローバルの導入は要らない）。
+  用意できなければ作らない（判定には影響しない）。割合は表と一致しないことがある（Framework を対象モジュールに絞らない）
 
 - **`1_BuildAll.ps1` を単体で回すときは `-IgnoreErrors` を付ける。**
   ClickOnce の署名（`MSB3482`）で、証明書が無い環境では必ず出る
@@ -194,7 +223,7 @@ dotnet test CS\Frameworks\Tests\NUnit\TestPublic\TestPublic.csproj -f net10.0 --
 - **カバレッジを [`Tests/COVERAGE.md`](CS/Frameworks/Tests/COVERAGE.md) に残すなら `.\2_RunAllTests.ps1 -Coverage -LocalServicesDir <LocalServicesOnDocker>`。**
   NUnit の全部（Linux の回を含む）とクロス DB を 1 回で回し、全部 OK ならアセンブリごとに合算して書く
   （`OpenTouryo.Framework` だけは、TestFramework の対象モジュールごと）。`docker` が要る。普通の実行は COVERAGE.md を書かない。
-  同じ計測から HTML（`Tests/CoverageHtml`。Git 管理外）も作る。要 `dotnet tool install -g dotnet-reportgenerator-globaltool`
+  同じ計測から HTML（`Tests/CoverageHtml`。Git 管理外）も作る。ReportGenerator はローカル ツール（`.config/dotnet-tools.json`）で、導入は要らない
 - **Linux（Golden の EncAndDecUtilCUI と NUnit の TestPublic）は `.\2_RunAllTests.ps1 -Linux` で回す**（#632）。
   Windows でビルドした net10.0 の出力を、Linux のコンテナ（1 つ、`--rm`）でそのまま動かす。`docker` が要る（[`TESTING.md`](TESTING.md) 2 節）。
   **Public・Public.Security に触れた fixed では、`SelectTargets.ps1` が自動で付ける**（fixing では後回し）

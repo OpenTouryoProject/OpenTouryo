@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/19  玄人 幸道         新規作成（カバレッジの拡充）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -31,6 +32,8 @@ using System.Security.Cryptography;
 using System.Text;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security;
 
@@ -52,6 +55,7 @@ namespace TestPublic.Security
         /// バイト配列版も同じ値を返す。
         /// </summary>
         [Test]
+        [Basis("別実装：.NET の HMACSHA256 と一致")]
         public void GetMAC_MatchesHmacSha256()
         {
             byte[] expected;

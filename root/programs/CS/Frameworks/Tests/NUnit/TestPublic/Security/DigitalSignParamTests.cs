@@ -26,6 +26,7 @@
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
 //*  2026/10/18  玄人 幸道         DSA の Sign / Verify のケースを追加（#625）
 //*  2026/10/19  玄人 幸道         DsaOpenSsl_SHA256 のケースを追加（#631。Linux のみ）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -33,6 +34,8 @@ using System.Security.Cryptography;
 using System.Text;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security;
 
@@ -60,6 +63,7 @@ namespace TestPublic.Security
         [TestCase(EnumDigitalSignAlgorithm.Rsa_SHA256, "SHA256")]
         [TestCase(EnumDigitalSignAlgorithm.Rsa_SHA384, "SHA384")]
         [TestCase(EnumDigitalSignAlgorithm.Rsa_SHA512, "SHA512")]
+        [Basis("設計：DigitalSignParam クラスの summary（RSA は MD5・SHA1・SHA256・SHA384・SHA512、DSA は SHA1）")]
         public void Rsa_SignAndVerify(EnumDigitalSignAlgorithm eaa, string hashName)
         {
             using (DigitalSignParam ds = new DigitalSignParam(eaa))
@@ -78,6 +82,7 @@ namespace TestPublic.Security
         [TestCase(EnumDigitalSignAlgorithm.Rsa_SHA1)]
         [TestCase(EnumDigitalSignAlgorithm.Rsa_SHA256)]
         [TestCase(EnumDigitalSignAlgorithm.Rsa_SHA512)]
+        [Basis("RFC 8017 8.2（Formatter（RSAPKCS1SignatureFormatter）も SignData（RSASignaturePadding.Pkcs1）も RSASSA-PKCS1-v1_5 なので、互いに検証できる）")]
         public void Rsa_Formatter(EnumDigitalSignAlgorithm eaa)
         {
             using (DigitalSignParam ds = new DigitalSignParam(eaa))
@@ -122,6 +127,8 @@ namespace TestPublic.Security
 
         /// <summary>RSA-PSS（HashAlgorithmName と RSASignaturePadding を渡す版）で署名して検証できる。</summary>
         [Test]
+        [Basis("RFC 8017 8.1（RSASSA-PSS）")]
+        [Basis("設計：DigitalSignParam(HashAlgorithmName, RSASignaturePadding) の remarks（RSASSA-PSS で使う。PSS に対応する実装を生成する）")]
         public void Rsa_Pss()
         {
             using (DigitalSignParam signer = new DigitalSignParam(HashAlgorithmName.SHA256, RSASignaturePadding.Pss))
@@ -156,6 +163,7 @@ namespace TestPublic.Security
 
         /// <summary>DSA は Formatter（DSASignatureFormatter）で署名して検証できる。PublicKey は DSAParameters。</summary>
         [Test]
+        [Basis("設計：DigitalSignParam クラスの summary（RSA は MD5・SHA1・SHA256・SHA384・SHA512、DSA は SHA1）")]
         public void Dsa_Formatter()
         {
             using (DigitalSignParam signer = new DigitalSignParam(EnumDigitalSignAlgorithm.DsaCSP_SHA1))
@@ -183,6 +191,7 @@ namespace TestPublic.Security
         /// 2026/10/18 まで、データをハッシュせずに渡していて例外になった（#625）。
         /// </summary>
         [Test]
+        [Basis("#625")]
         public void Dsa_SignAndVerify()
         {
             using (DigitalSignParam signer = new DigitalSignParam(EnumDigitalSignAlgorithm.DsaCSP_SHA1))
@@ -219,6 +228,8 @@ namespace TestPublic.Security
         /// </summary>
         [Test]
         [Platform("Linux")]
+        [Basis("#631")]
+        [Basis("別実装：.NET の DSA.VerifyData で、SHA-256 なら通り、SHA-1 なら通らない")]
         public void DsaOpenSsl_Sha256_SignAndVerify()
         {
             using (DigitalSignParam signer = new DigitalSignParam(EnumDigitalSignAlgorithm.DsaOpenSsl_SHA256))
@@ -250,6 +261,7 @@ namespace TestPublic.Security
         /// </summary>
         [Test]
         [Platform("Linux")]
+        [Basis("#631")]
         public void DsaOpenSsl_Sha256_Formatter()
         {
             using (DigitalSignParam signer = new DigitalSignParam(EnumDigitalSignAlgorithm.DsaOpenSsl_SHA256))
@@ -277,6 +289,7 @@ namespace TestPublic.Security
 
         /// <summary>Close / Dispose は何度呼んでもよい。</summary>
         [Test]
+        [Basis(".NET の IDisposable.Dispose の Remarks（2 回目以降の呼び出しは無視し、例外を投げてはならない）")]
         public void Dispose_Twice()
         {
             DigitalSignParam rsa = new DigitalSignParam(EnumDigitalSignAlgorithm.Rsa_SHA256);

@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -31,6 +32,8 @@ using System.Net;
 using System.Net.Http;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Framework.Authentication;
 
@@ -60,6 +63,8 @@ namespace TestFramework.Authentication
 
         /// <summary>private_key_jwt：本文に client_assertion_type / client_assertion が載り、Authorization は無い。</summary>
         [Test]
+        [Basis("CIBA Core 10.1（grant_type=urn:openid:params:grant-type:ciba と auth_req_id）")]
+        [Basis("RFC 7523 2.2（client_assertion_type と client_assertion）")]
         public void Ciba_PrivateKeyJwt()
         {
             Tuple<HttpRequestMessage, string> r = Ciba(OAuth2AndOIDCEnum.AuthMethods.private_key_jwt);
@@ -74,6 +79,7 @@ namespace TestFramework.Authentication
 
         /// <summary>tls_client_auth：本文は client_id だけ（証明書は TLS の層）。</summary>
         [Test]
+        [Basis("RFC 8705 2（mTLS のクライアント認証では、client_id を送る）")]
         public void Ciba_TlsClientAuth()
         {
             Tuple<HttpRequestMessage, string> r = Ciba(OAuth2AndOIDCEnum.AuthMethods.tls_client_auth);
@@ -86,6 +92,7 @@ namespace TestFramework.Authentication
 
         /// <summary>client_secret_basic：Authorization: Basic。本文に資格情報は載らない。</summary>
         [Test]
+        [Basis("RFC 6749 2.3.1（client_secret_basic は HTTP Basic）")]
         public void Ciba_ClientSecretBasic()
         {
             Tuple<HttpRequestMessage, string> r = Ciba(OAuth2AndOIDCEnum.AuthMethods.client_secret_basic);

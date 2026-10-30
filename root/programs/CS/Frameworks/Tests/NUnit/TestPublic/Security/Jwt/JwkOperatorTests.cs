@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（#634）
 //*  2026/10/22  玄人 幸道         EC・oct の指紋の値を固定した（正規化の JSON の組み立てを変えても、値が変わらないことを見る）
+//*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -33,6 +34,8 @@ using System.Security.Cryptography;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security;
 using Touryo.Infrastructure.Public.Security.Jwt;
@@ -58,6 +61,7 @@ namespace TestPublic.Security.Jwt
 
         /// <summary>RFC 7638 3.1 節の例と一致する（余計な項目・順の違いは影響しない）。</summary>
         [Test]
+        [Basis("RFC 7638 3.1（JWK Thumbprint の計算の例）")]
         public void Thumbprint_Rfc7638Example()
         {
             Assert.That(JwkOperator.Thumbprint(Rfc7638Jwk()), Is.EqualTo(Rfc7638Thumbprint));
@@ -110,7 +114,15 @@ namespace TestPublic.Security.Jwt
         }
 
         /// <summary>EC の指紋（RFC 7517 付録 A.1 の EC の公開鍵）。値を固定して、正規化の後退を検知する。</summary>
+        /// <remarks>
+        /// 期待値は、RFC 7638 3.2 の手順を Open棟梁 を使わずに計算した値と一致する（#640 で確認）。
+        /// 必須の項目だけを辞書順・空白なしで並べた
+        ///   {"crv":"P-256","kty":"EC","x":"f83OJ3D2xF1Bg8vub9tLe1gHMzV76e8Tus9uPHvRVEU","y":"x_FEzRu9m36HLN_tue659LNpXW6pCyStikYjKIWI5a0"}
+        /// を UTF-8 にし、SHA-256 を Base64url（パディング無し）にする。
+        /// </remarks>
         [Test]
+        [Basis("RFC 7638 3.2（必須の項目を辞書順に並べた JSON の SHA-256）")]
+        [Basis("別実装：.NET の SHA256 で、正規化した JSON から直接計算した値")]
         public void Thumbprint_EcFixedValue()
         {
             JObject jwk = JObject.Parse(

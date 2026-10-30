@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（OAuth2AndOIDCClient.cs から処理区分ごとに分割した）
+//*  2026/10/30  玄人 幸道         RegisterRequestObjectAsync の remarks を直した（RFC 9101 5.2.1 は例であり、登録の方式は範囲外。#640）
 //**********************************************************************************
 
 using System;
@@ -45,7 +46,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <returns>RequestObjectの登録結果</returns>
         /// <remarks>
         /// Request Object（署名付きJWT）を、生の本文としてPOSTし、request_uriを得る。
-        /// RFC 9101（JAR）§5.2.1 が認可サーバによるこの預け先を認めており、この形で正しい。
+        /// RFC 9101（JAR）§5.2.1 が例として挙げる形（認可サーバが用意した URL へ POST し、request_uri を受け取る）。
+        /// 登録の方式・本文の形式は RFC 9101 の範囲外なので、相手の認可サーバに合わせる。
         /// 本文の形式もクライアント認証も異なるPAR（RFC 9126）には、
         /// PushAuthorizationRequestAsyncメソッドを使用する。
         /// </remarks>

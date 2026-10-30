@@ -24,6 +24,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/19  玄人 幸道         新規作成
+//*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を広げた（#640）
 //**********************************************************************************
 
 using System;
@@ -33,6 +35,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Public.Security.Jwt;
@@ -75,6 +79,7 @@ namespace TestFramework.Authentication
 
         /// <summary>クレームの値を作る（jti は GUID、iat・exp は UNIX 秒）。exp・nbf の判定。</summary>
         [Test]
+        [Basis("RFC 7519 4.1.4（exp 以後は受けない）・4.1.5（nbf より前は受けない）・4.1.6（iat は NumericDate）")]
         public void CmnJwtToken_Claims()
         {
             Assert.That(CmnJwtToken.CreateJitClaim(), Has.Length.EqualTo(32));
@@ -110,6 +115,7 @@ namespace TestFramework.Authentication
 
         /// <summary>Verify（jws を受ける版）：渡した鍵で検証し、ペイロードを返す。別の鍵では通らない。</summary>
         [Test]
+        [Basis("RFC 7515 5.2 の手順 8・10（署名を検証し、通らなければ無効）")]
         public void CmnJwtToken_Verify()
         {
             string jwt = this.Sign(new JObject { [OAuth2AndOIDCConst.sub] = "user01" });
@@ -141,6 +147,8 @@ namespace TestFramework.Authentication
         /// iss・aud・鍵・exp のどれかが違えば通らない。
         /// </summary>
         [Test]
+        [Basis("RFC 9068 4（iss が一致し、aud が含まれ、署名が正しく、exp より前であること。typ の照合はこのテストの対象外）")]
+        [Basis("RFC 7519 4.1.3（aud は配列でもよい）")]
         public void AccessToken_Verify()
         {
             JObject p = new JObject
@@ -192,6 +200,7 @@ namespace TestFramework.Authentication
         /// VerifyHash はその値と照合する。
         /// </summary>
         [Test]
+        [Basis("OpenID Connect Core 1.0 3.1.3.6（at_hash）・付録 A.3（access_token と at_hash の例）")]
         public void IdToken_Hash()
         {
             Assert.That(IdToken.CreateHash("jHkWEdUXMU1BwAsC4vtUsZwnNvTIxEl0z9K3vx5KF0Y"), Is.EqualTo("77QmUPtjPfzWtF2AnpK9RQ"));
@@ -203,6 +212,8 @@ namespace TestFramework.Authentication
         /// IdToken.Verify（jws / iss / aud）：sub・nonce を返す。at_hash・c_hash・s_hash があれば照合する。
         /// </summary>
         [Test]
+        [Basis("OIDC Core 3.1.3.7 の 2・3・6・9（iss の一致・aud に client_id・署名・exp）")]
+        [Basis("OIDC Core 3.2.2.9（at_hash）・3.3.2.10（c_hash）")]
         public void IdToken_Verify()
         {
             JObject p = new JObject

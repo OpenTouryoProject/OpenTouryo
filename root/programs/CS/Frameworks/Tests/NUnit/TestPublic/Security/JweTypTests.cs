@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/15  玄人 幸道         新規作成（#615）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -32,6 +33,8 @@ using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security;
 using Touryo.Infrastructure.Public.Security.Jwt;
@@ -112,6 +115,7 @@ namespace TestPublic.Security
         /// **Decrypt(jwt, out payload) は typ を照合しない。** どの typ でも、typ が無くても通る（以前の実際の振る舞い）。
         /// </summary>
         [TestCaseSource(nameof(Algorithms))]
+        [Basis("設計：JWE.Decrypt(jwtString, out payloadJson) の remarks（typ は照合しない。以前の振る舞いを保つ。#615）")]
         public void Decrypt_WithoutTyp_DoesNotCheckTyp(Func<JWE> factory)
         {
             JWE jwe = factory();
@@ -129,6 +133,8 @@ namespace TestPublic.Security
 
         /// <summary>期待値と一致すれば通る（大文字・小文字、application/ の有無を問わない）。</summary>
         [TestCaseSource(nameof(Algorithms))]
+        [Basis("RFC 7516 4.1.11（JWE の typ は、RFC 7515 4.1.9 と同じ規則）")]
+        [Basis("RFC 7515 4.1.9（メディア タイプは大文字小文字を区別しない。application/ が無ければ付けたものとして扱う）")]
         public void Decrypt_Match(Func<JWE> factory)
         {
             JWE jwe = factory();
@@ -143,6 +149,7 @@ namespace TestPublic.Security
 
         /// <summary>期待値と違えば通らない。payload は空になる。</summary>
         [TestCaseSource(nameof(Algorithms))]
+        [Basis("設計：JWE.Decrypt(jwtString, typ, out payloadJson) の remarks（期待する typ と照合する。規則は JWS.Verify(jwtString, typ) と同じ）")]
         public void Decrypt_Mismatch_Rejected(Func<JWE> factory)
         {
             JWE jwe = factory();
@@ -160,6 +167,7 @@ namespace TestPublic.Security
 
         /// <summary>**期待値を指定したとき、typ が無ければ不一致。** JWT を期待しても通らない。</summary>
         [TestCaseSource(nameof(Algorithms))]
+        [Basis("設計：JWE.Decrypt(jwtString, typ, out payloadJson) の remarks（期待値を指定したとき、typ が無ければ不一致）")]
         public void Decrypt_NoTyp_WithExpected_Rejected(Func<JWE> factory)
         {
             JWE jwe = factory();
@@ -172,6 +180,7 @@ namespace TestPublic.Security
 
         /// <summary>期待値が null・空なら、照合しない（Decrypt(jwt, out payload) と同じ）。</summary>
         [TestCaseSource(nameof(Algorithms))]
+        [Basis("設計：JWE.Decrypt(jwtString, typ, out payloadJson) の typ の説明（null または空文字なら照合しない）")]
         public void Decrypt_NullOrEmptyExpected_SameAsDecrypt(Func<JWE> factory)
         {
             JWE jwe = factory();
@@ -185,6 +194,7 @@ namespace TestPublic.Security
 
         /// <summary>typ が一致しても、暗号文が改ざんされていれば通らない。</summary>
         [TestCaseSource(nameof(Algorithms))]
+        [Basis("RFC 7516 5.2 の手順 16（認証タグが正しくなければ、復号の結果を出さずに拒否する）")]
         public void Decrypt_TypMatch_ButCiphertextTampered(Func<JWE> factory)
         {
             JWE jwe = factory();

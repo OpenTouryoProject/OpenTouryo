@@ -61,6 +61,7 @@ cd root\programs
 
 **リリースではクロス DB も回す**（[`AGENTS.md`](../../AGENTS.md) の表）。`-Coverage` はクロス DB を含むので、これ 1 本で足りる。
 COVERAGE.md が書き換わるので、リリースのコミットに含めるかを決める。
+HTML（`Tests\CoverageHtml`）も作り直されるが、Git 管理外なのでコミットには関係しない。
 
 ```powershell
 .\3_SmokeTest.ps1                # サンプルの疎通
@@ -191,7 +192,7 @@ COVERAGE.md が書き換わるので、リリースのコミットに含める�
 - [ ] **`1_BuildAll.ps1` のエラーが「既知の 1 件」だけである**
       … `-SkipClean` は**使わない**。前回の成果物が残っていると通ったように見える
 - [ ] **`2_RunAllTests.ps1 -Linux` が終了コード 0**（18 ケース。Golden 8 ＋ NUnit 8 ＋ Linux 2）
-- [ ] **`2_RunAllTests.ps1 -Coverage` が終了コード 0**（NUnit 8 ＋ Linux 1 ＋ クロス DB 5。COVERAGE.md が書き換わる）
+- [ ] **`2_RunAllTests.ps1 -Coverage` が終了コード 0**（NUnit 8 ＋ Linux 1 ＋ クロス DB 5。COVERAGE.md が書き換わる。HTML ができたことも表示で見る）
 - [ ] **`3_SmokeTest.ps1` が終了コード 0**（30 件）
 
 > **`1_BuildAll.ps1` は現状ここで終了コード 1 になる。**

@@ -31,6 +31,7 @@
 //*  2018/11/09  西野 大介         RSAOpenSsl、DSAOpenSsl、HashAlgorithmName対応
 //*  2018/11/27  西野 大介         コンストラクタをRSA秘密鍵にも対応させた。
 //*  2026/10/03  玄人 幸道         パディングを指定するコンストラクタを追加（RSASSA-PSS 用）（#596）
+//*  2026/10/30  玄人 幸道         クラスの summary のクラス名の誤り（DigitalSignXML）を直した（コメントのみ）
 //**********************************************************************************
 
 using System;
@@ -39,7 +40,7 @@ using System.Security.Cryptography;
 namespace Touryo.Infrastructure.Public.Security
 {
     /// <summary>
-    /// DigitalSignXMLクラス
+    /// DigitalSignParamクラス
     /// - RSACryptoServiceProvider:
     ///   MD5, SHA1, SHA256, SHA384, SHA512
     /// - DSACryptoServiceProvider:SHA1

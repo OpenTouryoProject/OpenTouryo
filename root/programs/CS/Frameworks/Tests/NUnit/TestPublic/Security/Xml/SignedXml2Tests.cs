@@ -25,12 +25,15 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
 //*  2026/10/19  玄人 幸道         署名の付け替え（XML Signature Wrapping）を弾くケースを追加
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System.Security.Cryptography;
 using System.Xml;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security.Xml;
 
@@ -67,6 +70,7 @@ namespace TestPublic.Security.Xml
 
         /// <summary>入れ子（内側 b を署名した後、外側 a を署名）でも、両方とも検証できる。</summary>
         [Test]
+        [Basis("設計：SignedXml2 の summary（ネストした XML の署名・検証）")]
         public void Nested()
         {
             using (RSA rsa = RSA.Create())
@@ -102,6 +106,7 @@ namespace TestPublic.Security.Xml
         /// Verify は「署名が referenceId を指していること」を突き合わせる。
         /// </summary>
         [Test]
+        [Basis("設計：SignedXml2.Verify の注記（署名の付け替え対策）（署名が、検証する要素ちょうど 1 つ（#referenceId）を指していること）")]
         public void SignatureWrapping_WrongReference_False()
         {
             using (RSA rsa = RSA.Create())
@@ -132,6 +137,7 @@ namespace TestPublic.Security.Xml
         /// （CheckSignature がどちらを検証するかに依存させない。）
         /// </summary>
         [Test]
+        [Basis("設計：SignedXml2.Verify の注記（署名の付け替え対策）（referenceId の id を持つ要素が、文書内でちょうど 1 つで、それが検証する要素であること）")]
         public void SignatureWrapping_DuplicateId_False()
         {
             using (RSA rsa = RSA.Create())
@@ -150,6 +156,7 @@ namespace TestPublic.Security.Xml
 
         /// <summary>壊れた署名・対象に Signature が無い場合は、例外ではなく false を返す。</summary>
         [Test]
+        [Basis("設計：SignedXml2.Verify の注記（署名が壊れている・解釈できない場合は、例外を投げずに検証失敗）")]
         public void Malformed_False()
         {
             using (RSA rsa = RSA.Create())

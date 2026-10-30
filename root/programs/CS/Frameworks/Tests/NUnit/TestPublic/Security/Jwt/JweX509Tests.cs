@@ -24,12 +24,15 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/19  玄人 幸道         新規作成（カバレッジの拡充）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
 using System.Collections.Generic;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security.Jwt;
 
@@ -62,6 +65,7 @@ namespace TestPublic.Security.Jwt
 
         /// <summary>証明書で暗号化したものは、秘密鍵入りの証明書で復号できる。</summary>
         [TestCaseSource(nameof(Cases))]
+        [Basis("RFC 7516 7.1（JWE Compact Serialization は、5 つの部分を . で連ねる）")]
         public void EncryptByCer_DecryptByPfx(Func<JWE> encrypterFactory, Func<JWE> decrypterFactory)
         {
             string jwt = encrypterFactory().Create(Payload);

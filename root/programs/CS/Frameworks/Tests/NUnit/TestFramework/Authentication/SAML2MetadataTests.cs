@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（#634）
 //*  2026/10/22  玄人 幸道         メタデータの鍵の選び方・取り直しの失敗・属性の境界のテストを足した（カバレッジの拡充）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -35,6 +36,8 @@ using System.Security.Cryptography.X509Certificates;
 using System.Xml;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Public.Security;
@@ -83,6 +86,7 @@ namespace TestFramework.Authentication
 
         /// <summary>Parse：XML でない・EntityDescriptor でない・DTD を含むものは null（例外にしない）。</summary>
         [Test]
+        [Basis("設計：SAML2Metadata.Parse の remarks（DTD は処理しない）・SAML2Metadata の remarks（引けなければ null を返し、例外にしない）")]
         public void Parse_Invalid()
         {
             Assert.That(SAML2Metadata.Parse(null), Is.Null);
@@ -94,6 +98,7 @@ namespace TestFramework.Authentication
 
         /// <summary>GetAsync：期待する entityID と一致すれば返し、キャッシュする。違えば null。</summary>
         [Test]
+        [Basis("設計：SAML2Metadata の remarks（期待する entityID と違えば何も返さない。URL を鍵にしてキャッシュする）")]
         public void GetAsync_ChecksEntityId()
         {
             SAML2Metadata.Clear();
@@ -121,6 +126,7 @@ namespace TestFramework.Authentication
 
         /// <summary>属性を足した応答から、メアド・利用者名・email_verified を読み戻せる（値は DOM で入る）。</summary>
         [Test]
+        [Basis("設計：SAML2Attributes の remarks（Name・FriendlyName の対応表）と AppendStatement の remarks（値は DOM で入れる）")]
         public void Attributes_RoundTrip()
         {
             XmlDocument res = CreateResponseWithAttributes("a&b@example.com", "user<01>", true);
@@ -134,6 +140,8 @@ namespace TestFramework.Authentication
 
         /// <summary>別名でも読める。出す属性が無ければ AttributeStatement を足さない。</summary>
         [Test]
+        [Basis("SAML 2.0 Core 2.7.3（AttributeStatement は Attribute を 1 つ以上持つ）")]
+        [Basis("設計：SAML2Attributes の remarks（読む側は別名も見る）")]
         public void Attributes_AliasesAndEmpty()
         {
             Assert.That(SAML2Attributes.GetEmail(new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
@@ -152,6 +160,8 @@ namespace TestFramework.Authentication
 
         /// <summary>POST：すべて照合でき、属性も読める。鍵が複数なら、通るまで試す。</summary>
         [Test]
+        [Basis("SAML 2.0 Profiles 4.1.4.3（Recipient は ACS URL と、InResponseTo は要求の ID と一致する）")]
+        [Basis("設計：SAML2Client.VerifyResponseWithReason の remarks（鍵が複数なら、署名が通るまで順に試す）")]
         public void VerifyResponseWithReason_Valid()
         {
             string saml = SignPost(CreateResponseWithAttributes("u@example.com", "user01", false));
@@ -194,6 +204,8 @@ namespace TestFramework.Authentication
 
         /// <summary>落ちた理由を区別して返す。</summary>
         [Test]
+        [Basis("設計：SAML2Client.VerifyResponseWithReason の remarks（確かめた項目ごとの結果と、判定の理由を返す。#634 の C-3）")]
+        [Basis("設計：SAML2Attributes.Read の remarks（署名を検証した応答から読む）")]
         public void VerifyResponseWithReason_Reasons()
         {
             RSA idp = TestCertificates.RsaPublicKey();
@@ -234,6 +246,8 @@ namespace TestFramework.Authentication
         /// GetSigningKeys：読めない証明書は飛ばす（例外にしない）。
         /// </summary>
         [Test]
+        [Basis("SAML 2.0 Metadata 2.4.1.1（use は signing か encryption。Errata E62：use が無ければ、両方に使える）")]
+        [Basis("設計：SAML2Metadata.SigningCertificates の remarks（use=\"signing\" と use の無い KeyDescriptor を採る）")]
         public void Parse_KeySelection()
         {
             string cert = CertBase64();
@@ -271,6 +285,8 @@ namespace TestFramework.Authentication
         /// キャッシュが無いまま失敗したら null。URL・entityID が空なら取りに行かずに null。
         /// </summary>
         [Test]
+        [Basis("設計：SAML2Metadata.CacheLifetime の remarks（取り直しに失敗したら、前に取れたものを使い続ける）")]
+        [Basis("設計：SAML2Metadata の remarks（期待する entityID と違えば何も返さない）")]
         public void GetAsync_FailedRefetch()
         {
             TimeSpan lifetime = SAML2Metadata.CacheLifetime;
@@ -319,6 +335,8 @@ namespace TestFramework.Authentication
         /// 名前か値が空の属性は飛ばし、NameFormat / FriendlyName は空なら付けない。
         /// </summary>
         [Test]
+        [Basis("SAML 2.0 Core 2.7.3（AttributeStatement は Attribute を 1 つ以上持つ）")]
+        [Basis("設計：SAML2Attributes.AppendStatement の remarks（空の AttributeStatement は出さない）")]
         public void Attributes_AppendStatement_Boundaries()
         {
             Assert.That(SAML2Attributes.AppendStatement(CreateAssertion(), null), Is.False);
