@@ -27,6 +27,7 @@
 //*  2026/10/22  玄人 幸道         DPoP・チャレンジ・復号前後の照合のテストを追加（#634）
 //*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を広げた（#640）
+//*  2026/10/30  玄人 幸道         Basic：最初の ":" で分けることにした（Basic_TooManyParts_False を Basic_ColonInSecret にした。#643）
 //**********************************************************************************
 
 using System;
@@ -149,12 +150,26 @@ namespace TestFramework.Authentication
             Assert.That(AuthenticationHeader.GetCredentials(Basic("client01:secret01"), out token), Is.False);
         }
 
-        /// <summary>Basic で ":" が 2 つ以上ある（3 つ以上に分かれる）ものは受けない。</summary>
+        /// <summary>
+        /// Basic で ":" が 2 つ以上あれば、**最初の ":" で分ける**（2 つ目からの ":" は secret の一部）。
+        /// 2026/10/30 まで、3 つ以上に分かれるものは受けなかった（#643）。
+        /// </summary>
         [Test]
-        public void Basic_TooManyParts_False()
+        [Basis("RFC 7617 2（user-id は \":\" を含まない。最初の \":\" より後ろは、すべて password）")]
+        [Basis("#643")]
+        public void Basic_ColonInSecret()
         {
             string id, secret;
-            Assert.That(AuthenticationHeader.GetCredentials(Basic("a:b:c"), out id, out secret), Is.False);
+            Assert.That(AuthenticationHeader.GetCredentials(Basic("a:b:c"), out id, out secret), Is.True);
+            Assert.That(id, Is.EqualTo("a"));
+            Assert.That(secret, Is.EqualTo("b:c"));
+
+            Assert.That(AuthenticationHeader.GetCredentials(Basic("a::"), out id, out secret), Is.True);
+            Assert.That(secret, Is.EqualTo(":"));
+
+            // 照合する版も、この結果を使う（符号化しないクライアントが、":" を含む秘密をそのまま送ってきた）
+            Assert.That(AuthenticationHeader.GetCredentials(Basic("client01:se:cret"), (i, s) => s == "se:cret", out id, out secret), Is.True);
+            Assert.That(secret, Is.EqualTo("se:cret"));
         }
 
         #region #634（DPoP・チャレンジ・復号前後の照合）

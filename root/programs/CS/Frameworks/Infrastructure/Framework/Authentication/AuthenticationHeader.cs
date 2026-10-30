@@ -34,6 +34,7 @@
 //*                                符号化・復号するようにした
 //*  2026/10/22  玄人 幸道         DPoPスキーム（RFC 9449）の読み書き、WWW-Authenticateの組み立て、
 //*                                Basicの復号前後のどちらでも照合する版を追加（#634）
+//*  2026/10/30  玄人 幸道         Basicの資格情報を、最初の ":" で分けるようにした（password は ":" を含みうる。RFC 7617 2。#643）
 //**********************************************************************************
 
 using System;
@@ -56,6 +57,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <returns>AuthenticationScheme</returns>
         /// <remarks>
         /// 資格情報を取り出せない場合は、空の配列と "" を返す。
+        /// Basic は、**最初の ":" で 2 つに分ける**（user-id は ":" を含まず、最初の ":" より後ろはすべて password。RFC 7617 2）。
+        /// ":" が無ければ 1 つ。2026/10/30 まで、すべての ":" で分けていた（#643）。
         /// </remarks>
         public static string GetCredentials(string authHeader, out string[] credentials)
         {
@@ -71,8 +74,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     {
                         try
                         {
+                            // 最初の ":" で分ける（password は ":" を含みうる。RFC 7617 2。#643）
                             credentials = CustomEncode.ByteToString(
-                                CustomEncode.FromBase64String(temp[1]), CustomEncode.us_ascii).Split(':');
+                                CustomEncode.FromBase64String(temp[1]), CustomEncode.us_ascii).Split(new char[] { ':' }, 2);
 
                             return OAuth2AndOIDCConst.Basic;
                         }

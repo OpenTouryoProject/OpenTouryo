@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（#634）
 //*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
+//*  2026/10/30  玄人 幸道         response_type・prompt の大文字小文字を区別することにした（#643）
 //**********************************************************************************
 
 using System;
@@ -54,28 +55,43 @@ namespace TestFramework.Authentication
             Assert.That(OAuth2AndOIDCSpec.ToDistinctList("b a b"), Is.EqualTo(new List<string> { "b", "a" }));
         }
 
-        /// <summary>response_type：順不同・重複・大文字を正規化し、定数と比べられる。</summary>
+        /// <summary>
+        /// response_type：順不同・重複を正規化し、定数と比べられる。
+        /// **大文字小文字は区別する**（CODE は code ではない）。2026/10/30 まで、小文字にしていた（#643）。
+        /// </summary>
         [TestCase("id_token code", OAuth2AndOIDCConst.OidcHybrid2_IdToken_ResponseType)]
         [TestCase("token  id_token code", OAuth2AndOIDCConst.OidcHybrid3_ResponseType)]
         [TestCase("token id_token", OAuth2AndOIDCConst.OidcImplicit2_ResponseType)]
-        [TestCase("CODE code", OAuth2AndOIDCConst.AuthorizationCodeResponseType)]
+        [TestCase("code code", OAuth2AndOIDCConst.AuthorizationCodeResponseType)]
+        [TestCase("CODE code", "CODE code")]
+        [TestCase("CODE", "CODE")]
         [TestCase("", "")]
         [TestCase(null, null)]
+        [Basis("OAuth 2.0 Multiple Response Type Encoding Practices 1.2（Multiple-Valued Response Types は順不同の空白区切りとして比べる）")]
+        [Basis("RFC 6749 1.9（特に断りが無ければ、パラメタの名前と値は大文字小文字を区別する）")]
+        [Basis("#643")]
         public void NormalizeResponseType(string value, string expected)
         {
             Assert.That(OAuth2AndOIDCSpec.NormalizeResponseType(value), Is.EqualTo(expected));
         }
 
-        /// <summary>prompt：集合として扱う（部分一致しない）。none と他の値の併記は invalid_request。</summary>
+        /// <summary>
+        /// prompt：集合として扱う（部分一致しない）。none と他の値の併記は invalid_request。
+        /// **大文字小文字は区別する**（NONE は none ではない。未知の値として扱う）。2026/10/30 まで、小文字にしていた（#643）。
+        /// </summary>
         [Test]
+        [Basis("OIDC Core 3.1.2.1（prompt は空白区切りの、大文字小文字を区別する列挙。none と他の値を併記したらエラー）")]
+        [Basis("設計：OAuth2AndOIDCSpec.CheckPrompt の remarks（既知でない値だけではエラーにしない）")]
+        [Basis("#643")]
         public void Prompt()
         {
             Assert.That(OAuth2AndOIDCSpec.HasPrompt("login consent", OAuth2AndOIDCConst.PromptConsent), Is.True);
             Assert.That(OAuth2AndOIDCSpec.HasPrompt("nonexistent", OAuth2AndOIDCConst.PromptNone), Is.False);
-            Assert.That(OAuth2AndOIDCSpec.HasPrompt("NONE", OAuth2AndOIDCConst.PromptNone), Is.True);
+            Assert.That(OAuth2AndOIDCSpec.HasPrompt("NONE", OAuth2AndOIDCConst.PromptNone), Is.False, "大文字小文字を区別する");
 
             string err = "", desc = "";
             Assert.That(OAuth2AndOIDCSpec.CheckPrompt("none", ref err, ref desc), Is.True);
+            Assert.That(OAuth2AndOIDCSpec.CheckPrompt("NONE login", ref err, ref desc), Is.True, "NONE は none ではないので、併記の検査に掛からない");
             Assert.That(OAuth2AndOIDCSpec.CheckPrompt("login unknown", ref err, ref desc), Is.True, "未知の値だけではエラーにしない");
             Assert.That(OAuth2AndOIDCSpec.CheckPrompt("none login", ref err, ref desc), Is.False);
             Assert.That(err, Is.EqualTo(OAuth2AndOIDCConst.invalid_request));

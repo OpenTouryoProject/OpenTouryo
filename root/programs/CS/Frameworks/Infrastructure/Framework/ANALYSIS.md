@@ -210,6 +210,11 @@ UOC は `UOC_PreQuery` / `UOC_AfterQuery(sql)` / `UOC_AfterQuery(sql, ex)`。
 | `OAuth2AndOIDCSpec` | 仕様が決めている小物（`error` → HTTP ステータス、`response_type` の正規化、`prompt` の集合、`max_age`、認可応答の URL（`iss` を付ける）、空白区切り、`client_assertion` と `assertion` の両受け） | AS / RS |
 | `AuthenticationHeader` | `DPoP` スキームの読み書き（`GetAccessToken` はスキームも返す）、`WWW-Authenticate` の組み立て、**Basic を復号前後のどちらでも照合する版**（H-3） | AS / RS |
 
+- **`response_type`・`prompt`・PKCE のメソッド名は、大文字小文字を区別する**（RFC 6749 1.9・OIDC Core 3.1.2.1・RFC 7636 6.2.1。#643）。
+  2026/10/30 までは、小文字にしてから比べていた（`CODE`・`NONE`・`s256` を受けていた）。MPAS から移したときの扱いである
+- **Basic の資格情報は、最初の `:` で分ける**（`password` は `:` を含みうる。RFC 7617 2。#643）。
+  2026/10/30 までは、3 つ以上に分かれると `false` だった
+
 **SP・RP 側と対になる IdP 側の処理**（#634 の続き。例外として同じ所に置く）。どれも、配備の決めは引数で受ける
 （自分の値と鍵を設定から読む版もある。下の `CmnServerParams`）。
 
