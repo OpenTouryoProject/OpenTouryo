@@ -230,6 +230,10 @@ logout_token（ログアウトは保留）、DCR・Discovery・PAR などの受�
 `nonce` の作り方、`htu` の期待値の決め方（**要求の `Host` を信じず設定から作る**）、どの口で `cnf.jkt` / `dpop_jkt` を見るか、
 DCR の口の認可、クライアント登録の持ち方。
 
+- **`DPoPProof.Verify` の `htu` は、RFC 3986 の正規化の後に完全一致で比べる**（RFC 9449 4.3。#642）。
+  **末尾の `/` と、パスの大文字小文字は区別する。** 2026/10/30 までは、どちらも区別せずに比べていた。
+  設定から作る `htu` の期待値は、**クライアントが使う URL（ディスカバリで広告した値）と同じ書き方にする**
+
 - **`OAuth2AndOIDCConst.UrnCnfJktClaim` は `urn:oauth:claim:cnf:jkt`**（`UrnCnfX5tClaim` と同じ組み立て）。
   MPAS の `Const.UrnCnfJktClaim`（`urn:oauth:cnf:jkt`）とは値が違う。プロセスの外に出ない値だが、置き換えるときは揃えること
 - `DPoPProof.Create` は `iat` を**数値**で入れる（`CmnJwtToken.CreateIatClaim` は文字列を返すので使わない）。`Verify` は文字列の `iat` を断る
