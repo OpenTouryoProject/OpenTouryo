@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/18  玄人 幸道         新規作成（カバレッジの拡充）
 //*  2026/10/18  玄人 幸道         生成した鍵の秘密鍵を取り出すケースを追加（#627）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた。素の ECDsaCng で、渡したハッシュで署名したことを確かめた（#640）
 //**********************************************************************************
 
 using System;
@@ -32,6 +33,8 @@ using System.Security.Cryptography;
 using System.Text;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Public.Security;
 
@@ -44,6 +47,7 @@ namespace TestPublic.Security
     /// </remarks>
     [TestFixture]
     [Platform("Win")]
+#pragma warning disable CA1416 // Platform("Win") で Windows に限っている
     public class DigitalSignECDsaCngTests
     {
         /// <summary>署名するデータ</summary>
@@ -52,11 +56,17 @@ namespace TestPublic.Security
         /// <summary>改ざんしたデータ</summary>
         private static readonly byte[] Tampered = Encoding.UTF8.GetBytes("署名するデータ!");
 
-        /// <summary>曲線とハッシュの組で、署名し、公開鍵（EccPublicBlob）だけを持つ側で検証できる。</summary>
+        /// <summary>
+        /// 曲線とハッシュの組で、署名し、公開鍵（EccPublicBlob）だけを持つ側で検証できる。
+        /// 素の ECDsaCng に、渡したハッシュ（null なら SHA-256）を指定して検証でき、渡したハッシュで署名したと分かる（#595）。
+        /// </summary>
         [TestCase(EnumDigitalSignAlgorithm.ECDsaCng_P256, null)]
         [TestCase(EnumDigitalSignAlgorithm.ECDsaCng_P256, "SHA256")]
         [TestCase(EnumDigitalSignAlgorithm.ECDsaCng_P384, "SHA384")]
         [TestCase(EnumDigitalSignAlgorithm.ECDsaCng_P521, "SHA512")]
+        [Basis("#595")]
+        [Basis("別実装：.NET の ECDsaCng.VerifyData に、渡したハッシュ（null なら SHA-256）を指定して検証できる")]
+        [Basis("設計：DigitalSignECDsaCng のコンストラクタの注記（ダイジェストを指定しなければ ECDsaCng の既定（SHA-256）。#595）")]
         public void SignAndVerify(EnumDigitalSignAlgorithm eaa, string hashName)
         {
             HashAlgorithm ha = hashName == null ? null : HashAlgorithmCmnFunc.GetHashAlgorithmFromNameString(hashName);
@@ -71,17 +81,34 @@ namespace TestPublic.Security
                 byte[] sign = signer.Sign(Data);
                 Assert.That(verifier.Verify(Data, sign), Is.True);
                 Assert.That(verifier.Verify(Tampered, sign), Is.False);
+
+                using (ECDsaCng plain = new ECDsaCng(CngKey.Import(signer.PublicKey, CngKeyBlobFormat.EccPublicBlob)))
+                {
+                    Assert.That(plain.VerifyData(Data, sign, new HashAlgorithmName(hashName ?? "SHA256")), Is.True);
+                }
             }
         }
 
-        /// <summary>ハッシュを渡さない版（既定の SHA-256）で、公開鍵だけの側でも検証できる。</summary>
+        /// <summary>
+        /// ハッシュを渡さない版（既定の SHA-256）で、公開鍵だけの側でも検証できる。
+        /// 素の ECDsaCng で、SHA-256 なら通り、SHA-384 なら通らない。
+        /// </summary>
         [Test]
+        [Basis("設計：DigitalSignECDsaCng のコンストラクタの注記（ダイジェストを指定しなければ ECDsaCng の既定（SHA-256）。#595）")]
+        [Basis("別実装：.NET の ECDsaCng.VerifyData で、SHA-256 なら通り、SHA-384 なら通らない")]
         public void DefaultHash()
         {
             using (DigitalSignECDsaCng signer = new DigitalSignECDsaCng(EnumDigitalSignAlgorithm.ECDsaCng_P256))
             using (DigitalSignECDsaCng verifier = new DigitalSignECDsaCng(signer.PublicKey))
             {
-                Assert.That(verifier.Verify(Data, signer.Sign(Data)), Is.True);
+                byte[] sign = signer.Sign(Data);
+                Assert.That(verifier.Verify(Data, sign), Is.True);
+
+                using (ECDsaCng plain = new ECDsaCng(CngKey.Import(signer.PublicKey, CngKeyBlobFormat.EccPublicBlob)))
+                {
+                    Assert.That(plain.VerifyData(Data, sign, HashAlgorithmName.SHA256), Is.True);
+                    Assert.That(plain.VerifyData(Data, sign, HashAlgorithmName.SHA384), Is.False);
+                }
             }
         }
 
@@ -126,6 +153,7 @@ namespace TestPublic.Security
         [TestCase(EnumDigitalSignAlgorithm.ECDsaCng_P256)]
         [TestCase(EnumDigitalSignAlgorithm.ECDsaCng_P384)]
         [TestCase(EnumDigitalSignAlgorithm.ECDsaCng_P521)]
+        [Basis("#627")]
         public void GeneratedKey_Exportable(EnumDigitalSignAlgorithm eaa)
         {
             using (DigitalSignECDsaCng ds = new DigitalSignECDsaCng(eaa))
@@ -153,4 +181,5 @@ namespace TestPublic.Security
             }
         }
     }
+#pragma warning restore CA1416
 }
