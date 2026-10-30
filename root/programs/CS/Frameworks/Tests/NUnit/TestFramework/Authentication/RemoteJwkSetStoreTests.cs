@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（#634）
 //*  2026/10/22  玄人 幸道         取れない・壊れた応答の扱いのテストを足した（カバレッジの拡充）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -37,6 +38,8 @@ using System.Threading;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Public.Security.Jwt;
@@ -101,6 +104,8 @@ namespace TestFramework.Authentication
 
         /// <summary>JWK Set の URL から kid で引ける。2 回目はキャッシュから（取りに行かない）。</summary>
         [Test]
+        [Basis("設計：RemoteJwkSetStore の remarks（URL を鍵にしたキャッシュ。同じ URL の取得は MinRefetchInterval に 1 回まで）")]
+        [Basis("設計：RemoteJwkSetStore.GetJwkAsync(jwkSetUrl, kid) の remarks（無ければ、下限を過ぎていれば取り直す）")]
         public void GetJwkAsync_CachesByUrl()
         {
             string kid = (string)this._jwk["kid"];
@@ -128,6 +133,8 @@ namespace TestFramework.Authentication
 
         /// <summary>同期の経路：キャッシュだけを読む。kid が空なら上限まで順に返す。返すのは複製。</summary>
         [Test]
+        [Basis("設計：RemoteJwkSetStore.PickJwksFromCache の remarks（取りに行かない。kid は任意なので本数に上限を置く）")]
+        [Basis("設計：RemoteJwkSetStore の remarks（返す JWK は複製であり、キャッシュを書き換えない）")]
         public void PickJwksFromCache()
         {
             Assert.That(RemoteJwkSetStore.HasKeysInCache(JwksUri), Is.False);
@@ -147,6 +154,7 @@ namespace TestFramework.Authentication
 
         /// <summary>背景の補充：待たずに戻り、後でキャッシュに載る。</summary>
         [Test]
+        [Basis("設計：RemoteJwkSetStore.RefillInBackground の remarks（待たない。下限の内側の URL は取りに行かない）")]
         public void RefillInBackground()
         {
             using (StubHttp http = this.Server(Issuer))
@@ -169,6 +177,8 @@ namespace TestFramework.Authentication
 
         /// <summary>discovery 経由：issuer が期待値と一致すれば引ける。違えば鍵を使わない。</summary>
         [Test]
+        [Basis("OIDC Discovery 4.3（issuer は、取得に使った Issuer と同じでなければならない）")]
+        [Basis("設計：RemoteJwkSetStore.GetJwkByDiscoveryAsync の remarks（期待する Issuer を必ず受け取る）")]
         public void GetJwkByDiscoveryAsync_ChecksIssuer()
         {
             string kid = (string)this._jwk["kid"];
@@ -189,6 +199,8 @@ namespace TestFramework.Authentication
 
         /// <summary>URL の判定と、discovery の URL の組み立て。</summary>
         [Test]
+        [Basis("OIDC Discovery 4（Issuer の後ろに /.well-known/openid-configuration を付ける）")]
+        [Basis("設計：RemoteJwkSetStore.IsUsableKeySource の remarks（平文の http は鍵の出どころにしない）")]
         public void Urls()
         {
             Assert.That(RemoteJwkSetStore.IsUsableKeySource("https://op.example.com/jwks"), Is.True);
@@ -206,6 +218,9 @@ namespace TestFramework.Authentication
         /// トークンは Authorization: Bearer で、本文は application/json で送る。
         /// </summary>
         [Test]
+        [Basis("RFC 7591 3.1（登録は application/json の POST）")]
+        [Basis("RFC 7592 2.1・2.2・2.3（読むのは GET、直すのは PUT、消すのは DELETE。registration access token で認証する）")]
+        [Basis("OIDC Discovery 3（registration_endpoint）")]
         public void DynamicClientRegistration()
         {
             using (StubHttp http = new StubHttp((req, body) =>
@@ -269,6 +284,8 @@ namespace TestFramework.Authentication
 
         /// <summary>ResolveJwksUriAsync：discovery が取れない・JSON でない・配列なら空文字。issuer が合えば jwks_uri。</summary>
         [Test]
+        [Basis("OIDC Discovery 4.3（issuer は、取得に使った Issuer と同じでなければならない）")]
+        [Basis("設計：RemoteJwkSetStore の remarks（引けなければ空を返し、例外にしない）")]
         public void ResolveJwksUriAsync_Unreadable()
         {
             foreach (string body in new string[] { "", "not json", "[]" })
@@ -294,6 +311,7 @@ namespace TestFramework.Authentication
 
         /// <summary>URL が空なら、何もせずに「無い」を返す（取りに行かない）。</summary>
         [Test]
+        [Basis("設計：RemoteJwkSetStore の remarks（引けなければ空を返し、例外にしない）")]
         public void EmptyUrl()
         {
             using (StubHttp http = this.Server(Issuer))
@@ -313,6 +331,8 @@ namespace TestFramework.Authentication
         /// kid が空のときは、上限の本数まで順に返す。
         /// </summary>
         [Test]
+        [Basis("RFC 7517 5（JWK Set は keys の配列を持つ）")]
+        [Basis("設計：RemoteJwkSetStore.PickJwksFromCache の remarks（kid は任意なので本数に上限を置く）")]
         public void PickJwksFromCache_MalformedJwkSet()
         {
             JObject second = (JObject)this._jwk.DeepClone();
@@ -344,6 +364,7 @@ namespace TestFramework.Authentication
 
         /// <summary>取り直しに失敗しても、前に取れた JWK Set を残す（相手の一時的な障害で、鍵を失わない）。</summary>
         [Test]
+        [Basis("設計：RemoteJwkSetStore.Store の remarks（取れなかったときは、前に取れた JWK Set を残す）")]
         public void FailedRefetch_KeepsPreviousJwkSet()
         {
             string kid = (string)this._jwk["kid"];

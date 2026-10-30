@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（#634。partial に分けたファイルのカバレッジの拡充）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -32,6 +33,8 @@ using System.Net;
 using System.Net.Http;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Framework.Authentication;
 
@@ -96,6 +99,8 @@ namespace TestFramework.Authentication
 
         /// <summary>認可コード：Basic（既定）は Authorization ヘッダ、本文は grant_type・code・redirect_uri だけ。</summary>
         [Test]
+        [Basis("RFC 6749 4.1.3（grant_type=authorization_code・code・redirect_uri）")]
+        [Basis("RFC 6749 2.3.1（client_secret_basic は HTTP Basic）")]
         public void Code_ClientSecretBasic()
         {
             Tuple<HttpRequestMessage, string> r = Send(() => OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
@@ -114,6 +119,7 @@ namespace TestFramework.Authentication
 
         /// <summary>認可コード：client_secret_post は本文に client_id / client_secret。Authorization は無い。</summary>
         [Test]
+        [Basis("RFC 6749 2.3.1（本文に client_id・client_secret を載せてもよい）")]
         public void Code_ClientSecretPost()
         {
             Tuple<HttpRequestMessage, string> r = Send(() => OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
@@ -128,6 +134,8 @@ namespace TestFramework.Authentication
 
         /// <summary>認可コード（PKCE）：本文に client_id と code_verifier。client_secret は送らない。</summary>
         [Test]
+        [Basis("RFC 7636 4.5（Token 要求に code_verifier を送る）")]
+        [Basis("RFC 6749 4.1.3（クライアント認証をしないなら client_id を送る）")]
         public void Code_Pkce()
         {
             Tuple<HttpRequestMessage, string> r = Send(() => OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
@@ -145,6 +153,7 @@ namespace TestFramework.Authentication
         /// 認可コード（FAPI1 の private_key_jwt）：assertion と、RFC 7523 2.2 の client_assertion_type / client_assertion の両方を送る。
         /// </summary>
         [Test]
+        [Basis("RFC 7523 2.2（client_assertion_type と client_assertion）")]
         public void Code_PrivateKeyJwt()
         {
             Tuple<HttpRequestMessage, string> r = Send(() => OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
@@ -188,6 +197,8 @@ namespace TestFramework.Authentication
 
         /// <summary>Client Credentials（RFC 6749 4.4）：Basic と grant_type・scope。</summary>
         [Test]
+        [Basis("RFC 6749 4.4.2（grant_type=client_credentials・scope）")]
+        [Basis("RFC 6749 2.3.1（client_secret_basic は HTTP Basic）")]
         public void ClientCredentials()
         {
             Tuple<HttpRequestMessage, string> r = Send(() => OAuth2AndOIDCClient.ClientCredentialsGrantAsync(
@@ -201,6 +212,8 @@ namespace TestFramework.Authentication
 
         /// <summary>Resource Owner Password Credentials（RFC 6749 4.3）：Basic と username・password・scope。</summary>
         [Test]
+        [Basis("RFC 6749 4.3.2（grant_type=password・username・password・scope）")]
+        [Basis("RFC 6749 付録 B（UTF-8 にしてから URL エンコードする）")]
         public void ResourceOwnerPasswordCredentials()
         {
             Tuple<HttpRequestMessage, string> r = Send(() => OAuth2AndOIDCClient.ResourceOwnerPasswordCredentialsGrantAsync(
@@ -216,6 +229,7 @@ namespace TestFramework.Authentication
 
         /// <summary>Refresh Token（RFC 6749 6）：Basic と grant_type・refresh_token。</summary>
         [Test]
+        [Basis("RFC 6749 6（grant_type=refresh_token・refresh_token。クライアント認証をする）")]
         public void RefreshToken()
         {
             Tuple<HttpRequestMessage, string> r = Send(() => OAuth2AndOIDCClient.UpdateAccessTokenByRefreshTokenAsync(
@@ -233,6 +247,8 @@ namespace TestFramework.Authentication
 
         /// <summary>Revoke / Introspect：Basic（既定）は Authorization ヘッダ、本文は token と token_type_hint。</summary>
         [Test]
+        [Basis("RFC 7009 2.1（token と token_type_hint。クライアント認証は RFC 6749 2.3）")]
+        [Basis("RFC 7662 2.1（token と token_type_hint）")]
         public void RevokeAndIntrospect_ClientSecretBasic()
         {
             Uri revoke = new Uri("https://as.example.com/revoke");
@@ -254,6 +270,9 @@ namespace TestFramework.Authentication
 
         /// <summary>Revoke / Introspect：client_secret_post は本文に client_id / client_secret。それ以外の方式は ArgumentException。</summary>
         [Test]
+        [Basis("RFC 7009 2.1（token。クライアント認証は RFC 6749 2.3）")]
+        [Basis("RFC 7662 2.1（token）")]
+        [Basis("RFC 6749 2.3.1（本文に client_id・client_secret を載せてもよい）")]
         public void RevokeAndIntrospect_ClientSecretPost()
         {
             Uri revoke = new Uri("https://as.example.com/revoke");
@@ -290,6 +309,7 @@ namespace TestFramework.Authentication
 
         /// <summary>JWT Bearer（RFC 7523 2.1）：grant_type と assertion。クライアント認証は付けない。</summary>
         [Test]
+        [Basis("RFC 7523 2.1（grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer と assertion。クライアント認証は任意）")]
         public void JwtBearer()
         {
             Tuple<HttpRequestMessage, string> r = Send(() => OAuth2AndOIDCClient.JwtBearerTokenFlowAsync(
@@ -303,6 +323,7 @@ namespace TestFramework.Authentication
 
         /// <summary>Device（RFC 8628）：認可要求は client_id だけ、Token 要求は grant_type・client_id・device_code。</summary>
         [Test]
+        [Basis("RFC 8628 3.1（認可要求は client_id）・3.4（Token 要求は grant_type・device_code・client_id）")]
         public void DeviceAuthZ()
         {
             Tuple<HttpRequestMessage, string> r = Send(() => OAuth2AndOIDCClient.DeviceAuthZRequestAsync(
@@ -342,6 +363,8 @@ namespace TestFramework.Authentication
 
         /// <summary>CIBA の Token 要求（client_assertion を受けない版）：client_secret_post は本文に資格情報。</summary>
         [Test]
+        [Basis("CIBA Core 10.1（grant_type=urn:openid:params:grant-type:ciba と auth_req_id）")]
+        [Basis("RFC 6749 2.3.1（本文に client_id・client_secret を載せてもよい）")]
         public void CibaToken_ClientSecretPost()
         {
             Tuple<HttpRequestMessage, string> r = Send(() => OAuth2AndOIDCClient.GetAccessTokenByCibaAsync(
@@ -375,6 +398,8 @@ namespace TestFramework.Authentication
         /// private_key_jwt は client_assertion、client_secret_post は client_secret。
         /// </summary>
         [Test]
+        [Basis("RFC 9126 2.1（client_id は認可要求の必須パラメタなので、PAR でも必須。クライアント認証は Token エンドポイントと同じ）")]
+        [Basis("RFC 9126 3（request パラメタで Request Object を送れる）")]
         public void PushAuthorizationRequest()
         {
             Uri par = new Uri("https://as.example.com/par");
@@ -422,6 +447,7 @@ namespace TestFramework.Authentication
 
         /// <summary>UserInfo（OIDC Core 5.3）：GET と Bearer。</summary>
         [Test]
+        [Basis("OIDC Core 5.3.1（アクセス トークンは Bearer で送る。GET を推奨）")]
         public void GetUserInfo()
         {
             Uri userInfo = new Uri("https://op.example.com/userinfo");

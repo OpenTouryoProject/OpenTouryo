@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/19  玄人 幸道         新規作成
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //**********************************************************************************
 
 using System;
@@ -33,6 +34,8 @@ using System.Security.Cryptography.X509Certificates;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
+
+using TestCommon;
 
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Public.Security.Jwt;
@@ -53,6 +56,8 @@ namespace TestFramework.Authentication
 
         /// <summary>RSA：RSAParameters で作って検証でき、iss・aud・scopes を返す。別の鍵・期限切れは通らない。</summary>
         [Test]
+        [Basis("RFC 7523 3 の 1・3・4（iss・aud を持つ。期限の過ぎた JWT を断る）")]
+        [Basis("RFC 7523 3 の 9（署名が無い・正しくない JWT を断る）")]
         public void Rsa_Param()
         {
             using (RSA rsa = RSA.Create(2048))
@@ -105,6 +110,8 @@ namespace TestFramework.Authentication
         /// <summary>ECDSA（ES256）：ECParameters・JWK・証明書（*.pfx）で作って、公開鍵で検証できる。</summary>
         [Test]
         [Platform("Win")]
+        [Basis("RFC 7518 3.4（ES256 は P-256 と SHA-256 の ECDSA）")]
+        [Basis("RFC 7523 3 の 9（署名が無い・正しくない JWT を断る）")]
         public void Ecdsa()
         {
             ECParameters priv, pub;

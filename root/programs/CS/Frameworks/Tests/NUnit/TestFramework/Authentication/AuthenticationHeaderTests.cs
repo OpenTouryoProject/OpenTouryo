@@ -26,6 +26,7 @@
 //*  2026/10/19  玄人 幸道         新規作成
 //*  2026/10/22  玄人 幸道         DPoP・チャレンジ・復号前後の照合のテストを追加（#634）
 //*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を広げた（#640）
 //**********************************************************************************
 
 using System;
@@ -51,6 +52,7 @@ namespace TestFramework.Authentication
 
         /// <summary>Basic：作ったヘッダから、client_id / client_secret を取り出せる。</summary>
         [Test]
+        [Basis("RFC 7617 2（user-id と password を \":\" で連ねて Base64 にする）")]
         public void Basic_RoundTrip()
         {
             string header = AuthenticationHeader.CreateBasicAuthenticationHeaderValue("client01", "secret01").ToString();
@@ -104,6 +106,7 @@ namespace TestFramework.Authentication
 
         /// <summary>Bearer：作ったヘッダから、トークンを取り出せる。</summary>
         [Test]
+        [Basis("RFC 6750 2.1（Authorization: Bearer の後に b64token）")]
         public void Bearer_RoundTrip()
         {
             string header = AuthenticationHeader.CreateBearerAuthenticationHeaderValue("token01").ToString();
@@ -124,6 +127,7 @@ namespace TestFramework.Authentication
         [TestCase("Bearer ")]
         [TestCase("Basic !!!not-base64!!!")]
         [TestCase("Digest abc")]
+        [Basis("設計：AuthenticationHeader.GetCredentials(authHeader, out credentials) の remarks（取り出せない場合は、空の配列と \"\" を返す）")]
         public void Invalid_NoCredentials(string header)
         {
             string[] credentials;
@@ -186,6 +190,9 @@ namespace TestFramework.Authentication
         [TestCase("DPoP at01", "DPoP", "at01")]
         [TestCase("dpop at01", "DPoP", "at01")]
         [TestCase("bearer  at01 ", "Bearer", "at01")]
+        [Basis("RFC 7235 2.1（認証のスキームは大文字小文字を区別しない）")]
+        [Basis("RFC 9449 7.1（DPoP のスキーム）")]
+        [Basis("設計：AuthenticationHeader.GetAccessToken の remarks（スキームを返す。RFC 9449 7.2 で、DPoP で縛ったトークンを Bearer で出されたら断るため）")]
         public void GetAccessToken(string header, string scheme, string token)
         {
             string t, s;
@@ -201,6 +208,8 @@ namespace TestFramework.Authentication
         [TestCase("DPoP ")]
         [TestCase("DPoP a b")]
         [TestCase("Basic YTpi")]
+        [Basis("RFC 6750 2.1（b64token に空白は含まれない）")]
+        [Basis("RFC 9449 7.1（DPoP の資格情報は token68）")]
         public void GetAccessToken_False(string header)
         {
             string t, s;
@@ -210,6 +219,8 @@ namespace TestFramework.Authentication
 
         /// <summary>DPoP スキームのヘッダを作れる。チャレンジのスキームは、要求のスキームに合わせる。</summary>
         [Test]
+        [Basis("RFC 9449 7.1（DPoP で縛ったトークンは DPoP のスキームで送る。DPoP で来た要求には DPoP で答える）")]
+        [Basis("設計：AuthenticationHeader.GetChallengeScheme の remarks（それ以外は Bearer）")]
         public void DPoP_HeaderAndChallengeScheme()
         {
             Assert.That(AuthenticationHeader.CreateDPoPAuthenticationHeaderValue("at01").ToString(), Is.EqualTo("DPoP at01"));
@@ -223,6 +234,9 @@ namespace TestFramework.Authentication
         /// " と \ は逃がす。
         /// </summary>
         [Test]
+        [Basis("RFC 6750 3（realm・error・error_description）・3.1（認証情報の無い要求にはエラー情報を付けない）")]
+        [Basis("RFC 9449 7.1（algs を付ける）")]
+        [Basis("RFC 9110 5.6.4（quoted-string の中では \\ で 1 文字を逃がす）")]
         public void CreateChallengeParameter()
         {
             Assert.That(AuthenticationHeader.CreateChallengeParameter("Bearer", "api", "", "x", null), Is.EqualTo("realm=\"api\""));

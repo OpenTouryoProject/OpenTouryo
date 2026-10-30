@@ -27,6 +27,7 @@
 //*  2026/10/22  玄人 幸道         htu の比較のテストを UriOperatorTests から移した（比較を DPoPProof の private へ移したため）
 //*  2026/10/22  玄人 幸道         引数の境界と、送り直さない応答のテストを足した（カバレッジの拡充）
 //*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
+//*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を広げた（#640）
 //**********************************************************************************
 
 using System;
@@ -118,6 +119,8 @@ namespace TestFramework.Authentication
         [TestCase("RS256")]
         [TestCase("ES256")]
         [TestCase("PS256")]
+        [Basis("RFC 9449 4.2（typ は dpop+jwt。jwk は公開鍵で、秘密鍵を含めない。htu はクエリと素片を除く。iat は作成時刻）")]
+        [Basis("RFC 9449 6.1（jkt は JWK の SHA-256 の指紋）")]
         public void CreateAndVerify(string alg)
         {
             Key key = CreateKey(alg);
@@ -141,6 +144,7 @@ namespace TestFramework.Authentication
 
         /// <summary>Create：秘密鍵の JWK をヘッダに入れようとすると ArgumentException。htu は絶対 URL。</summary>
         [Test]
+        [Basis("RFC 9449 4.2（jwk に秘密鍵を含めない）")]
         public void Create_RejectsBadArguments()
         {
             Key key = CreateKey("ES256");
@@ -287,6 +291,7 @@ namespace TestFramework.Authentication
 
         /// <summary>CreateProofId：jkt と jti の組で決まり、区切りがあるので境目の違う組は別の値になる。</summary>
         [Test]
+        [Basis("設計：DPoPProof.CreateProofId の remarks（jkt と jti の組にする。区切りに \".\" を入れる）")]
         public void CreateProofId()
         {
             Assert.That(DPoPProof.CreateProofId("ab", "c"), Is.Not.EqualTo(DPoPProof.CreateProofId("a", "bc")));
@@ -303,6 +308,9 @@ namespace TestFramework.Authentication
         /// use_dpop_nonce で断られたら、受け取った nonce を入れて 1 回だけ送り直す。
         /// </summary>
         [Test]
+        [Basis("RFC 9449 9（リソース サーバは 401 と WWW-Authenticate: DPoP の use_dpop_nonce、DPoP-Nonce で nonce を求める）")]
+        [Basis("RFC 9449 7.1（Authorization ヘッダは DPoP の方式。証明に ath を入れる）")]
+        [Basis("設計：OAuth2AndOIDCClient.SendWithDPoPAsync の remarks（use_dpop_nonce で断られたら、1 回だけ送り直す）")]
         public void SendWithDPoP_NonceRetry()
         {
             Key key = CreateKey("ES256");
@@ -342,6 +350,8 @@ namespace TestFramework.Authentication
 
         /// <summary>Token：本文の use_dpop_nonce（400）でも送り直す。nonce を覚えて、次の要求に最初から入れる。</summary>
         [Test]
+        [Basis("RFC 9449 8（認可サーバは 400 の use_dpop_nonce と DPoP-Nonce で nonce を求める）")]
+        [Basis("設計：OAuth2AndOIDCClient.SendWithDPoPAsync の remarks（DPoP-Nonce をオリジンごとに覚え、次の要求に入れる）")]
         public void TokenRequestWithDPoP_RemembersNonce()
         {
             Key key = CreateKey("RS256");
@@ -377,6 +387,8 @@ namespace TestFramework.Authentication
 
         /// <summary>Token（クライアント認証あり）：client_secret_basic なら Authorization: Basic、DPoP ヘッダも付く。</summary>
         [Test]
+        [Basis("RFC 9449 5（Token 要求に DPoP ヘッダを付ける）")]
+        [Basis("RFC 6749 2.3.1（client_secret_basic は HTTP Basic）")]
         public void TokenRequestWithDPoP_ClientAuthentication()
         {
             Key key = CreateKey("ES256");
@@ -404,6 +416,7 @@ namespace TestFramework.Authentication
         [TestCase(HttpStatusCode.BadRequest, "{\"error\":\"invalid_grant\"}", null, 1, TestName = "SendWithDPoP_NoRetry(400 invalid_grant)")]
         [TestCase(HttpStatusCode.OK, "{}", null, 1, TestName = "SendWithDPoP_NoRetry(200 with nonce)")]
         [TestCase(HttpStatusCode.BadRequest, "{\"error\":\"use_dpop_nonce\"}", null, 2, TestName = "SendWithDPoP_NoRetry(same nonce twice)")]
+        [Basis("設計：OAuth2AndOIDCClient.SendWithDPoPAsync の remarks（送り直すのは use_dpop_nonce で断られたときだけ。1 回だけ）")]
         public void SendWithDPoP_NoRetry(HttpStatusCode status, string body, string wwwAuthenticate, int expectedRequests)
         {
             Key key = CreateKey("ES256");
