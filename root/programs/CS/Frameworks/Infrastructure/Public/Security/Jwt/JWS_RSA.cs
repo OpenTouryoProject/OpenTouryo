@@ -35,6 +35,7 @@
 //*  2026/10/03  玄人 幸道         RSASSA-PSS（PS256 / PS384 / PS512）用の列挙型 PS を追加（#596）
 //*  2026/10/15  玄人 幸道         Verify で typ を照合しないことを明示（照合は JWS.Verify(jwt, typ)。#611）
 //*  2026/10/16  玄人 幸道         JWSHeader を基底（JWS）へ移した（#615）
+//*  2026/10/30  玄人 幸道         Verify で、alg の大文字小文字を区別するようにした（RFC 7515 4.1.1。#643）
 //**********************************************************************************
 
 using System;
@@ -145,7 +146,8 @@ namespace Touryo.Infrastructure.Public.Security.Jwt
             // **typ は照合しない。**（#611）
             //   以前も JWS_Header.typ が readonly で読み込まれず、照合は常に真だった。
             //   その振る舞いを保つ。照合は JWS.Verify(jwtString, typ) で行う。
-            if (headerObject.alg.ToUpper() == this.JwtConstRSnnn)
+            // alg の大文字小文字を区別する（RFC 7515 4.1.1。#643）
+            if (headerObject.alg == this.JwtConstRSnnn)
             {
                 byte[] data = CustomEncode.StringToByte(temp[0] + "." + temp[1], CustomEncode.UTF_8);
                 byte[] sign = CustomEncode.FromBase64UrlString(temp[2]);

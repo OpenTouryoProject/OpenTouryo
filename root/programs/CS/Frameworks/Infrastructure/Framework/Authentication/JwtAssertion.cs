@@ -33,6 +33,7 @@
 //*  2018/11/27  西野 大介         秘密鍵 <---> JWKのサポートを追加
 //*  2020/03/04  西野 大介         ...ECDsaのサポートを追加
 //*  2020/03/04  西野 大介         Claim生成メソッドの利用
+//*  2026/10/30  玄人 幸道         Create・Verify で、kty の大文字小文字を区別するようにした（RFC 7517 4.1。#643）
 //**********************************************************************************
 
 using System;
@@ -69,13 +70,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
             JObject temp = JsonConvert.DeserializeObject<JObject>(jwkPrivateKey);
             if (temp.ContainsKey("kty"))
             {
-                if (((string)temp["kty"]).ToUpper() == "RSA")
+                // kty の大文字小文字を区別する（RFC 7517 4.1。#643）
+                if ((string)temp["kty"] == "RSA")
                 {
                     RsaPrivateKeyConverter rpkc = new RsaPrivateKeyConverter(JWS_RSA.RS._256);
                     return JwtAssertion.CreateByRsa(iss, aud, forExp, scopes,
                         rpkc.JwkToParam(jwkPrivateKey));
                 }
-                else if (((string)temp["kty"]).ToUpper() == "EC")
+                else if ((string)temp["kty"] == "EC")
                 {
                     EccPrivateKeyConverter epkc = new EccPrivateKeyConverter(JWS_ECDSA.ES._256);
                     return JwtAssertion.CreateByECDsa(iss, aud, forExp, scopes,
@@ -225,14 +227,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
             JObject temp = JsonConvert.DeserializeObject<JObject>(jwkPublicKey);
             if (temp.ContainsKey("kty"))
             {
-                if (((string)temp["kty"]).ToUpper() == "RSA")
+                // kty の大文字小文字を区別する（RFC 7517 4.1。#643）
+                if ((string)temp["kty"] == "RSA")
                 {
                     RsaPublicKeyConverter rpkc = new RsaPublicKeyConverter();
                     return JwtAssertion.VerifyByRsa(jwtAssertion,
                         out iss, out aud, out scopes, out jobj,
                         rpkc.JwkToParam(jwkPublicKey));
                 }
-                else if (((string)temp["kty"]).ToUpper() == "EC")
+                else if ((string)temp["kty"] == "EC")
                 {
                     EccPublicKeyConverter epkc = new EccPublicKeyConverter();
                     return JwtAssertion.VerifyByECDsa(jwtAssertion,

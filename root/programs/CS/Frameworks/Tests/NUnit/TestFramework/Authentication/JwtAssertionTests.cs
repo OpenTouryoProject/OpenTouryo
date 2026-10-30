@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/19  玄人 幸道         新規作成
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
+//*  2026/10/30  玄人 幸道         kty の大文字小文字を区別することのテストを足した（#643）
 //**********************************************************************************
 
 using System;
@@ -93,6 +94,31 @@ namespace TestFramework.Authentication
                 string iss, aud, scopes; JObject jobj;
                 Assert.That(JwtAssertion.Verify(jwt, out iss, out aud, out scopes, out jobj, publicJwk), Is.True);
                 Assert.That(iss, Is.EqualTo(Iss));
+            }
+        }
+
+        /// <summary>
+        /// kty は大文字小文字を区別する（"rsa" は RSA ではない）。綴りの違う JWK は、作れず（空文字）、検証も通らない。
+        /// 2026/10/30 まで、ToUpper で揃えてから比べていた（#643）。
+        /// </summary>
+        [Test]
+        [Basis("RFC 7517 4.1（kty は大文字小文字を区別する）・RFC 7518 6.1（RSA の kty は \"RSA\"）")]
+        [Basis("#643")]
+        public void Kty_CaseSensitive()
+        {
+            using (RSA rsa = RSA.Create(2048))
+            {
+                JObject privateJwk = JObject.Parse(new RsaPrivateKeyConverter().ParamToJwk(rsa.ExportParameters(true)));
+                JObject publicJwk = JObject.Parse(new RsaPublicKeyConverter().ParamToJwk(rsa.ExportParameters(false)));
+                string jwt = JwtAssertion.Create(Iss, Aud, TimeSpan.FromMinutes(5), Scopes, privateJwk.ToString());
+
+                string iss, aud, scopes; JObject jobj;
+                Assert.That(JwtAssertion.Verify(jwt, out iss, out aud, out scopes, out jobj, publicJwk.ToString()), Is.True, "元の綴り");
+
+                privateJwk["kty"] = "rsa";
+                publicJwk["kty"] = "rsa";
+                Assert.That(JwtAssertion.Create(Iss, Aud, TimeSpan.FromMinutes(5), Scopes, privateJwk.ToString()), Is.Empty);
+                Assert.That(JwtAssertion.Verify(jwt, out iss, out aud, out scopes, out jobj, publicJwk.ToString()), Is.False);
             }
         }
 
