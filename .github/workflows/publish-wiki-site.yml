@@ -1,0 +1,86 @@
+# Wiki を GitHub Pages に公開する（検索エンジンの対象にするため）。
+# GitHub Wiki には x-robots-tag: none が付くので、Wiki のままではインデックスされない。
+#
+# ＜位置づけ＞
+#   Wiki が原本で、サイトはその写しである。Wiki のファイルは書き換えない。LLM は使わない。
+#   手順と公開の範囲は .github/wiki-site/README.md。
+#
+# ＜権限＞
+#   配備のジョブだけが pages: write と id-token: write を持つ。Wiki の内容を読んで変換するビルドは
+#   contents: read だけで動く。pull_request では動かさない（PR のコードに配備の権限を渡さない）。
+name: publish-wiki-site
+
+on:
+  # Wiki の更新。git push での更新でも発火するかは、導入のときに確かめる。既定ブランチの定義で動く。
+  gollum:
+  # 変換スクリプトの更新
+  push:
+    branches: [develop]
+    paths:
+      - ".github/wiki-site/**"
+      - ".github/workflows/publish-wiki-site.yml"
+  # 手動
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# 続けて更新されたら、最後の分だけを公開する。
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # 最終更新日をサイトマップに書くので、履歴もすべて取る。
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: ${{ github.repository }}.wiki
+          path: wiki
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.13"
+
+      - run: pip install -r .github/wiki-site/requirements.txt
+
+      - name: Build
+        env:
+          GOOGLE_VERIFICATION: ${{ vars.GOOGLE_SITE_VERIFICATION }}
+        run: >
+          python .github/wiki-site/build_site.py
+          --wiki wiki
+          --out _site
+          --base-url "https://opentouryoproject.github.io/OpenTouryo/"
+          --google-verification "$GOOGLE_VERIFICATION"
+          --report build-report.json
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: build-report
+          path: build-report.json
+
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

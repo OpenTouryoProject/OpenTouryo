@@ -1,0 +1,127 @@
+:root {
+  color-scheme: light dark;
+  --text: #1f2328;
+  --muted: #59636e;
+  --bg: #ffffff;
+  --subtle: #f6f8fa;
+  --border: #d1d9e0;
+  --link: #0969da;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text: #f0f6fc;
+    --muted: #9198a1;
+    --bg: #0d1117;
+    --subtle: #151b23;
+    --border: #3d444d;
+    --link: #4493f8;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  color: var(--text);
+  background: var(--bg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans JP", "Hiragino Sans", Meiryo, sans-serif;
+  line-height: 1.7;
+  overflow-wrap: break-word;
+}
+
+a { color: var(--link); }
+
+.site-header {
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--subtle);
+  font-weight: 600;
+}
+
+.site-header a { color: inherit; text-decoration: none; }
+
+.site-body {
+  display: flex;
+  gap: 2rem;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.content { flex: 1 1 auto; min-width: 0; }
+
+.sidebar {
+  flex: 0 0 280px;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  align-self: flex-start;
+  font-size: 0.875rem;
+}
+
+.sidebar ul { padding-left: 1.1rem; margin: 0.25rem 0; }
+.sidebar summary { cursor: pointer; margin: 0.25rem 0; }
+
+@media (max-width: 860px) {
+  .site-body { flex-direction: column; }
+  .sidebar { flex-basis: auto; width: 100%; }
+}
+
+.content h1, .content h2 {
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.content img { max-width: 100%; height: auto; }
+
+.content table {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+}
+
+.content th, .content td {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--border);
+}
+
+.content th { background: var(--subtle); }
+
+.content pre {
+  padding: 1rem;
+  overflow-x: auto;
+  border-radius: 6px;
+  background: var(--subtle);
+  line-height: 1.45;
+}
+
+.content code {
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+  background: var(--subtle);
+  font-family: ui-monospace, SFMono-Regular, Consolas, Menlo, monospace;
+  font-size: 0.875em;
+}
+
+.content pre code { padding: 0; background: none; }
+
+.content blockquote {
+  margin-left: 0;
+  padding-left: 1rem;
+  border-left: 0.25rem solid var(--border);
+  color: var(--muted);
+}
+
+.source { margin-top: 2.5rem; font-size: 0.875rem; }
+
+.site-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.site-footer p { margin: 0; }

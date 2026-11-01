@@ -315,6 +315,7 @@ allow_rebase_merge   false   … 同上
 | [`workflows/build-windows-vb.yml`](.github/workflows/build-windows-vb.yml) | **VB 版**のビルドと疎通を windows-latest で（手動のみ） |
 | [`workflows/dependabot-retarget.yml`](.github/workflows/dependabot-retarget.yml) | Dependabot PR の向き先を `deps` へ変更 |
 | [`workflows/expectation-change.yml`](.github/workflows/expectation-change.yml) | PR のコミットに、トレーラーの無い期待値の変更が無いかを確かめる（#640。[`QUALITY.md`](QUALITY.md) 3 節の段 3） |
+| [`workflows/publish-wiki-site.yml`](.github/workflows/publish-wiki-site.yml) | Wiki を GitHub Pages へ公開する（変換は [`wiki-site/`](.github/wiki-site/README.md)） |
 | [`secret_scanning.yml`](.github/secret_scanning.yml) | Secret scanning のアラートから除外するパス（1 節） |
 | [`ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE) | Issue テンプレート 3 種 ＋ `config.yml`（5 節） |
 | [`pull_request_template.md`](.github/pull_request_template.md) | PR テンプレート（5 節） |
@@ -329,6 +330,7 @@ allow_rebase_merge   false   … 同上
 | `build-windows-vb.yml` | **手動のみ**（`workflow_dispatch`） | `contents: read` |
 | `dependabot-retarget.yml` | `pull_request_target`（`opened`） | `pull-requests: write` |
 | `expectation-change.yml` | **`pull_request: [develop, master]`** | `contents: read` |
+| `publish-wiki-site.yml` | `gollum`（Wiki の更新） / `push: [develop]`（変換の更新のみ） / 手動 | `contents: read`。**配備のジョブだけ** `pages: write`・`id-token: write` |
 | CodeQL（既定セットアップ） | GitHub 管理。`push` / `pull_request` / 週次 | ワークフロー ファイルを持たない |
 
 `build-windows.yml` は既知の署名エラー（`MSB3482` / `MSB3325` / `MSB3321`）を除外する。
@@ -465,7 +467,7 @@ gh issue view <番号> --repo OpenTouryoProject/OpenTouryo --json labels
 |---|---|
 | **Discussions** | **無効のまま。** Issue で回っており、有効にすると窓口が分散する |
 | Projects | 有効だが未使用 |
-| Wiki | 有効。[リリース エンジニアリング等の文書](https://github.com/OpenTouryoProject/OpenTouryo/wiki)を置いている |
+| Wiki | 有効。[リリース エンジニアリング等の文書](https://github.com/OpenTouryoProject/OpenTouryo/wiki)を置いている。[GitHub Pages に写しを公開する](.github/wiki-site/README.md)（Wiki が原本。検索エンジンの対象にするため） |
 | Auto-merge | 無効 |
 | Web commit signoff | 無効 |
 
