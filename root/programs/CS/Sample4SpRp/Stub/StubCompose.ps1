@@ -9,7 +9,7 @@
 
     ＜既定の設定を使う＞
       **サンプルは、MPAS の雛形（_appsettings.json）に在るクライアントを使う**
-      （CLI は TestClient3 = ae5a179813234ca290c8de93ef2e31dc）。
+      （CLI は Device_Client = ae5a179813234ca290c8de93ef2e31dc）。
       **雛形に無いクライアントが要るときだけ、-Settings で設定の JSON を渡す**（..\README.md の 3 節）。
 
     ＜なぜスクリプトにするか＞

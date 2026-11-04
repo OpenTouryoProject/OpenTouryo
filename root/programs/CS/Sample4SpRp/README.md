@@ -92,7 +92,7 @@ cd root\programs\CS\Sample4SpRp\E2E
 
 | サンプル | 雛形のクライアント | client_id | 戻り先（`redirect_uri_code`） |
 |---|---|---|---|
-| CLI（`DotNet/CLI`） | `TestClient3`（`client_mode` = `device`。秘密なし） | `ae5a179813234ca290c8de93ef2e31dc` | `http://localhost:12345/` |
+| CLI（`DotNet/CLI`） | `Device_Client`（`client_mode` = `device`。秘密なし。旧 `TestClient3`） | `ae5a179813234ca290c8de93ef2e31dc` | `http://localhost:12345/` |
 
 **雛形には、ほかのフェーズで使えそうなものも在る**（`MVC_Sample`・`WebForms_Sample`・`SPA_Application`・`Native_Application`・
 `IdFederation`（SAML2））。**どれを使うかは、そのフェーズで決める。**
@@ -149,7 +149,7 @@ dotnet .\SpRp_CLI\bin\Debug\net10.0\SpRp_CLI.dll pkce   # net10.0
 
 - **id_token の鍵は、ヘッダの `kid` で `jwks_uri` から引く**（`RemoteJwkSetStore.GetJwkByDiscoveryAsync`）。
   **`alg` は非対称のもの（`JwsFactory.SupportedAlgs`）に限る**（`none`・HS* を受けない）
-- **パブリック クライアントとして振る舞う**（秘密は持たず、送らない）。`TestClient3` は秘密を登録しておらず、
+- **パブリック クライアントとして振る舞う**（秘密は持たず、送らない）。`Device_Client` は秘密を登録しておらず、
   `token_endpoint_auth_method` も書いていないので、MPAS は **PKCE だけでの引き換え**と、**client_id だけの Device AuthZ** を受ける
 - **旧サンプル（`DAG_Login_CLI`・`LIR_Login_CLI`）と、同じクライアント・同じ戻り先を使う。** 同時には動かさないこと（ポート 12345 を取り合う）
 - **デバイス認可要求には `scope`（`SpRp_Scope`）を付ける**（`DeviceAuthZRequestAsync` の `scope` を受ける版。#650）。
@@ -161,7 +161,7 @@ dotnet .\SpRp_CLI\bin\Debug\net10.0\SpRp_CLI.dll pkce   # net10.0
 **MPAS スタブでの確認（2026/11/04）** : `device` と `pkce` を、net48・net10.0 の両方で通した
 （テスト利用者 `tanaka@example.com` でログインし、承認・同意して、id_token の検証と UserInfo まで）。
 `device` で拒否（Deny）すると、`access_denied` で終了コード 1 になることも確かめた。
-**雛形の `TestClient3` に切り替えた後も、`device`・`pkce` を net48・net10.0 で通した**（スタブは MPAS の既定の設定のまま）。
+**雛形の `Device_Client`（当時の名前は `TestClient3`）に切り替えた後も、`device`・`pkce` を net48・net10.0 で通した**（スタブは MPAS の既定の設定のまま）。
 
 **旧サンプル（`Samples4NetCore/Legacy/CLI_sample/DAG_Login_CLI`・`LIR_Login_CLI`）との違い**
 
