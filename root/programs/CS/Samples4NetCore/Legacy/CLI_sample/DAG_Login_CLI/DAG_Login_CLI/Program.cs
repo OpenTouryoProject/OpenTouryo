@@ -18,7 +18,8 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //*  2026/11/05  玄人 幸道         認証処理を MPAS のスタブに合わせた（#649）
 //*                                （エンドポイントを Discovery から引く・scope を送る・verification_uri をそのまま使う・
-//*                                  ポーリングを IdP の指示に従わせる・id_token を検証する・終了コードを返す）
+//*                                  ポーリングを IdP の指示に従わせる・id_token を検証する・終了コードを返す・
+//*                                  確認を飛ばす指定（--yes）を足す）
 //**********************************************************************************
 
 using System;
@@ -129,8 +130,10 @@ namespace DAG_Login_CLI
             #region LoginCommand
             Command LoginCommand = new Command(name: "login", description: "Sub command login");
             LoginCommand.AddOption(new Option<string>(alias: "--a-string"));
+            // **確認（Sharprompt）を飛ばす**（対話の無い環境で動かす。E2E もこれを使う）
+            LoginCommand.AddOption(new Option<bool>(alias: "--yes", description: "Start polling without the confirmation"));
             // **終了コードを返す**（成功なら 0、失敗なら 1）
-            LoginCommand.Handler = CommandHandler.Create<string>((Func<string, Task<int>>)Program.LoginCommand);
+            LoginCommand.Handler = CommandHandler.Create<string, bool>((Func<string, bool, Task<int>>)Program.LoginCommand);
             rootCommand.AddCommand(LoginCommand);
             #endregion
 
@@ -165,6 +168,7 @@ namespace DAG_Login_CLI
         #region LoginCommand
         /// <summary>LoginCommand</summary>
         /// <param name="aString">aString</param>
+        /// <param name="yes">確認を飛ばす（--yes）</param>
         /// <returns>終了コード（成功なら 0、失敗なら 1）</returns>
         /// <remarks>
         /// DAG : OAuth 2.0 Device Authorization Grant（RFC 8628）。
@@ -177,7 +181,7 @@ namespace DAG_Login_CLI
         /// | `slow_down` | **`interval` を 5 秒延ばして**、もう一度 |
         /// | `access_denied` / `expired_token` / その他 | やめる |
         /// </remarks>
-        private static async Task<int> LoginCommand(string aString)
+        private static async Task<int> LoginCommand(string aString, bool yes)
         {
             Console.WriteLine($"Sub command login: {aString}");
 
@@ -222,7 +226,8 @@ namespace DAG_Login_CLI
             Console.WriteLine("verificationUriComplete: " + (string)authz[OAuth2AndOIDCConst.verification_uri_complete]);
 
             // ポーリング開始
-            bool answer = Prompt.Confirm("Are you ready?");
+            //   **--yes なら確かめない**（Sharprompt は対話環境でしか動かない。入力をリダイレクトすると例外になる）
+            bool answer = yes || Prompt.Confirm("Are you ready?");
             Console.WriteLine($"Your answer is {answer}");
             if (!answer)
             {

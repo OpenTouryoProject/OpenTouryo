@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/11/04  玄人 幸道         新規作成（#649）
+//*  2026/11/05  玄人 幸道         ブラウザを開かない指定（--no-browser）を足した（#649。E2E で使う）
 //**********************************************************************************
 
 using System;
@@ -63,8 +64,9 @@ namespace SpRp_CLI
 
         /// <summary>フローを実行する</summary>
         /// <param name="discovery">Discovery</param>
+        /// <param name="openBrowser">ブラウザを開くか（false なら URL を表示するだけ。--no-browser）</param>
         /// <returns>成功なら true</returns>
-        public static async Task<bool> RunAsync(Discovery discovery)
+        public static async Task<bool> RunAsync(Discovery discovery, bool openBrowser)
         {
             string client_id = OAuth2AndOIDCParams.ClientID;
             string redirect_uri = CmnClientParams.SpRp_RedirectUri;
@@ -87,7 +89,7 @@ namespace SpRp_CLI
                 + "&" + OAuth2AndOIDCConst.code_challenge_method + "=" + OAuth2AndOIDCConst.PKCE_S256;
 
             // ---------------------------------------------------------------- 1. 認可要求と応答
-            NameValueCollection query = await PkceFlow.AuthorizeInBrowserAsync(authorizeUrl, redirect_uri);
+            NameValueCollection query = await PkceFlow.AuthorizeInBrowserAsync(authorizeUrl, redirect_uri, openBrowser);
             if (query == null)
             {
                 return false;
@@ -157,9 +159,10 @@ namespace SpRp_CLI
         /// <summary>ブラウザで認可要求を出し、ループバックで応答を受ける</summary>
         /// <param name="authorizeUrl">認可要求の URL</param>
         /// <param name="redirect_uri">戻り先（ループバック）</param>
+        /// <param name="openBrowser">ブラウザを開くか</param>
         /// <returns>応答のクエリ（受けられなければ null）</returns>
         private static async Task<NameValueCollection> AuthorizeInBrowserAsync(
-            string authorizeUrl, string redirect_uri)
+            string authorizeUrl, string redirect_uri, bool openBrowser)
         {
             if (!HttpListener.IsSupported)
             {
@@ -177,9 +180,22 @@ namespace SpRp_CLI
                 // **ブラウザを開く前に待ち受ける**（先に開くと、応答を取りこぼすことがある）
                 listener.Start();
 
-                Console.WriteLine("ブラウザで認可します（開かなければ、次を手で開いてください）。");
+                if (openBrowser)
+                {
+                    Console.WriteLine("ブラウザで認可します（開かなければ、次を手で開いてください）。");
+                }
+                else
+                {
+                    Console.WriteLine("次をブラウザで開いて、認可してください。");
+                }
+
+                // **URL は 1 行で出す**（E2E は、この行を読んで認可要求を出す）
                 Console.WriteLine("  " + authorizeUrl);
-                PkceFlow.OpenBrowser(authorizeUrl);
+
+                if (openBrowser)
+                {
+                    PkceFlow.OpenBrowser(authorizeUrl);
+                }
 
                 Task<HttpListenerContext> getContext = listener.GetContextAsync();
                 if (await Task.WhenAny(getContext, Task.Delay(PkceFlow.ResponseTimeout)) != getContext)

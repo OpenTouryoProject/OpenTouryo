@@ -84,6 +84,39 @@ cd root\programs\CS\Sample4SpRp\E2E
 - **ブラウザの代わりは HttpClient**（リダイレクトは自分で辿る。**Cookie の入れ物は 1 つ** — スタブとアプリは同じ localhost なので、ブラウザと同じく Cookie を共有する）
 - **SAML2 は、MPAS のクライアント（`MVC_Sample`・`WebForms_Sample`）に `redirect_uri_saml` が要る**（無いと「スタブから戻らない」で NG）
 
+## 2.2 CLI のログインの E2E（[`E2E/CliLoginE2E.ps1`](E2E/CliLoginE2E.ps1)）
+
+**CLI のサンプル（`SpRp_CLI` と、旧サンプルの `DAG_Login_CLI`・`LIR_Login_CLI`）のログインを、スタブで通す。**
+CLI を起動し、表示された URL を、ブラウザの代わりに HTTP で辿る。
+
+```powershell
+cd root\programs\CS\Sample4SpRp\E2E
+.\CliLoginE2E.ps1                                   # 6 対象 × 正常・対照（12 件）
+.\CliLoginE2E.ps1 -Flow pkce -Only "net48"          # 絞る（-SkipControl で対照を省く）
+```
+
+| 対象 | フロー | 起動のしかた |
+|---|---|---|
+| `SpRp_CLI (net48)`・`SpRp_CLI (net10.0)` | `device` | `device` |
+| `SpRp_CLI (net48)`・`SpRp_CLI (net10.0)` | `pkce` | `pkce --no-browser` |
+| `DAG_Login_CLI (net10.0)` | `device` | `login --yes` |
+| `LIR_Login_CLI (net10.0)` | `pkce` | `login --no-browser` |
+
+**1 件で確かめること**
+
+| フロー | 辿り方 | 正常 | 対照 |
+|---|---|---|---|
+| `device` | 表示された `verification_uri_complete` を開き、ログインして承認する | 終了コード 0、id_token の検証と UserInfo の行 | **拒否（Deny）する** → 終了コード 1、`access_denied` |
+| `pkce` | 表示された認可要求の URL を開き、ログイン・同意する。**戻り（`http://localhost:12345/?code=…`）を、E2E が CLI の待ち受けへ届ける** | 同上 | **戻りの `state` を書き換える** → 終了コード 1、state の不一致 |
+
+- **対照が要るのは、確かめる処理を省いた実装でも、正常の側は通ってしまうため**
+- **ブラウザを開かせない・対話をさせない**ために、サンプルのオプション（`--no-browser`・`--yes`）を使う（4 節）
+- **前提（起動はしない）** : スタブ、ビルド（`CS\11_Build_SpRp_sample.bat`・`CS\5_Build_CLICore_sample.bat`）、
+  **ポート 12345 が空いている**（どの CLI も同じ戻り先で待ち受けるので、**1 件ずつ動かす**）。SQL Server は要らない。
+  **足りなければ終了コード 2**（0 = すべて OK、1 = NG あり）
+- **CLI の出力は、1 件ごとに `-OutputDir`（既定 `%TEMP%\OpenTouryoE2E`）の `cli_*.log` に残す**
+- **HTTP の部品（`New-Browser` など）は `ExternalLoginE2E.ps1` と同じ作り**だが、こちらは**戻り先（12345）へのリダイレクトの手前で止まる**
+
 ## 3. 設定（サンプルと IdP で揃える値）
 
 **サンプル側の設定と、IdP のクライアントの登録は、1 文字も違ってはならない。**
@@ -136,6 +169,8 @@ dotnet .\SpRp_CLI\bin\Debug\net10.0\SpRp_CLI.dll pkce   # net10.0
 | `device` | Device Authorization Grant（RFC 8628） | URL とコードを表示する。**別のブラウザで開いてコードを入れ、承認する**と、端末が UserInfo を表示する |
 | `pkce` | 認可コード ＋ PKCE（RFC 7636）、ループバック（RFC 8252 §7.3） | **既定のブラウザが開く。** ログインして承認すると、`http://localhost:12345/` で応答を受け、UserInfo を表示する |
 
+**`pkce --no-browser` なら、ブラウザを開かない**（認可要求の URL を表示するだけ。手で、または別の端末で開く）。E2E（2.2 節）はこれを使う。
+
 **終了コード** : 0 = 成功、1 = 失敗（拒否・期限切れ・検証の失敗・IdP に繋がらない）、2 = 引数の誤り。
 
 **確かめていること**（サンプルとして、省かずに書いてある）
@@ -173,7 +208,7 @@ Discovery から引く・`scope` を送る・`verification_uri` をそのまま�
 |---|---|---|
 | 対象 | net10.0 のみ | **net48 と net10.0** |
 | 外部のパッケージ | `System.CommandLine`（beta）・`Sharprompt` | `Newtonsoft.Json` だけ |
-| 対話 | `DAG` はポーリングの前に `Sharprompt` で確認する（**対話環境でしか動かない**） | 確認しない |
+| 対話 | `DAG` はポーリングの前に `Sharprompt` で確認する（**対話環境でしか動かない。`--yes` で飛ばせる**） | 確認しない |
 | ビルド | `CS\5_Build_CLICore_sample.bat` | `CS\11_Build_SpRp_sample.bat` |
 
 ## 5. サンプルを足すとき
@@ -192,7 +227,7 @@ Discovery から引く・`scope` を送る・`verification_uri` をそのまま�
   **SpRp のサンプルを足したら、このバッチに足す**（net48 と net10.0 の両方）
 - **単体テスト（`2_RunAllTests.ps1`）・疎通テスト（`3_SmokeTest.ps1`）・CI には載っていない。**
   外部の IdP（スタブ）が要るため。**WebApp のサンプルの外部ログインは `E2E/ExternalLoginE2E.ps1` で確かめる**（2.1 節。
-  スタブと SQL Server の起動が要るので、**施主に確かめてから回す**）。CLI は手で確かめる
+  スタブと SQL Server の起動が要るので、**施主に確かめてから回す**）。**CLI は `E2E/CliLoginE2E.ps1` で確かめる**（2.2 節。スタブだけが要る）
 - **`SelectTargets.ps1` は、ここを変えると「バッチ : 11_Build_SpRp_sample.bat ＋ 手で確かめる（SpRp）」に分ける**
   （ビルドだけを回し、通しにはしない）。**手で確かめるものが残るので、検証の記録は進まない**（確かめたら `-Record`）
 - **スタブは MPAS の net10.0 版**である。net48 版の MPAS に固有の振る舞いは再現しない

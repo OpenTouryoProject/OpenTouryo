@@ -102,7 +102,9 @@ GetConfigParameter.InitConfiguration("appsettings.json");
 - **`DAG` / `LIR` の接続先は、MPAS のスタブ（`https://localhost:44310`）と、その雛形のクライアントである**（#649）。
   起動の仕方と、確かめていること（Discovery の `issuer`・`state`・`iss`・`nonce`・id_token）は
   [`Sample4SpRp/README.md`](../../Sample4SpRp/README.md) の 2 節・4 節。認証処理は、そこの `SpRp_CLI` と同じ作りにしてある。
-  **`DAG` は `Sharprompt` の確認を挟むので、対話環境でしか動かない**（入力をリダイレクトすると例外になる）
+  **`DAG` は `Sharprompt` の確認を挟むので、対話環境でしか動かない**（入力をリダイレクトすると例外になる）。
+  **`login --yes` で確認を飛ばせる。** `LIR` は **`login --no-browser` でブラウザを開かない**。
+  E2E（`Sample4SpRp/E2E/CliLoginE2E.ps1`。同 README 2.2 節）はこの 2 つを使う
 
 ---
 

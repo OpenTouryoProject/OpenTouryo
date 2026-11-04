@@ -18,7 +18,8 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //*  2026/11/05  玄人 幸道         認証処理を MPAS のスタブに合わせた（#649）
 //*                                （エンドポイントを Discovery から引く・scope と redirect_uri を送る・
-//*                                  state・iss・nonce を確かめる・id_token を検証する・応答を待つ上限・終了コードを返す）
+//*                                  state・iss・nonce を確かめる・id_token を検証する・応答を待つ上限・終了コードを返す・
+//*                                  ブラウザを開かない指定（--no-browser）を足す）
 //**********************************************************************************
 
 using System;
@@ -129,8 +130,10 @@ namespace LIR_Login_CLI
             #region LoginCommand
             Command LoginCommand = new Command(name: "login", description: "Sub command login");
             LoginCommand.AddOption(new Option<string>(alias: "--a-string"));
+            // **ブラウザを開かない**（表示した URL を、手で、または別の端末で開く。E2E もこれを使う）
+            LoginCommand.AddOption(new Option<bool>(alias: "--no-browser", description: "Do not open the browser (open the displayed URL yourself)"));
             // **終了コードを返す**（成功なら 0、失敗なら 1）
-            LoginCommand.Handler = CommandHandler.Create<string>((Func<string, Task<int>>)Program.LoginCommand);
+            LoginCommand.Handler = CommandHandler.Create<string, bool>((Func<string, bool, Task<int>>)Program.LoginCommand);
             rootCommand.AddCommand(LoginCommand);
             #endregion
 
@@ -165,6 +168,7 @@ namespace LIR_Login_CLI
         #region LoginCommand
         /// <summary>LoginCommand</summary>
         /// <param name="aString">aString</param>
+        /// <param name="noBrowser">ブラウザを開かない（--no-browser）</param>
         /// <returns>終了コード（成功なら 0、失敗なら 1）</returns>
         /// <remarks>
         /// 認可コード ＋ PKCE（RFC 7636）。戻り先はループバック（RFC 8252 §7.3）。
@@ -179,7 +183,7 @@ namespace LIR_Login_CLI
         /// | `code_verifier` | コードを横取りされても引き換えられない（RFC 7636） |
         /// | id_token の署名・`iss`・`aud`・`nonce` | OpenID Connect Core 1.0 §3.1.3.7 |
         /// </remarks>
-        private static async Task<int> LoginCommand(string aString)
+        private static async Task<int> LoginCommand(string aString, bool noBrowser)
         {
             if (!HttpListener.IsSupported)
             {
@@ -220,7 +224,7 @@ namespace LIR_Login_CLI
                 + "&" + OAuth2AndOIDCConst.code_challenge_method + "=" + OAuth2AndOIDCConst.PKCE_S256;
 
             // 認可リクエスト・レスポンス
-            NameValueCollection query = await Program.AuthorizeInBrowserAsync(target, redirect_uri);
+            NameValueCollection query = await Program.AuthorizeInBrowserAsync(target, redirect_uri, !noBrowser);
             if (query == null) return 1;
 
             if (!string.IsNullOrEmpty(query[OAuth2AndOIDCConst.error]))
@@ -283,8 +287,9 @@ namespace LIR_Login_CLI
         /// <summary>ブラウザで認可要求を出し、ループバックで応答を受ける</summary>
         /// <param name="target">認可要求の URL</param>
         /// <param name="redirect_uri">戻り先（ループバック）</param>
+        /// <param name="openBrowser">ブラウザを開くか</param>
         /// <returns>応答のクエリ（受けられなければ null）</returns>
-        private static async Task<NameValueCollection> AuthorizeInBrowserAsync(string target, string redirect_uri)
+        private static async Task<NameValueCollection> AuthorizeInBrowserAsync(string target, string redirect_uri, bool openBrowser)
         {
             HttpListener listener = new HttpListener();
 
@@ -299,8 +304,12 @@ namespace LIR_Login_CLI
                 Console.WriteLine("Listening...");
 
                 // 認可リクエスト（開かなければ、表示した URL を手で開く）
+                //   **URL は 1 行で出す**（E2E は、この行を読んで認可要求を出す）
                 Console.WriteLine(target);
-                Program.OpenBrowser(target);
+                if (openBrowser)
+                {
+                    Program.OpenBrowser(target);
+                }
 
                 // 受信
                 Task<HttpListenerContext> getContext = listener.GetContextAsync();

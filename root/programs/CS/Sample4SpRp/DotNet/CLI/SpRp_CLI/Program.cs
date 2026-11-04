@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/11/04  玄人 幸道         新規作成（#649）
+//*  2026/11/05  玄人 幸道         pkce に --no-browser を足した（#649。E2E で使う）
 //**********************************************************************************
 
 using System;
@@ -60,12 +61,15 @@ namespace SpRp_CLI
         /// <summary>終了コード：引数の誤り</summary>
         public const int ExitUsage = 2;
 
+        /// <summary>ブラウザを開かない（表示した URL を、手で、または別の端末で開く。E2E もこれを使う）</summary>
+        private const string NoBrowserOption = "--no-browser";
+
         /// <summary>入口</summary>
         /// <param name="args">string[]</param>
         /// <returns>終了コード</returns>
         public static async Task<int> Main(string[] args)
         {
-            if (args.Length != 1)
+            if (args.Length < 1 || 2 < args.Length)
             {
                 Program.WriteUsage();
                 return Program.ExitUsage;
@@ -78,6 +82,18 @@ namespace SpRp_CLI
                 return Program.ExitUsage;
             }
 
+            // **--no-browser は pkce だけ**（device はもともとブラウザを開かない）
+            bool openBrowser = true;
+            if (args.Length == 2)
+            {
+                if (command != "pkce" || args[1].ToLowerInvariant() != Program.NoBrowserOption)
+                {
+                    Program.WriteUsage();
+                    return Program.ExitUsage;
+                }
+                openBrowser = false;
+            }
+
             Program.Initialize();
 
             try
@@ -88,7 +104,7 @@ namespace SpRp_CLI
 
                 bool result = (command == "device")
                     ? await DeviceFlow.RunAsync(discovery)
-                    : await PkceFlow.RunAsync(discovery);
+                    : await PkceFlow.RunAsync(discovery, openBrowser);
 
                 return result ? Program.ExitOk : Program.ExitFailed;
             }
@@ -130,9 +146,10 @@ namespace SpRp_CLI
         /// <summary>使い方を表示する</summary>
         private static void WriteUsage()
         {
-            Console.WriteLine("使い方 : SpRp_CLI <device | pkce>");
+            Console.WriteLine("使い方 : SpRp_CLI <device | pkce [--no-browser]>");
             Console.WriteLine("  device : Device Authorization Grant（RFC 8628）。表示されたコードを、ブラウザで入力する");
             Console.WriteLine("  pkce   : 認可コード ＋ PKCE（RFC 7636）。ブラウザが開き、ループバックで応答を受ける");
+            Console.WriteLine("           --no-browser : ブラウザを開かない（表示した URL を手で開く）");
             Console.WriteLine();
             Console.WriteLine("終了コード : 0 = 成功、1 = 失敗、2 = 引数の誤り");
         }
