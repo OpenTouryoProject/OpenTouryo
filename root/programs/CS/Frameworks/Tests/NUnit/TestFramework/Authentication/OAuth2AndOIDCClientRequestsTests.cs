@@ -26,6 +26,7 @@
 //*  2026/10/22  玄人 幸道         新規作成（#634。partial に分けたファイルのカバレッジの拡充）
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //*  2026/10/30  玄人 幸道         CibaAuthZRequest を、request_uri の版と Request Object の版に分けた（根拠が違うため。#640）
+//*  2026/11/04  玄人 幸道         DeviceAuthZ の scope を受ける版のテストを追加（#650）
 //**********************************************************************************
 
 using System;
@@ -338,6 +339,34 @@ namespace TestFramework.Authentication
             Assert.That(form[OAuth2AndOIDCConst.grant_type], Is.EqualTo(OAuth2AndOIDCConst.DeviceAuthZGrantType));
             Assert.That(form[OAuth2AndOIDCConst.client_id], Is.EqualTo("client01"));
             Assert.That(form[OAuth2AndOIDCConst.device_code], Is.EqualTo("device01"));
+        }
+
+        /// <summary>Device（RFC 8628）：scope を受ける版は、認可要求に client_id と scope を載せる（#650）。</summary>
+        [Test]
+        [Basis("RFC 8628 3.1（認可要求の scope は任意。中身は RFC 6749 3.3）")]
+        public void DeviceAuthZ_WithScope()
+        {
+            Tuple<HttpRequestMessage, string> r = Send(() => OAuth2AndOIDCClient.DeviceAuthZRequestAsync(
+                new Uri("https://as.example.com/device"), "client01", "openid profile").Result);
+
+            Assert.That(Form(r.Item2), Is.EqualTo(new Dictionary<string, string>
+            {
+                { OAuth2AndOIDCConst.client_id, "client01" },
+                { OAuth2AndOIDCConst.scope, "openid profile" }
+            }));
+        }
+
+        /// <summary>Device（RFC 8628）：scope が null・空なら、scope を受けない版と同じ本文（client_id だけ）になる（#650）。</summary>
+        /// <param name="scope">scope</param>
+        [TestCase(null)]
+        [TestCase("")]
+        [Basis("RFC 8628 3.1（scope は任意。送らなければ client_id だけ）")]
+        public void DeviceAuthZ_WithoutScope(string scope)
+        {
+            Tuple<HttpRequestMessage, string> r = Send(() => OAuth2AndOIDCClient.DeviceAuthZRequestAsync(
+                new Uri("https://as.example.com/device"), "client01", scope).Result);
+
+            Assert.That(Form(r.Item2), Is.EqualTo(new Dictionary<string, string> { { OAuth2AndOIDCConst.client_id, "client01" } }));
         }
 
         /// <summary>CIBA の認可要求（request_uri を送る版）：request_uri を本文に載せる。</summary>

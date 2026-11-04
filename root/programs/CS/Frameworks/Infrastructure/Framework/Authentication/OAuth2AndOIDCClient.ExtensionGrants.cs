@@ -26,6 +26,7 @@
 //*  2026/10/22  玄人 幸道         新規作成（OAuth2AndOIDCClient.cs から処理区分ごとに分割した）
 //*  2026/10/22  玄人 幸道         CIBAのTokenリクエストに、client_assertionを受ける版を追加
 //*                                （private_key_jwt / client_secret_jwt / tls_client_authで取れなかった）
+//*  2026/11/04  玄人 幸道         Device AuthZの認可リクエストに、scopeを受ける版を追加（#650）
 //**********************************************************************************
 
 using System;
@@ -86,7 +87,30 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="deviceAuthZUri">Uri</param>
         /// <param name="clientId">string</param>
         /// <returns>結果のJSON文字列</returns>
+        /// <remarks>
+        /// scope を送らない（client_id だけ）。scope を送るなら、scope を受ける版を使う（#650）。
+        /// </remarks>
         public static async Task<string> DeviceAuthZRequestAsync(Uri deviceAuthZUri, string clientId)
+        {
+            return await OAuth2AndOIDCClient.DeviceAuthZRequestAsync(deviceAuthZUri, clientId, null).ConfigureAwait(false);
+        }
+
+        /// <summary>Device AuthZの認可リクエスト（WebAPI。scope を送る版）</summary>
+        /// <param name="deviceAuthZUri">Uri</param>
+        /// <param name="clientId">string</param>
+        /// <param name="scope">scope（空白区切り。null・空なら送らない）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>
+        /// 自由に利用できる。
+        ///
+        /// RFC 8628 3.1 のとおり、scope は任意（中身は RFC 6749 3.3）。
+        /// null・空なら載せないので、本文は scope を受けない版と同じ（client_id だけ）になる。
+        ///
+        /// **認証（id_token・UserInfo）に使うなら、scope に openid を含める。**
+        /// 含めないと、得たアクセス トークンで UserInfo を呼べない（insufficient_scope。#650）。
+        /// 認可要求をブラウザから出さないので、nonce は無い。id_token は署名・iss・aud・exp で確かめる。
+        /// </remarks>
+        public static async Task<string> DeviceAuthZRequestAsync(Uri deviceAuthZUri, string clientId, string scope)
         {
             // 通信用の変数
             HttpRequestMessage httpRequestMessage = null;
@@ -99,11 +123,18 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 RequestUri = deviceAuthZUri,
             };
 
-            httpRequestMessage.Content = new FormUrlEncodedContent(
-                new Dictionary<string, string>
-                {
-                    { OAuth2AndOIDCConst.client_id, clientId }
-                });
+            Dictionary<string, string> body = new Dictionary<string, string>
+            {
+                { OAuth2AndOIDCConst.client_id, clientId }
+            };
+
+            // scope は任意（RFC 8628 3.1）。無ければ載せない
+            if (!string.IsNullOrEmpty(scope))
+            {
+                body.Add(OAuth2AndOIDCConst.scope, scope);
+            }
+
+            httpRequestMessage.Content = new FormUrlEncodedContent(body);
 
             // HttpResponseMessage
             httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
