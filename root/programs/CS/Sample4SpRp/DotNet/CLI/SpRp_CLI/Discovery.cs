@@ -69,7 +69,7 @@ namespace SpRp_CLI
             if (string.IsNullOrEmpty(json))
             {
                 throw new InvalidOperationException(
-                    "Discovery（" + discoveryUri + "）を読めません。IdP（スタブ）は起動していますか？（../../README.md の 2 節）");
+                    "Discovery（" + discoveryUri + "）を読めません。IdP（スタブ）は起動していますか？（Sample4SpRp/README.md の 2 節）");
             }
 
             JObject doc = JObject.Parse(json);

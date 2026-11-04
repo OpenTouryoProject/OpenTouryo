@@ -11,7 +11,7 @@
 
 | 系統 | アプリ | フロー | 状態 | 場所 |
 |---|---|---|---|---|
-| net | **EXE（CLI）** | **Device**・**PKCE** | **済** | [`CLI/`](CLI/) |
+| net | **EXE（CLI）** | **Device**・**PKCE** | **済** | [`DotNet/CLI/`](DotNet/CLI/) |
 | net | EXE（CLI） | SAML2・AuthZCode・AuthNCode | 未（CLI には向かない。下記） | — |
 | net | MVC | SAML2・AuthZCode・AuthNCode・PKCE・Device | 未 | — |
 | net | WebForms（net48 のみ） | 同上 | 未 | — |
@@ -24,7 +24,8 @@
 
 ## 2. IdP（MPAS スタブ）を動かす
 
-**スタブの定義は MPAS 側に在り、ここには設定（[`Stub/sprp-stub.json`](Stub/sprp-stub.json)）だけを置く。**
+**スタブは、MPAS の既定の設定のまま動かす。** 定義も設定も MPAS 側に在り、ここには起動の手順（[`Stub/StubCompose.ps1`](Stub/StubCompose.ps1)）だけを置く。
+**サンプルは、MPAS の雛形（`_appsettings.json`）に在るクライアントを使う**（3 節）。
 **スタブの使い方の一次情報は、MPAS の `container\Stub\README.md`** である。
 
 **前提** : Docker（compose v2）、.NET 10 SDK、MPAS のリポジトリ（既定 `C:\MultiPurposeAuthSite`）、
@@ -36,7 +37,7 @@ C:\MultiPurposeAuthSite\container\Stub\1_PublishStub.ps1
 
 # 2. このリポジトリ側で、起動・停止する
 cd root\programs\CS\Sample4SpRp\Stub
-.\StubCompose.ps1                  # 起動（sprp-stub.json を設定として渡す）
+.\StubCompose.ps1                  # 起動（MPAS の既定の設定のまま）
 .\StubCompose.ps1 -Action Config   # 設定の解決だけを見る（起動しない）
 .\StubCompose.ps1 -Action Down     # 止めて消す（状態は残らない）
 ```
@@ -47,16 +48,27 @@ cd root\programs\CS\Sample4SpRp\Stub
 |---|---|
 | issuer・公開 URL | `https://localhost:44310`（MPAS のスタブの既定） |
 | テスト利用者 | `tanaka@example.com` / `super_tanaka@example.com`（パスワードは MPAS の `.env.sample` の `STUB_TEST_USER_PWD`） |
-| クライアント | **`sprp-stub.json` に、サンプルごとに 1 つ**（下の 3 節） |
+| クライアント | **MPAS の雛形に在るもの**（下の 3 節） |
 
 - **MPAS のスタブと同じプロジェクト名（`mpas-stub`）で動く。** MPAS 側でスタブを別の設定で動かしているなら、先に止める
 - **状態は残らない**（利用者・同意・セッションは、再起動で消える）
 
 ## 3. 設定（サンプルと IdP で揃える値）
 
-**サンプル側の設定と、`sprp-stub.json` のクライアントの登録は、1 文字も違ってはならない。**
+**サンプル側の設定と、IdP のクライアントの登録は、1 文字も違ってはならない。**
+**登録は、MPAS の雛形（`root\programs\MultiPurposeAuthSiteCore\MultiPurposeAuthSiteCore\_appsettings.json` の `OAuth2ClientsInformation`）を使う。**
+スタブの `appsettings.json` は、この雛形そのものである（MPAS の `container\Stub\README.md` 3 節）。
 
-| サンプル側のキー | 意味 | IdP 側（`sprp-stub.json`） |
+| サンプル | 雛形のクライアント | client_id | 戻り先（`redirect_uri_code`） |
+|---|---|---|---|
+| CLI（`DotNet/CLI`） | `TestClient3`（`client_mode` = `device`。秘密なし） | `ae5a179813234ca290c8de93ef2e31dc` | `http://localhost:12345/` |
+
+**雛形には、ほかのフェーズで使えそうなものも在る**（`MVC_Sample`・`WebForms_Sample`・`SPA_Application`・`Native_Application`・
+`IdFederation`（SAML2））。**どれを使うかは、そのフェーズで決める。**
+**雛形に無いクライアントが要るときだけ**、設定の JSON を書いて `StubCompose.ps1 -Settings <パス>` で渡す
+（書き方は MPAS の `container\Stub\appsettings.Stub.sample.json`）。
+
+| サンプル側のキー | 意味 | IdP 側（雛形） |
 |---|---|---|
 | `SpRp_Isser` | 期待する issuer | （スタブの `STUB_ISSUER`） |
 | `SpRp_DiscoveryUri` | Discovery の URL。**エンドポイントと `jwks_uri` はここから引く** | — |
@@ -67,10 +79,10 @@ cd root\programs\CS\Sample4SpRp\Stub
 **キーは部品が読むもの**（`CmnClientParams`・`OAuth2AndOIDCParams`）をそのまま使う。
 **値の置き場は net48 が `App.config`、net10.0 が `appsettings.json`**（両方を同じ値にする）。
 
-## 4. CLI（`CLI/SpRp_CLI`）
+## 4. CLI（`DotNet/CLI/SpRp_CLI`）
 
 ```powershell
-cd root\programs\CS\Sample4SpRp\CLI
+cd root\programs\CS\Sample4SpRp\DotNet\CLI
 dotnet build SpRp_CLI.sln                         # net48 と net10.0 の両方が出る
 
 .\SpRp_CLI\bin\Debug\net48\SpRp_CLI.exe device     # net48
@@ -79,7 +91,7 @@ dotnet .\SpRp_CLI\bin\Debug\net10.0\SpRp_CLI.dll pkce   # net10.0
 
 **前提** : 基盤のビルド（`root\programs\1_BuildAll.ps1`）。`Build_net48` と `Build_netcore100` の DLL を参照する。
 
-**ダブルクリックで回すなら、`CLI\` のバッチを使う**（中身は上と同じ。ASCII のみ）。
+**ダブルクリックで回すなら、`DotNet\CLI\` のバッチを使う**（中身は上と同じ。ASCII のみ）。
 
 | バッチ | 何をするか |
 |---|---|
@@ -91,7 +103,7 @@ dotnet .\SpRp_CLI\bin\Debug\net10.0\SpRp_CLI.dll pkce   # net10.0
 | サブコマンド | フロー | 何が起きるか |
 |---|---|---|
 | `device` | Device Authorization Grant（RFC 8628） | URL とコードを表示する。**別のブラウザで開いてコードを入れ、承認する**と、端末が UserInfo を表示する |
-| `pkce` | 認可コード ＋ PKCE（RFC 7636）、ループバック（RFC 8252 §7.3） | **既定のブラウザが開く。** ログインして承認すると、`http://localhost:54649/` で応答を受け、UserInfo を表示する |
+| `pkce` | 認可コード ＋ PKCE（RFC 7636）、ループバック（RFC 8252 §7.3） | **既定のブラウザが開く。** ログインして承認すると、`http://localhost:12345/` で応答を受け、UserInfo を表示する |
 
 **終了コード** : 0 = 成功、1 = 失敗（拒否・期限切れ・検証の失敗・IdP に繋がらない）、2 = 引数の誤り。
 
@@ -106,15 +118,19 @@ dotnet .\SpRp_CLI\bin\Debug\net10.0\SpRp_CLI.dll pkce   # net10.0
 
 - **id_token の鍵は、ヘッダの `kid` で `jwks_uri` から引く**（`RemoteJwkSetStore.GetJwkByDiscoveryAsync`）。
   **`alg` は非対称のもの（`JwsFactory.SupportedAlgs`）に限る**（`none`・HS* を受けない）
-- **パブリック クライアントである**（`token_endpoint_auth_method` = `none`）。秘密は持たず、送らない
+- **パブリック クライアントとして振る舞う**（秘密は持たず、送らない）。`TestClient3` は秘密を登録しておらず、
+  `token_endpoint_auth_method` も書いていないので、MPAS は **PKCE だけでの引き換え**と、**client_id だけの Device AuthZ** を受ける
+- **旧サンプル（`DAG_Login_CLI`・`LIR_Login_CLI`）と、同じクライアント・同じ戻り先を使う。** 同時には動かさないこと（ポート 12345 を取り合う）
 - **デバイス認可要求には `scope`（`SpRp_Scope`）を付ける**（`DeviceAuthZRequestAsync` の `scope` を受ける版。#650）。
   **`openid` を含めないと、id_token が返らず、UserInfo も `insufficient_scope` で断られる**（認証に使えない）
+
+- **外部のパッケージは `Newtonsoft.Json` だけ。** `System.CommandLine`（beta）・`Sharprompt` を使わないのは、
+  **net48 の CLI サンプルが落とされた原因**だったため（`5_Build_CLI_sample.bat`）
 
 **MPAS スタブでの確認（2026/11/04）** : `device` と `pkce` を、net48・net10.0 の両方で通した
 （テスト利用者 `tanaka@example.com` でログインし、承認・同意して、id_token の検証と UserInfo まで）。
 `device` で拒否（Deny）すると、`access_denied` で終了コード 1 になることも確かめた。
-- **外部のパッケージは `Newtonsoft.Json` だけ。** `System.CommandLine`（beta）・`Sharprompt` を使わないのは、
-  **net48 の CLI サンプルが落とされた原因**だったため（`5_Build_CLI_sample.bat`）
+**雛形の `TestClient3` に切り替えた後も、`device`・`pkce` を net48・net10.0 で通した**（スタブは MPAS の既定の設定のまま）。
 
 **旧サンプル（`Samples4NetCore/Legacy/CLI_sample/DAG_Login_CLI`・`LIR_Login_CLI`）との違い**
 
@@ -128,12 +144,12 @@ dotnet .\SpRp_CLI\bin\Debug\net10.0\SpRp_CLI.dll pkce   # net10.0
 
 ## 5. サンプルを足すとき
 
-1. **`sprp-stub.json` にクライアントを 1 つ足す**（client_id は 32 桁の 16 進。サンプルごとに分ける）
+1. **MPAS の雛形から、使うクライアントを選ぶ**（3 節の表に足す）。**無ければ、設定の JSON を書いて `-Settings` で渡す**
 2. サンプル側の設定（3 節）を、その値に揃える
 3. **1 節の表の状態を更新する**
 
-**サーバ側のアプリ（MVC・WebForms）は、`client_secret` を持つコンフィデンシャル クライアントとして登録する。**
-**ブラウザ（SPA）・ネイティブ（WinForms・CLI）は、パブリック（`none`）＋ PKCE にする。**
+**サーバ側のアプリ（MVC・WebForms）は、`client_secret` を持つコンフィデンシャル クライアントを使う。**
+**ブラウザ（SPA）・ネイティブ（WinForms・CLI）は、秘密を持たないクライアント ＋ PKCE にする。**
 
 ## 6. エージェントが気を付けること
 

@@ -38,13 +38,13 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Web" />
     <Reference Include="OpenTouryo.Framework">
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build_net48\OpenTouryo.Framework.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_net48\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public">
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build_net48\OpenTouryo.Public.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_net48\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public.Security">
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build_net48\OpenTouryo.Public.Security.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_net48\OpenTouryo.Public.Security.dll</HintPath>
     </Reference>
   </ItemGroup>
 
@@ -55,13 +55,13 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.5" />
     <PackageReference Include="BouncyCastle.NetCore" Version="2.2.1" />
     <Reference Include="OpenTouryo.Framework">
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Framework.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Framework.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public">
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.dll</HintPath>
     </Reference>
     <Reference Include="OpenTouryo.Public.Security">
-      <HintPath>..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.Security.dll</HintPath>
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.Security.dll</HintPath>
     </Reference>
   </ItemGroup>
 

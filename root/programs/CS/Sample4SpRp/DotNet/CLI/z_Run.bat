@@ -1,6 +1,6 @@
 @echo off
 rem NOTE: keep this file pure ASCII (root/programs/CODING.md section 4).
-rem       Japanese explanations are in ..\README.md (section 4).
+rem       Japanese explanations are in ..\..\README.md (section 4).
 rem
 rem Common runner called by 2_Device.bat / 3_Pkce.bat (#649).
 rem Usage: z_Run.bat <device|pkce> [net48|net10.0]   (default: net10.0)

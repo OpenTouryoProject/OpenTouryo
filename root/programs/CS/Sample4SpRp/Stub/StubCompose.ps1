@@ -4,12 +4,17 @@
 
 .DESCRIPTION
     ＜何をするか＞
-      **MPAS の container\Stub\docker-compose.yml を、このディレクトリの設定（sprp-stub.json）で動かす。**
-      スタブの定義そのものは MPAS 側に在り、ここには持たない（二重に持たない）。
+      **MPAS の container\Stub\docker-compose.yml を、MPAS の既定の設定のまま動かす。**
+      スタブの定義も設定も MPAS 側に在り、ここには持たない（二重に持たない）。
+
+    ＜既定の設定を使う＞
+      **サンプルは、MPAS の雛形（_appsettings.json）に在るクライアントを使う**
+      （CLI は TestClient3 = ae5a179813234ca290c8de93ef2e31dc）。
+      **雛形に無いクライアントが要るときだけ、-Settings で設定の JSON を渡す**（..\README.md の 3 節）。
 
     ＜なぜスクリプトにするか＞
-      **STUB_SETTINGS は絶対パスで渡す必要がある**（--env-file の相対パスは MPAS の container\Stub\ から見るため）。
-      環境変数で渡せば、パラメタのファイルを作らずに済む。
+      **MPAS の場所と、スタブの準備（publish・証明書）を確かめてから動かすため。**
+      **-Settings は絶対パスで渡す必要がある**（--env-file の相対パスは MPAS の container\Stub\ から見るため）。
 
     ＜前提＞
       **MPAS 側で、先に一度 container\Stub\1_PublishStub.ps1 を実行しておく**（publish と証明書）。
@@ -19,6 +24,9 @@
 
 .PARAMETER MpasRoot
     MultiPurposeAuthSite のリポジトリの場所。
+
+.PARAMETER Settings
+    スタブに渡すアプリの設定（appsettings.json と同じ書き方の JSON）。省けば MPAS の既定（appsettings.Stub.sample.json）。
 
 .EXAMPLE
     .\StubCompose.ps1
@@ -32,22 +40,22 @@
      日時        更新者            内容
      ----------  ----------------  -------------------------------------------------
      2026/11/04  玄人 幸道         新規（#649）
+     2026/11/04  玄人 幸道         既定は MPAS の設定のまま動かす（雛形のクライアントを使う）。-Settings を追加
 #>
 [CmdletBinding()]
 param(
     [ValidateSet('Up', 'Down', 'Config')]
     [string] $Action = 'Up',
 
-    [string] $MpasRoot = 'C:\MultiPurposeAuthSite'
+    [string] $MpasRoot = 'C:\MultiPurposeAuthSite',
+
+    [string] $Settings = ''
 )
 
 $ErrorActionPreference = 'Stop'
 
-# パスの既定値は param() に書かない（5.1 の -File で $PSScriptRoot が空になる。CODING.md 5 節）
-$here = Split-Path -Parent $PSCommandPath
 $stubDir = Join-Path $MpasRoot 'container\Stub'
 $compose = Join-Path $stubDir 'docker-compose.yml'
-$settings = Join-Path $here 'sprp-stub.json'
 
 if (-not (Test-Path $compose))
 {
@@ -66,8 +74,16 @@ if ($Action -eq 'Up')
     }
 }
 
-# **設定は絶対パスで渡す**（compose は / 区切りでも \ 区切りでも受ける）
-$env:STUB_SETTINGS = (Resolve-Path $settings).Path
+# **設定を渡すときだけ、絶対パスにして渡す**（渡さなければ MPAS の既定）。
+#   **前の実行で残った値を使わないよう、渡さないときは消す**（同じセッションで続けて動かすとき）。
+if ([string]::IsNullOrEmpty($Settings))
+{
+    Remove-Item Env:\STUB_SETTINGS -ErrorAction SilentlyContinue
+}
+else
+{
+    $env:STUB_SETTINGS = (Resolve-Path $Settings).Path
+}
 
 switch ($Action)
 {

@@ -96,7 +96,7 @@ namespace SpRp_CLI
             {
                 // **IdP（スタブ）が起動していないと、ここに来る**
                 Console.WriteLine("NG   IdP に接続できません : " + ex.Message);
-                Console.WriteLine("     スタブは起動していますか？（../../README.md の 2 節）");
+                Console.WriteLine("     スタブは起動していますか？（Sample4SpRp/README.md の 2 節）");
                 return Program.ExitFailed;
             }
             catch (InvalidOperationException ex)
