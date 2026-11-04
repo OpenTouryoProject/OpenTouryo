@@ -75,6 +75,7 @@
      2026/08/13  玄人 幸道         Lang を追加（VB 版のビルドに対応）
      2026/10/15  玄人 幸道         -Only の複数指定と -List -PassThru を追加（#610）
      2026/10/15  玄人 幸道         脆弱性の警告（NU1901〜NU1904）を別枠で出すようにした（#610）
+     2026/11/04  玄人 幸道         SpRp のサンプル（11_Build_SpRp_sample.bat）を追加（#649）
 #>
 [CmdletBinding()]
 param(
@@ -175,6 +176,10 @@ $stepsCS = @(
     @{ Name = "Framework_WSCore";              Bat = "7_Build_Framework_WSCore.bat" }
     @{ Name = "WSClntCore_sample";             Bat = "8_Build_WSClntCore_sample.bat" }
     @{ Name = "WebAppCore_sample";             Bat = "10_Build_WebAppCore_sample.bat" }
+
+    # --- SpRp のサンプル（net48 と net10.0 の両方。#649） ---
+    #   **SpRp 系は全部ここに詰める。** 外部の IdP（MPAS のスタブ）が要るので、2・3 では回らない（手で確かめる）。
+    @{ Name = "SpRp_sample";                   Bat = "11_Build_SpRp_sample.bat" }
 )
 
 # VB\0_ExecAllBat.bat と同じ順序・同じ内容。

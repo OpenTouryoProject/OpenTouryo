@@ -48,6 +48,7 @@ echo | call 6_Build_WSSrvCore_sample.bat
 echo | call 7_Build_Framework_WSCore.bat
 echo | call 8_Build_WSClntCore_sample.bat
 echo | call 10_Build_WebAppCore_sample.bat
+echo | call 11_Build_SpRp_sample.bat
 
 @echo on
 timeout 5

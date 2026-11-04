@@ -154,6 +154,10 @@ dotnet .\SpRp_CLI\bin\Debug\net10.0\SpRp_CLI.dll pkce   # net10.0
 ## 6. エージェントが気を付けること
 
 - **コンテナを勝手に起動・停止しない**（`AGENTS.md`）。`StubCompose.ps1 -Action Config` は起動しないので、設定の確認に使える
-- **CI・疎通テスト（`3_SmokeTest.ps1`）には載っていない。** ブラウザでのログインと承認が要るため、**動作の確認は手で行う**
-- **ビルドの一括スクリプト（`1_BuildAll.ps1`・`CS\*.bat`）にも、まだ載っていない**
+- **ビルドは `CS\11_Build_SpRp_sample.bat` に詰める**（`1_BuildAll.ps1` の `SpRp_sample`、`CS\0_ExecAllBat.bat` から呼ばれる）。
+  **SpRp のサンプルを足したら、このバッチに足す**（net48 と net10.0 の両方）
+- **単体テスト（`2_RunAllTests.ps1`）・疎通テスト（`3_SmokeTest.ps1`）・CI には載っていない。**
+  外部の IdP（スタブ）と、ブラウザでのログインと承認が要るため、**動作の確認は手で行う**
+- **`SelectTargets.ps1` は、ここを変えると「バッチ : 11_Build_SpRp_sample.bat ＋ 手で確かめる（SpRp）」に分ける**
+  （ビルドだけを回し、通しにはしない）。**手で確かめるものが残るので、検証の記録は進まない**（確かめたら `-Record`）
 - **スタブは MPAS の net10.0 版**である。net48 版の MPAS に固有の振る舞いは再現しない
