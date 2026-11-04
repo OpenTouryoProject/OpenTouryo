@@ -43,6 +43,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- OpenTouryo.Public.Security（外部ログインの id_token の検証）が使う。HintPath 参照は依存を引き継がないので、ここにも並べる（#649） -->
+    <PackageReference Include="BouncyCastle.NetCore" Version="2.2.1" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.5" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.5" />
@@ -77,6 +79,9 @@
     </Reference>
     <Reference Include="OpenTouryo.Public">
       <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0-windows7.0\OpenTouryo.Public.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public.Security">
+      <HintPath>..\..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0-windows7.0\OpenTouryo.Public.Security.dll</HintPath>
     </Reference>
     <Reference Include="WSIFType_sample">
       <HintPath>..\..\Build\net10.0\WSIFType_sample.dll</HintPath>

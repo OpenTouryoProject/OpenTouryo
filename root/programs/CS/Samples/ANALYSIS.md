@@ -152,7 +152,7 @@ object ret = cc.Invoke("testInProcess", parameterValue);   // 論理名で解決
 論理名 → プロトコル は `TMProtocolDefinition.xml`、
 論理名 → assembly/class は `TMInProcessDefinition.xml` で解決される。
 定義の実例（`protocol` 1〜5 と行き先）と、リモートを使うときの前提は
-[`WS_sample/ANALYSIS.md`](WS_sample/ANALYSIS.md) 2.1・2.2 節。
+[`WS_sample/ANALYSIS.md`](WS_sample/ANALYSIS.md) 2.1・2.3 節。
 
 ---
 
@@ -251,7 +251,7 @@ Web 系は `packages.config` 方式（NuGet classic）なので、**`nuget.exe r
 | バッチ | コマンドライン引数（`readme.txt`） | [`Bat_sample/ANALYSIS.md`](Bat_sample/ANALYSIS.md) 4 節 |
 | `AsyncEvent_sample` | `test-winx2&wpfx2.bat` から 4 プロセス起動 | [`2CS_sample/ANALYSIS.md`](2CS_sample/ANALYSIS.md) |
 | `WebForms_Sample` / `MVC_Sample` | **ASP.NET 状態サービス（`aspnet_state`）**と DB | [`WebApp_sample/ANALYSIS.md`](WebApp_sample/ANALYSIS.md) 2.3・4 節 |
-| WS クライアント（リモート） | 先に `ServiceInterface`（WCF/WebAPI ホスト）を起動 | [`WS_sample/ANALYSIS.md`](WS_sample/ANALYSIS.md) 2.2 節 |
+| WS クライアント（リモート） | 先に `ServiceInterface`（WCF/WebAPI ホスト）を起動 | [`WS_sample/ANALYSIS.md`](WS_sample/ANALYSIS.md) 2.3 節 |
 
 **サービスやホストを勝手に起動しない**（`AGENTS.md`）。止まっていたら報告する。
 GUI のサンプルは疎通テストの対象外（[`SMOKETEST.md`](../../SMOKETEST.md)）。

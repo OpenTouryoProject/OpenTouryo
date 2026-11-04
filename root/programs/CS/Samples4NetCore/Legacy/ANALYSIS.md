@@ -120,6 +120,10 @@ GetConfigParameter.InitConfiguration("appsettings.json");
 
 → **.NET 版の `WS_sample` は `testInProcess` でだけ動く。** 定義に残るリモートの記述は死んでいる。
 
+**`WSClientWin_sample` の外部ログインは、net48 版と同じ LIR**（ROPC から替えた。#649。
+[`Samples/WS_sample/ANALYSIS.md`](../../Samples/WS_sample/ANALYSIS.md) 2.2 節）。
+**ただし、得たアクセス トークンを送る先が無い**（インプロセスでしか動かないため）。ログインの見本としてだけ動く。
+
 `WSServer_sample` は、`Backend/ASPNETWebService` が参照する B 層でもある
 （`6_Build_WSSrvCore_sample.bat` が `WS_sample/Build/net10.0/` へ複写する。`Build/` と `Temp/` は生成物）。
 

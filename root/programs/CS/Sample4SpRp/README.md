@@ -126,6 +126,7 @@ cd root\programs\CS\Sample4SpRp\E2E
 | サンプル | 雛形のクライアント | client_id | 戻り先（`redirect_uri_code`） |
 |---|---|---|---|
 | CLI（`DotNet/CLI`） | `Device_Client`（`client_mode` = `device`。秘密なし。旧 `TestClient3`） | `ae5a179813234ca290c8de93ef2e31dc` | `http://localhost:12345/` |
+| WS クライアントの外部ログイン（`Samples/WS_sample/WSClient_sample/WSClientWin_sample`・`WSClientWinCone_sample`、VB・.NET 10 版の `WSClientWin_sample`） | 同上（LIR で使う） | 同上 | 同上 |
 
 **雛形には、ほかのフェーズで使えそうなものも在る**（`MVC_Sample`・`WebForms_Sample`・`SPA_Application`・`Native_Application`・
 `IdFederation`（SAML2））。**どれを使うかは、そのフェーズで決める。**

@@ -86,6 +86,8 @@ app.UseSession(...);             // セッションを使うなら（MVC_Sample 
 - **`Legacy/WS_sample/Build/net10.0/` の `WSServer_sample.dll` / `WSIFType_sample.dll` を `HintPath` で参照する。**
   `6_Build_WSSrvCore_sample.bat` が先に `WSServer_sample` を建ててそこへ複写し、続けて本プロジェクトを建てる
 - 自前の `Logic/`（`SuppliersLayerB` / `DaoSuppliers`）も持つ
+- **`Bearer`（アクセス トークン）の発行者は MPAS のスタブ**（`appsettings.json` の `SpRp_Isser` = `https://localhost:44310`、
+  鍵は `JwkSetUri` = `/jwkcerts`。#649）。検証は `AccessToken.Verify` の既存の版（鍵と iss は設定から。**aud は確かめない**。#601）
 - **OpenAPI を標準機能で出す**（`AddOpenApi` / `MapOpenApi`、`/openapi/v1.json`。#580）。
   `Microsoft.OpenApi` は脆弱性のある推移的な版を避けるため csproj に明示している
 - `MVC_Sample` と違い、**Cookie 認証・セッション・データ保護を持たない**（`AddMvc` も不要。#582）。
