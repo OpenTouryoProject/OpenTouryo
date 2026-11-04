@@ -47,11 +47,42 @@ cd root\programs\CS\Sample4SpRp\Stub
 | 値 | 内容 |
 |---|---|
 | issuer・公開 URL | `https://localhost:44310`（MPAS のスタブの既定） |
-| テスト利用者 | `tanaka@example.com` / `super_tanaka@example.com`（パスワードは MPAS の `.env.sample` の `STUB_TEST_USER_PWD`） |
+| テスト利用者 | `tanaka@example.com` / `super_tanaka@example.com`（パスワードは、スタブの土台の `appsettings.json` の `TestUserPWD`。既定は MPAS の手元の `MultiPurposeAuthSiteCore/appsettings.json`） |
 | クライアント | **MPAS の雛形に在るもの**（下の 3 節） |
 
 - **MPAS のスタブと同じプロジェクト名（`mpas-stub`）で動く。** MPAS 側でスタブを別の設定で動かしているなら、先に止める
 - **状態は残らない**（利用者・同意・セッションは、再起動で消える）
+- **スタブの土台は、MPAS の手元の `appsettings.json`**（`STUB_APPSETTINGS`。**無ければ起動しない**）。
+  クライアントの登録（`redirect_uri_saml` など）は、**雛形（`_appsettings.json`）と手元の `appsettings.json` の両方**に要る
+
+## 2.1 外部ログインの E2E（[`E2E/ExternalLoginE2E.ps1`](E2E/ExternalLoginE2E.ps1)）
+
+**WebApp のサンプル（C#・VB の MVC・WebForms）の外部ログイン（OIDC・SAML2）を、スタブで通す。**
+**疎通テスト（`3_SmokeTest.ps1`）はフォーム ログインしか見ない**ので、外部ログインはここで見る。
+
+```powershell
+cd root\programs\CS\Sample4SpRp\E2E
+.\ExternalLoginE2E.ps1                              # 5 対象 × 2 フロー（10 件）
+.\ExternalLoginE2E.ps1 -Lang CS -Flow OIDC          # 絞る（-Only "net10.0" のように対象名の部分一致でも）
+```
+
+| 対象 | 待ち受け | ホスト |
+|---|---|---|
+| `MVC_Sample (net48)`・`MVC_Sample (VB net48)` | `https://localhost:44334` | IIS Express（構成を生成する） |
+| `MVC_Sample (net10.0)` | `https://localhost:44334` | Kestrel |
+| `WebForms_Sample (net48)`・`WebForms_Sample (VB net48)` | `https://localhost:44333` | IIS Express（構成を生成する） |
+
+**1 件で確かめること**
+1. **対照**：ログインの前は、認証が要る画面（MVC `/Crud1/Index`、WebForms `Aspx/start/menu.aspx`）が 200 を返さない
+2. 外部ログインのボタン（OIDC `external` / `btnButton2`、SAML2 `saml2` / `btnButton3`）で、スタブの `/authorize` / `/saml2request` へリダイレクトする
+3. スタブのログイン画面・同意画面を、テスト利用者で通す
+4. アプリへ戻り、**認証が要る画面が 200 を返す**
+
+- **前提（起動はしない）** : スタブ、SQL Server（MVC の `/Crud1/Index` が DB を読む）、ASP.NET 状態サービス（WebForms）、ビルド。
+  **足りなければ終了コード 2**（0 = すべて OK、1 = NG あり）
+- **戻り先は MPAS に登録された URL なので、アプリをその URL で動かす。** **ポートが使用中なら、その対象は NG**（Visual Studio で動かしていないか）
+- **ブラウザの代わりは HttpClient**（リダイレクトは自分で辿る。**Cookie の入れ物は 1 つ** — スタブとアプリは同じ localhost なので、ブラウザと同じく Cookie を共有する）
+- **SAML2 は、MPAS のクライアント（`MVC_Sample`・`WebForms_Sample`）に `redirect_uri_saml` が要る**（無いと「スタブから戻らない」で NG）
 
 ## 3. 設定（サンプルと IdP で揃える値）
 
@@ -157,7 +188,8 @@ dotnet .\SpRp_CLI\bin\Debug\net10.0\SpRp_CLI.dll pkce   # net10.0
 - **ビルドは `CS\11_Build_SpRp_sample.bat` に詰める**（`1_BuildAll.ps1` の `SpRp_sample`、`CS\0_ExecAllBat.bat` から呼ばれる）。
   **SpRp のサンプルを足したら、このバッチに足す**（net48 と net10.0 の両方）
 - **単体テスト（`2_RunAllTests.ps1`）・疎通テスト（`3_SmokeTest.ps1`）・CI には載っていない。**
-  外部の IdP（スタブ）と、ブラウザでのログインと承認が要るため、**動作の確認は手で行う**
+  外部の IdP（スタブ）が要るため。**WebApp のサンプルの外部ログインは `E2E/ExternalLoginE2E.ps1` で確かめる**（2.1 節。
+  スタブと SQL Server の起動が要るので、**施主に確かめてから回す**）。CLI は手で確かめる
 - **`SelectTargets.ps1` は、ここを変えると「バッチ : 11_Build_SpRp_sample.bat ＋ 手で確かめる（SpRp）」に分ける**
   （ビルドだけを回し、通しにはしない）。**手で確かめるものが残るので、検証の記録は進まない**（確かめたら `-Record`）
 - **スタブは MPAS の net10.0 版**である。net48 版の MPAS に固有の振る舞いは再現しない
