@@ -15,14 +15,17 @@
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
 '*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+'*  2026/11/04  玄人 幸道         C# 版に合わせて、外部ログインの要求を MPAS のスタブに合わせた（#649）
+'*                                （prompt=none を外す・値をエンコード・SAML2 の外部ログイン（btnButton3）を追加）
 '**********************************************************************************
+
+Imports System.Threading.Tasks
 
 Imports Touryo.Infrastructure.Business.Presentation
 Imports Touryo.Infrastructure.Business.Util
 Imports Touryo.Infrastructure.Framework.Presentation
 Imports Touryo.Infrastructure.Framework.Authentication
 Imports Touryo.Infrastructure.Framework.Util
-Imports Touryo.Infrastructure.Public.Str
 Imports Touryo.Infrastructure.Public.Security.Pwd
 
 Namespace Aspx.Start
@@ -30,11 +33,13 @@ Namespace Aspx.Start
     Partial Public Class login
         Inherits MyBaseController
 
+#Region "プロパティ（OIDC の state・nonce）"
+
         ''' <summary>Nonce</summary>
         Public ReadOnly Property Nonce() As String
             Get
                 If Session("nonce") Is Nothing Then
-                    Session("nonce") = GetPassword.Base64UrlSecret(10)
+                    Session("nonce") = GetPassword.Base64UrlSecret(32)
                 End If
                 Return DirectCast(Session("nonce"), String)
             End Get
@@ -44,16 +49,22 @@ Namespace Aspx.Start
         Public ReadOnly Property State() As String
             Get
                 If Session("state") Is Nothing Then
-                    Session("state") = GetPassword.Base64UrlSecret(10)
+                    Session("state") = GetPassword.Base64UrlSecret(32)
                 End If
                 Return DirectCast(Session("state"), String)
             End Get
         End Property
 
+#End Region
+
+#Region "コンストラクタ"
+
         ''' <summary>constructor</summary>
         Public Sub New()
             Me.IsNoSession = True
         End Sub
+
+#End Region
 
 #Region "Page LoadのUOCメソッド"
 
@@ -85,9 +96,10 @@ Namespace Aspx.Start
             ' TODO:
             ' ここでは何もしない
 
-            ' btnButton1, 2のイベントであれば、Session消去しない
+            ' btnButton1, 2, 3のイベントであれば、Session消去しない
             If Request.Form("ctl00$ContentPlaceHolder_A$btnButton1") Is Nothing _
-                AndAlso Request.Form("ctl00$ContentPlaceHolder_A$btnButton2") Is Nothing Then
+                AndAlso Request.Form("ctl00$ContentPlaceHolder_A$btnButton2") Is Nothing _
+                AndAlso Request.Form("ctl00$ContentPlaceHolder_A$btnButton3") Is Nothing Then
                 ' Session消去
                 Me.FxSessionAbandon()
             End If
@@ -128,15 +140,55 @@ Namespace Aspx.Start
         ''' <summary>外部ログイン</summary>
         ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
         ''' <returns>URL</returns>
+        ''' <remarks>
+        ''' OIDC の認可コード フロー。応答は OAuth2/OAuth2AuthorizationCodeGrantClient.aspx が受ける。
+        ''' **prompt=none は付けない。** IdP にまだセッションが無いと、
+        ''' ログイン画面を出さずに login_required で戻ってしまう（OpenID Connect Core 1.0 3.1.2.1）。
+        ''' </remarks>
         Protected Function UOC_btnButton2_Click(fxEventArgs As FxEventArgs) As String
             Return CmnClientParams.SpRp_AuthRequestUri _
-                & "?client_id=" & OAuth2AndOIDCParams.ClientID _
+                & "?client_id=" & Uri.EscapeDataString(OAuth2AndOIDCParams.ClientID) _
                 & "&response_type=code" _
-                & "&scope=profile%20email%20phone%20address%20roles%20openid" _
-                & "&state=" & Me.State _
-                & "&nonce=" & Me.Nonce _
-                & "&redirect_uri=" + CustomEncode.UrlEncode(CmnClientParams.SpRp_RedirectUri) _
-                & "&prompt=none"
+                & "&scope=" & Uri.EscapeDataString("openid profile email phone address roles") _
+                & "&state=" & Uri.EscapeDataString(Me.State) _
+                & "&nonce=" & Uri.EscapeDataString(Me.Nonce) _
+                & "&redirect_uri=" & Uri.EscapeDataString(CmnClientParams.SpRp_RedirectUri)
+        End Function
+
+        ''' <summary>外部ログイン（SAML2）</summary>
+        ''' <param name="fxEventArgs">Event Handlerの共通引数</param>
+        ''' <returns>URL</returns>
+        ''' <remarks>
+        ''' 応答は Saml2/Saml2AssertionConsumerService.aspx が受ける。
+        ''' **IdP の SSO の口は、メタデータ（SpRp_Saml2MetadataUri）から引く**（entityID は SpRp_Saml2EntityId と照合する）。
+        ''' **要求は HTTP-Redirect で送り、応答も HTTP-Redirect で受ける**（ProtocolBinding）。
+        ''' **NameID は Persistent を求める**（SP ごとに固定の値。識別子にする。SAML Core 8.3.7）。
+        ''' 要求には SpRp_RsaPfxFilePath の鍵で署名する（IdP が WantAuthnRequestsSigned）。
+        ''' **Issuer は "http://" ＋ client_id**（汎用認証サイトは、Issuer から client_id を引く）。
+        ''' </remarks>
+        Protected Function UOC_btnButton3_Click(fxEventArgs As FxEventArgs) As String
+            ' **イベント ハンドラは同期なので、別スレッドで待つ**（同期コンテキストでの .Result はデッドロックしうる）
+            Dim metadata As SAML2Metadata = Task.Run(Function() SAML2Metadata.GetAsync()).Result
+            If metadata Is Nothing OrElse String.IsNullOrEmpty(metadata.SsoRedirectLocation) Then
+                ' メタデータが引けない（IdP が動いていない、entityID が違う）
+                Me.lblMessage.Text = "SAML2 の IdP のメタデータを取得できませんでした。"
+                Return String.Empty
+            End If
+
+            ' **RelayState と要求の ID を控え、応答と照合する**（CSRF・応答の差し替え）
+            Dim relayState As String = GetPassword.Base64UrlSecret(32)
+            Dim id As String = ""
+            Dim queryString As String = SAML2Client.CreateRedirectRequest(
+                SAML2Enum.RequestOrResponse.Request,
+                SAML2Enum.ProtocolBinding.HttpRedirect,
+                SAML2Enum.NameIDFormat.Persistent,
+                "http://" & OAuth2AndOIDCParams.ClientID,
+                CmnClientParams.SpRp_Saml2AcsUri, relayState, id)
+
+            Session("saml2_relay_state") = relayState
+            Session("saml2_request_id") = id
+
+            Return metadata.SsoRedirectLocation & "?" & queryString
         End Function
 
 #End Region
