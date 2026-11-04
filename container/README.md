@@ -1,18 +1,26 @@
-﻿# Docker — Backend のサンプルを Linux コンテナで動かす
+﻿# コンテナの定義 — Backend のサンプルを Linux コンテナで動かす
 
-`Samples4NetCore/Backend/` のサンプルを Linux コンテナで動かす一式（#548、#582）。
+`root/programs/CS/Samples4NetCore/Backend/` のサンプルを Linux コンテナで動かす一式（#548、#582）。
 **サンプルのコードは持たない。** `Backend/` を `dotnet publish` した成果物をイメージへ置く（ホストビルド型）。
 
-上位: [`Samples4NetCore/ANALYSIS.md`](../ANALYSIS.md) / サンプル本体: [`Backend/ANALYSIS.md`](../Backend/ANALYSIS.md)
+> もとは `root/programs/CS/Samples4NetCore/Docker/` にあった。
+> 汎用認証サイト（MultiPurposeAuthSite）の `container/` に合わせて、リポジトリの直下へ移した。
+
+上位: [`Samples4NetCore/ANALYSIS.md`](../root/programs/CS/Samples4NetCore/ANALYSIS.md) / サンプル本体: [`Backend/ANALYSIS.md`](../root/programs/CS/Samples4NetCore/Backend/ANALYSIS.md)
 
 **対象ごとにフォルダが分かれ、それぞれの `README.md` が一次情報である。** 本書はその案内に留める。
 
-| フォルダ | 対象 | ポート（ホスト側） | 一次情報 |
-|---|---|---|---|
-| [`MVC_Sample/`](MVC_Sample/README.md) | `Backend/MVC_Sample`（画面あり、Cookie 認証） | HTTP 8080 / HTTPS 8081 | **共通の方式・設定・証明書・本番化の一次情報** |
-| [`ASPNETWebService/`](ASPNETWebService/README.md) | `Backend/ASPNETWebService`（ResourceServer、Bearer） | HTTP 8090 / HTTPS 8091（IDL は `/openapi/v1.json`） | `MVC_Sample` との**違いだけ** |
+| フォルダ | 対象 | ポート（ホスト側） | compose のプロジェクト名 | 一次情報 |
+|---|---|---|---|---|
+| [`MVC_Sample/`](MVC_Sample/README.md) | `Backend/MVC_Sample`（画面あり、Cookie 認証） | HTTP 8080 / HTTPS 8081 | `mvc_sample` | **共通の方式・設定・証明書・本番化の一次情報** |
+| [`ASPNETWebService/`](ASPNETWebService/README.md) | `Backend/ASPNETWebService`（ResourceServer、Bearer） | HTTP 8090 / HTTPS 8091（IDL は `/openapi/v1.json`） | `aspnetwebservice` | `MVC_Sample` との**違いだけ** |
 
 ポートをずらしてあるので、**2 つを同時に起動できる**（MVC から ResourceServer を呼ぶ構成を試せる）。
+
+**プロジェクト名は、フォルダ名から決まる**（`docker-compose.yml` に `name:` を書いていない）。
+名前付きボリューム（データ保護の鍵・ログ）はこの名前を頭に付けて作られるので、
+**フォルダ名を変えると、別のボリュームになる**（鍵が変わり、認証 Cookie とセッションが失効する）。
+移したときにフォルダ名を変えなかったのは、このためである。
 
 ---
 
@@ -47,12 +55,12 @@
 | なぜ毎回 publish し直すのか（`rmdir` をやめてはいけない理由） | `MVC_Sample/README.md`「毎回 publish とイメージ ビルドが走る」 |
 | ファイル構成（`Dockerfile` / `docker-compose.yml` / `appsettings.Container.json` / `conf/`） | `MVC_Sample/README.md`「ファイル構成」 |
 | 設定の読み込み順（`appsettings.json` → `appsettings.Container.json` → 環境変数）と、置き場所の分担 | `MVC_Sample/README.md`「設定をどこに書くか」 |
-| `%OT_RESOURCE_ROOT%` を展開しているのは誰か | `MVC_Sample/README.md`（`ResourceLoader.ResolveFilePath`。仕組みは [`CONFIGURATION.md`](../../../CONFIGURATION.md) 5 節） |
+| `%OT_RESOURCE_ROOT%` を展開しているのは誰か | `MVC_Sample/README.md`（`ResourceLoader.ResolveFilePath`。仕組みは [`CONFIGURATION.md`](../root/programs/CONFIGURATION.md) 5 節） |
 | 踏みやすいところ（`WORKDIR`、`Xml` の大文字小文字、`Data Source=sqlserver`、読み取り専用のリソース、非 root、鍵のボリューム） | `MVC_Sample/README.md`「踏みやすいところ」 |
 | 証明書とパスワード、秘密を渡す口 | `MVC_Sample/README.md`「証明書とパスワード」 |
 | 本番へ持って行くときに変わるもの（`UseHttpsRedirection` / `UseForwardedHeaders` など） | `MVC_Sample/README.md`「本番へ持って行くとき」 |
 | Cookie を使わない分の違い、リダイレクト先のポート（`ASPNETCORE_HTTPS_PORT=8091`） | `ASPNETWebService/README.md` |
-| `UseHttpsRedirection` などの切り替えキーそのものと、実測した落とし穴 | [`Backend/ANALYSIS.md`](../Backend/ANALYSIS.md) 4 節 |
+| `UseHttpsRedirection` などの切り替えキーそのものと、実測した落とし穴 | [`Backend/ANALYSIS.md`](../root/programs/CS/Samples4NetCore/Backend/ANALYSIS.md) 4 節 |
 
 ---
 

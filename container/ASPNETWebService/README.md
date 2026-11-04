@@ -93,7 +93,7 @@ OK   WebAPI /api/BatchUpdate/SelectCount   200 / count
 
 - リダイレクトは**飛び先のポートと、実際に辿れるか**まで見る
 - IDL は `openapi` の版と、**代表的な API が名前で載っているか**まで見る
-  （疎通テストの判定も同じ。[`SMOKETEST.md`](../../../../SMOKETEST.md) 3 節）
+  （疎通テストの判定も同じ。[`SMOKETEST.md`](../../root/programs/SMOKETEST.md) 3 節）
 - `SelectCount` は **DB まで通る**ので、リソースと接続文字列の確認になる
 
 > **リダイレクトの判定は、最初「3xx かつ https で始まる」だけだった。**

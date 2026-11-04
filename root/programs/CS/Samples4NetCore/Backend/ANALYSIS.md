@@ -16,7 +16,7 @@
 | `MVC_Sample` | ASP.NET Core MVC（画面あり） | `MyBaseMVControllerCore` | Cookie 認証（フォーム ログイン、OAuth2 の認可コード グラント） |
 | `ASPNETWebService` | Web API（**ResourceServer**。画面なし） | `MyBaseAsyncApiController` 属性 | `Authorization: Bearer`（無くても通す） |
 
-コンテナで動かす一式は [`Docker/README.md`](../Docker/README.md)。
+コンテナで動かす一式は、リポジトリ直下の [`container/README.md`](../../../../../container/README.md)。
 
 ---
 
@@ -199,6 +199,6 @@ IIS ＋ ARR の URL Rewrite で `HTTPS` サーバ変数を立てる（[`CONFIGUR
 
 - [ ] 部品を先にビルドする（`Nuget_netcore100.sln` → `Business_netcore100.sln`）
 - [ ] `ASPNETWebService` を触るなら、`6_Build_WSSrvCore_sample.bat` で建てる
-- [ ] 設定のキーを足したら、`appsettings.json` と、コンテナ用の `Docker/*/appsettings.Container.json` / `docker-compose.yml` を見る
+- [ ] 設定のキーを足したら、`appsettings.json` と、コンテナ用の `container/*/appsettings.Container.json` / `docker-compose.yml` を見る
 - [ ] 変えたサンプルだけを `-Only` で疎通する
 - [ ] net48 版（`Samples/WebApp_sample/MVC_Sample`、`Samples/WS_sample/ASPNETWebService`）への追随の要否を報告する
