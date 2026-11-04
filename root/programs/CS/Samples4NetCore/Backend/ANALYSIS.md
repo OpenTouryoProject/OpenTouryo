@@ -88,6 +88,8 @@ app.UseSession(...);             // セッションを使うなら（MVC_Sample 
 - 自前の `Logic/`（`SuppliersLayerB` / `DaoSuppliers`）も持つ
 - **`Bearer`（アクセス トークン）の発行者は MPAS のスタブ**（`appsettings.json` の `SpRp_Isser` = `https://localhost:44310`、
   鍵は `JwkSetUri` = `/jwkcerts`。#649）。検証は `AccessToken.Verify` の既存の版（鍵と iss は設定から。**aud は確かめない**。#601）
+- **`GET api/json/claims` は、Bearer の検証の結果を返す**（`{ userName, roles, scopes }`。#649）。
+  **SPA のサンプル（`Sample4SpRp/SPA`）が使う。** トークンが無い・検証に失敗したときも 200 で、`userName` は「未認証」。DB は読まない
 - **OpenAPI を標準機能で出す**（`AddOpenApi` / `MapOpenApi`、`/openapi/v1.json`。#580）。
   `Microsoft.OpenApi` は脆弱性のある推移的な版を避けるため csproj に明示している
 - `MVC_Sample` と違い、**Cookie 認証・セッション・データ保護を持たない**（`AddMvc` も不要。#582）。

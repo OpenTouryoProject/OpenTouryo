@@ -4,6 +4,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import SignIn from './components/SignIn'
 import RedirectOfAuth from './components/RedirectOfAuth'
+import CallApi from './components/CallApi'
 import './App.css'
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
   return (
     <>
       <SignIn />
+      <CallApi />
       <section id="center">
         <div className="hero">
           <img src={heroImg} className="base" width="170" height="179" alt="" />

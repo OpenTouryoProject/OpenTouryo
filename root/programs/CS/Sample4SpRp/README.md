@@ -215,7 +215,9 @@ Discovery から引く・`scope` を送る・`verification_uri` をそのまま�
 
 ## 4.1 SPA（`SPA/SpRp_React`・`SPA/SpRp_Blazor`）
 
-**SPA 用の PKCE プロファイル**（認可コード ＋ PKCE S256、`response_mode=fragment`、**秘密なし**）でサインインする。
+**SPA 用の PKCE プロファイル**（認可コード ＋ PKCE S256、`response_mode=fragment`、**秘密なし**）でサインインし、
+**アクセス トークンを Bearer で付けて、`Samples4NetCore/Backend/ASPNETWebService` の `GET api/json/claims` を呼ぶ**
+（検証に通れば sub、通らなければ「未認証」が返る）。
 **簡素なサンプルである。** 正式なものは [FrontendTemplates](https://github.com/OpenTouryoProject/FrontendTemplates) にある。
 
 **動かし方と確かめ方は [`SPA/README.md`](SPA/README.md)。** 起動は各フォルダの `StartUp.bat`（どちらも `http://localhost:5173`）。

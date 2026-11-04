@@ -34,4 +34,10 @@ public static class Constants
 
     /// <summary>UserInfo エンドポイント</summary>
     public const string UserInfoRequestUrl = AuthServerRootUrl + "/userinfo";
+
+    /// <summary>リソース サーバ（Samples4NetCore/Backend/ASPNETWebService）。アクセス トークンを Bearer で送る</summary>
+    public const string ResourcesServerRootUrl = "https://localhost:44335";
+
+    /// <summary>Bearer の検証の結果（Claims）を返す口</summary>
+    public const string ClaimsUrl = ResourcesServerRootUrl + "/api/json/claims";
 }

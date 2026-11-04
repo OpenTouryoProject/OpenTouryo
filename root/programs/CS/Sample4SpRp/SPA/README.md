@@ -1,6 +1,7 @@
 ﻿# SPA のサンプル（SpRp_React・SpRp_Blazor）
 
-**SPA 用の PKCE プロファイル**（認可コード ＋ PKCE S256、`response_mode=fragment`、**秘密なし**）で、MPAS（のスタブ）にサインインする。
+**SPA 用の PKCE プロファイル**（認可コード ＋ PKCE S256、`response_mode=fragment`、**秘密なし**）で、MPAS（のスタブ）にサインインし、
+**得たアクセス トークンを Bearer で付けて、リソース サーバ（`Samples4NetCore/Backend/ASPNETWebService`）を呼ぶ**（6 節）。
 **簡素なサンプルである。** 正式なものは [FrontendTemplates](https://github.com/OpenTouryoProject/FrontendTemplates) にある。
 
 作りと、確かめていることは [`../README.md`](../README.md) の 4.1 節。本書は**動かし方と、確かめ方**を書く。
@@ -104,7 +105,51 @@
 
 ---
 
-## 6. 困ったとき
+## 6. リソース サーバを Bearer で呼ぶ
+
+**サインインで得たアクセス トークンを `Authorization: Bearer` に付けて、
+`Samples4NetCore/Backend/ASPNETWebService` の `GET api/json/claims` を呼ぶ。**
+リソース サーバは、**検証に通れば `userName` に sub を、通らなければ「未認証」を返す**（トークンが無くても 200 で通す）。
+
+| | React | Blazor |
+|---|---|---|
+| 呼ぶ部品 | `src/components/CallApi.tsx` | `Pages/CallApi.razor`（`Home` に置いた） |
+| ヘッダを作る | `oauth_oidc.createHttpRequestHeader` | `OAuthOidc.CreateHttpRequestAsync` |
+| 接続先 | `src/const.ts` の `ClaimsUrl` | `Constants.cs` の `ClaimsUrl` |
+
+### 6.1 リソース サーバを起動する
+
+```powershell
+cd root\programs\CS
+.\6_Build_WSSrvCore_sample.bat        # 初回・変更の後（WSServer_sample を建ててから、ASPNETWebService を建てる）
+
+cd Samples4NetCore\Backend\ASPNETWebService\ASPNETWebService
+$env:ASPNETCORE_ENVIRONMENT = 'Development'
+dotnet run --no-build --no-launch-profile --urls https://localhost:44335
+```
+
+- **ポートを明示する。** `Properties/launchSettings.json`（44335）は、リポジトリの `.gitignore` の対象で、取得した手元に無いことがある
+- **`https` で待ち受けるので、開発用の証明書をブラウザが信頼している必要がある**（`dotnet dev-certs https --trust`）。
+  信頼していないと、SPA の `fetch` が失敗する（`https://localhost:44335/api/json/test` を一度ブラウザで開くと分かる）
+- **SQL Server は要らない**（`claims` は DB を読まない）
+- **検証の設定**（`appsettings.json`）: `SpRp_Isser` = `https://localhost:44310`、鍵は `JwkSetUri` = `/jwkcerts`（スタブ）
+- CORS は、どのオリジンも許す（`AllowAnyOrigin`。資格情報は送らない構成）
+
+### 6.2 確かめる
+
+| すること | 期待（画面の下に JSON が出る） |
+|---|---|
+| **サインインの前**に **Call API（トークン無し）** を押す | `"userName": "未認証"` |
+| **サインインの後**に **Call API（Bearer）** を押す | `"userName": "<sub>"`、`"scopes": "openid,profile,email"` |
+| Sign Out の後に押す | `"userName": "未認証"` に戻る |
+
+- **sub は、UserInfo の sub と同じ値**（MPAS はクライアントごとに sub が違うことがある。WS クライアントの sub とは違ってよい）
+- DevTools の Network : `claims` の要求に `Authorization: Bearer …` が付いている。**その前にプリフライト（OPTIONS）が出る**
+  （`Authorization` ヘッダを付けるため）
+
+---
+
+## 7. 困ったとき
 
 | 症状 | 見ること |
 |---|---|
@@ -112,4 +157,6 @@
 | サインインの後、`/RedirectEndpoint` で止まる（トークン要求が通らない） | **CORS**（1.1 節の 3）。DevTools の Console に CORS のエラーが出ている |
 | スタブの画面で「redirect_uri が違う」などのエラー | **5173 以外で動いていないか**（戻り先は 1 文字も違ってはならない） |
 | Blazor で、ビルドし直したのに古い版が出る | WebAssembly のファイルはキャッシュされる。**Ctrl+Shift+R** で読み込み直す |
+| **Call API** で `Failed to fetch`（React）／`TypeError: Failed to fetch`（Blazor） | リソース サーバが動いているか（6.1 節）。**開発用の証明書をブラウザが信頼しているか** |
+| **サインインしたのに `"未認証"`** | リソース サーバの `SpRp_Isser`・`JwkSetUri` がスタブを向いているか。**スタブを起動し直すと鍵が変わる**ことがあるので、サインインし直す |
 | Blazor の画面の下に黄色い帯（An unhandled error has occurred） | DevTools の Console に C# の例外が出ている（サインインの失敗は例外にせず、`/RedirectEndpoint` に出す） |

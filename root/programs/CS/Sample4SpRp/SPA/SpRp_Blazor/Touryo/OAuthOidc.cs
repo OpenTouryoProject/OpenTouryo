@@ -8,6 +8,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/11/05  玄人 幸道         新規作成（#649）。React 版（src/touryo/oauth_oidc.ts）を C# に移した
+//*  2026/11/05  玄人 幸道         リソース サーバへの要求（Bearer）を作る CreateHttpRequestAsync を追加（#649）
 //**********************************************************************************
 
 using System.Buffers.Text;
@@ -253,6 +254,27 @@ public class OAuthOidc
         using HttpResponseMessage response = await _http.SendAsync(request);
         response.EnsureSuccessStatusCode();
         return JsonDocument.Parse(await response.Content.ReadAsStringAsync()).RootElement.Clone();
+    }
+
+    #endregion
+
+    #region リソース サーバへの要求
+
+    /// <summary>リソース サーバへの要求を作る（React 版の createHttpRequestHeader に当たる）</summary>
+    /// <param name="method">HTTP メソッド</param>
+    /// <param name="url">URL</param>
+    /// <returns>要求（**サインインしていれば Authorization: Bearer を付ける**）</returns>
+    public async Task<HttpRequestMessage> CreateHttpRequestAsync(HttpMethod method, string url)
+    {
+        HttpRequestMessage request = new(method, url);
+        request.Headers.Accept.ParseAdd("application/json");
+
+        string? accessToken = await GetAccessTokenAsync();
+        if (!string.IsNullOrEmpty(accessToken))
+        {
+            request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", accessToken);
+        }
+        return request;
     }
 
     #endregion

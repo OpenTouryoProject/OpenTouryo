@@ -8,6 +8,9 @@
 export const FrontendHostRootUrl = 'http://localhost:5173';
 export const AuthServerRootUrl = 'https://localhost:44310';
 
+// リソース サーバ（Samples4NetCore/Backend/ASPNETWebService）。アクセス トークンを Bearer で送る
+export const ResourcesServerRootUrl = 'https://localhost:44335';
+
 const constants = Object.freeze({
     ClientId: 'f374a155909d486a9234693c34e94479',
     Scope: 'openid profile email',
@@ -17,6 +20,8 @@ const constants = Object.freeze({
     AuthRequestUrl: `${AuthServerRootUrl}/authorize`,
     TokenRequestUrl: `${AuthServerRootUrl}/token`,
     UserInfoRequestUrl: `${AuthServerRootUrl}/userinfo`,
+    ResourcesServerRootUrl,
+    ClaimsUrl: `${ResourcesServerRootUrl}/api/json/claims`,
 } as const);
 
 export default constants;
