@@ -8,4 +8,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
+// Sign in with the SPA PKCE profile (#649)
+builder.Services.AddScoped<SpRp_Blazor.Touryo.OAuthOidc>();
+
 await builder.Build().RunAsync();

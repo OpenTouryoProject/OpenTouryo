@@ -126,6 +126,7 @@ cd root\programs\CS\Sample4SpRp\E2E
 | サンプル | 雛形のクライアント | client_id | 戻り先（`redirect_uri_code`） |
 |---|---|---|---|
 | CLI（`DotNet/CLI`） | `Device_Client`（`client_mode` = `device`。秘密なし。旧 `TestClient3`） | `ae5a179813234ca290c8de93ef2e31dc` | `http://localhost:12345/` |
+| SPA（`SPA/SpRp_React`・`SPA/SpRp_Blazor`） | `SPA_Application`（**秘密を外して使う**。4.1 節） | `f374a155909d486a9234693c34e94479` | `http://localhost:5173/RedirectEndpoint` |
 | WS クライアントの外部ログイン（`Samples/WS_sample/WSClient_sample/WSClientWin_sample`・`WSClientWinCone_sample`、VB・.NET 10 版の `WSClientWin_sample`） | 同上（LIR で使う） | 同上 | 同上 |
 
 **雛形には、ほかのフェーズで使えそうなものも在る**（`MVC_Sample`・`WebForms_Sample`・`SPA_Application`・`Native_Application`・
@@ -211,6 +212,32 @@ Discovery から引く・`scope` を送る・`verification_uri` をそのまま�
 | 外部のパッケージ | `System.CommandLine`（beta）・`Sharprompt` | `Newtonsoft.Json` だけ |
 | 対話 | `DAG` はポーリングの前に `Sharprompt` で確認する（**対話環境でしか動かない。`--yes` で飛ばせる**） | 確認しない |
 | ビルド | `CS\5_Build_CLICore_sample.bat` | `CS\11_Build_SpRp_sample.bat` |
+
+## 4.1 SPA（`SPA/SpRp_React`・`SPA/SpRp_Blazor`）
+
+**SPA 用の PKCE プロファイル**（認可コード ＋ PKCE S256、`response_mode=fragment`、**秘密なし**）でサインインする。
+**簡素なサンプルである。** 正式なものは [FrontendTemplates](https://github.com/OpenTouryoProject/FrontendTemplates) にある。
+
+**動かし方と確かめ方は [`SPA/README.md`](SPA/README.md)。** 起動は各フォルダの `StartUp.bat`（どちらも `http://localhost:5173`）。
+
+| | React | Blazor（WebAssembly スタンドアロン） |
+|---|---|---|
+| 認証の部品 | `src/touryo/`（FrontendTemplates の `vite-react-ts/src/touryo` を取り込み、手を入れた） | `Touryo/OAuthOidc.cs`（React 版を C# に移した） |
+| 接続先 | `src/const.ts` | `Constants.cs` |
+| 戻り先の画面 | `src/components/RedirectOfAuth.tsx` | `Pages/RedirectEndpoint.razor` |
+
+**確かめていること** : state、応答の `iss`（在れば。RFC 9207）、**id_token の `iss`・`aud`・`exp`・`nonce`**、
+UserInfo の `sub` が id_token と同じか。**乱数は Web Crypto API / `RandomNumberGenerator`**（RFC 7636 §7.1）。
+**id_token の署名は確かめない**（トークン エンドポイントから TLS で直接受けるため。OpenID Connect Core 1.0 §3.1.3.7 の 6）。
+
+- **前提 : MPAS の `SPA_Application` から `client_secret` を外す**（雛形 `_appsettings.json` と手元の `appsettings.json` の両方）。
+  **MPAS は、`/token`・`/userinfo` の CORS で許すオリジンを、秘密を持たないクライアントの戻り先から導く**ため、
+  秘密があると `http://localhost:5173` からの要求がブラウザで止まる（プリフライトに `Access-Control-Allow-Origin` が付かない）
+- **React と Blazor は、同じ戻り先（5173）を使う。** 同時には動かさない
+- **Blazor の `Properties/launchSettings.json` は、リポジトリの `.gitignore` の対象**（`**/Properties/launchSettings.json`）。
+  ポートを 5173 にしてあるので、**コミットするなら `git add -f`**（net10.0 の MVC_Sample と同じ）
+- **保存先は sessionStorage**（state・nonce・code_verifier は往復だけに使い、使ったら消す）。
+  access_token も置くので、**XSS があれば読まれる**（簡素さを優先した。実運用では BFF などを検討する）
 
 ## 5. サンプルを足すとき
 

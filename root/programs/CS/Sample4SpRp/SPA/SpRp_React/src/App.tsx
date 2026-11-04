@@ -2,13 +2,21 @@ import { useState } from 'react'
 import heroImg from './assets/hero.png'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
+import SignIn from './components/SignIn'
+import RedirectOfAuth from './components/RedirectOfAuth'
 import './App.css'
 
 function App() {
   const [count, setCount] = useState(0)
 
+  // 認可応答の戻り先（雛形の redirect_uri_code。ルータは使わない）
+  if (window.location.pathname === '/RedirectEndpoint') {
+    return <RedirectOfAuth />
+  }
+
   return (
     <>
+      <SignIn />
       <section id="center">
         <div className="hero">
           <img src={heroImg} className="base" width="170" height="179" alt="" />
