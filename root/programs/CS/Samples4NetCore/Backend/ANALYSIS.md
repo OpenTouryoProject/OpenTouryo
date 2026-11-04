@@ -58,11 +58,14 @@ app.UseSession(...);             // セッションを使うなら（MVC_Sample 
   ただし中身は別スレッドで同期版を走らせているだけである（[`Frameworks/ANALYSIS.md`](../../Frameworks/ANALYSIS.md) 4.4 節）
 - B 層・D 層は `Logic/{Business, Common, Dao}`（`LayerB` / `LayerD` / 自動生成 Dao `DaoShippers`）
 - `wwwroot/lib/`（bootstrap など）は**リポジトリに直接置いている**。npm / grunt は使わない
-- `launchSettings.json` のプロファイル: `http`(5219) / `https`(7014) / `IIS Express`(26422, ssl 44383)
+- `launchSettings.json` のプロファイルは `https`(44334) だけ（Kestrel）。**外部ログインの戻り先の登録（44334）と合わせるため。** net48 版の MVC_Sample（IIS Express）も 44334 なので、同時には動かせない
 
-**OAuth2 の流れを動かすには、別リポジトリの汎用認証サイト（MultiPurposeAuthSite）が要る。**
-接続先は `appsettings.json` の `SpRp_*` / `OAuth2AndOidc*` / `JwkSetUri`（既定は `https://localhost:44300/MultiPurposeAuthSite/...`）。
-単体ではフォーム ログインまでしか動かない。キーの意味（相手の値か自分の値か）は
+**OAuth2 の流れを動かすには、別リポジトリの汎用認証サイト（MultiPurposeAuthSite）のスタブが要る**（#649）。
+接続先は `appsettings.json` の `SpRp_*` / `OAuth2AndOidc*` / `JwkSetUri`（既定は MPAS のスタブ `https://localhost:44310`。
+起動は [`Sample4SpRp/README.md`](../../Sample4SpRp/README.md) 2 節）。
+**クライアントは MPAS の雛形の `MVC_Sample` で、戻り先は `https://localhost:44334/Home/OAuth2AuthorizationCodeGrantClient`**
+（この URL で動かさないと、戻り先が登録と合わない）。**id_token の鍵は `SpRp_DiscoveryUri` の `jwks_uri` から引く。**
+単体ではフォーム ログインまでしか動かない。**外部ログインは 2・3 に載っていないので、手で確かめる。**キーの意味（相手の値か自分の値か）は
 [`Framework/ANALYSIS.md`](../../Frameworks/Infrastructure/Framework/ANALYSIS.md) 8.1 節。
 
 ### 3.2 `ASPNETWebService`（ResourceServer）

@@ -15,8 +15,10 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+//*  2026/11/04  玄人 幸道         外部ログインの要求を、MPAS のスタブに合わせた（prompt=none を外す・値をエンコード。#649）
 //**********************************************************************************
 
+using System;
 using System.Web.Security;
 
 using Touryo.Infrastructure.Business.Presentation;
@@ -24,7 +26,6 @@ using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Presentation;
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Security.Pwd;
 
 namespace WebForms_Sample.Aspx.Start
@@ -39,7 +40,7 @@ namespace WebForms_Sample.Aspx.Start
             {
                 if (Session["nonce"] == null)
                 {
-                    Session["nonce"] = GetPassword.Base64UrlSecret(10);
+                    Session["nonce"] = GetPassword.Base64UrlSecret(32);
                 }
                 return (string)Session["nonce"];
             }
@@ -52,7 +53,7 @@ namespace WebForms_Sample.Aspx.Start
             {
                 if (Session["state"] == null)
                 {
-                    Session["state"] = GetPassword.Base64UrlSecret(10);
+                    Session["state"] = GetPassword.Base64UrlSecret(32);
                 }
                 return (string)Session["state"];
             }
@@ -143,16 +144,20 @@ namespace WebForms_Sample.Aspx.Start
         /// <summary>外部ログイン</summary>
         /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
+        /// <remarks>
+        /// OIDC の認可コード フロー。応答は OAuth2/OAuth2AuthorizationCodeGrantClient.aspx が受ける。
+        /// **prompt=none は付けない。** IdP にまだセッションが無いと、
+        /// ログイン画面を出さずに login_required で戻ってしまう（OpenID Connect Core 1.0 3.1.2.1）。
+        /// </remarks>
         protected string UOC_btnButton2_Click(FxEventArgs fxEventArgs)
         {
             return CmnClientParams.SpRp_AuthRequestUri
-                + "?client_id=" + OAuth2AndOIDCParams.ClientID
+                + "?client_id=" + Uri.EscapeDataString(OAuth2AndOIDCParams.ClientID)
                 + "&response_type=code"
-                + "&scope=profile%20email%20phone%20address%20roles%20openid"
-                + "&state=" + this.State
-                + "&nonce=" + this.Nonce
-                + "&redirect_uri=" + CustomEncode.UrlEncode(CmnClientParams.SpRp_RedirectUri)
-                + "&prompt=none";
+                + "&scope=" + Uri.EscapeDataString("openid profile email phone address roles")
+                + "&state=" + Uri.EscapeDataString(this.State)
+                + "&nonce=" + Uri.EscapeDataString(this.Nonce)
+                + "&redirect_uri=" + Uri.EscapeDataString(CmnClientParams.SpRp_RedirectUri);
         }
 
         #endregion
