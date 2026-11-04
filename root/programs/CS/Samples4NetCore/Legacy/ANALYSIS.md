@@ -99,6 +99,10 @@ GetConfigParameter.InitConfiguration("appsettings.json");
   **意図的に据え置いている。** 上げるなら、net48 版の扱いと合わせて判断する
 - 疎通テストは `Simple_CLI` だけ（`cmd1 --an-int 123` → `Sub command cmd1: 123`）。`interactive` サブコマンドは対話なので対象外。
   `DAG` / `LIR` は認証サイトが要るので対象外
+- **`DAG` / `LIR` の接続先は、MPAS のスタブ（`https://localhost:44310`）と、その雛形のクライアントである**（#649）。
+  起動の仕方と、確かめていること（Discovery の `issuer`・`state`・`iss`・`nonce`・id_token）は
+  [`Sample4SpRp/README.md`](../../Sample4SpRp/README.md) の 2 節・4 節。認証処理は、そこの `SpRp_CLI` と同じ作りにしてある。
+  **`DAG` は `Sharprompt` の確認を挟むので、対話環境でしか動かない**（入力をリダイレクトすると例外になる）
 
 ---
 

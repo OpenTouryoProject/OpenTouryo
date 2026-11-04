@@ -165,13 +165,16 @@ dotnet .\SpRp_CLI\bin\Debug\net10.0\SpRp_CLI.dll pkce   # net10.0
 
 **旧サンプル（`Samples4NetCore/Legacy/CLI_sample/DAG_Login_CLI`・`LIR_Login_CLI`）との違い**
 
+**旧サンプルの認証処理も、`SpRp_CLI` に合わせた（2026/11/05）。** 設定（`appsettings.json`）のキーも同じで、接続先はスタブである。
+Discovery から引く・`scope` を送る・`verification_uri` をそのまま使う・ポーリングを IdP の指示に従わせる・
+`state`・応答の `iss`・`nonce`・id_token を確かめる・終了コードを返す、の各点は同じになった。**残る違いは次のとおり。**
+
 | | 旧 | `SpRp_CLI` |
 |---|---|---|
 | 対象 | net10.0 のみ | **net48 と net10.0** |
-| エンドポイント | 設定に 1 つずつ書く | **Discovery から引く** |
-| `verification_uri` | 設定のルートを前に付けていた | **そのまま使う**（§3.2 で絶対 URI） |
-| ポーリング | 指数バックオフ（`interval`・`slow_down` を見ない） | **IdP の指示に従う** |
-| `state`・`nonce`・id_token | 確かめていない | **確かめる** |
+| 外部のパッケージ | `System.CommandLine`（beta）・`Sharprompt` | `Newtonsoft.Json` だけ |
+| 対話 | `DAG` はポーリングの前に `Sharprompt` で確認する（**対話環境でしか動かない**） | 確認しない |
+| ビルド | `CS\5_Build_CLICore_sample.bat` | `CS\11_Build_SpRp_sample.bat` |
 
 ## 5. サンプルを足すとき
 
