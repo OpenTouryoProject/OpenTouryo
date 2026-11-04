@@ -49,7 +49,7 @@ app.UseSession(...);             // セッションを使うなら（MVC_Sample 
 
 | コントローラ | 内容 |
 |---|---|
-| `HomeController` | `Login`（フォーム ログイン。**ユーザ名が空でなければ認証する**）、`OAuth2AuthorizationCodeGrantClient`（認可コード → トークン → id_token の検証 → UserInfo → `SignInAsync`）、`Logout`、`Scroll` |
+| `HomeController` | `Login`（フォーム ログイン。**ユーザ名が空でなければ認証する**）、`OAuth2AuthorizationCodeGrantClient`（認可コード → トークン → id_token の検証 → UserInfo → `SignInAsync`）、`Saml2AssertionConsumerService`（SAML2 の応答の検証 → `SignInAsync`）、`Logout`、`Scroll` |
 | `Crud1Controller` / `Crud2Controller` | CRUD。**2 つは実質同じ**（どちらも `Html.BeginForm`。違いは遷移先だけ） |
 | `ErrorController` / `PingController` | エラー画面・死活確認 |
 
@@ -67,6 +67,13 @@ app.UseSession(...);             // セッションを使うなら（MVC_Sample 
 （この URL で動かさないと、戻り先が登録と合わない）。**id_token の鍵は `SpRp_DiscoveryUri` の `jwks_uri` から引く。**
 単体ではフォーム ログインまでしか動かない。**外部ログインは 2・3 に載っていないので、手で確かめる。**キーの意味（相手の値か自分の値か）は
 [`Framework/ANALYSIS.md`](../../Frameworks/Infrastructure/Framework/ANALYSIS.md) 8.1 節。
+
+**SAML2 の外部ログインも同じスタブを使う**（`SpRp_Saml2*`・`SpRp_RsaPfx*`）。
+- **要求も応答も HTTP-Redirect。** NameID は Persistent を求め、**識別子は NameID、表示名は属性の `mail`**（OIDC の `sub` / `email` と同じ分け方）
+- **IdP の SSO の口と署名鍵は、メタデータ（`SpRp_Saml2MetadataUri`）から引く**（entityID は `SpRp_Saml2EntityId` と照合する）
+- **AuthnRequest の Issuer は `http://` ＋ client_id**（汎用認証サイトは、Issuer から client_id を引く）。要求には `SpRp_RsaPfxFilePath` の鍵で署名する
+- **ACS は `https://localhost:44334/Home/Saml2AssertionConsumerService`。MPAS の雛形の `MVC_Sample` に `redirect_uri_saml` として登録が要る**
+  （無いと IdP は応答を返さない）
 
 ### 3.2 `ASPNETWebService`（ResourceServer）
 

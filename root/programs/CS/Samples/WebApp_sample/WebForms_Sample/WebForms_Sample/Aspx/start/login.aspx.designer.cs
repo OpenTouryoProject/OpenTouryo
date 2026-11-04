@@ -47,6 +47,15 @@ namespace WebForms_Sample.Aspx.Start {
         /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
         /// </remarks>
         protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButton2;
+
+        /// <summary>
+        /// btnButton3 コントロール。
+        /// </summary>
+        /// <remarks>
+        /// 自動生成されたフィールド。
+        /// 変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
+        /// </remarks>
+        protected global::Touryo.Infrastructure.CustomControl.WebCustomButton btnButton3;
         
         /// <summary>
         /// lblMessage コントロール。

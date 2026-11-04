@@ -40,6 +40,8 @@ namespace WebForms_Sample.Aspx.OAuth2
     /// <summary>認証画面</summary>
     public partial class OAuth2AuthorizationCodeGrantClient : System.Web.UI.Page
     {
+        #region プロパティ（OIDC の state・nonce）
+
         /// <summary>Nonce</summary>
         public string Nonce
         {
@@ -65,6 +67,10 @@ namespace WebForms_Sample.Aspx.OAuth2
                 return (string)Session["state"];
             }
         }
+
+        #endregion
+
+        #region 応答（リダイレクト先）
 
         /// <summary>Page_Load</summary>
         /// <param name="sender">object</param>
@@ -131,6 +137,10 @@ namespace WebForms_Sample.Aspx.OAuth2
             }
         }
 
+        #endregion
+
+        #region 検証
+
         /// <summary>相手（OP）の id_token を検証する</summary>
         /// <param name="id_token">id_token</param>
         /// <param name="access_token">access_token（at_hash の検証）</param>
@@ -192,11 +202,13 @@ namespace WebForms_Sample.Aspx.OAuth2
             return string.IsNullOrEmpty(email) ? sub : email;
         }
 
-        /// <summary>ClearExLoginsParam</summary>
+        /// <summary>OIDC の state・nonce を消す（1 度しか使わない）</summary>
         private void ClearExLoginsParams()
         {
             Session["nonce"] = null;
             Session["state"] = null;
         }
+
+        #endregion
     }
 }
