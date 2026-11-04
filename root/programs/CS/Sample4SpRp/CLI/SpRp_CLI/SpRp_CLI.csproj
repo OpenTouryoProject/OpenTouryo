@@ -1,0 +1,78 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+  **********************************************************************************
+  * ファイル名      ：SpRp_CLI.csproj
+  * ファイル日本語名：SpRp サンプル（CLI）。Device AuthZ と、認可コード ＋ PKCE（ループバック）
+  *
+  * 作成者          ：玄人 幸道
+  * 更新履歴        ：
+  *
+  *  日時        更新者            内容
+  *  2026/11/04  玄人 幸道         新規作成（#649）
+  **********************************************************************************
+
+  ■ net48 と net10.0 の両方に出す（1 つの csproj で）
+    設定ファイルだけが違う（net48 は App.config、net10.0 は appsettings.json）。
+    コードの違いは Program.cs の #if NETCOREAPP の 1 か所（InitConfiguration）だけ。
+
+  ■ 外部のパッケージは Newtonsoft.Json だけにする
+    System.CommandLine（beta）と Sharprompt は使わない。
+    net48 の CLI サンプルが落とされた理由（5_Build_CLI_sample.bat）がこの 2 つだったため。
+  -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net48;net10.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>SpRp_CLI</RootNamespace>
+    <AssemblyName>SpRp_CLI</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+  </ItemGroup>
+
+  <!-- ================================================================ net48 -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Web" />
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build_net48\OpenTouryo.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build_net48\OpenTouryo.Public.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public.Security">
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build_net48\OpenTouryo.Public.Security.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <!-- ================================================================ net10.0 -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="10.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.5" />
+    <PackageReference Include="BouncyCastle.NetCore" Version="2.2.1" />
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public.Security">
+      <HintPath>..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.Security.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <None Remove="appsettings.json" />
+  </ItemGroup>
+
+</Project>

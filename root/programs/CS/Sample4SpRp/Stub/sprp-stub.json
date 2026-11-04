@@ -1,0 +1,24 @@
+﻿{
+  // SpRp サンプルが使う、MPAS スタブの設定（#649）。../README.md の 2 節。
+  //   **MPAS の container\Stub\ に渡す**（STUB_SETTINGS。StubCompose.ps1 が絶対パスで渡す）。
+  //   **appsettings.json と同じ書き方。** 雛形（_appsettings.json）の値に重ねて効き、書いたキーだけが変わる。
+  //   **値はテスト専用**（スタブはテストのための IdP で、配備用ではない）。
+  "appSettings": {
+
+    // ---- サンプルごとのクライアント（client_id は 32 桁の 16 進）
+    //   **サンプル側の設定（OAuth2AndOidcClientID・SpRp_RedirectUri）と、1 文字も違ってはならない。**
+    "OAuth2ClientsInformation": {
+
+      // SpRp_CLI（CLI/）: Device AuthZ と、認可コード ＋ PKCE（ループバック）
+      //   **パブリック クライアント**（token_endpoint_auth_method = none。秘密を持たない）。
+      //   client_mode = device : Device AuthZ と、PKCE（S256）の認可コードを使える。
+      "5a4b0000000000000000000000000001": {
+        "redirect_uri_code": "http://localhost:54649/",
+        "redirect_uri_token": "-",
+        "client_mode": "device",
+        "token_endpoint_auth_method": "none",
+        "client_name": "SpRp_CLI"
+      }
+    }
+  }
+}
