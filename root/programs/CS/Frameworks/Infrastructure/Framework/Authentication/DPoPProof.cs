@@ -29,6 +29,7 @@
 //*  2026/10/22  玄人 幸道         Create の htu を http / https の絶対 URL に限った（それ以外は ArgumentException）
 //*  2026/10/30  玄人 幸道         htu の比較を RFC 9449 4.3 どおりにした（末尾の "/"・パスの大文字小文字を区別する。
 //*                                %エンコードを RFC 3986 6.2.2 で正規化し、net48 と net10.0 で結果を揃えた。#642）
+//*  2026/11/05  玄人 幸道         iat を、小数の NumericDate でも受けるようにした（RFC 7519 2。#647。文字列は従来どおり断る）
 //**********************************************************************************
 
 using System;
@@ -513,18 +514,23 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="pastWindow">TimeSpan</param>
         /// <param name="futureWindow">TimeSpan</param>
         /// <returns>窓の中なら true</returns>
-        /// <remarks>数値でなければ受けない（RFC 7519 2 の NumericDate）。</remarks>
+        /// <remarks>
+        /// **数値でなければ受けない**（RFC 7519 2 の NumericDate。文字列は断る）。
+        /// **小数も受ける**（NumericDate は整数でない値も表せる。RFC 9449 4.2 の iat も NumericDate。#647）。
+        /// 2026/11/05 までは、整数でなければ断っていた。
+        /// </remarks>
         private static bool IsFreshIat(JToken iat, TimeSpan pastWindow, TimeSpan futureWindow)
         {
-            if (iat == null || iat.Type != JTokenType.Integer)
+            decimal issued;
+            if (!CmnJwtToken.TryReadNumericDate(iat, false, out issued))
             {
                 return false;
             }
 
-            DateTimeOffset issued = DateTimeOffset.FromUnixTimeSeconds((long)iat);
-            DateTimeOffset now = DateTimeOffset.UtcNow;
+            // 窓の端は、いまの時刻（ミリ秒まで）から作り、秒の小数で比べる
+            decimal now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() / 1000m;
 
-            return (now - pastWindow) <= issued && issued <= (now + futureWindow);
+            return (now - (decimal)pastWindow.TotalSeconds) <= issued && issued <= (now + (decimal)futureWindow.TotalSeconds);
         }
 
         /// <summary>文字列の項目を読む（文字列でなければ null）</summary>

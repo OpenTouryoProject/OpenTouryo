@@ -27,6 +27,7 @@
 //*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を広げた（#640）
 //*  2026/10/30  玄人 幸道         ResponseObject_Verify：error の応答も iss・aud・exp を照合することにした（#644）
+//*  2026/11/05  玄人 幸道         小数の NumericDate（exp・nbf）のテストを足した（#647）
 //**********************************************************************************
 
 using System;
@@ -318,6 +319,104 @@ namespace TestFramework.Authentication
 
             Assert.Throws<ArgumentNullException>(() => ResponseObject.Verify(response, this._opPublic, "", Aud, out jobj));
             Assert.Throws<ArgumentNullException>(() => ResponseObject.Verify(response, this._opPublic, Iss, "", out jobj));
+        }
+
+        #endregion
+
+        #region NumericDate（#647）
+
+        /// <summary>ペイロードに exp を入れて署名する（exp はそのまま入れる。数値・小数・文字列・無し）</summary>
+        private string SignWithExp(JObject payload, JToken exp)
+        {
+            JObject p = (JObject)payload.DeepClone();
+            if (exp != null)
+            {
+                p[OAuth2AndOIDCConst.exp] = exp;
+            }
+            return this._op.Create(p.ToString(Formatting.None));
+        }
+
+        /// <summary>
+        /// CmnJwtToken.VerifyExp・VerifyNbf：小数・指数表記の NumericDate を読む。カルチャに依らない。
+        /// 無い・読めない値は、例外にせず false。
+        /// </summary>
+        [Test]
+        [Basis("RFC 7519 2（NumericDate は JSON の数値で、整数でない値も表せる）")]
+        [Basis("RFC 7519 4.1.4（exp 以後は受けない）・4.1.5（nbf より前は受けない）")]
+        [Basis("#647")]
+        public void CmnJwtToken_NumericDate()
+        {
+            long now = DateTimeOffset.Now.ToUnixTimeSeconds();
+
+            Assert.That(CmnJwtToken.VerifyExp((now + 60) + ".5"), Is.True, "小数（未来）");
+            Assert.That(CmnJwtToken.VerifyExp((now - 60) + ".5"), Is.False, "小数（過去）");
+            Assert.That(CmnJwtToken.VerifyExp(((decimal)(now + 3600)).ToString("E12", System.Globalization.CultureInfo.InvariantCulture)), Is.True, "指数表記");
+            Assert.That(CmnJwtToken.VerifyNbf((now - 60) + ".5"), Is.True, "小数（過去）");
+            Assert.That(CmnJwtToken.VerifyNbf((now + 60) + ".5"), Is.False, "小数（未来）");
+
+            // 読めない値は、例外にせず false（2026/11/05 までは long.Parse の例外）
+            Assert.That(CmnJwtToken.VerifyExp("abc"), Is.False, "数値でない");
+            Assert.That(CmnJwtToken.VerifyExp(""), Is.False, "空");
+            Assert.That(CmnJwtToken.VerifyExp(null), Is.False, "null");
+            Assert.That(CmnJwtToken.VerifyNbf("abc"), Is.False, "nbf：数値でない");
+            Assert.That(CmnJwtToken.VerifyExp("1e400"), Is.False, "decimal に収まらない");
+
+            // カルチャに依らない（小数点が "," のカルチャでも、"." を小数点として読む）
+            System.Globalization.CultureInfo saved = System.Threading.Thread.CurrentThread.CurrentCulture;
+            try
+            {
+                System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("de-DE");
+                Assert.That(CmnJwtToken.VerifyExp((now + 60) + ".5"), Is.True, "de-DE でも小数を読む");
+                Assert.That(CmnJwtToken.VerifyExp((now - 60) + ".5"), Is.False, "de-DE：小数（過去）");
+            }
+            finally
+            {
+                System.Threading.Thread.CurrentThread.CurrentCulture = saved;
+            }
+        }
+
+        /// <summary>
+        /// AccessToken・IdToken・ResponseObject の Verify：exp が小数の数値でも読む。
+        /// 文字列の exp（従来どおり）も読む。無い・読めない exp は、例外にせず false。
+        /// </summary>
+        [Test]
+        [Basis("RFC 7519 2（NumericDate は JSON の数値で、整数でない値も表せる）・4.1.4（exp 以後は受けない）")]
+        [Basis("#647")]
+        public void Verify_ExpAsNumericDate()
+        {
+            long now = DateTimeOffset.Now.ToUnixTimeSeconds();
+            JObject p = new JObject
+            {
+                [OAuth2AndOIDCConst.iss] = Iss,
+                [OAuth2AndOIDCConst.aud] = Aud,
+                [OAuth2AndOIDCConst.sub] = "user01"
+            };
+
+            // 期待：未来なら true、過去・無し・読めないなら false
+            JToken[] valid = { new JValue(now + 3600.5), new JValue(now + 3600), new JValue((now + 3600).ToString()) };
+            JToken[] invalid = { new JValue(now - 3600.5), null, new JValue("abc"), new JObject(), new JValue(true) };
+
+            string sub, nonce; List<string> roles, scopes; JObject jobj;
+            Func<string, bool> at = t => AccessToken.Verify(t, this._opPublic, Iss, new[] { Aud }, out sub, out roles, out scopes, out jobj);
+            Func<string, bool> id = t => IdToken.Verify(t, "", "", "", this._opPublic, Iss, Aud, out sub, out nonce, out jobj);
+            Func<string, bool> ro = t => ResponseObject.Verify(t, this._opPublic, Iss, Aud, out jobj);
+
+            foreach (JToken exp in valid)
+            {
+                string token = this.SignWithExp(p, exp);
+                Assert.That(at(token), Is.True, "AccessToken：" + exp.Type + " " + exp);
+                Assert.That(id(token), Is.True, "IdToken：" + exp.Type + " " + exp);
+                Assert.That(ro(token), Is.True, "ResponseObject：" + exp.Type + " " + exp);
+            }
+
+            foreach (JToken exp in invalid)
+            {
+                string token = this.SignWithExp(p, exp);
+                string label = exp == null ? "無し" : exp.Type + " " + exp.ToString(Formatting.None);
+                Assert.That(at(token), Is.False, "AccessToken：" + label);
+                Assert.That(id(token), Is.False, "IdToken：" + label);
+                Assert.That(ro(token), Is.False, "ResponseObject：" + label);
+            }
         }
 
         #endregion

@@ -33,6 +33,7 @@
 //*  2026/10/11  玄人 幸道         Verifyに、検証鍵（JWS）と期待するiss / audを受けるオーバーロードを追加（#601）。
 //*                                認可サーバ兼クライアントでは、鍵もissも自分の設定で判定され、相手のid_tokenを検証できなかった。
 //*  2026/10/12  玄人 幸道         設定で判定するVerifyでも、認可サーバを兼ねる配備でaudを確認するようにした（#603）。
+//*  2026/11/05  玄人 幸道         Verifyで、exp を小数の NumericDate でも読み、無い・読めない値を例外にせず false にした（#647）
 //**********************************************************************************
 
 using System;
@@ -209,7 +210,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 string iss = (string)jobj[OAuth2AndOIDCConst.iss];
                 JToken aud = jobj[OAuth2AndOIDCConst.aud];
                 //string iat = (string)jobj[OAuth2AndOIDCConst.iat];
-                string exp = (string)jobj[OAuth2AndOIDCConst.exp];
 
                 #region ハッシュ・クレーム検証
 
@@ -247,8 +247,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
                 long unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
 
+                // exp は小数の NumericDate も読む。無い・読めない値は、例外にせず検証の失敗にする（RFC 7519 2。#647）
                 if (iss == expectedIss &&
-                    long.Parse(exp) >= unixTimeSeconds)
+                    CmnJwtToken.VerifyExpClaim(jobj[OAuth2AndOIDCConst.exp], unixTimeSeconds))
                 {
                     if (verifyAud(aud))
                     {

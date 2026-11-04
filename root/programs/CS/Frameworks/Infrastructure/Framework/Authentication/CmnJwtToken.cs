@@ -34,11 +34,14 @@
 //*  2026/10/11  玄人 幸道         Verifyに、検証鍵（JWS）を受けるオーバーロードを追加（#601）。
 //*                                JwkSetFilePathの有無で鍵を選ぶため、認可サーバ兼クライアントでは相手の鍵を引けなかった。
 //*  2026/10/12  玄人 幸道         設定のclient_idでaudを確認するVerifyAudByClientIDsを追加（#603）
+//*  2026/11/05  玄人 幸道         exp・nbf・iat（NumericDate）を、小数・指数表記でも読めるようにした（RFC 7519 2。#647）。
+//*                                読み方を TryReadNumericDate にまとめ、無い・読めない値は例外にせず検証の失敗にした
 //**********************************************************************************
 
 using System;
 using System.Linq;
 using System.Text;
+using System.Globalization;
 using System.Collections.Generic;
 
 using Newtonsoft.Json;
@@ -327,19 +330,109 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #region ClaimVerifier
         /// <summary>VerifyExp</summary>
-        /// <param name="exp">exp</param>
-        /// <returns>bool</returns>
+        /// <param name="exp">exp（NumericDate。整数・小数・指数表記）</param>
+        /// <returns>いまが exp より前（または同じ秒）なら true。無い・読めない値は false</returns>
+        /// <remarks>
+        /// **小数の NumericDate も読む**（RFC 7519 2。#647）。2026/11/05 までは整数しか読めず、
+        /// 小数や読めない値は例外（long.Parse）になっていた。
+        /// </remarks>
         public static bool VerifyExp(string exp)
         {
-            return (long.Parse(exp) >= DateTimeOffset.Now.ToUnixTimeSeconds());
+            decimal seconds;
+            return CmnJwtToken.TryParseNumericDate(exp, out seconds)
+                && CmnJwtToken.IsNotExpired(seconds, DateTimeOffset.Now.ToUnixTimeSeconds());
         }
 
         /// <summary>VerifyNbf</summary>
-        /// <param name="nbf">nbf</param>
-        /// <returns>bool</returns>
+        /// <param name="nbf">nbf（NumericDate。整数・小数・指数表記）</param>
+        /// <returns>いまが nbf 以後なら true。無い・読めない値は false</returns>
+        /// <remarks>VerifyExp と同じ（#647）。</remarks>
         public static bool VerifyNbf(string nbf)
         {
-            return (long.Parse(nbf) <= DateTimeOffset.Now.ToUnixTimeSeconds());
+            decimal seconds;
+            return CmnJwtToken.TryParseNumericDate(nbf, out seconds)
+                && CmnJwtToken.IsNotBefore(seconds, DateTimeOffset.Now.ToUnixTimeSeconds());
+        }
+
+        /// <summary>exp のクレームを確かめる（トークンの検証の共通部分）</summary>
+        /// <param name="exp">exp のクレーム（JToken。無ければ null）</param>
+        /// <param name="unixTimeSeconds">いまの UNIX 時刻（秒）</param>
+        /// <returns>いまが exp より前（または同じ秒）なら true。無い・読めない値は false</returns>
+        /// <remarks>IdToken・AccessToken・JwtAssertion・ResponseObject の Verify が使う（#647）。</remarks>
+        internal static bool VerifyExpClaim(JToken exp, long unixTimeSeconds)
+        {
+            decimal seconds;
+            return CmnJwtToken.TryReadNumericDate(exp, true, out seconds)
+                && CmnJwtToken.IsNotExpired(seconds, unixTimeSeconds);
+        }
+
+        /// <summary>いまが exp より前（または同じ秒）か</summary>
+        /// <remarks>
+        /// **小数はそのまま比べる。** いまの時刻は整数の秒なので、exp を切り捨ててから比べるのと同じ結果になり、
+        /// 小数を受けても有効期間は広がらない（RFC 7519 4.1.4。以前の long の比較と同じく、同じ秒は通す）。
+        /// </remarks>
+        private static bool IsNotExpired(decimal exp, long unixTimeSeconds)
+        {
+            return exp >= unixTimeSeconds;
+        }
+
+        /// <summary>いまが nbf 以後か</summary>
+        /// <remarks>
+        /// **小数はそのまま比べる。** nbf を切り上げてから比べるのと同じ結果になる（RFC 7519 4.1.5）。
+        /// </remarks>
+        private static bool IsNotBefore(decimal nbf, long unixTimeSeconds)
+        {
+            return nbf <= unixTimeSeconds;
+        }
+
+        /// <summary>NumericDate（RFC 7519 2）を読む</summary>
+        /// <param name="value">クレームの値（JToken。無ければ null）</param>
+        /// <param name="acceptString">
+        /// 数値の文字列も受けるか。**NumericDate は JSON の数値**だが、exp・nbf は従来から文字列でも読んでいた
+        /// （CreateExpClaim などが文字列を返す）ので、互換のために受ける。DPoP の iat は数値だけを受ける（false）
+        /// </param>
+        /// <param name="seconds">UNIX 時刻（秒。小数を含みうる）</param>
+        /// <returns>読めたら true</returns>
+        /// <remarks>
+        /// **整数・小数・指数表記を読む**（RFC 7519 2 : NumericDate は JSON の数値で、整数でない値も表せる。#647）。
+        /// **カルチャに依らない**（CultureInfo.InvariantCulture）。decimal に収まらない値・数値でない値は読めない（false）。
+        /// </remarks>
+        internal static bool TryReadNumericDate(JToken value, bool acceptString, out decimal seconds)
+        {
+            seconds = 0;
+
+            if (value == null)
+            {
+                return false;
+            }
+
+            switch (value.Type)
+            {
+                case JTokenType.Integer:
+                case JTokenType.Float:
+                    // JSON の数値を、カルチャに依らない字面にしてから decimal で読み直す
+                    //   （小数は double で届く。net48 の既定の書式は 15 桁で、秒の比較には足りる）
+                    return CmnJwtToken.TryParseNumericDate(
+                        ((JValue)value).ToString(CultureInfo.InvariantCulture), out seconds);
+
+                case JTokenType.String:
+                    return acceptString && CmnJwtToken.TryParseNumericDate((string)value, out seconds);
+
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>NumericDate の文字列を読む（整数・小数・指数表記。カルチャに依らない）</summary>
+        /// <param name="value">文字列</param>
+        /// <param name="seconds">UNIX 時刻（秒）</param>
+        /// <returns>読めたら true</returns>
+        private static bool TryParseNumericDate(string value, out decimal seconds)
+        {
+            return decimal.TryParse(value,
+                NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite |
+                NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent,
+                CultureInfo.InvariantCulture, out seconds);
         }
 
         /// <summary>

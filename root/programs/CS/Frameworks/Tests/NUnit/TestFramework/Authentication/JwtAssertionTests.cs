@@ -26,6 +26,7 @@
 //*  2026/10/19  玄人 幸道         新規作成
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //*  2026/10/30  玄人 幸道         kty の大文字小文字を区別することのテストを足した（#643）
+//*  2026/11/05  玄人 幸道         小数の NumericDate（exp）のテストを足した（#647）
 //**********************************************************************************
 
 using System;
@@ -78,6 +79,43 @@ namespace TestFramework.Authentication
                 string expired = JwtAssertion.CreateByRsa(Iss, Aud, TimeSpan.FromMinutes(-5), Scopes, rsa.ExportParameters(true));
                 Assert.That(JwtAssertion.VerifyByRsa(expired, out iss, out aud, out scopes, out jobj, rsa.ExportParameters(false)), Is.False, "期限切れ");
             }
+        }
+
+        /// <summary>
+        /// VerifyByRsa：exp が小数の数値でも読む。無い・読めない exp は、例外にせず false。
+        /// </summary>
+        [Test]
+        [Basis("RFC 7519 2（NumericDate は JSON の数値で、整数でない値も表せる）")]
+        [Basis("RFC 7523 3 の 4（exp を持ち、期限の過ぎた JWT を断る）")]
+        [Basis("#647")]
+        public void Rsa_ExpAsNumericDate()
+        {
+            JWS_RS256_Param signer = new JWS_RS256_Param();
+            long now = DateTimeOffset.Now.ToUnixTimeSeconds();
+
+            Func<JToken, bool> verify = exp =>
+            {
+                JObject p = new JObject
+                {
+                    [OAuth2AndOIDCConst.iss] = Iss,
+                    [OAuth2AndOIDCConst.aud] = Aud,
+                    [OAuth2AndOIDCConst.scope] = Scopes
+                };
+                if (exp != null)
+                {
+                    p[OAuth2AndOIDCConst.exp] = exp;
+                }
+
+                string iss, aud, scopes; JObject jobj;
+                return JwtAssertion.VerifyByRsa(signer.Create(p.ToString(Newtonsoft.Json.Formatting.None)),
+                    out iss, out aud, out scopes, out jobj, signer.RsaPublicParameters);
+            };
+
+            Assert.That(verify(new JValue(now + 300.5)), Is.True, "小数（未来）");
+            Assert.That(verify(new JValue((now + 300).ToString())), Is.True, "文字列（従来どおり）");
+            Assert.That(verify(new JValue(now - 300.5)), Is.False, "小数（過去）");
+            Assert.That(verify(null), Is.False, "無し（例外にしない）");
+            Assert.That(verify(new JValue("abc")), Is.False, "読めない（例外にしない）");
         }
 
         /// <summary>RSA：JWK（秘密鍵・公開鍵の JSON）でも作って検証できる（kty で RSA / EC を選ぶ）。</summary>

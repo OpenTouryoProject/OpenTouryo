@@ -244,7 +244,8 @@ DCR の口の認可、クライアント登録の持ち方。
 
 - **`OAuth2AndOIDCConst.UrnCnfJktClaim` は `urn:oauth:claim:cnf:jkt`**（`UrnCnfX5tClaim` と同じ組み立て）。
   MPAS の `Const.UrnCnfJktClaim`（`urn:oauth:cnf:jkt`）とは値が違う。プロセスの外に出ない値だが、置き換えるときは揃えること
-- `DPoPProof.Create` は `iat` を**数値**で入れる（`CmnJwtToken.CreateIatClaim` は文字列を返すので使わない）。`Verify` は文字列の `iat` を断る
+- `DPoPProof.Create` は `iat` を**数値**で入れる（`CmnJwtToken.CreateIatClaim` は文字列を返すので使わない）。`Verify` は文字列の `iat` を断る。
+  **小数の `iat` は受ける**（RFC 7519 2 の NumericDate。#647。2026/11/05 までは整数でなければ断っていた）
 - `SendWithDPoPAsync` の `DPoP-Nonce` の記憶は `static`（オリジンごと）で、プロセス全体に効く
 
 **`CmnClientParams`（`SpRp_*`）と `JwkSetUri` は、クライアント役が読む設定である**（#602）。
@@ -305,6 +306,12 @@ DCR の口の認可、クライアント登録の持ち方。
 - `AccessToken.Verify` の既存の版は `aud` を確認しない（Keycloak 互換）。
   **`aud` を確認するなら `jws` / `iss` / `auds`（期待する `aud` の集合）を受ける版を使う。**
   `aud` に `client_id` が入る形式では、受け付けるクライアントの `client_id` の一覧を渡す
+- **`exp`・`nbf`・`iat`（NumericDate）は、小数・指数表記でも読む**（RFC 7519 2。#647）。
+  読み方は `CmnJwtToken.TryReadNumericDate` の 1 か所（`decimal`・`CultureInfo.InvariantCulture`）。
+  **小数はそのまま、いまの時刻（整数の秒）と比べる**ので、切り捨て・切り上げてから比べるのと同じ結果になり、有効期間は広がらない。
+  **数値の文字列も、従来どおり読む**（`CreateExpClaim` などが文字列を返すため。DPoP の `iat` だけは数値に限る）。
+  **無い・読めない値は、例外にせず検証の失敗（`false`）**。2026/11/05 までは、`IdToken`・`AccessToken`・`JwtAssertion` の `Verify`
+  と `CmnJwtToken.VerifyExp`・`VerifyNbf` が、`long.Parse` の例外を投げていた（`ResponseObject.Verify` は #644 で先に `false` にしていた）
 - `AccessToken` は `typ`（`at+jwt`）を確認しない（RFC 9068 の形式には準拠していない）。
   JWS の層で照合するなら `JWS.Verify(jwt, typ)`（[`Public/Security/ANALYSIS.md`](../Public/Security/ANALYSIS.md) 4.1 節）
 

@@ -35,6 +35,7 @@
 //*  2020/06/23  西野 大介         audの検証を見直した（Keycloakコンパチ）
 //*  2026/10/12  玄人 幸道         Verifyに、検証鍵（JWS）と期待するiss / audの集合を受けるオーバーロードを追加（#601）。
 //*                                既存の版は鍵もissも自分の設定で判定し、audは確認しない。
+//*  2026/11/05  玄人 幸道         Verifyで、exp を小数の NumericDate でも読み、無い・読めない値を例外にせず false にした（#647）
 //**********************************************************************************
 
 using System;
@@ -184,7 +185,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 string iss = (string)jobj[OAuth2AndOIDCConst.iss];
                 JToken aud = jobj[OAuth2AndOIDCConst.aud];
                 //string iat = (string)jobj[OAuth2AndOIDCConst.iat];
-                string exp = (string)jobj[OAuth2AndOIDCConst.exp];
 
                 sub = (string)jobj[OAuth2AndOIDCConst.sub];
 
@@ -199,8 +199,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
                 long unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
 
+                // exp は小数の NumericDate も読む。無い・読めない値は、例外にせず検証の失敗にする（RFC 7519 2。#647）
                 if (iss == expectedIss &&
-                    long.Parse(exp) >= unixTimeSeconds)
+                    CmnJwtToken.VerifyExpClaim(jobj[OAuth2AndOIDCConst.exp], unixTimeSeconds))
                 {
                     if (verifyAud(aud))
                     {

@@ -34,6 +34,8 @@
 //*  2020/03/04  西野 大介         ...ECDsaのサポートを追加
 //*  2020/03/04  西野 大介         Claim生成メソッドの利用
 //*  2026/10/30  玄人 幸道         Create・Verify で、kty の大文字小文字を区別するようにした（RFC 7517 4.1。#643）
+//*  2026/11/05  玄人 幸道         VerifyByRsa・VerifyByECDsaで、exp を小数の NumericDate でも読み、
+//*                                無い・読めない値を例外にせず false にした（#647）
 //**********************************************************************************
 
 using System;
@@ -279,8 +281,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
                 long unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
 
-                string exp = (string)jobj[OAuth2AndOIDCConst.exp];
-                if (long.Parse(exp) >= unixTimeSeconds)
+                // exp は小数の NumericDate も読む。無い・読めない値は、例外にせず検証の失敗にする（RFC 7519 2。#647）
+                if (CmnJwtToken.VerifyExpClaim(jobj[OAuth2AndOIDCConst.exp], unixTimeSeconds))
                 {
                     return true;
                 }
@@ -329,8 +331,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 scopes = (string)jobj[OAuth2AndOIDCConst.scope];
 
                 long unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
-                string exp = (string)jobj[OAuth2AndOIDCConst.exp];
-                if (long.Parse(exp) >= unixTimeSeconds)
+
+                // exp は小数の NumericDate も読む。無い・読めない値は、例外にせず検証の失敗にする（RFC 7519 2。#647）
+                if (CmnJwtToken.VerifyExpClaim(jobj[OAuth2AndOIDCConst.exp], unixTimeSeconds))
                 {
                     return true;
                 }
