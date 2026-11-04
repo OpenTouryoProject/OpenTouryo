@@ -31,6 +31,8 @@
 //*  2018/12/12  西野 大介         インターフェイスの拡張
 //*  2020/02/12  西野 大介         属性ベース機構の強化（EnumHttpAuthHeaderの導入）
 //*  2020/06/23  西野 大介         audの検証を見直した（Keycloakコンパチ）
+//*  2026/11/05  玄人 幸道         要求ごとの値（性能測定・Controller / Action 名）をフィールドに持たないようにした（#651）
+//*                                （属性のインスタンスは全ての要求で共有されるため、同時の要求で 500 やログの入れ替わりになっていた）
 //**********************************************************************************
 
 using System;
@@ -60,22 +62,31 @@ using Touryo.Infrastructure.Public.Util;
 namespace Touryo.Infrastructure.Business.Presentation
 {
     /// <summary>非同期 ASP.NET WebAPI用 ベースクラス２</summary>
-    /// <remarks>（ActionFilterAttributeとして）自由に利用できる。</remarks>
+    /// <remarks>
+    /// （ActionFilterAttributeとして）自由に利用できる。
+    ///
+    /// **属性のインスタンスは、全ての要求で共有される**（ASP.NET Core は、属性で付けたフィルタを
+    /// IFilterFactory で作らない限り、同じインスタンスのまま使う）。
+    /// **要求ごとの値は、フィールドに持たない**（ローカル変数か、要求のコンテキストに持つ）。
+    /// フィールドに持つと、同時の要求で値が入れ替わる（#651）。
+    /// </remarks>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
     public class MyBaseAsyncApiController : ActionFilterAttribute, IAsyncAuthorizationFilter, IAsyncActionFilter, IExceptionFilter
     {
         #region インスタンス変数
 
-        /// <summary>性能測定</summary>
-        private PerformanceRecorder perfRec;
-
         ///// <summary>UserInfo</summary>
         //protected MyUserInfo UserInfo;
 
         /// <summary>ControllerName</summary>
+        /// <remarks>
+        /// **派生クラスとの互換のために残している。同時の要求では当てにならない**（インスタンスが要求をまたいで共有されるため。#651）。
+        /// 基盤のログは、この値を使わない（要求のコンテキストから取る）。
+        /// </remarks>
         protected string ControllerName = "";
 
         /// <summary>ActionName</summary>
+        /// <remarks>ControllerName と同じ（互換のために残している。同時の要求では当てにならない。#651）。</remarks>
         protected string ActionName = "";
 
         /// <summary>HttpAuthHeader</summary>
@@ -127,7 +138,11 @@ namespace Touryo.Infrastructure.Business.Presentation
             #region OnActionExecutingAsyncから移行
 
             // Controller・Action名を取得する。
-            this.GetControllerAndActionName(context);
+            //   **要求ごとの値なので、ローカル変数に持つ**（#651）。フィールドには互換のために入れるだけ。
+            string controllerName, actionName;
+            MyBaseAsyncApiController.GetControllerAndActionName(context?.ActionDescriptor, out controllerName, out actionName);
+            this.ControllerName = controllerName;
+            this.ActionName = actionName;
 
             // Claimを取得する。
             string userName, roles, scopes, ipAddress;
@@ -142,9 +157,11 @@ namespace Touryo.Infrastructure.Business.Presentation
             // -------------------------------------------------------------
 
             // 性能測定開始
-            this.perfRec = new PerformanceRecorder();
-            this.perfRec.StartsPerformanceRecord();
-            
+            //   **ローカル変数に持つ**（#651）。フィールドに持つと、同時の要求が別の要求の記録器を終了させ、
+            //   開始していない記録器で NullReferenceException（500）になっていた。
+            PerformanceRecorder perfRec = new PerformanceRecorder();
+            perfRec.StartsPerformanceRecord();
+
             // ------------
             // メッセージ部
             // ------------
@@ -158,13 +175,13 @@ namespace Touryo.Infrastructure.Business.Presentation
                 "," + userName + //this.UserInfo.UserName +
                 "," + ipAddress + //this.UserInfo.IPAddress +
                 "," + "----->" +
-                "," + this.ControllerName +
-                "," + this.ActionName + "(OnActionExecuting)";
+                "," + controllerName +
+                "," + actionName + "(OnActionExecuting)";
 
             LogIF.InfoLog("ACCESS", strLogMessage);
 
             // 性能測定終了
-            this.perfRec.EndsPerformanceRecord();
+            perfRec.EndsPerformanceRecord();
 
             #endregion
 
@@ -185,8 +202,8 @@ namespace Touryo.Infrastructure.Business.Presentation
                 "," + userName + //this.UserInfo.UserName +
                 "," + ipAddress + //this.UserInfo.IPAddress +
                 "," + "<-----" +
-                "," + this.ControllerName +
-                "," + this.ActionName + "(OnActionExecuted)" +
+                "," + controllerName +
+                "," + actionName + "(OnActionExecuted)" +
                 "," + perfRec.ExecTime +
                 "," + perfRec.CpuTime;
 
@@ -235,12 +252,16 @@ namespace Touryo.Infrastructure.Business.Presentation
             string userName, roles, scopes, ipAddress;
             MyBaseAsyncApiController.GetClaims(out userName, out roles, out scopes, out ipAddress);
 
+            // Controller・Action名は、**この要求のコンテキストから取る**（フィールドは別の要求の値でありうる。#651）
+            string controllerName, actionName;
+            MyBaseAsyncApiController.GetControllerAndActionName(exceptionContext?.ActionDescriptor, out controllerName, out actionName);
+
             string strLogMessage =
                 "," + userName + // (this.UserInfo != null ? this.UserInfo.UserName : "null") +
                 "," + ipAddress + //(this.UserInfo != null ? this.UserInfo.IPAddress : "null") +
                 "," + "<-----" +
-                "," + this.ControllerName +
-                "," + this.ActionName + "(ExecuteExceptionFilterAsync)" +
+                "," + controllerName +
+                "," + actionName + "(ExecuteExceptionFilterAsync)" +
                 "," + //this.perfRec.ExecTime +
                 "," + //this.perfRec.CpuTime + 
                 "," + GetExceptionMessageID(bottomException) +
@@ -281,34 +302,19 @@ namespace Touryo.Infrastructure.Business.Presentation
         #region 情報取得用
 
         /// <summary>Controller/Action名を取得する</summary>
-        /// <param name="context">ActionExecutingContext</param>
-        private void GetControllerAndActionName(ActionExecutingContext context)
+        /// <param name="actionDescriptor">ActionDescriptor（要求のコンテキストのもの）</param>
+        /// <param name="controllerName">Controller名（取れなければ空）</param>
+        /// <param name="actionName">Action名（取れなければ空）</param>
+        /// <remarks>
+        /// **フィールドに書かず、戻り値で返す**（要求ごとの値なので。#651）。
+        /// ControllerActionDescriptor でなければ（Controller のアクションでなければ）、空を返す。
+        /// </remarks>
+        private static void GetControllerAndActionName(
+            ActionDescriptor actionDescriptor, out string controllerName, out string actionName)
         {
-            // MSBuild で ビルド不可。
-            //this.ControllerName = actionContext?.ControllerContext?.ControllerDescriptor?.ControllerName;
-            //this.ActionName = actionContext?.ActionDescriptor?.ActionName;
-            if (context != null)
-            {
-                ControllerBase controller = (ControllerBase)context.Controller;
-                if (controller != null)
-                {
-                    ControllerContext controllerContext = controller.ControllerContext;
-                    if (controllerContext != null)
-                    {
-                        ControllerActionDescriptor controllerActionDescriptor = controllerContext.ActionDescriptor;
-                        if (controllerActionDescriptor != null)
-                        {
-                            this.ControllerName = controllerActionDescriptor.ControllerName;
-                        }
-                    }
-                }
-
-                ControllerActionDescriptor actionDescriptor = (ControllerActionDescriptor)context.ActionDescriptor;
-                if (actionDescriptor != null)
-                {
-                    this.ActionName = actionDescriptor.ActionName;
-                }
-            }
+            ControllerActionDescriptor controllerActionDescriptor = actionDescriptor as ControllerActionDescriptor;
+            controllerName = controllerActionDescriptor?.ControllerName ?? "";
+            actionName = controllerActionDescriptor?.ActionName ?? "";
         }
 
         /// <summary>ユーザ情報を取得する</summary>

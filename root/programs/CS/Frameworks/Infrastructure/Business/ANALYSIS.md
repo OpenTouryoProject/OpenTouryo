@@ -142,6 +142,12 @@
 4. **`MyBaseLogic` と `_3TierEngine` は net48 専用**（3 節）。net10.0 のサンプルで使おうとするとビルドが通らない。
 5. **同じクラス名のファイルが 2 つある**（`MyBaseAsyncApiController`。5 節）。片方だけ直すと、TFM で振る舞いが割れる。
 6. **テンプレートを直すと、サンプルの振る舞いが変わる**（1 節）。サンプルの疎通テストも回す。
+7. **属性で付けるフィルタ（`MyBaseAsyncApiController`・`MyMVCCoreFilterAttribute`）のインスタンスは、全ての要求で共有される**（#651）。
+   ASP.NET Core は属性のフィルタを（`IFilterFactory` で作らない限り）同じインスタンスのまま使い、ASP.NET Web API 2 もキャッシュする。
+   **要求ごとの値をフィールドに持つと、同時の要求で入れ替わる**（#651 では、性能測定の記録器が入れ替わって
+   `NullReferenceException` で 500 になり、ACCESS ログの Controller / Action 名も入れ替わりえた）。
+   **ローカル変数に持つ。** 実行の前後をまたぐもの（net48 の性能測定）は、**要求の `Properties` に持つ**。
+   `protected` の `ControllerName` / `ActionName` / `UserInfo` は、派生クラスとの互換のために残してあるが、**同時の要求では当てにならない**
 
 ---
 
@@ -152,3 +158,4 @@
 - [ ] 部品を先にビルドしてから、`3_Build_Business_*.bat` / `3_Build_BusinessRichClient_*.bat`
 - [ ] サンプルの疎通（[`SMOKETEST.md`](../../../../SMOKETEST.md)）で振る舞いを確かめる
 - [ ] VB 版の追随の要否を報告する（7 節）
+- [ ] 属性のフィルタに、要求ごとの値をフィールドで持たせていないか（8 節の 7。#651）
