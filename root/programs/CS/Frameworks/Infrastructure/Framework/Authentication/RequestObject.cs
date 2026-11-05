@@ -39,6 +39,8 @@
 //*  2026/11/05  玄人 幸道         aud を受けない Verify・VerifyCiba を Obsolete（警告）にした（#653）
 //*  2026/11/05  玄人 幸道         クレームの読み取りを CmnJwtToken に移した（JwtAssertion と共有する。#654。振る舞いは変えていない）
 //*  2026/11/05  玄人 幸道         形の壊れた入力でも、例外にせず false を返す（CmnJwtToken.TryVerifySignature。#654 のレビューの指摘 5）
+//*  2026/11/06  玄人 幸道         Create に、有効期間を受けて exp・nbf・iat を入れるオーバーロードを追加（#660）
+//*  2026/11/06  玄人 幸道         remarks に、時計のずれの余裕を取らないこと・上限で溢れないことを書いた（#660 のレビューの指摘 2・3）
 //**********************************************************************************
 
 using System;
@@ -133,6 +135,101 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string redirect_uri, string scopes, string state, string nonce,
             string max_age, string prompt, string login_hint, ClaimsInRO claims, RSAParameters rsaPrivateKey)
         {
+            // exp・nbf・iat は入れない（従来どおり）
+            return RequestObject.CreateCore(
+                iss, aud, response_type, response_mode,
+                redirect_uri, scopes, state, nonce,
+                max_age, prompt, login_hint, claims,
+                null, rsaPrivateKey);
+        }
+
+        /// <summary>Create（exp・nbf・iat を入れる）</summary>
+        /// <param name="iss">string</param>
+        /// <param name="aud">string</param>
+        /// <param name="response_type">string</param>
+        /// <param name="response_mode">string</param>
+        /// <param name="redirect_uri">string</param>
+        /// <param name="scopes">string</param>
+        /// <param name="state">string</param>
+        /// <param name="nonce">string</param>
+        /// <param name="max_age">string</param>
+        /// <param name="prompt">string</param>
+        /// <param name="login_hint">string</param>
+        /// <param name="claims">ClaimsInRO</param>
+        /// <param name="lifetime">有効期間（1 秒以上。exp = nbf + 有効期間）</param>
+        /// <param name="jwkPrivateKey">RS256用のJWK秘密鍵</param>
+        /// <returns>RequestObject</returns>
+        /// <remarks>
+        /// 振る舞いは RSAParameters を受ける版（有効期間を受けるもの）の remarks を参照。
+        /// </remarks>
+        public static string Create(
+            string iss, string aud, string response_type, string response_mode,
+            string redirect_uri, string scopes, string state, string nonce,
+            string max_age, string prompt, string login_hint, ClaimsInRO claims,
+            TimeSpan lifetime, string jwkPrivateKey)
+        {
+            RsaPrivateKeyConverter rpkc = new RsaPrivateKeyConverter();
+            return RequestObject.Create(
+                iss, aud, response_type, response_mode,
+                redirect_uri, scopes, state, nonce,
+                max_age, prompt, login_hint, claims,
+                lifetime, rpkc.JwkToParam(jwkPrivateKey));
+        }
+
+        /// <summary>Create（exp・nbf・iat を入れる）</summary>
+        /// <param name="iss">string</param>
+        /// <param name="aud">string</param>
+        /// <param name="response_type">string</param>
+        /// <param name="response_mode">string</param>
+        /// <param name="redirect_uri">string</param>
+        /// <param name="scopes">string</param>
+        /// <param name="state">string</param>
+        /// <param name="nonce">string</param>
+        /// <param name="max_age">string</param>
+        /// <param name="prompt">string</param>
+        /// <param name="login_hint">string</param>
+        /// <param name="claims">ClaimsInRO</param>
+        /// <param name="lifetime">有効期間（1 秒以上。exp = nbf + 有効期間）</param>
+        /// <param name="rsaPrivateKey">RS256用のRSAParameters秘密鍵</param>
+        /// <returns>RequestObject</returns>
+        /// <remarks>
+        /// - **nbf・iat に今の時刻（UTC）、exp に nbf + 有効期間を入れる**（#660）。
+        ///   FAPI（1.0 Advanced 5.2.3-11・14）は、クライアントに exp・nbf を送ることを求めている。
+        ///   有効期間を受けない版は、どれも入れない（従来どおり）
+        /// - 値は **JSON の数値**（秒。小数は切り捨て）で入れる（RFC 7519 2 の NumericDate）。
+        ///   CreateCiba・CmnJwtToken.CreateExpClaim は文字列で入れているが、こちらは数値にした
+        /// - **有効期間の上限は見ない。** FAPI の「60 分以内」はプロファイルの制約なので、呼び出し側が決める。
+        ///   TimeSpan.MaxValue（約 9.2 × 10^11 秒）でも long は溢れない
+        /// - **nbf は今の時刻ちょうどで、時計のずれの余裕を取らない。** 認可サーバの時計がクライアントより遅れていて、
+        ///   nbf を許容幅なしで確かめる相手（この基盤の Verify も許容幅は 0）なら、nbf で断られうる
+        /// - 1 秒未満の有効期間は ArgumentOutOfRangeException
+        /// </remarks>
+        public static string Create(
+            string iss, string aud, string response_type, string response_mode,
+            string redirect_uri, string scopes, string state, string nonce,
+            string max_age, string prompt, string login_hint, ClaimsInRO claims,
+            TimeSpan lifetime, RSAParameters rsaPrivateKey)
+        {
+            if (lifetime < TimeSpan.FromSeconds(1))
+            {
+                throw new ArgumentOutOfRangeException("lifetime", lifetime, "The lifetime must be at least one second.");
+            }
+
+            return RequestObject.CreateCore(
+                iss, aud, response_type, response_mode,
+                redirect_uri, scopes, state, nonce,
+                max_age, prompt, login_hint, claims,
+                lifetime, rsaPrivateKey);
+        }
+
+        /// <summary>Create の本体</summary>
+        /// <param name="lifetime">有効期間。null なら exp・nbf・iat を入れない</param>
+        private static string CreateCore(
+            string iss, string aud, string response_type, string response_mode,
+            string redirect_uri, string scopes, string state, string nonce,
+            string max_age, string prompt, string login_hint, ClaimsInRO claims,
+            TimeSpan? lifetime, RSAParameters rsaPrivateKey)
+        {
             string json = "";
 
             #region ClaimSetの生成
@@ -141,6 +238,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             requestObjectClaimSet.Add(OAuth2AndOIDCConst.iss, iss); // client_id
             requestObjectClaimSet.Add(OAuth2AndOIDCConst.aud, aud); // ROS EndPointのuri。
+
+            if (lifetime.HasValue)
+            {
+                // NumericDate（JSON の数値）で入れる
+                long now = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                requestObjectClaimSet.Add(OAuth2AndOIDCConst.exp, now + (long)lifetime.Value.TotalSeconds);
+                requestObjectClaimSet.Add(OAuth2AndOIDCConst.nbf, now);
+                requestObjectClaimSet.Add(OAuth2AndOIDCConst.iat, now);
+            }
 
             requestObjectClaimSet.Add(OAuth2AndOIDCConst.response_type, response_type);
             requestObjectClaimSet.Add(OAuth2AndOIDCConst.client_id, iss);
@@ -204,7 +310,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         ///   scope（OIDC Core 3.1.2.1）。**空の文字列は無いのと同じ**に扱う
         /// - **state・nonce は必須にしない**（どちらも RFC 6749・OIDC Core の認可コード フローでは任意。Create も空なら入れない）
         /// - exp・nbf は、**在れば**値を確かめる（RFC 7519 4.1.4・4.1.5。読み方は CmnJwtToken.TryReadNumericDate。#647）。
-        ///   Create は exp を入れないので、無くてもよい
+        ///   有効期間を受けない Create は exp を入れないので、無くてもよい（受ける版は入れる。#660）
         /// - **aud の値は照合しない**（期待する値を受けない版のため）。**照合するなら aud を受ける版を使う**（#653 ph2）
         /// 欠けている・読めない・期限の過ぎたものは false（例外にしない）。iss は、署名が正しければ読めた値を返す。
         /// </remarks>

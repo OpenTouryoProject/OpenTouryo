@@ -31,6 +31,8 @@
 //*  2026/11/05  玄人 幸道         aud の照合のケースを足し、OIDC と CIBA をそろえた（#653 ph2 のレビューの指摘 1・2・3）
 //*  2026/11/05  玄人 幸道         aud を受けない版の Obsolete の警告（CS0618）を抑えた（#653）
 //*  2026/11/05  玄人 幸道         形の壊れた入力を、例外にせず false にすることを足した（#654 のレビューの指摘 5）
+//*  2026/11/06  玄人 幸道         有効期間を受ける Create（exp・nbf・iat を入れる）のテストを追加（#660）
+//*  2026/11/06  玄人 幸道         nbf の範囲を Create の前後の時刻で挟み、TimeSpan.MaxValue を足した（#660 のレビューの指摘 3・4）
 //**********************************************************************************
 
 using System;
@@ -138,6 +140,87 @@ namespace TestFramework.Authentication
                 Assert.That((string)p[OAuth2AndOIDCConst.max_age], Is.EqualTo("300"));
                 Assert.That((string)p[OAuth2AndOIDCConst.prompt], Is.EqualTo("login"));
                 Assert.That((string)p[OAuth2AndOIDCConst.login_hint], Is.EqualTo("user01"));
+            }
+        }
+
+        /// <summary>
+        /// OIDC：有効期間を受ける Create は、nbf・iat に今の時刻、exp に nbf + 有効期間を、JSON の数値で入れる。
+        /// 期待する aud を受ける Verify で通る。RSAParameters 版・JWK 版のどちらも同じ。
+        /// </summary>
+        [Test]
+        [Basis("FAPI 1.0 Advanced 5.2.3-11・14（クライアントは、要求オブジェクトに exp・nbf を送る）")]
+        [Basis("RFC 7519 2（NumericDate は JSON の数値）・4.1.4・4.1.5・4.1.6")]
+        [Basis("#660")]
+        public void Oidc_Lifetime()
+        {
+            const string op = "https://op.example.com/";
+
+            using (RSA rsa = RSA.Create(2048))
+            {
+                long before = RequestObjectTests.Now();
+                string[] ros = new string[]
+                {
+                    RequestObject.Create("client01", op,
+                        "code", "", "https://rp.example.com/cb", "openid", "state01", "nonce01",
+                        "", "", "", new ClaimsInRO(null, null, null), TimeSpan.FromMinutes(10), rsa.ExportParameters(true)),
+                    RequestObject.Create("client01", op,
+                        "code", "", "https://rp.example.com/cb", "openid", "state01", "nonce01",
+                        "", "", "", new ClaimsInRO(null, null, null), TimeSpan.FromMinutes(10),
+                        new RsaPrivateKeyConverter().ParamToJwk(rsa.ExportParameters(true)))
+                };
+                long after = RequestObjectTests.Now();
+
+                foreach (string ro in ros)
+                {
+                    JObject p = PayloadOf(ro);
+
+                    Assert.That(p[OAuth2AndOIDCConst.exp].Type, Is.EqualTo(JTokenType.Integer), "exp は数値");
+                    Assert.That(p[OAuth2AndOIDCConst.nbf].Type, Is.EqualTo(JTokenType.Integer), "nbf は数値");
+                    Assert.That(p[OAuth2AndOIDCConst.iat].Type, Is.EqualTo(JTokenType.Integer), "iat は数値");
+
+                    long nbf = (long)p[OAuth2AndOIDCConst.nbf];
+                    Assert.That(nbf, Is.InRange(before, after), "nbf は今の時刻");
+                    Assert.That((long)p[OAuth2AndOIDCConst.iat], Is.EqualTo(nbf), "iat = nbf");
+                    Assert.That((long)p[OAuth2AndOIDCConst.exp], Is.EqualTo(nbf + 600), "exp = nbf + 有効期間");
+
+                    string iss;
+                    Assert.That(RequestObject.Verify(ro, op, out iss, rsa.ExportParameters(false)), Is.True);
+                    Assert.That(iss, Is.EqualTo("client01"));
+                }
+
+                // 上限は見ない。TimeSpan.MaxValue でも long は溢れない
+                JObject max = PayloadOf(RequestObject.Create("client01", op,
+                    "code", "", "https://rp.example.com/cb", "openid", "state01", "nonce01",
+                    "", "", "", new ClaimsInRO(null, null, null), TimeSpan.MaxValue, rsa.ExportParameters(true)));
+                Assert.That((long)max[OAuth2AndOIDCConst.exp],
+                    Is.EqualTo((long)max[OAuth2AndOIDCConst.nbf] + (long)TimeSpan.MaxValue.TotalSeconds), "TimeSpan.MaxValue");
+
+                // 1 秒未満の有効期間は受けない
+                foreach (TimeSpan lifetime in new TimeSpan[] { TimeSpan.Zero, TimeSpan.FromSeconds(-1), TimeSpan.FromMilliseconds(500) })
+                {
+                    ArgumentOutOfRangeException e = Assert.Throws<ArgumentOutOfRangeException>(() => RequestObject.Create("client01", op,
+                        "code", "", "https://rp.example.com/cb", "openid", "state01", "nonce01",
+                        "", "", "", new ClaimsInRO(null, null, null), lifetime, rsa.ExportParameters(true)), lifetime.ToString());
+                    Assert.That(e.ParamName, Is.EqualTo("lifetime"));
+                }
+            }
+        }
+
+        /// <summary>OIDC：有効期間を受けない Create は、exp・nbf・iat を入れない（従来どおり）。</summary>
+        [Test]
+        [Basis("設計：RequestObject.Create（有効期間を受ける版）の remarks（有効期間を受けない版は、どれも入れない）")]
+        [Basis("#660")]
+        public void Oidc_NoLifetime_NoTimeClaims()
+        {
+            using (RSA rsa = RSA.Create(2048))
+            {
+                JObject p = PayloadOf(RequestObject.Create("client01", "https://op.example.com/",
+                    "code", "", "https://rp.example.com/cb", "openid", "state01", "nonce01",
+                    "", "", "", new ClaimsInRO(null, null, null), rsa.ExportParameters(true)));
+
+                Assert.That(p.ContainsKey(OAuth2AndOIDCConst.exp), Is.False);
+                Assert.That(p.ContainsKey(OAuth2AndOIDCConst.nbf), Is.False);
+                Assert.That(p.ContainsKey(OAuth2AndOIDCConst.iat), Is.False);
             }
         }
 

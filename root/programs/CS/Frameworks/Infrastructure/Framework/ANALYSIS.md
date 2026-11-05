@@ -351,6 +351,13 @@ DCR の口の認可、クライアント登録の持ち方。
   `client_id` を入れない要求オブジェクトは断られる。`Create` は入れる）。**時計のずれは許さない**（`exp`・`nbf` の許容幅は 0。
   `IdToken` などと同じ）ので、CIBA ではクライアントの時計が進んでいると `nbf` で断られる。
   **日付の形の文字列のクレーム**（`"2026-11-05T00:00:00Z"` など）は、日付に変えずに文字列として読む（`DateParseHandling.None`）
+- **`RequestObject.Create` で `exp`・`nbf` を入れるなら、有効期間（`TimeSpan`）を受ける版を使う**（#660）。
+  `nbf`・`iat` に今の時刻（UTC）、`exp` に `nbf` + 有効期間を、**JSON の数値**で入れる（RFC 7519 2。`CreateCiba` は文字列）。
+  FAPI（1.0 Advanced 5.2.3-11・14）はクライアントに `exp`・`nbf` を求めるので、**受けない版で作った要求オブジェクトは、
+  FAPI の認可サーバに断られる。** 受けない版は従来どおりどれも入れない（振る舞いは変えていない）。
+  **有効期間の上限は見ない**（FAPI の 60 分は呼び出し側が守る）。1 秒未満は `ArgumentOutOfRangeException`。
+  **`nbf` は今の時刻ちょうどで、時計のずれの余裕を取らない**ので、認可サーバの時計が遅れていて許容幅なしで確かめる相手には、
+  `nbf` で断られうる（この基盤の `Verify` も許容幅は 0）
 - **`JwtAssertion` は、期待する `iss`・`aud` を受ける版**（`Verify(jwt, iss, auds, out sub, out scopes, out jobj, key)`・
   `VerifyByRsa`・`VerifyByECDsa`）**を使う**（RFC 7523 3。#654）。`iss` の一致、`sub` が在ること、`aud`、`exp`、在れば `nbf` を確かめる。
   **`aud` は唯一の値**（文字列か、要素 1 つの配列）で、それが `auds` のいずれかと一致すること（完全一致で正規化しない）。
