@@ -334,6 +334,17 @@ DCR の口の認可、クライアント登録の持ち方。
   `client_id` を入れない要求オブジェクトは断られる。`Create` は入れる）。**時計のずれは許さない**（`exp`・`nbf` の許容幅は 0。
   `IdToken` などと同じ）ので、CIBA ではクライアントの時計が進んでいると `nbf` で断られる。
   **日付の形の文字列のクレーム**（`"2026-11-05T00:00:00Z"` など）は、日付に変えずに文字列として読む（`DateParseHandling.None`）
+- **`JwtAssertion` は、期待する `iss`・`aud` を受ける版**（`Verify(jwt, iss, auds, out sub, out scopes, out jobj, key)`・
+  `VerifyByRsa`・`VerifyByECDsa`）**を使う**（RFC 7523 3。#654）。`iss` の一致、`sub` が在ること、`aud`、`exp`、在れば `nbf` を確かめる。
+  **`aud` は唯一の値**（文字列か、要素 1 つの配列）で、それが `auds` のいずれかと一致すること（完全一致で正規化しない）。
+  ほかの値も並べた `aud` は断る（別の用途の JWT を流用される攻撃（audience injection）への対策。draft-ietf-oauth-rfc7523bis 4。
+  RFC 7523 3 の 3 は、自分を含めば受ける）。**`auds` には認可サーバの issuer だけを渡すのを推奨する**
+  （トークン エンドポイントの URL などを並べるのは、それを `aud` にする旧いクライアントとの互換のためだけにする）。
+  **`sub` が `client_id` と一致するかは見ない**（クライアント認証なら `client_id`、認可グラントなら利用者。2 の A・B）。
+  **クライアント認証に使うなら、`out sub` が `iss` と一致することを、呼び出し側で必ず照合する**（照合しないと、別の `sub` の JWT が通る）。
+  **`jti` の使い回しも見ない**（呼び出し側の台帳で行う）。**形の壊れた入力も、例外にせず `false`**（`RequestObject` も同じ。`CmnJwtToken.TryVerifySignature`）。
+  **受けない版（`iss`・`aud` を `out` で返すだけ）は `[Obsolete]`（警告）にした**（振る舞いは変えていない。`aud` が配列だと例外になる）。
+  **`Create` は `sub`（= `iss`）を入れる**ようにした（2026/11/05 まで入れていなかった。RFC 7523 3 の 2 で必須）
 - `AccessToken` は `typ`（`at+jwt`）を確認しない（RFC 9068 の形式には準拠していない）。
   JWS の層で照合するなら `JWS.Verify(jwt, typ)`（[`Public/Security/ANALYSIS.md`](../Public/Security/ANALYSIS.md) 4.1 節）
 

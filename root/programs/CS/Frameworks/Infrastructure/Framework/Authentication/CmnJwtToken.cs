@@ -39,6 +39,9 @@
 //*  2026/11/05  玄人 幸道         TryReadNumericDate：小数の double を 17 桁（G17）で読み（net48 の 15 桁の丸めを避ける）、
 //*                                long の範囲を超える値を読めないとした（#647 のレビューの指摘 1・2）
 //*  2026/11/05  玄人 幸道         nbf のクレームを確かめる VerifyNbfClaim を追加（RequestObject が使う。#653）
+//*  2026/11/05  玄人 幸道         クレームの読み取り（ReadPayloadObject・ReadStringClaim・ContainsAud）を、
+//*                                RequestObject から移した（JwtAssertion と共有する。#654）
+//*  2026/11/05  玄人 幸道         形の壊れた JWS でも例外にしない TryVerifySignature を追加（#654 のレビューの指摘 5）
 //**********************************************************************************
 
 using System;
@@ -46,6 +49,7 @@ using System.Linq;
 using System.Text;
 using System.Globalization;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -514,6 +518,137 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 return false;
             }
         }
+        #endregion
+
+        #region クレームの読み取り（RequestObject・JwtAssertion。#653・#654）
+
+        /// <summary>JWS の署名を確かめる（形の壊れた入力でも例外にしない）</summary>
+        /// <param name="jws">検証鍵</param>
+        /// <param name="jwt">JWS（コンパクト形式。3 区切り）</param>
+        /// <returns>署名が正しければ true。形が壊れていれば false</returns>
+        /// <remarks>
+        /// JWS.Verify は、区切りが足りない・Base64url でない・ヘッダが JSON のオブジェクトでない入力で、
+        /// 例外（IndexOutOfRangeException・FormatException・JsonException・NullReferenceException）を投げる。
+        /// 外から来る値を検証する口（要求オブジェクト・アサーション）は、それを false にそろえる（#654 のレビュー）。
+        /// </remarks>
+        internal static bool TryVerifySignature(JWS jws, string jwt)
+        {
+            if (string.IsNullOrEmpty(jwt) || jwt.Split('.').Length != 3)
+            {
+                return false;
+            }
+
+            if (JwtReader.TryReadHeader(jwt) == null)
+            {
+                // ヘッダが読めない（JSON のオブジェクトでない）
+                return false;
+            }
+
+            try
+            {
+                return jws.Verify(jwt);
+            }
+            catch (FormatException)
+            {
+                // Base64url でない
+                return false;
+            }
+            catch (JsonException)
+            {
+                // ヘッダの値の型が違う
+                return false;
+            }
+            catch (CryptographicException)
+            {
+                // 署名の長さが違うなど
+                return false;
+            }
+        }
+
+        /// <summary>JWS のペイロードを読む（署名を確かめた後に呼ぶ）</summary>
+        /// <param name="jws">JWS</param>
+        /// <returns>JSON のオブジェクト。オブジェクトでなければ null</returns>
+        /// <remarks>
+        /// **日付の形の文字列を、日付に変えずに読む**（DateParseHandling.None）。
+        /// 既定（DateTime）では "2026-11-05T00:00:00Z" のような値が JTokenType.Date になり、
+        /// 文字列のクレーム（ReadStringClaim）として読めず、正しい JWT を断ってしまう（#653 ph1 のレビュー）。
+        /// </remarks>
+        internal static JObject ReadPayloadObject(string jws)
+        {
+            try
+            {
+                string jwtPayload = CustomEncode.ByteToString(
+                    CustomEncode.FromBase64UrlString(jws.Split('.')[1]), CustomEncode.UTF_8);
+
+                return JsonConvert.DeserializeObject(jwtPayload,
+                    new JsonSerializerSettings { DateParseHandling = DateParseHandling.None }) as JObject;
+            }
+            catch (JsonException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>文字列のクレームを読む</summary>
+        /// <param name="jobj">ペイロード</param>
+        /// <param name="name">クレーム名</param>
+        /// <returns>空でない文字列なら、その値。無い・空・文字列でないなら null</returns>
+        internal static string ReadStringClaim(JObject jobj, string name)
+        {
+            JToken value = jobj[name];
+
+            if (value == null || value.Type != JTokenType.String)
+            {
+                return null;
+            }
+
+            string text = (string)value;
+            return string.IsNullOrEmpty(text) ? null : text;
+        }
+
+        /// <summary>aud が在るか（文字列、または文字列の配列。RFC 7519 4.1.3）。期待する値があれば照合する</summary>
+        /// <param name="aud">aud のクレーム</param>
+        /// <param name="expectedAuds">期待する aud の集合。null なら照合しない（在ることだけを見る）</param>
+        /// <returns>
+        /// expectedAuds が null なら、空でない値を 1 つ以上含めば true。
+        /// expectedAuds があれば、そのいずれかと一致する値を含めば true（大文字・小文字を区別する完全一致。正規化しない）。
+        /// 配列に文字列でない要素があれば false
+        /// </returns>
+        internal static bool ContainsAud(JToken aud, IEnumerable<string> expectedAuds)
+        {
+            Func<string, bool> match = value => (expectedAuds == null)
+                ? !string.IsNullOrEmpty(value)
+                : expectedAuds.Any(x => !string.IsNullOrEmpty(x) && string.Equals(value, x, StringComparison.Ordinal));
+
+            if (aud == null)
+            {
+                return false;
+            }
+            else if (aud.Type == JTokenType.String)
+            {
+                return match((string)aud);
+            }
+            else if (aud.Type == JTokenType.Array)
+            {
+                bool any = false;
+                foreach (JToken item in (JArray)aud)
+                {
+                    if (item.Type != JTokenType.String)
+                    {
+                        // 文字列でない要素は受けない
+                        return false;
+                    }
+
+                    any |= match((string)item);
+                }
+                return any;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         #endregion
     }
 }

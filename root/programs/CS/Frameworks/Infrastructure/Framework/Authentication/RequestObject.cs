@@ -37,6 +37,8 @@
 //*  2026/11/05  玄人 幸道         Verify・VerifyCiba に、期待する aud を受けて照合するオーバーロードを追加（#653 ph2）
 //*  2026/11/05  玄人 幸道         aud を受ける版の remarks に、正規化しないことを書いた（#653 ph2 のレビューの指摘 3）
 //*  2026/11/05  玄人 幸道         aud を受けない Verify・VerifyCiba を Obsolete（警告）にした（#653）
+//*  2026/11/05  玄人 幸道         クレームの読み取りを CmnJwtToken に移した（JwtAssertion と共有する。#654。振る舞いは変えていない）
+//*  2026/11/05  玄人 幸道         形の壊れた入力でも、例外にせず false を返す（CmnJwtToken.TryVerifySignature。#654 のレビューの指摘 5）
 //**********************************************************************************
 
 using System;
@@ -261,7 +263,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             JWS_RS256_Param jwtRS256 = new JWS_RS256_Param(rsaPublicKey);
 
-            if (!jwtRS256.Verify(ro))
+            if (!CmnJwtToken.TryVerifySignature(jwtRS256, ro))
             {
                 // JWTの署名検証に失敗
                 return false;
@@ -486,7 +488,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             JWS_ES256_Param jwtES256 = new JWS_ES256_Param(ecPublicKey, false);
 
-            if (!jwtES256.Verify(ro))
+            if (!CmnJwtToken.TryVerifySignature(jwtES256, ro))
             {
                 // JWTの署名検証に失敗
                 return false;
@@ -536,89 +538,30 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #region 共通部分（#653）
 
-        /// <summary>ペイロードを読む（署名を確かめた後に呼ぶ）</summary>
+        /// <summary>ペイロードを読む（署名を確かめた後に呼ぶ。CmnJwtToken.ReadPayloadObject）</summary>
         /// <param name="ro">要求オブジェクト（JWS）</param>
         /// <returns>JSON のオブジェクト。オブジェクトでなければ null</returns>
-        /// <remarks>
-        /// **日付の形の文字列を、日付に変えずに読む**（DateParseHandling.None）。
-        /// 既定（DateTime）では "2026-11-05T00:00:00Z" のような値が JTokenType.Date になり、
-        /// 文字列のクレーム（ReadString）として読めず、正しい要求オブジェクトを断ってしまう（#653 ph1 のレビュー）。
-        /// </remarks>
         private static JObject ReadPayload(string ro)
         {
-            try
-            {
-                string jwtPayload = CustomEncode.ByteToString(
-                    CustomEncode.FromBase64UrlString(ro.Split('.')[1]), CustomEncode.UTF_8);
-
-                return JsonConvert.DeserializeObject(jwtPayload,
-                    new JsonSerializerSettings { DateParseHandling = DateParseHandling.None }) as JObject;
-            }
-            catch (JsonException)
-            {
-                return null;
-            }
+            return CmnJwtToken.ReadPayloadObject(ro);
         }
 
-        /// <summary>文字列のクレームを読む</summary>
+        /// <summary>文字列のクレームを読む（CmnJwtToken.ReadStringClaim）</summary>
         /// <param name="jobj">ペイロード</param>
         /// <param name="name">クレーム名</param>
         /// <returns>空でない文字列なら、その値。無い・空・文字列でないなら null</returns>
         private static string ReadString(JObject jobj, string name)
         {
-            JToken value = jobj[name];
-
-            if (value == null || value.Type != JTokenType.String)
-            {
-                return null;
-            }
-
-            string text = (string)value;
-            return string.IsNullOrEmpty(text) ? null : text;
+            return CmnJwtToken.ReadStringClaim(jobj, name);
         }
 
-        /// <summary>aud が在るか（文字列、または文字列の配列。RFC 7519 4.1.3）。期待する値があれば照合する</summary>
+        /// <summary>aud が在るか。期待する値があれば照合する（CmnJwtToken.ContainsAud）</summary>
         /// <param name="aud">aud のクレーム</param>
         /// <param name="expectedAud">期待する aud。null なら照合しない（在ることだけを見る）</param>
-        /// <returns>
-        /// expectedAud が null なら、空でない値を 1 つ以上含めば true。
-        /// expectedAud があれば、それと一致する値を含めば true（大文字・小文字を区別する完全一致）
-        /// </returns>
+        /// <returns>bool</returns>
         private static bool HasAud(JToken aud, string expectedAud)
         {
-            if (aud == null)
-            {
-                return false;
-            }
-            else if (aud.Type == JTokenType.String)
-            {
-                string value = (string)aud;
-                return expectedAud == null
-                    ? !string.IsNullOrEmpty(value)
-                    : string.Equals(value, expectedAud, StringComparison.Ordinal);
-            }
-            else if (aud.Type == JTokenType.Array)
-            {
-                bool any = false;
-                foreach (JToken item in (JArray)aud)
-                {
-                    if (item.Type != JTokenType.String)
-                    {
-                        // 文字列でない要素は受けない
-                        return false;
-                    }
-
-                    string value = (string)item;
-                    any |= expectedAud == null
-                        ? !string.IsNullOrEmpty(value)
-                        : string.Equals(value, expectedAud, StringComparison.Ordinal);
-                }
-                return any;
-            }
-            else
-            {
-                return false;
-            }
+            return CmnJwtToken.ContainsAud(aud, (expectedAud == null) ? null : new string[] { expectedAud });
         }
 
         /// <summary>exp・nbf（と iat）を確かめる</summary>
