@@ -30,6 +30,7 @@
 //*  2026/11/05  玄人 幸道         期待する aud を受ける版のテストを追加（#653 ph2）
 //*  2026/11/05  玄人 幸道         aud の照合のケースを足し、OIDC と CIBA をそろえた（#653 ph2 のレビューの指摘 1・2・3）
 //*  2026/11/05  玄人 幸道         aud を受けない版の Obsolete の警告（CS0618）を抑えた（#653）
+//*  2026/11/05  玄人 幸道         形の壊れた入力を、例外にせず false にすることを足した（#654 のレビューの指摘 5）
 //**********************************************************************************
 
 using System;
@@ -419,6 +420,12 @@ namespace TestFramework.Authentication
                 Assert.That(RequestObject.Verify(sign(p => p.Remove(OAuth2AndOIDCConst.scope)), op, out iss, pub),
                     Is.False, "ほかの必須（scope）が無い");
 
+                foreach (string broken in JwtAssertionTests.BrokenJwts())
+                {
+                    Assert.That(RequestObject.Verify(broken, op, out iss, pub), Is.False, "形が壊れている : " + (broken ?? "null"));
+                    Assert.That(RequestObject.Verify(broken, out iss, pub), Is.False, "形が壊れている（aud を受けない版） : " + (broken ?? "null"));
+                }
+
                 Assert.Throws<ArgumentNullException>(() => RequestObject.Verify(same, null, out iss, pub), "期待する aud が null");
                 Assert.Throws<ArgumentNullException>(() => RequestObject.Verify(same, "", out iss, pub), "期待する aud が空");
             }
@@ -471,6 +478,11 @@ namespace TestFramework.Authentication
             Assert.That(RequestObject.VerifyCiba(sign(p => p.Remove(OAuth2AndOIDCConst.aud)), op, out iss, pub), Is.False, "aud が無い");
             Assert.That(RequestObject.VerifyCiba(sign(p => p.Remove(OAuth2AndOIDCConst.jti)), op, out iss, pub),
                 Is.False, "ほかの必須（jti）が無い");
+
+            foreach (string broken in JwtAssertionTests.BrokenJwts())
+            {
+                Assert.That(RequestObject.VerifyCiba(broken, op, out iss, pub), Is.False, "形が壊れている : " + (broken ?? "null"));
+            }
 
             Assert.Throws<ArgumentNullException>(() => RequestObject.VerifyCiba(same, null, out iss, pub), "期待する aud が null");
             Assert.Throws<ArgumentNullException>(() => RequestObject.VerifyCiba(same, "", out iss, pub), "期待する aud が空");
