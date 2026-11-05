@@ -27,6 +27,7 @@
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //*  2026/11/05  玄人 幸道         必須のクレーム・時刻のクレームを確かめるテストを追加（#653）
 //*  2026/11/05  玄人 幸道         日付の形の文字列のクレームを通すことを足した（#653 ph1 のレビューの指摘 1）
+//*  2026/11/05  玄人 幸道         期待する aud を受ける版のテストを追加（#653 ph2）
 //**********************************************************************************
 
 using System;
@@ -361,6 +362,100 @@ namespace TestFramework.Authentication
                 m.Apply(p);
                 Assert.That(RequestObject.VerifyCiba(jws.Create(p.ToString(Formatting.None)), out iss, pub), Is.False, m.Label);
             }
+        }
+
+        /// <summary>
+        /// OIDC：aud を受ける版は、aud が期待する値と一致する（配列なら含む）ものだけを通す。
+        /// 大文字・小文字の違い・含まない配列は false。ほかの必須のクレームも、aud を受けない版と同じく確かめる。
+        /// aud を受けない版は、aud の値を照合しない。
+        /// </summary>
+        [Test]
+        [Basis("RFC 9101 4（aud は認可サーバの issuer）・RFC 7519 4.1.3（aud は StringOrURI か、その配列。自分を含まなければ断る）")]
+        [Basis("設計：RequestObject.Verify（aud を受けない版）の remarks（aud の値は照合しない）")]
+        [Basis("#653")]
+        public void Oidc_Aud()
+        {
+            const string op = "https://op.example.com/";
+
+            using (RSA rsa = RSA.Create(2048))
+            {
+                JWS_RS256_Param jws = new JWS_RS256_Param(rsa.ExportParameters(true));
+                RSAParameters pub = rsa.ExportParameters(false);
+                string pubJwk = new RsaPublicKeyConverter().ParamToJwk(pub);
+                string iss;
+
+                Func<Action<JObject>, string> sign = m =>
+                {
+                    JObject p = RequestObjectTests.OidcPayload();
+                    m(p);
+                    return jws.Create(p.ToString(Formatting.None));
+                };
+
+                string same = sign(p => { });
+                Assert.That(RequestObject.Verify(same, op, out iss, pub), Is.True, "一致");
+                Assert.That(iss, Is.EqualTo("client01"));
+                Assert.That(RequestObject.Verify(same, op, out iss, pubJwk), Is.True, "一致（JWK の版）");
+                Assert.That(RequestObject.Verify(sign(p => p[OAuth2AndOIDCConst.aud] = new JArray("other", op)), op, out iss, pub),
+                    Is.True, "配列が含む");
+
+                string other = sign(p => p[OAuth2AndOIDCConst.aud] = "https://other.example.com/");
+                Assert.That(RequestObject.Verify(other, op, out iss, pub), Is.False, "違う");
+                Assert.That(RequestObject.Verify(other, op, out iss, pubJwk), Is.False, "違う（JWK の版）");
+                Assert.That(RequestObject.Verify(other, out iss, pub), Is.True, "aud を受けない版は照合しない");
+                Assert.That(RequestObject.Verify(sign(p => p[OAuth2AndOIDCConst.aud] = op.ToUpperInvariant()), op, out iss, pub),
+                    Is.False, "大文字・小文字が違う");
+                Assert.That(RequestObject.Verify(sign(p => p[OAuth2AndOIDCConst.aud] = new JArray("a", "b")), op, out iss, pub),
+                    Is.False, "配列が含まない");
+                Assert.That(RequestObject.Verify(sign(p => p.Remove(OAuth2AndOIDCConst.aud)), op, out iss, pub), Is.False, "aud が無い");
+                Assert.That(RequestObject.Verify(sign(p => p.Remove(OAuth2AndOIDCConst.scope)), op, out iss, pub),
+                    Is.False, "ほかの必須（scope）が無い");
+
+                Assert.Throws<ArgumentNullException>(() => RequestObject.Verify(same, null, out iss, pub), "期待する aud が null");
+                Assert.Throws<ArgumentNullException>(() => RequestObject.Verify(same, "", out iss, pub), "期待する aud が空");
+            }
+        }
+
+        /// <summary>
+        /// CIBA：aud を受ける版は、aud が期待する値（OP の Issuer Identifier）と一致する（配列なら含む）ものだけを通す。
+        /// ほかの必須のクレームも、aud を受けない版と同じく確かめる。aud を受けない版は、aud の値を照合しない。
+        /// </summary>
+        [Test]
+        [Platform("Win")]
+        [Basis("CIBA Core 7.1.1（aud は OP の Issuer Identifier）・RFC 7519 4.1.3（自分を含まなければ断る）")]
+        [Basis("設計：RequestObject.VerifyCiba（aud を受けない版）の remarks（aud の値は照合しない）")]
+        [Basis("#653")]
+        public void Ciba_Aud()
+        {
+            const string op = "https://op.example.com/";
+
+            JWS_ES256_X509 jws = new JWS_ES256_X509(TestCertificates.EcdsaPfx256, TestCertificates.Password);
+            ECParameters pub = TestCertificates.LoadPfx(TestCertificates.EcdsaPfx256).GetECDsaPublicKey().ExportParameters(false);
+            string pubJwk = new EccPublicKeyConverter().ParamToJwk(pub);
+            string iss;
+
+            Func<Action<JObject>, string> sign = m =>
+            {
+                JObject p = RequestObjectTests.CibaPayload();
+                m(p);
+                return jws.Create(p.ToString(Formatting.None));
+            };
+
+            string same = sign(p => { });
+            Assert.That(RequestObject.VerifyCiba(same, op, out iss, pub), Is.True, "一致");
+            Assert.That(iss, Is.EqualTo("client01"));
+            Assert.That(RequestObject.VerifyCiba(same, op, out iss, pubJwk), Is.True, "一致（JWK の版）");
+            Assert.That(RequestObject.VerifyCiba(sign(p => p[OAuth2AndOIDCConst.aud] = new JArray(op, "other")), op, out iss, pub),
+                Is.True, "配列が含む");
+
+            string other = sign(p => p[OAuth2AndOIDCConst.aud] = "https://op.example.com/ros");
+            Assert.That(RequestObject.VerifyCiba(other, op, out iss, pub), Is.False, "違う（エンドポイントの URL）");
+            Assert.That(RequestObject.VerifyCiba(other, op, out iss, pubJwk), Is.False, "違う（JWK の版）");
+            Assert.That(RequestObject.VerifyCiba(other, out iss, pub), Is.True, "aud を受けない版は照合しない");
+            Assert.That(RequestObject.VerifyCiba(sign(p => p.Remove(OAuth2AndOIDCConst.jti)), op, out iss, pub),
+                Is.False, "ほかの必須（jti）が無い");
+
+            Assert.Throws<ArgumentNullException>(() => RequestObject.VerifyCiba(same, null, out iss, pub), "期待する aud が null");
+            Assert.Throws<ArgumentNullException>(() => RequestObject.VerifyCiba(same, "", out iss, pub), "期待する aud が空");
         }
 
         #endregion

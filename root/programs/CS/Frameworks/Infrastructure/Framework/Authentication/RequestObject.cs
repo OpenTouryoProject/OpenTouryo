@@ -34,6 +34,7 @@
 //*                                client_notification_token・binding_message を外し、ヒントはちょうど 1 つ）
 //*  2026/11/05  玄人 幸道         ペイロードを、日付の形の文字列を日付に変えずに読む（DateParseHandling.None）。
 //*                                iat の確認を VerifyTimeClaims にまとめた（#653 ph1 のレビューの指摘 1・2）
+//*  2026/11/05  玄人 幸道         Verify・VerifyCiba に、期待する aud を受けて照合するオーバーロードを追加（#653 ph2）
 //**********************************************************************************
 
 using System;
@@ -199,10 +200,57 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// - **state・nonce は必須にしない**（どちらも RFC 6749・OIDC Core の認可コード フローでは任意。Create も空なら入れない）
         /// - exp・nbf は、**在れば**値を確かめる（RFC 7519 4.1.4・4.1.5。読み方は CmnJwtToken.TryReadNumericDate。#647）。
         ///   Create は exp を入れないので、無くてもよい
-        /// - **aud の値は照合しない**（期待する値を受けない版のため）
+        /// - **aud の値は照合しない**（期待する値を受けない版のため）。**照合するなら aud を受ける版を使う**（#653 ph2）
         /// 欠けている・読めない・期限の過ぎたものは false（例外にしない）。iss は、署名が正しければ読めた値を返す。
         /// </remarks>
         public static bool Verify(string ro, out string iss, RSAParameters rsaPublicKey)
+        {
+            return RequestObject.VerifyCore(ro, null, out iss, rsaPublicKey);
+        }
+
+        /// <summary>Verify（期待する aud と照合する）</summary>
+        /// <param name="ro">string</param>
+        /// <param name="aud">期待する aud（認可サーバの issuer。RFC 9101 4）</param>
+        /// <param name="iss">string</param>
+        /// <param name="jwkPublicKey">RS256用のJWK公開鍵</param>
+        /// <returns>検証結果</returns>
+        /// <remarks>aud を受けない版と同じ確認に加えて、aud を照合する（RSAParameters の版を参照）。</remarks>
+        public static bool Verify(string ro, string aud, out string iss, string jwkPublicKey)
+        {
+            RsaPublicKeyConverter rpkc = new RsaPublicKeyConverter();
+            return RequestObject.Verify(ro, aud, out iss,
+                rpkc.JwkToParam(jwkPublicKey));
+        }
+
+        /// <summary>Verify（期待する aud と照合する）</summary>
+        /// <param name="ro">string</param>
+        /// <param name="aud">期待する aud（認可サーバの issuer。RFC 9101 4）</param>
+        /// <param name="iss">string</param>
+        /// <param name="rsaPublicKey">RS256用のRSAParameters公開鍵</param>
+        /// <returns>検証結果</returns>
+        /// <remarks>
+        /// aud を受けない版と同じ確認に加えて、**aud が期待する値と一致する**（配列なら、それを含む）ことを確かめる（#653 ph2）。
+        /// 比較は大文字・小文字を区別する完全一致（RFC 7519 4.1.3 : StringOrURI の比較）。
+        /// RFC 9101 4 は、aud を認可サーバの issuer（RFC 8414）にすると書く。何を期待するかは呼び出し側が決める。
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">aud が null か空</exception>
+        public static bool Verify(string ro, string aud, out string iss, RSAParameters rsaPublicKey)
+        {
+            if (string.IsNullOrEmpty(aud))
+            {
+                throw new ArgumentNullException(nameof(aud));
+            }
+
+            return RequestObject.VerifyCore(ro, aud, out iss, rsaPublicKey);
+        }
+
+        /// <summary>Verify の本体</summary>
+        /// <param name="ro">string</param>
+        /// <param name="expectedAud">期待する aud。null なら照合しない</param>
+        /// <param name="iss">string</param>
+        /// <param name="rsaPublicKey">RS256用のRSAParameters公開鍵</param>
+        /// <returns>検証結果</returns>
+        private static bool VerifyCore(string ro, string expectedAud, out string iss, RSAParameters rsaPublicKey)
         {
             iss = "";
 
@@ -225,7 +273,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             iss = RequestObject.ReadString(jobj, OAuth2AndOIDCConst.iss) ?? "";
 
             if (string.IsNullOrEmpty(iss) ||
-                !RequestObject.HasAud(jobj[OAuth2AndOIDCConst.aud]) ||
+                !RequestObject.HasAud(jobj[OAuth2AndOIDCConst.aud], expectedAud) ||
                 RequestObject.ReadString(jobj, OAuth2AndOIDCConst.response_type) == null ||
                 RequestObject.ReadString(jobj, OAuth2AndOIDCConst.client_id) == null ||
                 RequestObject.ReadString(jobj, OAuth2AndOIDCConst.scope) == null)
@@ -374,10 +422,57 @@ namespace Touryo.Infrastructure.Framework.Authentication
         ///   iat は NumericDate として読めることだけを見る（どれだけ古いかは見ない）
         /// - **client_notification_token・binding_message は必須にしない**（CIBA Core 7.1 : 前者は Ping・Push のときだけ必須、後者は任意。
         ///   どの方式で登録されたクライアントかは、この関数には分からない）
-        /// - **aud の値は照合しない**（期待する値を受けない版のため）
+        /// - **aud の値は照合しない**（期待する値を受けない版のため）。**照合するなら aud を受ける版を使う**（#653 ph2）
         /// 欠けている・読めない・期限の過ぎたものは false（例外にしない）。iss は、署名が正しければ読めた値を返す。
         /// </remarks>
         public static bool VerifyCiba(string ro, out string iss, ECParameters ecPublicKey)
+        {
+            return RequestObject.VerifyCibaCore(ro, null, out iss, ecPublicKey);
+        }
+
+        /// <summary>VerifyCiba（期待する aud と照合する）</summary>
+        /// <param name="ro">string</param>
+        /// <param name="aud">期待する aud（OP の Issuer Identifier。CIBA Core 7.1.1）</param>
+        /// <param name="iss">string</param>
+        /// <param name="jwkPublicKey">ES256用のJWK公開鍵</param>
+        /// <returns>検証結果</returns>
+        /// <remarks>aud を受けない版と同じ確認に加えて、aud を照合する（ECParameters の版を参照）。</remarks>
+        public static bool VerifyCiba(string ro, string aud, out string iss, string jwkPublicKey)
+        {
+            EccPublicKeyConverter epkc = new EccPublicKeyConverter();
+            return RequestObject.VerifyCiba(ro, aud, out iss,
+                epkc.JwkToParam(jwkPublicKey));
+        }
+
+        /// <summary>VerifyCiba（期待する aud と照合する）</summary>
+        /// <param name="ro">string</param>
+        /// <param name="aud">期待する aud（OP の Issuer Identifier。CIBA Core 7.1.1）</param>
+        /// <param name="iss">string</param>
+        /// <param name="ecPublicKey">ES256用のECParameters公開鍵</param>
+        /// <returns>検証結果</returns>
+        /// <remarks>
+        /// aud を受けない版と同じ確認に加えて、**aud が期待する値と一致する**（配列なら、それを含む）ことを確かめる（#653 ph2）。
+        /// 比較は大文字・小文字を区別する完全一致（RFC 7519 4.1.3 : StringOrURI の比較）。
+        /// CIBA Core 7.1.1 は、aud に OP の Issuer Identifier を入れるとする。
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">aud が null か空</exception>
+        public static bool VerifyCiba(string ro, string aud, out string iss, ECParameters ecPublicKey)
+        {
+            if (string.IsNullOrEmpty(aud))
+            {
+                throw new ArgumentNullException(nameof(aud));
+            }
+
+            return RequestObject.VerifyCibaCore(ro, aud, out iss, ecPublicKey);
+        }
+
+        /// <summary>VerifyCiba の本体</summary>
+        /// <param name="ro">string</param>
+        /// <param name="expectedAud">期待する aud。null なら照合しない</param>
+        /// <param name="iss">string</param>
+        /// <param name="ecPublicKey">ES256用のECParameters公開鍵</param>
+        /// <returns>検証結果</returns>
+        private static bool VerifyCibaCore(string ro, string expectedAud, out string iss, ECParameters ecPublicKey)
         {
             iss = "";
 
@@ -400,7 +495,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             iss = RequestObject.ReadString(jobj, OAuth2AndOIDCConst.iss) ?? "";
 
             if (string.IsNullOrEmpty(iss) ||
-                !RequestObject.HasAud(jobj[OAuth2AndOIDCConst.aud]) ||
+                !RequestObject.HasAud(jobj[OAuth2AndOIDCConst.aud], expectedAud) ||
                 RequestObject.ReadString(jobj, OAuth2AndOIDCConst.jti) == null ||
                 RequestObject.ReadString(jobj, OAuth2AndOIDCConst.scope) == null)
             {
@@ -474,10 +569,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
             return string.IsNullOrEmpty(text) ? null : text;
         }
 
-        /// <summary>aud が在るか（文字列、または文字列の配列。RFC 7519 4.1.3）</summary>
+        /// <summary>aud が在るか（文字列、または文字列の配列。RFC 7519 4.1.3）。期待する値があれば照合する</summary>
         /// <param name="aud">aud のクレーム</param>
-        /// <returns>空でない値を 1 つ以上含めば true</returns>
-        private static bool HasAud(JToken aud)
+        /// <param name="expectedAud">期待する aud。null なら照合しない（在ることだけを見る）</param>
+        /// <returns>
+        /// expectedAud が null なら、空でない値を 1 つ以上含めば true。
+        /// expectedAud があれば、それと一致する値を含めば true（大文字・小文字を区別する完全一致）
+        /// </returns>
+        private static bool HasAud(JToken aud, string expectedAud)
         {
             if (aud == null)
             {
@@ -485,7 +584,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
             else if (aud.Type == JTokenType.String)
             {
-                return !string.IsNullOrEmpty((string)aud);
+                string value = (string)aud;
+                return expectedAud == null
+                    ? !string.IsNullOrEmpty(value)
+                    : string.Equals(value, expectedAud, StringComparison.Ordinal);
             }
             else if (aud.Type == JTokenType.Array)
             {
@@ -497,7 +599,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
                         // 文字列でない要素は受けない
                         return false;
                     }
-                    any |= !string.IsNullOrEmpty((string)item);
+
+                    string value = (string)item;
+                    any |= expectedAud == null
+                        ? !string.IsNullOrEmpty(value)
+                        : string.Equals(value, expectedAud, StringComparison.Ordinal);
                 }
                 return any;
             }
