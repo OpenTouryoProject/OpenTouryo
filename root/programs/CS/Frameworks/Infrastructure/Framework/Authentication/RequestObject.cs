@@ -35,6 +35,8 @@
 //*  2026/11/05  玄人 幸道         ペイロードを、日付の形の文字列を日付に変えずに読む（DateParseHandling.None）。
 //*                                iat の確認を VerifyTimeClaims にまとめた（#653 ph1 のレビューの指摘 1・2）
 //*  2026/11/05  玄人 幸道         Verify・VerifyCiba に、期待する aud を受けて照合するオーバーロードを追加（#653 ph2）
+//*  2026/11/05  玄人 幸道         aud を受ける版の remarks に、正規化しないことを書いた（#653 ph2 のレビューの指摘 3）
+//*  2026/11/05  玄人 幸道         aud を受けない Verify・VerifyCiba を Obsolete（警告）にした（#653）
 //**********************************************************************************
 
 using System;
@@ -179,6 +181,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="iss">string</param>
         /// <param name="jwkPublicKey">RS256用のJWK公開鍵</param>
         /// <returns>検証結果</returns>
+        [Obsolete("This overload does not verify the aud claim, please use the overload that takes the expected aud instead.")]
         public static bool Verify(string ro, out string iss, string jwkPublicKey)
         {
             RsaPublicKeyConverter rpkc = new RsaPublicKeyConverter();
@@ -203,6 +206,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// - **aud の値は照合しない**（期待する値を受けない版のため）。**照合するなら aud を受ける版を使う**（#653 ph2）
         /// 欠けている・読めない・期限の過ぎたものは false（例外にしない）。iss は、署名が正しければ読めた値を返す。
         /// </remarks>
+        [Obsolete("This overload does not verify the aud claim, please use the overload that takes the expected aud instead.")]
         public static bool Verify(string ro, out string iss, RSAParameters rsaPublicKey)
         {
             return RequestObject.VerifyCore(ro, null, out iss, rsaPublicKey);
@@ -231,6 +235,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <remarks>
         /// aud を受けない版と同じ確認に加えて、**aud が期待する値と一致する**（配列なら、それを含む）ことを確かめる（#653 ph2）。
         /// 比較は大文字・小文字を区別する完全一致（RFC 7519 4.1.3 : StringOrURI の比較）。
+        /// **正規化はしない**（末尾のスラッシュの有無も別物）ので、メタデータの issuer の文字列をそのまま渡す。
         /// RFC 9101 4 は、aud を認可サーバの issuer（RFC 8414）にすると書く。何を期待するかは呼び出し側が決める。
         /// </remarks>
         /// <exception cref="ArgumentNullException">aud が null か空</exception>
@@ -400,6 +405,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="iss">string</param>
         /// <param name="jwkPublicKey">ES256用のJWK公開鍵</param>
         /// <returns>検証結果</returns>
+        [Obsolete("This overload does not verify the aud claim, please use the overload that takes the expected aud instead.")]
         public static bool VerifyCiba(string ro, out string iss, string jwkPublicKey)
         {
             EccPublicKeyConverter epkc = new EccPublicKeyConverter();
@@ -425,6 +431,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// - **aud の値は照合しない**（期待する値を受けない版のため）。**照合するなら aud を受ける版を使う**（#653 ph2）
         /// 欠けている・読めない・期限の過ぎたものは false（例外にしない）。iss は、署名が正しければ読めた値を返す。
         /// </remarks>
+        [Obsolete("This overload does not verify the aud claim, please use the overload that takes the expected aud instead.")]
         public static bool VerifyCiba(string ro, out string iss, ECParameters ecPublicKey)
         {
             return RequestObject.VerifyCibaCore(ro, null, out iss, ecPublicKey);
@@ -453,6 +460,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <remarks>
         /// aud を受けない版と同じ確認に加えて、**aud が期待する値と一致する**（配列なら、それを含む）ことを確かめる（#653 ph2）。
         /// 比較は大文字・小文字を区別する完全一致（RFC 7519 4.1.3 : StringOrURI の比較）。
+        /// **正規化はしない**（末尾のスラッシュの有無も別物）ので、メタデータの issuer の文字列をそのまま渡す。
         /// CIBA Core 7.1.1 は、aud に OP の Issuer Identifier を入れるとする。
         /// </remarks>
         /// <exception cref="ArgumentNullException">aud が null か空</exception>

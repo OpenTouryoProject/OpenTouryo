@@ -28,6 +28,8 @@
 //*  2026/11/05  玄人 幸道         必須のクレーム・時刻のクレームを確かめるテストを追加（#653）
 //*  2026/11/05  玄人 幸道         日付の形の文字列のクレームを通すことを足した（#653 ph1 のレビューの指摘 1）
 //*  2026/11/05  玄人 幸道         期待する aud を受ける版のテストを追加（#653 ph2）
+//*  2026/11/05  玄人 幸道         aud の照合のケースを足し、OIDC と CIBA をそろえた（#653 ph2 のレビューの指摘 1・2・3）
+//*  2026/11/05  玄人 幸道         aud を受けない版の Obsolete の警告（CS0618）を抑えた（#653）
 //**********************************************************************************
 
 using System;
@@ -46,6 +48,9 @@ using TestCommon;
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Public.Security.Jwt;
 using Touryo.Infrastructure.Public.Str;
+
+// aud を受けない Verify・VerifyCiba は Obsolete（#653）だが、利用者が使い続ける版なので、振る舞いを確かめ続ける。
+#pragma warning disable CS0618
 
 namespace TestFramework.Authentication
 {
@@ -406,6 +411,10 @@ namespace TestFramework.Authentication
                     Is.False, "大文字・小文字が違う");
                 Assert.That(RequestObject.Verify(sign(p => p[OAuth2AndOIDCConst.aud] = new JArray("a", "b")), op, out iss, pub),
                     Is.False, "配列が含まない");
+                Assert.That(RequestObject.Verify(sign(p => p[OAuth2AndOIDCConst.aud] = new JArray(op, 1)), op, out iss, pub),
+                    Is.False, "配列が含むが、文字列でない要素もある");
+                Assert.That(RequestObject.Verify(sign(p => p[OAuth2AndOIDCConst.aud] = "https://op.example.com"), op, out iss, pub),
+                    Is.False, "末尾のスラッシュが違う（正規化しない）");
                 Assert.That(RequestObject.Verify(sign(p => p.Remove(OAuth2AndOIDCConst.aud)), op, out iss, pub), Is.False, "aud が無い");
                 Assert.That(RequestObject.Verify(sign(p => p.Remove(OAuth2AndOIDCConst.scope)), op, out iss, pub),
                     Is.False, "ほかの必須（scope）が無い");
@@ -451,6 +460,15 @@ namespace TestFramework.Authentication
             Assert.That(RequestObject.VerifyCiba(other, op, out iss, pub), Is.False, "違う（エンドポイントの URL）");
             Assert.That(RequestObject.VerifyCiba(other, op, out iss, pubJwk), Is.False, "違う（JWK の版）");
             Assert.That(RequestObject.VerifyCiba(other, out iss, pub), Is.True, "aud を受けない版は照合しない");
+            Assert.That(RequestObject.VerifyCiba(sign(p => p[OAuth2AndOIDCConst.aud] = op.ToUpperInvariant()), op, out iss, pub),
+                Is.False, "大文字・小文字が違う");
+            Assert.That(RequestObject.VerifyCiba(sign(p => p[OAuth2AndOIDCConst.aud] = new JArray("a", "b")), op, out iss, pub),
+                Is.False, "配列が含まない");
+            Assert.That(RequestObject.VerifyCiba(sign(p => p[OAuth2AndOIDCConst.aud] = new JArray(op, 1)), op, out iss, pub),
+                Is.False, "配列が含むが、文字列でない要素もある");
+            Assert.That(RequestObject.VerifyCiba(sign(p => p[OAuth2AndOIDCConst.aud] = "https://op.example.com"), op, out iss, pub),
+                Is.False, "末尾のスラッシュが違う（正規化しない）");
+            Assert.That(RequestObject.VerifyCiba(sign(p => p.Remove(OAuth2AndOIDCConst.aud)), op, out iss, pub), Is.False, "aud が無い");
             Assert.That(RequestObject.VerifyCiba(sign(p => p.Remove(OAuth2AndOIDCConst.jti)), op, out iss, pub),
                 Is.False, "ほかの必須（jti）が無い");
 

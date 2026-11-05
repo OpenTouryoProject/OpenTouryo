@@ -322,10 +322,13 @@ DCR の口の認可、クライアント登録の持ち方。
   `Create` も空なら入れない）で、`exp`・`nbf` は在れば確かめる。`VerifyCiba` は `aud`・`iss`・`exp`・`iat`・`nbf`・`jti`・`scope`
   （CIBA Core 7.1.1・7.1）と、**ヒント（`login_hint_token`・`id_token_hint`・`login_hint`）がちょうど 1 つ**。
   **`client_notification_token`・`binding_message` は必須にしない**（Ping・Push のときだけ必須／任意）。
-  **既存の版は `aud` の値を照合しない**（期待する値を受けないため）。
+  **既存の版は `aud` の値を照合しない**（期待する値を受けないため）。**既存の版は `[Obsolete]`（警告。CS0618）にした**
+  （`aud` を見なければ、同じクライアントが別の宛先に向けて署名したものも通るため。RFC 9101 10.8）。振る舞いは変えていない。
   **照合するなら、期待する `aud` を受ける版**（`Verify(ro, aud, out iss, key)`・`VerifyCiba(ro, aud, out iss, key)`）**を使う**（#653 ph2）。
   完全一致（大文字・小文字を区別）で、配列ならそれを含むこと。期待する値は、RFC 9101 4・CIBA Core 7.1.1 では
   **認可サーバ（OP）の issuer**（エンドポイントの URL ではない）。null・空を渡すと `ArgumentNullException`。
+  **正規化はしない**（末尾のスラッシュの有無も別物）ので、**メタデータ（RFC 8414・Discovery）の `issuer` の文字列をそのまま渡す**。
+  配列に文字列でない要素があれば、期待する値を含んでいても `false`（ph1 から同じ）
   **欠けている・読めない・期限の過ぎたものは `false`**（例外にしない）。受け入れる範囲が狭まるので、利用側は E2E で確かめる。
   **移行のときに当たりやすいのは次の 2 つ。** `Verify` で **`client_id` が新たに必須**になった（以前は見ていなかったので、
   `client_id` を入れない要求オブジェクトは断られる。`Create` は入れる）。**時計のずれは許さない**（`exp`・`nbf` の許容幅は 0。
