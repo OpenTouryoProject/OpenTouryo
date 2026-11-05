@@ -9,6 +9,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/11/05  玄人 幸道         新規作成（#649）。React 版（src/touryo/oauth_oidc.ts）を C# に移した
 //*  2026/11/05  玄人 幸道         リソース サーバへの要求（Bearer）を作る CreateHttpRequestAsync を追加（#649）
+//*  2026/11/05  玄人 幸道         id_token の exp を、小数の NumericDate でも読むようにした（#647 のレビューの指摘）
 //**********************************************************************************
 
 using System.Buffers.Text;
@@ -225,8 +226,10 @@ public class OAuthOidc
             throw new InvalidOperationException("id_token の aud に、このクライアントが含まれていません。");
         }
 
+        // **exp は小数でもよい**（RFC 7519 2 の NumericDate。#647）。GetInt64 だと小数で例外になる
         if (!claims.TryGetProperty("exp", out JsonElement exp) || exp.ValueKind != JsonValueKind.Number
-            || exp.GetInt64() < DateTimeOffset.UtcNow.ToUnixTimeSeconds())
+            || !exp.TryGetDecimal(out decimal expSeconds)
+            || expSeconds < DateTimeOffset.UtcNow.ToUnixTimeSeconds())
         {
             throw new InvalidOperationException("id_token の期限（exp）が切れています。");
         }

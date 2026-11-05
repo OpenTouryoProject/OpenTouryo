@@ -309,6 +309,10 @@ DCR の口の認可、クライアント登録の持ち方。
 - **`exp`・`nbf`・`iat`（NumericDate）は、小数・指数表記でも読む**（RFC 7519 2。#647）。
   読み方は `CmnJwtToken.TryReadNumericDate` の 1 か所（`decimal`・`CultureInfo.InvariantCulture`）。
   **小数はそのまま、いまの時刻（整数の秒）と比べる**ので、切り捨て・切り上げてから比べるのと同じ結果になり、有効期間は広がらない。
+  **小数の double は 17 桁（`G17`）で字面にしてから読む**（net48 の既定の書式は 15 桁で、10 桁の秒だと小数が丸まり、
+  `exp` が最大 1 秒長く通るため。net48 と net10.0 で結果を揃える）。
+  **`long` の範囲を超える値は読めない**（以前の `long.Parse` が受けなかった範囲。極端に遠い未来の `exp` を通さない）。
+  **`exp` と同じ秒は通す**（従来どおり。RFC 7519 4.1.4 の「`exp` 以後は受けない」より 1 秒緩い）。
   **数値の文字列も、従来どおり読む**（`CreateExpClaim` などが文字列を返すため。DPoP の `iat` だけは数値に限る）。
   **無い・読めない値は、例外にせず検証の失敗（`false`）**。2026/11/05 までは、`IdToken`・`AccessToken`・`JwtAssertion` の `Verify`
   と `CmnJwtToken.VerifyExp`・`VerifyNbf` が、`long.Parse` の例外を投げていた（`ResponseObject.Verify` は #644 で先に `false` にしていた）

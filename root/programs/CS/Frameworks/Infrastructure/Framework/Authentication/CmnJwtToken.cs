@@ -36,6 +36,8 @@
 //*  2026/10/12  玄人 幸道         設定のclient_idでaudを確認するVerifyAudByClientIDsを追加（#603）
 //*  2026/11/05  玄人 幸道         exp・nbf・iat（NumericDate）を、小数・指数表記でも読めるようにした（RFC 7519 2。#647）。
 //*                                読み方を TryReadNumericDate にまとめ、無い・読めない値は例外にせず検証の失敗にした
+//*  2026/11/05  玄人 幸道         TryReadNumericDate：小数の double を 17 桁（G17）で読み（net48 の 15 桁の丸めを避ける）、
+//*                                long の範囲を超える値を読めないとした（#647 のレビューの指摘 1・2）
 //**********************************************************************************
 
 using System;
@@ -395,7 +397,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <returns>読めたら true</returns>
         /// <remarks>
         /// **整数・小数・指数表記を読む**（RFC 7519 2 : NumericDate は JSON の数値で、整数でない値も表せる。#647）。
-        /// **カルチャに依らない**（CultureInfo.InvariantCulture）。decimal に収まらない値・数値でない値は読めない（false）。
+        /// **カルチャに依らない**（CultureInfo.InvariantCulture）。long の範囲を超える値・数値でない値は読めない（false）。
+        /// **net48 と net10.0 で結果を揃える**（小数の double を 17 桁で読む）。
         /// </remarks>
         internal static bool TryReadNumericDate(JToken value, bool acceptString, out decimal seconds)
         {
@@ -410,10 +413,16 @@ namespace Touryo.Infrastructure.Framework.Authentication
             {
                 case JTokenType.Integer:
                 case JTokenType.Float:
-                    // JSON の数値を、カルチャに依らない字面にしてから decimal で読み直す
-                    //   （小数は double で届く。net48 の既定の書式は 15 桁で、秒の比較には足りる）
-                    return CmnJwtToken.TryParseNumericDate(
-                        ((JValue)value).ToString(CultureInfo.InvariantCulture), out seconds);
+                    // JSON の数値を、カルチャに依らない字面にしてから decimal で読み直す。
+                    //   **小数は double で届くので、double の値を落とさない 17 桁（"G17"）で字面にする。**
+                    //   既定の書式は net48 では 15 桁で、10 桁の秒だと小数が丸まり、exp が最大 1 秒長く通っていた
+                    //   （net10.0 の既定は最短の往復できる書式。"G17" で両者を揃える。
+                    //    .NET Framework の "R" には往復できない値があるので使わない）。
+                    object raw = ((JValue)value).Value;
+                    string text = (raw is double)
+                        ? ((double)raw).ToString("G17", CultureInfo.InvariantCulture)
+                        : ((JValue)value).ToString(CultureInfo.InvariantCulture);
+                    return CmnJwtToken.TryParseNumericDate(text, out seconds);
 
                 case JTokenType.String:
                     return acceptString && CmnJwtToken.TryParseNumericDate((string)value, out seconds);
@@ -427,12 +436,27 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="value">文字列</param>
         /// <param name="seconds">UNIX 時刻（秒）</param>
         /// <returns>読めたら true</returns>
+        /// <remarks>
+        /// **long の範囲を超える値は読めない（false）とする。** 以前（long.Parse）は例外で受けなかった範囲で、
+        /// 受ける範囲を以前と同じにするため（極端に遠い未来の exp を通さない）。
+        /// </remarks>
         private static bool TryParseNumericDate(string value, out decimal seconds)
         {
-            return decimal.TryParse(value,
+            if (!decimal.TryParse(value,
                 NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite |
                 NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent,
-                CultureInfo.InvariantCulture, out seconds);
+                CultureInfo.InvariantCulture, out seconds))
+            {
+                return false;
+            }
+
+            if (seconds > long.MaxValue || seconds < long.MinValue)
+            {
+                seconds = 0;
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
