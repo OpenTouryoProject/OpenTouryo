@@ -48,6 +48,8 @@
 //*                                配列でない 1 つの値）も、設定の誤りとした。バインドは形が違っても例外にしないため（#655 の 2 回目のレビュー）
 //*  2026/11/06  玄人 幸道         TryReadNumericDate・VerifyExpClaim・VerifyNbfClaim を公開した（JToken を持つ呼び出し側が、
 //*                                同じ読み方で exp・nbf を確かめられるようにする。#661。引数と振る舞いは変えていない）
+//*  2026/11/06  玄人 幸道         CheckClaims：値がオブジェクト・配列でも例外にせず false にし、Obsolete（警告）にした。
+//*                                無い・読めないクレームを invalid_request で返す TryGetStringClaim を追加（#662）
 //**********************************************************************************
 
 using System;
@@ -317,6 +319,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="errDescription">string</param>
         /// <param name="nullable">bool</param>
         /// <returns>bool</returns>
+        /// <remarks>
+        /// - **無いクレームは server_error で返す**（従来どおり）。外から来た要求の不備なので、本来は invalid_request である。
+        ///   **TryGetStringClaim を使う**（#662。このメソッドは Obsolete（警告）にした。振る舞いは下の 1 点を除いて変えていない）
+        /// - **値がオブジェクト・配列なら false**（err は server_error）。2026/11/06 までは ArgumentException を投げていた（#662）
+        /// - 数値・真偽値は文字列にして返し、明示的な null は value を null にして true を返す（従来どおり）
+        /// </remarks>
+        [Obsolete("This method returns server_error for a missing claim, please use TryGetStringClaim instead.")]
         public static bool CheckClaims(
             JObject json, string key, out string value,
             out string err, out string errDescription, bool nullable = false)
@@ -327,6 +336,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             if (json.ContainsKey(key))
             {
+                if (json[key] is JContainer)
+                {
+                    // オブジェクト・配列は、文字列にできない（以前は ArgumentException。#662）
+                    err = "server_error";
+                    errDescription = "the value correspond this key is not a string: " + key;
+                    return false;
+                }
+
                 value = (string)json[key];
                 return true;
             }
@@ -342,6 +359,72 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     errDescription = "the value correspond this key is not contained: " + key;
                     return false;
                 }
+            }
+        }
+
+        /// <summary>クレームの値を、文字列として取り出す（外から来た要求の検証に使う）</summary>
+        /// <param name="json">ペイロード（JObject）</param>
+        /// <param name="key">クレーム名</param>
+        /// <param name="required">必須か。false なら、無くても true（value は null）</param>
+        /// <param name="value">値（無ければ null）</param>
+        /// <param name="err">取り出せなければ invalid_request。取り出せれば空文字</param>
+        /// <param name="errDescription">取り出せなければ、その理由。取り出せれば空文字</param>
+        /// <returns>取り出せたら true（必須でないクレームが無いときも true）</returns>
+        /// <remarks>
+        /// - **無い・読めないクレームは invalid_request**（CIBA Core 13・RFC 6749 5.2 : 必須のパラメタが無い、値が不正）。
+        ///   CheckClaims は server_error を返していた（#662）
+        /// - **文字列・数値・真偽値を、文字列として返す**（数値はカルチャに依らない字面）。
+        ///   CIBA の requested_expiry のように、文字列でも数値でも来るクレームがある（CIBA Core 7.1.1）
+        /// - **オブジェクト・配列・日付などは、読めないもの**として false。例外にしない（外から来た値なので）。
+        ///   日付の形の文字列を日付に変えないよう、ペイロードは DateParseHandling.None で読んでおく
+        /// - **明示的な null は、無いのと同じ**に扱う（必須なら false）
+        /// - 空文字は、在るものとして返す（中身の妥当性は呼び出し側で見る）
+        /// - json・key が null なら ArgumentNullException（呼び出し側の誤り）
+        /// </remarks>
+        public static bool TryGetStringClaim(
+            JObject json, string key, bool required,
+            out string value, out string err, out string errDescription)
+        {
+            if (json == null)
+            {
+                throw new ArgumentNullException("json");
+            }
+            if (key == null)
+            {
+                throw new ArgumentNullException("key");
+            }
+
+            value = null;
+            err = "";
+            errDescription = "";
+
+            JToken token = json[key];
+
+            if (token == null || token.Type == JTokenType.Null)
+            {
+                if (!required)
+                {
+                    return true;
+                }
+
+                err = OAuth2AndOIDCConst.invalid_request;
+                errDescription = "the value correspond this key is not contained: " + key;
+                return false;
+            }
+
+            switch (token.Type)
+            {
+                case JTokenType.String:
+                case JTokenType.Integer:
+                case JTokenType.Float:
+                case JTokenType.Boolean:
+                    value = Convert.ToString(((JValue)token).Value, CultureInfo.InvariantCulture);
+                    return true;
+
+                default:
+                    err = OAuth2AndOIDCConst.invalid_request;
+                    errDescription = "the value correspond this key is not a string: " + key;
+                    return false;
             }
         }
 

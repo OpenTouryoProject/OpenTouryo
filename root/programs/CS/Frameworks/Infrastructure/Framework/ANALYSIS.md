@@ -330,12 +330,19 @@ DCR の口の認可、クライアント登録の持ち方。
   `exp` が最大 1 秒長く通るため。net48 と net10.0 で結果を揃える）。
   **`long` の範囲を超える値は読めない**（以前の `long.Parse` が受けなかった範囲。極端に遠い未来の `exp` を通さない）。
   **`exp` と同じ秒は通す**（従来どおり。RFC 7519 4.1.4 の「`exp` 以後は受けない」より 1 秒緩い）。
+  **数値の文字列も、従来どおり読む**（`CreateExpClaim` などが文字列を返すため。DPoP の `iat` だけは数値に限る）。
+  **無い・読めない値は、例外にせず検証の失敗（`false`）**。2026/11/05 までは、`IdToken`・`AccessToken`・`JwtAssertion` の `Verify`
+  と `CmnJwtToken.VerifyExp`・`VerifyNbf` が、`long.Parse` の例外を投げていた（`ResponseObject.Verify` は #644 で先に `false` にしていた）。
   **JWT のペイロード（JToken）を持つ呼び出し側は、公開した `TryReadNumericDate`・`VerifyExpClaim`・`VerifyNbfClaim` を使う**（#661）。
   文字列に直して `VerifyExp`・`VerifyNbf` に渡さない。`ToString()` はカルチャに依存し、たとえば de-DE では小数が `1000,5` になって読めない。
   `VerifyNbfClaim` は**無い `nbf` も `false`** なので、`nbf` を任意とするなら、先に null を見る。
-  **数値の文字列も、従来どおり読む**（`CreateExpClaim` などが文字列を返すため。DPoP の `iat` だけは数値に限る）。
-  **無い・読めない値は、例外にせず検証の失敗（`false`）**。2026/11/05 までは、`IdToken`・`AccessToken`・`JwtAssertion` の `Verify`
-  と `CmnJwtToken.VerifyExp`・`VerifyNbf` が、`long.Parse` の例外を投げていた（`ResponseObject.Verify` は #644 で先に `false` にしていた）
+- **外から来た要求のクレームを取り出すなら `CmnJwtToken.TryGetStringClaim` を使う**（#662）。無い・読めないクレームは
+  `invalid_request`（CIBA Core 13）で返し、例外にしない。文字列・数値・真偽値は文字列で返し（数値はカルチャに依らない字面。
+  CIBA の `requested_expiry` は文字列でも数値でも来る）、オブジェクト・配列・日付は読めないもの、**明示的な `null` は無いのと同じ**。
+  **`CheckClaims` は `[Obsolete]`（警告）にした**（無いクレームを `server_error` で返すため）。振る舞いは、値がオブジェクト・配列のとき
+  **例外（`ArgumentException`）にせず `false`（`server_error`）にした**ことだけを変えた。
+  **日付の形の文字列に注意する。** 既定の `JObject.Parse` は `"2026-01-01T00:00:00Z"` のような文字列を日付に変え、元の字面を戻せないので、
+  `TryGetStringClaim` は読めないもの（`invalid_request`）にする。**ペイロードは `DateParseHandling.None` で読んでおく**
 - **`RequestObject.Verify`・`VerifyCiba` は、署名に加えて必須のクレームと `exp`・`nbf` を確かめる**（#653）。
   2026/11/05 までは、署名が正しければクレームによらず `true` を返していた（「必須項目の不足」の分岐も `true`）。
   **必須の範囲は仕様に合わせた。** `Verify` は `iss`・`aud`・`response_type`・`client_id`・`scope`（**`state`・`nonce` は必須にしない**。
