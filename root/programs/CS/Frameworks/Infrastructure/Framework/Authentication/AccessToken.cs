@@ -35,6 +35,10 @@
 //*  2020/06/23  西野 大介         audの検証を見直した（Keycloakコンパチ）
 //*  2026/10/12  玄人 幸道         Verifyに、検証鍵（JWS）と期待するiss / audの集合を受けるオーバーロードを追加（#601）。
 //*                                既存の版は鍵もissも自分の設定で判定し、audは確認しない。
+//*  2026/11/05  玄人 幸道         Verifyで、exp を小数の NumericDate でも読み、無い・読めない値を例外にせず false にした（#647）
+//*  2026/11/05  玄人 幸道         設定を読む Verify で、設定の client_id（ClientID / ClientIDs）が在れば aud を確かめるようにした（#655）。
+//*                                設定が無ければ従来どおり確かめない（4.0 で断る予定）
+//*  2026/11/05  玄人 幸道         設定を 1 回だけ読み、空白だけの値は無いもの、壊れた JSON は断るとした（#655 のレビュー）
 //**********************************************************************************
 
 using System;
@@ -79,20 +83,54 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <returns>検証結果</returns>
         /// <remarks>
         /// 検証鍵・iss は、設定（CmnClientParams / OAuth2AndOIDCParams）から判定する。
-        /// aud は確認しない（Keycloakコンパチ）。
-        /// 鍵・iss を指定する場合や、aud を確認する場合は、jws / iss / auds を受けるオーバーロードを使う（#601）。
+        ///
+        /// **aud は、設定の client_id（OAuth2AndOIDCParams.ClientID / ClientIDs）が在れば、そのいずれかを含むことを確かめる**（#655）。
+        /// IdToken の設定を読む版（#603）と同じ判定（CmnJwtToken.VerifyAudByClientIDs）で、aud に client_id が入る形式
+        /// （汎用認証サイトなど）に合う。リソース サーバは、受け付けるクライアントの client_id を OAuth2AndOidcClientIDs に並べる。
+        /// 2026/11/05 まで、aud は確かめていなかった（Keycloak コンパチ）。
+        ///
+        /// **ClientID も ClientIDs も設定されていなければ、従来どおり aud を確かめない**（壊さないため）。
+        /// 4.0 で、設定が無いときも断る既定に変える予定である（#655）。
+        /// Keycloak のトークンを受けるなら、Keycloak 側で aud を付ける設定（Audience mapper）が要る。
+        ///
+        /// 鍵・iss を指定する場合や、aud を別の値で確かめる場合は、jws / iss / auds を受けるオーバーロードを使う（#601）。
         /// </remarks>
         public static bool Verify(string access_token,
             out string sub, out List<string> roles, out List<string> scopes, out JObject jobj)
         {
             return AccessToken.VerifyCore(access_token,
                 null, CmnClientParams.Isser,
-                audToken =>
-                {
-                    // access_token の中身は仕様の外
-                    return true;
-                },
+                AccessToken.VerifyAudBySettings,
                 out sub, out roles, out scopes, out jobj);
+        }
+
+        /// <summary>aud を、設定の client_id で確かめる（設定を読む版の aud の判定）</summary>
+        /// <param name="aud">aud のクレーム</param>
+        /// <returns>bool</returns>
+        /// <remarks>
+        /// 設定（OAuth2AndOIDCParams.ClientID / ClientIDs）が在れば、そのいずれかを含むことを確かめる（#655）。
+        /// 判定は CmnJwtToken.VerifyAudByClientIDs と同じ（ContainsAud。文字列でない aud は false）。
+        /// - どちらも無ければ（空白だけの値も無いものとする）、従来どおり確かめない（true）。4.0 で、無いときも断る既定に変える予定
+        /// - **ClientIDs の JSON が壊れていれば、設定の誤りとして断る**（false。例外にしない）
+        /// 設定は 1 回の検証で 1 回だけ読む（CmnJwtToken.ReadConfiguredClientIDs）。
+        /// </remarks>
+        private static bool VerifyAudBySettings(JToken aud)
+        {
+            List<string> clientIDs = CmnJwtToken.ReadConfiguredClientIDs();
+
+            if (clientIDs == null)
+            {
+                // 設定の誤り（JSON が壊れている）：断る（#655 のレビュー）
+                return false;
+            }
+
+            if (clientIDs.Count == 0)
+            {
+                // 設定が無い：従来どおり aud を確かめない（Keycloak コンパチ。4.0 で断る予定。#655）
+                return true;
+            }
+
+            return CmnJwtToken.ContainsAud(aud, clientIDs);
         }
 
         /// <summary>AccessTokenを、指定した検証鍵・iss・audの集合で検証する。</summary>
@@ -184,7 +222,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 string iss = (string)jobj[OAuth2AndOIDCConst.iss];
                 JToken aud = jobj[OAuth2AndOIDCConst.aud];
                 //string iat = (string)jobj[OAuth2AndOIDCConst.iat];
-                string exp = (string)jobj[OAuth2AndOIDCConst.exp];
 
                 sub = (string)jobj[OAuth2AndOIDCConst.sub];
 
@@ -199,8 +236,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
                 long unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
 
+                // exp は小数の NumericDate も読む。無い・読めない値は、例外にせず検証の失敗にする（RFC 7519 2。#647）
                 if (iss == expectedIss &&
-                    long.Parse(exp) >= unixTimeSeconds)
+                    CmnJwtToken.VerifyExpClaim(jobj[OAuth2AndOIDCConst.exp], unixTimeSeconds))
                 {
                     if (verifyAud(aud))
                     {

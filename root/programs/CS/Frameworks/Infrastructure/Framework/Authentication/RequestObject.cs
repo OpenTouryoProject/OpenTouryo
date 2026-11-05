@@ -29,6 +29,16 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2019/06/19  西野 大介         新規作成
 //*  2020/03/03  西野 大介         CIBA対応
+//*  2026/11/05  玄人 幸道         Verify・VerifyCiba：必須のクレームが欠けていたら false にし、exp・nbf の値を確かめる（#653）。
+//*                                必須の範囲を仕様に合わせた（Verify は state・nonce を外し、VerifyCiba は iat・jti を足して
+//*                                client_notification_token・binding_message を外し、ヒントはちょうど 1 つ）
+//*  2026/11/05  玄人 幸道         ペイロードを、日付の形の文字列を日付に変えずに読む（DateParseHandling.None）。
+//*                                iat の確認を VerifyTimeClaims にまとめた（#653 ph1 のレビューの指摘 1・2）
+//*  2026/11/05  玄人 幸道         Verify・VerifyCiba に、期待する aud を受けて照合するオーバーロードを追加（#653 ph2）
+//*  2026/11/05  玄人 幸道         aud を受ける版の remarks に、正規化しないことを書いた（#653 ph2 のレビューの指摘 3）
+//*  2026/11/05  玄人 幸道         aud を受けない Verify・VerifyCiba を Obsolete（警告）にした（#653）
+//*  2026/11/05  玄人 幸道         クレームの読み取りを CmnJwtToken に移した（JwtAssertion と共有する。#654。振る舞いは変えていない）
+//*  2026/11/05  玄人 幸道         形の壊れた入力でも、例外にせず false を返す（CmnJwtToken.TryVerifySignature。#654 のレビューの指摘 5）
 //**********************************************************************************
 
 using System;
@@ -173,6 +183,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="iss">string</param>
         /// <param name="jwkPublicKey">RS256用のJWK公開鍵</param>
         /// <returns>検証結果</returns>
+        [Obsolete("This overload does not verify the aud claim, please use the overload that takes the expected aud instead.")]
         public static bool Verify(string ro, out string iss, string jwkPublicKey)
         {
             RsaPublicKeyConverter rpkc = new RsaPublicKeyConverter();
@@ -185,52 +196,101 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="iss">string</param>
         /// <param name="rsaPublicKey">RS256用のRSAParameters公開鍵</param>
         /// <returns>検証結果</returns>
+        /// <remarks>
+        /// **署名に加えて、必須のクレームと、時刻のクレームを確かめる**（#653）。
+        /// 2026/11/05 までは、署名が正しければクレームによらず true を返していた。
+        /// - 必須：iss・aud（RFC 9101 4 : 署名した Request Object は iss・aud を含める）、
+        ///   response_type・client_id（RFC 6749 4.1.1。RFC 9101 6.3 : AS は Request Object の中のパラメタだけを使う）、
+        ///   scope（OIDC Core 3.1.2.1）。**空の文字列は無いのと同じ**に扱う
+        /// - **state・nonce は必須にしない**（どちらも RFC 6749・OIDC Core の認可コード フローでは任意。Create も空なら入れない）
+        /// - exp・nbf は、**在れば**値を確かめる（RFC 7519 4.1.4・4.1.5。読み方は CmnJwtToken.TryReadNumericDate。#647）。
+        ///   Create は exp を入れないので、無くてもよい
+        /// - **aud の値は照合しない**（期待する値を受けない版のため）。**照合するなら aud を受ける版を使う**（#653 ph2）
+        /// 欠けている・読めない・期限の過ぎたものは false（例外にしない）。iss は、署名が正しければ読めた値を返す。
+        /// </remarks>
+        [Obsolete("This overload does not verify the aud claim, please use the overload that takes the expected aud instead.")]
         public static bool Verify(string ro, out string iss, RSAParameters rsaPublicKey)
         {
+            return RequestObject.VerifyCore(ro, null, out iss, rsaPublicKey);
+        }
+
+        /// <summary>Verify（期待する aud と照合する）</summary>
+        /// <param name="ro">string</param>
+        /// <param name="aud">期待する aud（認可サーバの issuer。RFC 9101 4）</param>
+        /// <param name="iss">string</param>
+        /// <param name="jwkPublicKey">RS256用のJWK公開鍵</param>
+        /// <returns>検証結果</returns>
+        /// <remarks>aud を受けない版と同じ確認に加えて、aud を照合する（RSAParameters の版を参照）。</remarks>
+        public static bool Verify(string ro, string aud, out string iss, string jwkPublicKey)
+        {
+            RsaPublicKeyConverter rpkc = new RsaPublicKeyConverter();
+            return RequestObject.Verify(ro, aud, out iss,
+                rpkc.JwkToParam(jwkPublicKey));
+        }
+
+        /// <summary>Verify（期待する aud と照合する）</summary>
+        /// <param name="ro">string</param>
+        /// <param name="aud">期待する aud（認可サーバの issuer。RFC 9101 4）</param>
+        /// <param name="iss">string</param>
+        /// <param name="rsaPublicKey">RS256用のRSAParameters公開鍵</param>
+        /// <returns>検証結果</returns>
+        /// <remarks>
+        /// aud を受けない版と同じ確認に加えて、**aud が期待する値と一致する**（配列なら、それを含む）ことを確かめる（#653 ph2）。
+        /// 比較は大文字・小文字を区別する完全一致（RFC 7519 4.1.3 : StringOrURI の比較）。
+        /// **正規化はしない**（末尾のスラッシュの有無も別物）ので、メタデータの issuer の文字列をそのまま渡す。
+        /// RFC 9101 4 は、aud を認可サーバの issuer（RFC 8414）にすると書く。何を期待するかは呼び出し側が決める。
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">aud が null か空</exception>
+        public static bool Verify(string ro, string aud, out string iss, RSAParameters rsaPublicKey)
+        {
+            if (string.IsNullOrEmpty(aud))
+            {
+                throw new ArgumentNullException(nameof(aud));
+            }
+
+            return RequestObject.VerifyCore(ro, aud, out iss, rsaPublicKey);
+        }
+
+        /// <summary>Verify の本体</summary>
+        /// <param name="ro">string</param>
+        /// <param name="expectedAud">期待する aud。null なら照合しない</param>
+        /// <param name="iss">string</param>
+        /// <param name="rsaPublicKey">RS256用のRSAParameters公開鍵</param>
+        /// <returns>検証結果</returns>
+        private static bool VerifyCore(string ro, string expectedAud, out string iss, RSAParameters rsaPublicKey)
+        {
             iss = "";
-            string aud = "";
-            string response_type = "";
-            string scopes = "";
-            string state = "";
-            string nonce = "";
 
             JWS_RS256_Param jwtRS256 = new JWS_RS256_Param(rsaPublicKey);
 
-            if (jwtRS256.Verify(ro))
-            {
-                string jwtPayload = CustomEncode.ByteToString(
-                    CustomEncode.FromBase64UrlString(ro.Split('.')[1]), CustomEncode.UTF_8);
-
-                JObject jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
-
-                iss = (string)jobj[OAuth2AndOIDCConst.iss];
-                aud = (string)jobj[OAuth2AndOIDCConst.aud];
-                response_type = (string)jobj[OAuth2AndOIDCConst.response_type];
-                scopes = (string)jobj[OAuth2AndOIDCConst.scope];
-                state = (string)jobj[OAuth2AndOIDCConst.state];
-                nonce = (string)jobj[OAuth2AndOIDCConst.nonce];
-
-                if (!string.IsNullOrEmpty(iss) &&
-                    !string.IsNullOrEmpty(aud) &&
-                    !string.IsNullOrEmpty(response_type) &&
-                    !string.IsNullOrEmpty(scopes) &&
-                    !string.IsNullOrEmpty(state) &&
-                    !string.IsNullOrEmpty(nonce))
-                {
-                    // OK
-                    return true;
-                }
-                else
-                {
-                    // 必須項目の不足
-                    return true;
-                }
-            }
-            else
+            if (!CmnJwtToken.TryVerifySignature(jwtRS256, ro))
             {
                 // JWTの署名検証に失敗
                 return false;
             }
+
+            JObject jobj = RequestObject.ReadPayload(ro);
+
+            if (jobj == null)
+            {
+                // ペイロードが JSON のオブジェクトでない
+                return false;
+            }
+
+            iss = RequestObject.ReadString(jobj, OAuth2AndOIDCConst.iss) ?? "";
+
+            if (string.IsNullOrEmpty(iss) ||
+                !RequestObject.HasAud(jobj[OAuth2AndOIDCConst.aud], expectedAud) ||
+                RequestObject.ReadString(jobj, OAuth2AndOIDCConst.response_type) == null ||
+                RequestObject.ReadString(jobj, OAuth2AndOIDCConst.client_id) == null ||
+                RequestObject.ReadString(jobj, OAuth2AndOIDCConst.scope) == null)
+            {
+                // 必須項目の不足
+                return false;
+            }
+
+            // 時刻のクレーム（在れば確かめる）
+            return RequestObject.VerifyTimeClaims(jobj, false);
         }
         #endregion
 
@@ -347,6 +407,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="iss">string</param>
         /// <param name="jwkPublicKey">ES256用のJWK公開鍵</param>
         /// <returns>検証結果</returns>
+        [Obsolete("This overload does not verify the aud claim, please use the overload that takes the expected aud instead.")]
         public static bool VerifyCiba(string ro, out string iss, string jwkPublicKey)
         {
             EccPublicKeyConverter epkc = new EccPublicKeyConverter();
@@ -359,62 +420,185 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="iss">string</param>
         /// <param name="ecPublicKey">ES256用のECParameters公開鍵</param>
         /// <returns>検証結果</returns>
+        /// <remarks>
+        /// **署名に加えて、必須のクレームと、時刻のクレームを確かめる**（#653）。
+        /// 2026/11/05 までは、署名が正しければクレームによらず true を返していた。
+        /// - 必須：aud・iss・exp・iat・nbf・jti（CIBA Core 7.1.1 : 署名した認証要求の JWT のクレーム）、
+        ///   scope（CIBA Core 7.1）。**空の文字列は無いのと同じ**に扱う
+        /// - **ヒントは、login_hint_token・id_token_hint・login_hint のうち、ちょうど 1 つ**（CIBA Core 7.1 : one (and only one)）
+        /// - exp・nbf は値を確かめる（RFC 7519 4.1.4・4.1.5。読み方は CmnJwtToken.TryReadNumericDate。#647）。
+        ///   iat は NumericDate として読めることだけを見る（どれだけ古いかは見ない）
+        /// - **client_notification_token・binding_message は必須にしない**（CIBA Core 7.1 : 前者は Ping・Push のときだけ必須、後者は任意。
+        ///   どの方式で登録されたクライアントかは、この関数には分からない）
+        /// - **aud の値は照合しない**（期待する値を受けない版のため）。**照合するなら aud を受ける版を使う**（#653 ph2）
+        /// 欠けている・読めない・期限の過ぎたものは false（例外にしない）。iss は、署名が正しければ読めた値を返す。
+        /// </remarks>
+        [Obsolete("This overload does not verify the aud claim, please use the overload that takes the expected aud instead.")]
         public static bool VerifyCiba(string ro, out string iss, ECParameters ecPublicKey)
         {
+            return RequestObject.VerifyCibaCore(ro, null, out iss, ecPublicKey);
+        }
+
+        /// <summary>VerifyCiba（期待する aud と照合する）</summary>
+        /// <param name="ro">string</param>
+        /// <param name="aud">期待する aud（OP の Issuer Identifier。CIBA Core 7.1.1）</param>
+        /// <param name="iss">string</param>
+        /// <param name="jwkPublicKey">ES256用のJWK公開鍵</param>
+        /// <returns>検証結果</returns>
+        /// <remarks>aud を受けない版と同じ確認に加えて、aud を照合する（ECParameters の版を参照）。</remarks>
+        public static bool VerifyCiba(string ro, string aud, out string iss, string jwkPublicKey)
+        {
+            EccPublicKeyConverter epkc = new EccPublicKeyConverter();
+            return RequestObject.VerifyCiba(ro, aud, out iss,
+                epkc.JwkToParam(jwkPublicKey));
+        }
+
+        /// <summary>VerifyCiba（期待する aud と照合する）</summary>
+        /// <param name="ro">string</param>
+        /// <param name="aud">期待する aud（OP の Issuer Identifier。CIBA Core 7.1.1）</param>
+        /// <param name="iss">string</param>
+        /// <param name="ecPublicKey">ES256用のECParameters公開鍵</param>
+        /// <returns>検証結果</returns>
+        /// <remarks>
+        /// aud を受けない版と同じ確認に加えて、**aud が期待する値と一致する**（配列なら、それを含む）ことを確かめる（#653 ph2）。
+        /// 比較は大文字・小文字を区別する完全一致（RFC 7519 4.1.3 : StringOrURI の比較）。
+        /// **正規化はしない**（末尾のスラッシュの有無も別物）ので、メタデータの issuer の文字列をそのまま渡す。
+        /// CIBA Core 7.1.1 は、aud に OP の Issuer Identifier を入れるとする。
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">aud が null か空</exception>
+        public static bool VerifyCiba(string ro, string aud, out string iss, ECParameters ecPublicKey)
+        {
+            if (string.IsNullOrEmpty(aud))
+            {
+                throw new ArgumentNullException(nameof(aud));
+            }
+
+            return RequestObject.VerifyCibaCore(ro, aud, out iss, ecPublicKey);
+        }
+
+        /// <summary>VerifyCiba の本体</summary>
+        /// <param name="ro">string</param>
+        /// <param name="expectedAud">期待する aud。null なら照合しない</param>
+        /// <param name="iss">string</param>
+        /// <param name="ecPublicKey">ES256用のECParameters公開鍵</param>
+        /// <returns>検証結果</returns>
+        private static bool VerifyCibaCore(string ro, string expectedAud, out string iss, ECParameters ecPublicKey)
+        {
             iss = "";
-            string aud = "";
-            string exp = "";
-            string nbf = "";
-            string scopes = "";
-            string client_notification_token = "";
-            string binding_message = "";
-            string login_hint = "";
 
             JWS_ES256_Param jwtES256 = new JWS_ES256_Param(ecPublicKey, false);
 
-            if (jwtES256.Verify(ro))
-            {
-                string jwtPayload = CustomEncode.ByteToString(
-                    CustomEncode.FromBase64UrlString(ro.Split('.')[1]), CustomEncode.UTF_8);
-
-                JObject jobj = ((JObject)JsonConvert.DeserializeObject(jwtPayload));
-
-                iss = (string)jobj[OAuth2AndOIDCConst.iss];
-                aud = (string)jobj[OAuth2AndOIDCConst.aud];
-                exp = (string)jobj[OAuth2AndOIDCConst.exp];
-                nbf = (string)jobj[OAuth2AndOIDCConst.nbf];
-                scopes = (string)jobj[OAuth2AndOIDCConst.scope];
-                client_notification_token = (string)jobj[OAuth2AndOIDCConst.client_notification_token];
-                binding_message = (string)jobj[OAuth2AndOIDCConst.binding_message];
-                login_hint = (string)jobj[OAuth2AndOIDCConst.login_hint];
-
-                //if (...requestContextAndIntent
-
-                if (!string.IsNullOrEmpty(iss) &&
-                    !string.IsNullOrEmpty(aud) &&
-                    !string.IsNullOrEmpty(exp) &&
-                    !string.IsNullOrEmpty(nbf) &&
-                    !string.IsNullOrEmpty(scopes) &&
-                    !string.IsNullOrEmpty(client_notification_token) &&
-                    !string.IsNullOrEmpty(binding_message) &&
-                    !string.IsNullOrEmpty(login_hint))
-                {
-                    // OK
-                    return true;
-                }
-                else
-                {
-                    // 必須項目の不足
-                    return true;
-                }
-            }
-            else
+            if (!CmnJwtToken.TryVerifySignature(jwtES256, ro))
             {
                 // JWTの署名検証に失敗
                 return false;
             }
+
+            JObject jobj = RequestObject.ReadPayload(ro);
+
+            if (jobj == null)
+            {
+                // ペイロードが JSON のオブジェクトでない
+                return false;
+            }
+
+            iss = RequestObject.ReadString(jobj, OAuth2AndOIDCConst.iss) ?? "";
+
+            if (string.IsNullOrEmpty(iss) ||
+                !RequestObject.HasAud(jobj[OAuth2AndOIDCConst.aud], expectedAud) ||
+                RequestObject.ReadString(jobj, OAuth2AndOIDCConst.jti) == null ||
+                RequestObject.ReadString(jobj, OAuth2AndOIDCConst.scope) == null)
+            {
+                // 必須項目の不足
+                return false;
+            }
+
+            int hints = 0;
+            foreach (string hint in new string[] {
+                OAuth2AndOIDCConst.login_hint_token, OAuth2AndOIDCConst.id_token_hint, OAuth2AndOIDCConst.login_hint })
+            {
+                if (RequestObject.ReadString(jobj, hint) != null)
+                {
+                    hints++;
+                }
+            }
+
+            if (hints != 1)
+            {
+                // ヒントが無い、または複数
+                return false;
+            }
+
+            // 時刻のクレーム（exp・nbf・iat は必須）
+            return RequestObject.VerifyTimeClaims(jobj, true);
         }
         #endregion
+
+        #endregion
+
+        #region 共通部分（#653）
+
+        /// <summary>ペイロードを読む（署名を確かめた後に呼ぶ。CmnJwtToken.ReadPayloadObject）</summary>
+        /// <param name="ro">要求オブジェクト（JWS）</param>
+        /// <returns>JSON のオブジェクト。オブジェクトでなければ null</returns>
+        private static JObject ReadPayload(string ro)
+        {
+            return CmnJwtToken.ReadPayloadObject(ro);
+        }
+
+        /// <summary>文字列のクレームを読む（CmnJwtToken.ReadStringClaim）</summary>
+        /// <param name="jobj">ペイロード</param>
+        /// <param name="name">クレーム名</param>
+        /// <returns>空でない文字列なら、その値。無い・空・文字列でないなら null</returns>
+        private static string ReadString(JObject jobj, string name)
+        {
+            return CmnJwtToken.ReadStringClaim(jobj, name);
+        }
+
+        /// <summary>aud が在るか。期待する値があれば照合する（CmnJwtToken.ContainsAud）</summary>
+        /// <param name="aud">aud のクレーム</param>
+        /// <param name="expectedAud">期待する aud。null なら照合しない（在ることだけを見る）</param>
+        /// <returns>bool</returns>
+        private static bool HasAud(JToken aud, string expectedAud)
+        {
+            return CmnJwtToken.ContainsAud(aud, (expectedAud == null) ? null : new string[] { expectedAud });
+        }
+
+        /// <summary>exp・nbf（と iat）を確かめる</summary>
+        /// <param name="jobj">ペイロード</param>
+        /// <param name="required">
+        /// true なら、exp・nbf・iat を必須とし、無いものも失敗にする（VerifyCiba）。iat は読めることだけを見る（どれだけ古いかは見ない）。
+        /// false なら、exp・nbf のうち在るものだけを確かめ、iat は見ない（Verify）
+        /// </param>
+        /// <returns>bool</returns>
+        /// <remarks>**時計のずれは許さない**（許容幅 0。IdToken などの Verify と同じ。#647）。</remarks>
+        private static bool VerifyTimeClaims(JObject jobj, bool required)
+        {
+            long now = DateTimeOffset.Now.ToUnixTimeSeconds();
+
+            JToken exp = jobj[OAuth2AndOIDCConst.exp];
+            if ((required || exp != null) && !CmnJwtToken.VerifyExpClaim(exp, now))
+            {
+                // 期限切れ・読めない（・無い）
+                return false;
+            }
+
+            JToken nbf = jobj[OAuth2AndOIDCConst.nbf];
+            if ((required || nbf != null) && !CmnJwtToken.VerifyNbfClaim(nbf, now))
+            {
+                // まだ使えない・読めない（・無い）
+                return false;
+            }
+
+            decimal iat;
+            if (required && !CmnJwtToken.TryReadNumericDate(jobj[OAuth2AndOIDCConst.iat], true, out iat))
+            {
+                // iat が無い・読めない
+                return false;
+            }
+
+            return true;
+        }
 
         #endregion
     }

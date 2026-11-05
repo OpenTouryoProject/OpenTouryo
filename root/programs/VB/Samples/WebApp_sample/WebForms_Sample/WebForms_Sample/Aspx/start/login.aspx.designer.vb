@@ -51,6 +51,15 @@ Namespace Aspx.Start
         Protected WithEvents btnButton2 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
 
         '''<summary>
+        '''btnButton3 コントロール。
+        '''</summary>
+        '''<remarks>
+        '''自動生成されたフィールド。
+        '''変更するには、フィールドの宣言をデザイナー ファイルから分離コード ファイルに移動します。
+        '''</remarks>
+        Protected WithEvents btnButton3 As Global.Touryo.Infrastructure.CustomControl.WebCustomButton
+
+        '''<summary>
         '''lblMessage コントロール。
         '''</summary>
         '''<remarks>

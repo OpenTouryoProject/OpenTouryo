@@ -1,0 +1,54 @@
+﻿@*
+    サインイン・サインアウト（#649）
+      サインインは、認可要求の URL へ移るだけ（応答は Pages/RedirectEndpoint.razor が受ける）。
+      **表示名は UserInfo の email**（識別子は sub。WebApp のサンプルと同じ）。
+*@
+@using System.Text.Json
+@using SpRp_Blazor.Touryo
+@inject OAuthOidc OAuthOidc
+@inject NavigationManager Navigation
+
+@if (_userInfo is JsonElement userInfo)
+{
+    <button type="button" class="btn btn-link" @onclick="SignOutAsync">Sign Out（@DisplayName(userInfo)）</button>
+}
+else
+{
+    <button type="button" class="btn btn-link" @onclick="SignInAsync">Sign In</button>
+}
+@if (!string.IsNullOrEmpty(_message))
+{
+    <span class="text-danger">@_message</span>
+}
+
+@code {
+    private JsonElement? _userInfo;
+    private string _message = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        _userInfo = await OAuthOidc.GetUserInfoAsync();
+    }
+
+    private async Task SignInAsync()
+    {
+        try
+        {
+            Navigation.NavigateTo(await OAuthOidc.CreateAuthorizationRequestUrlAsync(), forceLoad: true);
+        }
+        catch (Exception ex)
+        {
+            _message = ex.Message;
+        }
+    }
+
+    private async Task SignOutAsync()
+    {
+        await OAuthOidc.ClearSignInStatusAsync();
+        _userInfo = null;
+    }
+
+    private static string DisplayName(JsonElement userInfo)
+        => userInfo.TryGetProperty("email", out JsonElement email) ? email.GetString() ?? ""
+         : userInfo.TryGetProperty("sub", out JsonElement sub) ? sub.GetString() ?? "" : "";
+}

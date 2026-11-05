@@ -27,6 +27,7 @@
 //*  2026/10/22  玄人 幸道         鍵を受ける版が null・空を受けないこと、鍵を受けない版が設定の鍵を使うことのテストを追加
 //*  2026/10/22  玄人 幸道         NotOnOrAfter の比較・期限切れ・InResponseTo の食い違い・エラー応答・Recipient・SigAlg のテストを足した（カバレッジの拡充）
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
+//*  2026/11/05  玄人 幸道         SAML2Client.VerifyResponse の Obsolete の警告（CS0618）を抑えた
 //**********************************************************************************
 
 using System;
@@ -43,6 +44,9 @@ using Microsoft.Extensions.Configuration;
 
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Public.Security;
+
+// SAML2Client.VerifyResponse は Obsolete だが、利用者が使い続ける版なので、振る舞いを確かめ続ける。
+#pragma warning disable CS0618
 
 namespace TestFramework.Authentication
 {

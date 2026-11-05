@@ -29,6 +29,8 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2018/08/08  西野 大介         新規作成
 //*  2026/08/21  玄人 幸道         CS4014対応（GetUserInfoAsyncを待つ。ログのUserInfoが空になっていた）（#575）
+//*  2026/11/05  玄人 幸道         例外のログに使う値（UserInfo・Controller / Action 名）をフィールドに持たないようにした（#651）
+//*                                （属性のインスタンスは全ての要求で共有されるため、同時の要求でログが入れ替わりえた）
 //**********************************************************************************
 
 using System;
@@ -55,17 +57,29 @@ using Touryo.Infrastructure.Public.Util;
 namespace Touryo.Infrastructure.Business.Presentation
 {
     /// <summary>ASP.NET MVC Core用 画面コード親クラス２相当（テンプレート）</summary>
-    /// <remarks>（ActionFilterAttributeとして）自由に利用できる。</remarks>
+    /// <remarks>
+    /// （ActionFilterAttributeとして）自由に利用できる。
+    ///
+    /// **属性のインスタンスは、全ての要求で共有される**（ASP.NET Core は、属性で付けたフィルタを
+    /// IFilterFactory で作らない限り、同じインスタンスのまま使う）。
+    /// **要求ごとの値は、フィールドに持たない**（ローカル変数に持つ）。フィールドに持つと、同時の要求で値が入れ替わる（#651）。
+    /// </remarks>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
     public class MyMVCCoreFilterAttribute : ActionFilterAttribute, IExceptionFilter
     {
         /// <summary>UserInfo</summary>
+        /// <remarks>
+        /// **派生クラスとの互換のために残している。同時の要求では当てにならない**（インスタンスが要求をまたいで共有されるため。#651）。
+        /// 基盤のログは、この値を使わない。
+        /// </remarks>
         protected MyUserInfo UserInfo;
 
         /// <summary>ControllerName</summary>
+        /// <remarks>UserInfo と同じ（互換のために残している。同時の要求では当てにならない。#651）。</remarks>
         protected string ControllerName = "";
 
         /// <summary>ActionName</summary>
+        /// <remarks>UserInfo と同じ（互換のために残している。同時の要求では当てにならない。#651）。</remarks>
         protected string ActionName = "";
 
         #region OnException
@@ -89,12 +103,18 @@ namespace Touryo.Infrastructure.Business.Presentation
         /// <param name="exceptionContext">ExceptionContext</param>
         private void OutputErrorLog(ExceptionContext exceptionContext)
         {
-            this.GetRouteData(exceptionContext.RouteData);
+            // **要求ごとの値なので、ローカル変数に持つ**（#651）。フィールドには互換のために入れるだけ。
+            string controllerName, actionName;
+            MyMVCCoreFilterAttribute.GetRouteData(exceptionContext.RouteData, out controllerName, out actionName);
 
             // **await しないと、この後の UserInfo がまだ設定されていない。**（CS4014）
             //   OutputErrorLog は void で await できないため、ここで待つ。
             //   ASP.NET Core には SynchronizationContext が無く、デッドロックしない。
-            this.GetUserInfoAsync().GetAwaiter().GetResult();
+            MyUserInfo userInfo = this.GetUserInfoAsync().GetAwaiter().GetResult();
+
+            this.ControllerName = controllerName;
+            this.ActionName = actionName;
+            this.UserInfo = userInfo;
 
             // 非同期ControllerのInnerException対策（底のExceptionを取得する）。
             Exception ex = exceptionContext.Exception;
@@ -114,11 +134,11 @@ namespace Touryo.Infrastructure.Business.Presentation
             // ------------
 
             string strLogMessage =
-                "," + (this.UserInfo != null ? this.UserInfo.UserName : "null") +
-                "," + (this.UserInfo != null ? this.UserInfo.IPAddress : "null") +
+                "," + (userInfo != null ? userInfo.UserName : "null") +
+                "," + (userInfo != null ? userInfo.IPAddress : "null") +
                 "," + "<-----" +
-                "," + this.ControllerName +
-                "," + this.ActionName + "(OnException)" +
+                "," + controllerName +
+                "," + actionName + "(OnException)" +
                 "," + //this.perfRec.ExecTime +
                 "," + //this.perfRec.CpuTime + 
                 "," + GetExceptionMessageID(bottomException) +
@@ -225,8 +245,12 @@ namespace Touryo.Infrastructure.Business.Presentation
         #region 情報取得用
 
         /// <summary>ユーザ情報を取得する</summary>
-        private async Task GetUserInfoAsync()
+        /// <returns>MyUserInfo（Session が無ければ null）</returns>
+        /// <remarks>**フィールドに書かず、戻り値で返す**（要求ごとの値なので。#651）。</remarks>
+        private async Task<MyUserInfo> GetUserInfoAsync()
         {
+            MyUserInfo userInfo = null;
+
             // セッションステートレス対応
             if (MyHttpContext.Current.Session == null)
             {
@@ -235,10 +259,10 @@ namespace Touryo.Infrastructure.Business.Presentation
             else
             {
                 // 取得を試みる。
-                this.UserInfo = UserInfoHandle.GetUserInformation<MyUserInfo>();
+                userInfo = UserInfoHandle.GetUserInformation<MyUserInfo>();
 
                 // nullチェック
-                if (this.UserInfo == null)
+                if (userInfo == null)
                 {
                     AuthenticateResult authenticateInfo =
                         await AuthenticationHttpContextExtensions.AuthenticateAsync(
@@ -254,32 +278,35 @@ namespace Touryo.Infrastructure.Business.Presentation
                     if (string.IsNullOrEmpty(userName))
                     {
                         // 未認証状態
-                        this.UserInfo = new MyUserInfo("未認証", (new GetClientIpAddress()).GetAddress());
+                        userInfo = new MyUserInfo("未認証", (new GetClientIpAddress()).GetAddress());
                     }
                     else
                     {
                         // 認証状態
-                        this.UserInfo = new MyUserInfo(userName, (new GetClientIpAddress()).GetAddress());
+                        userInfo = new MyUserInfo(userName, (new GetClientIpAddress()).GetAddress());
 
                         // 必要に応じて認証チケットのユーザ名からユーザ情報を復元する。
                         // ★ 必要であれば、他の業務共通引継ぎ情報などをロードする。
                         // ・・・
 
                         // 復元したユーザ情報をセット
-                        UserInfoHandle.SetUserInformation(this.UserInfo);
+                        UserInfoHandle.SetUserInformation(userInfo);
                     }
                 }
             }
+
+            return userInfo;
         }
 
         /// <summary>ルーティング情報を取得する</summary>
         /// <param name="routeData">RouteData</param>
-        private void GetRouteData(RouteData routeData)
+        /// <param name="controllerName">Controller名</param>
+        /// <param name="actionName">Action名</param>
+        /// <remarks>**フィールドに書かず、戻り値で返す**（要求ごとの値なので。#651）。</remarks>
+        private static void GetRouteData(RouteData routeData, out string controllerName, out string actionName)
         {
-            string[] temp = null;
-            temp = routeData.Values["controller"].ToString().Split('.');
-            this.ControllerName = routeData.Values["controller"].ToString();
-            this.ActionName = routeData.Values["action"].ToString();
+            controllerName = routeData.Values["controller"].ToString();
+            actionName = routeData.Values["action"].ToString();
         }
 
         #endregion

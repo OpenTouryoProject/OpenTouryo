@@ -57,7 +57,23 @@ WSServer_sample（B 層・D 層）── WSIFType_sample（引数・戻り値の
 - 定義ファイルは**物理ファイルと埋め込みリソースの両方**を用意し、`app.config` でどちらを読むかを切り替える
   （`TMProtocolDefinition.xml` と、`<既定の名前空間>.TMProtocolDefinition2.xml` など）
 
-### 2.2 実行の前提
+### 2.2 外部ログイン（`WSClientWin_sample`・`WSClientWinCone_sample`。#649）
+
+**ログイン画面の「外部ログイン」は、LIR（OAuth 2.0 for Native Apps のループバック。RFC 8252 §7.3）である。**
+既定のブラウザで MPAS（のスタブ）に認可し、`http://localhost:12345/` で応答を受け、認可コードを PKCE で引き換える。
+得たアクセス トークンを `Program.AccessToken` に置き、Web API（5）の呼び出しで `Bearer` として送る。
+
+- **以前は ROPC**（画面で受けたユーザ ID・パスワードを `/token` に送る）だった。**ROPC は使わない**（RFC 9700 2.4）。
+  MPAS の雛形も無効にしている（`EnableResourceOwnerPasswordCredentialsGrantType`）。
+  **画面のユーザ ID・パスワードの欄は、通常のログインでだけ使う**
+- **クライアントは MPAS の雛形の `Device_Client`**（秘密なし、戻り先 `http://localhost:12345/`。
+  [`Sample4SpRp/README.md`](../../Sample4SpRp/README.md) 3 節）。**CLI のサンプルと同じ戻り先なので、同時には動かさない**
+- **クライアントは id_token を検証する**（`jwks_uri` の鍵・iss・aud・nonce）。**アクセス トークンは検証しない**（受けるのはリソース サーバ）。
+  表示名（`UserName`）は UserInfo の email
+- **ブラウザでの操作を待つので、ハンドラは `async void`**（UI スレッドを止めない。例外はハンドラの中で受ける）
+- **GUI なので、自動の確認は無い。** スタブを起動し（`Sample4SpRp/README.md` 2 節）、手で確かめる
+
+### 2.3 実行の前提
 
 - リモート（4・5）を使うなら、先に **`ServiceInterface` のホストを起動する**（`WCFService.exe`、または IIS 上の `ASPNETWebService`）
 - **GUI なので疎通テストの対象外**（[`SMOKETEST.md`](../../../SMOKETEST.md)「対象外」）。リリースの手作業項目
@@ -73,6 +89,8 @@ WSServer_sample（B 層・D 層）── WSIFType_sample（引数・戻り値の
 | `SampleDataController` / `ValuesController` | `api/values` ほか | 動作確認用 |
 
 - 認証は `MyBaseAsyncApiController` 属性（`EnumHttpAuthHeader.None | Bearer`。**認証が無くても通し**、Bearer があればアクセス トークンを検証する）
+- **アクセス トークンの発行者は MPAS のスタブ**（`app.config` の `SpRp_Isser` = `https://localhost:44310`、鍵は `JwkSetUri` = `/jwkcerts`。#649）。
+  WS クライアントの外部ログイン（2.2 節）と揃えてある。検証は `AccessToken.Verify` の既存の版（鍵と iss は設定から。**aud は確かめない**。#601）
 - OWIN の `Startup` を持つ
 - **net48 版には OpenAPI（IDL）が無い**（クラシック ASP.NET のため。#580。.NET 10 版だけが `/openapi/v1.json` を出す）
 

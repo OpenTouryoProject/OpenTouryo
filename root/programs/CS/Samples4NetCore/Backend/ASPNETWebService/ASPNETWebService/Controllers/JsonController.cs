@@ -31,6 +31,7 @@
 //*  2017/08/18  西野 大介         新規作成
 //*  2026/08/21  玄人 幸道         CSRFが成立しない前提をコメントに明記（CodeQL誤検知）
 //*  2026/10/15  玄人 幸道         コメント中のテストのパスを追随（#610）
+//*  2026/11/05  玄人 幸道         Bearer の検証の結果を返す claims を追加（SPA のサンプルが使う。#649）
 //**********************************************************************************
 
 using System;
@@ -104,6 +105,26 @@ namespace ASPNETWebService.Controllers
         public string test()
         {
             return "test";
+        }
+
+        /// <summary>
+        /// Bearer の検証の結果（Claims）を返す。
+        /// GET http(s)://hostName:portNum/api/json/claims
+        /// </summary>
+        /// <returns>{ userName, roles, scopes }（JSON）</returns>
+        /// <remarks>
+        /// **SPA のサンプル（Sample4SpRp/SPA）が、アクセス トークンが受け付けられたかを見るのに使う**（#649）。
+        /// 認証はクラスの属性（None | Bearer）。**トークンが無い・検証に失敗したときも通し、userName は「未認証」になる。**
+        /// 検証に通れば userName は access_token の sub。**トークンそのものは返さない。**
+        /// </remarks>
+        [HttpGet]
+        public ContentResult claims()
+        {
+            string userName, roles, scopes, ipAddress;
+            MyBaseAsyncApiController.GetClaims(out userName, out roles, out scopes, out ipAddress);
+
+            return this.Content(JsonConvert.SerializeObject(
+                new { UserName = userName, Roles = roles, Scopes = scopes }, JSS), "application/json");
         }
 
         #endregion

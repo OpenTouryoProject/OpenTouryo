@@ -15,8 +15,12 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
+//*  2026/11/04  玄人 幸道         外部ログインの要求を、MPAS のスタブに合わせた（prompt=none を外す・値をエンコード。#649）
+//*  2026/11/04  玄人 幸道         SAML2 の外部ログイン（btnButton3）を追加した（#649）
 //**********************************************************************************
 
+using System;
+using System.Threading.Tasks;
 using System.Web.Security;
 
 using Touryo.Infrastructure.Business.Presentation;
@@ -24,7 +28,6 @@ using Touryo.Infrastructure.Business.Util;
 using Touryo.Infrastructure.Framework.Presentation;
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Framework.Util;
-using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Security.Pwd;
 
 namespace WebForms_Sample.Aspx.Start
@@ -32,6 +35,8 @@ namespace WebForms_Sample.Aspx.Start
     /// <summary>ログイン画面（Forms認証対応）</summary>
     public partial class login : MyBaseController
     {
+        #region プロパティ（OIDC の state・nonce）
+
         /// <summary>Nonce</summary>
         public string Nonce
         {
@@ -39,7 +44,7 @@ namespace WebForms_Sample.Aspx.Start
             {
                 if (Session["nonce"] == null)
                 {
-                    Session["nonce"] = GetPassword.Base64UrlSecret(10);
+                    Session["nonce"] = GetPassword.Base64UrlSecret(32);
                 }
                 return (string)Session["nonce"];
             }
@@ -52,17 +57,23 @@ namespace WebForms_Sample.Aspx.Start
             {
                 if (Session["state"] == null)
                 {
-                    Session["state"] = GetPassword.Base64UrlSecret(10);
+                    Session["state"] = GetPassword.Base64UrlSecret(32);
                 }
                 return (string)Session["state"];
             }
         }
+
+        #endregion
+
+        #region コンストラクタ
 
         /// <summary>constructor</summary>
         public login()
         {
             this.IsNoSession = true;
         }
+
+        #endregion
 
         #region Page LoadのUOCメソッド
 
@@ -96,9 +107,10 @@ namespace WebForms_Sample.Aspx.Start
             // TODO:
             // ここでは何もしない
 
-            // btnButton1, 2のイベントであれば、Session消去しない
-            if (Request.Form["ctl00$ContentPlaceHolder_A$btnButton1"] == null 
-                && Request.Form["ctl00$ContentPlaceHolder_A$btnButton2"] == null)
+            // btnButton1, 2, 3のイベントであれば、Session消去しない
+            if (Request.Form["ctl00$ContentPlaceHolder_A$btnButton1"] == null
+                && Request.Form["ctl00$ContentPlaceHolder_A$btnButton2"] == null
+                && Request.Form["ctl00$ContentPlaceHolder_A$btnButton3"] == null)
             {
                 // Session消去
                 this.FxSessionAbandon();
@@ -143,16 +155,58 @@ namespace WebForms_Sample.Aspx.Start
         /// <summary>外部ログイン</summary>
         /// <param name="fxEventArgs">Event Handlerの共通引数</param>
         /// <returns>URL</returns>
+        /// <remarks>
+        /// OIDC の認可コード フロー。応答は OAuth2/OAuth2AuthorizationCodeGrantClient.aspx が受ける。
+        /// **prompt=none は付けない。** IdP にまだセッションが無いと、
+        /// ログイン画面を出さずに login_required で戻ってしまう（OpenID Connect Core 1.0 3.1.2.1）。
+        /// </remarks>
         protected string UOC_btnButton2_Click(FxEventArgs fxEventArgs)
         {
             return CmnClientParams.SpRp_AuthRequestUri
-                + "?client_id=" + OAuth2AndOIDCParams.ClientID
+                + "?client_id=" + Uri.EscapeDataString(OAuth2AndOIDCParams.ClientID)
                 + "&response_type=code"
-                + "&scope=profile%20email%20phone%20address%20roles%20openid"
-                + "&state=" + this.State
-                + "&nonce=" + this.Nonce
-                + "&redirect_uri=" + CustomEncode.UrlEncode(CmnClientParams.SpRp_RedirectUri)
-                + "&prompt=none";
+                + "&scope=" + Uri.EscapeDataString("openid profile email phone address roles")
+                + "&state=" + Uri.EscapeDataString(this.State)
+                + "&nonce=" + Uri.EscapeDataString(this.Nonce)
+                + "&redirect_uri=" + Uri.EscapeDataString(CmnClientParams.SpRp_RedirectUri);
+        }
+
+        /// <summary>外部ログイン（SAML2）</summary>
+        /// <param name="fxEventArgs">Event Handlerの共通引数</param>
+        /// <returns>URL</returns>
+        /// <remarks>
+        /// 応答は Saml2/Saml2AssertionConsumerService.aspx が受ける。
+        /// **IdP の SSO の口は、メタデータ（SpRp_Saml2MetadataUri）から引く**（entityID は SpRp_Saml2EntityId と照合する）。
+        /// **要求は HTTP-Redirect で送り、応答も HTTP-Redirect で受ける**（ProtocolBinding）。
+        /// **NameID は Persistent を求める**（SP ごとに固定の値。識別子にする。SAML Core 8.3.7）。
+        /// 要求には SpRp_RsaPfxFilePath の鍵で署名する（IdP が WantAuthnRequestsSigned）。
+        /// **Issuer は "http://" ＋ client_id**（汎用認証サイトは、Issuer から client_id を引く）。
+        /// </remarks>
+        protected string UOC_btnButton3_Click(FxEventArgs fxEventArgs)
+        {
+            // **イベント ハンドラは同期なので、別スレッドで待つ**（同期コンテキストでの .Result はデッドロックしうる）
+            SAML2Metadata metadata = Task.Run(() => SAML2Metadata.GetAsync()).Result;
+            if (metadata == null || string.IsNullOrEmpty(metadata.SsoRedirectLocation))
+            {
+                // メタデータが引けない（IdP が動いていない、entityID が違う）
+                this.lblMessage.Text = "SAML2 の IdP のメタデータを取得できませんでした。";
+                return string.Empty;
+            }
+
+            // **RelayState と要求の ID を控え、応答と照合する**（CSRF・応答の差し替え）
+            string relayState = GetPassword.Base64UrlSecret(32);
+            string id = "";
+            string queryString = SAML2Client.CreateRedirectRequest(
+                SAML2Enum.RequestOrResponse.Request,
+                SAML2Enum.ProtocolBinding.HttpRedirect,
+                SAML2Enum.NameIDFormat.Persistent,
+                "http://" + OAuth2AndOIDCParams.ClientID,
+                CmnClientParams.SpRp_Saml2AcsUri, relayState, out id);
+
+            Session["saml2_relay_state"] = relayState;
+            Session["saml2_request_id"] = id;
+
+            return metadata.SsoRedirectLocation + "?" + queryString;
         }
 
         #endregion

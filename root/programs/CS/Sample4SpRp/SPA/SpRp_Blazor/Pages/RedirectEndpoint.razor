@@ -1,0 +1,32 @@
+﻿@*
+    認可応答の戻り先（雛形の redirect_uri_code。#649）
+      応答（フラグメント）を処理し、成功したらトップへ戻る。失敗したら理由を出す。
+*@
+@page "/RedirectEndpoint"
+@using SpRp_Blazor.Touryo
+@inject OAuthOidc OAuthOidc
+@inject NavigationManager Navigation
+
+<PageTitle>RedirectEndpoint</PageTitle>
+
+<p>@_message</p>
+<a href="@Constants.FrontendHostRootUrl">Top</a>
+
+@code {
+    private string _message = "...";
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await OAuthOidc.HandleAuthorizationResponseAsync(Navigation.Uri);
+
+            // **読み込み直す**（レイアウトのサインインの表示を、保存した状態から作り直す）
+            Navigation.NavigateTo(Constants.FrontendHostRootUrl, forceLoad: true, replace: true);
+        }
+        catch (Exception ex)
+        {
+            _message = ex.Message;
+        }
+    }
+}

@@ -99,6 +99,12 @@ GetConfigParameter.InitConfiguration("appsettings.json");
   **意図的に据え置いている。** 上げるなら、net48 版の扱いと合わせて判断する
 - 疎通テストは `Simple_CLI` だけ（`cmd1 --an-int 123` → `Sub command cmd1: 123`）。`interactive` サブコマンドは対話なので対象外。
   `DAG` / `LIR` は認証サイトが要るので対象外
+- **`DAG` / `LIR` の接続先は、MPAS のスタブ（`https://localhost:44310`）と、その雛形のクライアントである**（#649）。
+  起動の仕方と、確かめていること（Discovery の `issuer`・`state`・`iss`・`nonce`・id_token）は
+  [`Sample4SpRp/README.md`](../../Sample4SpRp/README.md) の 2 節・4 節。認証処理は、そこの `SpRp_CLI` と同じ作りにしてある。
+  **`DAG` は `Sharprompt` の確認を挟むので、対話環境でしか動かない**（入力をリダイレクトすると例外になる）。
+  **`login --yes` で確認を飛ばせる。** `LIR` は **`login --no-browser` でブラウザを開かない**。
+  E2E（`Sample4SpRp/E2E/CliLoginE2E.ps1`。同 README 2.2 節）はこの 2 つを使う
 
 ---
 
@@ -113,6 +119,10 @@ GetConfigParameter.InitConfiguration("appsettings.json");
 - **受ける側のホストも無い**（`7_Build_Framework_WSCore.bat` は何も建てない。`BinarySerialize` を .NET で廃止したため）
 
 → **.NET 版の `WS_sample` は `testInProcess` でだけ動く。** 定義に残るリモートの記述は死んでいる。
+
+**`WSClientWin_sample` の外部ログインは、net48 版と同じ LIR**（ROPC から替えた。#649。
+[`Samples/WS_sample/ANALYSIS.md`](../../Samples/WS_sample/ANALYSIS.md) 2.2 節）。
+**ただし、得たアクセス トークンを送る先が無い**（インプロセスでしか動かないため）。ログインの見本としてだけ動く。
 
 `WSServer_sample` は、`Backend/ASPNETWebService` が参照する B 層でもある
 （`6_Build_WSSrvCore_sample.bat` が `WS_sample/Build/net10.0/` へ複写する。`Build/` と `Temp/` は生成物）。

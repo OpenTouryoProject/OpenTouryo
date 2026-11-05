@@ -19,7 +19,7 @@ Open棟梁の **.NET (Core) 系サンプル**。3 つの区画に分かれてお
 |---|---|---|---|
 | **`Backend/`** | `MVC_Sample`（ASP.NET Core MVC）/ `ASPNETWebService`（ResourceServer） | **現行の推奨サンプル。** ここが本命 | [`Backend/ANALYSIS.md`](Backend/ANALYSIS.md) |
 | **`Legacy/`** | `2CS_sample` / `Bat_sample` / `CLI_sample` / `WS_sample` | `../Samples`（net48）を .NET へ移植した**独立コピー**。名前どおり「レガシー」扱い | [`Legacy/ANALYSIS.md`](Legacy/ANALYSIS.md) |
-| **`Docker/`** | `Backend/` のサンプルを Linux コンテナで動かす一式 | サンプルのコードは持たない。**対象ごとに分かれる**（#548、#582） | [`Docker/README.md`](Docker/README.md) |
+| （**`container/`**） | `Backend/` のサンプルを Linux コンテナで動かす一式 | **このフォルダの外、リポジトリの直下にある**（もとは `Docker/`）。サンプルのコードは持たない。**対象ごとに分かれる**（#548、#582） | [`container/README.md`](../../../../container/README.md) |
 
 **全プロジェクトが SDK 形式 csproj / `net10.0`（GUI は `net10.0-windows7.0`）。**
 
@@ -126,7 +126,7 @@ net48 の `app.config` → Core は `appsettings.json`。**`appSettings` / `conn
 - `Legacy/*` は定義ファイルを csproj の `CopyToOutputDirectory` で出力先へ配る。**定義ファイルを足したら csproj にも足す**
   （[`Legacy/ANALYSIS.md`](Legacy/ANALYSIS.md) 3.2 節）。`Backend/*` は Web SDK なので `appsettings.json` は自動でコピーされる。
 - `Backend/*` の環境ごとの切り替えキーと、実測した落とし穴は [`Backend/ANALYSIS.md`](Backend/ANALYSIS.md) 4 節。
-- コンテナでの上書き（`appsettings.Container.json` ＋ `docker-compose.yml`）は [`Docker/README.md`](Docker/README.md)。
+- コンテナでの上書き（`appsettings.Container.json` ＋ `docker-compose.yml`）は [`container/README.md`](../../../../container/README.md)。
 
 ---
 
@@ -185,7 +185,7 @@ bat を経由せず **`dotnet build <sln>` を直接叩いてよい**（Core 側
 10. **`Legacy/WS_sample/Build/` `Temp/` はビルド生成物**（`Build/` は `.gitignore` 済み）。
 11. **`ReturnValue` を設定し忘れると戻り値が null**（フレームワーク仕様。[`Frameworks/ANALYSIS.md`](../Frameworks/ANALYSIS.md) 3.2 節）。
 12. **`Backend/ASPNETWebService` は `Legacy/WS_sample` のビルド結果に依存する**（2-1 節）。`6_` を飛ばすとビルドできない。
-13. **`Docker/` を変えても、CI と疎通テストでは何も確かめられない**（[`Docker/README.md`](Docker/README.md) 4 節）。
+13. **`container/` を変えても、CI と疎通テストでは何も確かめられない**（[`container/README.md`](../../../../container/README.md) 4 節）。
 
 ---
 
@@ -203,7 +203,7 @@ bat を経由せず **`dotnet build <sln>` を直接叩いてよい**（Core 側
 | CLI | README のみ | **実体あり** |
 | 非同期イベント | `AsyncEvent_sample` あり | 未移植 |
 | NuGet | `packages.config`（Web） | `PackageReference` |
-| コンテナ | 対象外 | `Docker/`（Linux コンテナ） |
+| コンテナ | 対象外 | リポジトリ直下の `container/`（Linux コンテナ） |
 
 ---
 
@@ -220,4 +220,4 @@ bat を経由せず **`dotnet build <sln>` を直接叩いてよい**（Core 側
       **Copyright ブロックは新規には付けない**（[`CODING.md`](../../CODING.md) 1 節）
 - [ ] `UOC_` メソッドの冒頭で `this.ReturnValue = ...` を設定
 - [ ] 実行確認をするなら `C:\root\files` と Northwind DB の準備状況を先に確認
-- [ ] コンテナは勝手に起動しない（[`Docker/README.md`](Docker/README.md) 4 節）
+- [ ] コンテナは勝手に起動しない（[`container/README.md`](../../../../container/README.md) 4 節）

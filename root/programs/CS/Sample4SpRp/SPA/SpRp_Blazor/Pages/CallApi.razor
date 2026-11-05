@@ -1,0 +1,49 @@
+﻿@*
+    リソース サーバを Bearer で呼ぶ（#649）
+      Samples4NetCore/Backend/ASPNETWebService の GET api/json/claims。
+      **サインインしていれば Authorization: Bearer を付ける**（OAuthOidc.CreateHttpRequestAsync）。
+      リソース サーバは、検証に通れば userName に sub を、通らなければ「未認証」を返す。
+*@
+@using System.Text.Json
+@using SpRp_Blazor.Touryo
+@inject OAuthOidc OAuthOidc
+@inject HttpClient Http
+
+<button type="button" class="btn btn-primary" @onclick="CallApiAsync">Call API（@(_hasToken ? "Bearer" : "トークン無し")）</button>
+@if (!string.IsNullOrEmpty(_result))
+{
+    <pre>@_result</pre>
+}
+
+@code {
+    private bool _hasToken;
+    private string _result = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        _hasToken = !string.IsNullOrEmpty(await OAuthOidc.GetAccessTokenAsync());
+    }
+
+    private async Task CallApiAsync()
+    {
+        _result = "...";
+        try
+        {
+            using HttpRequestMessage request = await OAuthOidc.CreateHttpRequestAsync(HttpMethod.Get, Constants.ClaimsUrl);
+            using HttpResponseMessage response = await Http.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+
+            using JsonDocument json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+            _result = JsonSerializer.Serialize(json.RootElement, new JsonSerializerOptions
+            {
+                WriteIndented = true,
+                Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping, // 「未認証」を \uXXXX にしない（表示用）
+            });
+        }
+        catch (Exception ex)
+        {
+            // CORS で止まったときも、ここに来る（理由は DevTools の Console に出る）
+            _result = ex.Message;
+        }
+    }
+}

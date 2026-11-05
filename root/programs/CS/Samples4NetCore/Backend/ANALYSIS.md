@@ -16,7 +16,7 @@
 | `MVC_Sample` | ASP.NET Core MVC（画面あり） | `MyBaseMVControllerCore` | Cookie 認証（フォーム ログイン、OAuth2 の認可コード グラント） |
 | `ASPNETWebService` | Web API（**ResourceServer**。画面なし） | `MyBaseAsyncApiController` 属性 | `Authorization: Bearer`（無くても通す） |
 
-コンテナで動かす一式は [`Docker/README.md`](../Docker/README.md)。
+コンテナで動かす一式は、リポジトリ直下の [`container/README.md`](../../../../../container/README.md)。
 
 ---
 
@@ -49,7 +49,7 @@ app.UseSession(...);             // セッションを使うなら（MVC_Sample 
 
 | コントローラ | 内容 |
 |---|---|
-| `HomeController` | `Login`（フォーム ログイン。**ユーザ名が空でなければ認証する**）、`OAuth2AuthorizationCodeGrantClient`（認可コード → トークン → id_token の検証 → UserInfo → `SignInAsync`）、`Logout`、`Scroll` |
+| `HomeController` | `Login`（フォーム ログイン。**ユーザ名が空でなければ認証する**）、`OAuth2AuthorizationCodeGrantClient`（認可コード → トークン → id_token の検証 → UserInfo → `SignInAsync`）、`Saml2AssertionConsumerService`（SAML2 の応答の検証 → `SignInAsync`）、`Logout`、`Scroll` |
 | `Crud1Controller` / `Crud2Controller` | CRUD。**2 つは実質同じ**（どちらも `Html.BeginForm`。違いは遷移先だけ） |
 | `ErrorController` / `PingController` | エラー画面・死活確認 |
 
@@ -58,12 +58,22 @@ app.UseSession(...);             // セッションを使うなら（MVC_Sample 
   ただし中身は別スレッドで同期版を走らせているだけである（[`Frameworks/ANALYSIS.md`](../../Frameworks/ANALYSIS.md) 4.4 節）
 - B 層・D 層は `Logic/{Business, Common, Dao}`（`LayerB` / `LayerD` / 自動生成 Dao `DaoShippers`）
 - `wwwroot/lib/`（bootstrap など）は**リポジトリに直接置いている**。npm / grunt は使わない
-- `launchSettings.json` のプロファイル: `http`(5219) / `https`(7014) / `IIS Express`(26422, ssl 44383)
+- `launchSettings.json` のプロファイルは `https`(44334) だけ（Kestrel）。**外部ログインの戻り先の登録（44334）と合わせるため。** net48 版の MVC_Sample（IIS Express）も 44334 なので、同時には動かせない
 
-**OAuth2 の流れを動かすには、別リポジトリの汎用認証サイト（MultiPurposeAuthSite）が要る。**
-接続先は `appsettings.json` の `SpRp_*` / `OAuth2AndOidc*` / `JwkSetUri`（既定は `https://localhost:44300/MultiPurposeAuthSite/...`）。
-単体ではフォーム ログインまでしか動かない。キーの意味（相手の値か自分の値か）は
+**OAuth2 の流れを動かすには、別リポジトリの汎用認証サイト（MultiPurposeAuthSite）のスタブが要る**（#649）。
+接続先は `appsettings.json` の `SpRp_*` / `OAuth2AndOidc*` / `JwkSetUri`（既定は MPAS のスタブ `https://localhost:44310`。
+起動は [`Sample4SpRp/README.md`](../../Sample4SpRp/README.md) 2 節）。
+**クライアントは MPAS の雛形の `MVC_Sample` で、戻り先は `https://localhost:44334/Home/OAuth2AuthorizationCodeGrantClient`**
+（この URL で動かさないと、戻り先が登録と合わない）。**id_token の鍵は `SpRp_DiscoveryUri` の `jwks_uri` から引く。**
+単体ではフォーム ログインまでしか動かない。**外部ログインは 2・3 に載っていないので、手で確かめる。**キーの意味（相手の値か自分の値か）は
 [`Framework/ANALYSIS.md`](../../Frameworks/Infrastructure/Framework/ANALYSIS.md) 8.1 節。
+
+**SAML2 の外部ログインも同じスタブを使う**（`SpRp_Saml2*`・`SpRp_RsaPfx*`）。
+- **要求も応答も HTTP-Redirect。** NameID は Persistent を求め、**識別子は NameID、表示名は属性の `mail`**（OIDC の `sub` / `email` と同じ分け方）
+- **IdP の SSO の口と署名鍵は、メタデータ（`SpRp_Saml2MetadataUri`）から引く**（entityID は `SpRp_Saml2EntityId` と照合する）
+- **AuthnRequest の Issuer は `http://` ＋ client_id**（汎用認証サイトは、Issuer から client_id を引く）。要求には `SpRp_RsaPfxFilePath` の鍵で署名する
+- **ACS は `https://localhost:44334/Home/Saml2AssertionConsumerService`。MPAS の雛形の `MVC_Sample` に `redirect_uri_saml` として登録が要る**
+  （無いと IdP は応答を返さない）
 
 ### 3.2 `ASPNETWebService`（ResourceServer）
 
@@ -76,6 +86,10 @@ app.UseSession(...);             // セッションを使うなら（MVC_Sample 
 - **`Legacy/WS_sample/Build/net10.0/` の `WSServer_sample.dll` / `WSIFType_sample.dll` を `HintPath` で参照する。**
   `6_Build_WSSrvCore_sample.bat` が先に `WSServer_sample` を建ててそこへ複写し、続けて本プロジェクトを建てる
 - 自前の `Logic/`（`SuppliersLayerB` / `DaoSuppliers`）も持つ
+- **`Bearer`（アクセス トークン）の発行者は MPAS のスタブ**（`appsettings.json` の `SpRp_Isser` = `https://localhost:44310`、
+  鍵は `JwkSetUri` = `/jwkcerts`。#649）。検証は `AccessToken.Verify` の既存の版（鍵と iss は設定から。**aud は確かめない**。#601）
+- **`GET api/json/claims` は、Bearer の検証の結果を返す**（`{ userName, roles, scopes }`。#649）。
+  **SPA のサンプル（`Sample4SpRp/SPA`）が使う。** トークンが無い・検証に失敗したときも 200 で、`userName` は「未認証」。DB は読まない
 - **OpenAPI を標準機能で出す**（`AddOpenApi` / `MapOpenApi`、`/openapi/v1.json`。#580）。
   `Microsoft.OpenApi` は脆弱性のある推移的な版を避けるため csproj に明示している
 - `MVC_Sample` と違い、**Cookie 認証・セッション・データ保護を持たない**（`AddMvc` も不要。#582）。
@@ -199,6 +213,6 @@ IIS ＋ ARR の URL Rewrite で `HTTPS` サーバ変数を立てる（[`CONFIGUR
 
 - [ ] 部品を先にビルドする（`Nuget_netcore100.sln` → `Business_netcore100.sln`）
 - [ ] `ASPNETWebService` を触るなら、`6_Build_WSSrvCore_sample.bat` で建てる
-- [ ] 設定のキーを足したら、`appsettings.json` と、コンテナ用の `Docker/*/appsettings.Container.json` / `docker-compose.yml` を見る
+- [ ] 設定のキーを足したら、`appsettings.json` と、コンテナ用の `container/*/appsettings.Container.json` / `docker-compose.yml` を見る
 - [ ] 変えたサンプルだけを `-Only` で疎通する
 - [ ] net48 版（`Samples/WebApp_sample/MVC_Sample`、`Samples/WS_sample/ASPNETWebService`）への追随の要否を報告する

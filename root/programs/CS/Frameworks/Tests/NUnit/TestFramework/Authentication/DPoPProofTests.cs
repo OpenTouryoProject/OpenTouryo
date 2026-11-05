@@ -29,6 +29,7 @@
 //*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を広げた（#640）
 //*  2026/10/30  玄人 幸道         htu の比較を RFC 9449 4.3 どおりにした（末尾の "/"・パスの大文字小文字は別。#642）
+//*  2026/11/05  玄人 幸道         小数の iat を受けることのテストを足した（#647）
 //**********************************************************************************
 
 using System;
@@ -143,6 +144,24 @@ namespace TestFramework.Authentication
             Assert.That(key.Signer.JWSHeader.jwk, Is.Null);
         }
 
+        /// <summary>Verify：iat が小数の数値でも受ける（窓の中なら）。</summary>
+        [Test]
+        [Basis("RFC 9449 4.2（iat は作成時刻。RFC 7519 4.1.6 の iat）・RFC 7519 2（NumericDate は整数でない値も表せる）")]
+        [Basis("#647")]
+        public void Verify_FractionalIat()
+        {
+            Key key = CreateKey("ES256");
+            double now = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() / 1000.0;
+
+            Dictionary<string, object> fractional = Payload(0);
+            fractional["iat"] = now;
+
+            string jkt, err;
+            JObject payload;
+            Assert.That(DPoPProof.Verify(Craft(key, "dpop+jwt", key.Public, fractional), "POST", TokenEndpoint, out jkt, out payload, out err), Is.True, err);
+            Assert.That(payload["iat"].Type, Is.EqualTo(JTokenType.Float), "小数のまま届いている");
+        }
+
         /// <summary>Create：秘密鍵の JWK をヘッダに入れようとすると ArgumentException。htu は絶対 URL。</summary>
         [Test]
         [Basis("RFC 9449 4.2（jwk に秘密鍵を含めない）")]
@@ -189,6 +208,10 @@ namespace TestFramework.Authentication
             Dictionary<string, object> stringIat = Payload(now);
             stringIat["iat"] = now.ToString();
             Assert.That(verify(Craft(key, "dpop+jwt", key.Public, stringIat), "POST", TokenEndpoint), Is.False, "iat が文字列");
+
+            Dictionary<string, object> oldFractionalIat = Payload(now);
+            oldFractionalIat["iat"] = now - 600.5;
+            Assert.That(verify(Craft(key, "dpop+jwt", key.Public, oldFractionalIat), "POST", TokenEndpoint), Is.False, "iat が古い（小数）");
 
             Dictionary<string, object> noJti = Payload(now);
             noJti.Remove("jti");

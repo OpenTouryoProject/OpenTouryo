@@ -25,6 +25,12 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/19  玄人 幸道         新規作成
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
+//*  2026/11/05  玄人 幸道         必須のクレーム・時刻のクレームを確かめるテストを追加（#653）
+//*  2026/11/05  玄人 幸道         日付の形の文字列のクレームを通すことを足した（#653 ph1 のレビューの指摘 1）
+//*  2026/11/05  玄人 幸道         期待する aud を受ける版のテストを追加（#653 ph2）
+//*  2026/11/05  玄人 幸道         aud の照合のケースを足し、OIDC と CIBA をそろえた（#653 ph2 のレビューの指摘 1・2・3）
+//*  2026/11/05  玄人 幸道         aud を受けない版の Obsolete の警告（CS0618）を抑えた（#653）
+//*  2026/11/05  玄人 幸道         形の壊れた入力を、例外にせず false にすることを足した（#654 のレビューの指摘 5）
 //**********************************************************************************
 
 using System;
@@ -33,6 +39,7 @@ using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
@@ -43,15 +50,16 @@ using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Public.Security.Jwt;
 using Touryo.Infrastructure.Public.Str;
 
+// aud を受けない Verify・VerifyCiba は Obsolete（#653）だが、利用者が使い続ける版なので、振る舞いを確かめ続ける。
+#pragma warning disable CS0618
+
 namespace TestFramework.Authentication
 {
     /// <summary>RequestObject / ClaimsInRO（OIDC・CIBA の要求オブジェクト）の単体テスト</summary>
     /// <remarks>
     /// 作った要求オブジェクトが署名どおりに検証できること（別の鍵では通らない）と、クレームの中身を確かめる。
     ///
-    /// **必須のクレームが欠けたときの振る舞いは、ここでは確かめない。**
-    /// Verify / VerifyCiba は、必須のクレームが欠けていても true を返す（「必須項目の不足」の分岐も true）。
-    /// 不具合と思われるため、テストで固めずに報告している。
+    /// **必須のクレームが欠けたもの・期限の過ぎたものは false になる**（#653。2026/11/05 までは true を返していた）。
     /// </remarks>
     [TestFixture]
     public class RequestObjectTests
@@ -165,5 +173,321 @@ namespace TestFramework.Authentication
             Assert.That((string)p[OAuth2AndOIDCConst.requested_expiry], Is.EqualTo("120"));
             Assert.That(p.ContainsKey(OAuth2AndOIDCConst.user_code), Is.False, "空の任意項目は入らない");
         }
+
+        #region 必須のクレーム・時刻のクレーム（#653）
+
+        /// <summary>ペイロードを書き換える手と、その説明</summary>
+        private class Mutation
+        {
+            public string Label;
+            public Action<JObject> Apply;
+            public Mutation(string label, Action<JObject> apply) { this.Label = label; this.Apply = apply; }
+        }
+
+        /// <summary>いまの UNIX 時刻（秒）</summary>
+        private static long Now()
+        {
+            return DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        }
+
+        /// <summary>OIDC の要求オブジェクトの、必須のクレームだけを持つペイロード</summary>
+        private static JObject OidcPayload()
+        {
+            return new JObject
+            {
+                { OAuth2AndOIDCConst.iss, "client01" },
+                { OAuth2AndOIDCConst.aud, "https://op.example.com/" },
+                { OAuth2AndOIDCConst.response_type, "code" },
+                { OAuth2AndOIDCConst.client_id, "client01" },
+                { OAuth2AndOIDCConst.scope, "openid" },
+            };
+        }
+
+        /// <summary>CIBA の認証要求の、必須のクレームだけを持つペイロード</summary>
+        private static JObject CibaPayload()
+        {
+            long now = RequestObjectTests.Now();
+            return new JObject
+            {
+                { OAuth2AndOIDCConst.iss, "client01" },
+                { OAuth2AndOIDCConst.aud, "https://op.example.com/" },
+                { OAuth2AndOIDCConst.exp, now + 300 },
+                { OAuth2AndOIDCConst.iat, now },
+                { OAuth2AndOIDCConst.nbf, now },
+                { OAuth2AndOIDCConst.jti, "jti01" },
+                { OAuth2AndOIDCConst.scope, "openid" },
+                { OAuth2AndOIDCConst.login_hint, "user01" },
+            };
+        }
+
+        /// <summary>
+        /// OIDC：必須のクレーム（iss・aud・response_type・client_id・scope）がそろえば通り、
+        /// 欠けている・空・文字列でないものは false。state・nonce・exp は無くてよい。exp・nbf は在れば値を確かめる。
+        /// </summary>
+        [Test]
+        [Basis("RFC 9101 4（署名した Request Object は iss・aud を含める）")]
+        [Basis("RFC 9101 6.3（AS は Request Object の中のパラメタだけを使う）・RFC 6749 4.1.1（response_type・client_id は必須）")]
+        [Basis("OIDC Core 3.1.2.1（scope は必須。state・nonce は認可コード フローでは任意）")]
+        [Basis("RFC 7519 4.1.4・4.1.5（exp を過ぎたら・nbf より前なら受けない）")]
+        [Basis("#653")]
+        public void Oidc_Claims()
+        {
+            using (RSA rsa = RSA.Create(2048))
+            {
+                JWS_RS256_Param jws = new JWS_RS256_Param(rsa.ExportParameters(true));
+                RSAParameters pub = rsa.ExportParameters(false);
+                long now = RequestObjectTests.Now();
+                string iss;
+
+                // 通るもの
+                Mutation[] valid = new Mutation[]
+                {
+                    new Mutation("必須だけ（state・nonce・exp は無い）", p => { }),
+                    new Mutation("aud が配列", p => p[OAuth2AndOIDCConst.aud] = new JArray("https://op.example.com/", "other")),
+                    new Mutation("exp が未来", p => p[OAuth2AndOIDCConst.exp] = now + 300),
+                    new Mutation("exp が未来（文字列。CreateExpClaim の形）", p => p[OAuth2AndOIDCConst.exp] = (now + 300).ToString()),
+                    new Mutation("nbf が過去", p => p[OAuth2AndOIDCConst.nbf] = now - 60),
+                    new Mutation("文字列のクレームが日付の形（日付に変えずに読む）", p =>
+                    {
+                        p[OAuth2AndOIDCConst.client_id] = "2026-11-05T00:00:00Z";
+                        p[OAuth2AndOIDCConst.scope] = "2026-11-05T09:00:00+09:00";
+                    }),
+                };
+
+                foreach (Mutation m in valid)
+                {
+                    JObject p = RequestObjectTests.OidcPayload();
+                    m.Apply(p);
+                    Assert.That(RequestObject.Verify(jws.Create(p.ToString(Formatting.None)), out iss, pub), Is.True, m.Label);
+                    Assert.That(iss, Is.EqualTo("client01"), m.Label);
+                }
+
+                // 断るもの
+                List<Mutation> invalid = new List<Mutation>();
+                foreach (string name in new string[] {
+                    OAuth2AndOIDCConst.iss, OAuth2AndOIDCConst.aud, OAuth2AndOIDCConst.response_type,
+                    OAuth2AndOIDCConst.client_id, OAuth2AndOIDCConst.scope })
+                {
+                    string n = name;
+                    invalid.Add(new Mutation(n + " が無い", p => p.Remove(n)));
+                    invalid.Add(new Mutation(n + " が空", p => p[n] = ""));
+                    invalid.Add(new Mutation(n + " が数値", p => p[n] = 1));
+                }
+                invalid.Add(new Mutation("aud が空の配列", p => p[OAuth2AndOIDCConst.aud] = new JArray()));
+                invalid.Add(new Mutation("aud の配列に数値", p => p[OAuth2AndOIDCConst.aud] = new JArray("https://op.example.com/", 1)));
+                invalid.Add(new Mutation("exp が過去", p => p[OAuth2AndOIDCConst.exp] = now - 60));
+                invalid.Add(new Mutation("exp が読めない", p => p[OAuth2AndOIDCConst.exp] = "abc"));
+                invalid.Add(new Mutation("exp が null", p => p[OAuth2AndOIDCConst.exp] = JValue.CreateNull()));
+                invalid.Add(new Mutation("nbf が未来", p => p[OAuth2AndOIDCConst.nbf] = now + 300));
+
+                foreach (Mutation m in invalid)
+                {
+                    JObject p = RequestObjectTests.OidcPayload();
+                    m.Apply(p);
+                    Assert.That(RequestObject.Verify(jws.Create(p.ToString(Formatting.None)), out iss, pub), Is.False, m.Label);
+                }
+
+                // ペイロードがオブジェクトでない
+                Assert.That(RequestObject.Verify(jws.Create("[1]"), out iss, pub), Is.False, "ペイロードが配列");
+
+                // Create で、nonce・state を空にして作ったものも通る（Create は空の nonce を入れない）
+                string ro = RequestObject.Create("client01", "https://op.example.com/",
+                    "code", "", "https://rp.example.com/cb", "openid", "", "",
+                    "", "", "", new ClaimsInRO(null, null, null), rsa.ExportParameters(true));
+                Assert.That(RequestObject.Verify(ro, out iss, pub), Is.True, "Create（nonce 無し）");
+            }
+        }
+
+        /// <summary>
+        /// CIBA：必須のクレーム（aud・iss・exp・iat・nbf・jti・scope）とヒント 1 つがそろえば通り、
+        /// 欠けている・空・読めない・期限の過ぎたもの、ヒントが無い・複数のものは false。
+        /// client_notification_token・binding_message は無くてよい。
+        /// </summary>
+        [Test]
+        [Platform("Win")]
+        [Basis("CIBA Core 7.1.1（署名した認証要求は aud・iss・exp・iat・nbf・jti を含む）")]
+        [Basis("CIBA Core 7.1（scope は必須、ヒントは one (and only one)、client_notification_token は Ping・Push のときだけ、binding_message は任意）")]
+        [Basis("RFC 7519 4.1.4・4.1.5（exp を過ぎたら・nbf より前なら受けない）")]
+        [Basis("#653")]
+        public void Ciba_Claims()
+        {
+            JWS_ES256_X509 jws = new JWS_ES256_X509(TestCertificates.EcdsaPfx256, TestCertificates.Password);
+            ECParameters pub = TestCertificates.LoadPfx(TestCertificates.EcdsaPfx256).GetECDsaPublicKey().ExportParameters(false);
+            long now = RequestObjectTests.Now();
+            string iss;
+
+            // 通るもの
+            Mutation[] valid = new Mutation[]
+            {
+                new Mutation("必須だけ（client_notification_token・binding_message は無い）", p => { }),
+                new Mutation("ヒントが login_hint_token", p => { p.Remove(OAuth2AndOIDCConst.login_hint); p[OAuth2AndOIDCConst.login_hint_token] = "token"; }),
+                new Mutation("ヒントが id_token_hint", p => { p.Remove(OAuth2AndOIDCConst.login_hint); p[OAuth2AndOIDCConst.id_token_hint] = "idt"; }),
+                new Mutation("時刻が文字列（CreateCiba の形）", p =>
+                {
+                    p[OAuth2AndOIDCConst.exp] = (now + 300).ToString();
+                    p[OAuth2AndOIDCConst.iat] = now.ToString();
+                    p[OAuth2AndOIDCConst.nbf] = now.ToString();
+                }),
+                new Mutation("exp が小数", p => p[OAuth2AndOIDCConst.exp] = now + 300.5),
+                new Mutation("文字列のクレームが日付の形（日付に変えずに読む）", p =>
+                {
+                    p[OAuth2AndOIDCConst.jti] = "2026-11-05T00:00:00Z";
+                    p[OAuth2AndOIDCConst.login_hint] = "2026-11-05T00:00:00+09:00";
+                }),
+            };
+
+            foreach (Mutation m in valid)
+            {
+                JObject p = RequestObjectTests.CibaPayload();
+                m.Apply(p);
+                Assert.That(RequestObject.VerifyCiba(jws.Create(p.ToString(Formatting.None)), out iss, pub), Is.True, m.Label);
+                Assert.That(iss, Is.EqualTo("client01"), m.Label);
+            }
+
+            // 断るもの
+            List<Mutation> invalid = new List<Mutation>();
+            foreach (string name in new string[] {
+                OAuth2AndOIDCConst.aud, OAuth2AndOIDCConst.iss, OAuth2AndOIDCConst.exp, OAuth2AndOIDCConst.iat,
+                OAuth2AndOIDCConst.nbf, OAuth2AndOIDCConst.jti, OAuth2AndOIDCConst.scope })
+            {
+                string n = name;
+                invalid.Add(new Mutation(n + " が無い", p => p.Remove(n)));
+                invalid.Add(new Mutation(n + " が空", p => p[n] = ""));
+            }
+            invalid.Add(new Mutation("ヒントが無い", p => p.Remove(OAuth2AndOIDCConst.login_hint)));
+            invalid.Add(new Mutation("ヒントが空", p => p[OAuth2AndOIDCConst.login_hint] = ""));
+            invalid.Add(new Mutation("ヒントが 2 つ", p => p[OAuth2AndOIDCConst.id_token_hint] = "idt"));
+            invalid.Add(new Mutation("exp が過去", p => p[OAuth2AndOIDCConst.exp] = now - 60));
+            invalid.Add(new Mutation("nbf が未来", p => p[OAuth2AndOIDCConst.nbf] = now + 300));
+            invalid.Add(new Mutation("iat が読めない", p => p[OAuth2AndOIDCConst.iat] = "abc"));
+            invalid.Add(new Mutation("jti が数値", p => p[OAuth2AndOIDCConst.jti] = 1));
+
+            foreach (Mutation m in invalid)
+            {
+                JObject p = RequestObjectTests.CibaPayload();
+                m.Apply(p);
+                Assert.That(RequestObject.VerifyCiba(jws.Create(p.ToString(Formatting.None)), out iss, pub), Is.False, m.Label);
+            }
+        }
+
+        /// <summary>
+        /// OIDC：aud を受ける版は、aud が期待する値と一致する（配列なら含む）ものだけを通す。
+        /// 大文字・小文字の違い・含まない配列は false。ほかの必須のクレームも、aud を受けない版と同じく確かめる。
+        /// aud を受けない版は、aud の値を照合しない。
+        /// </summary>
+        [Test]
+        [Basis("RFC 9101 4（aud は認可サーバの issuer）・RFC 7519 4.1.3（aud は StringOrURI か、その配列。自分を含まなければ断る）")]
+        [Basis("設計：RequestObject.Verify（aud を受けない版）の remarks（aud の値は照合しない）")]
+        [Basis("#653")]
+        public void Oidc_Aud()
+        {
+            const string op = "https://op.example.com/";
+
+            using (RSA rsa = RSA.Create(2048))
+            {
+                JWS_RS256_Param jws = new JWS_RS256_Param(rsa.ExportParameters(true));
+                RSAParameters pub = rsa.ExportParameters(false);
+                string pubJwk = new RsaPublicKeyConverter().ParamToJwk(pub);
+                string iss;
+
+                Func<Action<JObject>, string> sign = m =>
+                {
+                    JObject p = RequestObjectTests.OidcPayload();
+                    m(p);
+                    return jws.Create(p.ToString(Formatting.None));
+                };
+
+                string same = sign(p => { });
+                Assert.That(RequestObject.Verify(same, op, out iss, pub), Is.True, "一致");
+                Assert.That(iss, Is.EqualTo("client01"));
+                Assert.That(RequestObject.Verify(same, op, out iss, pubJwk), Is.True, "一致（JWK の版）");
+                Assert.That(RequestObject.Verify(sign(p => p[OAuth2AndOIDCConst.aud] = new JArray("other", op)), op, out iss, pub),
+                    Is.True, "配列が含む");
+
+                string other = sign(p => p[OAuth2AndOIDCConst.aud] = "https://other.example.com/");
+                Assert.That(RequestObject.Verify(other, op, out iss, pub), Is.False, "違う");
+                Assert.That(RequestObject.Verify(other, op, out iss, pubJwk), Is.False, "違う（JWK の版）");
+                Assert.That(RequestObject.Verify(other, out iss, pub), Is.True, "aud を受けない版は照合しない");
+                Assert.That(RequestObject.Verify(sign(p => p[OAuth2AndOIDCConst.aud] = op.ToUpperInvariant()), op, out iss, pub),
+                    Is.False, "大文字・小文字が違う");
+                Assert.That(RequestObject.Verify(sign(p => p[OAuth2AndOIDCConst.aud] = new JArray("a", "b")), op, out iss, pub),
+                    Is.False, "配列が含まない");
+                Assert.That(RequestObject.Verify(sign(p => p[OAuth2AndOIDCConst.aud] = new JArray(op, 1)), op, out iss, pub),
+                    Is.False, "配列が含むが、文字列でない要素もある");
+                Assert.That(RequestObject.Verify(sign(p => p[OAuth2AndOIDCConst.aud] = "https://op.example.com"), op, out iss, pub),
+                    Is.False, "末尾のスラッシュが違う（正規化しない）");
+                Assert.That(RequestObject.Verify(sign(p => p.Remove(OAuth2AndOIDCConst.aud)), op, out iss, pub), Is.False, "aud が無い");
+                Assert.That(RequestObject.Verify(sign(p => p.Remove(OAuth2AndOIDCConst.scope)), op, out iss, pub),
+                    Is.False, "ほかの必須（scope）が無い");
+
+                foreach (string broken in JwtAssertionTests.BrokenJwts())
+                {
+                    Assert.That(RequestObject.Verify(broken, op, out iss, pub), Is.False, "形が壊れている : " + (broken ?? "null"));
+                    Assert.That(RequestObject.Verify(broken, out iss, pub), Is.False, "形が壊れている（aud を受けない版） : " + (broken ?? "null"));
+                }
+
+                Assert.Throws<ArgumentNullException>(() => RequestObject.Verify(same, null, out iss, pub), "期待する aud が null");
+                Assert.Throws<ArgumentNullException>(() => RequestObject.Verify(same, "", out iss, pub), "期待する aud が空");
+            }
+        }
+
+        /// <summary>
+        /// CIBA：aud を受ける版は、aud が期待する値（OP の Issuer Identifier）と一致する（配列なら含む）ものだけを通す。
+        /// ほかの必須のクレームも、aud を受けない版と同じく確かめる。aud を受けない版は、aud の値を照合しない。
+        /// </summary>
+        [Test]
+        [Platform("Win")]
+        [Basis("CIBA Core 7.1.1（aud は OP の Issuer Identifier）・RFC 7519 4.1.3（自分を含まなければ断る）")]
+        [Basis("設計：RequestObject.VerifyCiba（aud を受けない版）の remarks（aud の値は照合しない）")]
+        [Basis("#653")]
+        public void Ciba_Aud()
+        {
+            const string op = "https://op.example.com/";
+
+            JWS_ES256_X509 jws = new JWS_ES256_X509(TestCertificates.EcdsaPfx256, TestCertificates.Password);
+            ECParameters pub = TestCertificates.LoadPfx(TestCertificates.EcdsaPfx256).GetECDsaPublicKey().ExportParameters(false);
+            string pubJwk = new EccPublicKeyConverter().ParamToJwk(pub);
+            string iss;
+
+            Func<Action<JObject>, string> sign = m =>
+            {
+                JObject p = RequestObjectTests.CibaPayload();
+                m(p);
+                return jws.Create(p.ToString(Formatting.None));
+            };
+
+            string same = sign(p => { });
+            Assert.That(RequestObject.VerifyCiba(same, op, out iss, pub), Is.True, "一致");
+            Assert.That(iss, Is.EqualTo("client01"));
+            Assert.That(RequestObject.VerifyCiba(same, op, out iss, pubJwk), Is.True, "一致（JWK の版）");
+            Assert.That(RequestObject.VerifyCiba(sign(p => p[OAuth2AndOIDCConst.aud] = new JArray(op, "other")), op, out iss, pub),
+                Is.True, "配列が含む");
+
+            string other = sign(p => p[OAuth2AndOIDCConst.aud] = "https://op.example.com/ros");
+            Assert.That(RequestObject.VerifyCiba(other, op, out iss, pub), Is.False, "違う（エンドポイントの URL）");
+            Assert.That(RequestObject.VerifyCiba(other, op, out iss, pubJwk), Is.False, "違う（JWK の版）");
+            Assert.That(RequestObject.VerifyCiba(other, out iss, pub), Is.True, "aud を受けない版は照合しない");
+            Assert.That(RequestObject.VerifyCiba(sign(p => p[OAuth2AndOIDCConst.aud] = op.ToUpperInvariant()), op, out iss, pub),
+                Is.False, "大文字・小文字が違う");
+            Assert.That(RequestObject.VerifyCiba(sign(p => p[OAuth2AndOIDCConst.aud] = new JArray("a", "b")), op, out iss, pub),
+                Is.False, "配列が含まない");
+            Assert.That(RequestObject.VerifyCiba(sign(p => p[OAuth2AndOIDCConst.aud] = new JArray(op, 1)), op, out iss, pub),
+                Is.False, "配列が含むが、文字列でない要素もある");
+            Assert.That(RequestObject.VerifyCiba(sign(p => p[OAuth2AndOIDCConst.aud] = "https://op.example.com"), op, out iss, pub),
+                Is.False, "末尾のスラッシュが違う（正規化しない）");
+            Assert.That(RequestObject.VerifyCiba(sign(p => p.Remove(OAuth2AndOIDCConst.aud)), op, out iss, pub), Is.False, "aud が無い");
+            Assert.That(RequestObject.VerifyCiba(sign(p => p.Remove(OAuth2AndOIDCConst.jti)), op, out iss, pub),
+                Is.False, "ほかの必須（jti）が無い");
+
+            foreach (string broken in JwtAssertionTests.BrokenJwts())
+            {
+                Assert.That(RequestObject.VerifyCiba(broken, op, out iss, pub), Is.False, "形が壊れている : " + (broken ?? "null"));
+            }
+
+            Assert.Throws<ArgumentNullException>(() => RequestObject.VerifyCiba(same, null, out iss, pub), "期待する aud が null");
+            Assert.Throws<ArgumentNullException>(() => RequestObject.VerifyCiba(same, "", out iss, pub), "期待する aud が空");
+        }
+
+        #endregion
     }
 }

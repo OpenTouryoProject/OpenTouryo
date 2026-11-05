@@ -245,6 +245,7 @@
     <Content Include="Aspx\Framework\myYesNoMessageDialog.aspx" />
     <Content Include="Aspx\Framework\Ping.aspx" />
     <Content Include="Aspx\OAuth2\OAuth2AuthorizationCodeGrantClient.aspx" />
+    <Content Include="Aspx\Saml2\Saml2AssertionConsumerService.aspx" />
     <Content Include="Aspx\sample\3Tier\ProductsConditionalSearch.aspx" />
     <Content Include="Aspx\sample\3Tier\ProductsDetail.aspx" />
     <Content Include="Aspx\sample\3Tier\ProductsSearchAndUpdate.aspx" />
@@ -574,6 +575,13 @@
     <Compile Include="Aspx\OAuth2\OAuth2AuthorizationCodeGrantClient.aspx.designer.cs">
       <DependentUpon>OAuth2AuthorizationCodeGrantClient.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Aspx\Saml2\Saml2AssertionConsumerService.aspx.cs">
+      <DependentUpon>Saml2AssertionConsumerService.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Aspx\Saml2\Saml2AssertionConsumerService.aspx.designer.cs">
+      <DependentUpon>Saml2AssertionConsumerService.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Aspx\sample\3Tier\ProductsConditionalSearch.aspx.cs">
       <DependentUpon>ProductsConditionalSearch.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -839,7 +847,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>56773</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>https://localhost:44371/</IISUrl>
+          <IISUrl>https://localhost:44333/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

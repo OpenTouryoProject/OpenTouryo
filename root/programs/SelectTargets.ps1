@@ -84,6 +84,7 @@
      2026/10/15  玄人 幸道         -Stage（fixing / fixed）を追加（#610）
      2026/10/19  玄人 幸道         Public・Public.Security に触れたら、2_RunAllTests.ps1 に -Linux を付けるようにした（#632）
      2026/10/19  玄人 幸道         CoverageReport.ps1 を 2 で確かめる対象に加えた
+     2026/11/04  玄人 幸道         SpRp のサンプル（Sample4SpRp）は、ビルドのバッチに加えて「手で確かめる」に出す（#649）
 #>
 [CmdletBinding()]
 param(
@@ -328,6 +329,23 @@ foreach ($f in $changed)
             $manual += $f
             $kind = "スクリプト（手で実行する）"
         }
+    }
+    elseif ($lf -match '^root/programs/cs/sample4sprp/')
+    {
+        # **SpRp のサンプル**（#649）。ビルドは 11_Build_SpRp_sample.bat が建てる（1 で回る）。
+        #   **動作は外部の IdP（MPAS のスタブ）が要るので、2・3 では回らない。手で確かめる**
+        #   （Sample4SpRp/README.md）。**通しにしても確かめられないので、通しにはしない。**
+        #   フォルダ単位にまとめる（root/programs/CS/Sample4SpRp/<系統>/<アプリ>）
+        $hits = @($batDirs | Where-Object { $_.Dir -eq $lang -and $lf.StartsWith($_.Path) })
+        foreach ($h in $hits) { $bats["$($h.Dir)|$($h.Bat)"] = $f }
+
+        $parts = @($f -split '/')
+        $manual += (($parts | Select-Object -First ([Math]::Min(6, $parts.Count - 1))) -join '/') + "/"
+
+        $kind = $(if ($hits.Count -gt 0)
+            { "バッチ : " + (($hits | ForEach-Object { $_.Bat } | Sort-Object -Unique) -join ", ") + " ＋ 手で確かめる（SpRp）" }
+            else
+            { "手で確かめる（SpRp。IdP が要る）" })
     }
     else
     {

@@ -244,7 +244,8 @@ DCR の口の認可、クライアント登録の持ち方。
 
 - **`OAuth2AndOIDCConst.UrnCnfJktClaim` は `urn:oauth:claim:cnf:jkt`**（`UrnCnfX5tClaim` と同じ組み立て）。
   MPAS の `Const.UrnCnfJktClaim`（`urn:oauth:cnf:jkt`）とは値が違う。プロセスの外に出ない値だが、置き換えるときは揃えること
-- `DPoPProof.Create` は `iat` を**数値**で入れる（`CmnJwtToken.CreateIatClaim` は文字列を返すので使わない）。`Verify` は文字列の `iat` を断る
+- `DPoPProof.Create` は `iat` を**数値**で入れる（`CmnJwtToken.CreateIatClaim` は文字列を返すので使わない）。`Verify` は文字列の `iat` を断る。
+  **小数の `iat` は受ける**（RFC 7519 2 の NumericDate。#647。2026/11/05 までは整数でなければ断っていた）
 - `SendWithDPoPAsync` の `DPoP-Nonce` の記憶は `static`（オリジンごと）で、プロセス全体に効く
 
 **`CmnClientParams`（`SpRp_*`）と `JwkSetUri` は、クライアント役が読む設定である**（#602）。
@@ -302,9 +303,65 @@ DCR の口の認可、クライアント登録の持ち方。
   2026/10/30 までは、`error` の応答は署名だけを確かめて `true` を返していた。
   **認可サーバ側は、`error` の応答にも `iss`・`aud`・`exp` を入れること**（`ResponseObject.Create` は入れる）。
   入れない認可サーバの `error` の応答は、`false`（検証の失敗）として届く。署名が正しければ、`false` でも `jobj` は返る（検証されていない値）
-- `AccessToken.Verify` の既存の版は `aud` を確認しない（Keycloak 互換）。
-  **`aud` を確認するなら `jws` / `iss` / `auds`（期待する `aud` の集合）を受ける版を使う。**
+- **`AccessToken.Verify` の設定を読む版は、設定の `client_id`（`OAuth2AndOidcClientID` / `OAuth2AndOidcClientIDs`）が在れば、
+  `aud` がそのいずれかを含むことを確かめる**（#655。`IdToken` の設定を読む版（#603）と同じ `VerifyAudByClientIDs`）。
+  基盤の Web API（`MyBaseAsyncApiController`・`FxController`・`WCFTCPSvcForFx`）は、この版を使う。
+  **リソース サーバは、受け付けるクライアントの `client_id` を `OAuth2AndOidcClientIDs` に並べる。**
+  **どちらも設定されていなければ、従来どおり `aud` を確かめない**（壊さないため。**4.0 で、設定が無いときも断る既定に変える予定**）。
+  2026/11/05 までは、設定によらず `aud` を確かめていなかった（Keycloak 互換。Keycloak は Audience mapper で `aud` を付ける）。
+  **移行のときに当たりやすいこと：**
+  - **`OAuth2AndOidcClientID`（単数。クライアントとして自分の `client_id` を持つキー）を設定しているだけでも、確かめるようになる。**
+    クライアント兼 Web API の配備では、ほかのクライアント向けのトークンや、`aud` が自分の `client_id` でないトークン
+    （リソース サーバの識別子が入る RFC 9068 の形式など）は 401 になる。受けるなら、その `client_id` を `OAuth2AndOidcClientIDs` に並べる
+  - 基盤の `ServiceInterface`（ASPNETWebService・WCFService）の `app.config` には、既に `OAuth2AndOidcClientIDs` が入っている。
+    **ここに並べた `client_id` 以外は断る**（サンプルの ASPNETWebService と同じ 5 件にした）
+  - **空白・空文字だけの値は、設定が無いのと同じ**に扱う。**`OAuth2AndOidcClientIDs` が文字列の配列として読めなければ、すべて断る**（例外にしない。net48 は JSON が壊れているとき、net10.0 は要素がオブジェクト・配列のときと、配列でなく 1 つの値のとき。net10.0 の構成のバインドは、形が違っても例外にせず要素を飛ばすので、形を先に見る）
+  - **`aud` は文字列か、文字列の配列に限る**（数値・オブジェクト・文字列でない要素は `false`）。`IdToken`・`ResponseObject` の
+    設定を読む版も同じ判定（`VerifyAudByClientIDs`）なので、同じく変わる（以前は数値を文字列に変えて照合し、オブジェクトは例外だった）
+  - **リソースごとの分離にはならない。** 判定は「並べた `client_id` のいずれか向けか」なので、同じクライアント向けのトークンは、
+    そのクライアントを並べた別の Web API でも通る。分けるなら、リソース サーバの識別子を `aud` に入れる認可サーバと、`auds` を受ける版を使う
+  - `typ` を見ないので、同じ発行者が出した ID トークン（`aud` が並べた `client_id`）も通る（下の `typ` の項）
+  **`aud` を別の値で確かめるなら `jws` / `iss` / `auds`（期待する `aud` の集合）を受ける版を使う。**
   `aud` に `client_id` が入る形式では、受け付けるクライアントの `client_id` の一覧を渡す
+- **`exp`・`nbf`・`iat`（NumericDate）は、小数・指数表記でも読む**（RFC 7519 2。#647）。
+  読み方は `CmnJwtToken.TryReadNumericDate` の 1 か所（`decimal`・`CultureInfo.InvariantCulture`）。
+  **小数はそのまま、いまの時刻（整数の秒）と比べる**ので、切り捨て・切り上げてから比べるのと同じ結果になり、有効期間は広がらない。
+  **小数の double は 17 桁（`G17`）で字面にしてから読む**（net48 の既定の書式は 15 桁で、10 桁の秒だと小数が丸まり、
+  `exp` が最大 1 秒長く通るため。net48 と net10.0 で結果を揃える）。
+  **`long` の範囲を超える値は読めない**（以前の `long.Parse` が受けなかった範囲。極端に遠い未来の `exp` を通さない）。
+  **`exp` と同じ秒は通す**（従来どおり。RFC 7519 4.1.4 の「`exp` 以後は受けない」より 1 秒緩い）。
+  **数値の文字列も、従来どおり読む**（`CreateExpClaim` などが文字列を返すため。DPoP の `iat` だけは数値に限る）。
+  **無い・読めない値は、例外にせず検証の失敗（`false`）**。2026/11/05 までは、`IdToken`・`AccessToken`・`JwtAssertion` の `Verify`
+  と `CmnJwtToken.VerifyExp`・`VerifyNbf` が、`long.Parse` の例外を投げていた（`ResponseObject.Verify` は #644 で先に `false` にしていた）
+- **`RequestObject.Verify`・`VerifyCiba` は、署名に加えて必須のクレームと `exp`・`nbf` を確かめる**（#653）。
+  2026/11/05 までは、署名が正しければクレームによらず `true` を返していた（「必須項目の不足」の分岐も `true`）。
+  **必須の範囲は仕様に合わせた。** `Verify` は `iss`・`aud`・`response_type`・`client_id`・`scope`（**`state`・`nonce` は必須にしない**。
+  `Create` も空なら入れない）で、`exp`・`nbf` は在れば確かめる。`VerifyCiba` は `aud`・`iss`・`exp`・`iat`・`nbf`・`jti`・`scope`
+  （CIBA Core 7.1.1・7.1）と、**ヒント（`login_hint_token`・`id_token_hint`・`login_hint`）がちょうど 1 つ**。
+  **`client_notification_token`・`binding_message` は必須にしない**（Ping・Push のときだけ必須／任意）。
+  **既存の版は `aud` の値を照合しない**（期待する値を受けないため）。**既存の版は `[Obsolete]`（警告。CS0618）にした**
+  （`aud` を見なければ、同じクライアントが別の宛先に向けて署名したものも通るため。RFC 9101 10.8）。振る舞いは変えていない。
+  **照合するなら、期待する `aud` を受ける版**（`Verify(ro, aud, out iss, key)`・`VerifyCiba(ro, aud, out iss, key)`）**を使う**（#653 ph2）。
+  完全一致（大文字・小文字を区別）で、配列ならそれを含むこと。期待する値は、RFC 9101 4・CIBA Core 7.1.1 では
+  **認可サーバ（OP）の issuer**（エンドポイントの URL ではない）。null・空を渡すと `ArgumentNullException`。
+  **正規化はしない**（末尾のスラッシュの有無も別物）ので、**メタデータ（RFC 8414・Discovery）の `issuer` の文字列をそのまま渡す**。
+  配列に文字列でない要素があれば、期待する値を含んでいても `false`（ph1 から同じ）
+  **欠けている・読めない・期限の過ぎたものは `false`**（例外にしない）。受け入れる範囲が狭まるので、利用側は E2E で確かめる。
+  **移行のときに当たりやすいのは次の 2 つ。** `Verify` で **`client_id` が新たに必須**になった（以前は見ていなかったので、
+  `client_id` を入れない要求オブジェクトは断られる。`Create` は入れる）。**時計のずれは許さない**（`exp`・`nbf` の許容幅は 0。
+  `IdToken` などと同じ）ので、CIBA ではクライアントの時計が進んでいると `nbf` で断られる。
+  **日付の形の文字列のクレーム**（`"2026-11-05T00:00:00Z"` など）は、日付に変えずに文字列として読む（`DateParseHandling.None`）
+- **`JwtAssertion` は、期待する `iss`・`aud` を受ける版**（`Verify(jwt, iss, auds, out sub, out scopes, out jobj, key)`・
+  `VerifyByRsa`・`VerifyByECDsa`）**を使う**（RFC 7523 3。#654）。`iss` の一致、`sub` が在ること、`aud`、`exp`、在れば `nbf` を確かめる。
+  **`aud` は唯一の値**（文字列か、要素 1 つの配列）で、それが `auds` のいずれかと一致すること（完全一致で正規化しない）。
+  ほかの値も並べた `aud` は断る（別の用途の JWT を流用される攻撃（audience injection）への対策。draft-ietf-oauth-rfc7523bis 4。
+  RFC 7523 3 の 3 は、自分を含めば受ける）。**`auds` には認可サーバの issuer だけを渡すのを推奨する**
+  （トークン エンドポイントの URL などを並べるのは、それを `aud` にする旧いクライアントとの互換のためだけにする）。
+  **`sub` が `client_id` と一致するかは見ない**（クライアント認証なら `client_id`、認可グラントなら利用者。2 の A・B）。
+  **クライアント認証に使うなら、`out sub` が `iss` と一致することを、呼び出し側で必ず照合する**（照合しないと、別の `sub` の JWT が通る）。
+  **`jti` の使い回しも見ない**（呼び出し側の台帳で行う）。**形の壊れた入力も、例外にせず `false`**（`RequestObject` も同じ。`CmnJwtToken.TryVerifySignature`）。
+  **受けない版（`iss`・`aud` を `out` で返すだけ）は `[Obsolete]`（警告）にした**（振る舞いは変えていない。`aud` が配列だと例外になる）。
+  **`Create` は `sub`（= `iss`）を入れる**ようにした（2026/11/05 まで入れていなかった。RFC 7523 3 の 2 で必須）
 - `AccessToken` は `typ`（`at+jwt`）を確認しない（RFC 9068 の形式には準拠していない）。
   JWS の層で照合するなら `JWS.Verify(jwt, typ)`（[`Public/Security/ANALYSIS.md`](../Public/Security/ANALYSIS.md) 4.1 節）
 
@@ -319,7 +376,7 @@ XML 署名は `Public.Security` の `SignedXml2`。
 | ファイル | 区分 |
 |---|---|
 | `SAML2Client.cs` | 要求の作成（SP → IdP。`CreateRedirectRequest` / `CreatePostRequest`） |
-| `SAML2Client.VerifyResponse.cs` | 応答の検証（bool を返す従来の版） |
+| `SAML2Client.VerifyResponse.cs` | 応答の検証（bool を返す従来の版）。**`[Obsolete]`（警告）**：Issuer・Audience・Recipient・InResponseTo を照合しないため、照合する `VerifyResponseWithReason` を使う。振る舞いは変えていない |
 | `SAML2Client.VerifyResponseWithReason.cs` | 応答の検証（理由を返す版。#634。結果は `SAML2VerifyResult`） |
 | `SAML2Client.VerifyRequest.cs` | 要求の検証（**IdP 側**。SP → IdP。#634） |
 | `SAML2Client.CreateResponse.cs` | 応答の作成（**IdP 側**。IdP → SP。Redirect / POST。#634） |

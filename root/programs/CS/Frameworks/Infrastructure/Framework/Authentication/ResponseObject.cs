@@ -35,6 +35,7 @@
 //*  2026/10/22  玄人 幸道         Createに、iss と鍵を設定（CmnServerParams）から読む版を追加
 //*  2026/10/30  玄人 幸道         Verifyで、error の応答も iss / aud / exp を確かめるようにした（JARM 2.4。#644）
 //*  2026/10/30  玄人 幸道         Verifyで、exp が無い・読めない応答を、例外にせず false にした
+//*  2026/11/05  玄人 幸道         Verifyで、exp を小数の NumericDate でも読むようにした（#647）
 //**********************************************************************************
 
 using System;
@@ -246,15 +247,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 string iss = (string)jobj[OAuth2AndOIDCConst.iss];
                 JToken aud = jobj[OAuth2AndOIDCConst.aud];
                 //string iat = (string)jobj[OAuth2AndOIDCConst.iat];
-                string exp = (string)jobj[OAuth2AndOIDCConst.exp];
 
                 long unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
-                long expUnixTimeSeconds;
 
                 // exp が無い・読めない場合は、例外にせず検証の失敗にする（以前は long.Parse が例外を投げた）。
+                // exp は小数の NumericDate も読む（RFC 7519 2。#647）
                 if (iss == expectedIss &&
-                    long.TryParse(exp, out expUnixTimeSeconds) &&
-                    expUnixTimeSeconds >= unixTimeSeconds)
+                    CmnJwtToken.VerifyExpClaim(jobj[OAuth2AndOIDCConst.exp], unixTimeSeconds))
                 {
                     if (verifyAud(aud))
                     {

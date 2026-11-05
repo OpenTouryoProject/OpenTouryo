@@ -34,15 +34,33 @@
 //*  2026/10/11  玄人 幸道         Verifyに、検証鍵（JWS）を受けるオーバーロードを追加（#601）。
 //*                                JwkSetFilePathの有無で鍵を選ぶため、認可サーバ兼クライアントでは相手の鍵を引けなかった。
 //*  2026/10/12  玄人 幸道         設定のclient_idでaudを確認するVerifyAudByClientIDsを追加（#603）
+//*  2026/11/05  玄人 幸道         exp・nbf・iat（NumericDate）を、小数・指数表記でも読めるようにした（RFC 7519 2。#647）。
+//*                                読み方を TryReadNumericDate にまとめ、無い・読めない値は例外にせず検証の失敗にした
+//*  2026/11/05  玄人 幸道         TryReadNumericDate：小数の double を 17 桁（G17）で読み（net48 の 15 桁の丸めを避ける）、
+//*                                long の範囲を超える値を読めないとした（#647 のレビューの指摘 1・2）
+//*  2026/11/05  玄人 幸道         nbf のクレームを確かめる VerifyNbfClaim を追加（RequestObject が使う。#653）
+//*  2026/11/05  玄人 幸道         クレームの読み取り（ReadPayloadObject・ReadStringClaim・ContainsAud）を、
+//*                                RequestObject から移した（JwtAssertion と共有する。#654）
+//*  2026/11/05  玄人 幸道         形の壊れた JWS でも例外にしない TryVerifySignature を追加（#654 のレビューの指摘 5）
+//*  2026/11/05  玄人 幸道         VerifyAudByClientIDs：aud を ContainsAud で照合し（文字列でないものは false。例外にしない）、
+//*                                設定は ReadConfiguredClientIDs で 1 回だけ読む（空白だけの値は無いもの、壊れた JSON は false）（#655 のレビュー）
+//*  2026/11/05  玄人 幸道         ReadConfiguredClientIDs：net10.0 で ClientIDs が文字列の配列の形でないとき（要素がオブジェクト、
+//*                                配列でない 1 つの値）も、設定の誤りとした。バインドは形が違っても例外にしないため（#655 の 2 回目のレビュー）
 //**********************************************************************************
 
 using System;
 using System.Linq;
 using System.Text;
+using System.Globalization;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
+#if NETSTD
+using Microsoft.Extensions.Configuration;
+#endif
 
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Str;
@@ -327,19 +345,143 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         #region ClaimVerifier
         /// <summary>VerifyExp</summary>
-        /// <param name="exp">exp</param>
-        /// <returns>bool</returns>
+        /// <param name="exp">exp（NumericDate。整数・小数・指数表記）</param>
+        /// <returns>いまが exp より前（または同じ秒）なら true。無い・読めない値は false</returns>
+        /// <remarks>
+        /// **小数の NumericDate も読む**（RFC 7519 2。#647）。2026/11/05 までは整数しか読めず、
+        /// 小数や読めない値は例外（long.Parse）になっていた。
+        /// </remarks>
         public static bool VerifyExp(string exp)
         {
-            return (long.Parse(exp) >= DateTimeOffset.Now.ToUnixTimeSeconds());
+            decimal seconds;
+            return CmnJwtToken.TryParseNumericDate(exp, out seconds)
+                && CmnJwtToken.IsNotExpired(seconds, DateTimeOffset.Now.ToUnixTimeSeconds());
         }
 
         /// <summary>VerifyNbf</summary>
-        /// <param name="nbf">nbf</param>
-        /// <returns>bool</returns>
+        /// <param name="nbf">nbf（NumericDate。整数・小数・指数表記）</param>
+        /// <returns>いまが nbf 以後なら true。無い・読めない値は false</returns>
+        /// <remarks>VerifyExp と同じ（#647）。</remarks>
         public static bool VerifyNbf(string nbf)
         {
-            return (long.Parse(nbf) <= DateTimeOffset.Now.ToUnixTimeSeconds());
+            decimal seconds;
+            return CmnJwtToken.TryParseNumericDate(nbf, out seconds)
+                && CmnJwtToken.IsNotBefore(seconds, DateTimeOffset.Now.ToUnixTimeSeconds());
+        }
+
+        /// <summary>exp のクレームを確かめる（トークンの検証の共通部分）</summary>
+        /// <param name="exp">exp のクレーム（JToken。無ければ null）</param>
+        /// <param name="unixTimeSeconds">いまの UNIX 時刻（秒）</param>
+        /// <returns>いまが exp より前（または同じ秒）なら true。無い・読めない値は false</returns>
+        /// <remarks>IdToken・AccessToken・JwtAssertion・ResponseObject の Verify が使う（#647）。</remarks>
+        internal static bool VerifyExpClaim(JToken exp, long unixTimeSeconds)
+        {
+            decimal seconds;
+            return CmnJwtToken.TryReadNumericDate(exp, true, out seconds)
+                && CmnJwtToken.IsNotExpired(seconds, unixTimeSeconds);
+        }
+
+        /// <summary>nbf のクレームを確かめる（トークンの検証の共通部分）</summary>
+        /// <param name="nbf">nbf のクレーム（JToken。無ければ null）</param>
+        /// <param name="unixTimeSeconds">いまの UNIX 時刻（秒）</param>
+        /// <returns>いまが nbf 以後なら true。無い・読めない値は false</returns>
+        /// <remarks>RequestObject の Verify・VerifyCiba が使う（#653）。読み方は VerifyExpClaim と同じ。</remarks>
+        internal static bool VerifyNbfClaim(JToken nbf, long unixTimeSeconds)
+        {
+            decimal seconds;
+            return CmnJwtToken.TryReadNumericDate(nbf, true, out seconds)
+                && CmnJwtToken.IsNotBefore(seconds, unixTimeSeconds);
+        }
+
+        /// <summary>いまが exp より前（または同じ秒）か</summary>
+        /// <remarks>
+        /// **小数はそのまま比べる。** いまの時刻は整数の秒なので、exp を切り捨ててから比べるのと同じ結果になり、
+        /// 小数を受けても有効期間は広がらない（RFC 7519 4.1.4。以前の long の比較と同じく、同じ秒は通す）。
+        /// </remarks>
+        private static bool IsNotExpired(decimal exp, long unixTimeSeconds)
+        {
+            return exp >= unixTimeSeconds;
+        }
+
+        /// <summary>いまが nbf 以後か</summary>
+        /// <remarks>
+        /// **小数はそのまま比べる。** nbf を切り上げてから比べるのと同じ結果になる（RFC 7519 4.1.5）。
+        /// </remarks>
+        private static bool IsNotBefore(decimal nbf, long unixTimeSeconds)
+        {
+            return nbf <= unixTimeSeconds;
+        }
+
+        /// <summary>NumericDate（RFC 7519 2）を読む</summary>
+        /// <param name="value">クレームの値（JToken。無ければ null）</param>
+        /// <param name="acceptString">
+        /// 数値の文字列も受けるか。**NumericDate は JSON の数値**だが、exp・nbf は従来から文字列でも読んでいた
+        /// （CreateExpClaim などが文字列を返す）ので、互換のために受ける。DPoP の iat は数値だけを受ける（false）
+        /// </param>
+        /// <param name="seconds">UNIX 時刻（秒。小数を含みうる）</param>
+        /// <returns>読めたら true</returns>
+        /// <remarks>
+        /// **整数・小数・指数表記を読む**（RFC 7519 2 : NumericDate は JSON の数値で、整数でない値も表せる。#647）。
+        /// **カルチャに依らない**（CultureInfo.InvariantCulture）。long の範囲を超える値・数値でない値は読めない（false）。
+        /// **net48 と net10.0 で結果を揃える**（小数の double を 17 桁で読む）。
+        /// </remarks>
+        internal static bool TryReadNumericDate(JToken value, bool acceptString, out decimal seconds)
+        {
+            seconds = 0;
+
+            if (value == null)
+            {
+                return false;
+            }
+
+            switch (value.Type)
+            {
+                case JTokenType.Integer:
+                case JTokenType.Float:
+                    // JSON の数値を、カルチャに依らない字面にしてから decimal で読み直す。
+                    //   **小数は double で届くので、double の値を落とさない 17 桁（"G17"）で字面にする。**
+                    //   既定の書式は net48 では 15 桁で、10 桁の秒だと小数が丸まり、exp が最大 1 秒長く通っていた
+                    //   （net10.0 の既定は最短の往復できる書式。"G17" で両者を揃える。
+                    //    .NET Framework の "R" には往復できない値があるので使わない）。
+                    object raw = ((JValue)value).Value;
+                    string text = (raw is double)
+                        ? ((double)raw).ToString("G17", CultureInfo.InvariantCulture)
+                        : ((JValue)value).ToString(CultureInfo.InvariantCulture);
+                    return CmnJwtToken.TryParseNumericDate(text, out seconds);
+
+                case JTokenType.String:
+                    return acceptString && CmnJwtToken.TryParseNumericDate((string)value, out seconds);
+
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>NumericDate の文字列を読む（整数・小数・指数表記。カルチャに依らない）</summary>
+        /// <param name="value">文字列</param>
+        /// <param name="seconds">UNIX 時刻（秒）</param>
+        /// <returns>読めたら true</returns>
+        /// <remarks>
+        /// **long の範囲を超える値は読めない（false）とする。** 以前（long.Parse）は例外で受けなかった範囲で、
+        /// 受ける範囲を以前と同じにするため（極端に遠い未来の exp を通さない）。
+        /// </remarks>
+        private static bool TryParseNumericDate(string value, out decimal seconds)
+        {
+            if (!decimal.TryParse(value,
+                NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite |
+                NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent,
+                CultureInfo.InvariantCulture, out seconds))
+            {
+                return false;
+            }
+
+            if (seconds > long.MaxValue || seconds < long.MinValue)
+            {
+                seconds = 0;
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -349,41 +491,210 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="aud">aud（string か array）</param>
         /// <returns>bool</returns>
         /// <remarks>
-        /// 設定で判定する IdToken.Verify / ResponseObject.Verify が使う（#603）。
+        /// 設定で判定する IdToken.Verify / ResponseObject.Verify / AccessToken.Verify が使う（#603・#655）。
         /// 認可サーバを兼ねるか（JwkSetFilePath の有無）によらず、同じ判定をする。
+        ///
+        /// - **aud は文字列か、文字列の配列に限る**（ContainsAud。RFC 7519 4.1.3）。数値・オブジェクト・入れ子の配列、
+        ///   文字列でない要素を含む配列は false（例外にしない）。2026/11/05 までは、数値は文字列に変えて照合し、
+        ///   オブジェクトや入れ子の配列は例外（InvalidCastException）になっていた（#655 のレビュー）
+        /// - 設定の読み方は ReadConfiguredClientIDs（空白だけの値は無いものとし、設定の JSON が壊れていれば false）
+        /// - 設定が無ければ、一致するものが無いので false
         /// </remarks>
         internal static bool VerifyAudByClientIDs(JToken aud)
         {
-            List<string> auds = new List<string>();
+            List<string> clientIDs = CmnJwtToken.ReadConfiguredClientIDs();
 
-            if (aud is JArray)
+            if (clientIDs == null)
             {
-                auds.AddRange(((JArray)aud).Select(x => (string)x));
-            }
-            else if (aud != null)
-            {
-                auds.Add((string)aud);
+                // 設定の誤り（JSON が壊れている）
+                return false;
             }
 
-            // aud が無い、空の場合は、一致させない。
-            auds = auds.Where(x => !string.IsNullOrEmpty(x)).ToList();
+            return CmnJwtToken.ContainsAud(aud, clientIDs);
+        }
 
-            if (auds.Any(x => x == OAuth2AndOIDCParams.ClientID))
+        /// <summary>設定の client_id（OAuth2AndOIDCParams.ClientID と ClientIDs を合わせたもの）を読む</summary>
+        /// <returns>
+        /// client_id の一覧（空白だけの値は除く。どちらも無ければ空）。
+        /// ClientIDs が読めなければ null（設定の誤り。net48 は JSON が壊れている、net10.0 は文字列の配列としてバインドできない。呼び出し側は断る）
+        /// </returns>
+        /// <remarks>
+        /// **1 回の検証で 1 回だけ読む**（net48 は、読むたびに JSON を読み直すため。#655 のレビュー）。
+        /// 空白だけの値（環境変数の置き換えで空になった値など）は、設定が無いのと同じに扱う。
+        /// </remarks>
+        internal static List<string> ReadConfiguredClientIDs()
+        {
+            List<string> clientIDs = new List<string>();
+
+            string clientID = OAuth2AndOIDCParams.ClientID;
+            if (!string.IsNullOrWhiteSpace(clientID))
             {
-                // OAuth2 Clientバージョンの実装で成功
-                return true;
+                clientIDs.Add(clientID);
             }
-            else if (auds.Any(x => OAuth2AndOIDCParams.ClientIDs.Contains(x)))
+
+#if NETSTD
+            // **net10.0 の構成のバインドは、形が違っても例外にしない**（文字列の配列でない要素は飛ばし、
+            //   配列でない値は null になる）。そのままでは「設定が無い」と同じになり、確かめない側に倒れるので、
+            //   形を先に見て、文字列の配列でなければ設定の誤りとする（#655 の 2 回目のレビュー）。
+            IConfigurationSection section = GetConfigParameter.GetAnyConfigSection("appSettings:OAuth2AndOidcClientIDs");
+            if (section.GetChildren().Any(x => x.GetChildren().Any()) ||
+                (!string.IsNullOrWhiteSpace(section.Value) && !section.GetChildren().Any()))
             {
-                // OAuth2 ResourcesServerバージョンの実装で成功
-                return true;
+                // 要素がオブジェクト・配列、または配列でなく 1 つの値
+                return null;
             }
-            else
+#endif
+
+            List<string> configured;
+            try
             {
-                // JWTの内容検証に失敗
+                configured = OAuth2AndOIDCParams.ClientIDs;
+            }
+            catch (JsonException)
+            {
+                // OAuth2AndOidcClientIDs の JSON が壊れている（net48）
+                return null;
+            }
+            catch (InvalidOperationException)
+            {
+                // OAuth2AndOidcClientIDs を、文字列の一覧としてバインドできない（net10.0）
+                return null;
+            }
+
+            clientIDs.AddRange(configured.Where(x => !string.IsNullOrWhiteSpace(x)));
+            return clientIDs;
+        }
+        #endregion
+
+        #region クレームの読み取り（RequestObject・JwtAssertion。#653・#654）
+
+        /// <summary>JWS の署名を確かめる（形の壊れた入力でも例外にしない）</summary>
+        /// <param name="jws">検証鍵</param>
+        /// <param name="jwt">JWS（コンパクト形式。3 区切り）</param>
+        /// <returns>署名が正しければ true。形が壊れていれば false</returns>
+        /// <remarks>
+        /// JWS.Verify は、区切りが足りない・Base64url でない・ヘッダが JSON のオブジェクトでない入力で、
+        /// 例外（IndexOutOfRangeException・FormatException・JsonException・NullReferenceException）を投げる。
+        /// 外から来る値を検証する口（要求オブジェクト・アサーション）は、それを false にそろえる（#654 のレビュー）。
+        /// </remarks>
+        internal static bool TryVerifySignature(JWS jws, string jwt)
+        {
+            if (string.IsNullOrEmpty(jwt) || jwt.Split('.').Length != 3)
+            {
+                return false;
+            }
+
+            if (JwtReader.TryReadHeader(jwt) == null)
+            {
+                // ヘッダが読めない（JSON のオブジェクトでない）
+                return false;
+            }
+
+            try
+            {
+                return jws.Verify(jwt);
+            }
+            catch (FormatException)
+            {
+                // Base64url でない
+                return false;
+            }
+            catch (JsonException)
+            {
+                // ヘッダの値の型が違う
+                return false;
+            }
+            catch (CryptographicException)
+            {
+                // 署名の長さが違うなど
                 return false;
             }
         }
+
+        /// <summary>JWS のペイロードを読む（署名を確かめた後に呼ぶ）</summary>
+        /// <param name="jws">JWS</param>
+        /// <returns>JSON のオブジェクト。オブジェクトでなければ null</returns>
+        /// <remarks>
+        /// **日付の形の文字列を、日付に変えずに読む**（DateParseHandling.None）。
+        /// 既定（DateTime）では "2026-11-05T00:00:00Z" のような値が JTokenType.Date になり、
+        /// 文字列のクレーム（ReadStringClaim）として読めず、正しい JWT を断ってしまう（#653 ph1 のレビュー）。
+        /// </remarks>
+        internal static JObject ReadPayloadObject(string jws)
+        {
+            try
+            {
+                string jwtPayload = CustomEncode.ByteToString(
+                    CustomEncode.FromBase64UrlString(jws.Split('.')[1]), CustomEncode.UTF_8);
+
+                return JsonConvert.DeserializeObject(jwtPayload,
+                    new JsonSerializerSettings { DateParseHandling = DateParseHandling.None }) as JObject;
+            }
+            catch (JsonException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>文字列のクレームを読む</summary>
+        /// <param name="jobj">ペイロード</param>
+        /// <param name="name">クレーム名</param>
+        /// <returns>空でない文字列なら、その値。無い・空・文字列でないなら null</returns>
+        internal static string ReadStringClaim(JObject jobj, string name)
+        {
+            JToken value = jobj[name];
+
+            if (value == null || value.Type != JTokenType.String)
+            {
+                return null;
+            }
+
+            string text = (string)value;
+            return string.IsNullOrEmpty(text) ? null : text;
+        }
+
+        /// <summary>aud が在るか（文字列、または文字列の配列。RFC 7519 4.1.3）。期待する値があれば照合する</summary>
+        /// <param name="aud">aud のクレーム</param>
+        /// <param name="expectedAuds">期待する aud の集合。null なら照合しない（在ることだけを見る）</param>
+        /// <returns>
+        /// expectedAuds が null なら、空でない値を 1 つ以上含めば true。
+        /// expectedAuds があれば、そのいずれかと一致する値を含めば true（大文字・小文字を区別する完全一致。正規化しない）。
+        /// 配列に文字列でない要素があれば false
+        /// </returns>
+        internal static bool ContainsAud(JToken aud, IEnumerable<string> expectedAuds)
+        {
+            Func<string, bool> match = value => (expectedAuds == null)
+                ? !string.IsNullOrEmpty(value)
+                : expectedAuds.Any(x => !string.IsNullOrEmpty(x) && string.Equals(value, x, StringComparison.Ordinal));
+
+            if (aud == null)
+            {
+                return false;
+            }
+            else if (aud.Type == JTokenType.String)
+            {
+                return match((string)aud);
+            }
+            else if (aud.Type == JTokenType.Array)
+            {
+                bool any = false;
+                foreach (JToken item in (JArray)aud)
+                {
+                    if (item.Type != JTokenType.String)
+                    {
+                        // 文字列でない要素は受けない
+                        return false;
+                    }
+
+                    any |= match((string)item);
+                }
+                return any;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         #endregion
     }
 }

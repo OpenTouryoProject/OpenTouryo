@@ -30,6 +30,11 @@
                     <cc1:WebCustomButton ID="btnButton2" runat="server" Text="外部ログイン" Width="150px" />
                 </td>
             </tr>
+            <tr>
+                <td colspan="2" align="right">
+                    <cc1:WebCustomButton ID="btnButton3" runat="server" Text="外部ログイン（SAML2）" Width="150px" />
+                </td>
+            </tr>
         </table>
         <cc1:WebCustomLabel id="lblMessage" runat="server" Width="250px">Label</cc1:WebCustomLabel>    
     </div>

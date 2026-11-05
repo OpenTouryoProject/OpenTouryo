@@ -403,6 +403,7 @@ SDK 形式 csproj はワイルドカード込みなので、**プラットフォ
 | `7_Build_Framework_WSCore.bat` | **何もしない**（net10.0 にホストが無い。`1_BuildAll.ps1` の段を残すための空の手順） |
 | `8_Build_WSClnt*_sample.bat` | WS クライアント |
 | `10_Build_WebApp*_sample.bat` | Web アプリのサンプル |
+| `11_Build_SpRp_sample.bat` | **SpRp のサンプル**（`Sample4SpRp/`。net48 と net10.0。**SpRp 系は全部ここ**。動作は手で確かめる。#649） |
 | `y_Build_Test*.bat` | テスト |
 | `0_ExecAllBat.bat` | 全実行 |
 | `0_Release4Nuget.bat` | NuGet パッケージ用のビルド（[`NuGet/README.md`](../NuGet/README.md)） |

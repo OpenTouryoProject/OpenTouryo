@@ -34,6 +34,12 @@
 //*  2020/03/04  西野 大介         ...ECDsaのサポートを追加
 //*  2020/03/04  西野 大介         Claim生成メソッドの利用
 //*  2026/10/30  玄人 幸道         Create・Verify で、kty の大文字小文字を区別するようにした（RFC 7517 4.1。#643）
+//*  2026/11/05  玄人 幸道         VerifyByRsa・VerifyByECDsaで、exp を小数の NumericDate でも読み、
+//*                                無い・読めない値を例外にせず false にした（#647）
+//*  2026/11/05  玄人 幸道         期待する iss・aud を受けて照合する Verify・VerifyByRsa・VerifyByECDsa を追加し、
+//*                                受けない版を Obsolete（警告）にした。Create は sub（= iss）を入れる（RFC 7523 3。#654）
+//*  2026/11/05  玄人 幸道         期待する iss・aud を受ける版：aud を唯一の値に限った（draft-ietf-oauth-rfc7523bis 4）。
+//*                                形の壊れた入力を、例外にせず false にした（#654 のレビューの指摘 1・5）
 //**********************************************************************************
 
 using System;
@@ -106,6 +112,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             Dictionary<string, object> jwtAssertionClaimSet = new Dictionary<string, object>();
 
             jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iss, iss); // client_id
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.sub, iss); // client_id（RFC 7523 3 の 2。#654）
             jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.aud, aud); // Token EndPointのuri。
 
             jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.exp, CmnJwtToken.CreateExpClaim(forExp));
@@ -144,6 +151,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             Dictionary<string, object> jwtAssertionClaimSet = new Dictionary<string, object>();
 
             jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iss, iss); // client_id
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.sub, iss); // client_id（RFC 7523 3 の 2。#654）
             jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.aud, aud); // Token EndPointのuri。
 
             jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.exp, CmnJwtToken.CreateExpClaim(forExp));
@@ -186,6 +194,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             Dictionary<string, object> jwtAssertionClaimSet = new Dictionary<string, object>();
 
             jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.iss, iss); // client_id
+            jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.sub, iss); // client_id（RFC 7523 3 の 2。#654）
             jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.aud, aud); // Token EndPointのuri。
 
             jwtAssertionClaimSet.Add(OAuth2AndOIDCConst.exp, CmnJwtToken.CreateExpClaim(forExp));
@@ -216,6 +225,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="jobj">JObject</param>
         /// <param name="jwkPublicKey">RS256用のJWK公開鍵</param>
         /// <returns>検証結果</returns>
+        [Obsolete("This overload does not verify the iss and aud claims, please use the overload that takes the expected iss and auds instead.")]
         public static bool Verify(string jwtAssertion,
             out string iss, out string aud, out string scopes, out JObject jobj, string jwkPublicKey)
         {
@@ -255,6 +265,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="jobj">JObject</param>
         /// <param name="rsaPublicKey">RS256用のRSAParameters公開鍵</param>
         /// <returns>検証結果</returns>
+        [Obsolete("This overload does not verify the iss and aud claims, please use the overload that takes the expected iss and auds instead.")]
         public static bool VerifyByRsa(string jwtAssertion,
             out string iss, out string aud, out string scopes, out JObject jobj, RSAParameters rsaPublicKey)
         {
@@ -279,8 +290,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
                 long unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
 
-                string exp = (string)jobj[OAuth2AndOIDCConst.exp];
-                if (long.Parse(exp) >= unixTimeSeconds)
+                // exp は小数の NumericDate も読む。無い・読めない値は、例外にせず検証の失敗にする（RFC 7519 2。#647）
+                if (CmnJwtToken.VerifyExpClaim(jobj[OAuth2AndOIDCConst.exp], unixTimeSeconds))
                 {
                     return true;
                 }
@@ -306,6 +317,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="jobj">JObject</param>
         /// <param name="eccPublicKey">ES256用のECParameters公開鍵</param>
         /// <returns>検証結果</returns>
+        [Obsolete("This overload does not verify the iss and aud claims, please use the overload that takes the expected iss and auds instead.")]
         public static bool VerifyByECDsa(string jwtAssertion,
             out string iss, out string aud, out string scopes, out JObject jobj, ECParameters eccPublicKey)
         {
@@ -329,8 +341,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 scopes = (string)jobj[OAuth2AndOIDCConst.scope];
 
                 long unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
-                string exp = (string)jobj[OAuth2AndOIDCConst.exp];
-                if (long.Parse(exp) >= unixTimeSeconds)
+
+                // exp は小数の NumericDate も読む。無い・読めない値は、例外にせず検証の失敗にする（RFC 7519 2。#647）
+                if (CmnJwtToken.VerifyExpClaim(jobj[OAuth2AndOIDCConst.exp], unixTimeSeconds))
                 {
                     return true;
                 }
@@ -347,6 +360,212 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // 認証に失敗
             return false;
         }
+        #endregion
+
+        #region Verify（期待する iss・aud と照合する。#654）
+
+        /// <summary>Verify（期待する iss・aud と照合する）</summary>
+        /// <param name="jwtAssertion">string</param>
+        /// <param name="iss">期待する iss（client_id）</param>
+        /// <param name="auds">
+        /// 期待する aud の集合。**認可サーバの issuer だけを渡すのを推奨する**（draft-ietf-oauth-rfc7523bis 4）。
+        /// トークン エンドポイントの URL などを並べるのは、それを aud にする旧いクライアントとの互換のためだけにする。
+        /// JWT の aud が唯一の値で、それがこのいずれかと一致すれば通す
+        /// </param>
+        /// <param name="sub">out string（JWT の sub）</param>
+        /// <param name="scopes">out string（JWT の scope。無ければ空文字）</param>
+        /// <param name="jobj">out JObject（ペイロード。検証に通ったときだけ。通らなければ null）</param>
+        /// <param name="jwkPublicKey">JWK公開鍵（kty が RSA なら RS256、EC なら ES256）</param>
+        /// <returns>検証結果</returns>
+        /// <remarks>VerifyByRsa（期待する iss・aud を受ける版）を参照。</remarks>
+        /// <exception cref="ArgumentNullException">iss が null か空、auds が null か空</exception>
+        public static bool Verify(string jwtAssertion, string iss, string[] auds,
+            out string sub, out string scopes, out JObject jobj, string jwkPublicKey)
+        {
+            JwtAssertion.CheckExpected(iss, auds);
+
+            sub = "";
+            scopes = "";
+            jobj = null;
+
+            JObject temp = JsonConvert.DeserializeObject<JObject>(jwkPublicKey);
+            if (temp.ContainsKey("kty"))
+            {
+                // kty の大文字小文字を区別する（RFC 7517 4.1。#643）
+                if ((string)temp["kty"] == "RSA")
+                {
+                    RsaPublicKeyConverter rpkc = new RsaPublicKeyConverter();
+                    return JwtAssertion.VerifyByRsa(jwtAssertion, iss, auds,
+                        out sub, out scopes, out jobj, rpkc.JwkToParam(jwkPublicKey));
+                }
+                else if ((string)temp["kty"] == "EC")
+                {
+                    EccPublicKeyConverter epkc = new EccPublicKeyConverter();
+                    return JwtAssertion.VerifyByECDsa(jwtAssertion, iss, auds,
+                        out sub, out scopes, out jobj, epkc.JwkToParam(jwkPublicKey));
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>VerifyByRsa（期待する iss・aud と照合する）</summary>
+        /// <param name="jwtAssertion">string</param>
+        /// <param name="iss">期待する iss（client_id）</param>
+        /// <param name="auds">期待する aud の集合（**認可サーバの issuer だけを推奨**。ほかは互換のため）</param>
+        /// <param name="sub">out string（JWT の sub）</param>
+        /// <param name="scopes">out string（JWT の scope。無ければ空文字）</param>
+        /// <param name="jobj">out JObject（ペイロード。検証に通ったときだけ。通らなければ null）</param>
+        /// <param name="rsaPublicKey">RS256用のRSAParameters公開鍵</param>
+        /// <returns>検証結果</returns>
+        /// <remarks>
+        /// 自由に利用できる。署名に加えて、次を確かめる（RFC 7523 3。#654）。
+        ///
+        /// | クレーム | 確かめること |
+        /// |---|---|
+        /// | iss | 期待する値と一致する（1） |
+        /// | sub | 在る（2）。**client_id と一致するかは見ない**（クライアント認証なら client_id、認可グラントなら利用者。2 の A・B）。**クライアント認証に使うなら、out sub が iss と一致することを、呼び出し側で必ず照合する**（照合しないと、別の sub の JWT が通る） |
+        /// | aud | **唯一の値**（文字列か、要素 1 つの配列）で、それが期待する値のいずれかと一致する（3。draft-ietf-oauth-rfc7523bis 4） |
+        /// | exp | 在り、過ぎていない（4） |
+        /// | nbf | 在れば、その時刻以後である（5） |
+        ///
+        /// - **aud は唯一の値に限る。** ほかの値も並べた aud（例：issuer とトークン エンドポイントの URL）は断る。
+        ///   RFC 7523 3 の 3 は、自分を含めば受けるが、別の用途の JWT を流用される攻撃（audience injection）があるため、
+        ///   改訂案（draft-ietf-oauth-rfc7523bis 4）は issuer を唯一の値とすることを求めている。**auds にも issuer だけを渡すのを推奨する**
+        /// - 比較は大文字・小文字を区別する完全一致で、**正規化しない**（末尾のスラッシュの有無も別物）
+        /// - **時計のずれは許さない**（許容幅 0。IdToken などと同じ。#647）
+        /// - **jti の使い回しは見ない**（7。MAY。状態を持つので、呼び出し側の台帳で行う）
+        /// - 文字列のクレームが日付の形でも、日付に変えずに読む（DateParseHandling.None。#653）
+        /// - 欠けている・読めない・型の違う値は false（例外にしない）
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">iss が null か空、auds が null か空</exception>
+        public static bool VerifyByRsa(string jwtAssertion, string iss, string[] auds,
+            out string sub, out string scopes, out JObject jobj, RSAParameters rsaPublicKey)
+        {
+            JwtAssertion.CheckExpected(iss, auds);
+
+            return JwtAssertion.VerifyCore(jwtAssertion, new JWS_RS256_Param(rsaPublicKey), iss, auds,
+                out sub, out scopes, out jobj);
+        }
+
+        /// <summary>VerifyByECDsa（期待する iss・aud と照合する）</summary>
+        /// <param name="jwtAssertion">string</param>
+        /// <param name="iss">期待する iss（client_id）</param>
+        /// <param name="auds">期待する aud の集合（**認可サーバの issuer だけを推奨**。ほかは互換のため）</param>
+        /// <param name="sub">out string（JWT の sub）</param>
+        /// <param name="scopes">out string（JWT の scope。無ければ空文字）</param>
+        /// <param name="jobj">out JObject（ペイロード。検証に通ったときだけ。通らなければ null）</param>
+        /// <param name="eccPublicKey">ES256用のECParameters公開鍵</param>
+        /// <returns>検証結果</returns>
+        /// <remarks>VerifyByRsa（期待する iss・aud を受ける版）と同じ確認をする。</remarks>
+        /// <exception cref="ArgumentNullException">iss が null か空、auds が null か空</exception>
+        public static bool VerifyByECDsa(string jwtAssertion, string iss, string[] auds,
+            out string sub, out string scopes, out JObject jobj, ECParameters eccPublicKey)
+        {
+            JwtAssertion.CheckExpected(iss, auds);
+
+            return JwtAssertion.VerifyCore(jwtAssertion, new JWS_ES256_Param(eccPublicKey, false), iss, auds,
+                out sub, out scopes, out jobj);
+        }
+
+        /// <summary>aud が唯一の値で、それが期待する値のいずれかと一致するか</summary>
+        /// <param name="aud">aud のクレーム</param>
+        /// <param name="auds">期待する aud の集合</param>
+        /// <returns>文字列か、要素 1 つの配列で、その値が auds のいずれかと一致すれば true</returns>
+        /// <remarks>draft-ietf-oauth-rfc7523bis 4（issuer を唯一の値とする。audience injection の対策）。</remarks>
+        private static bool IsSoleAud(JToken aud, string[] auds)
+        {
+            if (aud != null && aud.Type == JTokenType.Array)
+            {
+                JArray array = (JArray)aud;
+                if (array.Count != 1)
+                {
+                    // 値が無い・複数
+                    return false;
+                }
+                aud = array[0];
+            }
+
+            return aud != null && aud.Type == JTokenType.String && CmnJwtToken.ContainsAud(aud, auds);
+        }
+
+        /// <summary>期待する iss・aud の引数を確かめる</summary>
+        /// <param name="iss">期待する iss</param>
+        /// <param name="auds">期待する aud の集合</param>
+        private static void CheckExpected(string iss, string[] auds)
+        {
+            if (string.IsNullOrEmpty(iss))
+            {
+                throw new ArgumentNullException(nameof(iss));
+            }
+
+            if (auds == null || auds.Length == 0 || Array.TrueForAll(auds, x => string.IsNullOrEmpty(x)))
+            {
+                throw new ArgumentNullException(nameof(auds));
+            }
+        }
+
+        /// <summary>期待する iss・aud を受ける版の本体</summary>
+        /// <param name="jwtAssertion">string</param>
+        /// <param name="jws">検証鍵</param>
+        /// <param name="iss">期待する iss</param>
+        /// <param name="auds">期待する aud の集合</param>
+        /// <param name="sub">out string</param>
+        /// <param name="scopes">out string</param>
+        /// <param name="jobj">out JObject</param>
+        /// <returns>検証結果</returns>
+        private static bool VerifyCore(string jwtAssertion, JWS jws, string iss, string[] auds,
+            out string sub, out string scopes, out JObject jobj)
+        {
+            sub = "";
+            scopes = "";
+            jobj = null;
+
+            if (!CmnJwtToken.TryVerifySignature(jws, jwtAssertion))
+            {
+                // JWTの署名検証に失敗
+                return false;
+            }
+
+            JObject payload = CmnJwtToken.ReadPayloadObject(jwtAssertion);
+
+            if (payload == null)
+            {
+                // ペイロードが JSON のオブジェクトでない
+                return false;
+            }
+
+            string actualSub = CmnJwtToken.ReadStringClaim(payload, OAuth2AndOIDCConst.sub);
+
+            if (!string.Equals(CmnJwtToken.ReadStringClaim(payload, OAuth2AndOIDCConst.iss), iss, StringComparison.Ordinal) ||
+                actualSub == null ||
+                !JwtAssertion.IsSoleAud(payload[OAuth2AndOIDCConst.aud], auds))
+            {
+                // iss が違う・sub が無い・aud が違う（無い）
+                return false;
+            }
+
+            long unixTimeSeconds = DateTimeOffset.Now.ToUnixTimeSeconds();
+
+            if (!CmnJwtToken.VerifyExpClaim(payload[OAuth2AndOIDCConst.exp], unixTimeSeconds))
+            {
+                // 期限切れ・読めない・無い
+                return false;
+            }
+
+            JToken nbf = payload[OAuth2AndOIDCConst.nbf];
+            if (nbf != null && !CmnJwtToken.VerifyNbfClaim(nbf, unixTimeSeconds))
+            {
+                // まだ使えない・読めない
+                return false;
+            }
+
+            sub = actualSub;
+            scopes = CmnJwtToken.ReadStringClaim(payload, OAuth2AndOIDCConst.scope) ?? "";
+            jobj = payload;
+            return true;
+        }
+
         #endregion
     }
 }

@@ -28,10 +28,21 @@ GitHub Wiki には `x-robots-tag: none` が付き、検索エンジンにイン�
 2. このワークフローが `develop` に入ったら、Actions で `publish-wiki-site` を手動で実行し、公開を確かめる。
    **`gollum` は既定ブランチ（`develop`）の定義で動く**ので、入る前は発火しない
 3. Wiki を `git push` で更新し、`publish-wiki-site` が動くかを確かめる。動かなければ、週次の `schedule` を足す
-4. Google Search Console に URL プレフィックスのプロパティを追加する
-   - 確認の方法に HTML タグを選び、コードを Actions の変数 `GOOGLE_SITE_VERIFICATION` に入れて、もう一度実行する
-   - `sitemap.xml` を登録する（<https://opentouryoproject.github.io/OpenTouryo/sitemap.xml>）。
-     プロジェクト サイトでは `robots.txt` が効かないので、ここで登録する
+4. Google Search Console に登録する（下の表）
+
+### Google Search Console への登録
+
+| # | 作業 | 担当 |
+| --- | --- | --- |
+| 1 | Search Console で URL プレフィックスに `https://opentouryoproject.github.io/OpenTouryo/` を入力する | 人 |
+| 2 | 確認方法で「HTML タグ」を選び、`content="…"` の中身だけをコピーする | 人 |
+| 3 | リポジトリの Settings → Secrets and variables → Actions → **Repository variables** に、`GOOGLE_SITE_VERIFICATION` として登録する | 人 |
+| 4 | Actions で `publish-wiki-site` を手動で実行する | 人 |
+| 5 | `<meta name="google-site-verification" …>` を全ページに埋め込んで公開する | **Actions** |
+| 6 | Search Console に戻り、「確認」を押す | 人 |
+| 7 | サイトマップに `sitemap.xml` を入力して送信する | 人 |
+
+- プロジェクト サイトでは `robots.txt` が効かないので、サイトマップは Search Console で登録する
 
 ## 手元で試す
 

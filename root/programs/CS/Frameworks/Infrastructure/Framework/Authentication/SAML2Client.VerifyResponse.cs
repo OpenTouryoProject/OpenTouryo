@@ -26,6 +26,8 @@
 //*  2026/10/22  玄人 幸道         新規作成（SAML2Client.cs から処理区分ごとに分割した）
 //*  2026/10/22  玄人 幸道         メソッド内の #region の字下げを揃えた（0 桁目になっていた）
 //*  2026/10/22  玄人 幸道         Issuer / InResponseTo の食い違いの判定を、理由つきの版と同じ Pick に寄せた（振る舞いは変えていない）
+//*  2026/11/05  玄人 幸道         VerifyResponse（2 つ）を Obsolete（警告）にした。Issuer・Audience・Recipient・InResponseTo を照合しないため
+//*                                （照合する VerifyResponseWithReason を使う）
 //**********************************************************************************
 
 using System;
@@ -68,6 +70,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// したがって、false のときの statusCode は検証されていない値である。
         /// 表示・ログによる切り分けにだけ使い、認証の判断には戻り値を使うこと。
         /// </remarks>
+        [Obsolete("This overload does not verify the Issuer, Audience, Recipient and InResponseTo, please use VerifyResponseWithReason instead.")]
         public static bool VerifyResponse(
             string queryString, string samlResponse,
             out string nameId, out string iss, out string aud,
@@ -127,6 +130,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// したがって、false のときの statusCode は検証されていない値である。
         /// 表示・ログによる切り分けにだけ使い、認証の判断には戻り値を使うこと。
         /// </remarks>
+        [Obsolete("This overload does not verify the Issuer, Audience, Recipient and InResponseTo, please use VerifyResponseWithReason instead.")]
         public static bool VerifyResponse(
             string queryString, string samlResponse, string cerFilePath,
             out string nameId, out string iss, out string aud,

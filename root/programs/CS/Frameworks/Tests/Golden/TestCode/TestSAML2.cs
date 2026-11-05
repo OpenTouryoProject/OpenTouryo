@@ -29,6 +29,7 @@
 //*  2026/10/14  玄人 幸道         SAML2Client.CreateRedirectRequest / CreatePostRequestの、鍵を渡す版のテストを追加（#606）
 //*  2026/10/22  玄人 幸道         StringExtractor.GetParameterFromQueryString（Obsolete）を UriOperator に置き換えた（#634）
 //*  2026/10/30  玄人 幸道         RSA-PSS の SigAlg を、RFC 9231 の sha256-rsa-MGF1 にした（#643）
+//*  2026/11/05  玄人 幸道         SAML2Client.VerifyResponse の Obsolete の警告（CS0618）を抑えた
 //**********************************************************************************
 
 using System;
@@ -39,6 +40,9 @@ using System.Security.Cryptography.X509Certificates;
 
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Public.Diagnostics;
+
+// SAML2Client.VerifyResponse は Obsolete だが、利用者が使い続ける版なので、振る舞いを確かめ続ける。
+#pragma warning disable CS0618
 
 namespace TestCode
 {
