@@ -348,7 +348,7 @@ XML 署名は `Public.Security` の `SignedXml2`。
 | ファイル | 区分 |
 |---|---|
 | `SAML2Client.cs` | 要求の作成（SP → IdP。`CreateRedirectRequest` / `CreatePostRequest`） |
-| `SAML2Client.VerifyResponse.cs` | 応答の検証（bool を返す従来の版） |
+| `SAML2Client.VerifyResponse.cs` | 応答の検証（bool を返す従来の版）。**`[Obsolete]`（警告）**：Issuer・Audience・Recipient・InResponseTo を照合しないため、照合する `VerifyResponseWithReason` を使う。振る舞いは変えていない |
 | `SAML2Client.VerifyResponseWithReason.cs` | 応答の検証（理由を返す版。#634。結果は `SAML2VerifyResult`） |
 | `SAML2Client.VerifyRequest.cs` | 要求の検証（**IdP 側**。SP → IdP。#634） |
 | `SAML2Client.CreateResponse.cs` | 応答の作成（**IdP 側**。IdP → SP。Redirect / POST。#634） |
