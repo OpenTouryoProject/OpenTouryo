@@ -28,9 +28,13 @@
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //*  2026/10/30  玄人 幸道         Redirect の SigAlg：RSA-PSS・ECDSA を RFC 9231 の URI にし、決められないものは例外にした（#643）
 //*  2026/10/31  玄人 幸道         Redirect：ECDSA でハッシュを渡さないときに SHA-256 で署名していることを、SHA-256 を明示した検証で確かめるテストを足した（#643）
+//*  2026/11/05  玄人 幸道         Redirect：署名の対象を 3 つのパラメタだけから組み立てることのテストを足した（ほかのパラメタ・並び・重複。#649）
+//*  2026/11/05  玄人 幸道         Redirect：署名の検証と SAML の取り出しが同じ値を読むこと、SAMLRequest の側、空の RelayState のテストを足した（#649 のレビュー）
+//*  2026/11/05  玄人 幸道         Redirect：空の RelayState を、仕様どおりの照合（Basis）と互換の許容（Observation）に分け、壊れた % の名前のテストを足した（#649 のレビュー）
 //**********************************************************************************
 
 using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Xml;
 
@@ -205,6 +209,232 @@ namespace TestFramework.Authentication
 
                 // RelayState を足すと、署名した文字列と変わる
                 Assert.That(SAML2Bindings.VerifyRedirect(query + "&RelayState=evil", rsa), Is.False, "書き換え");
+            }
+        }
+
+        /// <summary>
+        /// Redirect：署名の対象は SAMLRequest（SAMLResponse）・RelayState・SigAlg の 3 つだけで、受け取ったままの値で組み立てる。
+        /// ほかのパラメタ（Web Forms のウィンドウ GUID など）や、パラメタの並びの違い、先頭の "?" があっても検証できる。
+        /// 署名に関わる値の書き換え・重複・欠けは通らない（#649）。
+        /// </summary>
+        [Test]
+        [Basis("SAML 2.0 Bindings 3.4.4.1（SAMLRequest / SAMLResponse・RelayState・SigAlg をこの順に連ねた文字列に署名する。検証は受け取った値で行う）")]
+        [Basis("#649")]
+        public void Redirect_SignedPartOnly()
+        {
+            string saml = CreateResponse(SAML2Enum.StatusCode.Success, true).OuterXml;
+
+            using (RSA rsa = RSA.Create(2048))
+            {
+                DigitalSignParam ds = new DigitalSignParam(rsa.ExportParameters(true), HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+                string query = SAML2Bindings.EncodeAndSignRedirect(SAML2Enum.RequestOrResponse.Response, saml, "relay01", ds);
+
+                // パラメタを名前で分ける（値は受け取ったまま）
+                Dictionary<string, string> p = new Dictionary<string, string>();
+                foreach (string pair in query.Split('&'))
+                {
+                    int i = pair.IndexOf('=');
+                    p.Add(pair.Substring(0, i), pair.Substring(i + 1));
+                }
+                Assert.That(p.Keys, Is.EquivalentTo(new[] { "SAMLResponse", "RelayState", "SigAlg", "Signature" }));
+
+                Func<string, string, string> param = (name, value) => name + "=" + value;
+                string res = param("SAMLResponse", p["SAMLResponse"]);
+                string relay = param("RelayState", p["RelayState"]);
+                string sigAlg = param("SigAlg", p["SigAlg"]);
+                string sig = param("Signature", p["Signature"]);
+
+                // 通るもの
+                foreach (KeyValuePair<string, string> v in new Dictionary<string, string>
+                {
+                    { "そのまま", query },
+                    { "後ろにほかのパラメタ（BrowserWindowGUID）", query + "&BrowserWindowGUID=e4c6911f-b820-40e1-8946-e8753f22b499" },
+                    { "前にほかのパラメタ", "foo=bar&" + query },
+                    { "Signature が先頭", string.Join("&", sig, res, relay, sigAlg) },
+                    { "並びが違う", string.Join("&", sigAlg, relay, sig, res) },
+                    { "先頭に ?", "?" + query },
+                })
+                {
+                    Assert.That(SAML2Bindings.VerifyRedirect(v.Value, ds), Is.True, v.Key + "（DigitalSign 版）");
+                    Assert.That(SAML2Bindings.VerifyRedirect(v.Value, rsa), Is.True, v.Key + "（RSA 版）");
+                }
+
+                // 断るもの
+                foreach (KeyValuePair<string, string> v in new Dictionary<string, string>
+                {
+                    { "RelayState の書き換え", string.Join("&", res, "RelayState=relay02", sigAlg, sig) },
+                    { "RelayState を消す", string.Join("&", res, sigAlg, sig) },
+                    { "SAMLResponse の重複", query + "&" + res },
+                    { "RelayState の重複", query + "&RelayState=relay02" },
+                    { "SAMLRequest と SAMLResponse の両方", query + "&SAMLRequest=" + p["SAMLResponse"] },
+                    { "Signature が無い", string.Join("&", res, relay, sigAlg) },
+                    { "SigAlg が無い", string.Join("&", res, relay, sig) },
+                    { "SAMLResponse が無い", string.Join("&", relay, sigAlg, sig) },
+                    { "空", "" },
+                })
+                {
+                    Assert.That(SAML2Bindings.VerifyRedirect(v.Value, ds), Is.False, v.Key + "（DigitalSign 版）");
+                    Assert.That(SAML2Bindings.VerifyRedirect(v.Value, rsa), Is.False, v.Key + "（RSA 版）");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Redirect：署名を確かめる読み方と、SAML を取り出す読み方（DecodeRedirect）は同じ。
+        /// パラメタ名は完全一致で見るので、名前の一部に SAMLResponse を含む別のパラメタは、どちらも読まない。
+        /// エンコードされた名前で署名に関わるパラメタを名乗るものは、どちらも読まない（曖昧なため）（#649）。
+        /// </summary>
+        [Test]
+        [Basis("SAML 2.0 Bindings 3.4.4.1（署名の対象は SAMLRequest / SAMLResponse・RelayState・SigAlg）")]
+        [Basis("設計：SAML2Bindings.TryReadRedirectParameters の remarks（署名の検証と SAML の取り出しは、同じ読み方で読む）")]
+        [Basis("#649")]
+        public void Redirect_VerifyAndDecodeReadTheSameValue()
+        {
+            string saml = CreateResponse(SAML2Enum.StatusCode.Success, true).OuterXml;
+            string other = CreateResponse(SAML2Enum.StatusCode.Requester, false).OuterXml;
+
+            using (RSA rsa = RSA.Create(2048))
+            {
+                DigitalSignParam ds = new DigitalSignParam(rsa.ExportParameters(true), HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+                string query = SAML2Bindings.EncodeAndSignRedirect(SAML2Enum.RequestOrResponse.Response, saml, "relay01", ds);
+
+                // 別の SAML を、名前の一部に SAMLResponse を含む別のパラメタに入れる
+                string otherValue = SAML2Bindings.EncodeAndSignRedirect(SAML2Enum.RequestOrResponse.Response, other, "", null).Split('&')[0].Split('=')[1];
+
+                foreach (string q in new string[] {
+                    "xSAMLResponse=" + otherValue + "&" + query,
+                    query + "&xSAMLResponse=" + otherValue,
+                })
+                {
+                    Assert.That(SAML2Bindings.VerifyRedirect(q, rsa), Is.True, "署名に関わらないパラメタは無視する : " + q.Substring(0, 16));
+                    Assert.That(SAML2Bindings.DecodeRedirect(q), Is.EqualTo(saml), "取り出すのは、署名を確かめた SAML");
+                }
+
+                // エンコードされた名前で、署名に関わるパラメタを名乗る
+                foreach (string q in new string[] {
+                    "SAML%52esponse=" + otherValue + "&" + query,
+                    query + "&Relay%53tate=relay02",
+                })
+                {
+                    Assert.That(SAML2Bindings.VerifyRedirect(q, rsa), Is.False, "曖昧な名前は読まない（検証）");
+                    Assert.That(SAML2Bindings.VerifyRedirect(q, ds), Is.False, "曖昧な名前は読まない（検証。DigitalSign 版）");
+                    Assert.That(SAML2Bindings.DecodeRedirect(q), Is.Empty, "曖昧な名前は読まない（取り出し）");
+                }
+
+                // 重複・両方は、取り出しも空
+                Assert.That(SAML2Bindings.DecodeRedirect(query + "&SAMLResponse=" + otherValue), Is.Empty, "SAMLResponse の重複");
+                Assert.That(SAML2Bindings.DecodeRedirect(query + "&SAMLRequest=" + otherValue), Is.Empty, "SAMLRequest と SAMLResponse の両方");
+            }
+        }
+
+        /// <summary>
+        /// Redirect：SAMLRequest の側も、署名の対象は 3 つのパラメタだけ。ほかのパラメタが付いていても検証でき、取り出せる（#649）。
+        /// </summary>
+        [Test]
+        [Basis("SAML 2.0 Bindings 3.4.4.1（SAMLRequest・RelayState・SigAlg を連ねた文字列に署名する）")]
+        [Basis("#649")]
+        public void Redirect_Request_SignedPartOnly()
+        {
+            string saml = CreateResponse(SAML2Enum.StatusCode.Success, true).OuterXml;
+
+            using (RSA rsa = RSA.Create(2048))
+            {
+                DigitalSignParam ds = new DigitalSignParam(rsa.ExportParameters(true), HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+                string query = SAML2Bindings.EncodeAndSignRedirect(SAML2Enum.RequestOrResponse.Request, saml, "relay01", ds);
+                Assert.That(query, Does.StartWith("SAMLRequest="));
+
+                string withGuid = query + "&BrowserWindowGUID=e4c6911f-b820-40e1-8946-e8753f22b499";
+                Assert.That(SAML2Bindings.VerifyRedirect(withGuid, rsa), Is.True, "ほかのパラメタ（RSA 版）");
+                Assert.That(SAML2Bindings.VerifyRedirect(withGuid, ds), Is.True, "ほかのパラメタ（DigitalSign 版）");
+                Assert.That(SAML2Bindings.DecodeRedirect(withGuid), Is.EqualTo(saml), "取り出し");
+            }
+        }
+
+        /// <summary>
+        /// Redirect：RelayState の値が無ければ、パラメタ全体を署名の演算から除外する（送る側の EncodeAndSignRedirect も付けない）。
+        /// 空の "RelayState=" が付いていても、含めない版で検証できる。
+        /// </summary>
+        [Test]
+        [Basis("SAML 2.0 Bindings 3.4.4.1（RelayState の値が無ければ、パラメタ全体を署名の演算から除外する。空のパラメタとして含めてはならない）")]
+        [Basis("#649")]
+        public void Redirect_EmptyRelayStateIsNotSigned()
+        {
+            string saml = CreateResponse(SAML2Enum.StatusCode.Success, true).OuterXml;
+
+            using (RSA rsa = RSA.Create(2048))
+            {
+                DigitalSignParam ds = new DigitalSignParam(rsa.ExportParameters(true), HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+                string query = SAML2Bindings.EncodeAndSignRedirect(SAML2Enum.RequestOrResponse.Response, saml, "", ds);
+                Assert.That(query, Does.Not.Contain("RelayState="), "送る側は、空の RelayState を付けない");
+
+                string[] p = query.Split('&');
+                string withEmpty = p[0] + "&RelayState=&" + p[1] + "&" + p[2];
+                Assert.That(SAML2Bindings.VerifyRedirect(withEmpty, rsa), Is.True, "空の RelayState= は、含めない版で照合する（RSA 版）");
+                Assert.That(SAML2Bindings.VerifyRedirect(withEmpty, ds), Is.True, "空の RelayState= は、含めない版で照合する（DigitalSign 版）");
+            }
+        }
+
+        /// <summary>
+        /// Redirect：空の "RelayState=" を含めて署名した相手とも、互換のために照合できる（含める版も候補にする）。
+        /// どちらの候補も全体に署名が掛かっているので、SAMLResponse を書き換えれば通らない。
+        /// </summary>
+        [Test]
+        [Observation("空の RelayState= を含めて署名するのは、SAML 2.0 Bindings 3.4.4.1（空のパラメタとして含めてはならない）に反するが、相互運用のために受ける（施主の判断。#649）。2026/11/05 までの版（クエリ文字列の全体を署名の対象にした）も、この形を受けていた")]
+        public void Redirect_EmptyRelayStateSignedByPeer()
+        {
+            string saml = CreateResponse(SAML2Enum.StatusCode.Success, true).OuterXml;
+
+            using (RSA rsa = RSA.Create(2048))
+            {
+                DigitalSignParam ds = new DigitalSignParam(rsa.ExportParameters(true), HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+                string[] p = SAML2Bindings.EncodeAndSignRedirect(SAML2Enum.RequestOrResponse.Response, saml, "", ds).Split('&');
+
+                // 相手が、空の RelayState= を含めた文字列に署名した
+                string signedByPeer = p[0] + "&RelayState=&" + p[1];
+                string signature = CustomEncode.UrlEncode(CustomEncode.ToBase64String(rsa.SignData(
+                    CustomEncode.StringToByte(signedByPeer, CustomEncode.us_ascii), HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1)));
+                string query = signedByPeer + "&Signature=" + signature;
+
+                Assert.That(SAML2Bindings.VerifyRedirect(query, rsa), Is.True, "含める版で通る（RSA 版）");
+                Assert.That(SAML2Bindings.VerifyRedirect(query, ds), Is.True, "含める版で通る（DigitalSign 版）");
+
+                // RelayState を消すと、どちらの候補とも合わない
+                Assert.That(SAML2Bindings.VerifyRedirect(p[0] + "&" + p[1] + "&Signature=" + signature, rsa), Is.False,
+                    "RelayState= を消すと通らない");
+
+                // SAMLResponse を書き換えると、どちらの候補とも合わない
+                string other = SAML2Bindings.EncodeAndSignRedirect(SAML2Enum.RequestOrResponse.Response,
+                    CreateResponse(SAML2Enum.StatusCode.Requester, false).OuterXml, "", null);
+                Assert.That(SAML2Bindings.VerifyRedirect(other + "&RelayState=&" + p[1] + "&Signature=" + signature, rsa), Is.False,
+                    "SAMLResponse を書き換えると通らない");
+            }
+        }
+
+        /// <summary>
+        /// Redirect：名前に壊れた "%" の並びがあっても、例外にしない（署名に関わらない名前として無視する）。
+        /// </summary>
+        [Test]
+        [Basis("設計：SAML2Bindings.TryReadRedirectParameters の remarks（ほかのパラメタは無視する。外から来る値なので例外にしない）")]
+        [Basis("#649")]
+        public void Redirect_BrokenPercentInName()
+        {
+            string saml = CreateResponse(SAML2Enum.StatusCode.Success, true).OuterXml;
+
+            using (RSA rsa = RSA.Create(2048))
+            {
+                DigitalSignParam ds = new DigitalSignParam(rsa.ExportParameters(true), HashAlgorithmName.SHA256, RSASignaturePadding.Pkcs1);
+                string query = SAML2Bindings.EncodeAndSignRedirect(SAML2Enum.RequestOrResponse.Response, saml, "relay01", ds);
+
+                foreach (string name in new string[] { "%", "%Z1", "a%2", "%%%", "%E3%81" })
+                {
+                    string q = query + "&" + name + "=x";
+                    bool verified = false;
+                    string decoded = null;
+                    Assert.DoesNotThrow(() => verified = SAML2Bindings.VerifyRedirect(q, rsa), "検証で例外にしない : " + name);
+                    Assert.DoesNotThrow(() => decoded = SAML2Bindings.DecodeRedirect(q), "取り出しで例外にしない : " + name);
+                    Assert.That(verified, Is.True, "署名に関わらない名前として無視する : " + name);
+                    Assert.That(decoded, Is.EqualTo(saml), "取り出しも同じ : " + name);
+                }
             }
         }
 
