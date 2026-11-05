@@ -330,6 +330,9 @@ DCR の口の認可、クライアント登録の持ち方。
   `exp` が最大 1 秒長く通るため。net48 と net10.0 で結果を揃える）。
   **`long` の範囲を超える値は読めない**（以前の `long.Parse` が受けなかった範囲。極端に遠い未来の `exp` を通さない）。
   **`exp` と同じ秒は通す**（従来どおり。RFC 7519 4.1.4 の「`exp` 以後は受けない」より 1 秒緩い）。
+  **JWT のペイロード（JToken）を持つ呼び出し側は、公開した `TryReadNumericDate`・`VerifyExpClaim`・`VerifyNbfClaim` を使う**（#661）。
+  文字列に直して `VerifyExp`・`VerifyNbf` に渡さない。`ToString()` はカルチャに依存し、たとえば de-DE では小数が `1000,5` になって読めない。
+  `VerifyNbfClaim` は**無い `nbf` も `false`** なので、`nbf` を任意とするなら、先に null を見る。
   **数値の文字列も、従来どおり読む**（`CreateExpClaim` などが文字列を返すため。DPoP の `iat` だけは数値に限る）。
   **無い・読めない値は、例外にせず検証の失敗（`false`）**。2026/11/05 までは、`IdToken`・`AccessToken`・`JwtAssertion` の `Verify`
   と `CmnJwtToken.VerifyExp`・`VerifyNbf` が、`long.Parse` の例外を投げていた（`ResponseObject.Verify` は #644 で先に `false` にしていた）

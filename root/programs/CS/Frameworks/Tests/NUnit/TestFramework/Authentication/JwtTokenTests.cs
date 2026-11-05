@@ -30,6 +30,8 @@
 //*  2026/11/05  玄人 幸道         小数の NumericDate（exp・nbf）のテストを足した（#647）
 //*  2026/11/05  玄人 幸道         レビューの指摘で、指数表記・負の値・long を超える値・15 桁の丸めのテストを足し、
 //*                                exp の Basis の括弧を振る舞いに合わせた（同じ秒は通す。#647）
+//*  2026/11/06  玄人 幸道         公開した TryReadNumericDate・VerifyExpClaim・VerifyNbfClaim のテストを足した（#661）
+//*  2026/11/06  玄人 幸道         仕様の外の振る舞い（exp と同じ秒・文字列）を、Observation のテストに分けた（#661 のレビューの指摘 1・2）
 //**********************************************************************************
 
 using System;
@@ -442,6 +444,112 @@ namespace TestFramework.Authentication
                 Assert.That(id(token), Is.False, "IdToken：" + label);
                 Assert.That(ro(token), Is.False, "ResponseObject：" + label);
             }
+        }
+
+        /// <summary>
+        /// CmnJwtToken.TryReadNumericDate：JSON の数値の NumericDate を、整数・小数・指数表記で読む。
+        /// 文字列は acceptString が false なら読まない。数値でない型・long を超える値は読めない（seconds は 0）。カルチャに依らない。
+        /// </summary>
+        [Test]
+        [Basis("RFC 7519 2（NumericDate は JSON の数値で、整数でない値も表せる）")]
+        [Basis("設計：CmnJwtToken.TryReadNumericDate の remarks（カルチャに依らない。long の範囲を超える値は読めない）")]
+        [Basis("#661")]
+        public void CmnJwtToken_TryReadNumericDate()
+        {
+            decimal seconds;
+
+            Assert.That(CmnJwtToken.TryReadNumericDate(new JValue(1000L), false, out seconds), Is.True, "整数");
+            Assert.That(seconds, Is.EqualTo(1000m));
+            Assert.That(CmnJwtToken.TryReadNumericDate(new JValue(1000.5), false, out seconds), Is.True, "小数");
+            Assert.That(seconds, Is.EqualTo(1000.5m));
+            Assert.That(CmnJwtToken.TryReadNumericDate(JToken.Parse("1.0E3"), false, out seconds), Is.True, "指数表記");
+            Assert.That(seconds, Is.EqualTo(1000m));
+
+            Assert.That(CmnJwtToken.TryReadNumericDate(new JValue("1000"), false, out seconds), Is.False, "文字列（acceptString でない）");
+            Assert.That(seconds, Is.EqualTo(0m));
+
+            foreach (JToken bad in new JToken[] { null, JValue.CreateNull(), new JValue("abc"), new JValue(true), new JObject(), new JArray(1000), new JValue(1e20) })
+            {
+                string label = bad == null ? "null" : bad.Type + " " + bad.ToString(Formatting.None);
+                Assert.That(CmnJwtToken.TryReadNumericDate(bad, true, out seconds), Is.False, label);
+                Assert.That(seconds, Is.EqualTo(0m), label + "：seconds は 0");
+            }
+
+            System.Globalization.CultureInfo saved = System.Threading.Thread.CurrentThread.CurrentCulture;
+            try
+            {
+                System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("de-DE");
+                Assert.That(CmnJwtToken.TryReadNumericDate(new JValue(1000.5), false, out seconds), Is.True, "de-DE：小数");
+                Assert.That(seconds, Is.EqualTo(1000.5m));
+            }
+            finally
+            {
+                System.Threading.Thread.CurrentThread.CurrentCulture = saved;
+            }
+        }
+
+        /// <summary>
+        /// CmnJwtToken.TryReadNumericDate：acceptString が true なら、数値の文字列も読む（カルチャに依らない）。
+        /// </summary>
+        [Test]
+        [Observation("NumericDate は JSON の数値（RFC 7519 2）なので、文字列を読むのは仕様の外。exp・nbf は従来から文字列でも読んでいた（CreateExpClaim などが文字列を返す）ので、互換のために残している（#647・#661）")]
+        public void CmnJwtToken_TryReadNumericDate_String()
+        {
+            decimal seconds;
+
+            Assert.That(CmnJwtToken.TryReadNumericDate(new JValue("1000"), true, out seconds), Is.True, "文字列");
+            Assert.That(seconds, Is.EqualTo(1000m));
+
+            System.Globalization.CultureInfo saved = System.Threading.Thread.CurrentThread.CurrentCulture;
+            try
+            {
+                System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("de-DE");
+                Assert.That(CmnJwtToken.TryReadNumericDate(new JValue("1000.5"), true, out seconds), Is.True, "de-DE：小数の文字列");
+                Assert.That(seconds, Is.EqualTo(1000.5m));
+            }
+            finally
+            {
+                System.Threading.Thread.CurrentThread.CurrentCulture = saved;
+            }
+        }
+
+        /// <summary>
+        /// CmnJwtToken.VerifyExpClaim・VerifyNbfClaim：渡した時刻で exp・nbf を確かめる。
+        /// exp より後・nbf より前は false。小数はそのまま比べる。無い・読めない値は false。
+        /// </summary>
+        [Test]
+        [Basis("RFC 7519 4.1.4（exp 以後は受けない）・4.1.5（nbf より前は受けない）")]
+        [Basis("#661")]
+        public void CmnJwtToken_VerifyExpNbfClaim()
+        {
+            Assert.That(CmnJwtToken.VerifyExpClaim(new JValue(1000L), 999), Is.True, "exp：前");
+            Assert.That(CmnJwtToken.VerifyExpClaim(new JValue(1000L), 1001), Is.False, "exp：後");
+            Assert.That(CmnJwtToken.VerifyExpClaim(new JValue(1000.5), 1000), Is.True, "exp：小数（前）");
+            Assert.That(CmnJwtToken.VerifyExpClaim(new JValue(1000.5), 1001), Is.False, "exp：小数（後）");
+
+            Assert.That(CmnJwtToken.VerifyNbfClaim(new JValue(1000L), 999), Is.False, "nbf：前");
+            Assert.That(CmnJwtToken.VerifyNbfClaim(new JValue(1000L), 1000), Is.True, "nbf：同じ秒");
+            Assert.That(CmnJwtToken.VerifyNbfClaim(new JValue(999.5), 999), Is.False, "nbf：小数（前）");
+            Assert.That(CmnJwtToken.VerifyNbfClaim(new JValue(999.5), 1000), Is.True, "nbf：小数（後）");
+
+            foreach (JToken bad in new JToken[] { null, new JValue("abc"), new JObject(), new JValue(1e20) })
+            {
+                string label = bad == null ? "null" : bad.Type + " " + bad.ToString(Formatting.None);
+                Assert.That(CmnJwtToken.VerifyExpClaim(bad, 0), Is.False, "exp：" + label);
+                Assert.That(CmnJwtToken.VerifyNbfClaim(bad, 2000), Is.False, "nbf：" + label);
+            }
+        }
+
+        /// <summary>
+        /// CmnJwtToken.VerifyExpClaim・VerifyNbfClaim：exp と同じ秒は通し、数値の文字列の exp・nbf も読む。
+        /// </summary>
+        [Test]
+        [Observation("exp と同じ秒を通すのは、RFC 7519 4.1.4（exp 以後は受けない）より 1 秒緩い。文字列の exp・nbf を読むのは、NumericDate（JSON の数値。RFC 7519 2）の外。どちらも以前の振る舞いを互換のために残している（#647）")]
+        public void CmnJwtToken_VerifyExpNbfClaim_Compat()
+        {
+            Assert.That(CmnJwtToken.VerifyExpClaim(new JValue(1000L), 1000), Is.True, "exp：同じ秒");
+            Assert.That(CmnJwtToken.VerifyExpClaim(new JValue("1000"), 1000), Is.True, "exp：文字列");
+            Assert.That(CmnJwtToken.VerifyNbfClaim(new JValue("1000"), 1000), Is.True, "nbf：文字列");
         }
 
         #endregion

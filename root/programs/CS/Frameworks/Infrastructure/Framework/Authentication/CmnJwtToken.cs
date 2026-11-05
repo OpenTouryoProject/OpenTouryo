@@ -46,6 +46,8 @@
 //*                                設定は ReadConfiguredClientIDs で 1 回だけ読む（空白だけの値は無いもの、壊れた JSON は false）（#655 のレビュー）
 //*  2026/11/05  玄人 幸道         ReadConfiguredClientIDs：net10.0 で ClientIDs が文字列の配列の形でないとき（要素がオブジェクト、
 //*                                配列でない 1 つの値）も、設定の誤りとした。バインドは形が違っても例外にしないため（#655 の 2 回目のレビュー）
+//*  2026/11/06  玄人 幸道         TryReadNumericDate・VerifyExpClaim・VerifyNbfClaim を公開した（JToken を持つ呼び出し側が、
+//*                                同じ読み方で exp・nbf を確かめられるようにする。#661。引数と振る舞いは変えていない）
 //**********************************************************************************
 
 using System;
@@ -373,8 +375,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="exp">exp のクレーム（JToken。無ければ null）</param>
         /// <param name="unixTimeSeconds">いまの UNIX 時刻（秒）</param>
         /// <returns>いまが exp より前（または同じ秒）なら true。無い・読めない値は false</returns>
-        /// <remarks>IdToken・AccessToken・JwtAssertion・ResponseObject の Verify が使う（#647）。</remarks>
-        internal static bool VerifyExpClaim(JToken exp, long unixTimeSeconds)
+        /// <remarks>
+        /// IdToken・AccessToken・JwtAssertion・ResponseObject の Verify が使う（#647）。
+        /// **JWT のペイロード（JToken）を持つ呼び出し側も、これを使う**（#661 で公開した。文字列に直して VerifyExp に渡さない）。
+        /// 読み方は TryReadNumericDate（acceptString は true）。**時計のずれの許容幅は取らない**（必要なら unixTimeSeconds で調整する）。
+        /// **exp と同じ秒は通す**（RFC 7519 4.1.4 より 1 秒緩い。従来どおり）。
+        /// </remarks>
+        public static bool VerifyExpClaim(JToken exp, long unixTimeSeconds)
         {
             decimal seconds;
             return CmnJwtToken.TryReadNumericDate(exp, true, out seconds)
@@ -385,8 +392,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="nbf">nbf のクレーム（JToken。無ければ null）</param>
         /// <param name="unixTimeSeconds">いまの UNIX 時刻（秒）</param>
         /// <returns>いまが nbf 以後なら true。無い・読めない値は false</returns>
-        /// <remarks>RequestObject の Verify・VerifyCiba が使う（#653）。読み方は VerifyExpClaim と同じ。</remarks>
-        internal static bool VerifyNbfClaim(JToken nbf, long unixTimeSeconds)
+        /// <remarks>
+        /// RequestObject の Verify・VerifyCiba が使う（#653）。読み方は VerifyExpClaim と同じ（#661 で公開した）。
+        /// **無い nbf も false** なので、nbf を任意とするなら、呼び出し側で null を先に見る。
+        /// </remarks>
+        public static bool VerifyNbfClaim(JToken nbf, long unixTimeSeconds)
         {
             decimal seconds;
             return CmnJwtToken.TryReadNumericDate(nbf, true, out seconds)
@@ -424,8 +434,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// **整数・小数・指数表記を読む**（RFC 7519 2 : NumericDate は JSON の数値で、整数でない値も表せる。#647）。
         /// **カルチャに依らない**（CultureInfo.InvariantCulture）。long の範囲を超える値・数値でない値は読めない（false）。
         /// **net48 と net10.0 で結果を揃える**（小数の double を 17 桁で読む）。
+        /// 読めなければ seconds は 0。exp・nbf・iat を自前で読む呼び出し側も、これを使う（#661 で公開した）。
         /// </remarks>
-        internal static bool TryReadNumericDate(JToken value, bool acceptString, out decimal seconds)
+        public static bool TryReadNumericDate(JToken value, bool acceptString, out decimal seconds)
         {
             seconds = 0;
 
