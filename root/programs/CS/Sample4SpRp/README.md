@@ -13,10 +13,11 @@
 |---|---|---|---|---|
 | net | **EXE（CLI）** | **Device**・**PKCE** | **済** | [`DotNet/CLI/`](DotNet/CLI/) |
 | net | EXE（CLI） | SAML2・AuthZCode・AuthNCode | 未（CLI には向かない。下記） | — |
-| net | MVC | SAML2・AuthZCode・AuthNCode・PKCE・Device | 未 | — |
-| net | WebForms（net48 のみ） | 同上 | 未 | — |
-| net | WinForms | 同上 | 未 | — |
-| browser | SPA（React・Blazor） | PKCE | 未 | — |
+| net | EXE（CLI、旧サンプル・net10.0 のみ） | Device・PKCE（LIR） | **済**（スタブに合わせた。4 節） | `Samples4NetCore/Legacy/CLI_sample/` |
+| net | MVC | SAML2・AuthZCode・AuthNCode・PKCE・Device | **一部**：既存の `MVC_Sample`（C#・VB の net48、C# の net10.0）の外部ログイン（OIDC・SAML2）をスタブで通す（2.1 節）。専用のサンプルは未 | `Samples/`・`Samples4NetCore/` の `MVC_Sample` |
+| net | WebForms（net48 のみ） | 同上 | **一部**：既存の `WebForms_Sample`（C#・VB）の外部ログイン（OIDC・SAML2）をスタブで通す（2.1 節）。専用のサンプルは未 | `Samples/` の `WebForms_Sample` |
+| net | WinForms | 同上 | **一部**：既存の WS クライアント（`WSClientWin_sample`・`WSClientWinCone_sample`、VB・.NET 10 版）の外部ログインを、ROPC から PKCE（LIR）に替えた。専用のサンプルは未 | `Samples/WS_sample/WSClient_sample/` ほか |
+| browser | SPA（React・Blazor） | PKCE | **済**（Bearer でのリソース アクセスを含む。4.1 節） | [`SPA/`](SPA/) |
 
 > **CLI に SAML2・AuthZCode・AuthNCode を載せていないのは、秘密を守れないからである。**
 > 認可コードを秘密（`client_secret`）で引き換えるのはコンフィデンシャル クライアント（サーバ側のアプリ）で、
