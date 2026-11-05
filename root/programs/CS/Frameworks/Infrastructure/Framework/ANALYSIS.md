@@ -323,7 +323,11 @@ DCR の口の認可、クライアント登録の持ち方。
   （CIBA Core 7.1.1・7.1）と、**ヒント（`login_hint_token`・`id_token_hint`・`login_hint`）がちょうど 1 つ**。
   **`client_notification_token`・`binding_message` は必須にしない**（Ping・Push のときだけ必須／任意）。
   **既存の版は `aud` の値を照合しない**（期待する値を受けないため）。
-  **欠けている・読めない・期限の過ぎたものは `false`**（例外にしない）。受け入れる範囲が狭まるので、利用側は E2E で確かめる
+  **欠けている・読めない・期限の過ぎたものは `false`**（例外にしない）。受け入れる範囲が狭まるので、利用側は E2E で確かめる。
+  **移行のときに当たりやすいのは次の 2 つ。** `Verify` で **`client_id` が新たに必須**になった（以前は見ていなかったので、
+  `client_id` を入れない要求オブジェクトは断られる。`Create` は入れる）。**時計のずれは許さない**（`exp`・`nbf` の許容幅は 0。
+  `IdToken` などと同じ）ので、CIBA ではクライアントの時計が進んでいると `nbf` で断られる。
+  **日付の形の文字列のクレーム**（`"2026-11-05T00:00:00Z"` など）は、日付に変えずに文字列として読む（`DateParseHandling.None`）
 - `AccessToken` は `typ`（`at+jwt`）を確認しない（RFC 9068 の形式には準拠していない）。
   JWS の層で照合するなら `JWS.Verify(jwt, typ)`（[`Public/Security/ANALYSIS.md`](../Public/Security/ANALYSIS.md) 4.1 節）
 

@@ -32,6 +32,8 @@
 //*  2026/11/05  玄人 幸道         Verify・VerifyCiba：必須のクレームが欠けていたら false にし、exp・nbf の値を確かめる（#653）。
 //*                                必須の範囲を仕様に合わせた（Verify は state・nonce を外し、VerifyCiba は iat・jti を足して
 //*                                client_notification_token・binding_message を外し、ヒントはちょうど 1 つ）
+//*  2026/11/05  玄人 幸道         ペイロードを、日付の形の文字列を日付に変えずに読む（DateParseHandling.None）。
+//*                                iat の確認を VerifyTimeClaims にまとめた（#653 ph1 のレビューの指摘 1・2）
 //**********************************************************************************
 
 using System;
@@ -422,14 +424,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 return false;
             }
 
-            decimal iat;
-            if (!CmnJwtToken.TryReadNumericDate(jobj[OAuth2AndOIDCConst.iat], true, out iat))
-            {
-                // iat が無い・読めない
-                return false;
-            }
-
-            // 時刻のクレーム（exp・nbf は必須）
+            // 時刻のクレーム（exp・nbf・iat は必須）
             return RequestObject.VerifyTimeClaims(jobj, true);
         }
         #endregion
@@ -441,6 +436,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>ペイロードを読む（署名を確かめた後に呼ぶ）</summary>
         /// <param name="ro">要求オブジェクト（JWS）</param>
         /// <returns>JSON のオブジェクト。オブジェクトでなければ null</returns>
+        /// <remarks>
+        /// **日付の形の文字列を、日付に変えずに読む**（DateParseHandling.None）。
+        /// 既定（DateTime）では "2026-11-05T00:00:00Z" のような値が JTokenType.Date になり、
+        /// 文字列のクレーム（ReadString）として読めず、正しい要求オブジェクトを断ってしまう（#653 ph1 のレビュー）。
+        /// </remarks>
         private static JObject ReadPayload(string ro)
         {
             try
@@ -448,7 +448,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 string jwtPayload = CustomEncode.ByteToString(
                     CustomEncode.FromBase64UrlString(ro.Split('.')[1]), CustomEncode.UTF_8);
 
-                return JsonConvert.DeserializeObject(jwtPayload) as JObject;
+                return JsonConvert.DeserializeObject(jwtPayload,
+                    new JsonSerializerSettings { DateParseHandling = DateParseHandling.None }) as JObject;
             }
             catch (JsonException)
             {
@@ -506,10 +507,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
         }
 
-        /// <summary>exp・nbf を確かめる</summary>
+        /// <summary>exp・nbf（と iat）を確かめる</summary>
         /// <param name="jobj">ペイロード</param>
-        /// <param name="required">true なら、無いものも失敗にする。false なら、在るものだけを確かめる</param>
+        /// <param name="required">
+        /// true なら、exp・nbf・iat を必須とし、無いものも失敗にする（VerifyCiba）。iat は読めることだけを見る（どれだけ古いかは見ない）。
+        /// false なら、exp・nbf のうち在るものだけを確かめ、iat は見ない（Verify）
+        /// </param>
         /// <returns>bool</returns>
+        /// <remarks>**時計のずれは許さない**（許容幅 0。IdToken などの Verify と同じ。#647）。</remarks>
         private static bool VerifyTimeClaims(JObject jobj, bool required)
         {
             long now = DateTimeOffset.Now.ToUnixTimeSeconds();
@@ -525,6 +530,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
             if ((required || nbf != null) && !CmnJwtToken.VerifyNbfClaim(nbf, now))
             {
                 // まだ使えない・読めない（・無い）
+                return false;
+            }
+
+            decimal iat;
+            if (required && !CmnJwtToken.TryReadNumericDate(jobj[OAuth2AndOIDCConst.iat], true, out iat))
+            {
+                // iat が無い・読めない
                 return false;
             }
 

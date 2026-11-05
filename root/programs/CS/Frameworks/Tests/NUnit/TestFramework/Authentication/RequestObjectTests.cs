@@ -26,6 +26,7 @@
 //*  2026/10/19  玄人 幸道         新規作成
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //*  2026/11/05  玄人 幸道         必須のクレーム・時刻のクレームを確かめるテストを追加（#653）
+//*  2026/11/05  玄人 幸道         日付の形の文字列のクレームを通すことを足した（#653 ph1 のレビューの指摘 1）
 //**********************************************************************************
 
 using System;
@@ -239,6 +240,11 @@ namespace TestFramework.Authentication
                     new Mutation("exp が未来", p => p[OAuth2AndOIDCConst.exp] = now + 300),
                     new Mutation("exp が未来（文字列。CreateExpClaim の形）", p => p[OAuth2AndOIDCConst.exp] = (now + 300).ToString()),
                     new Mutation("nbf が過去", p => p[OAuth2AndOIDCConst.nbf] = now - 60),
+                    new Mutation("文字列のクレームが日付の形（日付に変えずに読む）", p =>
+                    {
+                        p[OAuth2AndOIDCConst.client_id] = "2026-11-05T00:00:00Z";
+                        p[OAuth2AndOIDCConst.scope] = "2026-11-05T09:00:00+09:00";
+                    }),
                 };
 
                 foreach (Mutation m in valid)
@@ -316,6 +322,11 @@ namespace TestFramework.Authentication
                     p[OAuth2AndOIDCConst.nbf] = now.ToString();
                 }),
                 new Mutation("exp が小数", p => p[OAuth2AndOIDCConst.exp] = now + 300.5),
+                new Mutation("文字列のクレームが日付の形（日付に変えずに読む）", p =>
+                {
+                    p[OAuth2AndOIDCConst.jti] = "2026-11-05T00:00:00Z";
+                    p[OAuth2AndOIDCConst.login_hint] = "2026-11-05T00:00:00+09:00";
+                }),
             };
 
             foreach (Mutation m in valid)
