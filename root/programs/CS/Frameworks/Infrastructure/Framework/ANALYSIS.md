@@ -303,8 +303,25 @@ DCR の口の認可、クライアント登録の持ち方。
   2026/10/30 までは、`error` の応答は署名だけを確かめて `true` を返していた。
   **認可サーバ側は、`error` の応答にも `iss`・`aud`・`exp` を入れること**（`ResponseObject.Create` は入れる）。
   入れない認可サーバの `error` の応答は、`false`（検証の失敗）として届く。署名が正しければ、`false` でも `jobj` は返る（検証されていない値）
-- `AccessToken.Verify` の既存の版は `aud` を確認しない（Keycloak 互換）。
-  **`aud` を確認するなら `jws` / `iss` / `auds`（期待する `aud` の集合）を受ける版を使う。**
+- **`AccessToken.Verify` の設定を読む版は、設定の `client_id`（`OAuth2AndOidcClientID` / `OAuth2AndOidcClientIDs`）が在れば、
+  `aud` がそのいずれかを含むことを確かめる**（#655。`IdToken` の設定を読む版（#603）と同じ `VerifyAudByClientIDs`）。
+  基盤の Web API（`MyBaseAsyncApiController`・`FxController`・`WCFTCPSvcForFx`）は、この版を使う。
+  **リソース サーバは、受け付けるクライアントの `client_id` を `OAuth2AndOidcClientIDs` に並べる。**
+  **どちらも設定されていなければ、従来どおり `aud` を確かめない**（壊さないため。**4.0 で、設定が無いときも断る既定に変える予定**）。
+  2026/11/05 までは、設定によらず `aud` を確かめていなかった（Keycloak 互換。Keycloak は Audience mapper で `aud` を付ける）。
+  **移行のときに当たりやすいこと：**
+  - **`OAuth2AndOidcClientID`（単数。クライアントとして自分の `client_id` を持つキー）を設定しているだけでも、確かめるようになる。**
+    クライアント兼 Web API の配備では、ほかのクライアント向けのトークンや、`aud` が自分の `client_id` でないトークン
+    （リソース サーバの識別子が入る RFC 9068 の形式など）は 401 になる。受けるなら、その `client_id` を `OAuth2AndOidcClientIDs` に並べる
+  - 基盤の `ServiceInterface`（ASPNETWebService・WCFService）の `app.config` には、既に `OAuth2AndOidcClientIDs` が入っている。
+    **ここに並べた `client_id` 以外は断る**（サンプルの ASPNETWebService と同じ 5 件にした）
+  - **空白・空文字だけの値は、設定が無いのと同じ**に扱う。**`OAuth2AndOidcClientIDs` が文字列の配列として読めなければ、すべて断る**（例外にしない。net48 は JSON が壊れているとき、net10.0 は要素がオブジェクト・配列のときと、配列でなく 1 つの値のとき。net10.0 の構成のバインドは、形が違っても例外にせず要素を飛ばすので、形を先に見る）
+  - **`aud` は文字列か、文字列の配列に限る**（数値・オブジェクト・文字列でない要素は `false`）。`IdToken`・`ResponseObject` の
+    設定を読む版も同じ判定（`VerifyAudByClientIDs`）なので、同じく変わる（以前は数値を文字列に変えて照合し、オブジェクトは例外だった）
+  - **リソースごとの分離にはならない。** 判定は「並べた `client_id` のいずれか向けか」なので、同じクライアント向けのトークンは、
+    そのクライアントを並べた別の Web API でも通る。分けるなら、リソース サーバの識別子を `aud` に入れる認可サーバと、`auds` を受ける版を使う
+  - `typ` を見ないので、同じ発行者が出した ID トークン（`aud` が並べた `client_id`）も通る（下の `typ` の項）
+  **`aud` を別の値で確かめるなら `jws` / `iss` / `auds`（期待する `aud` の集合）を受ける版を使う。**
   `aud` に `client_id` が入る形式では、受け付けるクライアントの `client_id` の一覧を渡す
 - **`exp`・`nbf`・`iat`（NumericDate）は、小数・指数表記でも読む**（RFC 7519 2。#647）。
   読み方は `CmnJwtToken.TryReadNumericDate` の 1 か所（`decimal`・`CultureInfo.InvariantCulture`）。

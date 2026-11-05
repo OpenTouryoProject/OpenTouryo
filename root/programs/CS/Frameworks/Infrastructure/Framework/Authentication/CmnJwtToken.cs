@@ -42,6 +42,10 @@
 //*  2026/11/05  玄人 幸道         クレームの読み取り（ReadPayloadObject・ReadStringClaim・ContainsAud）を、
 //*                                RequestObject から移した（JwtAssertion と共有する。#654）
 //*  2026/11/05  玄人 幸道         形の壊れた JWS でも例外にしない TryVerifySignature を追加（#654 のレビューの指摘 5）
+//*  2026/11/05  玄人 幸道         VerifyAudByClientIDs：aud を ContainsAud で照合し（文字列でないものは false。例外にしない）、
+//*                                設定は ReadConfiguredClientIDs で 1 回だけ読む（空白だけの値は無いもの、壊れた JSON は false）（#655 のレビュー）
+//*  2026/11/05  玄人 幸道         ReadConfiguredClientIDs：net10.0 で ClientIDs が文字列の配列の形でないとき（要素がオブジェクト、
+//*                                配列でない 1 つの値）も、設定の誤りとした。バインドは形が違っても例外にしないため（#655 の 2 回目のレビュー）
 //**********************************************************************************
 
 using System;
@@ -53,6 +57,10 @@ using System.Security.Cryptography;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
+#if NETSTD
+using Microsoft.Extensions.Configuration;
+#endif
 
 using Touryo.Infrastructure.Public.IO;
 using Touryo.Infrastructure.Public.Str;
@@ -483,40 +491,78 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="aud">aud（string か array）</param>
         /// <returns>bool</returns>
         /// <remarks>
-        /// 設定で判定する IdToken.Verify / ResponseObject.Verify が使う（#603）。
+        /// 設定で判定する IdToken.Verify / ResponseObject.Verify / AccessToken.Verify が使う（#603・#655）。
         /// 認可サーバを兼ねるか（JwkSetFilePath の有無）によらず、同じ判定をする。
+        ///
+        /// - **aud は文字列か、文字列の配列に限る**（ContainsAud。RFC 7519 4.1.3）。数値・オブジェクト・入れ子の配列、
+        ///   文字列でない要素を含む配列は false（例外にしない）。2026/11/05 までは、数値は文字列に変えて照合し、
+        ///   オブジェクトや入れ子の配列は例外（InvalidCastException）になっていた（#655 のレビュー）
+        /// - 設定の読み方は ReadConfiguredClientIDs（空白だけの値は無いものとし、設定の JSON が壊れていれば false）
+        /// - 設定が無ければ、一致するものが無いので false
         /// </remarks>
         internal static bool VerifyAudByClientIDs(JToken aud)
         {
-            List<string> auds = new List<string>();
+            List<string> clientIDs = CmnJwtToken.ReadConfiguredClientIDs();
 
-            if (aud is JArray)
+            if (clientIDs == null)
             {
-                auds.AddRange(((JArray)aud).Select(x => (string)x));
-            }
-            else if (aud != null)
-            {
-                auds.Add((string)aud);
-            }
-
-            // aud が無い、空の場合は、一致させない。
-            auds = auds.Where(x => !string.IsNullOrEmpty(x)).ToList();
-
-            if (auds.Any(x => x == OAuth2AndOIDCParams.ClientID))
-            {
-                // OAuth2 Clientバージョンの実装で成功
-                return true;
-            }
-            else if (auds.Any(x => OAuth2AndOIDCParams.ClientIDs.Contains(x)))
-            {
-                // OAuth2 ResourcesServerバージョンの実装で成功
-                return true;
-            }
-            else
-            {
-                // JWTの内容検証に失敗
+                // 設定の誤り（JSON が壊れている）
                 return false;
             }
+
+            return CmnJwtToken.ContainsAud(aud, clientIDs);
+        }
+
+        /// <summary>設定の client_id（OAuth2AndOIDCParams.ClientID と ClientIDs を合わせたもの）を読む</summary>
+        /// <returns>
+        /// client_id の一覧（空白だけの値は除く。どちらも無ければ空）。
+        /// ClientIDs が読めなければ null（設定の誤り。net48 は JSON が壊れている、net10.0 は文字列の配列としてバインドできない。呼び出し側は断る）
+        /// </returns>
+        /// <remarks>
+        /// **1 回の検証で 1 回だけ読む**（net48 は、読むたびに JSON を読み直すため。#655 のレビュー）。
+        /// 空白だけの値（環境変数の置き換えで空になった値など）は、設定が無いのと同じに扱う。
+        /// </remarks>
+        internal static List<string> ReadConfiguredClientIDs()
+        {
+            List<string> clientIDs = new List<string>();
+
+            string clientID = OAuth2AndOIDCParams.ClientID;
+            if (!string.IsNullOrWhiteSpace(clientID))
+            {
+                clientIDs.Add(clientID);
+            }
+
+#if NETSTD
+            // **net10.0 の構成のバインドは、形が違っても例外にしない**（文字列の配列でない要素は飛ばし、
+            //   配列でない値は null になる）。そのままでは「設定が無い」と同じになり、確かめない側に倒れるので、
+            //   形を先に見て、文字列の配列でなければ設定の誤りとする（#655 の 2 回目のレビュー）。
+            IConfigurationSection section = GetConfigParameter.GetAnyConfigSection("appSettings:OAuth2AndOidcClientIDs");
+            if (section.GetChildren().Any(x => x.GetChildren().Any()) ||
+                (!string.IsNullOrWhiteSpace(section.Value) && !section.GetChildren().Any()))
+            {
+                // 要素がオブジェクト・配列、または配列でなく 1 つの値
+                return null;
+            }
+#endif
+
+            List<string> configured;
+            try
+            {
+                configured = OAuth2AndOIDCParams.ClientIDs;
+            }
+            catch (JsonException)
+            {
+                // OAuth2AndOidcClientIDs の JSON が壊れている（net48）
+                return null;
+            }
+            catch (InvalidOperationException)
+            {
+                // OAuth2AndOidcClientIDs を、文字列の一覧としてバインドできない（net10.0）
+                return null;
+            }
+
+            clientIDs.AddRange(configured.Where(x => !string.IsNullOrWhiteSpace(x)));
+            return clientIDs;
         }
         #endregion
 
