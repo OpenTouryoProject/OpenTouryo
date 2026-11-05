@@ -26,9 +26,14 @@
 //*  2026/10/22  玄人 幸道         新規作成（SAML2Bindings.cs から処理区分ごとに分割した）
 //*  2026/10/22  玄人 幸道         StringExtractor.GetParameterFromQueryString（Obsolete）を UriOperator に置き換えた
 //*  2026/10/30  玄人 幸道         Redirect の SigAlg を、RSA-PSS・ECDSA でも署名のアルゴリズムどおりに書くようにした。決められなければ例外（#643）
+//*  2026/11/05  玄人 幸道         VerifyRedirect：署名の対象を、SAMLRequest（SAMLResponse）・RelayState・SigAlg の 3 つだけから組み立てる
+//*                                （SAML 2.0 Bindings 3.4.4.1）。ほかのパラメタが付いていても検証できるようにした（#649）。
+//*                                DecodeRedirect も同じ読み方（TryReadRedirectParameters）で SAML を取り出す（名前は完全一致。重複・曖昧な名前は読めないものとする）。
+//*                                空の RelayState= は、含めない版（仕様どおり）と含める版（互換）の両方で照合する
 //**********************************************************************************
 
 using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 
 using Touryo.Infrastructure.Public.IO;
@@ -175,7 +180,16 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>DecodeRedirect</summary>
         /// <param name="queryString">string</param>
-        /// <returns>デコードされたsaml</returns>
+        /// <returns>
+        /// デコードされたsaml。読めなければ空文字（SAMLRequest と SAMLResponse の両方・どちらも無い、
+        /// 署名に関わるパラメタの重複、エンコードされた名前で署名に関わるパラメタを名乗るもの）。
+        /// 2026/11/05 までは、名前を部分一致で探し、両方あれば SAMLRequest を、重複があれば最初の値を返していた
+        /// </returns>
+        /// <remarks>
+        /// **SAMLRequest / SAMLResponse は、VerifyRedirect と同じ読み方（TryReadRedirectParameters）で取り出す**（#649）。
+        /// 署名を確かめた値と、ここで取り出す値が、必ず同じものになるようにするため。
+        /// パラメタ名は完全一致で見る。署名に関わるパラメタの重複、SAMLRequest と SAMLResponse の両方・どちらも無いものは、空文字を返す。
+        /// </remarks>
         public static string DecodeRedirect(string queryString)
         {
             // EcodeRedirectの逆
@@ -183,20 +197,24 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // Saml → URLデコード → Base64デコード
             //   → DEFLATE解凍 → XML宣言のエンコーディング → XML
             // --------------------------------------------------
-            // Samlの抽出
-            string saml = "";
-            if (queryString.IndexOf(SAML2Const.QueryParamSAMLRequest) != -1)
-            {
-                saml = UriOperator.GetParameterFromQueryString(SAML2Const.QueryParamSAMLRequest, queryString);
-            }
-            else if (queryString.IndexOf(SAML2Const.QueryParamSAMLResponse) != -1)
-            {
-                saml = UriOperator.GetParameterFromQueryString(SAML2Const.QueryParamSAMLResponse, queryString);
-            }
-            else
+            // Samlの抽出（VerifyRedirect と同じ読み方。#649）
+            Dictionary<string, string> raw;
+            if (!SAML2Bindings.TryReadRedirectParameters(queryString, out raw))
             {
                 return "";
             }
+
+            string request, response;
+            raw.TryGetValue(SAML2Const.QueryParamSAMLRequest, out request);
+            raw.TryGetValue(SAML2Const.QueryParamSAMLResponse, out response);
+
+            if (string.IsNullOrEmpty(request) == string.IsNullOrEmpty(response))
+            {
+                // SAMLRequest と SAMLResponse の両方・どちらも無い
+                return "";
+            }
+
+            string saml = string.IsNullOrEmpty(request) ? response : request;
 
             byte[] tempByte = DeflateCompression.Decompress(
                 CustomEncode.FromBase64String(CustomEncode.UrlDecode(saml)));
@@ -227,34 +245,35 @@ namespace Touryo.Infrastructure.Framework.Authentication
         {
             // EcodeRedirectの逆
 
+            // 署名の対象・SigAlg・Signature を取り出す（SAML Bindings 3.4.4.1。#649）
+            string[] signedOctets;
+            string sigAlg, signature;
+            if (!SAML2Bindings.TryParseSignedRedirect(queryString, out signedOctets, out sigAlg, out signature))
+            {
+                return false;
+            }
+
             // SigAlgの確認（#604）
-            string sigAlg = CustomEncode.UrlDecode(
-                UriOperator.GetParameterFromQueryString(SAML2Const.QueryParamSigAlg, queryString));
             string expectedSigAlg = SAML2Bindings.GetSigAlg(ds);
             if (string.IsNullOrEmpty(expectedSigAlg) || sigAlg != expectedSigAlg)
             {
                 return false;
             }
 
-            // Signatureの抽出
-            string signature = UriOperator.GetParameterFromQueryString(SAML2Const.QueryParamSignature, queryString);
-            // Signatureの削除
-            queryString = queryString.Replace("&" + SAML2Const.QueryParamSignature + "=" + signature, "");
-
-            // queryString : ASCIIデコード
+            // 署名の対象 : ASCIIデコード（候補は、空の RelayState= があるときだけ 2 つ。TryParseSignedRedirect）
             // signature   : パラメタ → URLデコード →  Base64デコード
-            if (ds.Verify(
-                CustomEncode.StringToByte(queryString, CustomEncode.us_ascii),
-                CustomEncode.FromBase64String(CustomEncode.UrlDecode(signature))))
+            byte[] sign = CustomEncode.FromBase64String(CustomEncode.UrlDecode(signature));
+            foreach (string candidate in signedOctets)
             {
-                // 署名検証 OK
-                return true;
+                if (ds.Verify(CustomEncode.StringToByte(candidate, CustomEncode.us_ascii), sign))
+                {
+                    // 署名検証 OK
+                    return true;
+                }
             }
-            else
-            {
-                // 署名検証 NG
-                return false;
-            }
+
+            // 署名検証 NG
+            return false;
         }
 
         /// <summary>VerifyRedirect</summary>
@@ -279,9 +298,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     SAML2Const.RSAwithSHA256, SAML2Const.RSAwithSHA384, SAML2Const.RSAwithSHA512 };
             }
 
+            // 署名の対象・SigAlg・Signature を取り出す（SAML Bindings 3.4.4.1。#649）
+            string[] signedOctets;
+            string sigAlg, signature;
+            if (!SAML2Bindings.TryParseSignedRedirect(queryString, out signedOctets, out sigAlg, out signature))
+            {
+                return false;
+            }
+
             // SigAlgの確認
-            string sigAlg = CustomEncode.UrlDecode(
-                UriOperator.GetParameterFromQueryString(SAML2Const.QueryParamSigAlg, queryString));
             if (Array.IndexOf(sigAlgs, sigAlg) == -1)
             {
                 return false;
@@ -299,17 +324,154 @@ namespace Touryo.Infrastructure.Framework.Authentication
             else if (sigAlg == SAML2Const.RSAPSSwithSHA512) { han = HashAlgorithmName.SHA512; padding = RSASignaturePadding.Pss; }
             else return false; // RSA 以外
 
-            // Signatureの抽出
-            string signature = UriOperator.GetParameterFromQueryString(SAML2Const.QueryParamSignature, queryString);
-            // Signatureの削除
-            queryString = queryString.Replace("&" + SAML2Const.QueryParamSignature + "=" + signature, "");
-
-            // queryString : ASCIIデコード
+            // 署名の対象 : ASCIIデコード（候補は、空の RelayState= があるときだけ 2 つ。TryParseSignedRedirect）
             // signature   : パラメタ → URLデコード →  Base64デコード
-            return rsa.VerifyData(
-                CustomEncode.StringToByte(queryString, CustomEncode.us_ascii),
-                CustomEncode.FromBase64String(CustomEncode.UrlDecode(signature)),
-                han, padding);
+            byte[] sign = CustomEncode.FromBase64String(CustomEncode.UrlDecode(signature));
+            foreach (string candidate in signedOctets)
+            {
+                if (rsa.VerifyData(CustomEncode.StringToByte(candidate, CustomEncode.us_ascii), sign, han, padding))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Redirect Binding のクエリ文字列から、署名に関わるパラメタ（SAMLRequest・SAMLResponse・RelayState・SigAlg・Signature）を読む
+        /// </summary>
+        /// <param name="queryString">受け取ったクエリ文字列（URL エンコードされたまま。先頭の "?" は在ってもよい）</param>
+        /// <param name="raw">パラメタ名 → 受け取ったままの（URL エンコードされた）値</param>
+        /// <returns>読めたら true。曖昧なら false</returns>
+        /// <remarks>
+        /// **署名の検証（TryParseSignedRedirect）と SAML の取り出し（DecodeRedirect）は、必ずこの関数で読む**（#649）。
+        /// 読み方が別だと、署名を確かめた値と、実際に使う値が食い違いうる（QUALITY.md 4 節「署名の対象と、実際に使う要素の一致」）。
+        /// - パラメタ名は、"&amp;" で区切った各組の "=" の前を、**完全一致**で見る（部分一致にしない）
+        /// - **署名に関わるパラメタの重複は false**（どれを使うかが曖昧）
+        /// - **URL デコードすると署名に関わる名前になる、エンコードされた名前も false**（受け手の Web フレームワークは名前をデコードするので、読み方が食い違う）
+        /// - ほかのパラメタは無視する（署名の対象ではない。SAML 2.0 Bindings 3.4.4.1）
+        /// </remarks>
+        internal static bool TryReadRedirectParameters(string queryString, out Dictionary<string, string> raw)
+        {
+            raw = new Dictionary<string, string>(StringComparer.Ordinal);
+
+            if (string.IsNullOrEmpty(queryString))
+            {
+                return false;
+            }
+
+            string query = queryString.StartsWith("?") ? queryString.Substring(1) : queryString;
+
+            string[] names = new string[] {
+                SAML2Const.QueryParamSAMLRequest, SAML2Const.QueryParamSAMLResponse,
+                SAML2Const.QueryParamRelayState, SAML2Const.QueryParamSigAlg, SAML2Const.QueryParamSignature };
+
+            foreach (string pair in query.Split('&'))
+            {
+                int index = pair.IndexOf('=');
+                string name = (index < 0) ? pair : pair.Substring(0, index);
+                string value = (index < 0) ? "" : pair.Substring(index + 1);
+
+                if (Array.IndexOf(names, name) == -1)
+                {
+                    if (Array.IndexOf(names, CustomEncode.UrlDecode(name)) != -1)
+                    {
+                        // エンコードされた名前で、署名に関わるパラメタを名乗っている（読み方が食い違う）
+                        return false;
+                    }
+
+                    // 署名の対象でないパラメタは無視する（3.4.4.1）
+                    continue;
+                }
+
+                if (raw.ContainsKey(name))
+                {
+                    // 重複（どれを使うかが曖昧）
+                    return false;
+                }
+
+                raw.Add(name, value);
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Redirect Binding のクエリ文字列から、署名の対象（オクテット列にする文字列）・SigAlg・Signature を取り出す
+        /// </summary>
+        /// <param name="queryString">受け取ったクエリ文字列（URL エンコードされたまま。先頭の "?" は在ってもよい）</param>
+        /// <param name="signedOctets">
+        /// 署名の対象の候補（SAMLRequest か SAMLResponse、RelayState（在れば）、SigAlg をこの順に "&amp;" でつないだもの）。
+        /// 通常は 1 つ。値が空の RelayState= が付いているときだけ、含めない版（仕様どおり）と含める版（互換）の 2 つ
+        /// </param>
+        /// <param name="sigAlg">SigAlg（URL デコードしたもの）</param>
+        /// <param name="signature">Signature（URL エンコードされたまま）</param>
+        /// <returns>取り出せたら true</returns>
+        /// <remarks>
+        /// **署名の対象は、SAMLRequest（または SAMLResponse）・RelayState・SigAlg の 3 つだけ**から、
+        /// 受け取ったままの（URL エンコードされた）値で組み立てる（SAML 2.0 Bindings 3.4.4.1。#649）。
+        /// - **ほかのパラメタは無視する。** 2026/11/05 までは、クエリ文字列の全体から Signature だけを除いたものを署名の対象にしていたので、
+        ///   SP 側の画面遷移が付けたパラメタ（Open棟梁 の Web Forms の BrowserWindowGUID など）があると、正しい署名でも失敗していた
+        /// - **RelayState の値が無ければ、パラメタ全体を署名の演算から除外する**（SAML 2.0 Bindings 3.4.4.1。
+        ///   空のパラメタとして含めてはならない。EncodeAndSignRedirect も含めない）。
+        ///   ただし、**仕様に反して空の "RelayState=" を含めて署名する相手との互換のため、含める版も候補にする**（どちらかで通れば受ける）。
+        ///   どちらの候補も、SAMLRequest（SAMLResponse）・SigAlg を含む全体に署名が掛かっているので、偽造は通らない。
+        ///   2026/11/05 までの版（クエリ文字列の全体を署名の対象にした）は、空の RelayState= を含めて照合していた
+        /// - SAMLRequest と SAMLResponse の両方・どちらも無い、署名に関わるパラメタの重複、SigAlg・Signature が無いものは false
+        /// </remarks>
+        private static bool TryParseSignedRedirect(
+            string queryString, out string[] signedOctets, out string sigAlg, out string signature)
+        {
+            signedOctets = null;
+            sigAlg = null;
+            signature = null;
+
+            Dictionary<string, string> raw;
+            if (!SAML2Bindings.TryReadRedirectParameters(queryString, out raw))
+            {
+                return false;
+            }
+
+            string request, response, relayState, rawSigAlg, rawSignature;
+            raw.TryGetValue(SAML2Const.QueryParamSAMLRequest, out request);
+            raw.TryGetValue(SAML2Const.QueryParamSAMLResponse, out response);
+            raw.TryGetValue(SAML2Const.QueryParamRelayState, out relayState);
+            raw.TryGetValue(SAML2Const.QueryParamSigAlg, out rawSigAlg);
+            raw.TryGetValue(SAML2Const.QueryParamSignature, out rawSignature);
+
+            if (string.IsNullOrEmpty(request) == string.IsNullOrEmpty(response) ||
+                string.IsNullOrEmpty(rawSigAlg) || string.IsNullOrEmpty(rawSignature))
+            {
+                // SAMLRequest と SAMLResponse の両方・どちらも無い、SigAlg・Signature が無い
+                return false;
+            }
+
+            string message = string.IsNullOrEmpty(request)
+                ? SAML2Const.QueryParamSAMLResponse + "=" + response
+                : SAML2Const.QueryParamSAMLRequest + "=" + request;
+            string tail = "&" + SAML2Const.QueryParamSigAlg + "=" + rawSigAlg;
+
+            if (!string.IsNullOrEmpty(relayState))
+            {
+                signedOctets = new string[] {
+                    message + "&" + SAML2Const.QueryParamRelayState + "=" + relayState + tail };
+            }
+            else if (relayState != null)
+            {
+                // 値が空の RelayState=：含めない版（仕様どおり）と、含める版（互換）
+                signedOctets = new string[] {
+                    message + tail,
+                    message + "&" + SAML2Const.QueryParamRelayState + "=" + tail };
+            }
+            else
+            {
+                signedOctets = new string[] { message + tail };
+            }
+
+            sigAlg = CustomEncode.UrlDecode(rawSigAlg);
+            signature = rawSignature;
+            return true;
         }
 
         /// <summary>DigitalSign のアルゴリズムから、SigAlg の値を決める（#604・#643）</summary>

@@ -17,6 +17,7 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //*  2026/11/04  玄人 幸道         外部ログインの要求を、MPAS のスタブに合わせた（prompt=none を外す・値をエンコード。#649）
 //*  2026/11/04  玄人 幸道         SAML2 の外部ログイン（btnButton3）を追加した（#649）
+//*  2026/11/05  玄人 幸道         外部ログインの IdP へは、基盤の画面遷移を通さずに送る（ウィンドウ GUID を付け足さない。#649）
 //**********************************************************************************
 
 using System;
@@ -159,16 +160,17 @@ namespace WebForms_Sample.Aspx.Start
         /// OIDC の認可コード フロー。応答は OAuth2/OAuth2AuthorizationCodeGrantClient.aspx が受ける。
         /// **prompt=none は付けない。** IdP にまだセッションが無いと、
         /// ログイン画面を出さずに login_required で戻ってしまう（OpenID Connect Core 1.0 3.1.2.1）。
+        /// **IdP へは Response.Redirect で直接送る**（RedirectToIdP。基盤の画面遷移はウィンドウ GUID を付け足すため）。
         /// </remarks>
         protected string UOC_btnButton2_Click(FxEventArgs fxEventArgs)
         {
-            return CmnClientParams.SpRp_AuthRequestUri
+            return this.RedirectToIdP(CmnClientParams.SpRp_AuthRequestUri
                 + "?client_id=" + Uri.EscapeDataString(OAuth2AndOIDCParams.ClientID)
                 + "&response_type=code"
                 + "&scope=" + Uri.EscapeDataString("openid profile email phone address roles")
                 + "&state=" + Uri.EscapeDataString(this.State)
                 + "&nonce=" + Uri.EscapeDataString(this.Nonce)
-                + "&redirect_uri=" + Uri.EscapeDataString(CmnClientParams.SpRp_RedirectUri);
+                + "&redirect_uri=" + Uri.EscapeDataString(CmnClientParams.SpRp_RedirectUri));
         }
 
         /// <summary>外部ログイン（SAML2）</summary>
@@ -181,6 +183,8 @@ namespace WebForms_Sample.Aspx.Start
         /// **NameID は Persistent を求める**（SP ごとに固定の値。識別子にする。SAML Core 8.3.7）。
         /// 要求には SpRp_RsaPfxFilePath の鍵で署名する（IdP が WantAuthnRequestsSigned）。
         /// **Issuer は "http://" ＋ client_id**（汎用認証サイトは、Issuer から client_id を引く）。
+        /// **IdP へは Response.Redirect で直接送る**（RedirectToIdP）。基盤の画面遷移は、署名した URL の後ろに
+        /// ウィンドウ GUID（BrowserWindowGUID）を付け足し、IdP が全体を署名の対象として扱うと検証に失敗するため（#649）。
         /// </remarks>
         protected string UOC_btnButton3_Click(FxEventArgs fxEventArgs)
         {
@@ -206,7 +210,23 @@ namespace WebForms_Sample.Aspx.Start
             Session["saml2_relay_state"] = relayState;
             Session["saml2_request_id"] = id;
 
-            return metadata.SsoRedirectLocation + "?" + queryString;
+            return this.RedirectToIdP(metadata.SsoRedirectLocation + "?" + queryString);
+        }
+
+        /// <summary>外部の IdP へ、URL をそのまま送る（基盤の画面遷移を通さない）</summary>
+        /// <param name="url">IdP の URL（クエリ文字列を含む）</param>
+        /// <returns>空文字（基盤の画面遷移はしない）</returns>
+        /// <remarks>
+        /// 基盤の画面遷移（FxRedirect）は、遷移先の URL にウィンドウ GUID（BrowserWindowGUID）を付け足す。
+        /// 外部の IdP には要らない値で、**SAML2 の Redirect Binding では、署名した URL を変えてしまう**（#649）。
+        /// **例外を使わない形で送る**（Redirect(url, false) と CompleteRequest）。イベント ハンドラはレイトバインドで呼ばれるので、
+        /// Response.Redirect(url) の ThreadAbortException が別の例外に包まれないようにする。
+        /// </remarks>
+        private string RedirectToIdP(string url)
+        {
+            this.Response.Redirect(url, false);
+            this.Context.ApplicationInstance.CompleteRequest();
+            return string.Empty;
         }
 
         #endregion

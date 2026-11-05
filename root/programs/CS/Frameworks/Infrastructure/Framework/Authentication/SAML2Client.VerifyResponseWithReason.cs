@@ -27,6 +27,7 @@
 //*  2026/10/22  玄人 幸道         NotOnOrAfter が読めなければ Expired で断るようにした（読めない方を無視して通していた）。
 //*                                Pick を bool 版と共有するため、null を空文字にしない形にした
 //*  2026/10/22  玄人 幸道         StringExtractor.GetParameterFromQueryString（Obsolete）を UriOperator に置き換えた
+//*  2026/11/05  玄人 幸道         SigAlg を、VerifyRedirect と同じ読み方（SAML2Bindings.TryReadRedirectParameters）で読む（#649）
 //**********************************************************************************
 
 using System;
@@ -151,8 +152,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
             {
                 if (ret.IsRedirect)
                 {
-                    ret.SigAlg = CustomEncode.UrlDecode(
-                        UriOperator.GetParameterFromQueryString(SAML2Const.QueryParamSigAlg, queryString)) ?? "";
+                    // **VerifyRedirect・DecodeRedirect と同じ読み方で読む**（SAML2Bindings.TryReadRedirectParameters。#649）
+                    Dictionary<string, string> raw;
+                    string rawSigAlg = null;
+                    if (SAML2Bindings.TryReadRedirectParameters(queryString, out raw))
+                    {
+                        raw.TryGetValue(SAML2Const.QueryParamSigAlg, out rawSigAlg);
+                    }
+                    ret.SigAlg = string.IsNullOrEmpty(rawSigAlg) ? "" : CustomEncode.UrlDecode(rawSigAlg);
 
                     if (string.IsNullOrEmpty(ret.SigAlg))
                     {

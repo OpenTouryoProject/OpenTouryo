@@ -425,6 +425,21 @@ SAML の署名・検証は SP と IdP の双方が使うため、**IdP 側の処
 | `DigitalSign` を受ける | 渡された `DigitalSign` で検証し、**`SigAlg` がそのアルゴリズムと一致しなければ失敗する**（`SAML2Client.VerifyResponse` はこちら。ハッシュは `hashAlgorithmName`、既定は SHA256） |
 | `RSA` を受ける | **許可リスト（`sigAlgs`）の中から `SigAlg` でハッシュとパディングを選ぶ**（既定は SHA256 / 384 / 512 で、SHA1 は受けない。**RSA-PSS は既定では受けず、`RSAPSSwithSHA256` などを並べたときだけ**。#643） |
 
+- **署名の対象は、`SAMLRequest`（`SAMLResponse`）・`RelayState`（在れば）・`SigAlg` の 3 つだけから、受け取ったままの値で組み立てる**
+  （どちらの版も。SAML 2.0 Bindings 3.4.4.1。#649）。**ほかのパラメタは無視し、並びも問わない**。
+  2026/11/05 までは、クエリ文字列の全体から `Signature` だけを除いたものを署名の対象にしていたので、
+  **SP 側の画面遷移が付けたパラメタ（Open棟梁 の Web Forms の `BrowserWindowGUID` など）があると、正しい署名でも失敗していた**。
+  署名に関わるパラメタの重複、`SAMLRequest` と `SAMLResponse` の両方、`SigAlg`・`Signature` が無いものは失敗にする。
+  **署名の検証と SAML の取り出し（`DecodeRedirect`）、理由を返す版の `SigAlg` は、同じ読み方（`TryReadRedirectParameters`）で読む**
+  （署名を確かめた値と、実際に使う値を一致させるため。QUALITY.md 4 節）。パラメタ名は完全一致で見て、
+  **URL エンコードされた名前で署名に関わるパラメタを名乗るものは、曖昧なので読まない**。
+  **読み方を足すときも、この関数を通すこと**（`UriOperator.GetParameterFromQueryString` は名前を部分一致で探すので、ここでは使わない）。
+  **`DecodeRedirect` は、読めないもの**（`SAMLRequest` と `SAMLResponse` の両方・どちらも無い、重複、エンコードされた名前）**に空文字を返す**
+  （2026/11/05 までは、名前を部分一致で探し、両方あれば `SAMLRequest` を、重複があれば最初の値を返していた）。
+  **`RelayState` の値が無ければ、パラメタ全体を署名の演算から除外する**（3.4.4.1。空のパラメタとして含めてはならない。
+  送る側の `EncodeAndSignRedirect` も付けない）。ただし、**仕様に反して空の `RelayState=` を含めて署名する相手との互換のため、
+  含める版でも照合する**（どちらかで通れば受ける。どちらも全体に署名が掛かるので、偽造は通らない）
+  **送る側（Web Forms）も、外部の IdP への遷移は基盤の画面遷移（`FxRedirect`）を通さない**（ウィンドウ GUID を付け足すため。サンプルの `login.aspx` の `RedirectToIdP`）
 - **#604 より前の Open棟梁 が送った要求・応答（`rsa-sha1` と名乗る SHA256 の署名）は、どちらでも失敗する。**
   受け手で `SigAlg` が `rsa-sha1` であることを確かめていると、#604 以降の送り手の要求・応答で落ちる
 - `EncodeAndSignRedirect` / `VerifyRedirect` の引数名は、#604 で `dsRSAwithSHA1` から `ds` に変えた（SHA1 に限らないため）。
