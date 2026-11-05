@@ -316,6 +316,14 @@ DCR の口の認可、クライアント登録の持ち方。
   **数値の文字列も、従来どおり読む**（`CreateExpClaim` などが文字列を返すため。DPoP の `iat` だけは数値に限る）。
   **無い・読めない値は、例外にせず検証の失敗（`false`）**。2026/11/05 までは、`IdToken`・`AccessToken`・`JwtAssertion` の `Verify`
   と `CmnJwtToken.VerifyExp`・`VerifyNbf` が、`long.Parse` の例外を投げていた（`ResponseObject.Verify` は #644 で先に `false` にしていた）
+- **`RequestObject.Verify`・`VerifyCiba` は、署名に加えて必須のクレームと `exp`・`nbf` を確かめる**（#653）。
+  2026/11/05 までは、署名が正しければクレームによらず `true` を返していた（「必須項目の不足」の分岐も `true`）。
+  **必須の範囲は仕様に合わせた。** `Verify` は `iss`・`aud`・`response_type`・`client_id`・`scope`（**`state`・`nonce` は必須にしない**。
+  `Create` も空なら入れない）で、`exp`・`nbf` は在れば確かめる。`VerifyCiba` は `aud`・`iss`・`exp`・`iat`・`nbf`・`jti`・`scope`
+  （CIBA Core 7.1.1・7.1）と、**ヒント（`login_hint_token`・`id_token_hint`・`login_hint`）がちょうど 1 つ**。
+  **`client_notification_token`・`binding_message` は必須にしない**（Ping・Push のときだけ必須／任意）。
+  **既存の版は `aud` の値を照合しない**（期待する値を受けないため）。
+  **欠けている・読めない・期限の過ぎたものは `false`**（例外にしない）。受け入れる範囲が狭まるので、利用側は E2E で確かめる
 - `AccessToken` は `typ`（`at+jwt`）を確認しない（RFC 9068 の形式には準拠していない）。
   JWS の層で照合するなら `JWS.Verify(jwt, typ)`（[`Public/Security/ANALYSIS.md`](../Public/Security/ANALYSIS.md) 4.1 節）
 

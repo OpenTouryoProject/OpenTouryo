@@ -38,6 +38,7 @@
 //*                                読み方を TryReadNumericDate にまとめ、無い・読めない値は例外にせず検証の失敗にした
 //*  2026/11/05  玄人 幸道         TryReadNumericDate：小数の double を 17 桁（G17）で読み（net48 の 15 桁の丸めを避ける）、
 //*                                long の範囲を超える値を読めないとした（#647 のレビューの指摘 1・2）
+//*  2026/11/05  玄人 幸道         nbf のクレームを確かめる VerifyNbfClaim を追加（RequestObject が使う。#653）
 //**********************************************************************************
 
 using System;
@@ -366,6 +367,18 @@ namespace Touryo.Infrastructure.Framework.Authentication
             decimal seconds;
             return CmnJwtToken.TryReadNumericDate(exp, true, out seconds)
                 && CmnJwtToken.IsNotExpired(seconds, unixTimeSeconds);
+        }
+
+        /// <summary>nbf のクレームを確かめる（トークンの検証の共通部分）</summary>
+        /// <param name="nbf">nbf のクレーム（JToken。無ければ null）</param>
+        /// <param name="unixTimeSeconds">いまの UNIX 時刻（秒）</param>
+        /// <returns>いまが nbf 以後なら true。無い・読めない値は false</returns>
+        /// <remarks>RequestObject の Verify・VerifyCiba が使う（#653）。読み方は VerifyExpClaim と同じ。</remarks>
+        internal static bool VerifyNbfClaim(JToken nbf, long unixTimeSeconds)
+        {
+            decimal seconds;
+            return CmnJwtToken.TryReadNumericDate(nbf, true, out seconds)
+                && CmnJwtToken.IsNotBefore(seconds, unixTimeSeconds);
         }
 
         /// <summary>いまが exp より前（または同じ秒）か</summary>
