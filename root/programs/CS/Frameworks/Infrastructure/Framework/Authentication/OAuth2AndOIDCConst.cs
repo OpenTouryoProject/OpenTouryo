@@ -37,6 +37,8 @@
 //*  2026/10/22  玄人 幸道         DPoP・DCR・Discoveryの区分をparamの外（PKCE / Device AuthZ / CIBAの並び）へ出し、
 //*                                WWW-Authenticateのパラメタを Authorization の外へ移した。preferred_usernameを追加。
 //*                                responseのsummaryの誤記を直した
+//*  2026/11/06  玄人 幸道         username・ログアウト（post_logout_redirect_uri・logout_token・sid・events）・
+//*                                token_endpoint_auth_method・tls_client_auth_subject_dn・invalid_request_object の定数を追加（#663）
 //**********************************************************************************
 
 // urnはClaimのurnで、
@@ -80,6 +82,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>scope</summary>
         public const string scope = "scope";
+
+        /// <summary>username（リソース オーナー パスワード クレデンシャルの要求。RFC 6749 4.3.2）</summary>
+        public const string username = "username";
 
         #region RequestObject & ResponseObject(JARM)
         /// <summary>request</summary>
@@ -462,6 +467,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// </summary>
         public const string auth_time = "auth_time";
 
+        /// <summary>sid（セッション ID。OIDC Front-Channel Logout 1.0 3・Back-Channel Logout 1.0 2.4）</summary>
+        public const string sid = "sid";
+
+        /// <summary>events（ログアウト トークンのイベント。OIDC Back-Channel Logout 1.0 2.4）</summary>
+        public const string events = "events";
+
         #endregion
 
         #region urn
@@ -673,6 +684,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>software_statement（RFC 7591 2.3）</summary>
         public const string software_statement = "software_statement";
+
+        /// <summary>token_endpoint_auth_method（RFC 7591 2）</summary>
+        public const string token_endpoint_auth_method = "token_endpoint_auth_method";
+
+        /// <summary>tls_client_auth_subject_dn（mTLS の PKI 方式で期待する証明書のサブジェクト DN。RFC 8705 2.1.2）</summary>
+        public const string tls_client_auth_subject_dn = "tls_client_auth_subject_dn";
         #endregion
 
         #region 登録の応答
@@ -688,6 +705,16 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>registration_access_token（登録を管理するトークン。RFC 7592 3）</summary>
         public const string registration_access_token = "registration_access_token";
         #endregion
+
+        #endregion
+
+        #region Logout
+
+        /// <summary>post_logout_redirect_uri（ログアウト後に戻す先。OIDC RP-Initiated Logout 1.0 2）</summary>
+        public const string post_logout_redirect_uri = "post_logout_redirect_uri";
+
+        /// <summary>logout_token（バックチャネルのログアウト要求。OIDC Back-Channel Logout 1.0 2.5）</summary>
+        public const string logout_token = "logout_token";
 
         #endregion
 
@@ -795,6 +822,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>account_selection_required（prompt=noneで、アカウントの選択が必要）</summary>
         public const string account_selection_required = "account_selection_required";
+        #endregion
+
+        #region RFC 9101（JAR）
+        /// <summary>invalid_request_object（request の Request Object が不正。RFC 9101 7）</summary>
+        public const string invalid_request_object = "invalid_request_object";
         #endregion
 
         #region CIBA Core
