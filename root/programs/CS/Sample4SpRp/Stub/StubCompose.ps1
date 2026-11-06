@@ -16,8 +16,14 @@
       **MPAS の場所と、スタブの準備（publish・証明書）を確かめてから動かすため。**
       **-Settings は絶対パスで渡す必要がある**（--env-file の相対パスは MPAS の container\Stub\ から見るため）。
 
+    ＜起動・停止は MPAS のバッチに任せる＞
+      **Up は container\Stub\2_DockerComposeUp.bat、Down は 3_DockerComposeDown.bat を呼ぶ**（MPAS#340）。
+      **Up では、publish の成果物が MPAS のソースより古ければ警告が出る**（起動は止めない）。
+      Config だけは、バッチが無いので docker compose を直接呼ぶ。
+      **-Settings は、環境変数 STUB_SETTINGS でバッチへ渡る**（バッチには、パラメタのファイルを渡さない）。
+
     ＜前提＞
-      **MPAS 側で、先に一度 container\Stub\1_PublishStub.ps1 を実行しておく**（publish と証明書）。
+      **MPAS 側で、先に一度 container\Stub\1_PublishStub.ps1 を実行しておく**（publish と証明書。**MPAS を更新したときも**）。
 
 .PARAMETER Action
     Up（起動。既定）/ Down（停止して消す）/ Config（設定の解決だけを見る。起動しない）
@@ -41,6 +47,7 @@
      ----------  ----------------  -------------------------------------------------
      2026/11/04  玄人 幸道         新規（#649）
      2026/11/04  玄人 幸道         既定は MPAS の設定のまま動かす（雛形のクライアントを使う）。-Settings を追加
+     2026/11/07  玄人 幸道         起動・停止を MPAS の 2_DockerComposeUp.bat・3_DockerComposeDown.bat に任せた（MPAS#340）
 #>
 [CmdletBinding()]
 param(
@@ -56,10 +63,17 @@ $ErrorActionPreference = 'Stop'
 
 $stubDir = Join-Path $MpasRoot 'container\Stub'
 $compose = Join-Path $stubDir 'docker-compose.yml'
+$upBat = Join-Path $stubDir '2_DockerComposeUp.bat'
+$downBat = Join-Path $stubDir '3_DockerComposeDown.bat'
 
 if (-not (Test-Path $compose))
 {
     throw "MPAS のスタブが見つかりません : $compose（-MpasRoot で場所を指定してください）"
+}
+
+if (($Action -ne 'Config') -and (-not (Test-Path $upBat) -or -not (Test-Path $downBat)))
+{
+    throw "MPAS のスタブの起動バッチが見つかりません : $stubDir（MPAS#340 より前の版です。MPAS を更新してください）"
 }
 
 if ($Action -eq 'Up')
@@ -87,14 +101,14 @@ else
 
 switch ($Action)
 {
-    'Up'     { docker compose -f $compose up -d --build }
-    'Down'   { docker compose -f $compose down }
+    'Up'     { & $upBat }
+    'Down'   { & $downBat }
     'Config' { docker compose -f $compose config }
 }
 
 if ($LASTEXITCODE -ne 0)
 {
-    throw "docker compose が失敗しました（終了コード $LASTEXITCODE）。"
+    throw "スタブの $Action が失敗しました（終了コード $LASTEXITCODE）。"
 }
 
 if ($Action -eq 'Up')

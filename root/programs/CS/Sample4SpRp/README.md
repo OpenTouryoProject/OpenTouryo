@@ -51,6 +51,8 @@ cd root\programs\CS\Sample4SpRp\Stub
 | テスト利用者 | `tanaka@example.com` / `super_tanaka@example.com`（パスワードは、スタブの土台の `appsettings.json` の `TestUserPWD`。既定は MPAS の手元の `MultiPurposeAuthSiteCore/appsettings.json`） |
 | クライアント | **MPAS の雛形に在るもの**（下の 3 節） |
 
+- **起動・停止は、MPAS の `container\Stub\2_DockerComposeUp.bat`・`3_DockerComposeDown.bat` に任せる**（MPAS#340）。
+  **publish の成果物が MPAS のソースより古ければ、起動のときに警告が出る**（起動は止めない）。出たら 1 をやり直す
 - **MPAS のスタブと同じプロジェクト名（`mpas-stub`）で動く。** MPAS 側でスタブを別の設定で動かしているなら、先に止める
 - **状態は残らない**（利用者・同意・セッションは、再起動で消える）
 - **スタブの土台は、MPAS の手元の `appsettings.json`**（`STUB_APPSETTINGS`。**無ければ起動しない**）。
