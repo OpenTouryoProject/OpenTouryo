@@ -21,7 +21,7 @@
     ＜前提（このスクリプトは起動しない）＞
       | 前提 | 確かめ方 |
       |---|---|
-      | MPAS のスタブ | **SpRp_MVC のクライアントを登録して起動する**（..\Stub\StubCompose.ps1 -Settings ..\Stub\SpRp_MVC.stub.json） |
+      | MPAS のスタブ | **SpRp_MVC のクライアントを登録して起動する**（..\Stub\StubCompose.ps1 -Settings ..\Stub\Sample4SpRp.stub.json） |
       | ビルド | CS\11_Build_SpRp_sample.bat（または DotNet\MVC\1_Build.bat） |
       | ポート 44336 | 空いている（SpRp_MVC は、IdP に登録した戻り先の URL で動かす） |
 
@@ -238,7 +238,7 @@ function Invoke-UntilCallback($client, $res, [string]$password)
         else
         {
             # ログイン画面でも同意画面でもない（エラー画面など。クライアントが登録されていないと、ここになる）
-            return @{ Error = "スタブのエラー画面（$(($res.Url -split '\?')[0])。SpRp_MVC.stub.json を -Settings で渡して起動したか）" }
+            return @{ Error = "スタブのエラー画面（$(($res.Url -split '\?')[0])。Sample4SpRp.stub.json を -Settings で渡して起動したか）" }
         }
     }
     return @{ Error = 'スタブの画面が終わらない' }
@@ -373,7 +373,7 @@ $lack = @()
 $probe = New-Browser
 $d = Send-Http $probe 'GET' "$stubBase/.well-known/openid-configuration" $null
 $probe.Dispose()
-if ($d.Status -ne 200) { $lack += "MPAS のスタブが応答しません（$stubBase。..\Stub\StubCompose.ps1 -Settings ..\Stub\SpRp_MVC.stub.json で起動する）" }
+if ($d.Status -ne 200) { $lack += "MPAS のスタブが応答しません（$stubBase。..\Stub\StubCompose.ps1 -Settings ..\Stub\Sample4SpRp.stub.json で起動する）" }
 
 if (-not (Test-Path $appDll)) { $lack += "ビルドされていません : $appDll（CS\11_Build_SpRp_sample.bat）" }
 

@@ -13,11 +13,20 @@
 
       **成功の判定**：終了コード 0、id_token を検証した旨の行、UserInfo を得た旨の行（SpRp_CLI : 「OK   UserInfo」、旧 : 「NORMAL_END」）。
 
+      **ブラウザを使わないグラント**（SpRp_CLI の cc・jwtbearer・ropc。#668）は、CLI を起動して終わるのを待つだけである。
+      **成功の判定**：終了コード 0、access_token を得た旨の行（ropc は、さらに id_token を検証し UserInfo を得た旨の行）。
+
       **対照（確かめる処理が効いているか）**：これが無いと、検証を省いた実装でも通ってしまう。
       | フロー | すること | 期待 |
       |---|---|---|
       | device | 承認せずに拒否（Deny）する | 終了コード 1、access_denied |
       | pkce   | 戻りの state を書き換えて届ける | 終了コード 1、state の不一致 |
+      | cc     | 秘密を書き換えた設定で動かす | 終了コード 1、invalid_client |
+      | jwtbearer | 別の鍵（SHA256RSA_Server.pfx）で署名させる | 終了コード 1、invalid_client |
+      | ropc   | 違うパスワードを入れる | 終了コード 1、access_denied |
+
+      **cc・jwtbearer の対照は、出力フォルダを -OutputDir に写し、設定ファイルだけを書き換えて動かす**（ビルドの成果物は変えない）。
+      **対照は正常の後に回す**（MPAS は、クライアント認証と利用者のパスワードの「連続した」失敗を数え、成功で消す。#305）。
 
     ＜CLI の起動のしかた＞
       **ブラウザを開かせない・対話をさせない**ために、サンプルのオプションを使う。
@@ -31,11 +40,13 @@
       | MPAS のスタブ | https://localhost:44310 の Discovery が 200（..\README.md の 2 節。StubCompose.ps1） |
       | ビルド | SpRp_CLI : CS\11_Build_SpRp_sample.bat、旧 : CS\5_Build_CLICore_sample.bat |
       | ポート 12345 | 空いている（pkce の戻り先。**どの CLI も同じポートを使うので、1 つずつ動かす**） |
+      | cc・jwtbearer・ropc | **スタブを -Settings ..\Stub\Sample4SpRp.stub.json で起動する**（SpRp_CLI_Batch のクライアントと、ROPC を開ける設定） |
 
       SQL Server は要らない。
+      **ropc の前に、スタブのログイン画面を一度開く**（MPAS は、アカウントの画面を初めて開いたときにテスト利用者を作る）。
 
 .PARAMETER Flow
-    device / pkce / Both（既定）
+    device / pkce / cc / jwtbearer / ropc / All（既定）。Both は All と同じ（以前の名前）
 
 .PARAMETER Only
     対象名の部分一致で絞る（複数可）
@@ -67,11 +78,12 @@
      日時        更新者            内容
      ----------  ----------------  -------------------------------------------------
      2026/11/05  玄人 幸道         新規（#649）
+     2026/11/07  玄人 幸道         SpRp_CLI の cc・jwtbearer・ropc を足した（#668）
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet('device', 'pkce', 'Both')]
-    [string] $Flow = 'Both',
+    [ValidateSet('device', 'pkce', 'cc', 'jwtbearer', 'ropc', 'All', 'Both')]
+    [string] $Flow = 'All',
 
     [string[]] $Only,
 
@@ -93,6 +105,11 @@ if ([Console]::OutputEncoding.CodePage -ne 65001)
     [Console]::OutputEncoding = New-Object Text.UTF8Encoding $false
 }
 
+# **CLI の標準入力に BOM を書かせない**（ropc のパスワード）。
+#   5.1（.NET Framework）は、子プロセスの標準入力を [Console]::InputEncoding で開き、**起動した時点で BOM を書く**。
+#   net10.0 の CLI は、それをパスワードの先頭の 1 文字として読む（net48 の CLI は読み飛ばす）。
+[Console]::InputEncoding = New-Object Text.UTF8Encoding $false
+
 # パスの既定値は param() に書かない（5.1 の -File で $PSScriptRoot が空になる。CODING.md 5 節）
 $here = Split-Path -Parent $PSCommandPath
 $progRoot = (Resolve-Path (Join-Path $here '..\..\..')).Path   # root\programs（E2E → Sample4SpRp → CS → programs）
@@ -110,6 +127,9 @@ $testUser = 'tanaka@example.com'
 # **pkce の戻り先**（MPAS の雛形の Device_Client の redirect_uri_code。各 CLI の SpRp_RedirectUri と同じ）
 $redirectUri = 'http://localhost:12345/'
 
+# **ropc の利用者は、利用者名**（ログイン画面で入れるメール アドレスではない）
+$ropcUser = 'tanaka'
+
 # ------------------------------------------------------------------
 # 対象
 # ------------------------------------------------------------------
@@ -126,9 +146,17 @@ $targets = @(
     @{ Name = 'SpRp_CLI (net10.0)';      Flow = 'pkce';   Exe = "$sprp\net10.0\SpRp_CLI.dll"; Args = 'pkce --no-browser' }
     @{ Name = 'DAG_Login_CLI (net10.0)'; Flow = 'device'; Exe = $dag;                          Args = 'login --yes' }
     @{ Name = 'LIR_Login_CLI (net10.0)'; Flow = 'pkce';   Exe = $lir;                          Args = 'login --no-browser' }
+    @{ Name = 'SpRp_CLI (net48)';        Flow = 'cc';        Exe = "$sprp\net48\SpRp_CLI.exe";   Args = 'cc' }
+    @{ Name = 'SpRp_CLI (net48)';        Flow = 'jwtbearer'; Exe = "$sprp\net48\SpRp_CLI.exe";   Args = 'jwtbearer' }
+    @{ Name = 'SpRp_CLI (net48)';        Flow = 'ropc';      Exe = "$sprp\net48\SpRp_CLI.exe";   Args = "ropc $ropcUser" }
+    @{ Name = 'SpRp_CLI (net10.0)';      Flow = 'cc';        Exe = "$sprp\net10.0\SpRp_CLI.dll"; Args = 'cc' }
+    @{ Name = 'SpRp_CLI (net10.0)';      Flow = 'jwtbearer'; Exe = "$sprp\net10.0\SpRp_CLI.dll"; Args = 'jwtbearer' }
+    @{ Name = 'SpRp_CLI (net10.0)';      Flow = 'ropc';      Exe = "$sprp\net10.0\SpRp_CLI.dll"; Args = "ropc $ropcUser" }
 )
 
-$targets = @($targets | Where-Object { $Flow -eq 'Both' -or $_.Flow -eq $Flow })
+$grants = @('cc', 'jwtbearer', 'ropc')
+
+$targets = @($targets | Where-Object { $Flow -eq 'All' -or $Flow -eq 'Both' -or $_.Flow -eq $Flow })
 if ($Only)
 {
     $targets = @($targets | Where-Object { $t = $_; @($Only | Where-Object { $t.Name -like "*$_*" }).Count -gt 0 })
@@ -250,31 +278,37 @@ function Invoke-IdpScreens($client, $res, [string]$password)
 # ------------------------------------------------------------------
 # **このコンソールを引き継がせる**（UseShellExecute = false・CreateNoWindow = false）。
 #   Start-Process -WindowStyle Hidden だと新しいコンソール（既定のコード ページ）になり、日本語が化ける。
-function Start-Cli($t)
+#   $exe   : 動かす実行ファイル（省けば $t.Exe。対照で、設定を書き換えた写しを動かすとき）
+#   $stdin : 標準入力に渡す 1 行（ropc のパスワード。省けば何も渡さない）
+function Start-Cli($t, [string]$exe = '', [string]$stdin = $null)
 {
+    if (-not $exe) { $exe = $t.Exe }
+
     $psi = New-Object System.Diagnostics.ProcessStartInfo
-    if ($t.Exe.EndsWith('.dll'))
+    if ($exe.EndsWith('.dll'))
     {
         $psi.FileName = 'dotnet'
-        $psi.Arguments = "`"$($t.Exe)`" $($t.Args)"
+        $psi.Arguments = "`"$exe`" $($t.Args)"
     }
     else
     {
-        $psi.FileName = $t.Exe
+        $psi.FileName = $exe
         $psi.Arguments = $t.Args
     }
     # **設定ファイルは実行ファイルの隣**（appsettings.json / SpRp_CLI.exe.config）
-    $psi.WorkingDirectory = Split-Path $t.Exe
+    $psi.WorkingDirectory = Split-Path $exe
     $psi.UseShellExecute = $false
     $psi.CreateNoWindow = $false
     $psi.RedirectStandardOutput = $true
     $psi.RedirectStandardError = $true
-    # **入力は与えない**（対話を求めたら、待たずに失敗させる）
+    # **入力は、渡すもの（ropc のパスワード）だけ**（対話を求めたら、待たずに失敗させる）。
+    #   **パスワードはコマンド ラインに書かない**（プロセスの一覧から見える）
     $psi.RedirectStandardInput = $true
     $psi.StandardOutputEncoding = New-Object Text.UTF8Encoding $false
     $psi.StandardErrorEncoding = New-Object Text.UTF8Encoding $false
 
     $proc = [System.Diagnostics.Process]::Start($psi)
+    if ($null -ne $stdin) { $proc.StandardInput.WriteLine($stdin) }
     $proc.StandardInput.Close()
 
     return @{
@@ -439,6 +473,89 @@ function Invoke-Pkce($cli, [string]$case, [string]$password)
     return Test-CliResult $cli $case 'state' 60
 }
 
+# ------------------------------------------------------------------
+# ブラウザを使わないグラント（cc・jwtbearer・ropc）
+# ------------------------------------------------------------------
+# **出力フォルダを写し、設定ファイルの値だけを書き換える**（対照用。ビルドの成果物は変えない）。
+#   net10.0 は appsettings.json、net48 は SpRp_CLI.exe.config。戻り値は、写しの実行ファイル。
+function Copy-PatchedCli($t, [hashtable]$values)
+{
+    $src = Split-Path $t.Exe
+    $safe = ("$($t.Name)_$($t.Flow)" -replace '[^A-Za-z0-9.]', '_')
+    $dst = Join-Path $OutputDir "cli_patched_$safe"
+
+    Remove-Item -Recurse -Force $dst -ErrorAction SilentlyContinue
+    Copy-Item -Recurse $src $dst
+
+    $config = if ($t.Exe.EndsWith('.dll')) { Join-Path $dst 'appsettings.json' } else { Join-Path $dst 'SpRp_CLI.exe.config' }
+    $text = [IO.File]::ReadAllText($config)
+
+    foreach ($k in $values.Keys)
+    {
+        $v = [string]$values[$k]
+        $pattern = if ($t.Exe.EndsWith('.dll')) { '("' + [regex]::Escape($k) + '"\s*:\s*")[^"]*(")' }
+                   else { '(key="' + [regex]::Escape($k) + '"\s+value=")[^"]*(")' }
+        if (-not [regex]::IsMatch($text, $pattern)) { throw "設定に $k がありません : $config" }
+        $text = [regex]::Replace($text, $pattern, { param($m) $m.Groups[1].Value + $v + $m.Groups[2].Value })
+    }
+
+    [IO.File]::WriteAllText($config, $text, (New-Object Text.UTF8Encoding $true))
+    return Join-Path $dst (Split-Path -Leaf $t.Exe)
+}
+
+# 1 件を通す。戻り値は、正常 / 対照の判定（Test-GrantResult）
+function Invoke-Grant($t, [string]$case, [string]$password, [hashtable]$wrongKey, [string]$log)
+{
+    $exe = ''
+    $stdin = $null
+
+    if ($t.Flow -eq 'ropc') { $stdin = $password }
+
+    if ($case -ne '正常')
+    {
+        switch ($t.Flow)
+        {
+            'cc'        { $exe = Copy-PatchedCli $t @{ SpRp_BatchClientSecret = 'wrong-secret-for-e2e' } }
+            'jwtbearer' { $exe = Copy-PatchedCli $t $wrongKey }
+            'ropc'      { $stdin = 'wrong-password-for-e2e' }
+        }
+    }
+
+    $cli = $null
+    try
+    {
+        $cli = Start-Cli $t $exe $stdin
+        return Test-GrantResult $cli $t.Flow $case 60
+    }
+    finally
+    {
+        Stop-Cli $cli $log
+    }
+}
+
+#   正常 : 終了コード 0、access_token を得た旨の行（ropc は、さらに id_token を検証し UserInfo を得た旨の行）
+#   対照 : 終了コード 1、invalid_client（cc・jwtbearer）/ access_denied（ropc）
+function Test-GrantResult($cli, [string]$flow, [string]$case, [int]$seconds)
+{
+    $code = Wait-CliExit $cli $seconds
+    if ($null -eq $code) { return "CLI が終わらない（$seconds 秒。$(Get-Tail $cli)）" }
+
+    $out = $cli.Lines -join "`n"
+
+    if ($case -eq '正常')
+    {
+        if ($code -ne 0) { return "終了コード $code（$(Get-Tail $cli)）" }
+        if ($out -notmatch 'OK   access_token を得ました') { return "access_token を得た旨の行が無い（$(Get-Tail $cli)）" }
+        if ($flow -eq 'ropc' -and $out -notmatch 'OK   id_token を検証し、UserInfo を得ました') { return "id_token・UserInfo の行が無い（$(Get-Tail $cli)）" }
+        return ''
+    }
+
+    $word = if ($flow -eq 'ropc') { 'access_denied' } else { 'invalid_client' }
+    if ($code -ne 1) { return "対照なのに終了コード $code（$(Get-Tail $cli)）" }
+    if ($out -notmatch [regex]::Escape($word)) { return "対照の理由（$word）が出ていない（$(Get-Tail $cli)）" }
+    return ''
+}
+
 # CLI の終わり方を判定する
 #   正常 : 終了コード 0、id_token を検証した旨の行、UserInfo を得た旨の行
 #   対照 : 終了コード 1、$controlWord を含む行（access_denied / state）
@@ -509,6 +626,34 @@ if (Test-Path $appSettings)
 }
 if (-not $password) { $lack += "テスト利用者のパスワードを読めません（$appSettings の TestUserPWD。-MpasRoot か -StubAppSettings で場所を指定する）" }
 
+#   **jwtbearer の対照は、別の鍵（スタブ自身の署名鍵 SHA256RSA_Server.pfx）で署名させる**。
+#   パスワードは、スタブの土台の appsettings.json の RsaPfxPassword（テスト用）。
+$wrongKey = $null
+if (-not $SkipControl -and @($targets | Where-Object { $_.Flow -eq 'jwtbearer' }).Count -gt 0)
+{
+    $m = if (Test-Path $appSettings) { [regex]::Match([IO.File]::ReadAllText($appSettings), '"RsaPfxPassword"\s*:\s*"([^"]*)"') } else { $null }
+    if ($m -and $m.Success)
+    {
+        $wrongKey = @{
+            SpRp_RsaPfxFilePath = 'C:/root/files/resource/X509/SHA256RSA_Server.pfx'
+            SpRp_RsaPfxPassword = $m.Groups[1].Value
+        }
+    }
+    else
+    {
+        $lack += "jwtbearer の対照の鍵のパスワードを読めません（$appSettings の RsaPfxPassword）"
+    }
+}
+
+#   **ropc は、テスト利用者が居ないと通らない**。MPAS は、アカウントの画面を初めて開いたときに作るので、ログイン画面を一度開く
+if (@($targets | Where-Object { $_.Flow -eq 'ropc' }).Count -gt 0 -and $d.Status -eq 200)
+{
+    $probe = New-Browser
+    $l = Send-Http $probe 'GET' "$stubBase/Account/Login" $null
+    $probe.Dispose()
+    if ($l.Status -ne 200) { $lack += "スタブのログイン画面が開けません（$($l.Status)。テスト利用者を作れない）" }
+}
+
 if ($targets.Count -eq 0) { $lack += '対象がありません（-Flow / -Only を確かめる）' }
 
 if ($lack.Count -gt 0)
@@ -517,6 +662,10 @@ if ($lack.Count -gt 0)
     exit 2
 }
 Write-Output '  OK  スタブ・ビルド・ポート 12345・テスト利用者'
+if (@($targets | Where-Object { $grants -contains $_.Flow }).Count -gt 0)
+{
+    Write-Output '      （cc・jwtbearer・ropc は、スタブを -Settings ..\Stub\Sample4SpRp.stub.json で起動していること）'
+}
 
 # ------------------------------------------------------------------
 # 実行（**1 件ずつ**。pkce はどれもポート 12345 で待ち受ける）
@@ -536,25 +685,57 @@ foreach ($t in $targets)
         $log = Join-Path $OutputDir "cli_$safe.log"
         $cli = $null
 
-        try
+        if ($grants -contains $t.Flow)
         {
-            $cli = Start-Cli $t
-            $ng = if ($t.Flow -eq 'device') { Invoke-Device $cli $case $password } else { Invoke-Pkce $cli $case $password }
+            # **ブラウザを使わないグラント**：CLI を動かして、終わるのを待つだけ（起動と後始末は Invoke-Grant）
+            try
+            {
+                $ng = Invoke-Grant $t $case $password $wrongKey $log
+            }
+            catch
+            {
+                $ng = $_.Exception.Message
+            }
         }
-        catch
+        else
         {
-            $ng = $_.Exception.Message
-        }
-        finally
-        {
-            Stop-Cli $cli $log
+            try
+            {
+                $cli = Start-Cli $t
+                $ng = if ($t.Flow -eq 'device') { Invoke-Device $cli $case $password } else { Invoke-Pkce $cli $case $password }
+            }
+            catch
+            {
+                $ng = $_.Exception.Message
+            }
+            finally
+            {
+                Stop-Cli $cli $log
+            }
         }
 
         $ok = [string]::IsNullOrEmpty($ng)
         $detail = if (-not $ok) { $ng }
-                  elseif ($case -eq '正常') { 'id_token を検証し、UserInfo を得た（終了コード 0）' }
-                  elseif ($t.Flow -eq 'device') { '拒否すると access_denied で終了コード 1' }
-                  else { 'state を書き換えると、不一致で終了コード 1' }
+                  elseif ($case -eq '正常')
+                  {
+                      switch ($t.Flow)
+                      {
+                          'cc'        { 'access_token を得た（終了コード 0）' }
+                          'jwtbearer' { 'access_token を得た（終了コード 0）' }
+                          default     { 'id_token を検証し、UserInfo を得た（終了コード 0）' }
+                      }
+                  }
+                  else
+                  {
+                      switch ($t.Flow)
+                      {
+                          'device'    { '拒否すると access_denied で終了コード 1' }
+                          'pkce'      { 'state を書き換えると、不一致で終了コード 1' }
+                          'cc'        { '秘密を書き換えると invalid_client で終了コード 1' }
+                          'jwtbearer' { '別の鍵で署名すると invalid_client で終了コード 1' }
+                          default     { '違うパスワードでは access_denied で終了コード 1' }
+                      }
+                  }
 
         $results += [pscustomobject]@{ 対象 = $t.Name; フロー = $t.Flow; ケース = $case; 結果 = $(if ($ok) { 'OK' } else { 'NG' }); 内容 = $detail }
         Write-Output ("  {0,-4}{1,-4}{2}" -f $(if ($ok) { 'OK' } else { 'NG' }), $case, $detail)

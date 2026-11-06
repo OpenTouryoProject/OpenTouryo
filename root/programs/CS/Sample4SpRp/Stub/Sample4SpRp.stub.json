@@ -1,0 +1,52 @@
+﻿{
+  // Sample4SpRp のサンプルが使う、雛形（_appsettings.json）に無いクライアントと設定を、MPAS のスタブに足す（#668）。
+  //   **StubCompose.ps1 -Settings .\Sample4SpRp.stub.json で渡す**（Sample4SpRp の README の 2 節・5 節）。
+  //   **雛形のクライアントは、そのまま残る**（入れ子はキーごとに足される）。**スタブに渡せる JSON は 1 つなので、ここに集める。**
+  //   書き方は、MPAS の container\Stub\appsettings.Stub.sample.json。**値はテスト専用。**
+  "appSettings": {
+    // ---- ROPC（RFC 6749 4.3）を開ける（雛形は閉じている）。SpRp_CLI の ropc が使う。
+    //   **ROPC は、OAuth 2.0 Security BCP（RFC 9700 2.4）で使ってはならないとされる。** MPAS の自己テストから移したので、スタブでだけ開ける。
+    "EnableResourceOwnerPasswordCredentialsGrantType": "true",
+
+    "OAuth2ClientsInformation": {
+
+      // ======== SpRp_MVC（DotNet/MVC。4.2 節） ========
+      // **client_mode = fapi1**：認可コードの引き換えに、PKCE S256 か private_key_jwt を求める（client_secret は通さない）。
+      //   **client_secret は、どちらにも登録しない**（どちらの経路も秘密を使わない）。
+      //   **2 つに分けるのは、private_key_jwt を登録したクライアントは、PKCE だけでは引き換えられないため**（コンフィデンシャル）。
+
+      // ---- SpRp_MVC（oauth2・oidc の flow。private_key_jwt）
+      "75d74cb5a4ae44e3afec154623f0cbb4": {
+        "client_mode": "fapi1",
+        "client_name": "SpRp_MVC",
+        "redirect_uri_code": "https://localhost:44336/Fapi1/Callback",
+        "redirect_uri_token": "-",
+        // **private_key_jwt は明示が要る**（MPAS は、鍵を登録しただけでは、その方法で通さない。MPAS#307）
+        "token_endpoint_auth_method": "private_key_jwt",
+        // private_key_jwt の検証鍵（SHA256RSA_Client.cer の JWK。雛形の FAPI1_Client と同じ公開鍵）
+        "jwk_rsa_publickey": "eyJrdHkiOiJSU0EiLCJhbGciOiJSUzI1NiIsIm4iOiJybUxucTNjaHNudThrMTFWX2FjSjlFQXhjSFU4dzZCNzRMbU5tMFdGVkVRV1htOXQ4bTZRU2ZkQlR6ZWotMXpFYmV6WllOWVNzSkZDZ283WW4tTjFXY0FEU01neTZYaFliVDhuYmJwUTc5VG1rSV91aVNVdktycnhSaVNtMklUOVJ3WjdWN2Z0VWVibUI5YmJDME9PRFpfVGJMMFpVaE1sV05xMG5BbjBwYnFlYloySmwxWHRMRFRxOVVyeWxBdWVSZ3V2ekU3Mno1Qlh3VTE4S08yeWp5dTRBSkpIOU9aLVNmUktHeVlwU3J3OEdqRFhMNm5ObnA1TU9mTk1veTF4VWVIa0xWXzJaVUgtMktYV3hCVnJQbVhFWDNWbXlwN2VWSWFrV2ZrazNpeG41c2ZDZkxyekZIRmpfMjFlX3RlT1ZRVGVYUUlRcUpxN0FaQ0d1NmlxUVEiLCJlIjoiQVFBQiIsImtpZCI6IkVzSF9xS281eWNLeVU2c2xuaEVZRkN2a2RhWXRWUXhjSmxvX1pac3VJQncifQ"
+      },
+
+      // ---- SpRp_MVC_PKCE（pkce の flow。秘密も鍵も持たない）
+      "9e53bded5e7d4ee4bc9e7e30f7a9f0a6": {
+        "client_mode": "fapi1",
+        "client_name": "SpRp_MVC_PKCE",
+        "redirect_uri_code": "https://localhost:44336/Fapi1/Callback",
+        "redirect_uri_token": "-"
+      },
+
+      // ======== SpRp_CLI の cc・jwtbearer・ropc（DotNet/CLI。4 節） ========
+      // **サーバで動くバッチを模したコンフィデンシャル クライアント**（秘密と鍵を、設定ファイルに持つ）。
+      //   client_mode は normal（client_credentials・JWT Bearer・ROPC は normal にだけ開いている）。
+      //   **token_endpoint_auth_method は書かない**（秘密ベースの 2 つを暗黙に許す。cc・ropc は client_secret_basic で送る）。
+      //   JWT Bearer（RFC 7523 2.1）の検証鍵は jwk_rsa_publickey（SHA256RSA_Client.cer の JWK）。
+      "b9582fe575bf4ba9984f3fc81147408c": {
+        "client_name": "SpRp_CLI_Batch",
+        "client_secret": "RLVKAIIrbMO9pRCPBbv899IZtJ87EajfVWR9AhfD5a4",
+        "redirect_uri_code": "-",
+        "redirect_uri_token": "-",
+        "jwk_rsa_publickey": "eyJrdHkiOiJSU0EiLCJhbGciOiJSUzI1NiIsIm4iOiJybUxucTNjaHNudThrMTFWX2FjSjlFQXhjSFU4dzZCNzRMbU5tMFdGVkVRV1htOXQ4bTZRU2ZkQlR6ZWotMXpFYmV6WllOWVNzSkZDZ283WW4tTjFXY0FEU01neTZYaFliVDhuYmJwUTc5VG1rSV91aVNVdktycnhSaVNtMklUOVJ3WjdWN2Z0VWVibUI5YmJDME9PRFpfVGJMMFpVaE1sV05xMG5BbjBwYnFlYloySmwxWHRMRFRxOVVyeWxBdWVSZ3V2ekU3Mno1Qlh3VTE4S08yeWp5dTRBSkpIOU9aLVNmUktHeVlwU3J3OEdqRFhMNm5ObnA1TU9mTk1veTF4VWVIa0xWXzJaVUgtMktYV3hCVnJQbVhFWDNWbXlwN2VWSWFrV2ZrazNpeG41c2ZDZkxyekZIRmpfMjFlX3RlT1ZRVGVYUUlRcUpxN0FaQ0d1NmlxUVEiLCJlIjoiQVFBQiIsImtpZCI6IkVzSF9xS281eWNLeVU2c2xuaEVZRkN2a2RhWXRWUXhjSmxvX1pac3VJQncifQ"
+      }
+    }
+  }
+}

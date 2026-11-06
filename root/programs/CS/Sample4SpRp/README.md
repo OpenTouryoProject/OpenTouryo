@@ -12,6 +12,7 @@
 | 系統 | アプリ | フロー | 状態 | 場所 |
 |---|---|---|---|---|
 | net | **EXE（CLI）** | **Device**・**PKCE** | **済** | [`DotNet/CLI/`](DotNet/CLI/) |
+| net | **EXE（CLI。サーバで動くバッチを模す）** | **Client Credentials**・**JWT Bearer**・**ROPC**（非推奨） | **済**（#668。MPAS の自己テストから移した。4 節） | 同上 |
 | net | EXE（CLI） | SAML2・AuthZCode・AuthNCode | 未（CLI には向かない。下記） | — |
 | net | EXE（CLI、旧サンプル・net10.0 のみ） | Device・PKCE（LIR） | **済**（スタブに合わせた。4 節） | `Samples4NetCore/Legacy/CLI_sample/` |
 | net | MVC | SAML2・AuthZCode・AuthNCode・PKCE・Device | **一部**：既存の `MVC_Sample`（C#・VB の net48、C# の net10.0）の外部ログイン（OIDC・SAML2）をスタブで通す（2.1 節）。専用のサンプルは未 | `Samples/`・`Samples4NetCore/` の `MVC_Sample` |
@@ -23,6 +24,9 @@
 > **CLI に SAML2・AuthZCode・AuthNCode を載せていないのは、秘密を守れないからである。**
 > 認可コードを秘密（`client_secret`）で引き換えるのはコンフィデンシャル クライアント（サーバ側のアプリ）で、
 > **CLI のようなネイティブ アプリは PKCE を使う**（RFC 8252 §8.4・§8.5）。SAML2 の SP もサーバ側に置くものである。
+>
+> **CLI の `cc`・`jwtbearer`・`ropc` だけは、秘密と鍵を設定ファイルに持つ**（コンフィデンシャル クライアント）。
+> **利用者の端末に配る CLI ではなく、サーバで動くバッチを模したもの**である（4 節）。
 
 ## 2. IdP（MPAS スタブ）を動かす
 
@@ -92,12 +96,16 @@ cd root\programs\CS\Sample4SpRp\E2E
 
 **CLI のサンプル（`SpRp_CLI` と、旧サンプルの `DAG_Login_CLI`・`LIR_Login_CLI`）のログインを、スタブで通す。**
 CLI を起動し、表示された URL を、ブラウザの代わりに HTTP で辿る。
+**ブラウザを使わないグラント（`cc`・`jwtbearer`・`ropc`。#668）は、CLI を起動して終わるのを待つだけ**である。
 
 ```powershell
 cd root\programs\CS\Sample4SpRp\E2E
-.\CliLoginE2E.ps1                                   # 6 対象 × 正常・対照（12 件）
-.\CliLoginE2E.ps1 -Flow pkce -Only "net48"          # 絞る（-SkipControl で対照を省く）
+.\CliLoginE2E.ps1                                   # 12 対象 × 正常・対照（24 件）
+.\CliLoginE2E.ps1 -Flow pkce -Only "net48"          # 絞る（-Flow は device / pkce / cc / jwtbearer / ropc / All。-SkipControl で対照を省く）
 ```
+
+**`cc`・`jwtbearer`・`ropc` は、スタブを `-Settings .\Sample4SpRp.stub.json` で起動しておく**（クライアント `SpRp_CLI_Batch` と、ROPC を開ける設定）。
+`device`・`pkce` は、どちらの起動でも通る。
 
 | 対象 | フロー | 起動のしかた |
 |---|---|---|
@@ -105,6 +113,9 @@ cd root\programs\CS\Sample4SpRp\E2E
 | `SpRp_CLI (net48)`・`SpRp_CLI (net10.0)` | `pkce` | `pkce --no-browser` |
 | `DAG_Login_CLI (net10.0)` | `device` | `login --yes` |
 | `LIR_Login_CLI (net10.0)` | `pkce` | `login --no-browser` |
+| `SpRp_CLI (net48)`・`SpRp_CLI (net10.0)` | `cc` | `cc` |
+| `SpRp_CLI (net48)`・`SpRp_CLI (net10.0)` | `jwtbearer` | `jwtbearer` |
+| `SpRp_CLI (net48)`・`SpRp_CLI (net10.0)` | `ropc` | `ropc tanaka`（パスワードは標準入力） |
 
 **1 件で確かめること**
 
@@ -112,8 +123,17 @@ cd root\programs\CS\Sample4SpRp\E2E
 |---|---|---|---|
 | `device` | 表示された `verification_uri_complete` を開き、ログインして承認する | 終了コード 0、id_token の検証と UserInfo の行 | **拒否（Deny）する** → 終了コード 1、`access_denied` |
 | `pkce` | 表示された認可要求の URL を開き、ログイン・同意する。**戻り（`http://localhost:12345/?code=…`）を、E2E が CLI の待ち受けへ届ける** | 同上 | **戻りの `state` を書き換える** → 終了コード 1、state の不一致 |
+| `cc` | （辿らない） | 終了コード 0、access_token の行 | **秘密を書き換えた設定で動かす** → 終了コード 1、`invalid_client` |
+| `jwtbearer` | （辿らない） | 同上 | **別の鍵（`SHA256RSA_Server.pfx`）で署名させる** → 終了コード 1、`invalid_client` |
+| `ropc` | （辿らない） | 終了コード 0、access_token の行、id_token の検証と UserInfo の行 | **違うパスワードを入れる** → 終了コード 1、`access_denied` |
 
 - **対照が要るのは、確かめる処理を省いた実装でも、正常の側は通ってしまうため**
+- **`cc`・`jwtbearer` の対照は、出力フォルダを `-OutputDir` に写し、設定ファイルだけを書き換えて動かす**（ビルドの成果物は変えない）。
+  `jwtbearer` の別の鍵のパスワードは、スタブの土台の `appsettings.json` の `RsaPfxPassword`
+- **対照は正常の後に回す。** MPAS は、クライアント認証と利用者のパスワードの**連続した**失敗を数え、5 回で断る（成功で消える。MPAS#305）
+- **`ropc` の前に、スタブのログイン画面を一度開く。** MPAS は、アカウントの画面を初めて開いたときにテスト利用者を作るので、
+  **スタブを起動した直後は、利用者が居ない**（`access_denied` になる）
+- **CLI の標準入力に BOM を書かせない**（Windows PowerShell 5.1 は、子プロセスの標準入力に BOM を書くことがある。`[Console]::InputEncoding` を BOM 無しにしている）
 - **ブラウザを開かせない・対話をさせない**ために、サンプルのオプション（`--no-browser`・`--yes`）を使う（4 節）
 - **前提（起動はしない）** : スタブ、ビルド（`CS\11_Build_SpRp_sample.bat`・`CS\5_Build_CLICore_sample.bat`）、
   **ポート 12345 が空いている**（どの CLI も同じ戻り先で待ち受けるので、**1 件ずつ動かす**）。SQL Server は要らない。
@@ -127,7 +147,7 @@ cd root\programs\CS\Sample4SpRp\E2E
 
 ```powershell
 cd root\programs\CS\Sample4SpRp\Stub
-.\StubCompose.ps1 -Settings .\SpRp_MVC.stub.json   # SpRp_MVC のクライアントを足して起動（雛形のクライアントも残る）
+.\StubCompose.ps1 -Settings .\Sample4SpRp.stub.json   # 雛形に無いクライアント（SpRp_MVC ほか）を足して起動（雛形のクライアントも残る）
 
 cd ..\E2E
 .\MvcFapi1E2E.ps1                                  # 5 つのフロー × 正常・対照（11 件）
@@ -144,7 +164,7 @@ cd ..\E2E
 
 - **戻り（スタブ → アプリ）のリダイレクトの手前で止め、URL を書き換えてからアプリへ届ける**
 - **対照は、NG になり、しかも狙った確認（理由の文言）で落ちたことを見る**（別の理由で落ちたのなら、狙いは確かめられていない）
-- **前提（起動はしない）** : スタブ（`-Settings .\SpRp_MVC.stub.json`）、ビルド（`CS\11_Build_SpRp_sample.bat`）、**ポート 44336 が空いている**。
+- **前提（起動はしない）** : スタブ（`-Settings .\Sample4SpRp.stub.json`）、ビルド（`CS\11_Build_SpRp_sample.bat`）、**ポート 44336 が空いている**。
   SQL Server は要らない。**足りなければ終了コード 2**（0 = すべて OK、1 = NG あり）
 - **スタブを `-Settings` 無しで起動していると、`SpRp_MVC` のクライアントが無いので「スタブのエラー画面」で NG**。
   2.1・2.2 の E2E は、どちらの起動でも通る（雛形のクライアントは残る）
@@ -161,8 +181,12 @@ cd ..\E2E
 | CLI（`DotNet/CLI`） | `Device_Client`（`client_mode` = `device`。秘密なし。旧 `TestClient3`） | `ae5a179813234ca290c8de93ef2e31dc` | `http://localhost:12345/` |
 | SPA（`SPA/SpRp_React`・`SPA/SpRp_Blazor`） | `SPA_Application`（**秘密を外して使う**。4.1 節） | `f374a155909d486a9234693c34e94479` | `http://localhost:5173/RedirectEndpoint` |
 | WS クライアントの外部ログイン（`Samples/WS_sample/WSClient_sample/WSClientWin_sample`・`WSClientWinCone_sample`、VB・.NET 10 版の `WSClientWin_sample`） | 同上（LIR で使う） | 同上 | 同上 |
-| MVC（`DotNet/MVC`）の `oauth2`・`oidc` | **雛形に無い**：`SpRp_MVC`（[`Stub/SpRp_MVC.stub.json`](Stub/SpRp_MVC.stub.json)。`fapi1`、`private_key_jwt`） | `75d74cb5a4ae44e3afec154623f0cbb4` | `https://localhost:44336/Fapi1/Callback` |
+| MVC（`DotNet/MVC`）の `oauth2`・`oidc` | **雛形に無い**：`SpRp_MVC`（[`Stub/Sample4SpRp.stub.json`](Stub/Sample4SpRp.stub.json)。`fapi1`、`private_key_jwt`） | `75d74cb5a4ae44e3afec154623f0cbb4` | `https://localhost:44336/Fapi1/Callback` |
 | MVC（`DotNet/MVC`）の `pkce` | **雛形に無い**：`SpRp_MVC_PKCE`（同上。`fapi1`、秘密なし） | `9e53bded5e7d4ee4bc9e7e30f7a9f0a6` | 同上 |
+| CLI（`DotNet/CLI`）の `cc`・`jwtbearer`・`ropc` | **雛形に無い**：`SpRp_CLI_Batch`（同上。normal、秘密と `jwk_rsa_publickey`） | `b9582fe575bf4ba9984f3fc81147408c` | （使わない） |
+
+**`Stub/Sample4SpRp.stub.json` は、雛形に無いクライアントと設定を 1 つに集めたもの**（スタブに渡せる JSON は 1 つ）。
+**ROPC も、ここで開けている**（雛形は `EnableResourceOwnerPasswordCredentialsGrantType` = false）。
 
 **雛形には、ほかのフェーズで使えそうなものも在る**（`MVC_Sample`・`WebForms_Sample`・`SPA_Application`・`Native_Application`・
 `IdFederation`（SAML2））。**どれを使うかは、そのフェーズで決める。**
@@ -199,12 +223,25 @@ dotnet .\SpRp_CLI\bin\Debug\net10.0\SpRp_CLI.dll pkce   # net10.0
 | `1_Build.bat` | 基盤の DLL が在るかを見てから、`dotnet build`（net48 と net10.0） |
 | `2_Device.bat [net48\|net10.0]` | `device` を実行する（既定 net10.0） |
 | `3_Pkce.bat [net48\|net10.0]` | `pkce` を実行する（既定 net10.0） |
-| `z_Run.bat <device\|pkce> [net48\|net10.0]` | 2・3 が呼ぶ共通部分（`pause` しない。**終了コードは `SpRp_CLI` と同じ**） |
+| `4_ClientCredentials.bat [net48\|net10.0]` | `cc` を実行する（既定 net10.0） |
+| `5_JwtBearer.bat [net48\|net10.0]` | `jwtbearer` を実行する（既定 net10.0） |
+| `6_Ropc.bat [利用者名] [net48\|net10.0]` | `ropc` を実行する（既定 `tanaka`・net10.0。パスワードは表示せずに読む） |
+| `z_Run.bat <device\|pkce\|cc\|jwtbearer\|ropc> [net48\|net10.0] [利用者名]` | 2〜6 が呼ぶ共通部分（`pause` しない。**終了コードは `SpRp_CLI` と同じ**） |
 
 | サブコマンド | フロー | 何が起きるか |
 |---|---|---|
 | `device` | Device Authorization Grant（RFC 8628） | URL とコードを表示する。**別のブラウザで開いてコードを入れ、承認する**と、端末が UserInfo を表示する |
 | `pkce` | 認可コード ＋ PKCE（RFC 7636）、ループバック（RFC 8252 §7.3） | **既定のブラウザが開く。** ログインして承認すると、`http://localhost:12345/` で応答を受け、UserInfo を表示する |
+| `cc` | Client Credentials（RFC 6749 §4.4） | `client_secret`（Basic）で access_token を得る |
+| `jwtbearer` | JWT Bearer（RFC 7523 §2.1） | **クライアントの鍵（`SpRp_RsaPfxFilePath`）で署名したアサーション**で access_token を得る（`iss`・`sub` は client_id、`aud` はトークン エンドポイント、有効期間 1 分） |
+| `ropc <利用者名>` | Resource Owner Password Credentials（RFC 6749 §4.3）。**非推奨**（RFC 9700 §2.4） | **パスワードを標準入力から読み**（端末なら表示しない）、`client_secret`（Basic）と一緒に送る。id_token を検証し、UserInfo を表示する |
+
+**`cc`・`jwtbearer`・`ropc` は、サーバで動くバッチを模したコンフィデンシャル クライアント**（`SpRp_BatchClientID`。秘密 `SpRp_BatchClientSecret` と鍵を設定ファイルに持つ）。
+**利用者の端末に配る CLI に、この形を使ってはならない**（秘密を守れない）。**スタブは `-Settings ..\..\Stub\Sample4SpRp.stub.json` で起動する**（2.2 節）。
+- **`ropc` の利用者名は、MPAS のログイン画面で入れるメール アドレスではない**（テスト利用者は `tanaka`）。
+  **パスワードは、コマンド ラインに書かない**（プロセスの一覧から見える）。**先頭の BOM は読み飛ばす**（Windows PowerShell 5.1 から流し込むと付くことがある）
+- **`ropc` は、スタブを起動した直後には通らない**（テスト利用者は、スタブのアカウントの画面を初めて開いたときに作られる。ログイン画面を一度開く）
+- **ROPC は新しく使わない。** MPAS の自己テストから移したもので、**利用者がパスワードをクライアントに渡す**形である。`device` か `pkce` にする
 
 **`pkce --no-browser` なら、ブラウザを開かない**（認可要求の URL を表示するだけ。手で、または別の端末で開く）。E2E（2.2 節）はこれを使う。
 
@@ -218,10 +255,12 @@ dotnet .\SpRp_CLI\bin\Debug\net10.0\SpRp_CLI.dll pkce   # net10.0
 | `device` | **ポーリングの間隔は IdP の指示に従う**（`interval`、`slow_down` で 5 秒延ばす。§3.5）。`expires_in` を過ぎたらやめる。id_token が来れば、署名・`iss`・`aud`・`exp` を見る（nonce は無い） |
 | 共通 | **UserInfo のエラー（`insufficient_scope` など）を失敗にする**（エラーも JSON で返るので、表示するだけでは成功と区別できない） |
 | `pkce` | `state`、応答の `iss`（在れば。RFC 9207）、**id_token の署名・`iss`・`aud`・`exp`・`at_hash`・`c_hash`・`nonce`** |
+| `cc`・`jwtbearer` | トークン応答の `error` を失敗にする。`access_token` が在るか（**トークンそのものは表示しない**） |
+| `ropc` | 同上。**id_token の署名・`iss`・`aud`・`exp`・`at_hash`**、**UserInfo の `sub` が id_token と同じか**（OpenID Connect Core 1.0 §5.3.2） |
 
 - **id_token の鍵は、ヘッダの `kid` で `jwks_uri` から引く**（`RemoteJwkSetStore.GetJwkByDiscoveryAsync`）。
   **`alg` は非対称のもの（`JwsFactory.SupportedAlgs`）に限る**（`none`・HS* を受けない）
-- **パブリック クライアントとして振る舞う**（秘密は持たず、送らない）。`Device_Client` は秘密を登録しておらず、
+- **`device`・`pkce` は、パブリック クライアントとして振る舞う**（秘密は持たず、送らない）。`Device_Client` は秘密を登録しておらず、
   `token_endpoint_auth_method` も書いていないので、MPAS は **PKCE だけでの引き換え**と、**client_id だけの Device AuthZ** を受ける
 - **旧サンプル（`DAG_Login_CLI`・`LIR_Login_CLI`）と、同じクライアント・同じ戻り先を使う。** 同時には動かさないこと（ポート 12345 を取り合う）
 - **デバイス認可要求には `scope`（`SpRp_Scope`）を付ける**（`DeviceAuthZRequestAsync` の `scope` を受ける版。#650）。
@@ -288,7 +327,7 @@ cd root\programs\CS\Sample4SpRp\DotNet\MVC
 .\2_Run.bat          # https://localhost:44336 で待ち受ける。ブラウザで開き、フローを選ぶ
 ```
 
-**前提** : 基盤のビルド（`Build_netcore100`）、**スタブを `-Settings ..\..\Stub\SpRp_MVC.stub.json` で起動する**（2.3 節）。
+**前提** : 基盤のビルド（`Build_netcore100`）、**スタブを `-Settings ..\..\Stub\Sample4SpRp.stub.json` で起動する**（2.3 節）。
 **待ち受けの URL は `appsettings.json` の `Kestrel` の節**（戻り先は登録と 1 文字も違ってはならないので、`launchSettings.json` に頼らない）。
 
 | flow | client_id（設定のキー） | トークン要求のクライアント認証 |
@@ -345,8 +384,8 @@ cd root\programs\CS\Sample4SpRp\DotNet\MVC
   **SpRp のサンプルを足したら、このバッチに足す**（net48 と net10.0 の両方。`SpRp_MVC` は、いまは net10.0 だけ）
 - **単体テスト（`2_RunAllTests.ps1`）・疎通テスト（`3_SmokeTest.ps1`）・CI には載っていない。**
   外部の IdP（スタブ）が要るため。**WebApp のサンプルの外部ログインは `E2E/ExternalLoginE2E.ps1` で確かめる**（2.1 節。
-  スタブと SQL Server の起動が要るので、**施主に確かめてから回す**）。**CLI は `E2E/CliLoginE2E.ps1` で確かめる**（2.2 節。スタブだけが要る）。
-  **MVC（FAPI 1.0）は `E2E/MvcFapi1E2E.ps1` で確かめる**（2.3 節。スタブを `-Settings .\SpRp_MVC.stub.json` で起動する）
+  スタブと SQL Server の起動が要るので、**施主に確かめてから回す**）。**CLI は `E2E/CliLoginE2E.ps1` で確かめる**（2.2 節。スタブだけが要る。`cc`・`jwtbearer`・`ropc` は `-Settings .\Sample4SpRp.stub.json` で起動したスタブ）。
+  **MVC（FAPI 1.0）は `E2E/MvcFapi1E2E.ps1` で確かめる**（2.3 節。スタブを `-Settings .\Sample4SpRp.stub.json` で起動する）
 - **`SelectTargets.ps1` は、ここを変えると「バッチ : 11_Build_SpRp_sample.bat ＋ 手で確かめる（SpRp）」に分ける**
   （ビルドだけを回し、通しにはしない）。**手で確かめるものが残るので、検証の記録は進まない**（確かめたら `-Record`）
 - **スタブは MPAS の net10.0 版**である。net48 版の MPAS に固有の振る舞いは再現しない

@@ -4,7 +4,7 @@ rem       Japanese explanations are in ..\..\README.md (section 4.2).
 rem
 rem Runs SpRp_MVC on https://localhost:44336 (#668). Open it in a browser and pick a flow.
 rem The URL comes from appsettings.json (Kestrel section), and must match the redirect_uri
-rem registered in ..\..\Stub\SpRp_MVC.stub.json.
+rem registered in ..\..\Stub\Sample4SpRp.stub.json.
 rem Usage: 2_Run.bat   (Ctrl+C to stop)
 
 setlocal
