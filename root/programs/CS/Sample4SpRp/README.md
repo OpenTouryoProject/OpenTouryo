@@ -137,7 +137,7 @@ cd root\programs\CS\Sample4SpRp\E2E
 
 | サンプル側のキー | 意味 | IdP 側（雛形） |
 |---|---|---|
-| `SpRp_Isser` | 期待する issuer | （スタブの `STUB_ISSUER`） |
+| `SpRp_Issuer` | 期待する issuer | （スタブの `STUB_ISSUER`） |
 | `SpRp_DiscoveryUri` | Discovery の URL。**エンドポイントと `jwks_uri` はここから引く** | — |
 | `OAuth2AndOidcClientID` | client_id | `OAuth2ClientsInformation` のキー |
 | `SpRp_RedirectUri` | 戻り先 | `redirect_uri_code` |
@@ -180,7 +180,7 @@ dotnet .\SpRp_CLI\bin\Debug\net10.0\SpRp_CLI.dll pkce   # net10.0
 
 | フロー | 確かめること |
 |---|---|
-| 共通 | **Discovery の `issuer` が `SpRp_Isser` と一致するか**（OpenID Connect Discovery 1.0 §4.3） |
+| 共通 | **Discovery の `issuer` が `SpRp_Issuer` と一致するか**（OpenID Connect Discovery 1.0 §4.3） |
 | `device` | **ポーリングの間隔は IdP の指示に従う**（`interval`、`slow_down` で 5 秒延ばす。§3.5）。`expires_in` を過ぎたらやめる。id_token が来れば、署名・`iss`・`aud`・`exp` を見る（nonce は無い） |
 | 共通 | **UserInfo のエラー（`insufficient_scope` など）を失敗にする**（エラーも JSON で返るので、表示するだけでは成功と区別できない） |
 | `pkce` | `state`、応答の `iss`（在れば。RFC 9207）、**id_token の署名・`iss`・`aud`・`exp`・`at_hash`・`c_hash`・`nonce`** |

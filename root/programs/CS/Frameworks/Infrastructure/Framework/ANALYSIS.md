@@ -195,7 +195,7 @@ UOC は `UOC_PreQuery` / `UOC_AfterQuery(sql)` / `UOC_AfterQuery(sql, ex)`。
 - **CIBA の Token 要求で `private_key_jwt` / `client_secret_jwt` / `tls_client_auth` を使うなら、`client_assertion` を受ける `GetAccessTokenByCibaAsync` を使う。**
   受けない既存の版は Basic / post だけで、それ以外は従来どおり `ArgumentException`
 - `OAuth2AndOIDCConst` / `OAuth2AndOIDCEnum` / `OAuth2AndOIDCParams` / `CmnClientParams` / `CmnServerParams`（#634）
-- `JwkSetStore` … JWK Set のキャッシュ（**設定の `JwkSetUri` 1 本**＝自分の認可サーバ）
+- `JwkSetStore` … JWK Set のキャッシュ（**設定の `SpRp_JwkSetUri` 1 本**＝この配備が信頼する認可サーバ。改名前の `JwkSetUri` は読まない。#666）
 
 **#634 で、汎用認証サイト（MPAS）から次を移した**（どれも追加で、既存のシグネチャは変えていない）。
 
@@ -248,23 +248,55 @@ DCR の口の認可、クライアント登録の持ち方。
   **小数の `iat` は受ける**（RFC 7519 2 の NumericDate。#647。2026/11/05 までは整数でなければ断っていた）
 - `SendWithDPoPAsync` の `DPoP-Nonce` の記憶は `static`（オリジンごと）で、プロセス全体に効く
 
-**`CmnClientParams`（`SpRp_*`）と `JwkSetUri` は、クライアント役が読む設定である**（#602）。
+**`CmnClientParams`（`SpRp_*`）と `SpRp_JwkSetUri` は、クライアント役が読む設定である**（#602）。
 
 | キー | フレームワークでの意味 |
 |---|---|
-| `SpRp_Isser` / `SpRp_*Uri` / `SpRp_*CerFilePath` / `JwkSetUri` | **相手（OP / IdP）の値**（Issuer・エンドポイント・検証用の公開鍵・JWK Set の URL） |
+| `SpRp_Issuer` / `SpRp_*Uri` / `SpRp_*CerFilePath` / `SpRp_JwkSetUri` | **相手（OP / IdP）の値**（Issuer・エンドポイント・検証用の公開鍵・JWK Set の URL） |
 | `SpRp_DiscoveryUri` / `SpRp_Saml2MetadataUri` / `SpRp_Saml2EntityId` | **相手（OP / IdP）の値**（Discovery・SAML2 メタデータの所在、期待する entityID）。#634 で追加 |
 | `SpRp_Saml2AcsUri` | **自分の ACS の URL**（SAML2 の Audience / Recipient に照合する。空なら照合しない）。#634 で追加 |
 | `SpRp_*PfxFilePath` / `SpRp_*PfxPassword` | **クライアント自身の鍵**（要求の署名・JWE の復号） |
 | `JwkSetFilePath` | **認可サーバ自身の JWK Set**（`CmnJwtToken.Verify` の分岐にも使われる） |
+
+**改名した設定キーがある**（#666）。プロパティ名（`CmnClientParams.Isser`・`OAuth2AndOIDCParams.JwkSetUri`・`RequestObjectRegUri`・`AuthRequestPushUri`）は変えていない。
+
+| 新しい名前 | 改名前の名前 | 改名前の名前を | 理由 |
+|---|---|---|---|
+| `SpRp_Issuer` | `SpRp_Isser` | **読み続ける**（期限は決めていない。表は `CmnClientParams.RenamedKeys`） | 綴りの誤り（2017 年の `OAuth2AndOidcIsser` からの名前） |
+| `SpRp_JwkSetUri` | `JwkSetUri` | **読まない** | 相手（OP）の値なので、ほかの相手の値（`SpRp_*`）に揃えた |
+| `SpRp_RequestObjectRegUri` | `RequestObjectRegUri` | **読まない** | 同上（Request Object を預ける口の URL。フレームワークは読まない） |
+| `SpRp_AuthRequestPushUri` | `AuthRequestPushUri` | **読まない** | 同上（PAR の口の URL。フレームワークは読まない） |
+
+**URL の 3 つは、改名前の名前を読まない。** 改名前の名前は、汎用認証サイトが**認可サーバ自身の口のパス**として使っている。
+汎用認証サイトには、自分に送る自己テストのクライアントがあり、**1 つの環境にサーバとクライアントが共存しうる。**
+読み替えると、クライアント役の値にサーバのパスが黙って入り、下の警告の関数も誤って検出する。
+
+- **改名前の名前（`JwkSetUri` など）をクライアント役の値として書いていた配備は、新しい名前に書き換える。** 書き換えないと値は空になる
+  （`JwkSetStore` は空の JWK Set を持ち、`kid` での検証は鍵が無く失敗する。通してしまう側には倒れない）
+- **サーバの値は、アプリの設定で読む**（汎用認証サイトは `Config`。OpenTouryoProject/MultiPurposeAuthSite#339）
+- **自己テスト**（同じ環境で、自分に送るクライアント）は例外として、サーバの値をそのまま使ってよい
+- **本物のクライアント**（サンプルなど、別の配備で動くもの）は、`SpRp_*` の値を使う
+
+`SpRp_Issuer` の読み方：
+
+- **新しい名前を優先する。** 新しい名前が空（null・空文字）のときだけ、改名前の名前を読む
+- **警告はフレームワークでは出さない。** アプリが起動時に次を呼び、ログに出す（汎用認証サイトの `Config.OldKeysStillUsed` と同じ分担）。どちらも名前だけを返し、値は返さない
+
+  | 関数 | 返すもの |
+  |---|---|
+  | `CmnClientParams.OldKeysStillUsed()` | 改名前の名前だけが設定されているもの（動くが、書き換えを促す） |
+  | `CmnClientParams.RenamedKeysInConflict()` | 新旧の両方に違う値があるもの（**使われるのは新しい名前の値**。書き間違いか、移行の途中） |
+
+- **環境変数で上書きしている配備は、変数の名前も合わせる**（CONFIGURATION.md 4 節）。設定ファイルだけを新しい名前にすると、改名前の名前の環境変数は読まれなくなる（`RenamedKeysInConflict` に出る）
+- Golden の設定（`Tests/Golden/TestCode`）は、改名前の名前のまま残している（改名前の名前を読めることの確かめを兼ねる）
 
 **#634 の部品は、相手の値を引数で受ける版が基本である。** 設定を読む版（引数の少ない版）は、**相手が 1 つの配備**のための便宜で、
 次の表のキーを読む。**キーが空なら何もせずに null（検証は `NoKey`）を返す**（通信もしない）。相手が複数なら、引数で受ける版を使う。
 
 | 設定を読む版 | 読むキー |
 |---|---|
-| `RemoteJwkSetStore.GetJwkAsync(kid)` | `JwkSetUri` |
-| `RemoteJwkSetStore.GetJwkByDiscoveryAsync(kid)` | `SpRp_DiscoveryUri`・`SpRp_Isser` |
+| `RemoteJwkSetStore.GetJwkAsync(kid)` | `SpRp_JwkSetUri` |
+| `RemoteJwkSetStore.GetJwkByDiscoveryAsync(kid)` | `SpRp_DiscoveryUri`・`SpRp_Issuer` |
 | `SAML2Metadata.GetAsync()` | `SpRp_Saml2MetadataUri`・`SpRp_Saml2EntityId` |
 | `SAML2Client.VerifyResponseWithReason(queryString, samlResponse, expectedInResponseTo, relayState, expectedRelayState)` | `SpRp_RsaCerFilePath`・`SpRp_Saml2EntityId`・`SpRp_Saml2AcsUri` |
 

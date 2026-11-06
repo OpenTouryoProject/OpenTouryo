@@ -20,6 +20,7 @@
 //*                                （エンドポイントを Discovery から引く・scope と redirect_uri を送る・
 //*                                  state・iss・nonce を確かめる・id_token を検証する・応答を待つ上限・終了コードを返す・
 //*                                  ブラウザを開かない指定（--no-browser）を足す）
+//*  2026/11/06  玄人 幸道         コメントの設定キーを、改名後の SpRp_Issuer にした（#666）
 //**********************************************************************************
 
 using System;
@@ -173,7 +174,7 @@ namespace LIR_Login_CLI
         /// <remarks>
         /// 認可コード ＋ PKCE（RFC 7636）。戻り先はループバック（RFC 8252 §7.3）。
         /// 接続先とクライアントは appsettings.json にある（MPAS のスタブと、その雛形のクライアント。Sample4SpRp/README.md）。
-        /// **エンドポイントは Discovery から引く**（issuer を SpRp_Isser と照合する）。
+        /// **エンドポイントは Discovery から引く**（issuer を SpRp_Issuer と照合する）。
         ///
         /// **確かめること**
         /// | 値 | 何のため |

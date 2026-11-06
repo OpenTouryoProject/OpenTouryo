@@ -20,6 +20,7 @@
 //*                                （エンドポイントを Discovery から引く・scope を送る・verification_uri をそのまま使う・
 //*                                  ポーリングを IdP の指示に従わせる・id_token を検証する・終了コードを返す・
 //*                                  確認を飛ばす指定（--yes）を足す）
+//*  2026/11/06  玄人 幸道         コメントの設定キーを、改名後の SpRp_Issuer にした（#666）
 //**********************************************************************************
 
 using System;
@@ -173,7 +174,7 @@ namespace DAG_Login_CLI
         /// <remarks>
         /// DAG : OAuth 2.0 Device Authorization Grant（RFC 8628）。
         /// 接続先とクライアントは appsettings.json にある（MPAS のスタブと、その雛形のクライアント。Sample4SpRp/README.md）。
-        /// **エンドポイントは Discovery から引く**（issuer を SpRp_Isser と照合する）。
+        /// **エンドポイントは Discovery から引く**（issuer を SpRp_Issuer と照合する）。
         /// **ポーリングは IdP の指示に従う**（RFC 8628 §3.5）。
         /// | 応答の error | すること |
         /// |---|---|

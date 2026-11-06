@@ -32,6 +32,9 @@
 //*                                GetConfigSection → GetAnyConfigSection
 //*  2026/09/25  玄人 幸道         AuthRequestPushUri（PARエンドポイント）を追加
 //*  2026/10/12  玄人 幸道         ClientIDsは、未設定なら空のリストを返すようにした（#603）
+//*  2026/11/06  玄人 幸道         JwkSetUri・RequestObjectRegUri・AuthRequestPushUri の設定キーを、
+//*                                SpRp_JwkSetUri・SpRp_RequestObjectRegUri・SpRp_AuthRequestPushUri に改名した（相手の口の URL。
+//*                                改名前の名前は、汎用認証サイトが認可サーバ自身の口のパスとして使うので読まない。#666）
 //**********************************************************************************
 
 using System.Collections.Generic;
@@ -112,12 +115,18 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
         }
 
-        /// <summary>JwkSetUri</summary>
+        /// <summary>JwkSetUri（相手の OP の JWK Set の URL）</summary>
+        /// <remarks>
+        /// **設定のキーは SpRp_JwkSetUri**（#666 で改名した。相手の値なので、ほかの SpRp_* に揃えた）。プロパティ名は変えていない。
+        /// **改名前の JwkSetUri は読まない**（汎用認証サイトが認可サーバ自身の口のパスとして使い、
+        /// 自己テストのクライアントと 1 つの環境に共存しうるため。CmnClientParams.RenamedKeys の remarks）。
+        /// JwkSetStore と、RemoteJwkSetStore.GetJwkAsync(kid) が読む。空なら JwkSetStore は空の JWK Set を持つ（検証は鍵が無く失敗する）。
+        /// </remarks>
         public static string JwkSetUri
         {
             get
             {
-                return GetConfigParameter.GetConfigValue("JwkSetUri");
+                return GetConfigParameter.GetConfigValue("SpRp_JwkSetUri");
             }
         }
 
@@ -144,11 +153,17 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>
         /// FAPI2のRequestObject登録エンドポイント 
         /// </summary>
+        /// <remarks>
+        /// **相手（OP）の口の URL**（クライアント役の値）。フレームワークの中では読まない。
+        /// **設定のキーは SpRp_RequestObjectRegUri**（#666 で改名した。相手の値なので、ほかの SpRp_* に揃えた）。
+        /// **改名前の RequestObjectRegUri は読まない**（JwkSetUri と同じ理由）。
+        /// 認可サーバ自身の口のパスは、この値に置かない（汎用認証サイトは自分の設定で持つ）。
+        /// </remarks>
         public static string RequestObjectRegUri
         {
             get
             {
-                return GetConfigParameter.GetConfigValue("RequestObjectRegUri");
+                return GetConfigParameter.GetConfigValue("SpRp_RequestObjectRegUri");
             }
         }
 
@@ -156,11 +171,17 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// PAR（RFC 9126）のエンドポイント
         /// （Discoveryのpushed_authorization_request_endpoint）
         /// </summary>
+        /// <remarks>
+        /// **相手（OP）の口の URL**（クライアント役の値）。フレームワークの中では読まない。
+        /// **設定のキーは SpRp_AuthRequestPushUri**（#666 で改名した。相手の値なので、ほかの SpRp_* に揃えた）。
+        /// **改名前の AuthRequestPushUri は読まない**（JwkSetUri と同じ理由）。
+        /// 認可サーバ自身の口のパスは、この値に置かない（汎用認証サイトは自分の設定で持つ）。
+        /// </remarks>
         public static string AuthRequestPushUri
         {
             get
             {
-                return GetConfigParameter.GetConfigValue("AuthRequestPushUri");
+                return GetConfigParameter.GetConfigValue("SpRp_AuthRequestPushUri");
             }
         }
         #endregion

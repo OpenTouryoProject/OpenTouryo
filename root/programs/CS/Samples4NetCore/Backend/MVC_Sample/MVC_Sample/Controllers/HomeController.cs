@@ -20,6 +20,7 @@
 //*  2026/11/04  玄人 幸道         表示名を UserInfo の email にした（識別子は sub のまま。UserInfo の sub を id_token と照合。#649）
 //*  2026/11/04  玄人 幸道         SAML2 の外部ログインを追加した（Redirect Binding。NameID は Persistent、表示名は mail 属性。#649）
 //*  2026/11/04  玄人 幸道         並びを統一し、Region でまとめた（定数・プロパティ・画面・OIDC・SAML2・共通。net48 版と同じ。#649）
+//*  2026/11/06  玄人 幸道         コメントの設定キーを、改名後の SpRp_Issuer にした（#666）
 //**********************************************************************************
 
 using MVC_Sample.Models.ViewModels;
@@ -334,7 +335,7 @@ namespace MVC_Sample.Controllers
         /// <param name="code">code（c_hash の検証）</param>
         /// <returns>sub（検証に失敗したら null）</returns>
         /// <remarks>
-        /// **鍵は、ヘッダの kid で jwks_uri から引く**（SpRp_DiscoveryUri の Discovery。issuer は SpRp_Isser と照合する）。
+        /// **鍵は、ヘッダの kid で jwks_uri から引く**（SpRp_DiscoveryUri の Discovery。issuer は SpRp_Issuer と照合する）。
         /// **alg は非対称のもの（JwsFactory.SupportedAlgs）に限る**（none・HS* を受けない）。
         /// **iss・aud を指定する版の IdToken.Verify を使う**（#601。相手の id_token を、設定の自分の鍵で検証しない）。
         /// </remarks>

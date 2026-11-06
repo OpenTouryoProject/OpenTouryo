@@ -89,7 +89,7 @@ WSServer_sample（B 層・D 層）── WSIFType_sample（引数・戻り値の
 | `SampleDataController` / `ValuesController` | `api/values` ほか | 動作確認用 |
 
 - 認証は `MyBaseAsyncApiController` 属性（`EnumHttpAuthHeader.None | Bearer`。**認証が無くても通し**、Bearer があればアクセス トークンを検証する）
-- **アクセス トークンの発行者は MPAS のスタブ**（`app.config` の `SpRp_Isser` = `https://localhost:44310`、鍵は `JwkSetUri` = `/jwkcerts`。#649）。
+- **アクセス トークンの発行者は MPAS のスタブ**（`app.config` の `SpRp_Issuer` = `https://localhost:44310`、鍵は `SpRp_JwkSetUri` = `/jwkcerts`。#649）。
   WS クライアントの外部ログイン（2.2 節）と揃えてある。検証は `AccessToken.Verify` の既存の版（鍵と iss は設定から。**aud は確かめない**。#601）
 - OWIN の `Startup` を持つ
 - **net48 版には OpenAPI（IDL）が無い**（クラシック ASP.NET のため。#580。.NET 10 版だけが `/openapi/v1.json` を出す）

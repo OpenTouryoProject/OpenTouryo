@@ -18,6 +18,7 @@
 '*  2026/11/04  玄人 幸道         C# 版に合わせて、外部ログインを今のライブラリと MPAS のスタブに合わせた（#649）
 '*                                （prompt=none を外す・トークン要求に redirect_uri・id_token を jwks_uri の鍵と iss / aud で検証・
 '*                                  表示名を UserInfo の email に・SAML2 の外部ログインを追加・並びを Region でまとめた）
+'*  2026/11/06  玄人 幸道         コメントの設定キーを、改名後の SpRp_Issuer にした（#666）
 '**********************************************************************************
 
 Imports MVC_Sample.Models.ViewModels
@@ -279,7 +280,7 @@ Namespace Controllers
         ''' <param name="code">code（c_hash の検証）</param>
         ''' <returns>sub（検証に失敗したら Nothing）</returns>
         ''' <remarks>
-        ''' **鍵は、ヘッダの kid で jwks_uri から引く**（SpRp_DiscoveryUri の Discovery。issuer は SpRp_Isser と照合する）。
+        ''' **鍵は、ヘッダの kid で jwks_uri から引く**（SpRp_DiscoveryUri の Discovery。issuer は SpRp_Issuer と照合する）。
         ''' **alg は非対称のもの（JwsFactory.SupportedAlgs）に限る**（none・HS* を受けない）。
         ''' **iss・aud を指定する版の IdToken.Verify を使う**（#601。相手の id_token を、設定の自分の鍵で検証しない）。
         ''' </remarks>

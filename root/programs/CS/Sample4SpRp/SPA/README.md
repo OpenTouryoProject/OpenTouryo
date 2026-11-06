@@ -132,7 +132,7 @@ dotnet run --no-build --no-launch-profile --urls https://localhost:44335
 - **`https` で待ち受けるので、開発用の証明書をブラウザが信頼している必要がある**（`dotnet dev-certs https --trust`）。
   信頼していないと、SPA の `fetch` が失敗する（`https://localhost:44335/api/json/test` を一度ブラウザで開くと分かる）
 - **SQL Server は要らない**（`claims` は DB を読まない）
-- **検証の設定**（`appsettings.json`）: `SpRp_Isser` = `https://localhost:44310`、鍵は `JwkSetUri` = `/jwkcerts`（スタブ）
+- **検証の設定**（`appsettings.json`）: `SpRp_Issuer` = `https://localhost:44310`、鍵は `SpRp_JwkSetUri` = `/jwkcerts`（スタブ）
 - CORS は、どのオリジンも許す（`AllowAnyOrigin`。資格情報は送らない構成）
 
 ### 6.2 確かめる
@@ -158,5 +158,5 @@ dotnet run --no-build --no-launch-profile --urls https://localhost:44335
 | スタブの画面で「redirect_uri が違う」などのエラー | **5173 以外で動いていないか**（戻り先は 1 文字も違ってはならない） |
 | Blazor で、ビルドし直したのに古い版が出る | WebAssembly のファイルはキャッシュされる。**Ctrl+Shift+R** で読み込み直す |
 | **Call API** で `Failed to fetch`（React）／`TypeError: Failed to fetch`（Blazor） | リソース サーバが動いているか（6.1 節）。**開発用の証明書をブラウザが信頼しているか** |
-| **サインインしたのに `"未認証"`** | リソース サーバの `SpRp_Isser`・`JwkSetUri` がスタブを向いているか。**スタブを起動し直すと鍵が変わる**ことがあるので、サインインし直す |
+| **サインインしたのに `"未認証"`** | リソース サーバの `SpRp_Issuer`・`SpRp_JwkSetUri` がスタブを向いているか。**スタブを起動し直すと鍵が変わる**ことがあるので、サインインし直す |
 | Blazor の画面の下に黄色い帯（An unhandled error has occurred） | DevTools の Console に C# の例外が出ている（サインインの失敗は例外にせず、`/RedirectEndpoint` に出す） |

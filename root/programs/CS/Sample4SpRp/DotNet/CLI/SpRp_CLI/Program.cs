@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/11/04  玄人 幸道         新規作成（#649）
 //*  2026/11/05  玄人 幸道         pkce に --no-browser を足した（#649。E2E で使う）
+//*  2026/11/06  玄人 幸道         コメントの設定キーを、改名後の SpRp_Issuer にした（#666）
 //**********************************************************************************
 
 using System;
@@ -117,7 +118,7 @@ namespace SpRp_CLI
             }
             catch (InvalidOperationException ex)
             {
-                // **Discovery を読めない、または issuer が設定（SpRp_Isser）と違う**
+                // **Discovery を読めない、または issuer が設定（SpRp_Issuer）と違う**
                 Console.WriteLine("NG   " + ex.Message);
                 return Program.ExitFailed;
             }
