@@ -1,0 +1,28 @@
+﻿@{
+    // フローを選ぶ画面（#668）。リンクは Fapi1Controller.Start へ行く。
+    string[][] flows = new string[][]
+    {
+        new string[] { "oauth2", "",          "FAPI1 : code（openid なし）＋ private_key_jwt" },
+        new string[] { "oidc",   "",          "FAPI1 : code ＋ OIDC ＋ private_key_jwt" },
+        new string[] { "oidc",   "query.jwt", "FAPI1 : code ＋ OIDC ＋ private_key_jwt、JARM（query.jwt）" },
+        new string[] { "pkce",   "",          "FAPI1 : code ＋ OIDC ＋ PKCE（S256）" },
+        new string[] { "pkce",   "query.jwt", "FAPI1 : code ＋ OIDC ＋ PKCE（S256）、JARM（query.jwt）" },
+    };
+}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8" />
+    <title>SpRp_MVC</title>
+</head>
+<body>
+    <h1>SpRp_MVC（FAPI 1.0 のクライアント）</h1>
+    <p>IdP は MPAS のスタブ。クライアントの登録は Sample4SpRp\Stub\SpRp_MVC.stub.json（README の 5 節）。</p>
+    <ul id="flows">
+        @foreach (string[] f in flows)
+        {
+            <li><a href="@Url.Action("Start", "Fapi1", new { flow = f[0], responseMode = f[1] })">@f[2]</a></li>
+        }
+    </ul>
+</body>
+</html>

@@ -15,6 +15,7 @@
 | net | EXE（CLI） | SAML2・AuthZCode・AuthNCode | 未（CLI には向かない。下記） | — |
 | net | EXE（CLI、旧サンプル・net10.0 のみ） | Device・PKCE（LIR） | **済**（スタブに合わせた。4 節） | `Samples4NetCore/Legacy/CLI_sample/` |
 | net | MVC | SAML2・AuthZCode・AuthNCode・PKCE・Device | **一部**：既存の `MVC_Sample`（C#・VB の net48、C# の net10.0）の外部ログイン（OIDC・SAML2）をスタブで通す（2.1 節）。専用のサンプルは未 | `Samples/`・`Samples4NetCore/` の `MVC_Sample` |
+| net | **MVC（net10.0 のみ）** | **FAPI 1.0**（認可コード ＋ `private_key_jwt` / PKCE、JARM） | **済**（#668。MPAS の自己テストから移した。4.2 節）。net48 は未。FAPI 2.0 は見送り | [`DotNet/MVC/`](DotNet/MVC/) |
 | net | WebForms（net48 のみ） | 同上 | **一部**：既存の `WebForms_Sample`（C#・VB）の外部ログイン（OIDC・SAML2）をスタブで通す（2.1 節）。専用のサンプルは未 | `Samples/` の `WebForms_Sample` |
 | net | WinForms | 同上 | **一部**：既存の WS クライアント（`WSClientWin_sample`・`WSClientWinCone_sample`、VB・.NET 10 版）の外部ログインを、ROPC から PKCE（LIR）に替えた。専用のサンプルは未 | `Samples/WS_sample/WSClient_sample/` ほか |
 | browser | SPA（React・Blazor） | PKCE | **済**（Bearer でのリソース アクセスを含む。4.1 節） | [`SPA/`](SPA/) |
@@ -120,6 +121,35 @@ cd root\programs\CS\Sample4SpRp\E2E
 - **CLI の出力は、1 件ごとに `-OutputDir`（既定 `%TEMP%\OpenTouryoE2E`）の `cli_*.log` に残す**
 - **HTTP の部品（`New-Browser` など）は `ExternalLoginE2E.ps1` と同じ作り**だが、こちらは**戻り先（12345）へのリダイレクトの手前で止まる**
 
+## 2.3 MVC（FAPI 1.0）の E2E（[`E2E/MvcFapi1E2E.ps1`](E2E/MvcFapi1E2E.ps1)）
+
+**`SpRp_MVC`（4.2 節）の FAPI 1.0 のフローを、スタブで通す**（#668）。**スタブには、`SpRp_MVC` のクライアントを登録して起動する。**
+
+```powershell
+cd root\programs\CS\Sample4SpRp\Stub
+.\StubCompose.ps1 -Settings .\SpRp_MVC.stub.json   # SpRp_MVC のクライアントを足して起動（雛形のクライアントも残る）
+
+cd ..\E2E
+.\MvcFapi1E2E.ps1                                  # 5 つのフロー × 正常・対照（11 件）
+.\MvcFapi1E2E.ps1 -Only "pkce" -SkipControl        # 絞る（ケース名の部分一致）
+```
+
+| flow / response_mode | 正常 | 対照（書き換えると NG になること） |
+|---|---|---|
+| `oauth2` / `query` | access_token を得る | `state` を書き換える |
+| `oidc` / `query` | ＋ id_token の検証・UserInfo（`sub` の一致） | `state` を書き換える |
+| `oidc` / `query.jwt`（JARM） | 同上 | 応答（JWT）の署名を書き換える / **素の応答（`code`・`state`）に落とす** |
+| `pkce` / `query` | 同上 | `state` を書き換える |
+| `pkce` / `query.jwt` | 同上 | 応答（JWT）の署名を書き換える |
+
+- **戻り（スタブ → アプリ）のリダイレクトの手前で止め、URL を書き換えてからアプリへ届ける**
+- **対照は、NG になり、しかも狙った確認（理由の文言）で落ちたことを見る**（別の理由で落ちたのなら、狙いは確かめられていない）
+- **前提（起動はしない）** : スタブ（`-Settings .\SpRp_MVC.stub.json`）、ビルド（`CS\11_Build_SpRp_sample.bat`）、**ポート 44336 が空いている**。
+  SQL Server は要らない。**足りなければ終了コード 2**（0 = すべて OK、1 = NG あり）
+- **スタブを `-Settings` 無しで起動していると、`SpRp_MVC` のクライアントが無いので「スタブのエラー画面」で NG**。
+  2.1・2.2 の E2E は、どちらの起動でも通る（雛形のクライアントは残る）
+- **アプリのログは `-OutputDir`（既定 `%TEMP%\OpenTouryoE2E`）の `app_SpRp_MVC.log`**
+
 ## 3. 設定（サンプルと IdP で揃える値）
 
 **サンプル側の設定と、IdP のクライアントの登録は、1 文字も違ってはならない。**
@@ -131,6 +161,8 @@ cd root\programs\CS\Sample4SpRp\E2E
 | CLI（`DotNet/CLI`） | `Device_Client`（`client_mode` = `device`。秘密なし。旧 `TestClient3`） | `ae5a179813234ca290c8de93ef2e31dc` | `http://localhost:12345/` |
 | SPA（`SPA/SpRp_React`・`SPA/SpRp_Blazor`） | `SPA_Application`（**秘密を外して使う**。4.1 節） | `f374a155909d486a9234693c34e94479` | `http://localhost:5173/RedirectEndpoint` |
 | WS クライアントの外部ログイン（`Samples/WS_sample/WSClient_sample/WSClientWin_sample`・`WSClientWinCone_sample`、VB・.NET 10 版の `WSClientWin_sample`） | 同上（LIR で使う） | 同上 | 同上 |
+| MVC（`DotNet/MVC`）の `oauth2`・`oidc` | **雛形に無い**：`SpRp_MVC`（[`Stub/SpRp_MVC.stub.json`](Stub/SpRp_MVC.stub.json)。`fapi1`、`private_key_jwt`） | `75d74cb5a4ae44e3afec154623f0cbb4` | `https://localhost:44336/Fapi1/Callback` |
+| MVC（`DotNet/MVC`）の `pkce` | **雛形に無い**：`SpRp_MVC_PKCE`（同上。`fapi1`、秘密なし） | `9e53bded5e7d4ee4bc9e7e30f7a9f0a6` | 同上 |
 
 **雛形には、ほかのフェーズで使えそうなものも在る**（`MVC_Sample`・`WebForms_Sample`・`SPA_Application`・`Native_Application`・
 `IdFederation`（SAML2））。**どれを使うかは、そのフェーズで決める。**
@@ -244,6 +276,58 @@ UserInfo の `sub` が id_token と同じか。**乱数は Web Crypto API / `Ran
 - **保存先は sessionStorage**（state・nonce・code_verifier は往復だけに使い、使ったら消す）。
   access_token も置くので、**XSS があれば読まれる**（簡素さを優先した。実運用では BFF などを検討する）
 
+## 4.2 MVC（`DotNet/MVC/SpRp_MVC`、FAPI 1.0）
+
+**MPAS の自己テストの FAPI1 を、別の配備で動く本物のクライアントに移したもの**（#668）。
+**自己テストは 1 つの環境でサーバとクライアントを兼ねるので、クライアント役の設定（`SpRp_*`）だけで通ることは、ここで確かめる**（#666・MPAS#339）。
+**net10.0（ASP.NET Core MVC）だけ。** DB と、Open棟梁 の P 層の基底クラスは使わない（SP / RP の部品の使い方だけを見せる）。
+
+```powershell
+cd root\programs\CS\Sample4SpRp\DotNet\MVC
+.\1_Build.bat        # dotnet build SpRp_MVC.sln
+.\2_Run.bat          # https://localhost:44336 で待ち受ける。ブラウザで開き、フローを選ぶ
+```
+
+**前提** : 基盤のビルド（`Build_netcore100`）、**スタブを `-Settings ..\..\Stub\SpRp_MVC.stub.json` で起動する**（2.3 節）。
+**待ち受けの URL は `appsettings.json` の `Kestrel` の節**（戻り先は登録と 1 文字も違ってはならないので、`launchSettings.json` に頼らない）。
+
+| flow | client_id（設定のキー） | トークン要求のクライアント認証 |
+|---|---|---|
+| `oauth2`（openid なし。`SpRp_Fapi1OAuth2Scope`） | `OAuth2AndOidcClientID` | **`private_key_jwt`**（RFC 7523 §2.2。鍵は `SpRp_RsaPfxFilePath`） |
+| `oidc`（`SpRp_Scope`） | 同上 | 同上 |
+| `pkce`（`SpRp_Scope`） | **`SpRp_Fapi1PkceClientID`**（サンプル独自のキー） | **無し**（PKCE S256 の `code_verifier` だけ） |
+
+**response_mode は `query`（既定）か `query.jwt`（JARM）。** 画面のリンクで選ぶ。
+
+**確かめていること**（サンプルとして、省かずに書いてある）
+
+| 段 | 確かめること |
+|---|---|
+| 共通 | **Discovery の `issuer` が `SpRp_Issuer` と一致するか**（OpenID Connect Discovery 1.0 §4.3） |
+| 戻り（JARM） | **署名・`iss`・`aud`・`exp`**（`ResponseObject.Verify`。JARM §4.4）。**JARM を求めたのに素の応答なら断る**（署名の無い応答に落とさせない）。使うのは、検証した応答の中の `code`・`state` だけ |
+| 戻り | `state`（RFC 6749 §10.12）、応答の `iss`（在れば。RFC 9207） |
+| トークン | `error` を失敗にする。`access_token` が在るか |
+| `oidc`・`pkce` | **id_token の署名・`iss`・`aud`・`exp`・`at_hash`・`c_hash`（在れば）・`nonce`**。**UserInfo の `sub` が id_token と同じか**（OpenID Connect Core 1.0 §5.3.2） |
+
+- **id_token・JARM の鍵は、ヘッダの `kid` で `jwks_uri` から引く**（`RemoteJwkSetStore`）。**`alg` は非対称のもの（`JwsFactory.SupportedAlgs`）に限る**
+- **state・nonce・code_verifier は、セッションに置き、戻りで 1 回だけ使って消す**
+- **トークンそのものは画面に出さない**（id_token のクレームと UserInfo だけ）
+
+**MPAS の fapi1 の登録について（スタブで確かめたこと）**
+- **認可コードの引き換えは、PKCE S256 か `private_key_jwt`（か mTLS）だけが通る。** `client_secret` では通らない。Hybrid（`code id_token`）も通らない
+- **`private_key_jwt` は、登録に `token_endpoint_auth_method` の明示が要る**（鍵を登録しただけでは、その方法で通らない。MPAS#307）
+- **`private_key_jwt` を登録したクライアントは、PKCE だけでは引き換えられない**（コンフィデンシャル クライアントの認証は省けない）。
+  **このため、`pkce` の flow は、秘密も鍵も持たない別のクライアント（`SpRp_MVC_PKCE`）で通す**
+
+**扱っていないもの**（#668）
+
+| もの | 理由 |
+|---|---|
+| **FAPI 2.0**（`/ros`・PAR） | 見送り（MPAS の自己テストにも、本物のクライアントとして通す形が無い） |
+| **PKCE と `private_key_jwt` の併用** | `OAuth2AndOIDCClient.GetAccessTokenByCodeAsync` に、両方を送る版が無い |
+| **mTLS**（`tls_client_auth`） | スタブがクライアント証明書を受けるかを、まだ確かめていない |
+| **net48**（ASP.NET MVC 5） | 後の段で、別のプロジェクトとして足す |
+
 ## 5. サンプルを足すとき
 
 1. **MPAS の雛形から、使うクライアントを選ぶ**（3 節の表に足す）。**無ければ、設定の JSON を書いて `-Settings` で渡す**
@@ -251,16 +335,18 @@ UserInfo の `sub` が id_token と同じか。**乱数は Web Crypto API / `Ran
 3. **1 節の表の状態を更新する**
 
 **サーバ側のアプリ（MVC・WebForms）は、`client_secret` を持つコンフィデンシャル クライアントを使う。**
+**FAPI の登録（`fapi1`）は `client_secret` を通さないので、`private_key_jwt` にする**（4.2 節。`token_endpoint_auth_method` の明示が要る）。
 **ブラウザ（SPA）・ネイティブ（WinForms・CLI）は、秘密を持たないクライアント ＋ PKCE にする。**
 
 ## 6. エージェントが気を付けること
 
 - **コンテナを勝手に起動・停止しない**（`AGENTS.md`）。`StubCompose.ps1 -Action Config` は起動しないので、設定の確認に使える
 - **ビルドは `CS\11_Build_SpRp_sample.bat` に詰める**（`1_BuildAll.ps1` の `SpRp_sample`、`CS\0_ExecAllBat.bat` から呼ばれる）。
-  **SpRp のサンプルを足したら、このバッチに足す**（net48 と net10.0 の両方）
+  **SpRp のサンプルを足したら、このバッチに足す**（net48 と net10.0 の両方。`SpRp_MVC` は、いまは net10.0 だけ）
 - **単体テスト（`2_RunAllTests.ps1`）・疎通テスト（`3_SmokeTest.ps1`）・CI には載っていない。**
   外部の IdP（スタブ）が要るため。**WebApp のサンプルの外部ログインは `E2E/ExternalLoginE2E.ps1` で確かめる**（2.1 節。
-  スタブと SQL Server の起動が要るので、**施主に確かめてから回す**）。**CLI は `E2E/CliLoginE2E.ps1` で確かめる**（2.2 節。スタブだけが要る）
+  スタブと SQL Server の起動が要るので、**施主に確かめてから回す**）。**CLI は `E2E/CliLoginE2E.ps1` で確かめる**（2.2 節。スタブだけが要る）。
+  **MVC（FAPI 1.0）は `E2E/MvcFapi1E2E.ps1` で確かめる**（2.3 節。スタブを `-Settings .\SpRp_MVC.stub.json` で起動する）
 - **`SelectTargets.ps1` は、ここを変えると「バッチ : 11_Build_SpRp_sample.bat ＋ 手で確かめる（SpRp）」に分ける**
   （ビルドだけを回し、通しにはしない）。**手で確かめるものが残るので、検証の記録は進まない**（確かめたら `-Record`）
 - **スタブは MPAS の net10.0 版**である。net48 版の MPAS に固有の振る舞いは再現しない

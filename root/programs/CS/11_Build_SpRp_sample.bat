@@ -33,6 +33,12 @@ rem --------------------------------------------------
 dotnet restore "Sample4SpRp\DotNet\CLI\SpRp_CLI.sln"
 dotnet msbuild %COMMANDLINE% "Sample4SpRp\DotNet\CLI\SpRp_CLI.sln"
 
+rem --------------------------------------------------
+rem SpRp_MVC (net10.0 only for now, #668).
+rem --------------------------------------------------
+dotnet restore "Sample4SpRp\DotNet\MVC\SpRp_MVC.sln"
+dotnet msbuild %COMMANDLINE% "Sample4SpRp\DotNet\MVC\SpRp_MVC.sln"
+
 pause
 
 rem -------------------------------------------------------
