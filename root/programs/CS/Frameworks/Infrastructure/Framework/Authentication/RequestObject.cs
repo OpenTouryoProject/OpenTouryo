@@ -41,6 +41,8 @@
 //*  2026/11/05  玄人 幸道         形の壊れた入力でも、例外にせず false を返す（CmnJwtToken.TryVerifySignature。#654 のレビューの指摘 5）
 //*  2026/11/06  玄人 幸道         Create に、有効期間を受けて exp・nbf・iat を入れるオーバーロードを追加（#660）
 //*  2026/11/06  玄人 幸道         remarks に、時計のずれの余裕を取らないこと・上限で溢れないことを書いた（#660 のレビューの指摘 2・3）
+//*  2026/11/06  玄人 幸道         Verify・VerifyCiba に、検証鍵（JWS）を受けて署名の alg を選べるオーバーロードを追加（#664）
+//*  2026/11/06  玄人 幸道         remarks に、登録どおりの鍵の型だけを渡すことを書いた（#664 のレビューの指摘 2）
 //**********************************************************************************
 
 using System;
@@ -317,7 +319,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         [Obsolete("This overload does not verify the aud claim, please use the overload that takes the expected aud instead.")]
         public static bool Verify(string ro, out string iss, RSAParameters rsaPublicKey)
         {
-            return RequestObject.VerifyCore(ro, null, out iss, rsaPublicKey);
+            return RequestObject.VerifyCore(ro, null, out iss, new JWS_RS256_Param(rsaPublicKey));
         }
 
         /// <summary>Verify（期待する aud と照合する）</summary>
@@ -354,22 +356,53 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 throw new ArgumentNullException(nameof(aud));
             }
 
-            return RequestObject.VerifyCore(ro, aud, out iss, rsaPublicKey);
+            return RequestObject.VerifyCore(ro, aud, out iss, new JWS_RS256_Param(rsaPublicKey));
+        }
+
+        /// <summary>Verify（期待する aud と照合する。署名の alg は、渡した検証鍵で選ぶ）</summary>
+        /// <param name="ro">string</param>
+        /// <param name="aud">期待する aud（認可サーバの issuer。RFC 9101 4）</param>
+        /// <param name="iss">string</param>
+        /// <param name="jws">
+        /// 署名の検証に使う、クライアントの鍵（JWS_PS256_Param など）。
+        /// JWK からなら JwsFactory.CreateFromJwk(alg, jwk) で作る
+        /// </param>
+        /// <returns>検証結果</returns>
+        /// <remarks>
+        /// RSAParameters の版と同じ確認をする。違いは、**署名の alg を呼び出し側が選べる**ことだけである（#664）。
+        /// FAPI 1.0 Advanced 8.6 は、PS256 か ES256 を使うとする（RS256 は使わないほうがよい）。
+        /// - **ヘッダの alg が、渡した鍵の alg と違えば false**（大文字・小文字を区別する。RFC 8725 3.1）
+        /// - **受ける alg は、呼び出し側が決める**（クライアントの登録など）。ヘッダの alg を読んで鍵を作ると、照合の意味が無くなる
+        /// - 渡せる鍵の型は制限しない
+        /// - **鍵の型は、クライアントの登録どおりのものだけを渡す。** 公開鍵の値を HS* の鍵に使うと、alg の取り違えになる（RFC 8725 3.1 : 鍵は 1 つの alg だけで使う）
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">aud が null か空、jws が null</exception>
+        public static bool Verify(string ro, string aud, out string iss, JWS jws)
+        {
+            if (string.IsNullOrEmpty(aud))
+            {
+                throw new ArgumentNullException(nameof(aud));
+            }
+
+            if (jws == null)
+            {
+                throw new ArgumentNullException(nameof(jws));
+            }
+
+            return RequestObject.VerifyCore(ro, aud, out iss, jws);
         }
 
         /// <summary>Verify の本体</summary>
         /// <param name="ro">string</param>
         /// <param name="expectedAud">期待する aud。null なら照合しない</param>
         /// <param name="iss">string</param>
-        /// <param name="rsaPublicKey">RS256用のRSAParameters公開鍵</param>
+        /// <param name="jws">検証鍵（ヘッダの alg と、この鍵の alg が一致すること。#664）</param>
         /// <returns>検証結果</returns>
-        private static bool VerifyCore(string ro, string expectedAud, out string iss, RSAParameters rsaPublicKey)
+        private static bool VerifyCore(string ro, string expectedAud, out string iss, JWS jws)
         {
             iss = "";
 
-            JWS_RS256_Param jwtRS256 = new JWS_RS256_Param(rsaPublicKey);
-
-            if (!CmnJwtToken.TryVerifySignature(jwtRS256, ro))
+            if (!CmnJwtToken.TryVerifySignature(jws, ro))
             {
                 // JWTの署名検証に失敗
                 return false;
@@ -542,7 +575,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         [Obsolete("This overload does not verify the aud claim, please use the overload that takes the expected aud instead.")]
         public static bool VerifyCiba(string ro, out string iss, ECParameters ecPublicKey)
         {
-            return RequestObject.VerifyCibaCore(ro, null, out iss, ecPublicKey);
+            return RequestObject.VerifyCibaCore(ro, null, out iss, new JWS_ES256_Param(ecPublicKey, false));
         }
 
         /// <summary>VerifyCiba（期待する aud と照合する）</summary>
@@ -579,22 +612,53 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 throw new ArgumentNullException(nameof(aud));
             }
 
-            return RequestObject.VerifyCibaCore(ro, aud, out iss, ecPublicKey);
+            return RequestObject.VerifyCibaCore(ro, aud, out iss, new JWS_ES256_Param(ecPublicKey, false));
+        }
+
+        /// <summary>VerifyCiba（期待する aud と照合する。署名の alg は、渡した検証鍵で選ぶ）</summary>
+        /// <param name="ro">string</param>
+        /// <param name="aud">期待する aud（OP の Issuer Identifier。CIBA Core 7.1.1）</param>
+        /// <param name="iss">string</param>
+        /// <param name="jws">
+        /// 署名の検証に使う、クライアントの鍵（JWS_PS256_Param・JWS_ES256_Param など）。
+        /// JWK からなら JwsFactory.CreateFromJwk(alg, jwk) で作る
+        /// </param>
+        /// <returns>検証結果</returns>
+        /// <remarks>
+        /// ECParameters の版と同じ確認をする。違いは、**署名の alg を呼び出し側が選べる**ことだけである（#664）。
+        /// FAPI CIBA 7.6 は、FAPI 1.0 Advanced 8.6 に従うとする（PS256 か ES256。RS256 は使わないほうがよい）。
+        /// - **ヘッダの alg が、渡した鍵の alg と違えば false**（大文字・小文字を区別する。RFC 8725 3.1）
+        /// - **受ける alg は、呼び出し側が決める**（クライアントの登録など）。ヘッダの alg を読んで鍵を作ると、照合の意味が無くなる
+        /// - 渡せる鍵の型は制限しない
+        /// - **鍵の型は、クライアントの登録どおりのものだけを渡す。** 公開鍵の値を HS* の鍵に使うと、alg の取り違えになる（RFC 8725 3.1 : 鍵は 1 つの alg だけで使う）
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">aud が null か空、jws が null</exception>
+        public static bool VerifyCiba(string ro, string aud, out string iss, JWS jws)
+        {
+            if (string.IsNullOrEmpty(aud))
+            {
+                throw new ArgumentNullException(nameof(aud));
+            }
+
+            if (jws == null)
+            {
+                throw new ArgumentNullException(nameof(jws));
+            }
+
+            return RequestObject.VerifyCibaCore(ro, aud, out iss, jws);
         }
 
         /// <summary>VerifyCiba の本体</summary>
         /// <param name="ro">string</param>
         /// <param name="expectedAud">期待する aud。null なら照合しない</param>
         /// <param name="iss">string</param>
-        /// <param name="ecPublicKey">ES256用のECParameters公開鍵</param>
+        /// <param name="jws">検証鍵（ヘッダの alg と、この鍵の alg が一致すること。#664）</param>
         /// <returns>検証結果</returns>
-        private static bool VerifyCibaCore(string ro, string expectedAud, out string iss, ECParameters ecPublicKey)
+        private static bool VerifyCibaCore(string ro, string expectedAud, out string iss, JWS jws)
         {
             iss = "";
 
-            JWS_ES256_Param jwtES256 = new JWS_ES256_Param(ecPublicKey, false);
-
-            if (!CmnJwtToken.TryVerifySignature(jwtES256, ro))
+            if (!CmnJwtToken.TryVerifySignature(jws, ro))
             {
                 // JWTの署名検証に失敗
                 return false;

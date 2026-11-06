@@ -379,6 +379,16 @@ DCR の口の認可、クライアント登録の持ち方。
   **`jti` の使い回しも見ない**（呼び出し側の台帳で行う）。**形の壊れた入力も、例外にせず `false`**（`RequestObject` も同じ。`CmnJwtToken.TryVerifySignature`）。
   **受けない版（`iss`・`aud` を `out` で返すだけ）は `[Obsolete]`（警告）にした**（振る舞いは変えていない。`aud` が配列だと例外になる）。
   **`Create` は `sub`（= `iss`）を入れる**ようにした（2026/11/05 まで入れていなかった。RFC 7523 3 の 2 で必須）
+- **署名の alg を選ぶなら、検証鍵（`JWS`）を受ける版を使う**（#664）。`RequestObject.Verify(ro, aud, out iss, jws)`・
+  `VerifyCiba(ro, aud, out iss, jws)`・`JwtAssertion.Verify(jwt, iss, auds, out sub, out scopes, out jobj, jws)`。
+  ほかの版は、`RequestObject.Verify` が RS256、`VerifyCiba` が ES256、`JwtAssertion` が JWK の `kty` で RS256 か ES256 に決まる。
+  FAPI 1.0 Advanced 8.6 は PS256 か ES256 を使うとする（RS256 は使わないほうがよい）。確認するクレームは、ほかの版と同じ。
+  **ヘッダの `alg` が、渡した鍵の `alg`（`JWS.JWSHeader.alg`）と違えば `false`**（大文字・小文字を区別する。RFC 8725 3.1。
+  `CmnJwtToken.TryVerifySignature` で見るので、照合しない `JWS` の派生を渡されても通さない）。
+  **受ける `alg` は呼び出し側が決める**（クライアントの登録など）。**ヘッダの `alg` を読んで鍵を作ると、照合の意味が無くなる。**
+  JWK からなら `JwsFactory.CreateFromJwk(alg, jwk)` で作る。鍵の型は制限しない（`client_secret_jwt` なら `JWS_HS256` など。OIDC Core 9）ので、
+  **クライアントの登録どおりの型の鍵だけを渡す**（公開鍵の値を HS* の鍵に使うと、alg の取り違えになる。RFC 8725 3.1 : 鍵は 1 つの alg だけで使う）。
+  **鍵の引数に `null` のリテラルを書くと、JWK（`string`）の版と区別できず、コンパイル エラーになる**（`(JWS)null` と書けば `ArgumentNullException`）
 - `AccessToken` は `typ`（`at+jwt`）を確認しない（RFC 9068 の形式には準拠していない）。
   JWS の層で照合するなら `JWS.Verify(jwt, typ)`（[`Public/Security/ANALYSIS.md`](../Public/Security/ANALYSIS.md) 4.1 節）
 

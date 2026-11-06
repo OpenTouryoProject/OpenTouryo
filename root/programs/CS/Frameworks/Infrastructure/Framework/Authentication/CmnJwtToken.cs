@@ -50,6 +50,7 @@
 //*                                同じ読み方で exp・nbf を確かめられるようにする。#661。引数と振る舞いは変えていない）
 //*  2026/11/06  玄人 幸道         CheckClaims：値がオブジェクト・配列でも例外にせず false にし、Obsolete（警告）にした。
 //*                                無い・読めないクレームを invalid_request で返す TryGetStringClaim を追加（#662）
+//*  2026/11/06  玄人 幸道         TryVerifySignature：ヘッダの alg が、検証鍵の alg と違えば false にする（RFC 8725 3.1。#664）
 //**********************************************************************************
 
 using System;
@@ -670,6 +671,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// JWS.Verify は、区切りが足りない・Base64url でない・ヘッダが JSON のオブジェクトでない入力で、
         /// 例外（IndexOutOfRangeException・FormatException・JsonException・NullReferenceException）を投げる。
         /// 外から来る値を検証する口（要求オブジェクト・アサーション）は、それを false にそろえる（#654 のレビュー）。
+        ///
+        /// **ヘッダの alg が、検証鍵の alg（JWS.JWSHeader.alg）と違えば false**（大文字・小文字を区別する。RFC 8725 3.1。#664）。
+        /// 基盤の JWS の型（JWS_RSA・JWS_ECDSA・JWS_HMACSHA）は、Verify の中でも同じ照合をしている。
+        /// 呼び出し側が JWS を渡せる版（#664）で、照合しない派生を渡されても、alg の取り違えを通さないために、ここでも見る。
         /// </remarks>
         internal static bool TryVerifySignature(JWS jws, string jwt)
         {
@@ -681,6 +686,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
             if (JwtReader.TryReadHeader(jwt) == null)
             {
                 // ヘッダが読めない（JSON のオブジェクトでない）
+                return false;
+            }
+
+            if (jws == null || jws.JWSHeader == null || string.IsNullOrEmpty(jws.JWSHeader.alg) ||
+                !string.Equals(JwtReader.TryReadAlg(jwt), jws.JWSHeader.alg, StringComparison.Ordinal))
+            {
+                // ヘッダの alg が、検証鍵の alg と違う（無い・文字列でないものも）
                 return false;
             }
 
