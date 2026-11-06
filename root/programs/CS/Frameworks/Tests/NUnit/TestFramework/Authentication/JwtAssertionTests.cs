@@ -30,6 +30,7 @@
 //*  2026/11/05  玄人 幸道         期待する iss・aud を受ける版と、Create の sub のテストを足した。受けない版の Obsolete の警告を抑えた（#654）
 //*  2026/11/05  玄人 幸道         sub が iss と違っても通すこと（観測）・形の壊れた入力・scope の有無・ES256 の期限切れを足した（#654 のレビューの指摘 3・5）
 //*  2026/11/05  玄人 幸道         aud を唯一の値に限ったことのテストを足した（#654 のレビューの指摘 1）
+//*  2026/11/06  玄人 幸道         検証鍵（JWS）を受ける Verify のテストを追加（#664）
 //**********************************************************************************
 
 using System;
@@ -439,6 +440,93 @@ namespace TestFramework.Authentication
             ECParameters cerPub = TestCertificates.LoadPfx(TestCertificates.EcdsaPfx256).GetECDsaPublicKey().ExportParameters(false);
             Assert.That(JwtAssertion.VerifyByECDsa(byX509, Iss, auds, out sub, out scopes, out jobj, cerPub), Is.True, "証明書");
             Assert.That(sub, Is.EqualTo(Iss), "Create（証明書）は sub を入れる");
+        }
+
+        #endregion
+
+        #region 検証鍵（JWS）を受ける版（#664）
+
+        /// <summary>
+        /// 渡した検証鍵の alg（PS256・RS256・HS256）で署名したものは通り、ヘッダの alg が鍵の alg と違うもの・
+        /// 別の鍵・iss や aud の違うもの・期限切れは false。
+        /// </summary>
+        [Test]
+        [Basis("FAPI 1.0 Advanced 8.6（JWS は PS256 か ES256 を使う）")]
+        [Basis("RFC 8725 3.1（呼び出し側が受ける alg を決め、ほかの alg は使わない）")]
+        [Basis("OIDC Core 9（client_secret_jwt は、client_secret を鍵にした HMAC）")]
+        [Basis("RFC 7523 3 の 1〜4（iss・sub・aud・exp を持つ。aud が自分を示さなければ断る）")]
+        [Basis("#664")]
+        public void Jws_ExpectedIssAud()
+        {
+            string[] auds = new string[] { AsIssuer, Aud };
+            string sub, scopes; JObject jobj;
+
+            RSAParameters priv, pub, otherPub;
+            using (RSA rsa = RSA.Create(2048))
+            {
+                priv = rsa.ExportParameters(true);
+                pub = rsa.ExportParameters(false);
+            }
+            using (RSA other = RSA.Create(2048))
+            {
+                otherPub = other.ExportParameters(false);
+            }
+
+            string payload = JwtAssertionTests.Payload().ToString(Newtonsoft.Json.Formatting.None);
+            string ps256 = new JWS_PS256_Param(priv).Create(payload);
+
+            Assert.That(JwtAssertion.Verify(ps256, Iss, auds, out sub, out scopes, out jobj, new JWS_PS256_Param(pub)), Is.True, "PS256");
+            Assert.That(sub, Is.EqualTo(Iss));
+            Assert.That(jobj, Is.Not.Null);
+            Assert.That(JwtAssertion.Verify(ps256, Iss, auds, out sub, out scopes, out jobj,
+                JwsFactory.CreateFromJwk(JwtConst.PS256, JObject.Parse(new RsaPublicKeyConverter().ParamToJwk(pub)))), Is.True, "JWK から作った PS256");
+            Assert.That(JwtAssertion.Verify(ps256, Iss, auds, out sub, out scopes, out jobj, new JWS_RS256_Param(pub)), Is.False,
+                "PS256 で署名したものを RS256 で検証する");
+            Assert.That(jobj, Is.Null, "通らなければ jobj は null");
+            Assert.That(JwtAssertion.Verify(ps256, Iss, auds, out sub, out scopes, out jobj, new JWS_PS384_Param(pub)), Is.False,
+                "PS256 で署名したものを PS384 で検証する");
+            Assert.That(JwtAssertion.Verify(ps256, Iss, auds, out sub, out scopes, out jobj, new JWS_PS256_Param(otherPub)), Is.False, "別の鍵");
+            Assert.That(JwtAssertion.Verify(ps256, "client02", auds, out sub, out scopes, out jobj, new JWS_PS256_Param(pub)), Is.False, "iss が違う");
+            Assert.That(JwtAssertion.Verify(ps256, Iss, new string[] { AsIssuer }, out sub, out scopes, out jobj, new JWS_PS256_Param(pub)),
+                Is.False, "aud が違う");
+
+            // JWK の版（kty で RS256 に決まる）は、PS256 を通さない（従来どおり）
+            Assert.That(JwtAssertion.Verify(ps256, Iss, auds, out sub, out scopes, out jobj, new RsaPublicKeyConverter().ParamToJwk(pub)),
+                Is.False, "JWK の版（RS256）");
+
+            // RS256 も、渡せば通る
+            string rs256 = new JWS_RS256_Param(priv).Create(payload);
+            Assert.That(JwtAssertion.Verify(rs256, Iss, auds, out sub, out scopes, out jobj, new JWS_RS256_Param(pub)), Is.True, "RS256");
+            Assert.That(JwtAssertion.Verify(rs256, Iss, auds, out sub, out scopes, out jobj, new JWS_PS256_Param(pub)), Is.False,
+                "RS256 で署名したものを PS256 で検証する");
+
+            // client_secret_jwt（HS256）
+            byte[] secret = System.Text.Encoding.UTF8.GetBytes("client_secret_0123456789abcdef0123456789");
+            string hs256 = new JWS_HS256(secret).Create(payload);
+            Assert.That(JwtAssertion.Verify(hs256, Iss, auds, out sub, out scopes, out jobj, new JWS_HS256(secret)), Is.True, "HS256");
+            Assert.That(JwtAssertion.Verify(hs256, Iss, auds, out sub, out scopes, out jobj,
+                new JWS_HS256(System.Text.Encoding.UTF8.GetBytes("another_secret_0123456789abcdef012345"))), Is.False, "HS256：別の鍵");
+
+            // 期限切れ
+            JObject expired = JwtAssertionTests.Payload();
+            expired[OAuth2AndOIDCConst.exp] = DateTimeOffset.Now.ToUnixTimeSeconds() - 60;
+            Assert.That(JwtAssertion.Verify(new JWS_PS256_Param(priv).Create(expired.ToString(Newtonsoft.Json.Formatting.None)),
+                Iss, auds, out sub, out scopes, out jobj, new JWS_PS256_Param(pub)), Is.False, "期限切れ");
+
+            foreach (string broken in JwtAssertionTests.BrokenJwts())
+            {
+                Assert.That(JwtAssertion.Verify(broken, Iss, auds, out sub, out scopes, out jobj, new JWS_PS256_Param(pub)),
+                    Is.False, "形が壊れている : " + (broken ?? "null"));
+            }
+
+            // ヘッダの alg を見ない検証器を渡されても、alg が違えば通さない
+            JWS anyAlg = new RequestObjectTests.AnyAlgJws(JwtConst.PS256);
+            Assert.That(JwtAssertion.Verify(RequestObjectTests.UnsignedJws(JwtConst.RS256, JwtAssertionTests.Payload()),
+                Iss, auds, out sub, out scopes, out jobj, anyAlg), Is.False, "alg が違う（ヘッダの alg を見ない検証器）");
+
+            Assert.Throws<ArgumentNullException>(() => JwtAssertion.Verify(ps256, Iss, auds, out sub, out scopes, out jobj, (JWS)null), "jws が null");
+            Assert.Throws<ArgumentNullException>(() => JwtAssertion.Verify(ps256, null, auds, out sub, out scopes, out jobj, new JWS_PS256_Param(pub)),
+                "期待する iss が null");
         }
 
         #endregion

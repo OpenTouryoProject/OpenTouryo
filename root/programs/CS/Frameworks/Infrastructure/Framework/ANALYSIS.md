@@ -332,7 +332,17 @@ DCR の口の認可、クライアント登録の持ち方。
   **`exp` と同じ秒は通す**（従来どおり。RFC 7519 4.1.4 の「`exp` 以後は受けない」より 1 秒緩い）。
   **数値の文字列も、従来どおり読む**（`CreateExpClaim` などが文字列を返すため。DPoP の `iat` だけは数値に限る）。
   **無い・読めない値は、例外にせず検証の失敗（`false`）**。2026/11/05 までは、`IdToken`・`AccessToken`・`JwtAssertion` の `Verify`
-  と `CmnJwtToken.VerifyExp`・`VerifyNbf` が、`long.Parse` の例外を投げていた（`ResponseObject.Verify` は #644 で先に `false` にしていた）
+  と `CmnJwtToken.VerifyExp`・`VerifyNbf` が、`long.Parse` の例外を投げていた（`ResponseObject.Verify` は #644 で先に `false` にしていた）。
+  **JWT のペイロード（JToken）を持つ呼び出し側は、公開した `TryReadNumericDate`・`VerifyExpClaim`・`VerifyNbfClaim` を使う**（#661）。
+  文字列に直して `VerifyExp`・`VerifyNbf` に渡さない。`ToString()` はカルチャに依存し、たとえば de-DE では小数が `1000,5` になって読めない。
+  `VerifyNbfClaim` は**無い `nbf` も `false`** なので、`nbf` を任意とするなら、先に null を見る。
+- **外から来た要求のクレームを取り出すなら `CmnJwtToken.TryGetStringClaim` を使う**（#662）。無い・読めないクレームは
+  `invalid_request`（CIBA Core 13）で返し、例外にしない。文字列・数値・真偽値は文字列で返し（数値はカルチャに依らない字面。
+  CIBA の `requested_expiry` は文字列でも数値でも来る）、オブジェクト・配列・日付は読めないもの、**明示的な `null` は無いのと同じ**。
+  **`CheckClaims` は `[Obsolete]`（警告）にした**（無いクレームを `server_error` で返すため）。振る舞いは、値がオブジェクト・配列のとき
+  **例外（`ArgumentException`）にせず `false`（`server_error`）にした**ことだけを変えた。
+  **日付の形の文字列に注意する。** 既定の `JObject.Parse` は `"2026-01-01T00:00:00Z"` のような文字列を日付に変え、元の字面を戻せないので、
+  `TryGetStringClaim` は読めないもの（`invalid_request`）にする。**ペイロードは `DateParseHandling.None` で読んでおく**
 - **`RequestObject.Verify`・`VerifyCiba` は、署名に加えて必須のクレームと `exp`・`nbf` を確かめる**（#653）。
   2026/11/05 までは、署名が正しければクレームによらず `true` を返していた（「必須項目の不足」の分岐も `true`）。
   **必須の範囲は仕様に合わせた。** `Verify` は `iss`・`aud`・`response_type`・`client_id`・`scope`（**`state`・`nonce` は必須にしない**。
@@ -351,6 +361,13 @@ DCR の口の認可、クライアント登録の持ち方。
   `client_id` を入れない要求オブジェクトは断られる。`Create` は入れる）。**時計のずれは許さない**（`exp`・`nbf` の許容幅は 0。
   `IdToken` などと同じ）ので、CIBA ではクライアントの時計が進んでいると `nbf` で断られる。
   **日付の形の文字列のクレーム**（`"2026-11-05T00:00:00Z"` など）は、日付に変えずに文字列として読む（`DateParseHandling.None`）
+- **`RequestObject.Create` で `exp`・`nbf` を入れるなら、有効期間（`TimeSpan`）を受ける版を使う**（#660）。
+  `nbf`・`iat` に今の時刻（UTC）、`exp` に `nbf` + 有効期間を、**JSON の数値**で入れる（RFC 7519 2。`CreateCiba` は文字列）。
+  FAPI（1.0 Advanced 5.2.3-11・14）はクライアントに `exp`・`nbf` を求めるので、**受けない版で作った要求オブジェクトは、
+  FAPI の認可サーバに断られる。** 受けない版は従来どおりどれも入れない（振る舞いは変えていない）。
+  **有効期間の上限は見ない**（FAPI の 60 分は呼び出し側が守る）。1 秒未満は `ArgumentOutOfRangeException`。
+  **`nbf` は今の時刻ちょうどで、時計のずれの余裕を取らない**ので、認可サーバの時計が遅れていて許容幅なしで確かめる相手には、
+  `nbf` で断られうる（この基盤の `Verify` も許容幅は 0）
 - **`JwtAssertion` は、期待する `iss`・`aud` を受ける版**（`Verify(jwt, iss, auds, out sub, out scopes, out jobj, key)`・
   `VerifyByRsa`・`VerifyByECDsa`）**を使う**（RFC 7523 3。#654）。`iss` の一致、`sub` が在ること、`aud`、`exp`、在れば `nbf` を確かめる。
   **`aud` は唯一の値**（文字列か、要素 1 つの配列）で、それが `auds` のいずれかと一致すること（完全一致で正規化しない）。
@@ -362,6 +379,16 @@ DCR の口の認可、クライアント登録の持ち方。
   **`jti` の使い回しも見ない**（呼び出し側の台帳で行う）。**形の壊れた入力も、例外にせず `false`**（`RequestObject` も同じ。`CmnJwtToken.TryVerifySignature`）。
   **受けない版（`iss`・`aud` を `out` で返すだけ）は `[Obsolete]`（警告）にした**（振る舞いは変えていない。`aud` が配列だと例外になる）。
   **`Create` は `sub`（= `iss`）を入れる**ようにした（2026/11/05 まで入れていなかった。RFC 7523 3 の 2 で必須）
+- **署名の alg を選ぶなら、検証鍵（`JWS`）を受ける版を使う**（#664）。`RequestObject.Verify(ro, aud, out iss, jws)`・
+  `VerifyCiba(ro, aud, out iss, jws)`・`JwtAssertion.Verify(jwt, iss, auds, out sub, out scopes, out jobj, jws)`。
+  ほかの版は、`RequestObject.Verify` が RS256、`VerifyCiba` が ES256、`JwtAssertion` が JWK の `kty` で RS256 か ES256 に決まる。
+  FAPI 1.0 Advanced 8.6 は PS256 か ES256 を使うとする（RS256 は使わないほうがよい）。確認するクレームは、ほかの版と同じ。
+  **ヘッダの `alg` が、渡した鍵の `alg`（`JWS.JWSHeader.alg`）と違えば `false`**（大文字・小文字を区別する。RFC 8725 3.1。
+  `CmnJwtToken.TryVerifySignature` で見るので、照合しない `JWS` の派生を渡されても通さない）。
+  **受ける `alg` は呼び出し側が決める**（クライアントの登録など）。**ヘッダの `alg` を読んで鍵を作ると、照合の意味が無くなる。**
+  JWK からなら `JwsFactory.CreateFromJwk(alg, jwk)` で作る。鍵の型は制限しない（`client_secret_jwt` なら `JWS_HS256` など。OIDC Core 9）ので、
+  **クライアントの登録どおりの型の鍵だけを渡す**（公開鍵の値を HS* の鍵に使うと、alg の取り違えになる。RFC 8725 3.1 : 鍵は 1 つの alg だけで使う）。
+  **鍵の引数に `null` のリテラルを書くと、JWK（`string`）の版と区別できず、コンパイル エラーになる**（`(JWS)null` と書けば `ArgumentNullException`）
 - `AccessToken` は `typ`（`at+jwt`）を確認しない（RFC 9068 の形式には準拠していない）。
   JWS の層で照合するなら `JWS.Verify(jwt, typ)`（[`Public/Security/ANALYSIS.md`](../Public/Security/ANALYSIS.md) 4.1 節）
 

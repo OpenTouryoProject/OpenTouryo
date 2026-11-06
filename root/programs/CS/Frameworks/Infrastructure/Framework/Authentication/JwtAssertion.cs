@@ -40,6 +40,8 @@
 //*                                受けない版を Obsolete（警告）にした。Create は sub（= iss）を入れる（RFC 7523 3。#654）
 //*  2026/11/05  玄人 幸道         期待する iss・aud を受ける版：aud を唯一の値に限った（draft-ietf-oauth-rfc7523bis 4）。
 //*                                形の壊れた入力を、例外にせず false にした（#654 のレビューの指摘 1・5）
+//*  2026/11/06  玄人 幸道         期待する iss・aud を受ける Verify に、検証鍵（JWS）を受けて署名の alg を選べるオーバーロードを追加（#664）
+//*  2026/11/06  玄人 幸道         remarks に、登録どおりの鍵の型だけを渡すことを書いた（#664 のレビューの指摘 2）
 //**********************************************************************************
 
 using System;
@@ -468,6 +470,43 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 out sub, out scopes, out jobj);
         }
 
+        /// <summary>Verify（期待する iss・aud と照合する。署名の alg は、渡した検証鍵で選ぶ）</summary>
+        /// <param name="jwtAssertion">string</param>
+        /// <param name="iss">期待する iss（client_id）</param>
+        /// <param name="auds">期待する aud の集合（**認可サーバの issuer だけを推奨**。ほかは互換のため）</param>
+        /// <param name="sub">out string（JWT の sub）</param>
+        /// <param name="scopes">out string（JWT の scope。無ければ空文字）</param>
+        /// <param name="jobj">out JObject（ペイロード。検証に通ったときだけ。通らなければ null）</param>
+        /// <param name="jws">
+        /// 署名の検証に使う、クライアントの鍵（JWS_PS256_Param など）。
+        /// JWK からなら JwsFactory.CreateFromJwk(alg, jwk) で作る
+        /// </param>
+        /// <returns>検証結果</returns>
+        /// <remarks>
+        /// VerifyByRsa（期待する iss・aud を受ける版）と同じ確認をする。違いは、**署名の alg を呼び出し側が選べる**ことだけである（#664）。
+        /// JWK を受ける版は kty で RS256 か ES256 に決め、ヘッダの alg を見ない。
+        /// FAPI 1.0 Advanced 8.6 は、PS256 か ES256 を使うとする（RS256 は使わないほうがよい）。
+        /// - **ヘッダの alg が、渡した鍵の alg と違えば false**（大文字・小文字を区別する。RFC 8725 3.1）
+        /// - **受ける alg は、呼び出し側が決める**（クライアントの登録の token_endpoint_auth_signing_alg など）。
+        ///   ヘッダの alg を読んで鍵を作ると、照合の意味が無くなる
+        /// - 渡せる鍵の型は制限しない（client_secret_jwt なら、client_secret を鍵にした JWS_HS256 などを渡す。OIDC Core 9）
+        /// - **鍵の型は、クライアントの登録どおりのものだけを渡す。** 公開鍵の値を HS* の鍵に使うと、alg の取り違えになる（RFC 8725 3.1 : 鍵は 1 つの alg だけで使う）
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">iss が null か空、auds が null か空、jws が null</exception>
+        public static bool Verify(string jwtAssertion, string iss, string[] auds,
+            out string sub, out string scopes, out JObject jobj, JWS jws)
+        {
+            JwtAssertion.CheckExpected(iss, auds);
+
+            if (jws == null)
+            {
+                throw new ArgumentNullException(nameof(jws));
+            }
+
+            return JwtAssertion.VerifyCore(jwtAssertion, jws, iss, auds,
+                out sub, out scopes, out jobj);
+        }
+
         /// <summary>aud が唯一の値で、それが期待する値のいずれかと一致するか</summary>
         /// <param name="aud">aud のクレーム</param>
         /// <param name="auds">期待する aud の集合</param>
@@ -507,7 +546,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>期待する iss・aud を受ける版の本体</summary>
         /// <param name="jwtAssertion">string</param>
-        /// <param name="jws">検証鍵</param>
+        /// <param name="jws">検証鍵（ヘッダの alg と、この鍵の alg が一致すること。#664）</param>
         /// <param name="iss">期待する iss</param>
         /// <param name="auds">期待する aud の集合</param>
         /// <param name="sub">out string</param>

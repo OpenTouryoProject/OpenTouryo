@@ -31,6 +31,9 @@
 //*  2026/11/05  玄人 幸道         aud の照合のケースを足し、OIDC と CIBA をそろえた（#653 ph2 のレビューの指摘 1・2・3）
 //*  2026/11/05  玄人 幸道         aud を受けない版の Obsolete の警告（CS0618）を抑えた（#653）
 //*  2026/11/05  玄人 幸道         形の壊れた入力を、例外にせず false にすることを足した（#654 のレビューの指摘 5）
+//*  2026/11/06  玄人 幸道         有効期間を受ける Create（exp・nbf・iat を入れる）のテストを追加（#660）
+//*  2026/11/06  玄人 幸道         nbf の範囲を Create の前後の時刻で挟み、TimeSpan.MaxValue を足した（#660 のレビューの指摘 3・4）
+//*  2026/11/06  玄人 幸道         検証鍵（JWS）を受ける Verify・VerifyCiba のテストを追加（#664）
 //**********************************************************************************
 
 using System;
@@ -138,6 +141,87 @@ namespace TestFramework.Authentication
                 Assert.That((string)p[OAuth2AndOIDCConst.max_age], Is.EqualTo("300"));
                 Assert.That((string)p[OAuth2AndOIDCConst.prompt], Is.EqualTo("login"));
                 Assert.That((string)p[OAuth2AndOIDCConst.login_hint], Is.EqualTo("user01"));
+            }
+        }
+
+        /// <summary>
+        /// OIDC：有効期間を受ける Create は、nbf・iat に今の時刻、exp に nbf + 有効期間を、JSON の数値で入れる。
+        /// 期待する aud を受ける Verify で通る。RSAParameters 版・JWK 版のどちらも同じ。
+        /// </summary>
+        [Test]
+        [Basis("FAPI 1.0 Advanced 5.2.3-11・14（クライアントは、要求オブジェクトに exp・nbf を送る）")]
+        [Basis("RFC 7519 2（NumericDate は JSON の数値）・4.1.4・4.1.5・4.1.6")]
+        [Basis("#660")]
+        public void Oidc_Lifetime()
+        {
+            const string op = "https://op.example.com/";
+
+            using (RSA rsa = RSA.Create(2048))
+            {
+                long before = RequestObjectTests.Now();
+                string[] ros = new string[]
+                {
+                    RequestObject.Create("client01", op,
+                        "code", "", "https://rp.example.com/cb", "openid", "state01", "nonce01",
+                        "", "", "", new ClaimsInRO(null, null, null), TimeSpan.FromMinutes(10), rsa.ExportParameters(true)),
+                    RequestObject.Create("client01", op,
+                        "code", "", "https://rp.example.com/cb", "openid", "state01", "nonce01",
+                        "", "", "", new ClaimsInRO(null, null, null), TimeSpan.FromMinutes(10),
+                        new RsaPrivateKeyConverter().ParamToJwk(rsa.ExportParameters(true)))
+                };
+                long after = RequestObjectTests.Now();
+
+                foreach (string ro in ros)
+                {
+                    JObject p = PayloadOf(ro);
+
+                    Assert.That(p[OAuth2AndOIDCConst.exp].Type, Is.EqualTo(JTokenType.Integer), "exp は数値");
+                    Assert.That(p[OAuth2AndOIDCConst.nbf].Type, Is.EqualTo(JTokenType.Integer), "nbf は数値");
+                    Assert.That(p[OAuth2AndOIDCConst.iat].Type, Is.EqualTo(JTokenType.Integer), "iat は数値");
+
+                    long nbf = (long)p[OAuth2AndOIDCConst.nbf];
+                    Assert.That(nbf, Is.InRange(before, after), "nbf は今の時刻");
+                    Assert.That((long)p[OAuth2AndOIDCConst.iat], Is.EqualTo(nbf), "iat = nbf");
+                    Assert.That((long)p[OAuth2AndOIDCConst.exp], Is.EqualTo(nbf + 600), "exp = nbf + 有効期間");
+
+                    string iss;
+                    Assert.That(RequestObject.Verify(ro, op, out iss, rsa.ExportParameters(false)), Is.True);
+                    Assert.That(iss, Is.EqualTo("client01"));
+                }
+
+                // 上限は見ない。TimeSpan.MaxValue でも long は溢れない
+                JObject max = PayloadOf(RequestObject.Create("client01", op,
+                    "code", "", "https://rp.example.com/cb", "openid", "state01", "nonce01",
+                    "", "", "", new ClaimsInRO(null, null, null), TimeSpan.MaxValue, rsa.ExportParameters(true)));
+                Assert.That((long)max[OAuth2AndOIDCConst.exp],
+                    Is.EqualTo((long)max[OAuth2AndOIDCConst.nbf] + (long)TimeSpan.MaxValue.TotalSeconds), "TimeSpan.MaxValue");
+
+                // 1 秒未満の有効期間は受けない
+                foreach (TimeSpan lifetime in new TimeSpan[] { TimeSpan.Zero, TimeSpan.FromSeconds(-1), TimeSpan.FromMilliseconds(500) })
+                {
+                    ArgumentOutOfRangeException e = Assert.Throws<ArgumentOutOfRangeException>(() => RequestObject.Create("client01", op,
+                        "code", "", "https://rp.example.com/cb", "openid", "state01", "nonce01",
+                        "", "", "", new ClaimsInRO(null, null, null), lifetime, rsa.ExportParameters(true)), lifetime.ToString());
+                    Assert.That(e.ParamName, Is.EqualTo("lifetime"));
+                }
+            }
+        }
+
+        /// <summary>OIDC：有効期間を受けない Create は、exp・nbf・iat を入れない（従来どおり）。</summary>
+        [Test]
+        [Basis("設計：RequestObject.Create（有効期間を受ける版）の remarks（有効期間を受けない版は、どれも入れない）")]
+        [Basis("#660")]
+        public void Oidc_NoLifetime_NoTimeClaims()
+        {
+            using (RSA rsa = RSA.Create(2048))
+            {
+                JObject p = PayloadOf(RequestObject.Create("client01", "https://op.example.com/",
+                    "code", "", "https://rp.example.com/cb", "openid", "state01", "nonce01",
+                    "", "", "", new ClaimsInRO(null, null, null), rsa.ExportParameters(true)));
+
+                Assert.That(p.ContainsKey(OAuth2AndOIDCConst.exp), Is.False);
+                Assert.That(p.ContainsKey(OAuth2AndOIDCConst.nbf), Is.False);
+                Assert.That(p.ContainsKey(OAuth2AndOIDCConst.iat), Is.False);
             }
         }
 
@@ -486,6 +570,203 @@ namespace TestFramework.Authentication
 
             Assert.Throws<ArgumentNullException>(() => RequestObject.VerifyCiba(same, null, out iss, pub), "期待する aud が null");
             Assert.Throws<ArgumentNullException>(() => RequestObject.VerifyCiba(same, "", out iss, pub), "期待する aud が空");
+        }
+
+        #endregion
+
+        #region 検証鍵（JWS）を受ける版（#664）
+
+        /// <summary>Verify は、ヘッダの alg を見ない検証器（テスト用）。CmnJwtToken.TryVerifySignature の alg の照合を確かめる。</summary>
+        internal class AnyAlgJws : JWS
+        {
+            /// <summary>alg を名乗るだけで、署名は確かめない</summary>
+            public AnyAlgJws(string alg)
+            {
+                this.JWSHeader = new JWS_Header() { alg = alg };
+            }
+
+            /// <summary>使わない</summary>
+            public override string Create(string payloadJson)
+            {
+                throw new NotSupportedException();
+            }
+
+            /// <summary>常に true（ヘッダの alg も署名も見ない）</summary>
+            public override bool Verify(string jwtString)
+            {
+                return true;
+            }
+        }
+
+        /// <summary>ヘッダの alg を指定した、署名の無い（でたらめな）JWS</summary>
+        internal static string UnsignedJws(string alg, JObject payload)
+        {
+            Func<string, string> b64 = x => CustomEncode.ToBase64UrlString(Encoding.UTF8.GetBytes(x));
+            return b64(new JObject { { "alg", alg }, { "typ", "JWT" } }.ToString(Formatting.None)) + "."
+                + b64(payload.ToString(Formatting.None)) + ".c2ln";
+        }
+
+        /// <summary>
+        /// OIDC：渡した検証鍵の alg（RS256・RS384・RS512・PS256・PS384・PS512）で署名したものは通り、
+        /// ヘッダの alg が鍵の alg と違うもの・別の鍵・クレームの足りないもの・aud の違うものは false。
+        /// </summary>
+        [Test]
+        [Basis("FAPI 1.0 Advanced 8.6（JWS は PS256 か ES256 を使う）")]
+        [Basis("RFC 8725 3.1（呼び出し側が受ける alg を決め、ほかの alg は使わない）")]
+        [Basis("RFC 9101 4・6.2（署名を検証し、aud は認可サーバの issuer）")]
+        [Basis("#664")]
+        public void Oidc_Jws()
+        {
+            const string op = "https://op.example.com/";
+            string iss;
+
+            RSAParameters priv, pub, otherPub;
+            using (RSA rsa = RSA.Create(2048))
+            {
+                priv = rsa.ExportParameters(true);
+                pub = rsa.ExportParameters(false);
+            }
+            using (RSA other = RSA.Create(2048))
+            {
+                otherPub = other.ExportParameters(false);
+            }
+
+            string[] algs = new string[] {
+                JwtConst.RS256, JwtConst.RS384, JwtConst.RS512, JwtConst.PS256, JwtConst.PS384, JwtConst.PS512 };
+
+            foreach (string alg in algs)
+            {
+                string ro = JwsFactory.CreateFromRsaParameters(alg, priv).Create(RequestObjectTests.OidcPayload().ToString(Formatting.None));
+
+                Assert.That(RequestObject.Verify(ro, op, out iss, JwsFactory.CreateFromRsaParameters(alg, pub)), Is.True, alg);
+                Assert.That(iss, Is.EqualTo("client01"), alg);
+                Assert.That(RequestObject.Verify(ro, op, out iss, JwsFactory.CreateFromRsaParameters(alg, otherPub)), Is.False, alg + "：別の鍵");
+                Assert.That(RequestObject.Verify(ro, "https://other.example.com/", out iss, JwsFactory.CreateFromRsaParameters(alg, pub)),
+                    Is.False, alg + "：aud が違う");
+
+                foreach (string another in algs)
+                {
+                    if (another != alg)
+                    {
+                        Assert.That(RequestObject.Verify(ro, op, out iss, JwsFactory.CreateFromRsaParameters(another, pub)),
+                            Is.False, alg + " で署名したものを " + another + " で検証する");
+                    }
+                }
+            }
+
+            // JWK から作る（JwsFactory.CreateFromJwk）
+            JObject jwk = JObject.Parse(new RsaPublicKeyConverter().ParamToJwk(pub));
+            string ps256 = new JWS_PS256_Param(priv).Create(RequestObjectTests.OidcPayload().ToString(Formatting.None));
+            Assert.That(RequestObject.Verify(ps256, op, out iss, JwsFactory.CreateFromJwk(JwtConst.PS256, jwk)), Is.True, "JWK から作った PS256");
+
+            // RS256 で決め打ちの版は、PS256 を通さない（従来どおり）
+            Assert.That(RequestObject.Verify(ps256, op, out iss, pub), Is.False, "RSAParameters の版（RS256）");
+
+            // クレームの確認は、ほかの版と同じ
+            JObject noClientId = RequestObjectTests.OidcPayload();
+            noClientId.Remove(OAuth2AndOIDCConst.client_id);
+            Assert.That(RequestObject.Verify(new JWS_PS256_Param(priv).Create(noClientId.ToString(Formatting.None)), op, out iss,
+                new JWS_PS256_Param(pub)), Is.False, "client_id が無い");
+
+            foreach (string broken in JwtAssertionTests.BrokenJwts())
+            {
+                Assert.That(RequestObject.Verify(broken, op, out iss, new JWS_PS256_Param(pub)), Is.False, "形が壊れている : " + (broken ?? "null"));
+            }
+
+            Assert.Throws<ArgumentNullException>(() => RequestObject.Verify(ps256, op, out iss, (JWS)null), "jws が null");
+            Assert.Throws<ArgumentNullException>(() => RequestObject.Verify(ps256, null, out iss, new JWS_PS256_Param(pub)), "期待する aud が null");
+            Assert.Throws<ArgumentNullException>(() => RequestObject.Verify(ps256, "", out iss, new JWS_PS256_Param(pub)), "期待する aud が空");
+        }
+
+        /// <summary>
+        /// ヘッダの alg を見ない検証器を渡されても、ヘッダの alg が検証器の alg と違えば false（大文字・小文字も区別する）。
+        /// ヘッダの alg が無い・文字列でないものも false。
+        /// </summary>
+        [Test]
+        [Basis("RFC 8725 3.1（呼び出し側が受ける alg を決め、ほかの alg は使わない）")]
+        [Basis("RFC 7515 4.1.1（alg は大文字・小文字を区別する）")]
+        [Basis("#664")]
+        public void Jws_HeaderAlgMustMatch()
+        {
+            const string op = "https://op.example.com/";
+            string iss;
+            JWS anyAlg = new AnyAlgJws(JwtConst.PS256);
+            JObject payload = RequestObjectTests.OidcPayload();
+
+            Assert.That(RequestObject.Verify(RequestObjectTests.UnsignedJws(JwtConst.PS256, payload), op, out iss, anyAlg), Is.True,
+                "alg が一致（検証器は署名を見ない）");
+            Assert.That(RequestObject.Verify(RequestObjectTests.UnsignedJws(JwtConst.RS256, payload), op, out iss, anyAlg), Is.False, "alg が違う");
+            Assert.That(RequestObject.Verify(RequestObjectTests.UnsignedJws("ps256", payload), op, out iss, anyAlg), Is.False, "大文字・小文字が違う");
+            Assert.That(RequestObject.Verify(RequestObjectTests.UnsignedJws("none", payload), op, out iss, anyAlg), Is.False, "none");
+
+            Func<string, string> b64 = x => CustomEncode.ToBase64UrlString(Encoding.UTF8.GetBytes(x));
+            string body = "." + b64(payload.ToString(Formatting.None)) + ".c2ln";
+            Assert.That(RequestObject.Verify(b64("{\"typ\":\"JWT\"}") + body, op, out iss, anyAlg), Is.False, "alg が無い");
+            Assert.That(RequestObject.Verify(b64("{\"alg\":1}") + body, op, out iss, anyAlg), Is.False, "alg が数値");
+
+            Assert.That(RequestObject.Verify(RequestObjectTests.UnsignedJws(JwtConst.PS256, payload), op, out iss, new AnyAlgJws("")),
+                Is.False, "検証器の alg が空");
+        }
+
+        /// <summary>
+        /// CIBA：渡した検証鍵の alg（ES256・ES384・PS256）で署名したものは通り、
+        /// ヘッダの alg が鍵の alg と違うもの・クレームの足りないもの・aud の違うものは false。
+        /// </summary>
+        [Test]
+        [Platform("Win")]
+        [Basis("FAPI CIBA 7.6（FAPI 1.0 Advanced 8.6 に従う。JWS は PS256 か ES256 を使う）")]
+        [Basis("RFC 8725 3.1（呼び出し側が受ける alg を決め、ほかの alg は使わない）")]
+        [Basis("CIBA Core 7.1.1（署名した認証要求。aud は OP の Issuer Identifier）")]
+        [Basis("#664")]
+        public void Ciba_Jws()
+        {
+            const string op = "https://op.example.com/";
+            string iss;
+            string payload = RequestObjectTests.CibaPayload().ToString(Formatting.None);
+
+            ECParameters priv384, pub384, pub256;
+            using (ECDsa ec = ECDsa.Create(ECCurve.NamedCurves.nistP384))
+            {
+                priv384 = ec.ExportParameters(true);
+                pub384 = ec.ExportParameters(false);
+            }
+            using (ECDsa ec = ECDsa.Create(ECCurve.NamedCurves.nistP256))
+            {
+                pub256 = ec.ExportParameters(false);
+            }
+
+            string es384 = JwsFactory.CreateFromEcParameters(JwtConst.ES384, priv384, true).Create(payload);
+            Assert.That(RequestObject.VerifyCiba(es384, op, out iss, JwsFactory.CreateFromEcParameters(JwtConst.ES384, pub384)), Is.True, "ES384");
+            Assert.That(iss, Is.EqualTo("client01"));
+            Assert.That(RequestObject.VerifyCiba(es384, op, out iss, JwsFactory.CreateFromEcParameters(JwtConst.ES256, pub256)), Is.False,
+                "ES384 で署名したものを ES256 で検証する");
+            Assert.That(RequestObject.VerifyCiba(es384, op, out iss, pub256), Is.False, "ECParameters の版（ES256）");
+            Assert.That(RequestObject.VerifyCiba(es384, "https://other.example.com/", out iss,
+                JwsFactory.CreateFromEcParameters(JwtConst.ES384, pub384)), Is.False, "aud が違う");
+
+            // ES256 の証明書（従来の版と同じ鍵）
+            JWS_ES256_X509 x509 = new JWS_ES256_X509(TestCertificates.EcdsaPfx256, TestCertificates.Password);
+            ECParameters cerPub = TestCertificates.LoadPfx(TestCertificates.EcdsaPfx256).GetECDsaPublicKey().ExportParameters(false);
+            Assert.That(RequestObject.VerifyCiba(x509.Create(payload), op, out iss, new JWS_ES256_Param(cerPub, false)), Is.True, "ES256");
+
+            // PS256（FAPI CIBA が認める、もう一方の alg）
+            using (RSA rsa = RSA.Create(2048))
+            {
+                string ps256 = new JWS_PS256_Param(rsa.ExportParameters(true)).Create(payload);
+                Assert.That(RequestObject.VerifyCiba(ps256, op, out iss, new JWS_PS256_Param(rsa.ExportParameters(false))), Is.True, "PS256");
+                Assert.That(RequestObject.VerifyCiba(ps256, op, out iss, new JWS_RS256_Param(rsa.ExportParameters(false))), Is.False,
+                    "PS256 で署名したものを RS256 で検証する");
+            }
+
+            // クレームの確認は、ほかの版と同じ
+            JObject noJti = RequestObjectTests.CibaPayload();
+            noJti.Remove(OAuth2AndOIDCConst.jti);
+            Assert.That(RequestObject.VerifyCiba(JwsFactory.CreateFromEcParameters(JwtConst.ES384, priv384, true).Create(noJti.ToString(Formatting.None)),
+                op, out iss, JwsFactory.CreateFromEcParameters(JwtConst.ES384, pub384)), Is.False, "jti が無い");
+
+            Assert.Throws<ArgumentNullException>(() => RequestObject.VerifyCiba(es384, op, out iss, (JWS)null), "jws が null");
+            Assert.Throws<ArgumentNullException>(() => RequestObject.VerifyCiba(es384, null, out iss,
+                JwsFactory.CreateFromEcParameters(JwtConst.ES384, pub384)), "期待する aud が null");
         }
 
         #endregion

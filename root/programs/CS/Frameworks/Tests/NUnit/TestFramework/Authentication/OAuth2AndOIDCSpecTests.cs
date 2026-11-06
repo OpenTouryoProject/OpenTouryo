@@ -26,6 +26,7 @@
 //*  2026/10/22  玄人 幸道         新規作成（#634）
 //*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //*  2026/10/30  玄人 幸道         response_type・prompt の大文字小文字を区別することにした（#643）
+//*  2026/11/06  玄人 幸道         #663 で足した定数の値を確かめるテストを追加
 //**********************************************************************************
 
 using System;
@@ -43,6 +44,28 @@ namespace TestFramework.Authentication
     [TestFixture]
     public class OAuth2AndOIDCSpecTests
     {
+        /// <summary>#663 で足した定数：仕様の名前と一致する。</summary>
+        [TestCase(OAuth2AndOIDCConst.username, "username")]
+        [TestCase(OAuth2AndOIDCConst.post_logout_redirect_uri, "post_logout_redirect_uri")]
+        [TestCase(OAuth2AndOIDCConst.logout_token, "logout_token")]
+        [TestCase(OAuth2AndOIDCConst.sid, "sid")]
+        [TestCase(OAuth2AndOIDCConst.events, "events")]
+        [TestCase(OAuth2AndOIDCConst.token_endpoint_auth_method, "token_endpoint_auth_method")]
+        [TestCase(OAuth2AndOIDCConst.tls_client_auth_subject_dn, "tls_client_auth_subject_dn")]
+        [TestCase(OAuth2AndOIDCConst.invalid_request_object, "invalid_request_object")]
+        [Basis("RFC 6749 4.3.2（username）")]
+        [Basis("OIDC RP-Initiated Logout 1.0 2（post_logout_redirect_uri）")]
+        [Basis("OIDC Back-Channel Logout 1.0 2.4（sid・events）・2.5（logout_token）")]
+        [Basis("OIDC Front-Channel Logout 1.0 3（sid）")]
+        [Basis("RFC 7591 2（token_endpoint_auth_method）")]
+        [Basis("RFC 8705 2.1.2（tls_client_auth_subject_dn）")]
+        [Basis("RFC 9101 7（invalid_request_object）")]
+        [Basis("#663")]
+        public void Const_SpecNames(string actual, string expected)
+        {
+            Assert.That(actual, Is.EqualTo(expected));
+        }
+
         /// <summary>空白区切り：半角・全角の空白・タブ・改行で切り、空を捨てる。カンマでは切らない。</summary>
         [Test]
         [Basis("RFC 6749 3.3（scope は空白区切りの列挙）")]

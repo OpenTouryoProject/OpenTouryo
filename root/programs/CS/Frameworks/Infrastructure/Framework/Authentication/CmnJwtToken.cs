@@ -46,6 +46,11 @@
 //*                                設定は ReadConfiguredClientIDs で 1 回だけ読む（空白だけの値は無いもの、壊れた JSON は false）（#655 のレビュー）
 //*  2026/11/05  玄人 幸道         ReadConfiguredClientIDs：net10.0 で ClientIDs が文字列の配列の形でないとき（要素がオブジェクト、
 //*                                配列でない 1 つの値）も、設定の誤りとした。バインドは形が違っても例外にしないため（#655 の 2 回目のレビュー）
+//*  2026/11/06  玄人 幸道         TryReadNumericDate・VerifyExpClaim・VerifyNbfClaim を公開した（JToken を持つ呼び出し側が、
+//*                                同じ読み方で exp・nbf を確かめられるようにする。#661。引数と振る舞いは変えていない）
+//*  2026/11/06  玄人 幸道         CheckClaims：値がオブジェクト・配列でも例外にせず false にし、Obsolete（警告）にした。
+//*                                無い・読めないクレームを invalid_request で返す TryGetStringClaim を追加（#662）
+//*  2026/11/06  玄人 幸道         TryVerifySignature：ヘッダの alg が、検証鍵の alg と違えば false にする（RFC 8725 3.1。#664）
 //**********************************************************************************
 
 using System;
@@ -315,6 +320,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="errDescription">string</param>
         /// <param name="nullable">bool</param>
         /// <returns>bool</returns>
+        /// <remarks>
+        /// - **無いクレームは server_error で返す**（従来どおり）。外から来た要求の不備なので、本来は invalid_request である。
+        ///   **TryGetStringClaim を使う**（#662。このメソッドは Obsolete（警告）にした。振る舞いは下の 1 点を除いて変えていない）
+        /// - **値がオブジェクト・配列なら false**（err は server_error）。2026/11/06 までは ArgumentException を投げていた（#662）
+        /// - 数値・真偽値は文字列にして返し、明示的な null は value を null にして true を返す（従来どおり）
+        /// </remarks>
+        [Obsolete("This method returns server_error for a missing claim, please use TryGetStringClaim instead.")]
         public static bool CheckClaims(
             JObject json, string key, out string value,
             out string err, out string errDescription, bool nullable = false)
@@ -325,6 +337,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             if (json.ContainsKey(key))
             {
+                if (json[key] is JContainer)
+                {
+                    // オブジェクト・配列は、文字列にできない（以前は ArgumentException。#662）
+                    err = "server_error";
+                    errDescription = "the value correspond this key is not a string: " + key;
+                    return false;
+                }
+
                 value = (string)json[key];
                 return true;
             }
@@ -340,6 +360,72 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     errDescription = "the value correspond this key is not contained: " + key;
                     return false;
                 }
+            }
+        }
+
+        /// <summary>クレームの値を、文字列として取り出す（外から来た要求の検証に使う）</summary>
+        /// <param name="json">ペイロード（JObject）</param>
+        /// <param name="key">クレーム名</param>
+        /// <param name="required">必須か。false なら、無くても true（value は null）</param>
+        /// <param name="value">値（無ければ null）</param>
+        /// <param name="err">取り出せなければ invalid_request。取り出せれば空文字</param>
+        /// <param name="errDescription">取り出せなければ、その理由。取り出せれば空文字</param>
+        /// <returns>取り出せたら true（必須でないクレームが無いときも true）</returns>
+        /// <remarks>
+        /// - **無い・読めないクレームは invalid_request**（CIBA Core 13・RFC 6749 5.2 : 必須のパラメタが無い、値が不正）。
+        ///   CheckClaims は server_error を返していた（#662）
+        /// - **文字列・数値・真偽値を、文字列として返す**（数値はカルチャに依らない字面）。
+        ///   CIBA の requested_expiry のように、文字列でも数値でも来るクレームがある（CIBA Core 7.1.1）
+        /// - **オブジェクト・配列・日付などは、読めないもの**として false。例外にしない（外から来た値なので）。
+        ///   日付の形の文字列を日付に変えないよう、ペイロードは DateParseHandling.None で読んでおく
+        /// - **明示的な null は、無いのと同じ**に扱う（必須なら false）
+        /// - 空文字は、在るものとして返す（中身の妥当性は呼び出し側で見る）
+        /// - json・key が null なら ArgumentNullException（呼び出し側の誤り）
+        /// </remarks>
+        public static bool TryGetStringClaim(
+            JObject json, string key, bool required,
+            out string value, out string err, out string errDescription)
+        {
+            if (json == null)
+            {
+                throw new ArgumentNullException("json");
+            }
+            if (key == null)
+            {
+                throw new ArgumentNullException("key");
+            }
+
+            value = null;
+            err = "";
+            errDescription = "";
+
+            JToken token = json[key];
+
+            if (token == null || token.Type == JTokenType.Null)
+            {
+                if (!required)
+                {
+                    return true;
+                }
+
+                err = OAuth2AndOIDCConst.invalid_request;
+                errDescription = "the value correspond this key is not contained: " + key;
+                return false;
+            }
+
+            switch (token.Type)
+            {
+                case JTokenType.String:
+                case JTokenType.Integer:
+                case JTokenType.Float:
+                case JTokenType.Boolean:
+                    value = Convert.ToString(((JValue)token).Value, CultureInfo.InvariantCulture);
+                    return true;
+
+                default:
+                    err = OAuth2AndOIDCConst.invalid_request;
+                    errDescription = "the value correspond this key is not a string: " + key;
+                    return false;
             }
         }
 
@@ -373,8 +459,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="exp">exp のクレーム（JToken。無ければ null）</param>
         /// <param name="unixTimeSeconds">いまの UNIX 時刻（秒）</param>
         /// <returns>いまが exp より前（または同じ秒）なら true。無い・読めない値は false</returns>
-        /// <remarks>IdToken・AccessToken・JwtAssertion・ResponseObject の Verify が使う（#647）。</remarks>
-        internal static bool VerifyExpClaim(JToken exp, long unixTimeSeconds)
+        /// <remarks>
+        /// IdToken・AccessToken・JwtAssertion・ResponseObject の Verify が使う（#647）。
+        /// **JWT のペイロード（JToken）を持つ呼び出し側も、これを使う**（#661 で公開した。文字列に直して VerifyExp に渡さない）。
+        /// 読み方は TryReadNumericDate（acceptString は true）。**時計のずれの許容幅は取らない**（必要なら unixTimeSeconds で調整する）。
+        /// **exp と同じ秒は通す**（RFC 7519 4.1.4 より 1 秒緩い。従来どおり）。
+        /// </remarks>
+        public static bool VerifyExpClaim(JToken exp, long unixTimeSeconds)
         {
             decimal seconds;
             return CmnJwtToken.TryReadNumericDate(exp, true, out seconds)
@@ -385,8 +476,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="nbf">nbf のクレーム（JToken。無ければ null）</param>
         /// <param name="unixTimeSeconds">いまの UNIX 時刻（秒）</param>
         /// <returns>いまが nbf 以後なら true。無い・読めない値は false</returns>
-        /// <remarks>RequestObject の Verify・VerifyCiba が使う（#653）。読み方は VerifyExpClaim と同じ。</remarks>
-        internal static bool VerifyNbfClaim(JToken nbf, long unixTimeSeconds)
+        /// <remarks>
+        /// RequestObject の Verify・VerifyCiba が使う（#653）。読み方は VerifyExpClaim と同じ（#661 で公開した）。
+        /// **無い nbf も false** なので、nbf を任意とするなら、呼び出し側で null を先に見る。
+        /// </remarks>
+        public static bool VerifyNbfClaim(JToken nbf, long unixTimeSeconds)
         {
             decimal seconds;
             return CmnJwtToken.TryReadNumericDate(nbf, true, out seconds)
@@ -424,8 +518,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// **整数・小数・指数表記を読む**（RFC 7519 2 : NumericDate は JSON の数値で、整数でない値も表せる。#647）。
         /// **カルチャに依らない**（CultureInfo.InvariantCulture）。long の範囲を超える値・数値でない値は読めない（false）。
         /// **net48 と net10.0 で結果を揃える**（小数の double を 17 桁で読む）。
+        /// 読めなければ seconds は 0。exp・nbf・iat を自前で読む呼び出し側も、これを使う（#661 で公開した）。
         /// </remarks>
-        internal static bool TryReadNumericDate(JToken value, bool acceptString, out decimal seconds)
+        public static bool TryReadNumericDate(JToken value, bool acceptString, out decimal seconds)
         {
             seconds = 0;
 
@@ -576,6 +671,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// JWS.Verify は、区切りが足りない・Base64url でない・ヘッダが JSON のオブジェクトでない入力で、
         /// 例外（IndexOutOfRangeException・FormatException・JsonException・NullReferenceException）を投げる。
         /// 外から来る値を検証する口（要求オブジェクト・アサーション）は、それを false にそろえる（#654 のレビュー）。
+        ///
+        /// **ヘッダの alg が、検証鍵の alg（JWS.JWSHeader.alg）と違えば false**（大文字・小文字を区別する。RFC 8725 3.1。#664）。
+        /// 基盤の JWS の型（JWS_RSA・JWS_ECDSA・JWS_HMACSHA）は、Verify の中でも同じ照合をしている。
+        /// 呼び出し側が JWS を渡せる版（#664）で、照合しない派生を渡されても、alg の取り違えを通さないために、ここでも見る。
         /// </remarks>
         internal static bool TryVerifySignature(JWS jws, string jwt)
         {
@@ -587,6 +686,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
             if (JwtReader.TryReadHeader(jwt) == null)
             {
                 // ヘッダが読めない（JSON のオブジェクトでない）
+                return false;
+            }
+
+            if (jws == null || jws.JWSHeader == null || string.IsNullOrEmpty(jws.JWSHeader.alg) ||
+                !string.Equals(JwtReader.TryReadAlg(jwt), jws.JWSHeader.alg, StringComparison.Ordinal))
+            {
+                // ヘッダの alg が、検証鍵の alg と違う（無い・文字列でないものも）
                 return false;
             }
 
