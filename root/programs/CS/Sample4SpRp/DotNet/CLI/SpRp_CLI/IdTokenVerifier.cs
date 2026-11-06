@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/11/04  玄人 幸道         新規作成（#649）
+//*  2026/11/06  玄人 幸道         コメントの設定キーを、改名後の SpRp_Issuer にした（#666）
 //**********************************************************************************
 
 using System;
@@ -39,7 +40,7 @@ namespace SpRp_CLI
     /// <summary>相手（OP）の id_token を、jwks_uri の鍵で検証する</summary>
     /// <remarks>
     /// **鍵は、ヘッダの kid で jwks_uri から引く**（`RemoteJwkSetStore`。鍵のロールオーバーに追随する）。
-    /// jwks_uri は Discovery から引き、**Discovery の issuer を照合する**（設定の SpRp_DiscoveryUri / SpRp_Isser）。
+    /// jwks_uri は Discovery から引き、**Discovery の issuer を照合する**（設定の SpRp_DiscoveryUri / SpRp_Issuer）。
     ///
     /// **alg は、扱う非対称の alg（`JwsFactory.SupportedAlgs`）に限る。**
     /// `none` や HS*（共有鍵）を受けると、署名の検証が意味を持たなくなる。

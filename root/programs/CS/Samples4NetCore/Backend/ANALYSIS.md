@@ -61,7 +61,7 @@ app.UseSession(...);             // セッションを使うなら（MVC_Sample 
 - `launchSettings.json` のプロファイルは `https`(44334) だけ（Kestrel）。**外部ログインの戻り先の登録（44334）と合わせるため。** net48 版の MVC_Sample（IIS Express）も 44334 なので、同時には動かせない
 
 **OAuth2 の流れを動かすには、別リポジトリの汎用認証サイト（MultiPurposeAuthSite）のスタブが要る**（#649）。
-接続先は `appsettings.json` の `SpRp_*` / `OAuth2AndOidc*` / `JwkSetUri`（既定は MPAS のスタブ `https://localhost:44310`。
+接続先は `appsettings.json` の `SpRp_*` / `OAuth2AndOidc*`（既定は MPAS のスタブ `https://localhost:44310`。
 起動は [`Sample4SpRp/README.md`](../../Sample4SpRp/README.md) 2 節）。
 **クライアントは MPAS の雛形の `MVC_Sample` で、戻り先は `https://localhost:44334/Home/OAuth2AuthorizationCodeGrantClient`**
 （この URL で動かさないと、戻り先が登録と合わない）。**id_token の鍵は `SpRp_DiscoveryUri` の `jwks_uri` から引く。**
@@ -86,8 +86,8 @@ app.UseSession(...);             // セッションを使うなら（MVC_Sample 
 - **`Legacy/WS_sample/Build/net10.0/` の `WSServer_sample.dll` / `WSIFType_sample.dll` を `HintPath` で参照する。**
   `6_Build_WSSrvCore_sample.bat` が先に `WSServer_sample` を建ててそこへ複写し、続けて本プロジェクトを建てる
 - 自前の `Logic/`（`SuppliersLayerB` / `DaoSuppliers`）も持つ
-- **`Bearer`（アクセス トークン）の発行者は MPAS のスタブ**（`appsettings.json` の `SpRp_Isser` = `https://localhost:44310`、
-  鍵は `JwkSetUri` = `/jwkcerts`。#649）。検証は `AccessToken.Verify` の既存の版（鍵と iss は設定から。**aud は確かめない**。#601）
+- **`Bearer`（アクセス トークン）の発行者は MPAS のスタブ**（`appsettings.json` の `SpRp_Issuer` = `https://localhost:44310`、
+  鍵は `SpRp_JwkSetUri` = `/jwkcerts`。#649）。検証は `AccessToken.Verify` の既存の版（鍵と iss は設定から。**aud は確かめない**。#601）
 - **`GET api/json/claims` は、Bearer の検証の結果を返す**（`{ userName, roles, scopes }`。#649）。
   **SPA のサンプル（`Sample4SpRp/SPA`）が使う。** トークンが無い・検証に失敗したときも 200 で、`userName` は「未認証」。DB は読まない
 - **OpenAPI を標準機能で出す**（`AddOpenApi` / `MapOpenApi`、`/openapi/v1.json`。#580）。

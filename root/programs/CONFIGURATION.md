@@ -135,6 +135,16 @@ if (containerization.ToUpper() == PubLiteral.ON)
 
 **net10.0 のコンテナで使っているのは前者。** `FxContainerization` は使っていない。
 
+### 4-3. 改名した設定キーは、環境変数の名前も合わせる（#666）
+
+**改名したキーは、新しい名前を優先し、空なら改名前の名前を読む。** 4-1・4-2 の上書きも、**名前ごとに**効く。
+したがって、改名前の名前を環境変数で上書きしていた配備で、設定ファイルだけを新しい名前にすると、
+**設定ファイルの値が使われ、環境変数は読まれない。** エラーにはならない。
+
+- 環境変数の名前も、新しい名前にする（例：`appSettings__SpRp_Isser` → `appSettings__SpRp_Issuer`）
+- 気付くための関数がある（`CmnClientParams.RenamedKeysInConflict`）。改名したキーの一覧と使い方は、
+  [`Framework/ANALYSIS.md`](CS/Frameworks/Infrastructure/Framework/ANALYSIS.md) 8.1
+
 ---
 
 ## 5. 設定値の中の `%変数%` はフレームワークが展開する

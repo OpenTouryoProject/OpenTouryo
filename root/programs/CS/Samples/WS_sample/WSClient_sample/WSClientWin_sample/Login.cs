@@ -17,6 +17,7 @@
 //*  20xx/xx/xx  ＸＸ ＸＸ         ＸＸＸＸ
 //*  2026/11/05  玄人 幸道         外部ログインを ROPC から LIR（認可コード ＋ PKCE、ループバック）に替えた（#649）
 //*                                （MPAS のスタブの Device_Client。id_token を検証し、表示名は UserInfo の email）
+//*  2026/11/06  玄人 幸道         コメントの設定キーを、改名後の SpRp_Issuer にした（#666）
 //**********************************************************************************
 
 using System;
@@ -122,7 +123,7 @@ namespace WSClientWin_sample
         /// <returns>（access_token, 表示名）。失敗なら null（理由は表示済み）</returns>
         /// <remarks>
         /// 接続先とクライアントは app.config にある（MPAS のスタブと、その雛形の Device_Client）。
-        /// **エンドポイントは Discovery から引く**（issuer を SpRp_Isser と照合する）。
+        /// **エンドポイントは Discovery から引く**（issuer を SpRp_Issuer と照合する）。
         ///
         /// **確かめること**
         /// | 値 | 何のため |

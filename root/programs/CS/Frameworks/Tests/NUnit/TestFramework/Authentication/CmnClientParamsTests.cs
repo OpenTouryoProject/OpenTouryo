@@ -29,6 +29,10 @@
 //*  2026/11/05  玄人 幸道         AccessToken.Verify（設定を読む版）が、設定の client_id で aud を確かめることのテストを足した（#655）
 //*  2026/11/05  玄人 幸道         文字列でない aud・空・両方の設定・空白だけの設定のケースを足し、根拠を設計と RFC 7519 4.1.3 にした（#655 のレビュー）
 //*  2026/11/05  玄人 幸道         読めない ClientIDs を断ること、IdToken・ResponseObject の aud の判定のテストを足した（#655 の 2 回目のレビュー）
+//*  2026/11/06  玄人 幸道         改名した設定キーの読み方（SpRp_Issuer は改名前の名前も読み、SpRp_JwkSetUri・SpRp_RequestObjectRegUri・
+//*                                SpRp_AuthRequestPushUri は読まない）と、改名前の名前が残っている設定の検出のテストを足した。
+//*                                Properties_ReadTheirKeys の Isser を、新しい名前（SpRp_Issuer）で確かめるようにした。
+//*                                RemoteJwkSetStore_ReadsConfig は、JWK Set の URL を SpRp_JwkSetUri で渡すようにした（改名前の名前を読まなくしたため。#666）
 //**********************************************************************************
 
 using System;
@@ -81,6 +85,21 @@ namespace TestFramework.Authentication
             Assert.That(r.IsValid, Is.False);
         }
 
+        /// <summary>改名した設定キーの表（新しい名前 → 改名前の名前。#666）。表は読み取り専用。</summary>
+        [Test]
+        [Basis("設計：CmnClientParams.RenamedKeys の remarks（改名した設定キーの表）")]
+        [Basis("#666")]
+        public void RenamedKeys_Table()
+        {
+            Assert.That(CmnClientParams.RenamedKeys, Is.EquivalentTo(new Dictionary<string, string>
+            {
+                { "SpRp_Issuer", "SpRp_Isser" },
+            }), "改名前の名前も読むのは SpRp_Issuer だけ（URL の 3 つは読まない）");
+
+            Assert.Throws<NotSupportedException>(
+                () => ((IDictionary<string, string>)CmnClientParams.RenamedKeys).Add("x", "y"), "読み取り専用");
+        }
+
 #if NETCOREAPP
         /// <summary>構成を差し替えて、テストの後で空に戻す</summary>
         private static void WithConfig(Dictionary<string, string> appSettings, Action action)
@@ -104,7 +123,10 @@ namespace TestFramework.Authentication
             }
         }
 
-        /// <summary>RemoteJwkSetStore：JwkSetUri / SpRp_DiscoveryUri ＋ SpRp_Isser を読む。</summary>
+        /// <summary>
+        /// RemoteJwkSetStore：SpRp_JwkSetUri / SpRp_DiscoveryUri ＋ SpRp_Isser を読む。
+        /// SpRp_Isser は改名前の名前（SpRp_Issuer が空なら読む）。JwkSetUri（改名前の名前）は読まないので、SpRp_JwkSetUri で渡す（#666）。
+        /// </summary>
         [Test]
         [Basis("設計：RemoteJwkSetStore.GetJwkAsync(kid)・GetJwkByDiscoveryAsync(kid) の remarks（JwkSetUri・SpRp_DiscoveryUri・SpRp_Isser を渡す）")]
         public void RemoteJwkSetStore_ReadsConfig()
@@ -121,7 +143,7 @@ namespace TestFramework.Authentication
 
             WithConfig(new Dictionary<string, string>
             {
-                { "JwkSetUri", "https://op.example.com/jwks" },
+                { "SpRp_JwkSetUri", "https://op.example.com/jwks" },
                 { "SpRp_DiscoveryUri", "https://op.example.com/.well-known/openid-configuration" },
                 { "SpRp_Isser", "https://op.example.com" }
             }, () =>
@@ -195,7 +217,7 @@ namespace TestFramework.Authentication
         {
             Dictionary<string, Func<string>> props = new Dictionary<string, Func<string>>
             {
-                { "SpRp_Isser", () => CmnClientParams.Isser },
+                { "SpRp_Issuer", () => CmnClientParams.Isser },
                 { "SpRp_AuthRequestUri", () => CmnClientParams.SpRp_AuthRequestUri },
                 { "SpRp_TokenRequestUri", () => CmnClientParams.SpRp_TokenRequestUri },
                 { "SpRp_UserInfoUri", () => CmnClientParams.SpRp_UserInfoUri },
@@ -399,6 +421,197 @@ namespace TestFramework.Authentication
             }
             return new JWS_RS256_Param(TestCertificates.RsaPrivateKey().ExportParameters(true))
                 .Create(p.ToString(Newtonsoft.Json.Formatting.None));
+        }
+
+        /// <summary>
+        /// 改名した URL の 3 つ（SpRp_JwkSetUri・SpRp_RequestObjectRegUri・SpRp_AuthRequestPushUri）は、改名前の名前を読まない。
+        /// 改名前の名前は、汎用認証サイトが認可サーバ自身の口のパスとして使い、自己テストのクライアントと共存しうるため（#666）。
+        /// </summary>
+        [Test]
+        [Basis("設計：CmnClientParams.RenamedKeys・OAuth2AndOIDCParams.JwkSetUri ほかの remarks（改名前の名前は読まない）")]
+        [Basis("#666")]
+        public void RenamedUrlKeys_DoNotReadOldNames()
+        {
+            Dictionary<string, KeyValuePair<string, Func<string>>> props = new Dictionary<string, KeyValuePair<string, Func<string>>>
+            {
+                { "SpRp_JwkSetUri", new KeyValuePair<string, Func<string>>("JwkSetUri", () => OAuth2AndOIDCParams.JwkSetUri) },
+                { "SpRp_RequestObjectRegUri", new KeyValuePair<string, Func<string>>("RequestObjectRegUri", () => OAuth2AndOIDCParams.RequestObjectRegUri) },
+                { "SpRp_AuthRequestPushUri", new KeyValuePair<string, Func<string>>("AuthRequestPushUri", () => OAuth2AndOIDCParams.AuthRequestPushUri) },
+            };
+
+            foreach (KeyValuePair<string, KeyValuePair<string, Func<string>>> p in props)
+            {
+                string newKey = p.Key;
+                string oldKey = p.Value.Key;
+                Func<string> read = p.Value.Value;
+
+                Assert.That(CmnClientParams.RenamedKeys.ContainsKey(newKey), Is.False, newKey + "：読み替えの表に載せない");
+
+                // 新しい名前だけ
+                WithConfig(new Dictionary<string, string> { { newKey, "https://op.example.com/x" } }, () =>
+                {
+                    Assert.That(read(), Is.EqualTo("https://op.example.com/x"), newKey + "：新しい名前を読む");
+                });
+
+                // 改名前の名前だけ（サーバ自身の口のパス）：読まず、検出もしない
+                WithConfig(new Dictionary<string, string> { { oldKey, "/server-path" } }, () =>
+                {
+                    Assert.That(read(), Is.Null, newKey + "：改名前の名前は読まない");
+                    Assert.That(CmnClientParams.OldKeysStillUsed(), Is.Empty, newKey + "：改名前の名前を検出しない");
+                });
+
+                // 両方（サーバのパスと、クライアント役の URL が共存する）：新しい名前だけを読み、食い違いとして検出しない
+                WithConfig(new Dictionary<string, string>
+                {
+                    { newKey, "https://op.example.com/x" }, { oldKey, "/server-path" }
+                }, () =>
+                {
+                    Assert.That(read(), Is.EqualTo("https://op.example.com/x"), newKey + "：共存しても新しい名前だけ");
+                    Assert.That(CmnClientParams.RenamedKeysInConflict(), Is.Empty, newKey + "：食い違いとして検出しない");
+                });
+            }
+        }
+
+        /// <summary>
+        /// 改名した設定キー：新しい名前を優先し、空なら改名前の名前を読む。
+        /// 改名前の名前だけなら OldKeysStillUsed に、新旧で値が違えば RenamedKeysInConflict に出る（#666）。
+        /// </summary>
+        [Test]
+        [Basis("設計：CmnClientParams.RenamedKeys・OldKeysStillUsed・RenamedKeysInConflict の remarks（新しい名前を優先し、空なら改名前の名前を読む）")]
+        [Basis("#666")]
+        public void RenamedKeys_NewOldBoth()
+        {
+            Dictionary<string, Func<string>> props = new Dictionary<string, Func<string>>
+            {
+                { "SpRp_Issuer", () => CmnClientParams.Isser },
+            };
+
+            Assert.That(props.Keys, Is.EquivalentTo(CmnClientParams.RenamedKeys.Keys), "改名前の名前も読むキーを、すべて確かめる");
+
+            foreach (KeyValuePair<string, Func<string>> p in props)
+            {
+                string newKey = p.Key;
+                string oldKey = CmnClientParams.RenamedKeys[newKey];
+                KeyValuePair<string, string>[] pair = new KeyValuePair<string, string>[]
+                {
+                    new KeyValuePair<string, string>(oldKey, newKey)
+                };
+
+                // 新しい名前だけ
+                WithConfig(new Dictionary<string, string> { { newKey, "new" } }, () =>
+                {
+                    Assert.That(p.Value(), Is.EqualTo("new"), newKey + "：新しい名前だけ");
+                    Assert.That(CmnClientParams.OldKeysStillUsed(), Is.Empty, newKey + "：新しい名前だけ");
+                    Assert.That(CmnClientParams.RenamedKeysInConflict(), Is.Empty, newKey + "：新しい名前だけ");
+                });
+
+                // 改名前の名前だけ（読むが、OldKeysStillUsed に出る）
+                WithConfig(new Dictionary<string, string> { { oldKey, "old" } }, () =>
+                {
+                    Assert.That(p.Value(), Is.EqualTo("old"), newKey + "：改名前の名前だけ");
+                    Assert.That(CmnClientParams.OldKeysStillUsed(), Is.EqualTo(pair), newKey + "：改名前の名前だけ");
+                    Assert.That(CmnClientParams.RenamedKeysInConflict(), Is.Empty, newKey + "：改名前の名前だけ");
+                });
+
+                // 新しい名前が空文字なら、無いのと同じ
+                WithConfig(new Dictionary<string, string> { { newKey, "" }, { oldKey, "old" } }, () =>
+                {
+                    Assert.That(p.Value(), Is.EqualTo("old"), newKey + "：新しい名前が空文字");
+                    Assert.That(CmnClientParams.OldKeysStillUsed(), Is.EqualTo(pair), newKey + "：新しい名前が空文字");
+                });
+
+                // 両方（値が違う）：新しい名前を使い、RenamedKeysInConflict に出る
+                WithConfig(new Dictionary<string, string> { { newKey, "new" }, { oldKey, "old" } }, () =>
+                {
+                    Assert.That(p.Value(), Is.EqualTo("new"), newKey + "：両方（値が違う）");
+                    Assert.That(CmnClientParams.OldKeysStillUsed(), Is.Empty, newKey + "：両方（値が違う）");
+                    Assert.That(CmnClientParams.RenamedKeysInConflict(), Is.EqualTo(pair), newKey + "：両方（値が違う）");
+                });
+
+                // 両方（大文字・小文字だけが違う）：違う値として扱う
+                WithConfig(new Dictionary<string, string>
+                {
+                    { newKey, "https://op.example.com" }, { oldKey, "https://OP.example.com" }
+                }, () =>
+                {
+                    Assert.That(p.Value(), Is.EqualTo("https://op.example.com"), newKey + "：大文字・小文字だけが違う");
+                    Assert.That(CmnClientParams.RenamedKeysInConflict(), Is.EqualTo(pair), newKey + "：大文字・小文字だけが違う");
+                });
+
+                // 両方（同じ値）：どちらにも出ない
+                WithConfig(new Dictionary<string, string> { { newKey, "same" }, { oldKey, "same" } }, () =>
+                {
+                    Assert.That(p.Value(), Is.EqualTo("same"), newKey + "：両方（同じ値）");
+                    Assert.That(CmnClientParams.OldKeysStillUsed(), Is.Empty, newKey + "：両方（同じ値）");
+                    Assert.That(CmnClientParams.RenamedKeysInConflict(), Is.Empty, newKey + "：両方（同じ値）");
+                });
+
+                // どちらも無い：null（従来と同じ）
+                WithConfig(new Dictionary<string, string>(), () =>
+                {
+                    Assert.That(p.Value(), Is.Null, newKey + "：どちらも無い");
+                });
+
+                // 新しい名前が空文字で、改名前の名前が無い：新しい名前の値（空文字）を返す（従来と同じ）
+                WithConfig(new Dictionary<string, string> { { newKey, "" } }, () =>
+                {
+                    Assert.That(p.Value(), Is.EqualTo(""), newKey + "：新しい名前が空文字だけ");
+                });
+            }
+        }
+
+        /// <summary>
+        /// 改名した設定キー：コンテナ・モード（FxContainerization）の環境変数も、名前ごとに読む。
+        /// 順は、新しい名前（環境変数 → 設定ファイル）→ 改名前の名前（環境変数 → 設定ファイル）（#666）。
+        /// </summary>
+        [Test]
+        [Basis("設計：CmnClientParams.RenamedKeys の remarks（環境変数も名前ごとに読む）・CONFIGURATION.md 4-3")]
+        [Basis("#666")]
+        public void RenamedKeys_Containerization()
+        {
+            KeyValuePair<string, string>[] pair = new KeyValuePair<string, string>[]
+            {
+                new KeyValuePair<string, string>("SpRp_Isser", "SpRp_Issuer")
+            };
+
+            try
+            {
+                // 新しい名前の環境変数 ＋ 改名前の名前の設定ファイル：環境変数（新しい名前）を使う
+                Environment.SetEnvironmentVariable("SpRp_Issuer", "env-new", EnvironmentVariableTarget.Process);
+                WithConfig(new Dictionary<string, string>
+                {
+                    { "FxContainerization", "on" }, { "SpRp_Isser", "file-old" }
+                }, () =>
+                {
+                    Assert.That(CmnClientParams.Isser, Is.EqualTo("env-new"), "新しい名前の環境変数");
+                    Assert.That(CmnClientParams.RenamedKeysInConflict(), Is.EqualTo(pair), "新旧で値が違う");
+                });
+                Environment.SetEnvironmentVariable("SpRp_Issuer", null, EnvironmentVariableTarget.Process);
+
+                // 改名前の名前の環境変数 ＋ 新しい名前の設定ファイル：設定ファイル（新しい名前）を使い、RenamedKeysInConflict に出る
+                //   （改名前の名前を環境変数で上書きしていた配備で、設定ファイルだけを新しい名前にした場合）
+                Environment.SetEnvironmentVariable("SpRp_Isser", "env-old", EnvironmentVariableTarget.Process);
+                WithConfig(new Dictionary<string, string>
+                {
+                    { "FxContainerization", "on" }, { "SpRp_Issuer", "file-new" }
+                }, () =>
+                {
+                    Assert.That(CmnClientParams.Isser, Is.EqualTo("file-new"), "新しい名前の設定ファイルが優先");
+                    Assert.That(CmnClientParams.RenamedKeysInConflict(), Is.EqualTo(pair), "改名前の名前の環境変数は読まれない");
+                });
+
+                // 改名前の名前の環境変数だけ：読み、OldKeysStillUsed に出る
+                WithConfig(new Dictionary<string, string> { { "FxContainerization", "on" } }, () =>
+                {
+                    Assert.That(CmnClientParams.Isser, Is.EqualTo("env-old"), "改名前の名前の環境変数");
+                    Assert.That(CmnClientParams.OldKeysStillUsed(), Is.EqualTo(pair), "改名前の名前の環境変数");
+                });
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable("SpRp_Issuer", null, EnvironmentVariableTarget.Process);
+                Environment.SetEnvironmentVariable("SpRp_Isser", null, EnvironmentVariableTarget.Process);
+            }
         }
 
         /// <summary>
