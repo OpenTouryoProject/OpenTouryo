@@ -102,6 +102,7 @@
     -Only / -SkipBuild / -Linux / -CrossDb とは同時に指定できない（全部をそろえて測るため）。
 .PARAMETER LocalServicesDir
     LocalServicesOnDocker のフォルダ（-CrossDb / -Coverage で使う）。
+    **省けば、環境変数 LSOD_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**（root\files\tools\PowerShell\RepoPath.ps1。#652）。
     **docker コマンドが使えれば Rancher Desktop 版（*.ps1）、使えなければ WSL2 版（*_wsl2.ps1）を使う。**
 .PARAMETER Linux
     Windows でのビルドとテストの後に、**net10.0 の出力をそのまま Linux のコンテナで回す**（#632）。
@@ -136,13 +137,13 @@
     .\2_RunAllTests.ps1 -Only "TestBatch"
 
 .EXAMPLE
-    .\2_RunAllTests.ps1 -CrossDb -LocalServicesDir D:\git\LocalServicesOnDocker
+    .\2_RunAllTests.ps1 -CrossDb                       # LocalServicesOnDocker の場所は環境変数 LSOD_PATH
 
 .EXAMPLE
     .\2_RunAllTests.ps1 -Linux
 
 .EXAMPLE
-    .\2_RunAllTests.ps1 -Coverage -LocalServicesDir D:\git\LocalServicesOnDocker
+    .\2_RunAllTests.ps1 -Coverage -LocalServicesDir D:\path\to\LocalServicesOnDocker   # 引数で渡すなら
 
 .NOTES
     作成者          ：玄人 幸道
@@ -168,6 +169,7 @@
      2026/10/22  玄人 幸道         Framework の対象モジュールに、#634 で足したクラスと partial に分けたファイルを加えた
      2026/10/29  玄人 幸道         -Coverage の回に、ReportGenerator の HTML（Tests\CoverageHtml）も作るようにした
      2026/10/29  玄人 幸道         -List -PassThru に Result・Kind・SkipLog4net・NormBase64 を加え、-List では chcp しないようにした（#640）
+     2026/11/07  玄人 幸道         -LocalServicesDir を省いたら、環境変数 LSOD_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定 で決める（#652）
 #>
 [CmdletBinding()]
 param(
@@ -510,9 +512,13 @@ $crossDbMode = $(if ($Coverage) { "-Coverage" } else { "-CrossDb" })
 
 if ($crossDbRun)
 {
+    # **LocalServicesOnDocker の場所は、引数 ＞ 環境変数 LSOD_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**（#652）
+    . (Join-Path $PSScriptRoot '..\files\tools\PowerShell\RepoPath.ps1')
+    $LocalServicesDir = Resolve-RepoPath -Variable LSOD_PATH -Argument $LocalServicesDir -ArgumentName '-LocalServicesDir'
+
     if (-not $LocalServicesDir -or -not (Test-Path (Join-Path $LocalServicesDir "Start-Services.ps1")))
     {
-        Write-Host ("  **{0} には -LocalServicesDir（LocalServicesOnDocker のフォルダ）が要ります。**" -f $crossDbMode) -ForegroundColor Red
+        Write-Host ("  **{0} には -LocalServicesDir（LocalServicesOnDocker のフォルダ。環境変数 LSOD_PATH でもよい）が要ります。**" -f $crossDbMode) -ForegroundColor Red
         Write-Host ("  指定 : '{0}'（Start-Services.ps1 が見つかりません）" -f $LocalServicesDir) -ForegroundColor Yellow
         exit 1
     }

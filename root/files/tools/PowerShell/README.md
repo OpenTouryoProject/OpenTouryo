@@ -95,3 +95,38 @@ CPU とメモリの使用状況を一定間隔で表示します。
 - CPU 値は CIM のパフォーマンスクラスから取得するため、OS の言語設定に依存しません。
 - プロセスのメモリは WorkingSetPrivate(プライベートワーキングセット)です。
 - Windows 専用です。
+
+---
+
+## Register-RepoPaths.ps1・RepoPath.ps1・_RepoPaths.csv（関連リポジトリの場所。#652）
+
+**ほかのリポジトリの場所を、ユーザーの環境変数に登録し、スクリプトから引く。**
+
+| ファイル | 役割 |
+|---|---|
+| `_RepoPaths.csv` | **変数名・リポジトリ・既定の場所の一覧（雛形。コミットする）**（列 : `Variable`・`Repository`・`DefaultPath`・`UsedBy`）。**唯一の出どころ**で、スクリプトに既定の場所を書き込まない |
+| `RepoPaths.csv` | **手元用**（`.gitignore` の対象）。手元の配置が雛形と違うなら、`_RepoPaths.csv` を写して `DefaultPath` を直す。**在れば雛形より優先する** |
+| `Register-RepoPaths.ps1` | CSV の行ごとに、ユーザーの環境変数を登録する。**`-Apply` を付けなければ、どうなるかを見るだけ** |
+| `RepoPath.ps1` | ドット ソースで読む関数 `Resolve-RepoPath`。**引数 ＞ 環境変数 ＞ CSV（`RepoPaths.csv`、無ければ `_RepoPaths.csv`）の既定（そのフォルダが在るときだけ）** の順に決め、どれを使ったかを表示する。決まらなければ `$null` |
+
+```powershell
+.\Register-RepoPaths.ps1                                  # 見るだけ
+Copy-Item .\_RepoPaths.csv .\RepoPaths.csv              # 手元の配置に直すとき（写して DefaultPath を直す）
+.\Register-RepoPaths.ps1 -Apply                           # RepoPaths.csv（無ければ _RepoPaths.csv）の既定の場所で登録する
+.\Register-RepoPaths.ps1 -Only MPAS_PATH,LSOD_PATH -Apply  # 絞る（CSV に無い名前は警告する）
+.\Register-RepoPaths.ps1 -Csv <パス> -Apply               # 別の CSV で登録する
+```
+
+- **フォルダが無い行は登録しない**（打ち間違い・まだ clone していないリポジトリ）
+- **雛形（`_RepoPaths.csv`）の既定を使ったとき・雛形で登録するときは、警告を出す**（手元の配置と合っている保証が無い）
+- **登録した後は、コンソールや Visual Studio を開き直す**（開いているプロセスには反映されない）
+- **変数名は、リポジトリごとに略号を決める**（`OTR_PATH`・`MPAS_PATH`・`LSOD_PATH` など）。値はリポジトリの直下（`.git` のあるフォルダ）で、末尾に `\` を付けない
+- **docker compose（`${...}`）からも使える**よう、変数名は英数字と `_` だけにする
+- **共有のリソース（`C:\root\files`）は対象外**（開発者向けのリポジトリでは、昔からの慣習で固定のパス）
+
+```powershell
+# 使う側（例：Sample4SpRp\Stub\StubCompose.ps1）
+. (Join-Path <root\files\tools\PowerShell> 'RepoPath.ps1')
+$MpasRoot = Resolve-RepoPath -Variable MPAS_PATH -Argument $MpasRoot -ArgumentName '-MpasRoot'
+if (-not $MpasRoot) { throw '...' }
+```
