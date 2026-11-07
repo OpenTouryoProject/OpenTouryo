@@ -380,7 +380,7 @@ Copyright ブロックの扱い、`ArgumentException` 系の引数の順、`.bat
 | リソース | 回すとき |
 |---|---|
 | クロス DB（Oracle / MySQL / PostgreSQL のコンテナ） | Dam・SQL の生成（`Public/Db`、`Dam*`）に触れた fixed と、リリース |
-| VB 側（`-Lang VB`） | VB のソース、または VB が取り込む基盤に触れた fixed と、リリース |
+| VB 側（`-Lang VB`） | **VB のソースに触れた fixed と、リリース**（C# の基盤だけなら回さない。回帰は C# の 3 本でほぼ捕まる。#542。リリースの前は GHA の `build-windows-vb.yml` を手動で回すか、手元で `-Lang VB`） |
 | Linux（`-Linux`。net10.0 の出力を Linux のコンテナで回す） | Public・Public.Security に触れた fixed と、リリース（`SelectTargets.ps1` が付ける。#632） |
 | 管理者権限（イベント ログの NUnit） | `CustomEventLog` に触れたとき。手元が管理者でなければ、回せていないと報告する |
 
