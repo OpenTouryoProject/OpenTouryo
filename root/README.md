@@ -35,6 +35,26 @@ Click [here](Readme.ja.md) for the Japanese version of this file.
 ### Deploy Open Touryo
 Copy the *root* folder to just under the C drive. If you copy it elsewhere, the build may fail because of the Windows maximum path length limitation.
 
+### Locations of the related repositories (environment variables)
+The E2E tests that use the stub of MultiPurposeAuthSite and the cross-DB tests that use LocalServicesOnDocker **read the locations of those repositories from environment variables** (#652).
+
+| Environment variable | Repository | Used by |
+|---|---|---|
+| `MPAS_PATH` | MultiPurposeAuthSite | The stub and E2E tests in `programs\CS\Sample4SpRp` (`-MpasRoot`) |
+| `LSOD_PATH` | LocalServicesOnDocker | `programs\2_RunAllTests.ps1 -CrossDb / -Coverage` (`-LocalServicesDir`) |
+
+The list (including `OTR_PATH` and others used by other repositories) and the default locations are in `files\tools\PowerShell\_RepoPaths.csv` (the template). **If your local layout differs from the template, copy it to `RepoPaths.csv` in the same folder and edit it** (it is ignored by `.gitignore`, and takes precedence over the template when present). Register them as follows (user environment variables).
+
+```powershell
+cd root\files\tools\PowerShell
+.\Register-RepoPaths.ps1                       # Show what would be registered (no changes)
+Copy-Item .\_RepoPaths.csv .\RepoPaths.csv     # To match your local layout (copy, then edit DefaultPath)
+.\Register-RepoPaths.ps1 -Apply                # Register the default locations in RepoPaths.csv (or _RepoPaths.csv if absent)
+```
+
+- **An argument always wins** (`-MpasRoot` / `-LocalServicesDir`). **Without the environment variable, the default location in `RepoPaths.csv` (or `_RepoPaths.csv`) is used only when that folder exists.** A warning is shown when the template's default is used
+- After registering, reopen your consoles and Visual Studio (running processes do not see the new values)
+
 ### Set up the sample database
 
 #### Make use of [LocalServicesOnDocker](https://github.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker)

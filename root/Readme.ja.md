@@ -52,7 +52,7 @@ Copy-Item .\_RepoPaths.csv .\RepoPaths.csv              # 手元の配置に直�
 .\Register-RepoPaths.ps1 -Apply                           # RepoPaths.csv（無ければ _RepoPaths.csv）の既定の場所で登録する
 ```
 
-- **引数で渡せば、引数が勝ちます**（`-MpasRoot` / `-LocalServicesDir`）。**環境変数が無ければ、`RepoPaths.csv`（無ければ `_RepoPaths.csv`）の既定の場所を、そのフォルダが在るときだけ使います**
+- **引数で渡せば、引数が勝ちます**（`-MpasRoot` / `-LocalServicesDir`）。**環境変数が無ければ、`RepoPaths.csv`（無ければ `_RepoPaths.csv`）の既定の場所を、そのフォルダが在るときだけ使います**。雛形の既定を使ったときは、警告を出します
 - 登録した後は、コンソールや Visual Studio を開き直してください（開いているプロセスには反映されません）
 
 ### サンプルデータベースのセットアップ
