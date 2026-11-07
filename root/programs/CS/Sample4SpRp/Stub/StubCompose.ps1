@@ -4,13 +4,20 @@
 
 .DESCRIPTION
     ＜何をするか＞
-      **MPAS の container\Stub\docker-compose.yml を、MPAS の既定の設定のまま動かす。**
-      スタブの定義も設定も MPAS 側に在り、ここには持たない（二重に持たない）。
+      **MPAS の container\Stub\docker-compose.yml を動かす。** スタブの定義は MPAS 側に在り、ここには持たない。
 
-    ＜既定の設定を使う＞
-      **サンプルは、MPAS の雛形（_appsettings.json）に在るクライアントを使う**
-      （CLI は Device_Client = ae5a179813234ca290c8de93ef2e31dc）。
-      **雛形に無いクライアントが要るときだけ、-Settings で設定の JSON を渡す**（..\README.md の 3 節）。
+    ＜既定で Sample4SpRp.stub.json を渡す（#668）＞
+      **既定では、このフォルダの Sample4SpRp.stub.json を、スタブの追加の設定として渡す。**
+      雛形（_appsettings.json）に無いクライアント（SpRp_MVC・SpRp_MVC_PKCE・SpRp_CLI_Batch・SPA_Hybrid）と、
+      ROPC を開ける設定が入っている。**雛形のクライアントは、そのまま残る**（Device_Client・MVC_Sample など）。
+      **以前は既定が MPAS の既定（appsettings.Stub.sample.json）で、-Settings を付け忘れると、
+      雛形に無いクライアントが居らず「Invalid client_id.」になっていた。**
+
+      | 指定 | 渡す設定 |
+      |---|---|
+      | 無し | **Sample4SpRp.stub.json** |
+      | -Settings <パス> | そのファイル |
+      | -MpasDefault | MPAS の既定（container\Stub\appsettings.Stub.sample.json） |
 
     ＜なぜスクリプトにするか＞
       **MPAS の場所と、スタブの準備（publish・証明書）を確かめてから動かすため。**
@@ -32,13 +39,19 @@
     MultiPurposeAuthSite のリポジトリの場所。
 
 .PARAMETER Settings
-    スタブに渡すアプリの設定（appsettings.json と同じ書き方の JSON）。省けば MPAS の既定（appsettings.Stub.sample.json）。
+    スタブに渡すアプリの設定（appsettings.json と同じ書き方の JSON）。省けば、このフォルダの Sample4SpRp.stub.json。
+
+.PARAMETER MpasDefault
+    Sample4SpRp.stub.json を渡さず、MPAS の既定（appsettings.Stub.sample.json）で動かす。-Settings とは併せて使えない。
 
 .EXAMPLE
     .\StubCompose.ps1
 
 .EXAMPLE
     .\StubCompose.ps1 -Action Down
+
+.EXAMPLE
+    .\StubCompose.ps1 -MpasDefault
 
 .NOTES
     作成者          ：玄人 幸道
@@ -48,6 +61,7 @@
      2026/11/04  玄人 幸道         新規（#649）
      2026/11/04  玄人 幸道         既定は MPAS の設定のまま動かす（雛形のクライアントを使う）。-Settings を追加
      2026/11/07  玄人 幸道         起動・停止を MPAS の 2_DockerComposeUp.bat・3_DockerComposeDown.bat に任せた（MPAS#340）
+     2026/11/07  玄人 幸道         既定で Sample4SpRp.stub.json を渡すようにし、-MpasDefault を足した（#668）
 #>
 [CmdletBinding()]
 param(
@@ -56,10 +70,23 @@ param(
 
     [string] $MpasRoot = 'C:\MultiPurposeAuthSite',
 
-    [string] $Settings = ''
+    [string] $Settings = '',
+
+    [switch] $MpasDefault
 )
 
 $ErrorActionPreference = 'Stop'
+
+if ($MpasDefault -and -not [string]::IsNullOrEmpty($Settings))
+{
+    throw '-Settings と -MpasDefault は、併せて使えません。'
+}
+
+# **既定は、このフォルダの Sample4SpRp.stub.json**（パスの既定値は param() に書かない。5.1 の -File で $PSScriptRoot が空になる。CODING.md 5 節）
+if (-not $MpasDefault -and [string]::IsNullOrEmpty($Settings))
+{
+    $Settings = Join-Path (Split-Path -Parent $PSCommandPath) 'Sample4SpRp.stub.json'
+}
 
 $stubDir = Join-Path $MpasRoot 'container\Stub'
 $compose = Join-Path $stubDir 'docker-compose.yml'
@@ -88,15 +115,21 @@ if ($Action -eq 'Up')
     }
 }
 
-# **設定を渡すときだけ、絶対パスにして渡す**（渡さなければ MPAS の既定）。
+# **設定は、絶対パスにして渡す**（-MpasDefault なら渡さず、MPAS の既定）。
 #   **前の実行で残った値を使わないよう、渡さないときは消す**（同じセッションで続けて動かすとき）。
-if ([string]::IsNullOrEmpty($Settings))
+if ($MpasDefault)
 {
     Remove-Item Env:\STUB_SETTINGS -ErrorAction SilentlyContinue
+    Write-Output "  設定 : MPAS の既定（container\Stub\appsettings.Stub.sample.json。雛形に無いクライアントは居ない）"
 }
 else
 {
+    if (-not (Test-Path $Settings))
+    {
+        throw "スタブの設定が見つかりません : $Settings"
+    }
     $env:STUB_SETTINGS = (Resolve-Path $Settings).Path
+    Write-Output "  設定 : $($env:STUB_SETTINGS)"
 }
 
 switch ($Action)

@@ -20,6 +20,7 @@
 | net | WebForms（net48 のみ） | 同上 | **一部**：既存の `WebForms_Sample`（C#・VB）の外部ログイン（OIDC・SAML2）をスタブで通す（2.1 節）。専用のサンプルは未 | `Samples/` の `WebForms_Sample` |
 | net | WinForms | 同上 | **一部**：既存の WS クライアント（`WSClientWin_sample`・`WSClientWinCone_sample`、VB・.NET 10 版）の外部ログインを、ROPC から PKCE（LIR）に替えた。専用のサンプルは未 | `Samples/WS_sample/WSClient_sample/` ほか |
 | browser | SPA（React・Blazor） | PKCE | **済**（Bearer でのリソース アクセスを含む。4.1 節） | [`SPA/`](SPA/) |
+| browser | SPA（React・Blazor） | **Hybrid（`code id_token`）** | **済**（#668。MPAS の自己テストから移した。4.1 節）。`code token`・`code id_token token` は扱わない | 同上 |
 
 > **CLI に SAML2・AuthZCode・AuthNCode を載せていないのは、秘密を守れないからである。**
 > 認可コードを秘密（`client_secret`）で引き換えるのはコンフィデンシャル クライアント（サーバ側のアプリ）で、
@@ -30,8 +31,9 @@
 
 ## 2. IdP（MPAS スタブ）を動かす
 
-**スタブは、MPAS の既定の設定のまま動かす。** 定義も設定も MPAS 側に在り、ここには起動の手順（[`Stub/StubCompose.ps1`](Stub/StubCompose.ps1)）だけを置く。
-**サンプルは、MPAS の雛形（`_appsettings.json`）に在るクライアントを使う**（3 節）。
+**スタブの定義は MPAS 側に在り、ここには起動の手順（[`Stub/StubCompose.ps1`](Stub/StubCompose.ps1)）と、
+雛形に無いクライアントの設定（[`Stub/Sample4SpRp.stub.json`](Stub/Sample4SpRp.stub.json)）だけを置く。**
+**`StubCompose.ps1` は、既定で `Sample4SpRp.stub.json` を渡す**（#668）。**雛形（`_appsettings.json`）のクライアントも、そのまま残る**（3 節）。
 **スタブの使い方の一次情報は、MPAS の `container\Stub\README.md`** である。
 
 **前提** : Docker（compose v2）、.NET 10 SDK、MPAS のリポジトリ（既定 `C:\MultiPurposeAuthSite`）、
@@ -43,10 +45,15 @@ C:\MultiPurposeAuthSite\container\Stub\1_PublishStub.ps1
 
 # 2. このリポジトリ側で、起動・停止する
 cd root\programs\CS\Sample4SpRp\Stub
-.\StubCompose.ps1                  # 起動（MPAS の既定の設定のまま）
+.\StubCompose.ps1                  # 起動（Sample4SpRp.stub.json を渡す）
 .\StubCompose.ps1 -Action Config   # 設定の解決だけを見る（起動しない）
 .\StubCompose.ps1 -Action Down     # 止めて消す（状態は残らない）
+.\StubCompose.ps1 -MpasDefault     # MPAS の既定（appsettings.Stub.sample.json）で起動する（雛形に無いクライアントは居ない）
 ```
+
+> **`-Settings` を付けずに MPAS 側の `2_DockerComposeUp.bat` や `docker compose` で起動すると、MPAS の既定の設定になる。**
+> **雛形に無いクライアント（`SpRp_MVC`・`SPA_Hybrid` など）が居らず、スタブのエラー画面に「unauthorized_client / Invalid client_id.」が出る。**
+> **起動は `StubCompose.ps1` で行う。** 起動の表示（`設定 : …`）で、どの設定を渡したかが分かる。
 
 **起動の確認** : `https://localhost:44310/.well-known/openid-configuration` が 200 を返せばよい。
 
@@ -54,7 +61,7 @@ cd root\programs\CS\Sample4SpRp\Stub
 |---|---|
 | issuer・公開 URL | `https://localhost:44310`（MPAS のスタブの既定） |
 | テスト利用者 | `tanaka@example.com` / `super_tanaka@example.com`（パスワードは、スタブの土台の `appsettings.json` の `TestUserPWD`。既定は MPAS の手元の `MultiPurposeAuthSiteCore/appsettings.json`） |
-| クライアント | **MPAS の雛形に在るもの**（下の 3 節） |
+| クライアント | **MPAS の雛形に在るもの ＋ `Sample4SpRp.stub.json` で足したもの**（下の 3 節） |
 
 - **起動・停止は、MPAS の `container\Stub\2_DockerComposeUp.bat`・`3_DockerComposeDown.bat` に任せる**（MPAS#340）。
   **publish の成果物が MPAS のソースより古ければ、起動のときに警告が出る**（起動は止めない）。出たら 1 をやり直す
@@ -104,7 +111,7 @@ cd root\programs\CS\Sample4SpRp\E2E
 .\CliLoginE2E.ps1 -Flow pkce -Only "net48"          # 絞る（-Flow は device / pkce / cc / jwtbearer / ropc / All。-SkipControl で対照を省く）
 ```
 
-**`cc`・`jwtbearer`・`ropc` は、スタブを `-Settings .\Sample4SpRp.stub.json` で起動しておく**（クライアント `SpRp_CLI_Batch` と、ROPC を開ける設定）。
+**`cc`・`jwtbearer`・`ropc` は、`Sample4SpRp.stub.json` を渡したスタブが要る**（クライアント `SpRp_CLI_Batch` と、ROPC を開ける設定。`StubCompose.ps1` の既定）。
 `device`・`pkce` は、どちらの起動でも通る。
 
 | 対象 | フロー | 起動のしかた |
@@ -147,7 +154,7 @@ cd root\programs\CS\Sample4SpRp\E2E
 
 ```powershell
 cd root\programs\CS\Sample4SpRp\Stub
-.\StubCompose.ps1 -Settings .\Sample4SpRp.stub.json   # 雛形に無いクライアント（SpRp_MVC ほか）を足して起動（雛形のクライアントも残る）
+.\StubCompose.ps1                                     # 既定で Sample4SpRp.stub.json を渡す（SpRp_MVC ほか。雛形のクライアントも残る）
 
 cd ..\E2E
 .\MvcFapi1E2E.ps1                                  # 5 つのフロー × 正常・対照（11 件）
@@ -164,9 +171,9 @@ cd ..\E2E
 
 - **戻り（スタブ → アプリ）のリダイレクトの手前で止め、URL を書き換えてからアプリへ届ける**
 - **対照は、NG になり、しかも狙った確認（理由の文言）で落ちたことを見る**（別の理由で落ちたのなら、狙いは確かめられていない）
-- **前提（起動はしない）** : スタブ（`-Settings .\Sample4SpRp.stub.json`）、ビルド（`CS\11_Build_SpRp_sample.bat`）、**ポート 44336 が空いている**。
+- **前提（起動はしない）** : スタブ（`StubCompose.ps1` の既定 = `Sample4SpRp.stub.json`）、ビルド（`CS\11_Build_SpRp_sample.bat`）、**ポート 44336 が空いている**。
   SQL Server は要らない。**足りなければ終了コード 2**（0 = すべて OK、1 = NG あり）
-- **スタブを `-Settings` 無しで起動していると、`SpRp_MVC` のクライアントが無いので「スタブのエラー画面」で NG**。
+- **スタブを `-MpasDefault`（または MPAS 側のバッチ）で起動していると、`SpRp_MVC` のクライアントが無いので「スタブのエラー画面」で NG**。
   2.1・2.2 の E2E は、どちらの起動でも通る（雛形のクライアントは残る）
 - **アプリのログは `-OutputDir`（既定 `%TEMP%\OpenTouryoE2E`）の `app_SpRp_MVC.log`**
 
@@ -184,13 +191,14 @@ cd ..\E2E
 | MVC（`DotNet/MVC`）の `oauth2`・`oidc` | **雛形に無い**：`SpRp_MVC`（[`Stub/Sample4SpRp.stub.json`](Stub/Sample4SpRp.stub.json)。`fapi1`、`private_key_jwt`） | `75d74cb5a4ae44e3afec154623f0cbb4` | `https://localhost:44336/Fapi1/Callback` |
 | MVC（`DotNet/MVC`）の `pkce` | **雛形に無い**：`SpRp_MVC_PKCE`（同上。`fapi1`、秘密なし） | `9e53bded5e7d4ee4bc9e7e30f7a9f0a6` | 同上 |
 | CLI（`DotNet/CLI`）の `cc`・`jwtbearer`・`ropc` | **雛形に無い**：`SpRp_CLI_Batch`（同上。normal、秘密と `jwk_rsa_publickey`） | `b9582fe575bf4ba9984f3fc81147408c` | （使わない） |
+| SPA（`SPA/`）の Hybrid | **雛形に無い**：`SPA_Hybrid`（同上。normal、秘密なし） | `2ee77c67c8624f39a423c9b6c319c106` | **`redirect_uri_token`** = `http://localhost:5173/RedirectEndpoint`（Hybrid はこちらを使う） |
 
 **`Stub/Sample4SpRp.stub.json` は、雛形に無いクライアントと設定を 1 つに集めたもの**（スタブに渡せる JSON は 1 つ）。
 **ROPC も、ここで開けている**（雛形は `EnableResourceOwnerPasswordCredentialsGrantType` = false）。
 
 **雛形には、ほかのフェーズで使えそうなものも在る**（`MVC_Sample`・`WebForms_Sample`・`SPA_Application`・`Native_Application`・
 `IdFederation`（SAML2））。**どれを使うかは、そのフェーズで決める。**
-**雛形に無いクライアントが要るときだけ**、設定の JSON を書いて `StubCompose.ps1 -Settings <パス>` で渡す
+**雛形に無いクライアントが要るときは、`Stub/Sample4SpRp.stub.json` に足す**（`StubCompose.ps1` が既定で渡す。別のファイルを渡すなら `-Settings <パス>`）
 （書き方は MPAS の `container\Stub\appsettings.Stub.sample.json`）。
 
 | サンプル側のキー | 意味 | IdP 側（雛形） |
@@ -237,7 +245,7 @@ dotnet .\SpRp_CLI\bin\Debug\net10.0\SpRp_CLI.dll pkce   # net10.0
 | `ropc <利用者名>` | Resource Owner Password Credentials（RFC 6749 §4.3）。**非推奨**（RFC 9700 §2.4） | **パスワードを標準入力から読み**（端末なら表示しない）、`client_secret`（Basic）と一緒に送る。id_token を検証し、UserInfo を表示する |
 
 **`cc`・`jwtbearer`・`ropc` は、サーバで動くバッチを模したコンフィデンシャル クライアント**（`SpRp_BatchClientID`。秘密 `SpRp_BatchClientSecret` と鍵を設定ファイルに持つ）。
-**利用者の端末に配る CLI に、この形を使ってはならない**（秘密を守れない）。**スタブは `-Settings ..\..\Stub\Sample4SpRp.stub.json` で起動する**（2.2 節）。
+**利用者の端末に配る CLI に、この形を使ってはならない**（秘密を守れない）。**スタブには `Sample4SpRp.stub.json` が要る**（`StubCompose.ps1` の既定。2.2 節）。
 - **`ropc` の利用者名は、MPAS のログイン画面で入れるメール アドレスではない**（テスト利用者は `tanaka`）。
   **パスワードは、コマンド ラインに書かない**（プロセスの一覧から見える）。**先頭の BOM は読み飛ばす**（Windows PowerShell 5.1 から流し込むと付くことがある）
 - **`ropc` は、スタブを起動した直後には通らない**（テスト利用者は、スタブのアカウントの画面を初めて開いたときに作られる。ログイン画面を一度開く）
@@ -306,6 +314,19 @@ Discovery から引く・`scope` を送る・`verification_uri` をそのまま�
 UserInfo の `sub` が id_token と同じか。**乱数は Web Crypto API / `RandomNumberGenerator`**（RFC 7636 §7.1）。
 **id_token の署名は確かめない**（トークン エンドポイントから TLS で直接受けるため。OpenID Connect Core 1.0 §3.1.3.7 の 6）。
 
+**Hybrid（`code id_token`。#668）** : MPAS の自己テストから移した。**ボタンを分けた**（**Sign In（Hybrid : code id_token）**）。
+
+| | 内容 |
+|---|---|
+| クライアント | **`SPA_Hybrid`**（`2ee77c67c8624f39a423c9b6c319c106`。秘密なし）。**雛形に無い**（MPAS は Hybrid の戻り先を `redirect_uri_token` から引き、`SPA_Application` はそこが空）。`Stub/Sample4SpRp.stub.json` に登録 |
+| code の引き換え | **PKCE**（`code_verifier`。秘密は送らない） |
+| 認可応答の id_token | **署名を確かめる**（フロント チャネルで届くので、TLS で発行者を確かめられない。§3.3.2.12 → §3.2.2.11）。鍵は `jwks_uri` から `kid` で引き、**alg は RS256・ES256・ES384・ES512 だけ**。**検証は Web Crypto**（Blazor は `wwwroot/js/jwsVerify.js` を JS 相互運用で呼ぶ。ブラウザでは .NET の RSA・ECDSA を使えない） |
+| | `iss`・`aud`・`exp`・`nonce`、**`c_hash`（必須。§3.3.2.11）** |
+| トークン応答の id_token | 上の PKCE と同じクレーム、**認可応答の id_token と同じ `iss`・`sub` か**（§3.3.3.6） |
+| 扱わないもの | **`code token`・`code id_token token`**（access_token をフロント チャネルで返す。MPAS の雛形は Implicit を閉じており、通らない） |
+
+- **リソース サーバ（`ASPNETWebService`）の `OAuth2AndOidcClientIDs` に `SPA_Hybrid` を足した**（`aud` を確かめるため。#655）
+
 - **前提 : MPAS の `SPA_Application` から `client_secret` を外す**（雛形 `_appsettings.json` と手元の `appsettings.json` の両方）。
   **MPAS は、`/token`・`/userinfo` の CORS で許すオリジンを、秘密を持たないクライアントの戻り先から導く**ため、
   秘密があると `http://localhost:5173` からの要求がブラウザで止まる（プリフライトに `Access-Control-Allow-Origin` が付かない）
@@ -327,7 +348,7 @@ cd root\programs\CS\Sample4SpRp\DotNet\MVC
 .\2_Run.bat          # https://localhost:44336 で待ち受ける。ブラウザで開き、フローを選ぶ
 ```
 
-**前提** : 基盤のビルド（`Build_netcore100`）、**スタブを `-Settings ..\..\Stub\Sample4SpRp.stub.json` で起動する**（2.3 節）。
+**前提** : 基盤のビルド（`Build_netcore100`）、**スタブには `Sample4SpRp.stub.json` が要る**（`StubCompose.ps1` の既定。2.3 節）。
 **待ち受けの URL は `appsettings.json` の `Kestrel` の節**（戻り先は登録と 1 文字も違ってはならないので、`launchSettings.json` に頼らない）。
 
 | flow | client_id（設定のキー） | トークン要求のクライアント認証 |
@@ -369,7 +390,7 @@ cd root\programs\CS\Sample4SpRp\DotNet\MVC
 
 ## 5. サンプルを足すとき
 
-1. **MPAS の雛形から、使うクライアントを選ぶ**（3 節の表に足す）。**無ければ、設定の JSON を書いて `-Settings` で渡す**
+1. **MPAS の雛形から、使うクライアントを選ぶ**（3 節の表に足す）。**無ければ、`Stub/Sample4SpRp.stub.json` に足す**
 2. サンプル側の設定（3 節）を、その値に揃える
 3. **1 節の表の状態を更新する**
 
@@ -384,8 +405,8 @@ cd root\programs\CS\Sample4SpRp\DotNet\MVC
   **SpRp のサンプルを足したら、このバッチに足す**（net48 と net10.0 の両方。`SpRp_MVC` は、いまは net10.0 だけ）
 - **単体テスト（`2_RunAllTests.ps1`）・疎通テスト（`3_SmokeTest.ps1`）・CI には載っていない。**
   外部の IdP（スタブ）が要るため。**WebApp のサンプルの外部ログインは `E2E/ExternalLoginE2E.ps1` で確かめる**（2.1 節。
-  スタブと SQL Server の起動が要るので、**施主に確かめてから回す**）。**CLI は `E2E/CliLoginE2E.ps1` で確かめる**（2.2 節。スタブだけが要る。`cc`・`jwtbearer`・`ropc` は `-Settings .\Sample4SpRp.stub.json` で起動したスタブ）。
-  **MVC（FAPI 1.0）は `E2E/MvcFapi1E2E.ps1` で確かめる**（2.3 節。スタブを `-Settings .\Sample4SpRp.stub.json` で起動する）
+  スタブと SQL Server の起動が要るので、**施主に確かめてから回す**）。**CLI は `E2E/CliLoginE2E.ps1` で確かめる**（2.2 節。スタブだけが要る。`cc`・`jwtbearer`・`ropc` は `Sample4SpRp.stub.json` を渡したスタブ）。
+  **MVC（FAPI 1.0）は `E2E/MvcFapi1E2E.ps1` で確かめる**（2.3 節。スタブには `Sample4SpRp.stub.json` が要る）
 - **`SelectTargets.ps1` は、ここを変えると「バッチ : 11_Build_SpRp_sample.bat ＋ 手で確かめる（SpRp）」に分ける**
   （ビルドだけを回し、通しにはしない）。**手で確かめるものが残るので、検証の記録は進まない**（確かめたら `-Record`）
 - **スタブは MPAS の net10.0 版**である。net48 版の MPAS に固有の振る舞いは再現しない

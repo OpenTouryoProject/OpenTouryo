@@ -40,7 +40,7 @@
       | MPAS のスタブ | https://localhost:44310 の Discovery が 200（..\README.md の 2 節。StubCompose.ps1） |
       | ビルド | SpRp_CLI : CS\11_Build_SpRp_sample.bat、旧 : CS\5_Build_CLICore_sample.bat |
       | ポート 12345 | 空いている（pkce の戻り先。**どの CLI も同じポートを使うので、1 つずつ動かす**） |
-      | cc・jwtbearer・ropc | **スタブを -Settings ..\Stub\Sample4SpRp.stub.json で起動する**（SpRp_CLI_Batch のクライアントと、ROPC を開ける設定） |
+      | cc・jwtbearer・ropc | **スタブに ..\Stub\Sample4SpRp.stub.json が要る**（StubCompose.ps1 の既定）（SpRp_CLI_Batch のクライアントと、ROPC を開ける設定） |
 
       SQL Server は要らない。
       **ropc の前に、スタブのログイン画面を一度開く**（MPAS は、アカウントの画面を初めて開いたときにテスト利用者を作る）。
@@ -664,7 +664,7 @@ if ($lack.Count -gt 0)
 Write-Output '  OK  スタブ・ビルド・ポート 12345・テスト利用者'
 if (@($targets | Where-Object { $grants -contains $_.Flow }).Count -gt 0)
 {
-    Write-Output '      （cc・jwtbearer・ropc は、スタブを -Settings ..\Stub\Sample4SpRp.stub.json で起動していること）'
+    Write-Output '      （cc・jwtbearer・ropc は、スタブに Sample4SpRp.stub.json が要る。StubCompose.ps1 の既定）'
 }
 
 # ------------------------------------------------------------------

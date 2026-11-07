@@ -17,6 +17,13 @@ public static class Constants
     /// <summary>client_id（雛形の SPA_Application）</summary>
     public const string ClientId = "f374a155909d486a9234693c34e94479";
 
+    /// <summary>client_id（Hybrid : code id_token。#668）</summary>
+    /// <remarks>
+    /// **別のクライアント SPA_Hybrid**（秘密なし）。MPAS は Hybrid の戻り先を redirect_uri_token から引き、
+    /// 雛形の SPA_Application はそこが空のため。登録は Sample4SpRp/Stub/Sample4SpRp.stub.json（StubCompose.ps1 が既定で渡す）。
+    /// </remarks>
+    public const string HybridClientId = "2ee77c67c8624f39a423c9b6c319c106";
+
     /// <summary>求める scope</summary>
     public const string Scope = "openid profile email";
 
@@ -34,6 +41,9 @@ public static class Constants
 
     /// <summary>UserInfo エンドポイント</summary>
     public const string UserInfoRequestUrl = AuthServerRootUrl + "/userinfo";
+
+    /// <summary>Discovery（Hybrid の id_token の署名を確かめる鍵は、ここの jwks_uri から引く。#668）</summary>
+    public const string DiscoveryUrl = AuthServerRootUrl + "/.well-known/openid-configuration";
 
     /// <summary>リソース サーバ（Samples4NetCore/Backend/ASPNETWebService）。アクセス トークンを Bearer で送る</summary>
     public const string ResourcesServerRootUrl = "https://localhost:44335";

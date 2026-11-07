@@ -25,7 +25,7 @@ if errorlevel 1 goto :fail
 echo.
 echo [OK] Built: SpRp_MVC\bin\Debug\net10.0\SpRp_MVC.dll
 echo      Next: start the IdP stub with the SpRp_MVC clients
-echo            ^(..\..\Stub\StubCompose.ps1 -Settings ..\..\Stub\Sample4SpRp.stub.json^), then 2_Run.bat.
+echo            ^(..\..\Stub\StubCompose.ps1, which passes Sample4SpRp.stub.json by default^), then 2_Run.bat.
 set RC=0
 goto :end
 

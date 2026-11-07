@@ -83,12 +83,26 @@ export function base64URLDecodeToString(value: string): string {
   return new TextDecoder().decode(bytes);
 }
 
+// ---------------------------------------------------------------
+// Base64URL をデコードし、バイト列にする（#668）。
+// ---------------------------------------------------------------
+// 引数    value（Base64URL エンコーディングした値）
+// 戻り値  Uint8Array（JWS の署名を確かめるのに使う）
+// ---------------------------------------------------------------
+export function base64URLDecodeToBytes(value: string): Uint8Array<ArrayBuffer> {
+  const base64 = value.replace(/-/g, '+').replace(/_/g, '/');
+  const padded = base64 + '='.repeat((4 - (base64.length % 4)) % 4);
+  const binary = atob(padded);
+  return Uint8Array.from(binary, (ch) => ch.charCodeAt(0));
+}
+
 // 全関数をオブジェクトとしてデフォルトエクスポート
 const common = {
   fetchStatusHandler,
   getRandomString,
   base64URLEncode,
   base64URLDecodeToString,
+  base64URLDecodeToBytes,
 };
 
 export default common;
