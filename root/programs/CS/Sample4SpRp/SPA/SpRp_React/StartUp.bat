@@ -18,9 +18,9 @@ if not errorlevel 1 (
     goto :end
 )
 
-rem Run npm ci when node_modules is missing, or when it is broken:
-rem the clean step of the build (CS\1_DeleteDir.bat, called by 1_BuildAll.ps1) deletes
-rem every folder named "bin" under CS, including node_modules\vite\bin (#668).
+rem Run npm ci when node_modules is missing, or when it is broken
+rem (an interrupted npm ci, files deleted by hand, ...). The clean step of the build
+rem (CS\1_DeleteDir.bat) used to delete node_modules\vite\bin as well; fixed in #669 (#668).
 rem npm ci deletes node_modules itself before installing, so a broken one is replaced.
 set NEED_CI=0
 if not exist node_modules set NEED_CI=1

@@ -195,6 +195,6 @@ dotnet run --no-build --no-launch-profile --urls https://localhost:44335
 | **サインインしたのに `"未認証"`** | リソース サーバの `SpRp_Issuer`・`SpRp_JwkSetUri` がスタブを向いているか。**スタブを起動し直すと鍵が変わる**ことがあるので、サインインし直す |
 | **Hybrid** でスタブがエラー画面（redirect_uri・client が違う） | スタブを **`StubCompose.ps1`（既定で `Sample4SpRp.stub.json` を渡す）** で起動したか。`-MpasDefault` や MPAS 側のバッチでは居ない（`SPA_Hybrid` は雛形に無い） |
 | **Hybrid** で「署名を確かめられません」（書き換えていないのに） | Blazor : `wwwroot/js/jwsVerify.js` が読み込まれているか（Console に `sprpJws` のエラー）。**Ctrl+Shift+R** |
-| `StartUp.bat`（React）が `[WARN] node_modules is broken` と出して `npm ci` を流す | **`node_modules` の `bin` が消えている**（`1_BuildAll.ps1` のクリーン `CS\1_DeleteDir.bat` が、`CS` の下の `bin` という名前のフォルダを、`node_modules` の中まで消す）。**`StartUp.bat` が `vite\bin\vite.js` の有無で見分け、入れ直す**（#668）。ネットワークが要る |
+| `StartUp.bat`（React）が `[WARN] node_modules is broken` と出して `npm ci` を流す | **`node_modules` の中が欠けている**（`npm ci` が途中で止まった、手で消した、など）。**`StartUp.bat` が `vite\bin\vite.js` の有無で見分け、入れ直す**（#668）。ネットワークが要る。**以前はビルドのクリーン（`CS\1_DeleteDir.bat`）が `node_modules` の中の `bin` を消していた**が、#669 で直した |
 | それでも `Cannot find module …\vite\bin\vite.js` | `npm run dev` を直接動かしていないか（`StartUp.bat` を使う）。または `node_modules` を消して `StartUp.bat` をやり直す |
 | Blazor の画面の下に黄色い帯（An unhandled error has occurred） | DevTools の Console に C# の例外が出ている（サインインの失敗は例外にせず、`/RedirectEndpoint` に出す） |

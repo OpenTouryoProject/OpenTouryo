@@ -52,6 +52,10 @@ cd root\programs
 `MigrationBackup` `.vs` を再帰的に削除する。**Visual Studio は閉じてから実行する**
 （`.vs` が削除されるため）。
 
+**`node_modules` の中は消さない**（`1_DeleteDir.bat`・`1_DeleteFile.bat` とも。C#・VB 同じ。#669）。
+npm のパッケージは実行ファイルを `bin` に置く（`vite\bin` など）ので、消すと `node_modules` は残ったまま壊れ、
+`npm ci` も流れ直さない。パスに `\node_modules\` を含むものを `findstr` で除いてから消している。
+
 ---
 
 ## 2. なぜラッパーが必要か
