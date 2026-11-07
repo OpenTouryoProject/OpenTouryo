@@ -20,7 +20,7 @@
 | net | WebForms（net48 のみ） | 同上 | **一部**：既存の `WebForms_Sample`（C#・VB）の外部ログイン（OIDC・SAML2）をスタブで通す（2.1 節）。専用のサンプルは未 | `Samples/` の `WebForms_Sample` |
 | net | WinForms | 同上 | **一部**：既存の WS クライアント（`WSClientWin_sample`・`WSClientWinCone_sample`、VB・.NET 10 版）の外部ログインを、ROPC から PKCE（LIR）に替えた。専用のサンプルは未 | `Samples/WS_sample/WSClient_sample/` ほか |
 | browser | SPA（React・Blazor） | PKCE | **済**（Bearer でのリソース アクセスを含む。4.1 節） | [`SPA/`](SPA/) |
-| browser | SPA（React・Blazor） | **Hybrid（`code id_token`）** | **済**（#668。MPAS の自己テストから移した。4.1 節）。`code token`・`code id_token token` は扱わない | 同上 |
+| browser | SPA（React・Blazor） | **Hybrid（`code id_token`）**（**新しく使わない**） | **済**（#668。MPAS の自己テストから移した。4.1 節）。`code token`・`code id_token token` は扱わない（Implicit 相当） | 同上 |
 
 > **CLI に SAML2・AuthZCode・AuthNCode を載せていないのは、秘密を守れないからである。**
 > 認可コードを秘密（`client_secret`）で引き換えるのはコンフィデンシャル クライアント（サーバ側のアプリ）で、
@@ -314,7 +314,13 @@ Discovery から引く・`scope` を送る・`verification_uri` をそのまま�
 UserInfo の `sub` が id_token と同じか。**乱数は Web Crypto API / `RandomNumberGenerator`**（RFC 7636 §7.1）。
 **id_token の署名は確かめない**（トークン エンドポイントから TLS で直接受けるため。OpenID Connect Core 1.0 §3.1.3.7 の 6）。
 
-**Hybrid（`code id_token`。#668）** : MPAS の自己テストから移した。**ボタンを分けた**（**Sign In（Hybrid : code id_token）**）。
+**Hybrid（`code id_token`。#668）** : MPAS の自己テストから移した。**ボタンを分けた**（**Sign In（Hybrid : code id_token。非推奨）**）。
+
+> **Hybrid は新しく使わない**（ROPC と同じ扱い）。**認可コード ＋ PKCE に `openid` を付ければ、ほぼ代替できる**（上の PKCE のボタン）。
+> Hybrid が `c_hash`・`nonce` で守っていたもの（code の差し替え・リプレイ）は、PKCE と `nonce`・応答の `iss`（RFC 9207）で守られる。
+> 逆に、**id_token が URL のフラグメントに載り**（履歴に残りうる）、**ブラウザで署名を確かめる必要がある**（Blazor は JS 相互運用が要った）。
+> **`code token`・`code id_token token` は、access_token をフロント チャネルで返す Implicit 相当なので、扱わない。**
+> **このサンプルは、ブラウザで JWS の署名を確かめる例として残す。**
 
 | | 内容 |
 |---|---|
@@ -323,7 +329,7 @@ UserInfo の `sub` が id_token と同じか。**乱数は Web Crypto API / `Ran
 | 認可応答の id_token | **署名を確かめる**（フロント チャネルで届くので、TLS で発行者を確かめられない。§3.3.2.12 → §3.2.2.11）。鍵は `jwks_uri` から `kid` で引き、**alg は RS256・ES256・ES384・ES512 だけ**。**検証は Web Crypto**（Blazor は `wwwroot/js/jwsVerify.js` を JS 相互運用で呼ぶ。ブラウザでは .NET の RSA・ECDSA を使えない） |
 | | `iss`・`aud`・`exp`・`nonce`、**`c_hash`（必須。§3.3.2.11）** |
 | トークン応答の id_token | 上の PKCE と同じクレーム、**認可応答の id_token と同じ `iss`・`sub` か**（§3.3.3.6） |
-| 扱わないもの | **`code token`・`code id_token token`**（access_token をフロント チャネルで返す。MPAS の雛形は Implicit を閉じており、通らない） |
+| 扱わないもの | **`code token`・`code id_token token`**（access_token をフロント チャネルで返す **Implicit 相当**。MPAS の雛形も Implicit を閉じており、通らない） |
 
 - **リソース サーバ（`ASPNETWebService`）の `OAuth2AndOidcClientIDs` に `SPA_Hybrid` を足した**（`aud` を確かめるため。#655）
 

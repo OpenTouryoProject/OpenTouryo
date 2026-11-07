@@ -31,7 +31,9 @@
 //   **id_token の署名は確かめない。** トークン エンドポイントから TLS で直接受けた id_token は、
 //   署名の代わりに TLS のサーバ検証で発行者を確かめてよい（OpenID Connect Core 1.0 §3.1.3.7 の 6）。
 //
-// ＜Hybrid（code id_token。#668）＞
+// ＜Hybrid（code id_token。#668）＞ **新しく使わない。**
+//   **認可コード ＋ PKCE に openid を付ければ、ほぼ代替できる**（code の差し替え・リプレイは PKCE・nonce・応答の iss で守られる）。
+//   id_token がフラグメントに載り、ブラウザで署名を確かめる必要もある。**ブラウザで JWS の署名を確かめる例として残す。**
 //   汎用認証サイトの自己テストから移した。**クライアントは SPA_Hybrid**（const.ts。秘密なし）。
 //   **認可応答（フラグメント）で id_token が届くので、その id_token は署名を確かめる**
 //   （フロント チャネルは TLS で発行者を確かめられない。OpenID Connect Core 1.0 §3.3.2.12 → §3.2.2.11）。
@@ -42,7 +44,7 @@
 //   | 認可応答の id_token の c_hash | **必須**（§3.3.2.11）。届いた code と結び付いているか（code の差し替え） |
 //   | トークン応答の id_token の iss・sub | 認可応答の id_token と同じか（§3.3.3.6） |
 //   **code は PKCE で引き換える**（code_verifier。秘密は送らない）。
-//   **code token・code id_token token は扱わない**（access_token をフロント チャネルで返す。MPAS の雛形も閉じている）。
+//   **code token・code id_token token は扱わない**（access_token をフロント チャネルで返す Implicit 相当。MPAS の雛形も閉じている）。
 //
 // ＜保存先＞
 //   **sessionStorage**（タブを閉じれば消える。他のタブとは共有しない）。

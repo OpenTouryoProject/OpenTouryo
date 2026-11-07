@@ -41,7 +41,9 @@ namespace SpRp_Blazor.Touryo;
 /// **id_token の署名は確かめない。** トークン エンドポイントから TLS で直接受けた id_token は、
 /// 署名の代わりに TLS のサーバ検証で発行者を確かめてよい（OpenID Connect Core 1.0 §3.1.3.7 の 6）。
 ///
-/// ＜Hybrid（code id_token。#668）＞ React 版と同じ。**クライアントは SPA_Hybrid**（Constants.HybridClientId。秘密なし）。
+/// ＜Hybrid（code id_token。#668）＞ **新しく使わない。** **認可コード ＋ PKCE に openid を付ければ、ほぼ代替できる**
+/// （code の差し替え・リプレイは PKCE・nonce・応答の iss で守られる）。**ブラウザで JWS の署名を確かめる例として残す。**
+/// React 版と同じ。**クライアントは SPA_Hybrid**（Constants.HybridClientId。秘密なし）。
 /// **認可応答（フラグメント）で届く id_token は、署名を確かめる**（§3.3.2.12 → §3.2.2.11）。
 /// | 値 | 何のため |
 /// |---|---|
@@ -49,7 +51,7 @@ namespace SpRp_Blazor.Touryo;
 /// | 認可応答の id_token の iss・aud・exp・nonce | 上と同じ |
 /// | 認可応答の id_token の c_hash | **必須**（§3.3.2.11）。届いた code と結び付いているか |
 /// | トークン応答の id_token の iss・sub | 認可応答の id_token と同じか（§3.3.3.6） |
-/// **code は PKCE で引き換える。** **code token・code id_token token は扱わない**（access_token をフロント チャネルで返す）。
+/// **code は PKCE で引き換える。** **code token・code id_token token は扱わない**（access_token をフロント チャネルで返す Implicit 相当）。
 ///
 /// ＜保存先＞ **sessionStorage**（JS 相互運用）。state・nonce・code_verifier は認可の往復だけに使い、使ったら消す。
 /// access_token も sessionStorage に置くので、**XSS があれば読まれる**（サンプルの簡素さを優先した）。

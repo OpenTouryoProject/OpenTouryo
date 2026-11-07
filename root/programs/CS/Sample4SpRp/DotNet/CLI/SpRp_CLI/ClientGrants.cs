@@ -107,7 +107,7 @@ namespace SpRp_CLI
         /// </remarks>
         public static async Task<bool> RunRopcAsync(Discovery discovery, string userId)
         {
-            string password = ClientGrants.ReadPassword();
+            string password = ClientGrants.ReadPassword(userId);
 
             string response = await OAuth2AndOIDCClient.ResourceOwnerPasswordCredentialsGrantAsync(
                 discovery.TokenEndpoint,
@@ -191,17 +191,18 @@ namespace SpRp_CLI
         }
 
         /// <summary>パスワードを標準入力から読む</summary>
+        /// <param name="userId">利用者名（端末なら、誰のパスワードかを示す）</param>
         /// <returns>パスワード</returns>
         /// <remarks>**リダイレクトされていれば 1 行を読み、端末なら表示せずに読む。**</remarks>
-        private static string ReadPassword()
+        private static string ReadPassword(string userId)
         {
             if (Console.IsInputRedirected)
             {
                 // **先頭の BOM は読み飛ばす**（Windows PowerShell 5.1 から流し込むと付くことがある）
-                return (Console.In.ReadLine() ?? "").TrimStart('﻿');
+                return (Console.In.ReadLine() ?? "").TrimStart('\uFEFF');
             }
 
-            Console.Write("パスワード : ");
+            Console.Write("利用者 " + userId + " のパスワード : ");
             StringBuilder sb = new StringBuilder();
             while (true)
             {

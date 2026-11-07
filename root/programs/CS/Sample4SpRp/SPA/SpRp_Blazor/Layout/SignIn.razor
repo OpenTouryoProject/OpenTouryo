@@ -2,7 +2,7 @@
     サインイン・サインアウト（#649）
       サインインは、認可要求の URL へ移るだけ（応答は Pages/RedirectEndpoint.razor が受ける）。
       **表示名は UserInfo の email**（識別子は sub。WebApp のサンプルと同じ）。
-      **Hybrid（code id_token）のボタンを足した**（#668。クライアントは SPA_Hybrid）。
+      **Hybrid（code id_token）のボタンを足した**（#668。クライアントは SPA_Hybrid）。**新しく使わない**（PKCE ＋ openid で代替できる）。
 *@
 @using System.Text.Json
 @using SpRp_Blazor.Touryo
@@ -16,7 +16,7 @@
 else
 {
     <button type="button" class="btn btn-link" @onclick="() => SignInAsync(OAuthOidc.FlowPkce)">Sign In</button>
-    <button type="button" class="btn btn-link" @onclick="() => SignInAsync(OAuthOidc.FlowHybrid)">Sign In（Hybrid : code id_token）</button>
+    <button type="button" class="btn btn-link" @onclick="() => SignInAsync(OAuthOidc.FlowHybrid)">Sign In（Hybrid : code id_token。非推奨）</button>
 }
 @if (!string.IsNullOrEmpty(_message))
 {

@@ -55,6 +55,7 @@ if not exist "%EXE%" (
 
 echo === SpRp_CLI %FLOW% ^(%TFM%^) ===
 echo   IdP stub must be running: https://localhost:44310/.well-known/openid-configuration
+if /i "%FLOW%"=="ropc" echo   User: %ROPCUSER% ^(the user name, not the e-mail address^)
 echo.
 
 if /i "%TFM%"=="net48" (

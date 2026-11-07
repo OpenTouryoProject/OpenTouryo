@@ -62,6 +62,7 @@
      2026/11/04  玄人 幸道         既定は MPAS の設定のまま動かす（雛形のクライアントを使う）。-Settings を追加
      2026/11/07  玄人 幸道         起動・停止を MPAS の 2_DockerComposeUp.bat・3_DockerComposeDown.bat に任せた（MPAS#340）
      2026/11/07  玄人 幸道         既定で Sample4SpRp.stub.json を渡すようにし、-MpasDefault を足した（#668）
+     2026/11/07  玄人 幸道         MPAS のバッチを呼ぶ間だけコンソールを UTF-8 にした（日本語の echo が化けていた。#668）
 #>
 [CmdletBinding()]
 param(
@@ -132,11 +133,25 @@ else
     Write-Output "  設定 : $($env:STUB_SETTINGS)"
 }
 
-switch ($Action)
+# **MPAS のバッチを呼ぶ間だけ、コンソールを UTF-8（65001）にする**（#668）。
+#   MPAS の 2_DockerComposeUp.bat などは、日本語の echo を UTF-8 で書いている。
+#   **cmd は、バッチをコンソールの出力のコード ページで読む**ので、既定の 932 のままだと、その行が化ける。
+#   [Console]::OutputEncoding を変えると、コンソールのコード ページも変わる。**終わったら元に戻す**（呼んだ側のコンソールを変えたままにしない）。
+$oldEncoding = [Console]::OutputEncoding
+try
 {
-    'Up'     { & $upBat }
-    'Down'   { & $downBat }
-    'Config' { docker compose -f $compose config }
+    [Console]::OutputEncoding = New-Object Text.UTF8Encoding $false
+
+    switch ($Action)
+    {
+        'Up'     { & $upBat }
+        'Down'   { & $downBat }
+        'Config' { docker compose -f $compose config }
+    }
+}
+finally
+{
+    [Console]::OutputEncoding = $oldEncoding
 }
 
 if ($LASTEXITCODE -ne 0)
