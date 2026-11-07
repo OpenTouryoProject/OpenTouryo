@@ -156,6 +156,19 @@ cd C:\root\programs
 The three can also be run individually. **In that case the order is fixed**,
 because the clean and the assembly deployment done by `1_` are prerequisites of `2_` and `3_`.
 
+`2_RunAllTests.ps1` has options such as running in a Linux container (`-Linux`), running against each DBMS (`-CrossDb`),
+and measuring coverage (`-Coverage`). The list is in section 1 of
+[`programs/CHEATSHEET.md`](programs/CHEATSHEET.md), and the details are in [`programs/TESTING.md`](programs/TESTING.md).
+
+If you changed only samples or tests, `SelectTargets.ps1` narrows down what to run.
+It examines the changes since the last verification and selects only the builds, tests and smoke tests that are needed.
+
+```powershell
+.\SelectTargets.ps1 -Record   # After a full run passes, record the current commit
+.\SelectTargets.ps1           # Show what to run, based on the changes since the record
+.\SelectTargets.ps1 -Run      # Run 1 -> 2 -> 3 within that scope
+```
+
 For the procedures and the criteria, refer to
 [`BUILDING.md`](programs/BUILDING.md) / [`TESTING.md`](programs/TESTING.md) /
 [`SMOKETEST.md`](programs/SMOKETEST.md) in the same folder.
