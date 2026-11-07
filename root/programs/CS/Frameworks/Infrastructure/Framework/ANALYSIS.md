@@ -192,6 +192,10 @@ UOC は `UOC_PreQuery` / `UOC_AfterQuery(sql)` / `UOC_AfterQuery(sql, ex)`。
   **ログアウトは部品化を保留している**（Web Forms / MVC の SP・RP の口の共通化の観点から）。net48 の csproj は `Compile Include` を列挙しているので、ファイルを足したら並べること
 - **公開情報（JWK Set・Discovery・SAML2 メタデータ）の取得は `GetStringAsync`（`internal`）に集めている。** 失敗しても例外にせず空文字を返す。
   `GetJwkSetAsync` と `GetDiscoveryDocumentAsync` はこれを呼ぶだけ（以前は `GetJwkSetAsync` を汎用の GET として代用していた）
+- **認可コードを `private_key_jwt` で引き換え、PKCE も併せるなら、`GetAccessTokenByCodeWithPkceAsync` を使う**（#670）。
+  アサーションの版（`GetAccessTokenByCodeAsync(uri, redirect_uri, code, assertion, authMethod)`）は `code_verifier` を送らず、
+  `code_challenge` を付けて求めたコードを引き換えられない（RFC 7636 §4.5）。**名前を分けた**のは、(Uri, string × 4, AuthMethods) の版がすでに在り、
+  引数の型の並びが同じ版を足せないため。`code_verifier`・`assertion` は必須で、`authMethod` は受けない（本文の形は `client_secret_jwt` でも同じ）
 - **CIBA の Token 要求で `private_key_jwt` / `client_secret_jwt` / `tls_client_auth` を使うなら、`client_assertion` を受ける `GetAccessTokenByCibaAsync` を使う。**
   受けない既存の版は Basic / post だけで、それ以外は従来どおり `ArgumentException`
 - `OAuth2AndOIDCConst` / `OAuth2AndOIDCEnum` / `OAuth2AndOIDCParams` / `CmnClientParams` / `CmnServerParams`（#634）

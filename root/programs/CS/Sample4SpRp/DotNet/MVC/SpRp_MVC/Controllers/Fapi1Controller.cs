@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/11/07  玄人 幸道         新規作成（#668。汎用認証サイトの自己テストの FAPI1 を移した）
+//*  2026/11/07  玄人 幸道         oauth2・oidc は private_key_jwt に PKCE を併せた（GetAccessTokenByCodeWithPkceAsync。#670）
 //**********************************************************************************
 
 using System;
@@ -54,15 +55,17 @@ namespace SpRp_MVC.Controllers
     ///
     /// | flow | client_id | scope | トークン要求のクライアント認証 |
     /// |---|---|---|---|
-    /// | `oauth2` | `OAuth2AndOidcClientID` | `SpRp_Fapi1OAuth2Scope`（openid なし） | `private_key_jwt`（RFC 7523 §2.2） |
-    /// | `oidc` | 同上 | `SpRp_Scope`（openid あり。nonce を送る） | `private_key_jwt` |
+    /// | `oauth2` | `OAuth2AndOidcClientID` | `SpRp_Fapi1OAuth2Scope`（openid なし） | **`private_key_jwt`（RFC 7523 §2.2）＋ PKCE S256** |
+    /// | `oidc` | 同上 | `SpRp_Scope`（openid あり。nonce を送る） | 同上 |
     /// | `pkce` | **`SpRp_Fapi1PkceClientID`** | `SpRp_Scope`（同上） | **無し**（PKCE S256 の code_verifier だけ。RFC 7636） |
     ///
     /// **MPAS は fapi1 の登録に、認可コードの引き換えで PKCE S256 か `private_key_jwt`（か mTLS）を求める**
     /// （client_secret では通らない。Hybrid（`code id_token`）も通らない）。
     /// **`pkce` は、秘密を持たない別のクライアントで通す。** `private_key_jwt` を登録したクライアント（コンフィデンシャル）は、
     /// **PKCE だけでは引き換えられない**（クライアント認証を省けない）。
-    /// **PKCE と `private_key_jwt` の併用は、ここでは扱わない**（`OAuth2AndOIDCClient.GetAccessTokenByCodeAsync` に、両方を送る版が無い）。
+    /// **`oauth2`・`oidc` は、`private_key_jwt` に PKCE を併せる**（`OAuth2AndOIDCClient.GetAccessTokenByCodeWithPkceAsync`。#670）。
+    /// **どの flow も code_challenge（S256）を送り、トークン要求で code_verifier を送る**
+    /// （IdP が code_verifier を検証すれば、コンフィデンシャル クライアントでも code の差し替えを防げる）。
     ///
     /// **response_mode は `query`（既定）か `query.jwt`（JARM）。** JARM を求めたのに素の応答が来たら、断る（素の応答へ落とさせない）。
     /// </remarks>
@@ -70,10 +73,10 @@ namespace SpRp_MVC.Controllers
     {
         #region 定数
 
-        /// <summary>flow : openid なし ＋ private_key_jwt</summary>
+        /// <summary>flow : openid なし ＋ private_key_jwt ＋ PKCE</summary>
         public const string FlowOAuth2 = "oauth2";
 
-        /// <summary>flow : openid ＋ private_key_jwt</summary>
+        /// <summary>flow : openid ＋ private_key_jwt ＋ PKCE</summary>
         public const string FlowOidc = "oidc";
 
         /// <summary>flow : openid ＋ PKCE S256（クライアント認証なし）</summary>
@@ -118,7 +121,8 @@ namespace SpRp_MVC.Controllers
                 ResponseMode = responseMode,
                 State = GetPassword.Base64UrlSecret(32),
                 Nonce = flow == FlowOAuth2 ? null : GetPassword.Base64UrlSecret(32),
-                CodeVerifier = flow == FlowPkce ? GetPassword.Base64UrlSecret(50) : null,
+                // **どの flow も PKCE を付ける**（private_key_jwt の flow も併せる。#670）
+                CodeVerifier = GetPassword.Base64UrlSecret(50),
             };
 
             Dictionary<string, string> query = new Dictionary<string, string>
@@ -279,10 +283,10 @@ namespace SpRp_MVC.Controllers
             }
             else
             {
-                // **private_key_jwt**（RFC 7523 §2.2。aud はトークン エンドポイント。§3）
-                result.AuthMethod = "private_key_jwt";
-                tokenResponse = await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
-                    discovery.TokenEndpoint, CmnClientParams.SpRp_RedirectUri, code,
+                // **private_key_jwt**（RFC 7523 §2.2。aud はトークン エンドポイント。§3）**＋ PKCE の code_verifier**（RFC 7636 §4.5。#670）
+                result.AuthMethod = "private_key_jwt ＋ PKCE（S256）";
+                tokenResponse = await OAuth2AndOIDCClient.GetAccessTokenByCodeWithPkceAsync(
+                    discovery.TokenEndpoint, CmnClientParams.SpRp_RedirectUri, code, s.CodeVerifier,
                     Fapi1Controller.CreateClientAssertion(clientId, discovery.TokenEndpoint.AbsoluteUri));
             }
 

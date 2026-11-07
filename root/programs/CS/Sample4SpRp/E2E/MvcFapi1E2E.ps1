@@ -9,14 +9,21 @@
 
       | flow | response_mode | 正常 | 対照（書き換えると NG になること） |
       |---|---|---|---|
-      | oauth2（private_key_jwt） | query | access_token を得る | state を書き換える |
-      | oidc（private_key_jwt） | query | ＋ id_token の検証・UserInfo | state を書き換える |
-      | oidc（private_key_jwt） | query.jwt（JARM） | 同上 | 応答（JWT）の署名を書き換える / 素の応答に落とす |
-      | pkce（PKCE S256） | query | 同上 | state を書き換える |
+      | oauth2（private_key_jwt ＋ PKCE） | query | access_token を得る | state を書き換える |
+      | oidc（private_key_jwt ＋ PKCE） | query | ＋ id_token の検証・UserInfo | state を書き換える / **code_challenge を書き換える** |
+      | oidc（private_key_jwt ＋ PKCE） | query.jwt（JARM） | 同上 | 応答（JWT）の署名を書き換える / 素の応答に落とす |
+      | pkce（PKCE S256） | query | 同上 | state を書き換える / **code_challenge を書き換える** |
       | pkce（PKCE S256） | query.jwt（JARM） | 同上 | 応答（JWT）の署名を書き換える |
 
       **対照が要るのは、確かめる処理を省いた実装でも、正常の側は通ってしまうため**（CliLoginE2E.ps1 と同じ考え方）。
       **戻り（IdP → アプリ）のリダイレクトの手前で止め、URL を書き換えてからアプリへ届ける。**
+
+      **PKCE（#670）**
+      - **どの flow も、認可要求に code_challenge（S256）が付くことを見る**（private_key_jwt の flow も PKCE を併せる）
+      - **対照（Challenge）は、アプリ → IdP の認可要求の code_challenge を書き換えて送る。** code は別の code_challenge に結び付くので、
+        アプリが正しい code_verifier を送っても、IdP が検証していればトークン要求は invalid_grant で断られる
+      - **アプリが code_verifier を送らない（PKCE を落とす）と、正常の側が落ちる。** MPAS は、code_challenge を付けて求めた code の
+        引き換えに code_verifier を求める（無ければ invalid_grant。private_key_jwt で認証しても同じ）
 
     ＜前提（このスクリプトは起動しない）＞
       | 前提 | 確かめ方 |
@@ -61,6 +68,8 @@
      日時        更新者            内容
      ----------  ----------------  -------------------------------------------------
      2026/11/07  玄人 幸道         新規（#668）
+     2026/11/07  玄人 幸道         どの flow も code_challenge（S256）が付くことを見る（private_key_jwt ＋ PKCE。#670）
+     2026/11/07  玄人 幸道         認可要求の code_challenge を書き換える対照を足した（PKCE が効いていることを見る。#670）
 #>
 [CmdletBinding()]
 param(
@@ -106,17 +115,20 @@ $appDll = Join-Path $here '..\DotNet\MVC\SpRp_MVC\bin\Debug\net10.0\SpRp_MVC.dll
 # ケース
 # ------------------------------------------------------------------
 #   Tamper : None（正常）/ State（state を書き換える）/ Signature（JARM の署名を書き換える）/ Plain（JARM を素の応答に落とす）
+#            / Challenge（認可要求の code_challenge を書き換える。#670）
 #   Expect : 結果の画面の NG の理由に含まれるべき文言（対照が、狙った確認で落ちたことを見る）
 $cases = @(
     @{ Flow = 'oauth2'; Mode = '';          Tamper = 'None' }
     @{ Flow = 'oauth2'; Mode = '';          Tamper = 'State';     Expect = 'state が' }
     @{ Flow = 'oidc';   Mode = '';          Tamper = 'None' }
     @{ Flow = 'oidc';   Mode = '';          Tamper = 'State';     Expect = 'state が' }
+    @{ Flow = 'oidc';   Mode = '';          Tamper = 'Challenge'; Expect = 'トークン要求が断られました : invalid_grant' }
     @{ Flow = 'oidc';   Mode = 'query.jwt'; Tamper = 'None' }
     @{ Flow = 'oidc';   Mode = 'query.jwt'; Tamper = 'Signature'; Expect = '応答（JARM）の検証に失敗' }
     @{ Flow = 'oidc';   Mode = 'query.jwt'; Tamper = 'Plain';     Expect = 'response がありません' }
     @{ Flow = 'pkce';   Mode = '';          Tamper = 'None' }
     @{ Flow = 'pkce';   Mode = '';          Tamper = 'State';     Expect = 'state が' }
+    @{ Flow = 'pkce';   Mode = '';          Tamper = 'Challenge'; Expect = 'トークン要求が断られました : invalid_grant' }
     @{ Flow = 'pkce';   Mode = 'query.jwt'; Tamper = 'None' }
     @{ Flow = 'pkce';   Mode = 'query.jwt'; Tamper = 'Signature'; Expect = '応答（JARM）の検証に失敗' }
 )
@@ -317,6 +329,20 @@ function Invoke-Case($c, [string]$password)
         if ($r.Status -lt 300 -or $r.Status -ge 400 -or -not $r.Location.StartsWith("$stubBase/authorize"))
         {
             return "Start の後が $($r.Status)（$stubBase/authorize へのリダイレクトではない）"
+        }
+
+        # **どの flow も PKCE（S256）を付ける**（private_key_jwt の flow も併せる。#670）
+        if ((Get-QueryValue $r.Location 'code_challenge_method') -ne 'S256' -or -not (Get-QueryValue $r.Location 'code_challenge'))
+        {
+            return "認可要求に code_challenge（S256）が無い"
+        }
+
+        # **対照（Challenge）：IdP へ送る認可要求の code_challenge を書き換える**（#670）。
+        #   code は別の code_challenge に結び付くので、アプリが正しい code_verifier を送っても、IdP が検証していれば断られる
+        if ($c.Tamper -eq 'Challenge')
+        {
+            $tampered = Set-QueryValue $r.Location 'code_challenge' (Edit-Base64Url (Get-QueryValue $r.Location 'code_challenge'))
+            $r = [pscustomobject]@{ Status = $r.Status; Url = $r.Url; Location = $tampered; Body = $r.Body }
         }
 
         $u = Invoke-UntilCallback $client $r $password

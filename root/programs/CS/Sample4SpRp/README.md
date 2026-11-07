@@ -16,7 +16,7 @@
 | net | EXE（CLI） | SAML2・AuthZCode・AuthNCode | 未（CLI には向かない。下記） | — |
 | net | EXE（CLI、旧サンプル・net10.0 のみ） | Device・PKCE（LIR） | **済**（スタブに合わせた。4 節） | `Samples4NetCore/Legacy/CLI_sample/` |
 | net | MVC | SAML2・AuthZCode・AuthNCode・PKCE・Device | **一部**：既存の `MVC_Sample`（C#・VB の net48、C# の net10.0）の外部ログイン（OIDC・SAML2）をスタブで通す（2.1 節）。専用のサンプルは未 | `Samples/`・`Samples4NetCore/` の `MVC_Sample` |
-| net | **MVC（net10.0 のみ）** | **FAPI 1.0**（認可コード ＋ `private_key_jwt` / PKCE、JARM） | **済**（#668。MPAS の自己テストから移した。4.2 節）。net48 は未。FAPI 2.0 は見送り | [`DotNet/MVC/`](DotNet/MVC/) |
+| net | **MVC（net10.0 のみ）** | **FAPI 1.0**（認可コード ＋ `private_key_jwt` ＋ PKCE / PKCE だけ、JARM） | **済**（#668。MPAS の自己テストから移した。`private_key_jwt` と PKCE の併用は #670。4.2 節）。net48 は未。FAPI 2.0 は見送り | [`DotNet/MVC/`](DotNet/MVC/) |
 | net | WebForms（net48 のみ） | 同上 | **一部**：既存の `WebForms_Sample`（C#・VB）の外部ログイン（OIDC・SAML2）をスタブで通す（2.1 節）。専用のサンプルは未 | `Samples/` の `WebForms_Sample` |
 | net | WinForms | 同上 | **一部**：既存の WS クライアント（`WSClientWin_sample`・`WSClientWinCone_sample`、VB・.NET 10 版）の外部ログインを、ROPC から PKCE（LIR）に替えた。専用のサンプルは未 | `Samples/WS_sample/WSClient_sample/` ほか |
 | browser | SPA（React・Blazor） | PKCE | **済**（Bearer でのリソース アクセスを含む。4.1 節） | [`SPA/`](SPA/) |
@@ -157,19 +157,22 @@ cd root\programs\CS\Sample4SpRp\Stub
 .\StubCompose.ps1                                     # 既定で Sample4SpRp.stub.json を渡す（SpRp_MVC ほか。雛形のクライアントも残る）
 
 cd ..\E2E
-.\MvcFapi1E2E.ps1                                  # 5 つのフロー × 正常・対照（11 件）
+.\MvcFapi1E2E.ps1                                  # 5 つのフロー × 正常・対照（13 件）
 .\MvcFapi1E2E.ps1 -Only "pkce" -SkipControl        # 絞る（ケース名の部分一致）
 ```
 
 | flow / response_mode | 正常 | 対照（書き換えると NG になること） |
 |---|---|---|
 | `oauth2` / `query` | access_token を得る | `state` を書き換える |
-| `oidc` / `query` | ＋ id_token の検証・UserInfo（`sub` の一致） | `state` を書き換える |
+| `oidc` / `query` | ＋ id_token の検証・UserInfo（`sub` の一致） | `state` を書き換える / **認可要求の `code_challenge` を書き換える** |
 | `oidc` / `query.jwt`（JARM） | 同上 | 応答（JWT）の署名を書き換える / **素の応答（`code`・`state`）に落とす** |
-| `pkce` / `query` | 同上 | `state` を書き換える |
+| `pkce` / `query` | 同上 | `state` を書き換える / **認可要求の `code_challenge` を書き換える** |
 | `pkce` / `query.jwt` | 同上 | 応答（JWT）の署名を書き換える |
 
 - **戻り（スタブ → アプリ）のリダイレクトの手前で止め、URL を書き換えてからアプリへ届ける**
+- **PKCE（#670）：どの flow も、認可要求に `code_challenge`（S256）が付くことを見る。** 対照の `code_challenge` の書き換えは、
+  アプリ → スタブの認可要求で行う（code が別の値に結び付くので、アプリが正しい `code_verifier` を送っても `invalid_grant` で断られる）。
+  **アプリが `code_verifier` を送らなくなれば、正常の側が落ちる**（スタブは、`code_challenge` 付きの code の引き換えに `code_verifier` を求める。`private_key_jwt` でも同じ）
 - **対照は、NG になり、しかも狙った確認（理由の文言）で落ちたことを見る**（別の理由で落ちたのなら、狙いは確かめられていない）
 - **前提（起動はしない）** : スタブ（`StubCompose.ps1` の既定 = `Sample4SpRp.stub.json`）、ビルド（`CS\11_Build_SpRp_sample.bat`）、**ポート 44336 が空いている**。
   SQL Server は要らない。**足りなければ終了コード 2**（0 = すべて OK、1 = NG あり）
@@ -359,11 +362,11 @@ cd root\programs\CS\Sample4SpRp\DotNet\MVC
 
 | flow | client_id（設定のキー） | トークン要求のクライアント認証 |
 |---|---|---|
-| `oauth2`（openid なし。`SpRp_Fapi1OAuth2Scope`） | `OAuth2AndOidcClientID` | **`private_key_jwt`**（RFC 7523 §2.2。鍵は `SpRp_RsaPfxFilePath`） |
+| `oauth2`（openid なし。`SpRp_Fapi1OAuth2Scope`） | `OAuth2AndOidcClientID` | **`private_key_jwt`（RFC 7523 §2.2。鍵は `SpRp_RsaPfxFilePath`）＋ PKCE S256**（`GetAccessTokenByCodeWithPkceAsync`。#670） |
 | `oidc`（`SpRp_Scope`） | 同上 | 同上 |
 | `pkce`（`SpRp_Scope`） | **`SpRp_Fapi1PkceClientID`**（サンプル独自のキー） | **無し**（PKCE S256 の `code_verifier` だけ） |
 
-**response_mode は `query`（既定）か `query.jwt`（JARM）。** 画面のリンクで選ぶ。
+**response_mode は `query`（既定）か `query.jwt`（JARM）。** 画面のリンクで選ぶ。**どの flow も code_challenge（S256）を送る**（E2E も確かめる）。
 
 **確かめていること**（サンプルとして、省かずに書いてある）
 
@@ -390,7 +393,6 @@ cd root\programs\CS\Sample4SpRp\DotNet\MVC
 | もの | 理由 |
 |---|---|
 | **FAPI 2.0**（`/ros`・PAR） | 見送り（MPAS の自己テストにも、本物のクライアントとして通す形が無い） |
-| **PKCE と `private_key_jwt` の併用** | `OAuth2AndOIDCClient.GetAccessTokenByCodeAsync` に、両方を送る版が無い |
 | **mTLS**（`tls_client_auth`） | スタブがクライアント証明書を受けるかを、まだ確かめていない |
 | **net48**（ASP.NET MVC 5） | 後の段で、別のプロジェクトとして足す |
 

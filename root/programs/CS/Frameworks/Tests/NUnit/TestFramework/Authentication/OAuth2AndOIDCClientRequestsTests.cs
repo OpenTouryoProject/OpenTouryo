@@ -27,6 +27,7 @@
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //*  2026/10/30  玄人 幸道         CibaAuthZRequest を、request_uri の版と Request Object の版に分けた（根拠が違うため。#640）
 //*  2026/11/04  玄人 幸道         DeviceAuthZ の scope を受ける版のテストを追加（#650）
+//*  2026/11/07  玄人 幸道         private_key_jwt ＋ PKCE の版（GetAccessTokenByCodeWithPkceAsync）のテストを追加（#670）
 //**********************************************************************************
 
 using System;
@@ -166,6 +167,62 @@ namespace TestFramework.Authentication
             Assert.That(form[OAuth2AndOIDCConst.assertion], Is.EqualTo("assertion01"));
             Assert.That(form[OAuth2AndOIDCConst.client_assertion_type], Is.EqualTo(OAuth2AndOIDCConst.JwtBearerClientAssertionType));
             Assert.That(form[OAuth2AndOIDCConst.client_assertion], Is.EqualTo("assertion01"));
+            Assert.That(form.ContainsKey(OAuth2AndOIDCConst.code_verifier), Is.False, "PKCE の版でなければ code_verifier は送らない（#670）");
+        }
+
+        /// <summary>
+        /// 認可コード（private_key_jwt ＋ PKCE）：アサーションの版と同じ本文に、code_verifier を足して送る（#670）。
+        /// </summary>
+        [Test]
+        [Basis("RFC 7636 4.5（Token 要求に code_verifier を送る）")]
+        [Basis("RFC 7523 2.2（client_assertion_type と client_assertion）")]
+        public void Code_PrivateKeyJwtWithPkce()
+        {
+            Tuple<HttpRequestMessage, string> r = Send(() => OAuth2AndOIDCClient.GetAccessTokenByCodeWithPkceAsync(
+                TokenEndpoint, RedirectUri, "code01", "verifier01", "assertion01").Result);
+
+            Assert.That(r.Item1.Method, Is.EqualTo(HttpMethod.Post));
+            Assert.That(r.Item1.RequestUri, Is.EqualTo(TokenEndpoint));
+            Assert.That(r.Item1.Headers.Authorization, Is.Null, "秘密は送らない（Basic を付けない）");
+
+            Dictionary<string, string> form = Form(r.Item2);
+            Assert.That(form[OAuth2AndOIDCConst.grant_type], Is.EqualTo(OAuth2AndOIDCConst.AuthorizationCodeGrantType));
+            Assert.That(form[OAuth2AndOIDCConst.code], Is.EqualTo("code01"));
+            Assert.That(form[OAuth2AndOIDCConst.redirect_uri], Is.EqualTo(RedirectUri));
+            Assert.That(form[OAuth2AndOIDCConst.code_verifier], Is.EqualTo("verifier01"));
+            Assert.That(form[OAuth2AndOIDCConst.client_assertion_type], Is.EqualTo(OAuth2AndOIDCConst.JwtBearerClientAssertionType));
+            Assert.That(form[OAuth2AndOIDCConst.client_assertion], Is.EqualTo("assertion01"));
+            Assert.That(form[OAuth2AndOIDCConst.assertion], Is.EqualTo("assertion01"), "従来の assertion も送る（アサーションの版と同じ）");
+            Assert.That(form.ContainsKey(OAuth2AndOIDCConst.client_secret), Is.False);
+        }
+
+        /// <summary>
+        /// 認可コード（private_key_jwt ＋ PKCE）：code_verifier・assertion のどちらかが空なら ArgumentNullException（送らない。#670）。
+        /// </summary>
+        [Test]
+        [Basis("設計：OAuth2AndOIDCClient.GetAccessTokenByCodeWithPkceAsync の remarks（code_verifier・assertion は必須。#670）")]
+        public void Code_PrivateKeyJwtWithPkce_RequiresBoth()
+        {
+            using (StubHttp http = new StubHttp((req, body) => StubHttp.Json(HttpStatusCode.OK, "{}")))
+            {
+                foreach (string verifier in new string[] { null, "" })
+                {
+                    AggregateException ex = Assert.Throws<AggregateException>(() => OAuth2AndOIDCClient.GetAccessTokenByCodeWithPkceAsync(
+                        TokenEndpoint, RedirectUri, "code01", verifier, "assertion01").Wait());
+                    Assert.That(ex.InnerException, Is.InstanceOf<ArgumentNullException>());
+                    Assert.That(((ArgumentNullException)ex.InnerException).ParamName, Is.EqualTo("code_verifier"));
+                }
+
+                foreach (string assertion in new string[] { null, "" })
+                {
+                    AggregateException ex = Assert.Throws<AggregateException>(() => OAuth2AndOIDCClient.GetAccessTokenByCodeWithPkceAsync(
+                        TokenEndpoint, RedirectUri, "code01", "verifier01", assertion).Wait());
+                    Assert.That(ex.InnerException, Is.InstanceOf<ArgumentNullException>());
+                    Assert.That(((ArgumentNullException)ex.InnerException).ParamName, Is.EqualTo("assertion"));
+                }
+
+                Assert.That(http.Requests, Is.Empty, "送らない");
+            }
         }
 
         /// <summary>認可コード：方式と引数の組み合わせが合わなければ ArgumentException（送らない）。</summary>
