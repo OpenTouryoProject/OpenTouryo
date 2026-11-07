@@ -20,7 +20,8 @@
 | 途中の `fixing` のコミットの前に、重いものを後回しにして回す（記録は進まない） | `.\SelectTargets.ps1 -Stage fixing -Run` | 1 |
 | 何が回るかだけ見る | `.\SelectTargets.ps1` | 1 |
 | 記録ではなく、develop からの差分で割り出す | `.\SelectTargets.ps1 -Since develop` | 1 |
-| 通しが通った後に、いまの HEAD を検証済みとして記録する | `.\SelectTargets.ps1 -Record` | 1 |
+| 通しが通った後に、いまの HEAD を検証済みとして記録する（**fixed のコミットの後**） | `.\SelectTargets.ps1 -Record` | 1 |
+| 通しで揺れた Golden を戻す（揺れだけのとき。コミットの前） | `git checkout -- CS/Frameworks/Tests/Golden` | 1 |
 | 全ビルドだけ | `.\1_BuildAll.ps1 -IgnoreErrors 'error MSB(3482\|3325\|3321):.*WSClientWinCone_sample\.csproj'` | 1 |
 | 単体テストだけ | `.\2_RunAllTests.ps1` | 1 |
 | 疎通だけ | `.\3_SmokeTest.ps1` | 1 |
@@ -182,12 +183,15 @@ cd root\programs
 | 表示 | 意味 |
 |---|---|
 | `通し` | 基盤・共通バッチ・対応が引けないファイルに触れている |
+| `ビルドだけ通し` | **クリーンのバッチ（`1_DeleteDir.bat`・`1_DeleteFile.bat`）に触れている**。その言語のビルドを通し（クリーンを含む）にし、単体テスト・疎通は回さない。fixing では基盤だけ（基盤のクリーンを含む）（#672） |
 | `N 件` | 変更の下にあるバッチから引いた対象だけ |
 | `スクリプトの確認（1 件）` | 検証スクリプトだけを変えた。軽い対象を 1 件回す |
 | `手で確かめるもの` | **どの検証にも載っていない**（`Else/TestLog`、GUI、`.sh` 等）。**回せていないと報告する** |
 
 - **記録が無いと止まる。** 初回は通しの後に `-Record` するか、`-Since` を付ける
-- **手で確かめるものが残ると、`-Run` が全部 OK でも記録は進まない**（終了コード 1）
+- **手で確かめるものが残ると、`-Run` が全部 OK でも記録は進まない**（終了コード 1。失敗ではない。手で確かめたら `-Record`）
+- **`1_BuildAll.ps1` は、`-Only` で選んだステップが `-SkipClean` で全部飛ぶなら止める**（終了コード 1。一部だけ飛ぶなら、その一覧を出して続ける。#672）
+- **記録の基点がいまの HEAD なら、`-Run` は何も回さない**（差分 0 件）。その版を回し直すなら、3 本を直接回す（`1_BuildAll.ps1` → `2_RunAllTests.ps1` → `3_SmokeTest.ps1`）
 - 対象名とバッチの対応は各スクリプトの `-List -PassThru` から取る（写していない）
 
 ### 段階で回す量を変える（fixing / fixed、#610）
@@ -232,6 +236,25 @@ dotnet test CS\Frameworks\Tests\NUnit\TestPublic\TestPublic.csproj -f net10.0 --
 - **基盤だけのビルドでもクリーンは外さない。** 外すと #574 の罠
   （`Business.RichClient (net48)` が「does not reference .NETFramework,Version=v4.8」）を踏む。
   クリーンは CS 配下の bin / obj をすべて消すので、**fixing の後に疎通だけを `-SkipBuild` で回してはならない**
+
+### Issue の完了の手順（fixed）
+
+**流れと判断は [`AGENTS.md`](../../AGENTS.md)「Issue に対応する流れ」。** ここはコマンドだけ。**`root\programs` で実行する。**
+
+```powershell
+# エージェント : コミットの直前の状態で回す（手で確かめるものが残れば終了コード 1。手で確かめてから記録する）
+.\SelectTargets.ps1 -Run
+
+# 施主 : 1. Golden の揺れ（2_RunAllTests.ps1 が書き換えた Result*.txt。揺れだけのもの）を戻す
+git checkout -- CS/Frameworks/Tests/Golden
+# 施主 : 2. fixed #NNN でコミットする（メッセージはエージェントの案）
+# 施主 : 3. コミットの後に、いまの HEAD を記録する（コミットの前に回すと、古い HEAD を記録する）
+.\SelectTargets.ps1 -Record
+# エージェント : 完了コメントを、承認を得て投稿する。施主 : Issue を閉じる
+```
+
+- **Golden を戻すのは、揺れだけのとき。** 期待値の変更（[`QUALITY.md`](../../QUALITY.md) 3 節）を含むなら戻さず、トレーラーを付けてコミットする
+- **記録の基点がいまの HEAD のまま回し直す**なら、`-Run` は何も回さないので、3 本を直接回す（上の節）
 
 **基盤（Public の 4 ファイル）を変えたときの実測**（#612、C# のみ）。**約 5 分の 1 になる。**
 

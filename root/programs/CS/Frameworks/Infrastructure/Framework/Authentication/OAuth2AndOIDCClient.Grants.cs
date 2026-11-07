@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（OAuth2AndOIDCClient.cs から処理区分ごとに分割した）
+//*  2026/11/07  玄人 幸道         アサーションと code_verifier を一緒に送る GetAccessTokenByCodeWithPkceAsync を追加（#670）
 //**********************************************************************************
 
 using System;
@@ -100,6 +101,46 @@ namespace Touryo.Infrastructure.Framework.Authentication
         {
             return await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
                 tokenEndpointUri, null, null, redirect_uri, code, null, assertion, authMethod);
+        }
+
+        /// <summary>
+        /// PKCE ＋ アサーション : code, code_verifier, assertionからAccess Tokenを取得する。
+        /// </summary>
+        /// <param name="tokenEndpointUri">TokenエンドポイントのUri</param>
+        /// <param name="redirect_uri">redirect_uri</param>
+        /// <param name="code">code</param>
+        /// <param name="code_verifier">code_verifier（必須）</param>
+        /// <param name="assertion">assertion（クライアント認証のアサーション。必須）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>
+        /// **private_key_jwt（RFC 7523 §2.2）でクライアント認証し、PKCE（RFC 7636 §4.5）の code_verifier も送る**（#670）。
+        /// code_challenge を付けて認可を求めたコードは、トークン要求で code_verifier が要るため、
+        /// アサーションで認証するクライアントが PKCE を併用するときに使う。
+        ///
+        /// - 本文は、アサーションの版（code・assertion を受ける GetAccessTokenByCodeAsync）と同じで、code_verifier を足したもの。
+        ///   アサーションは client_assertion_type ＋ client_assertion と、従来の assertion の両方で送る
+        /// - **code_verifier・assertion は、どちらも必須**（空なら ArgumentNullException。送らない）。
+        ///   PKCE を使わないなら、アサーションの版を使う
+        /// - **認証の方法（authMethod）は受けない。** 本文の形は、アサーションを共有鍵で署名した client_secret_jwt でも同じで、
+        ///   どちらになるかは、呼び出し側が作るアサーション（alg と鍵）で決まる
+        /// - **既存の版と同じ名前にしなかった**のは、(Uri, string × 4, AuthMethods) の版がすでに在り、
+        ///   引数の型の並びが同じ版を足せないため（引数名と既定値は、シグネチャに含まれない）
+        /// </remarks>
+        public static async Task<string> GetAccessTokenByCodeWithPkceAsync(
+            Uri tokenEndpointUri, string redirect_uri, string code, string code_verifier, string assertion)
+        {
+            if (string.IsNullOrEmpty(code_verifier))
+            {
+                throw new ArgumentNullException(nameof(code_verifier));
+            }
+            if (string.IsNullOrEmpty(assertion))
+            {
+                throw new ArgumentNullException(nameof(assertion));
+            }
+
+            return await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
+                tokenEndpointUri, null, null, redirect_uri, code, code_verifier, assertion,
+                OAuth2AndOIDCEnum.AuthMethods.private_key_jwt);
         }
 
         /// <summary>
@@ -186,16 +227,25 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 // 従来のassertionしか読まない認可サーバも在るため、両方送る。
                 // grant_typeはauthorization_codeなので、
                 // JWT Bearerグラント（§2.1）のassertionとして解釈されることはない。
-                httpRequestMessage.Content = new FormUrlEncodedContent(
-                    new Dictionary<string, string>
-                    {
-                        { OAuth2AndOIDCConst.grant_type, OAuth2AndOIDCConst.AuthorizationCodeGrantType },
-                        { OAuth2AndOIDCConst.code, code },
-                        { OAuth2AndOIDCConst.assertion, assertion },
-                        { OAuth2AndOIDCConst.client_assertion_type, OAuth2AndOIDCConst.JwtBearerClientAssertionType },
-                        { OAuth2AndOIDCConst.client_assertion, assertion },
-                        { OAuth2AndOIDCConst.redirect_uri, HttpUtility.HtmlEncode(redirect_uri) },
-                    });
+                Dictionary<string, string> body = new Dictionary<string, string>
+                {
+                    { OAuth2AndOIDCConst.grant_type, OAuth2AndOIDCConst.AuthorizationCodeGrantType },
+                    { OAuth2AndOIDCConst.code, code },
+                    { OAuth2AndOIDCConst.assertion, assertion },
+                    { OAuth2AndOIDCConst.client_assertion_type, OAuth2AndOIDCConst.JwtBearerClientAssertionType },
+                    { OAuth2AndOIDCConst.client_assertion, assertion },
+                    { OAuth2AndOIDCConst.redirect_uri, HttpUtility.HtmlEncode(redirect_uri) },
+                };
+
+                // **PKCE を併用するなら、code_verifier も送る**（RFC 7636 §4.5。#670）。
+                //   ここに code_verifier を持って来るのは GetAccessTokenByCodeWithPkceAsync だけ
+                //   （アサーションの版は null を渡す）なので、既存の版の本文は変わらない。
+                if (!string.IsNullOrEmpty(code_verifier))
+                {
+                    body.Add(OAuth2AndOIDCConst.code_verifier, code_verifier);
+                }
+
+                httpRequestMessage.Content = new FormUrlEncodedContent(body);
             }
             else
             {

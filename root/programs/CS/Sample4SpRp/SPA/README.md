@@ -46,7 +46,7 @@
 | | React | Blazor |
 |---|---|---|
 | 要るもの | Node.js（npm） | .NET 10 SDK |
-| 初回 | `StartUp.bat` が `npm ci` を流す（`node_modules` が無いときだけ。`package-lock.json` どおりに入る） | 無し（`dotnet run` が復元する） |
+| 初回 | `StartUp.bat` が `npm ci` を流す（`node_modules` が無い・壊れているときだけ。`package-lock.json` どおりに入る。7 節） | 無し（`dotnet run` が復元する） |
 
 ---
 
@@ -80,6 +80,40 @@
 > **2 回目のサインインで、スタブのログイン画面が出ないことがある。**
 > ブラウザにスタブのログインのセッション（Cookie）が残っていると、ログイン画面を飛ばして戻るためである。
 > ログイン画面から確かめたいときは、プライベート ウィンドウを使う。
+
+### 3.1 Hybrid（code id_token）でサインインする（#668）
+
+**Sign In（Hybrid : code id_token。非推奨）** を押す。手順は 3 節と同じ（ログイン・同意 → `/RedirectEndpoint` → トップ）。
+
+> **Hybrid は新しく使わない。** 3 節の **Sign In**（認可コード ＋ PKCE。`openid` を付けている）で、ほぼ代替できる。
+> MPAS の自己テストから移したもので、**ブラウザで JWS の署名を確かめる例**として残している（理由は `../README.md` の 4.1 節）。
+
+- **前提 : スタブには `Sample4SpRp.stub.json` が要る**（`StubCompose.ps1` の既定）。 クライアントは `SPA_Hybrid`（`2ee77c67…`。秘密なし）で、
+  雛形には無い（MPAS は Hybrid の戻り先を `redirect_uri_token` から引き、雛形の `SPA_Application` はそこが空のため）
+- **リソース サーバ（6 節）も、`SPA_Hybrid` のトークンを受ける**（`OAuth2AndOidcClientIDs` に足してある）。**ビルドし直して起動する**
+- **同意は、クライアントごと**なので、`SPA_Application` で同意済みでも、初回は同意画面が出る
+
+| 見る場所（DevTools） | 確かめること |
+|---|---|
+| Network の `authorize` | `response_type=code id_token`、`client_id=2ee77c67…`、`code_challenge`（S256）・`nonce` が付いている |
+| Network の `.well-known/openid-configuration`・`jwkcerts` | **戻った後に読みに行っている**（認可応答の id_token の署名を、`kid` の鍵で確かめるため） |
+| Network の `token`（POST） | `client_secret` が無く、`code_verifier` がある（**code も PKCE で引き換える**） |
+| アドレス バー | 戻ってきたとき、`#code=…&id_token=…` が残っていない |
+
+**失敗する側を確かめる（任意）**
+
+**戻り（`/RedirectEndpoint`）を開かせずに止め、その URL を書き換えてから開く。** そのまま戻ると state が使われてしまい、書き換えた URL では「state が一致しません」になる。
+
+1. DevTools の Network で **Preserve log** を有効にし、**Network request blocking** に `localhost:5173/RedirectEndpoint` を足す
+2. **Sign In（Hybrid : code id_token。非推奨）** を押し、ログイン・同意する。戻りが止められる
+3. Network の `authorize`（または `Account/...`）の応答 302 の **`Location`** をコピーし、下の表のとおり 1 文字だけ変える
+4. blocking を外し、**同じタブ**のアドレス バーに貼って開く（sessionStorage はタブごと）
+
+| 書き換えるもの | 期待（`/RedirectEndpoint` に出る） |
+|---|---|
+| `id_token` の最後の部分（署名）の 1 文字 | 「認可応答の id_token の署名を確かめられません。」 |
+| `code` の 1 文字 | 「認可応答の id_token の c_hash が、届いた code と合いません（または c_hash がありません）。」 |
+| `&id_token=…` を丸ごと消す | 「Hybrid（code id_token）なのに、認可応答に id_token がありません。」 |
 
 ---
 
@@ -159,4 +193,8 @@ dotnet run --no-build --no-launch-profile --urls https://localhost:44335
 | Blazor で、ビルドし直したのに古い版が出る | WebAssembly のファイルはキャッシュされる。**Ctrl+Shift+R** で読み込み直す |
 | **Call API** で `Failed to fetch`（React）／`TypeError: Failed to fetch`（Blazor） | リソース サーバが動いているか（6.1 節）。**開発用の証明書をブラウザが信頼しているか** |
 | **サインインしたのに `"未認証"`** | リソース サーバの `SpRp_Issuer`・`SpRp_JwkSetUri` がスタブを向いているか。**スタブを起動し直すと鍵が変わる**ことがあるので、サインインし直す |
+| **Hybrid** でスタブがエラー画面（redirect_uri・client が違う） | スタブを **`StubCompose.ps1`（既定で `Sample4SpRp.stub.json` を渡す）** で起動したか。`-MpasDefault` や MPAS 側のバッチでは居ない（`SPA_Hybrid` は雛形に無い） |
+| **Hybrid** で「署名を確かめられません」（書き換えていないのに） | Blazor : `wwwroot/js/jwsVerify.js` が読み込まれているか（Console に `sprpJws` のエラー）。**Ctrl+Shift+R** |
+| `StartUp.bat`（React）が `[WARN] node_modules is broken` と出して `npm ci` を流す | **`node_modules` の中が欠けている**（`npm ci` が途中で止まった、手で消した、など）。**`StartUp.bat` が `vite\bin\vite.js` の有無で見分け、入れ直す**（#668）。ネットワークが要る。**以前はビルドのクリーン（`CS\1_DeleteDir.bat`）が `node_modules` の中の `bin` を消していた**が、#669 で直した |
+| それでも `Cannot find module …\vite\bin\vite.js` | `npm run dev` を直接動かしていないか（`StartUp.bat` を使う）。または `node_modules` を消して `StartUp.bat` をやり直す |
 | Blazor の画面の下に黄色い帯（An unhandled error has occurred） | DevTools の Console に C# の例外が出ている（サインインの失敗は例外にせず、`/RedirectEndpoint` に出す） |

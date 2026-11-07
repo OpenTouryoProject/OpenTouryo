@@ -211,7 +211,7 @@ sakura -GREPMODE -GKEY="ビルドに" -GFOLDER="." -GFILE="*.log" -GOPT=P -GCODE
 **`.ps1` は Windows PowerShell 5.1 と PowerShell 7 の両方で動くこと。**
 
 開発時は `pwsh`（7）で確認しがちだが、利用者は `powershell.exe`（5.1）で実行する。
-7 だけで確認すると 5.1 で落ちる。既踏の落とし穴は次の 4 点。
+7 だけで確認すると 5.1 で落ちる。既踏の落とし穴は次のとおり。
 
 | 事象 | 原因 | 対処 |
 |---|---|---|
@@ -220,6 +220,8 @@ sakura -GREPMODE -GKEY="ビルドに" -GFOLDER="." -GFILE="*.log" -GOPT=P -GCODE
 | HTTP が常に失敗（状態コード `-1`） | `-SkipHttpErrorCheck` は **7 以降にしかない** | バージョンを見て付け外しする |
 | 実行中に画面がクリアされ、それまでの結果が消える | 子プロセスの `chcp 65001` はコンソール全体に影響する | スクリプト冒頭で先に切り替える |
 | 表の見出し・罫線・データがずれる | 5.1 の `Format-Table` は**桁数ではなく文字数**で幅を決める（全角は 1 文字で 2 桁） | `SummaryTable.ps1` の `Write-SummaryTable` を使う |
+| 子プロセスの標準入力に渡した値（パスワードなど）が合わない。**5.1 からだけ**起き、7 からは通る | 5.1（.NET Framework）は子プロセスの標準入力を `[Console]::InputEncoding` で開き、**それが BOM 付きの UTF-8 だと、起動した時点で BOM を書く**。net10.0 の子プロセスは、それを値の先頭の 1 文字（U+FEFF）として読む（net48 の子プロセスは読み飛ばす） | 子プロセスを起動する前に **`[Console]::InputEncoding` を BOM 無しの UTF-8 にする**。受け取る側も、先頭の BOM を読み飛ばすとよい（#668。`Sample4SpRp\E2E\CliLoginE2E.ps1`・`SpRp_CLI`） |
+| 非 ASCII の `echo` を持つ `.bat` を呼ぶと、その行が化ける | **cmd は、バッチをコンソールの出力のコード ページで読む**（日本語の Windows の既定は 932）。UTF-8 で書いた bat の日本語は、932 では読み違える | **呼ぶ間だけ `[Console]::OutputEncoding` を UTF-8 にし、`finally` で戻す**（#668。`Sample4SpRp\Stub\StubCompose.ps1`）。根本は bat を ASCII にする（4 節） |
 
 ```powershell
 # 7 専用の引数は、バージョンを見て付け外しする
@@ -232,6 +234,27 @@ if ([Console]::OutputEncoding.CodePage -ne 65001)
     [Console]::OutputEncoding = New-Object Text.UTF8Encoding $false
 }
 ```
+
+```powershell
+# 子プロセスの標準入力に BOM を書かせない（5.1。起動の前に）
+[Console]::InputEncoding = New-Object Text.UTF8Encoding $false
+
+# 非 ASCII の bat を呼ぶ間だけ、コンソールを UTF-8 にして、元に戻す（呼んだ側のコンソールを変えたままにしない）
+$old = [Console]::OutputEncoding
+try
+{
+    [Console]::OutputEncoding = New-Object Text.UTF8Encoding $false
+    & $bat
+}
+finally
+{
+    [Console]::OutputEncoding = $old
+}
+```
+
+- **bat の化けは、出力を取り込んで（パイプ・リダイレクトで）確かめると見えない。**
+  932 で読み違えた文字を 932 で書き戻すので、バイト列としては元に戻る。**コンソールに直接出したときにだけ見える**
+- **標準入力の BOM は、7 から動かすと起きない。** 5.1 から動かして確かめること（下の「変更したら 5.1 でも実行」）
 
 ```powershell
 # 集計表は Format-Table ではなく、桁数を自前で数える整形を使う

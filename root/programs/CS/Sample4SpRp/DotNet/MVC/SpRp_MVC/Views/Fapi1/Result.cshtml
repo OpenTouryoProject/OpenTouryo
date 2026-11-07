@@ -1,0 +1,32 @@
+﻿@model Fapi1Result
+@{
+    // 結果の画面（#668）。**E2E は id="result" の data-result（OK / NG）を見る。**
+}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8" />
+    <title>SpRp_MVC - 結果</title>
+</head>
+<body>
+    <h1>FAPI1 の結果</h1>
+    <p id="result" data-result="@(Model.Ok ? "OK" : "NG")">@(Model.Ok ? "OK" : "NG : " + Model.Error)</p>
+    <table>
+        <tr><th>flow</th><td>@Model.Flow</td></tr>
+        <tr><th>response_mode</th><td>@Model.ResponseMode</td></tr>
+        <tr><th>クライアント認証</th><td>@Model.AuthMethod</td></tr>
+        <tr><th>token_type</th><td>@Model.TokenType</td></tr>
+    </table>
+    @if (!string.IsNullOrEmpty(Model.IdTokenClaims))
+    {
+        <h2>id_token のクレーム</h2>
+        <pre>@Model.IdTokenClaims</pre>
+    }
+    @if (!string.IsNullOrEmpty(Model.UserInfo))
+    {
+        <h2>UserInfo</h2>
+        <pre>@Model.UserInfo</pre>
+    }
+    <p><a href="@Url.Action("Index", "Home")">戻る</a></p>
+</body>
+</html>

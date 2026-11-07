@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <!--
+  **********************************************************************************
+  * ファイル名      ：SpRp_MVC.csproj
+  * ファイル日本語名：SpRp サンプル（MVC）。FAPI 1.0 のクライアント（コンフィデンシャル）
+  *
+  * 作成者          ：玄人 幸道
+  * 更新履歴        ：
+  *
+  *  日時        更新者            内容
+  *  2026/11/07  玄人 幸道         新規作成（#668）
+  **********************************************************************************
+
+  ■ まず net10.0（ASP.NET Core MVC）だけに出す
+    net48（ASP.NET MVC 5）は、別のプロジェクトとして後の段で足す（#668）。
+
+  ■ DB・Open棟梁 の P 層の基底クラスは使わない
+    SP / RP の部品（Touryo.Infrastructure.Framework.Authentication）の使い方だけを見せるため。
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <RootNamespace>SpRp_MVC</RootNamespace>
+    <AssemblyName>SpRp_MVC</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <!-- HintPath の参照は依存を引き継がないので、JWT・ハッシュが使う BouncyCastle を直接足す -->
+    <PackageReference Include="BouncyCastle.NetCore" Version="2.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="OpenTouryo.Framework">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Framework.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTouryo.Public.Security">
+      <HintPath>..\..\..\..\Frameworks\Infrastructure\Build_netcore100\net10.0\OpenTouryo.Public.Security.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>

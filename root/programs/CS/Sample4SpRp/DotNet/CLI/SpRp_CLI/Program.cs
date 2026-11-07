@@ -26,6 +26,7 @@
 //*  2026/11/04  玄人 幸道         新規作成（#649）
 //*  2026/11/05  玄人 幸道         pkce に --no-browser を足した（#649。E2E で使う）
 //*  2026/11/06  玄人 幸道         コメントの設定キーを、改名後の SpRp_Issuer にした（#666）
+//*  2026/11/07  玄人 幸道         cc・jwtbearer・ropc を足した（#668。汎用認証サイトの自己テストから移した）
 //**********************************************************************************
 
 using System;
@@ -48,8 +49,10 @@ namespace SpRp_CLI
     /// |---|---|
     /// | `device` | Device Authorization Grant（RFC 8628） |
     /// | `pkce`   | 認可コード ＋ PKCE（RFC 7636）。戻り先はループバック（RFC 8252 §7.3） |
+    /// | `cc`・`jwtbearer`・`ropc` | ブラウザを使わないグラント（`ClientGrants`） |
     ///
-    /// **どちらもパブリック クライアント**（秘密を持たない）。CLI は秘密を守れないため。
+    /// **`device`・`pkce` はパブリック クライアント**（秘密を持たない）。利用者の端末に配る CLI は秘密を守れないため。
+    /// **`cc`・`jwtbearer`・`ropc` は、サーバで動くバッチを模したコンフィデンシャル クライアント**（秘密と鍵を設定ファイルに持つ）。
     /// </remarks>
     public class Program
     {
@@ -77,15 +80,26 @@ namespace SpRp_CLI
             }
 
             string command = args[0].ToLowerInvariant();
-            if (command != "device" && command != "pkce")
+            if (command != "device" && command != "pkce"
+                && command != "cc" && command != "jwtbearer" && command != "ropc")
             {
                 Program.WriteUsage();
                 return Program.ExitUsage;
             }
 
-            // **--no-browser は pkce だけ**（device はもともとブラウザを開かない）
+            // **2 つ目の引数は、pkce の --no-browser と、ropc の利用者の ID だけ**（device はもともとブラウザを開かない）
             bool openBrowser = true;
-            if (args.Length == 2)
+            string userId = null;
+            if (command == "ropc")
+            {
+                if (args.Length != 2)
+                {
+                    Program.WriteUsage();
+                    return Program.ExitUsage;
+                }
+                userId = args[1];
+            }
+            else if (args.Length == 2)
             {
                 if (command != "pkce" || args[1].ToLowerInvariant() != Program.NoBrowserOption)
                 {
@@ -103,9 +117,15 @@ namespace SpRp_CLI
                 Discovery discovery = await Discovery.LoadAsync(
                     CmnClientParams.SpRp_DiscoveryUri, CmnClientParams.Isser);
 
-                bool result = (command == "device")
-                    ? await DeviceFlow.RunAsync(discovery)
-                    : await PkceFlow.RunAsync(discovery, openBrowser);
+                bool result;
+                switch (command)
+                {
+                    case "device": result = await DeviceFlow.RunAsync(discovery); break;
+                    case "pkce": result = await PkceFlow.RunAsync(discovery, openBrowser); break;
+                    case "cc": result = await ClientGrants.RunClientCredentialsAsync(discovery); break;
+                    case "jwtbearer": result = await ClientGrants.RunJwtBearerAsync(discovery); break;
+                    default: result = await ClientGrants.RunRopcAsync(discovery, userId); break;
+                }
 
                 return result ? Program.ExitOk : Program.ExitFailed;
             }
@@ -147,10 +167,13 @@ namespace SpRp_CLI
         /// <summary>使い方を表示する</summary>
         private static void WriteUsage()
         {
-            Console.WriteLine("使い方 : SpRp_CLI <device | pkce [--no-browser]>");
-            Console.WriteLine("  device : Device Authorization Grant（RFC 8628）。表示されたコードを、ブラウザで入力する");
-            Console.WriteLine("  pkce   : 認可コード ＋ PKCE（RFC 7636）。ブラウザが開き、ループバックで応答を受ける");
-            Console.WriteLine("           --no-browser : ブラウザを開かない（表示した URL を手で開く）");
+            Console.WriteLine("使い方 : SpRp_CLI <device | pkce [--no-browser] | cc | jwtbearer | ropc <利用者の ID>>");
+            Console.WriteLine("  device    : Device Authorization Grant（RFC 8628）。表示されたコードを、ブラウザで入力する");
+            Console.WriteLine("  pkce      : 認可コード ＋ PKCE（RFC 7636）。ブラウザが開き、ループバックで応答を受ける");
+            Console.WriteLine("              --no-browser : ブラウザを開かない（表示した URL を手で開く）");
+            Console.WriteLine("  cc        : Client Credentials（RFC 6749 4.4）。サーバで動くバッチを模した、秘密を持つクライアント");
+            Console.WriteLine("  jwtbearer : JWT Bearer（RFC 7523 2.1）。同上のクライアントの鍵で、アサーションに署名する");
+            Console.WriteLine("  ropc      : Resource Owner Password Credentials（RFC 6749 4.3。非推奨）。パスワードは標準入力から読む");
             Console.WriteLine();
             Console.WriteLine("終了コード : 0 = 成功、1 = 失敗、2 = 引数の誤り");
         }

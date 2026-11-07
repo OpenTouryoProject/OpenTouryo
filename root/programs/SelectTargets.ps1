@@ -85,6 +85,7 @@
      2026/10/19  玄人 幸道         Public・Public.Security に触れたら、2_RunAllTests.ps1 に -Linux を付けるようにした（#632）
      2026/10/19  玄人 幸道         CoverageReport.ps1 を 2 で確かめる対象に加えた
      2026/11/04  玄人 幸道         SpRp のサンプル（Sample4SpRp）は、ビルドのバッチに加えて「手で確かめる」に出す（#649）
+     2026/11/07  玄人 幸道         クリーンのバッチ（1_DeleteDir.bat・1_DeleteFile.bat）に触れたら、その言語のビルドを通しにする（#672）
 #>
 [CmdletBinding()]
 param(
@@ -263,6 +264,7 @@ $probes = @{
 # 分類
 # ------------------------------------------------------------------
 $full        = @{}            # 言語 → 通しの理由
+$buildFull   = @{}            # 言語 → ビルド（1）だけを通しにする理由（クリーンのバッチ。#672）
 $bats        = @{}            # "CS|xxx.bat" → 理由
 $scriptRuns  = @{}            # 1/2/3 → 理由
 $manual      = @()            # 手で確かめるもの
@@ -309,6 +311,16 @@ foreach ($f in $changed)
         # WSL（Linux）で実行するもの。Windows の 1/2/3 では回らない。
         $manual += $f
         $kind = "手で確かめる（Linux で実行するもの）"
+    }
+    elseif ($lf -match '^root/programs/(cs|vb)/1_delete(dir|file)\.bat$')
+    {
+        # **クリーンのバッチは、ビルドの通しで確かめる**（#672）。
+        #   ほかのバッチと同じく「そのバッチを呼ぶ段だけ」にすると、選ばれるのはクリーンの段だけになり、
+        #   絞ったビルドに付ける -SkipClean で全部飛ばされる（何も回さずに OK になっていた）。
+        #   クリーンの段だけを -SkipClean 無しで回すと、成果物を消したまま建て直さない。
+        #   **消した後に建て直せることまで見る**ので、その言語のビルドを通しにする。単体テスト・疎通は呼ばないので回さない。
+        $buildFull[$lang] = "クリーンのバッチに触れている（#672）"
+        $kind = "ビルドの通し（クリーンのバッチ）"
     }
     elseif ($f -match '^root/programs/(cs|vb)/([^/]+\.bat)$')
     {
@@ -456,6 +468,9 @@ foreach ($no in @(1, 3))
     $list  = $(if ($no -eq 1) { $listBuild } else { $listSmoke })
     $names = Select-ByBat $list
     $langs = @($full.Keys)
+
+    # **クリーンのバッチに触れた言語は、ビルドだけ通し**（#672）
+    if ($no -eq 1) { $langs += @($buildFull.Keys) }
 
     # 部分指定の言語（通しでない言語の対象名）
     $partialLangs = @($list | Where-Object { $names -contains $_.Name } | ForEach-Object { $_.Dir } | Sort-Object -Unique)
@@ -633,6 +648,13 @@ Write-Host ("=== 回す範囲（段階 : {0}） ===" -f $Stage) -ForegroundColor
 foreach ($k in ($full.Keys | Sort-Object))
 {
     Write-Host ("  {0} は通し : {1}" -f $k, $full[$k]) -ForegroundColor Yellow
+}
+foreach ($k in ($buildFull.Keys | Sort-Object))
+{
+    if (-not $full.ContainsKey($k))
+    {
+        Write-Host ("  {0} はビルドだけ通し : {1}" -f $k, $buildFull[$k]) -ForegroundColor Yellow
+    }
 }
 if ($plan.ContainsKey(2) -and $plan[2].Linux)
 {
