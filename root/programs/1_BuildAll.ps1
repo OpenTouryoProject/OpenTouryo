@@ -76,6 +76,7 @@
      2026/10/15  玄人 幸道         -Only の複数指定と -List -PassThru を追加（#610）
      2026/10/15  玄人 幸道         脆弱性の警告（NU1901〜NU1904）を別枠で出すようにした（#610）
      2026/11/04  玄人 幸道         SpRp のサンプル（11_Build_SpRp_sample.bat）を追加（#649）
+     2026/11/07  玄人 幸道         -Only で選んだステップが -SkipClean で全部飛ぶなら止める。一部が飛ぶなら一覧を出す（#672）
 #>
 [CmdletBinding()]
 param(
@@ -369,6 +370,26 @@ if ($Only)
 
     $matched = @($steps | Where-Object { Test-OnlyMatch $_ })
     Write-Host ("  -Only '{0}' : {1} ステップに絞りました" -f ($Only -join "', '"), $matched.Count) -ForegroundColor Yellow
+
+    # **-SkipClean で、選んだステップが全部飛ぶなら止める。**（#672）
+    #   -Only がクリーンのステップだけを選び、-SkipClean も付いていると、1 つも実行せずに
+    #   「全ステップ OK」になっていた（#576 の空振りと同じく、何も建てていないのに緑になる）。
+    #   一部だけが飛ぶなら、何を飛ばしたかを出して続ける。
+    if ($SkipClean)
+    {
+        $skipped = @($matched | Where-Object { $_.Clean })
+
+        if ($skipped.Count -gt 0 -and $skipped.Count -eq $matched.Count)
+        {
+            Write-Host ("  **-Only で選んだ {0} ステップは、どれもクリーンのステップで、-SkipClean で全部飛びます。**" -f $matched.Count) -ForegroundColor Red
+            Write-Host "  クリーンを確かめるなら -SkipClean を外してください（クリーンは成果物を消すので、建て直すなら通しにする）。" -ForegroundColor Yellow
+            exit 1
+        }
+        elseif ($skipped.Count -gt 0)
+        {
+            Write-Host ("  -SkipClean で飛ばすステップ : {0}" -f (($skipped | ForEach-Object { $_.Name }) -join ", ")) -ForegroundColor Yellow
+        }
+    }
 }
 
 foreach ($s in $steps)
