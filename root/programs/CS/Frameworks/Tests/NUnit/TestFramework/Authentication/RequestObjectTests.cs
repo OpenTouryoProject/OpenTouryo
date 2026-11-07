@@ -34,6 +34,7 @@
 //*  2026/11/06  玄人 幸道         有効期間を受ける Create（exp・nbf・iat を入れる）のテストを追加（#660）
 //*  2026/11/06  玄人 幸道         nbf の範囲を Create の前後の時刻で挟み、TimeSpan.MaxValue を足した（#660 のレビューの指摘 3・4）
 //*  2026/11/06  玄人 幸道         検証鍵（JWS）を受ける Verify・VerifyCiba のテストを追加（#664）
+//*  2026/11/08  玄人 幸道         code_challenge・code_challenge_method を受ける Create のテストを追加（#675）
 //**********************************************************************************
 
 using System;
@@ -222,6 +223,146 @@ namespace TestFramework.Authentication
                 Assert.That(p.ContainsKey(OAuth2AndOIDCConst.exp), Is.False);
                 Assert.That(p.ContainsKey(OAuth2AndOIDCConst.nbf), Is.False);
                 Assert.That(p.ContainsKey(OAuth2AndOIDCConst.iat), Is.False);
+            }
+        }
+
+        /// <summary>
+        /// OIDC：code_challenge を受ける Create は、code_challenge・code_challenge_method を Request Object に入れ、
+        /// exp・nbf・iat も入れる。入った値で、認可サーバ側の PKCE の検証（VerifyPkce）が通る。RSAParameters 版・JWK 版のどちらも同じ。
+        /// </summary>
+        [Test]
+        [Basis("RFC 9101 4（認可要求のパラメタは、Request Object のクレームにする）")]
+        [Basis("RFC 7636 4.2（S256 の code_challenge は BASE64URL(SHA256(ASCII(code_verifier)))）・4.3（code_challenge・code_challenge_method を送る）")]
+        [Basis("FAPI 2.0 Security Profile 5.3.3.2（クライアントは PAR と、S256 の PKCE を使う）")]
+        [Basis("#675")]
+        public void Oidc_Pkce()
+        {
+            const string op = "https://op.example.com/";
+            const string code_verifier = "dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";
+            string code_challenge = OAuth2AndOIDCClient.PKCE_S256_CodeChallengeMethod(code_verifier);
+
+            using (RSA rsa = RSA.Create(2048))
+            {
+                long before = RequestObjectTests.Now();
+                string[] ros = new string[]
+                {
+                    RequestObject.Create("client01", op,
+                        "code", "", "https://rp.example.com/cb", "openid", "state01", "nonce01",
+                        "", "", "", new ClaimsInRO(null, null, null),
+                        code_challenge, OAuth2AndOIDCConst.PKCE_S256, TimeSpan.FromMinutes(10), rsa.ExportParameters(true)),
+                    RequestObject.Create("client01", op,
+                        "code", "", "https://rp.example.com/cb", "openid", "state01", "nonce01",
+                        "", "", "", new ClaimsInRO(null, null, null),
+                        code_challenge, OAuth2AndOIDCConst.PKCE_S256, TimeSpan.FromMinutes(10),
+                        new RsaPrivateKeyConverter().ParamToJwk(rsa.ExportParameters(true)))
+                };
+                long after = RequestObjectTests.Now();
+
+                foreach (string ro in ros)
+                {
+                    JObject p = PayloadOf(ro);
+
+                    Assert.That((string)p[OAuth2AndOIDCConst.code_challenge], Is.EqualTo(code_challenge));
+                    Assert.That((string)p[OAuth2AndOIDCConst.code_challenge_method], Is.EqualTo("S256"));
+
+                    // 入った値で、認可サーバ側の PKCE の検証が通る（S256 だけを受ける設定で）
+                    bool usedS256;
+                    Assert.That(OAuth2AndOIDCSpec.VerifyPkce(
+                        (string)p[OAuth2AndOIDCConst.code_challenge_method], (string)p[OAuth2AndOIDCConst.code_challenge],
+                        code_verifier, false, out usedS256), Is.True, "VerifyPkce");
+                    Assert.That(usedS256, Is.True);
+
+                    // exp・nbf・iat も入る（有効期間を受ける版と同じ）
+                    long nbf = (long)p[OAuth2AndOIDCConst.nbf];
+                    Assert.That(nbf, Is.InRange(before, after), "nbf は今の時刻");
+                    Assert.That((long)p[OAuth2AndOIDCConst.exp], Is.EqualTo(nbf + 600), "exp = nbf + 有効期間");
+
+                    string iss;
+                    Assert.That(RequestObject.Verify(ro, op, out iss, rsa.ExportParameters(false)), Is.True);
+                    Assert.That(iss, Is.EqualTo("client01"));
+                }
+            }
+        }
+
+        /// <summary>
+        /// OIDC：code_challenge を受ける Create の、code_challenge_method の扱い。
+        /// 空なら S256 を入れ、渡した値（plain も）はそのまま入れる。
+        /// code_challenge・code_challenge_method が両方空ならどちらも入れず、code_challenge だけが空なら ArgumentException。
+        /// </summary>
+        [Test]
+        [Basis("RFC 7636 4.3（code_challenge_method を省くと plain として扱われる。だから S256 を明示する）")]
+        [Basis("設計：RequestObject.Create（code_challenge を受ける版）の remarks（空なら S256、渡した値はそのまま、method だけなら ArgumentException）")]
+        [Basis("#675")]
+        public void Oidc_Pkce_Method()
+        {
+            const string op = "https://op.example.com/";
+
+            using (RSA rsa = RSA.Create(2048))
+            {
+                Func<string, string, JObject> create = (challenge, method) => PayloadOf(RequestObject.Create("client01", op,
+                    "code", "", "https://rp.example.com/cb", "openid", "state01", "nonce01",
+                    "", "", "", new ClaimsInRO(null, null, null),
+                    challenge, method, TimeSpan.FromMinutes(10), rsa.ExportParameters(true)));
+
+                // 空（null も）なら S256
+                foreach (string method in new string[] { "", null })
+                {
+                    JObject p = create("challenge01", method);
+                    Assert.That((string)p[OAuth2AndOIDCConst.code_challenge], Is.EqualTo("challenge01"));
+                    Assert.That((string)p[OAuth2AndOIDCConst.code_challenge_method], Is.EqualTo("S256"), "method = " + (method ?? "null"));
+                }
+
+                // 渡した値は、そのまま入れる（plain も断らない。受けるかは認可サーバが決める）
+                Assert.That((string)create("challenge01", "plain")[OAuth2AndOIDCConst.code_challenge_method], Is.EqualTo("plain"));
+
+                // 両方空なら、どちらも入れない（exp・nbf・iat は入る）
+                foreach (string challenge in new string[] { "", null })
+                {
+                    JObject p = create(challenge, challenge);
+                    Assert.That(p.ContainsKey(OAuth2AndOIDCConst.code_challenge), Is.False);
+                    Assert.That(p.ContainsKey(OAuth2AndOIDCConst.code_challenge_method), Is.False);
+                    Assert.That(p.ContainsKey(OAuth2AndOIDCConst.exp), Is.True);
+                }
+
+                // code_challenge が空で code_challenge_method だけがあれば、作り忘れとして断る
+                foreach (string challenge in new string[] { "", null })
+                {
+                    ArgumentException e = Assert.Throws<ArgumentException>(() => create(challenge, "S256"));
+                    Assert.That(e.ParamName, Is.EqualTo("code_challenge"));
+                }
+
+                // 1 秒未満の有効期間は受けない（有効期間を受ける版と同じ）
+                ArgumentOutOfRangeException e2 = Assert.Throws<ArgumentOutOfRangeException>(() => RequestObject.Create("client01", op,
+                    "code", "", "https://rp.example.com/cb", "openid", "state01", "nonce01",
+                    "", "", "", new ClaimsInRO(null, null, null),
+                    "challenge01", "S256", TimeSpan.Zero, rsa.ExportParameters(true)));
+                Assert.That(e2.ParamName, Is.EqualTo("lifetime"));
+            }
+        }
+
+        /// <summary>OIDC：code_challenge を受けない Create は、code_challenge・code_challenge_method を入れない（従来どおり）。</summary>
+        [Test]
+        [Basis("設計：RequestObject.Create（code_challenge を受ける版）の remarks（受けない版は、従来どおり入れない）")]
+        [Basis("#675")]
+        public void Oidc_NoPkce()
+        {
+            using (RSA rsa = RSA.Create(2048))
+            {
+                JObject[] ps = new JObject[]
+                {
+                    PayloadOf(RequestObject.Create("client01", "https://op.example.com/",
+                        "code", "", "https://rp.example.com/cb", "openid", "state01", "nonce01",
+                        "", "", "", new ClaimsInRO(null, null, null), rsa.ExportParameters(true))),
+                    PayloadOf(RequestObject.Create("client01", "https://op.example.com/",
+                        "code", "", "https://rp.example.com/cb", "openid", "state01", "nonce01",
+                        "", "", "", new ClaimsInRO(null, null, null), TimeSpan.FromMinutes(10), rsa.ExportParameters(true)))
+                };
+
+                foreach (JObject p in ps)
+                {
+                    Assert.That(p.ContainsKey(OAuth2AndOIDCConst.code_challenge), Is.False);
+                    Assert.That(p.ContainsKey(OAuth2AndOIDCConst.code_challenge_method), Is.False);
+                }
             }
         }
 

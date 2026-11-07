@@ -43,6 +43,8 @@
 //*  2026/11/06  玄人 幸道         remarks に、時計のずれの余裕を取らないこと・上限で溢れないことを書いた（#660 のレビューの指摘 2・3）
 //*  2026/11/06  玄人 幸道         Verify・VerifyCiba に、検証鍵（JWS）を受けて署名の alg を選べるオーバーロードを追加（#664）
 //*  2026/11/06  玄人 幸道         remarks に、登録どおりの鍵の型だけを渡すことを書いた（#664 のレビューの指摘 2）
+//*  2026/11/08  玄人 幸道         Create に、code_challenge・code_challenge_method（PKCE）を入れるオーバーロードを追加（#675）
+//*  2026/11/08  玄人 幸道         有効期間の検査を CreateCore にまとめた（#675 のレビューの指摘 1。例外の型・引数名・メッセージは変えていない）
 //**********************************************************************************
 
 using System;
@@ -142,7 +144,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 iss, aud, response_type, response_mode,
                 redirect_uri, scopes, state, nonce,
                 max_age, prompt, login_hint, claims,
-                null, rsaPrivateKey);
+                "", "", null, rsaPrivateKey);
         }
 
         /// <summary>Create（exp・nbf・iat を入れる）</summary>
@@ -212,26 +214,128 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string max_age, string prompt, string login_hint, ClaimsInRO claims,
             TimeSpan lifetime, RSAParameters rsaPrivateKey)
         {
-            if (lifetime < TimeSpan.FromSeconds(1))
+            // 1 秒未満の有効期間は、CreateCore で断る
+            return RequestObject.CreateCore(
+                iss, aud, response_type, response_mode,
+                redirect_uri, scopes, state, nonce,
+                max_age, prompt, login_hint, claims,
+                "", "", lifetime, rsaPrivateKey);
+        }
+
+        /// <summary>Create（code_challenge・code_challenge_method（PKCE）と、exp・nbf・iat を入れる）</summary>
+        /// <param name="iss">string</param>
+        /// <param name="aud">string</param>
+        /// <param name="response_type">string</param>
+        /// <param name="response_mode">string</param>
+        /// <param name="redirect_uri">string</param>
+        /// <param name="scopes">string</param>
+        /// <param name="state">string</param>
+        /// <param name="nonce">string</param>
+        /// <param name="max_age">string</param>
+        /// <param name="prompt">string</param>
+        /// <param name="login_hint">string</param>
+        /// <param name="claims">ClaimsInRO</param>
+        /// <param name="code_challenge">code_challenge（空なら PKCE のクレームを入れない）</param>
+        /// <param name="code_challenge_method">code_challenge_method（空なら S256）</param>
+        /// <param name="lifetime">有効期間（1 秒以上。exp = nbf + 有効期間）</param>
+        /// <param name="jwkPrivateKey">RS256用のJWK秘密鍵</param>
+        /// <returns>RequestObject</returns>
+        /// <remarks>
+        /// 振る舞いは RSAParameters を受ける版（code_challenge を受けるもの）の remarks を参照。
+        /// </remarks>
+        public static string Create(
+            string iss, string aud, string response_type, string response_mode,
+            string redirect_uri, string scopes, string state, string nonce,
+            string max_age, string prompt, string login_hint, ClaimsInRO claims,
+            string code_challenge, string code_challenge_method,
+            TimeSpan lifetime, string jwkPrivateKey)
+        {
+            RsaPrivateKeyConverter rpkc = new RsaPrivateKeyConverter();
+            return RequestObject.Create(
+                iss, aud, response_type, response_mode,
+                redirect_uri, scopes, state, nonce,
+                max_age, prompt, login_hint, claims,
+                code_challenge, code_challenge_method,
+                lifetime, rpkc.JwkToParam(jwkPrivateKey));
+        }
+
+        /// <summary>Create（code_challenge・code_challenge_method（PKCE）と、exp・nbf・iat を入れる）</summary>
+        /// <param name="iss">string</param>
+        /// <param name="aud">string</param>
+        /// <param name="response_type">string</param>
+        /// <param name="response_mode">string</param>
+        /// <param name="redirect_uri">string</param>
+        /// <param name="scopes">string</param>
+        /// <param name="state">string</param>
+        /// <param name="nonce">string</param>
+        /// <param name="max_age">string</param>
+        /// <param name="prompt">string</param>
+        /// <param name="login_hint">string</param>
+        /// <param name="claims">ClaimsInRO</param>
+        /// <param name="code_challenge">code_challenge（空なら PKCE のクレームを入れない）</param>
+        /// <param name="code_challenge_method">code_challenge_method（空なら S256）</param>
+        /// <param name="lifetime">有効期間（1 秒以上。exp = nbf + 有効期間）</param>
+        /// <param name="rsaPrivateKey">RS256用のRSAParameters秘密鍵</param>
+        /// <returns>RequestObject</returns>
+        /// <remarks>
+        /// - **code_challenge・code_challenge_method を、Request Object のクレームとして入れる**（#675）。
+        ///   PAR と Request Object を使うとき、PKCE のパラメタは Request Object の中に入る（RFC 9101 4）。
+        ///   FAPI 2.0（Security Profile 5.3.3.2）は、クライアントに PAR と、S256 の PKCE を求めている
+        /// - code_challenge は、OAuth2AndOIDCClient.PKCE_S256_CodeChallengeMethod(code_verifier) で作る
+        /// - **code_challenge_method が空なら S256 を入れる。** RFC 7636 4.3 では、省くと plain として扱われるので、明示して入れる
+        /// - **code_challenge_method は、渡された値をそのまま入れる**（plain も断らない）。
+        ///   受けるかは認可サーバが決める。FAPI 2.0・OAuth 2.1 は S256 だけを認める（有効期間の上限と同じく、プロファイルの制約は呼び出し側が決める）
+        /// - code_challenge・code_challenge_method が両方空なら、どちらも入れない
+        /// - **code_challenge が空で code_challenge_method だけがあれば ArgumentException**（code_challenge の作り忘れ）
+        /// - exp・nbf・iat と、1 秒未満の有効期間の扱いは、有効期間を受ける版（code_challenge を受けないもの）と同じ
+        /// - **code_challenge と有効期間の両方が誤っていれば、先に code_challenge の ArgumentException を投げる**（有効期間は CreateCore で検査する）
+        /// </remarks>
+        public static string Create(
+            string iss, string aud, string response_type, string response_mode,
+            string redirect_uri, string scopes, string state, string nonce,
+            string max_age, string prompt, string login_hint, ClaimsInRO claims,
+            string code_challenge, string code_challenge_method,
+            TimeSpan lifetime, RSAParameters rsaPrivateKey)
+        {
+            // 1 秒未満の有効期間は、CreateCore で断る
+            if (string.IsNullOrEmpty(code_challenge))
             {
-                throw new ArgumentOutOfRangeException("lifetime", lifetime, "The lifetime must be at least one second.");
+                if (!string.IsNullOrEmpty(code_challenge_method))
+                {
+                    throw new ArgumentException("The code_challenge is required when the code_challenge_method is specified.", "code_challenge");
+                }
+            }
+            else if (string.IsNullOrEmpty(code_challenge_method))
+            {
+                // 省くと plain として扱われる（RFC 7636 4.3）ので、S256 を明示する
+                code_challenge_method = OAuth2AndOIDCConst.PKCE_S256;
             }
 
             return RequestObject.CreateCore(
                 iss, aud, response_type, response_mode,
                 redirect_uri, scopes, state, nonce,
                 max_age, prompt, login_hint, claims,
+                code_challenge, code_challenge_method,
                 lifetime, rsaPrivateKey);
         }
 
         /// <summary>Create の本体</summary>
-        /// <param name="lifetime">有効期間。null なら exp・nbf・iat を入れない</param>
+        /// <param name="code_challenge">空なら code_challenge・code_challenge_method を入れない</param>
+        /// <param name="code_challenge_method">code_challenge が空でないときに入れる（呼び出し側で既定を決めておく）</param>
+        /// <param name="lifetime">有効期間。null なら exp・nbf・iat を入れない。1 秒未満なら ArgumentOutOfRangeException</param>
         private static string CreateCore(
             string iss, string aud, string response_type, string response_mode,
             string redirect_uri, string scopes, string state, string nonce,
             string max_age, string prompt, string login_hint, ClaimsInRO claims,
+            string code_challenge, string code_challenge_method,
             TimeSpan? lifetime, RSAParameters rsaPrivateKey)
         {
+            // **有効期間の検査は、ここ 1 か所で行う**（有効期間を受ける版のすべてが通る。#675 のレビューの指摘 1）
+            if (lifetime.HasValue && lifetime.Value < TimeSpan.FromSeconds(1))
+            {
+                throw new ArgumentOutOfRangeException("lifetime", lifetime.Value, "The lifetime must be at least one second.");
+            }
+
             string json = "";
 
             #region ClaimSetの生成
@@ -269,6 +373,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 requestObjectClaimSet.Add(OAuth2AndOIDCConst.prompt, prompt);
             if (!string.IsNullOrEmpty(login_hint))
                 requestObjectClaimSet.Add(OAuth2AndOIDCConst.login_hint, login_hint);
+
+            // PKCE（#675）
+            if (!string.IsNullOrEmpty(code_challenge))
+            {
+                requestObjectClaimSet.Add(OAuth2AndOIDCConst.code_challenge, code_challenge);
+                requestObjectClaimSet.Add(OAuth2AndOIDCConst.code_challenge_method, code_challenge_method);
+            }
 
             requestObjectClaimSet.Add(OAuth2AndOIDCConst.claims, claims.Claims);
 
