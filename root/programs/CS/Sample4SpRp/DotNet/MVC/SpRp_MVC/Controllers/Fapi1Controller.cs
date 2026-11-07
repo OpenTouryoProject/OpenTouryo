@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/11/07  玄人 幸道         新規作成（#668。汎用認証サイトの自己テストの FAPI1 を移した）
 //*  2026/11/07  玄人 幸道         oauth2・oidc は private_key_jwt に PKCE を併せた（GetAccessTokenByCodeWithPkceAsync。#670）
+//*  2026/11/07  玄人 幸道         Start は、照合した後に入力の文字列ではなく定数を使う（code scanning #59。振る舞いは変えない）
 //**********************************************************************************
 
 using System;
@@ -110,17 +111,23 @@ namespace SpRp_MVC.Controllers
                 return this.BadRequest("responseMode は 空 / query.jwt のどちらかです。");
             }
 
+            // **照合した後は、入力の文字列ではなく、定数を使う**（リダイレクト先の URL・セッションに、利用者の値を流さない）。
+            //   許可リストで照合済みなので値は同じだが、入力の変数をそのまま連結すると、
+            //   照合を経ていない値と区別が付かない（CodeQL の cs/web/unvalidated-url-redirection もそう読む）。
+            string checkedFlow = (flow == FlowOAuth2) ? FlowOAuth2 : (flow == FlowPkce) ? FlowPkce : FlowOidc;
+            string checkedMode = (responseMode == ResponseModeQueryJwt) ? ResponseModeQueryJwt : "";
+
             Discovery discovery = await Discovery.LoadAsync(
                 CmnClientParams.SpRp_DiscoveryUri, CmnClientParams.Isser);
 
             // **state・nonce・code_verifier は、推測できない乱数**（RFC 6749 §10.12、RFC 7636 §7.1）
             Fapi1Session s = new Fapi1Session
             {
-                Flow = flow,
-                ClientId = Fapi1Controller.ClientIdOf(flow),
-                ResponseMode = responseMode,
+                Flow = checkedFlow,
+                ClientId = Fapi1Controller.ClientIdOf(checkedFlow),
+                ResponseMode = checkedMode,
                 State = GetPassword.Base64UrlSecret(32),
-                Nonce = flow == FlowOAuth2 ? null : GetPassword.Base64UrlSecret(32),
+                Nonce = checkedFlow == FlowOAuth2 ? null : GetPassword.Base64UrlSecret(32),
                 // **どの flow も PKCE を付ける**（private_key_jwt の flow も併せる。#670）
                 CodeVerifier = GetPassword.Base64UrlSecret(50),
             };
@@ -129,7 +136,7 @@ namespace SpRp_MVC.Controllers
             {
                 { OAuth2AndOIDCConst.client_id, s.ClientId },
                 { OAuth2AndOIDCConst.response_type, OAuth2AndOIDCConst.AuthorizationCodeResponseType },
-                { OAuth2AndOIDCConst.scope, flow == FlowOAuth2
+                { OAuth2AndOIDCConst.scope, checkedFlow == FlowOAuth2
                     ? GetConfigParameter.GetConfigValue("SpRp_Fapi1OAuth2Scope")
                     : GetConfigParameter.GetConfigValue("SpRp_Scope") },
                 { OAuth2AndOIDCConst.redirect_uri, CmnClientParams.SpRp_RedirectUri },
@@ -147,9 +154,9 @@ namespace SpRp_MVC.Controllers
                 query.Add(OAuth2AndOIDCConst.code_challenge_method, OAuth2AndOIDCConst.PKCE_S256);
             }
 
-            if (responseMode != "")
+            if (checkedMode != "")
             {
-                query.Add(OAuth2AndOIDCConst.response_mode, responseMode);
+                query.Add(OAuth2AndOIDCConst.response_mode, checkedMode);
             }
 
             this.HttpContext.Session.SetString(SessionKey, JsonConvert.SerializeObject(s));
