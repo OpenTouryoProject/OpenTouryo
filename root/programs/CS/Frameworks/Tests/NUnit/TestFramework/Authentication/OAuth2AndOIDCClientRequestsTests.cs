@@ -28,6 +28,7 @@
 //*  2026/10/30  玄人 幸道         CibaAuthZRequest を、request_uri の版と Request Object の版に分けた（根拠が違うため。#640）
 //*  2026/11/04  玄人 幸道         DeviceAuthZ の scope を受ける版のテストを追加（#650）
 //*  2026/11/07  玄人 幸道         private_key_jwt ＋ PKCE の版（GetAccessTokenByCodeWithPkceAsync）のテストを追加（#670）
+//*  2026/11/08  玄人 幸道         redirect_uri が記号を含んでも受けた値のまま届くことのテストを追加（#677）
 //**********************************************************************************
 
 using System;
@@ -222,6 +223,35 @@ namespace TestFramework.Authentication
                 }
 
                 Assert.That(http.Requests, Is.Empty, "送らない");
+            }
+        }
+
+        /// <summary>
+        /// 認可コード：redirect_uri は、記号（&amp; &lt; &gt; " '）や 0xA0〜0xFF の文字を含んでも、受けた値のまま届く
+        /// （HTML エンコードしない。既存の 4 つの版と、本体の 3 つの分岐とも。#677）。
+        /// </summary>
+        [Test]
+        [Basis("RFC 6749 4.1.3（redirect_uri は認可要求と同じ値）")]
+        [Basis("#677")]
+        public void Code_RedirectUriAsIs()
+        {
+            const string redirect = "https://rp.example.com/cb?a=1&b=<x>&c=\"y\"&d='z'&e=é";
+
+            foreach (Func<string> send in new Func<string>[]
+            {
+                // 通常（Basic・Post）
+                () => OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(TokenEndpoint, "client01", "secret01", redirect, "code01").Result,
+                () => OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(TokenEndpoint, "client01", "secret01", redirect, "code01",
+                    OAuth2AndOIDCEnum.AuthMethods.client_secret_post).Result,
+                // PKCE
+                () => OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(TokenEndpoint, "client01", "secret01", redirect, "code01", "verifier01").Result,
+                // アサーション（PKCE なし・あり）
+                () => OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(TokenEndpoint, redirect, "code01", "assertion01").Result,
+                () => OAuth2AndOIDCClient.GetAccessTokenByCodeWithPkceAsync(TokenEndpoint, redirect, "code01", "verifier01", "assertion01").Result
+            })
+            {
+                Dictionary<string, string> form = Form(Send(send).Item2);
+                Assert.That(form[OAuth2AndOIDCConst.redirect_uri], Is.EqualTo(redirect));
             }
         }
 
