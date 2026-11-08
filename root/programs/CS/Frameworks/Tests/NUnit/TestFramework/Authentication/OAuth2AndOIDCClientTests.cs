@@ -26,6 +26,7 @@
 //*  2026/10/22  玄人 幸道         新規作成
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //*  2026/11/08  玄人 幸道         クライアント認証の方式を問わない版（認可コード・Refresh・Revoke・Introspect）のテストを追加（#676）
+//*  2026/11/08  玄人 幸道         既存の口（PAR・CIBA）の、空の値の検査のテストを追加（#678）
 //**********************************************************************************
 
 using System;
@@ -372,6 +373,101 @@ namespace TestFramework.Authentication
                 }
 
                 Assert.That(http.Requests, Is.Empty, "送らない");
+            }
+        }
+
+        #endregion
+
+        #region 既存の口の、空の値の検査（PAR・CIBA の認可リクエスト・CIBA の Token 要求。#678）
+
+        /// <summary>PAR・CIBA の認可リクエスト・CIBA の Token 要求（client_assertion を受ける版）を、同じ資格情報で呼ぶ</summary>
+        private static Func<Task<string>>[] ExistingCalls(OAuth2AndOIDCEnum.AuthMethods authMethod,
+            string client_id, string client_secret, string client_assertion)
+        {
+            Uri par = new Uri("https://as.example.com/par");
+            Uri ciba = new Uri("https://as.example.com/ciba");
+            return new Func<Task<string>>[]
+            {
+                () => OAuth2AndOIDCClient.PushAuthorizationRequestAsync(par, "ro01", client_id, client_secret, client_assertion, authMethod),
+                () => OAuth2AndOIDCClient.CibaAuthZRequestAsync(ciba, "ro01", client_id, client_secret, client_assertion, authMethod),
+                () => OAuth2AndOIDCClient.GetAccessTokenByCibaAsync(TokenEndpoint, client_id, client_secret, client_assertion, "req01", authMethod)
+            };
+        }
+
+        /// <summary>
+        /// 既存の口も、空では認証として成り立たない値が空（null も）なら ArgumentNullException で、送らない（3 つの口とも）。
+        /// </summary>
+        [Test]
+        [Basis("設計：OAuth2AndOIDCClient.SetClientAuthentication の remarks（空では認証として成り立たない値は ArgumentNullException）")]
+        [Basis("#678")]
+        [TestCase(OAuth2AndOIDCEnum.AuthMethods.private_key_jwt, "c", "s", "", "client_assertion")]
+        [TestCase(OAuth2AndOIDCEnum.AuthMethods.client_secret_jwt, "c", "s", null, "client_assertion")]
+        [TestCase(OAuth2AndOIDCEnum.AuthMethods.client_secret_basic, "", "s", "a", "client_id")]
+        [TestCase(OAuth2AndOIDCEnum.AuthMethods.client_secret_post, null, "s", "a", "client_id")]
+        [TestCase(OAuth2AndOIDCEnum.AuthMethods.tls_client_auth, "", "s", "a", "client_id")]
+        public void ExistingAuth_MissingCredential(OAuth2AndOIDCEnum.AuthMethods authMethod,
+            string client_id, string client_secret, string client_assertion, string paramName)
+        {
+            using (StubHttp http = new StubHttp((req, body) => StubHttp.Json(HttpStatusCode.OK, "{}")))
+            {
+                foreach (Func<Task<string>> call in ExistingCalls(authMethod, client_id, client_secret, client_assertion))
+                {
+                    AggregateException ex = Assert.Throws<AggregateException>(() => call().Wait());
+                    Assert.That(ex.InnerException, Is.TypeOf<ArgumentNullException>());
+                    Assert.That(((ArgumentNullException)ex.InnerException).ParamName, Is.EqualTo(paramName));
+                }
+
+                Assert.That(http.Requests, Is.Empty, "送らない");
+            }
+        }
+
+        /// <summary>
+        /// PAR は、方式によらず client_id が要る（private_key_jwt でも空なら ArgumentNullException）。
+        /// CIBA は、private_key_jwt なら client_id が空でも送る（認証方式が要求するもの以外を JWT の外に置かないため、もともと載せない）。
+        /// </summary>
+        [Test]
+        [Basis("RFC 9126 2.1（client_id は認可リクエストの必須パラメタなので、PAR でも必須）")]
+        [Basis("CIBA Core 1.0 7.1.1（認証方式が要求するパラメタ以外を、署名付きの認証要求の外に置かない）")]
+        [Basis("#678")]
+        public void ExistingAuth_ParRequiresClientId()
+        {
+            foreach (string clientId in new string[] { "", null })
+            {
+                Func<Task<string>>[] calls = ExistingCalls(OAuth2AndOIDCEnum.AuthMethods.private_key_jwt, clientId, null, "assertion01");
+
+                using (StubHttp http = new StubHttp((req, body) => StubHttp.Json(HttpStatusCode.OK, "{}")))
+                {
+                    AggregateException ex = Assert.Throws<AggregateException>(() => calls[0]().Wait());
+                    Assert.That(ex.InnerException, Is.TypeOf<ArgumentNullException>());
+                    Assert.That(((ArgumentNullException)ex.InnerException).ParamName, Is.EqualTo("client_id"));
+                    Assert.That(http.Requests, Is.Empty, "PAR は送らない");
+                }
+
+                foreach (Func<Task<string>> call in new[] { calls[1], calls[2] })
+                {
+                    Tuple<HttpRequestMessage, string> r = Send(call);
+                    Assert.That(Form(r.Item2)[OAuth2AndOIDCConst.client_assertion], Is.EqualTo("assertion01"));
+                }
+            }
+        }
+
+        /// <summary>既存の口も、client_secret が空（null も）なら、Basic・Post で送る（公開クライアントの使い方を塞がない）。</summary>
+        [Test]
+        [Basis("RFC 6749 4.1.3（認証しないクライアントは client_id を送る）")]
+        [Basis("設計：OAuth2AndOIDCClient.SetClientAuthentication の remarks（client_secret は検査しない）")]
+        [Basis("#678")]
+        public void ExistingAuth_EmptySecret()
+        {
+            foreach (OAuth2AndOIDCEnum.AuthMethods authMethod in new[] {
+                OAuth2AndOIDCEnum.AuthMethods.client_secret_basic, OAuth2AndOIDCEnum.AuthMethods.client_secret_post })
+            {
+                foreach (string secret in new string[] { "", null })
+                {
+                    foreach (Func<Task<string>> call in ExistingCalls(authMethod, "client01", secret, null))
+                    {
+                        Assert.That(Send(call).Item1, Is.Not.Null, authMethod + " / " + (secret ?? "null"));
+                    }
+                }
             }
         }
 

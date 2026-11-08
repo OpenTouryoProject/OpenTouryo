@@ -30,6 +30,7 @@
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を広げた（#640）
 //*  2026/10/30  玄人 幸道         htu の比較を RFC 9449 4.3 どおりにした（末尾の "/"・パスの大文字小文字は別。#642）
 //*  2026/11/05  玄人 幸道         小数の iat を受けることのテストを足した（#647）
+//*  2026/11/08  玄人 幸道         クライアント認証ありの版で、空の値を送らないことのテストを足した（#678）
 //**********************************************************************************
 
 using System;
@@ -446,6 +447,40 @@ namespace TestFramework.Authentication
                 HttpRequestMessage req = http.Requests[0].Item1;
                 Assert.That(req.Headers.Authorization.Scheme, Is.EqualTo("Basic"));
                 Assert.That(req.Headers.Contains("DPoP"), Is.True);
+            }
+        }
+
+        /// <summary>
+        /// Token（クライアント認証あり）：空では認証として成り立たない値（private_key_jwt の client_assertion・tls_client_auth の client_id）が
+        /// 空なら ArgumentNullException で、送らない（#678）。client_secret が空でも、Basic は送る。
+        /// </summary>
+        [Test]
+        [Basis("設計：OAuth2AndOIDCClient.SetClientAuthentication の remarks（空では認証として成り立たない値は ArgumentNullException。client_secret は検査しない）")]
+        [Basis("#678")]
+        public void TokenRequestWithDPoP_MissingCredential()
+        {
+            Key key = CreateKey("ES256");
+            Dictionary<string, string> body = new Dictionary<string, string> { { "grant_type", "client_credentials" } };
+
+            using (StubHttp http = new StubHttp((req, b) => StubHttp.Json(HttpStatusCode.OK, "{}")))
+            {
+                AggregateException ex = Assert.Throws<AggregateException>(() => OAuth2AndOIDCClient.TokenRequestWithDPoPAsync(
+                    new Uri(TokenEndpoint), body, "client01", null, null, OAuth2AndOIDCEnum.AuthMethods.private_key_jwt,
+                    key.Signer, key.Public).Wait());
+                Assert.That(ex.InnerException, Is.TypeOf<ArgumentNullException>());
+                Assert.That(((ArgumentNullException)ex.InnerException).ParamName, Is.EqualTo("client_assertion"));
+
+                ex = Assert.Throws<AggregateException>(() => OAuth2AndOIDCClient.TokenRequestWithDPoPAsync(
+                    new Uri(TokenEndpoint), body, "", null, null, OAuth2AndOIDCEnum.AuthMethods.tls_client_auth,
+                    key.Signer, key.Public).Wait());
+                Assert.That(((ArgumentNullException)ex.InnerException).ParamName, Is.EqualTo("client_id"));
+
+                Assert.That(http.Requests, Is.Empty, "送らない");
+
+                OAuth2AndOIDCClient.TokenRequestWithDPoPAsync(
+                    new Uri(TokenEndpoint), body, "client01", "", null, OAuth2AndOIDCEnum.AuthMethods.client_secret_basic,
+                    key.Signer, key.Public).Wait();
+                Assert.That(http.Requests.Count, Is.EqualTo(1), "client_secret が空でも送る");
             }
         }
 

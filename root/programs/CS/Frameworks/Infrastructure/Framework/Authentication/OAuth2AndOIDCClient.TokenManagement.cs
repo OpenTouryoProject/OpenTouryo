@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（OAuth2AndOIDCClient.cs から処理区分ごとに分割した）
 //*  2026/11/08  玄人 幸道         Refresh・Revoke・Introspect に、クライアント認証の方式を問わない版を追加（private_key_jwt・tls_client_auth。#676）
+//*  2026/11/08  玄人 幸道         空の値の検査を SetClientAuthentication に移した（#678）
 //**********************************************************************************
 
 using System;
@@ -305,44 +306,22 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>本文にクライアント認証を付けて POST する（SetClientAuthentication。client_id は方式が要求するときだけ）</summary>
         /// <remarks>
-        /// 空では認証として成り立たない値だけ、送る前に ArgumentNullException にする（空のまま送ると、認可サーバに断られるまで気付けないため）。
-        /// - client_secret_basic / client_secret_post：client_id
-        /// - private_key_jwt / client_secret_jwt：client_assertion
-        /// - tls_client_auth：client_id（RFC 8705 2）
-        /// client_secret は検査しない（秘密を持たない公開クライアントが client_id だけを送る使い方がある。RFC 6749 4.1.3）。
-        /// 例外にするのは、本当にあり得ない組合せに絞る（組めるはずのプロファイルを塞がない）。
-        /// この検査は #676 で足した版だけのもの（PAR・CIBA の既存の口は、SetClientAuthentication を直接使い、検査しない。#678）。
+        /// 空では認証として成り立たない値は、SetClientAuthentication が送る前に ArgumentNullException にする
+        /// （jwt 系は client_assertion、client_secret_* と tls_client_auth は client_id。client_secret は検査しない）。
+        /// 検査は #676 でここに入れ、#678 で SetClientAuthentication に移した（PAR・CIBA・DPoP と同じ検査になる）。
         /// </remarks>
         private static async Task<string> PostWithClientAuthenticationAsync(
             Uri endpointUri, Dictionary<string, string> body,
             string client_id, string client_secret, string client_assertion,
             OAuth2AndOIDCEnum.AuthMethods authMethod)
         {
-            switch (authMethod)
-            {
-                case OAuth2AndOIDCEnum.AuthMethods.client_secret_basic:
-                case OAuth2AndOIDCEnum.AuthMethods.client_secret_post:
-                    if (string.IsNullOrEmpty(client_id)) throw new ArgumentNullException(nameof(client_id));
-                    break;
-                case OAuth2AndOIDCEnum.AuthMethods.private_key_jwt:
-                case OAuth2AndOIDCEnum.AuthMethods.client_secret_jwt:
-                    if (string.IsNullOrEmpty(client_assertion)) throw new ArgumentNullException(nameof(client_assertion));
-                    break;
-                case OAuth2AndOIDCEnum.AuthMethods.tls_client_auth:
-                    if (string.IsNullOrEmpty(client_id)) throw new ArgumentNullException(nameof(client_id));
-                    break;
-                default:
-                    // 未知の方式は、SetClientAuthentication が ArgumentException にする
-                    break;
-            }
-
             HttpRequestMessage httpRequestMessage = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
                 RequestUri = endpointUri,
             };
 
-            // 認証情報の付加（送る前に方式を確かめる。未知の方式なら ArgumentException で、送らない）
+            // 認証情報の付加（送る前に方式と値を確かめる。未知の方式は ArgumentException、空の値は ArgumentNullException で、送らない）
             OAuth2AndOIDCClient.SetClientAuthentication(
                 httpRequestMessage, body, client_id, client_secret, client_assertion, authMethod, false);
 
