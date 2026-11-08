@@ -28,6 +28,13 @@
       **基盤（Frameworks\Infrastructure）に触れたら通し。** 下は全部やり直しになるため。
       **対応が引けないファイルも通し。** 迷ったら通し（AGENTS.md）。
 
+    ＜root/files/tools（#674）＞
+      **どのプロジェクトからも参照されない**（リンクも無い）ので、ビルドされるもの・期待値は変わらない。通しにしない。
+        ・PowerShell\    … 手で確かめる（Sample4SpRp・2_RunAllTests.ps1 -CrossDb だけが読む）。回すものを添えて出す
+        ・DGenTemplates\ … DaoGen_Tool のバッチ（4_Build_Framework_Tool*.bat）に対応付け、疎通は DaoGen_Tool の対象だけに絞る。
+                            疎通の DAOSQLGEN がテンプレートとして読むので、生成が通るかを確かめられる
+      それ以外（Doxyfile・WinMergeFilters）は、今のところ対応が引けないので通し。
+
     ＜Linux（#632）＞
       Public・Public.Security（と、それを Linux で回すテスト）に触れたら、
       2_RunAllTests.ps1 に -Linux を付ける（net10.0 の出力を Linux のコンテナで回す）。
@@ -86,6 +93,7 @@
      2026/10/19  玄人 幸道         CoverageReport.ps1 を 2 で確かめる対象に加えた
      2026/11/04  玄人 幸道         SpRp のサンプル（Sample4SpRp）は、ビルドのバッチに加えて「手で確かめる」に出す（#649）
      2026/11/07  玄人 幸道         クリーンのバッチ（1_DeleteDir.bat・1_DeleteFile.bat）に触れたら、その言語のビルドを通しにする（#672）
+     2026/11/07  玄人 幸道         root/files/tools の PowerShell は手で確かめる、DGenTemplates は DaoGen_Tool のバッチに対応付ける（#674）
 #>
 [CmdletBinding()]
 param(
@@ -270,6 +278,8 @@ $scriptRuns  = @{}            # 1/2/3 → 理由
 $manual      = @()            # 手で確かめるもの
 $rows        = @()
 $linux       = $null          # -Linux を付ける理由（#632）
+$daoGenTemplate = $null       # DaoGen のテンプレート（root/files/tools/DGenTemplates）に触れたファイル（#674）
+$smokeNarrow = @{}            # "CS|xxx.bat" → 疎通で回す対象名の正規表現（バッチの対象の一部だけを回すとき。#674）
 
 # **Linux でも回すもの**（#632）。Public・Public.Security と、それを Linux で回すテスト。
 #   Public\Db の Dam*（Oracle / MySQL / PostgreSQL）は、Linux の回の対象（TestPublic）に入らないので外す。
@@ -359,6 +369,30 @@ foreach ($f in $changed)
             else
             { "手で確かめる（SpRp。IdP が要る）" })
     }
+    elseif ($lf -match '^root/files/tools/powershell/')
+    {
+        # **関連リポジトリの場所（#652）などの、開発者向けのツール**（#674）。
+        #   読むのは Sample4SpRp（手で確かめる）と 2_RunAllTests.ps1 -CrossDb / -Coverage だけで、通しの 3 本では呼ばれない。
+        #   **通しにしても確かめられないので、通しにはしない。** 何を回せば確かめられるかを添える。
+        #   2_RunAllTests.ps1 -CrossDb はコンテナを起動するので、ここには出さない（コンテナは勝手に起動しない。AGENTS.md）。
+        $leaf = ($lf -split '/')[-1]
+        $how = $(switch -Regex ($leaf)
+            {
+                '^(repopath\.ps1|_repopaths\.csv)$' { "Sample4SpRp\Stub\StubCompose.ps1 -Action Config と Register-RepoPaths.ps1（-Apply 無し）を 5.1・7 で" }
+                '^register-repopaths\.ps1$'         { "-Apply を付けずに 5.1・7 で" }
+                default                             { "そのスクリプトを 5.1・7 で" }
+            })
+        $manual += "{0}（{1}）" -f $f, $how
+        $kind = "手で確かめる（ツール）"
+    }
+    elseif ($lf -match '^root/files/tools/dgentemplates/')
+    {
+        # **DaoGen_Tool（墨壺）のテンプレート**（#674）。プロジェクトからは参照されない（生成済みの Dao は写しで取り込んでいる）。
+        #   疎通の DAOSQLGEN がテンプレートとして読むので、DaoGen_Tool の対象だけを回せば、生成が通るかを確かめられる。
+        #   **バッチへの対応付けは、分類の後で行う**（同じバッチで建てる DeployZip を外すため。下の「DaoGen のテンプレート」）
+        $daoGenTemplate = $f
+        $kind = "DaoGen のテンプレート（DaoGen_Tool の対象）"
+    }
     else
     {
         $hits = @($batDirs | Where-Object { $_.Dir -eq $lang -and $lf.StartsWith($_.Path) })
@@ -444,6 +478,21 @@ $listSmoke = @(& (Join-Path $progRoot "3_SmokeTest.ps1")   -Lang Both -List -Pas
 # **どの検証にも載っていないバッチは、手で実行する。**
 #   例: y_Build_TestCode_SecGUI.bat（GUI の確認ツール。1/2/3 のどれも呼ばない）
 #   黙って落とすと「回す必要が無い」と読めてしまう。
+# **DaoGen のテンプレート**（#674）。ツールを建てるバッチで、ビルドは 2 件（net48・core）だけ。
+#   **疎通は DaoGen_Tool の対象だけに絞る**（同じバッチで建てる DeployZip は、テンプレートを読まない）。
+#   **ツールのソースにも触れていて、そのバッチが既に選ばれていれば、絞らない**（そのバッチの対象を全部回す）。
+if ($daoGenTemplate)
+{
+    foreach ($b in @("4_Build_Framework_Tool.bat", "4_Build_Framework_ToolCore.bat"))
+    {
+        if (-not $bats.ContainsKey("CS|$b"))
+        {
+            $bats["CS|$b"] = $daoGenTemplate
+            $smokeNarrow["CS|$b"] = '^DaoGen_Tool '
+        }
+    }
+}
+
 $known = @{}
 foreach ($x in @($listBuild + $listTest + $listSmoke)) { $known["$($x.Dir)|$($x.Bat)"] = $true }
 foreach ($key in @($bats.Keys))
@@ -454,9 +503,14 @@ foreach ($key in @($bats.Keys))
     }
 }
 
-function Select-ByBat($list)
+function Select-ByBat($list, [switch] $Smoke)
 {
     return @($list | Where-Object { $bats.ContainsKey("$($_.Dir)|$($_.Bat)") -and -not $full.ContainsKey($_.Dir) } |
+             Where-Object {
+                 # 疎通で、バッチの対象の一部だけを回すとき（#674）
+                 $key = "$($_.Dir)|$($_.Bat)"
+                 (-not $Smoke) -or (-not $smokeNarrow.ContainsKey($key)) -or ($_.Name -match $smokeNarrow[$key])
+             } |
              ForEach-Object { $_.Name })
 }
 
@@ -466,7 +520,7 @@ $plan = @{}
 foreach ($no in @(1, 3))
 {
     $list  = $(if ($no -eq 1) { $listBuild } else { $listSmoke })
-    $names = Select-ByBat $list
+    $names = Select-ByBat $list -Smoke:($no -eq 3)
     $langs = @($full.Keys)
 
     # **クリーンのバッチに触れた言語は、ビルドだけ通し**（#672）

@@ -24,6 +24,8 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（OAuth2AndOIDCClient.cs から処理区分ごとに分割した）
+//*  2026/11/08  玄人 幸道         Refresh・Revoke・Introspect に、クライアント認証の方式を問わない版を追加（private_key_jwt・tls_client_auth。#676）
+//*  2026/11/08  玄人 幸道         空の値の検査を SetClientAuthentication に移した（#678）
 //**********************************************************************************
 
 using System;
@@ -78,6 +80,35 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // HttpResponseMessage
             httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+        }
+
+        /// <summary>Refresh Tokenを使用してAccess Tokenを更新（クライアント認証の方式を問わない）</summary>
+        /// <param name="tokenEndpointUri">tokenEndpointUri</param>
+        /// <param name="client_id">client_id</param>
+        /// <param name="client_secret">client_secret（client_secret_basic / client_secret_postで使用）</param>
+        /// <param name="client_assertion">client_assertion（private_key_jwt / client_secret_jwtで使用）</param>
+        /// <param name="refreshToken">refreshToken</param>
+        /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods（既定値は無い。必ず指定する）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>
+        /// **private_key_jwt と tls_client_auth でも更新できる**（#676。既存の版は Basic だけ）。
+        /// 認証の付け方は SetClientAuthentication（GetAccessTokenByCodeAsync のクライアント認証の方式を問わない版と同じ）。
+        /// client_id は、認証方式が要求するときだけ本文に載せる（client_secret_post / tls_client_auth）。
+        /// 既存の版の振る舞いは変えていない。
+        /// </remarks>
+        public static async Task<string> UpdateAccessTokenByRefreshTokenAsync(
+            Uri tokenEndpointUri, string client_id, string client_secret, string client_assertion, string refreshToken,
+            OAuth2AndOIDCEnum.AuthMethods authMethod)
+        {
+            // RFC 6749 §6
+            Dictionary<string, string> body = new Dictionary<string, string>
+            {
+                { OAuth2AndOIDCConst.grant_type, OAuth2AndOIDCConst.RefreshTokenGrantType },
+                { OAuth2AndOIDCConst.RefreshToken, refreshToken },
+            };
+
+            return await OAuth2AndOIDCClient.PostWithClientAuthenticationAsync(
+                tokenEndpointUri, body, client_id, client_secret, client_assertion, authMethod).ConfigureAwait(false);
         }
 
         #endregion
@@ -144,6 +175,29 @@ namespace Touryo.Infrastructure.Framework.Authentication
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
+        /// <summary>Revokeエンドポイントで、Tokenを無効化する（クライアント認証の方式を問わない）。</summary>
+        /// <param name="revokeTokenEndpointUri">RevokeエンドポイントのUri</param>
+        /// <param name="client_id">client_id</param>
+        /// <param name="client_secret">client_secret（client_secret_basic / client_secret_postで使用）</param>
+        /// <param name="client_assertion">client_assertion（private_key_jwt / client_secret_jwtで使用）</param>
+        /// <param name="token">token</param>
+        /// <param name="token_type_hint">token_type_hint（空なら送らない）</param>
+        /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods（既定値は無い。必ず指定する）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>
+        /// **private_key_jwt と tls_client_auth でも取り消せる**（#676。既存の版は Basic・Post だけ）。
+        /// 認証の付け方は SetClientAuthentication。token_type_hint は任意（RFC 7009 §2.1）なので、空なら送らない。
+        /// 既存の版の振る舞いは変えていない。
+        /// </remarks>
+        public static async Task<string> RevokeTokenAsync(
+            Uri revokeTokenEndpointUri, string client_id, string client_secret, string client_assertion,
+            string token, string token_type_hint, OAuth2AndOIDCEnum.AuthMethods authMethod)
+        {
+            return await OAuth2AndOIDCClient.PostWithClientAuthenticationAsync(
+                revokeTokenEndpointUri, OAuth2AndOIDCClient.CreateTokenBody(token, token_type_hint),
+                client_id, client_secret, client_assertion, authMethod).ConfigureAwait(false);
+        }
+
         #endregion
 
         #region Introspect（RFC 7662）
@@ -204,6 +258,77 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             // HttpResponseMessage
             httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
+        }
+
+        /// <summary>Introspectエンドポイントで、Tokenの状態を照会する（クライアント認証の方式を問わない）。</summary>
+        /// <param name="introspectTokenEndpointUri">IntrospectエンドポイントのUri</param>
+        /// <param name="client_id">client_id</param>
+        /// <param name="client_secret">client_secret（client_secret_basic / client_secret_postで使用）</param>
+        /// <param name="client_assertion">client_assertion（private_key_jwt / client_secret_jwtで使用）</param>
+        /// <param name="token">token</param>
+        /// <param name="token_type_hint">token_type_hint（空なら送らない）</param>
+        /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods（既定値は無い。必ず指定する）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>
+        /// **private_key_jwt と tls_client_auth でも照会できる**（#676。既存の版は Basic・Post だけ）。
+        /// 認証の付け方は SetClientAuthentication。token_type_hint は任意（RFC 7662 §2.1）なので、空なら送らない。
+        /// 既存の版の振る舞いは変えていない。
+        /// </remarks>
+        public static async Task<string> IntrospectTokenAsync(
+            Uri introspectTokenEndpointUri, string client_id, string client_secret, string client_assertion,
+            string token, string token_type_hint, OAuth2AndOIDCEnum.AuthMethods authMethod)
+        {
+            return await OAuth2AndOIDCClient.PostWithClientAuthenticationAsync(
+                introspectTokenEndpointUri, OAuth2AndOIDCClient.CreateTokenBody(token, token_type_hint),
+                client_id, client_secret, client_assertion, authMethod).ConfigureAwait(false);
+        }
+
+        #endregion
+
+        #region 共通（#676）
+
+        /// <summary>Revoke・Introspect の本文（token と、空でなければ token_type_hint）</summary>
+        private static Dictionary<string, string> CreateTokenBody(string token, string token_type_hint)
+        {
+            Dictionary<string, string> body = new Dictionary<string, string>
+            {
+                { OAuth2AndOIDCConst.token, token },
+            };
+
+            if (!string.IsNullOrEmpty(token_type_hint))
+            {
+                body.Add(OAuth2AndOIDCConst.token_type_hint, token_type_hint);
+            }
+
+            return body;
+        }
+
+        /// <summary>本文にクライアント認証を付けて POST する（SetClientAuthentication。client_id は方式が要求するときだけ）</summary>
+        /// <remarks>
+        /// 空では認証として成り立たない値は、SetClientAuthentication が送る前に ArgumentNullException にする
+        /// （jwt 系は client_assertion、client_secret_* と tls_client_auth は client_id。client_secret は検査しない）。
+        /// 検査は #676 でここに入れ、#678 で SetClientAuthentication に移した（PAR・CIBA・DPoP と同じ検査になる）。
+        /// </remarks>
+        private static async Task<string> PostWithClientAuthenticationAsync(
+            Uri endpointUri, Dictionary<string, string> body,
+            string client_id, string client_secret, string client_assertion,
+            OAuth2AndOIDCEnum.AuthMethods authMethod)
+        {
+            HttpRequestMessage httpRequestMessage = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = endpointUri,
+            };
+
+            // 認証情報の付加（送る前に方式と値を確かめる。未知の方式は ArgumentException、空の値は ArgumentNullException で、送らない）
+            OAuth2AndOIDCClient.SetClientAuthentication(
+                httpRequestMessage, body, client_id, client_secret, client_assertion, authMethod, false);
+
+            httpRequestMessage.Content = new FormUrlEncodedContent(body);
+
+            HttpResponseMessage httpResponseMessage =
+                await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 

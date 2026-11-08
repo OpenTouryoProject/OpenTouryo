@@ -35,6 +35,26 @@ Open 棟梁は、.NET Framework と .NET Core をベースとしたアプリケ�
 ### Open 棟梁の配置
 「root」フォルダを、C ドライブ直下にコピーしてください。C ドライブ直下以外にコピーすると、Windows のファイルパスの最大文字長の制限により、ビルドに失敗することがあります。
 
+### 関連リポジトリの場所（環境変数）
+汎用認証サイト（MultiPurposeAuthSite）のスタブを使う E2E や、LocalServicesOnDocker を使うクロス DB のテストは、**それらのリポジトリの場所を、環境変数から読みます**（#652）。
+
+| 環境変数 | リポジトリ | 使うもの |
+|---|---|---|
+| `MPAS_PATH` | MultiPurposeAuthSite | `programs\CS\Sample4SpRp` のスタブと E2E（`-MpasRoot`） |
+| `LSOD_PATH` | LocalServicesOnDocker | `programs\2_RunAllTests.ps1 -CrossDb / -Coverage`（`-LocalServicesDir`） |
+
+一覧（ほかのリポジトリが使う `OTR_PATH` などを含む）と既定の場所は `files\tools\PowerShell\_RepoPaths.csv`（雛形）にあります。**手元の配置が雛形と違うなら、同じフォルダに `RepoPaths.csv` として写して直してください**（`.gitignore` の対象。在れば雛形より優先します）。登録は次のとおりです（ユーザーの環境変数）。
+
+```powershell
+cd root\files\tools\PowerShell
+.\Register-RepoPaths.ps1                                  # どうなるかを見るだけ
+Copy-Item .\_RepoPaths.csv .\RepoPaths.csv              # 手元の配置に直すとき（写して DefaultPath を直す）
+.\Register-RepoPaths.ps1 -Apply                           # RepoPaths.csv（無ければ _RepoPaths.csv）の既定の場所で登録する
+```
+
+- **引数で渡せば、引数が勝ちます**（`-MpasRoot` / `-LocalServicesDir`）。**環境変数が無ければ、`RepoPaths.csv`（無ければ `_RepoPaths.csv`）の既定の場所を、そのフォルダが在るときだけ使います**。雛形の既定を使ったときは、警告を出します
+- 登録した後は、コンソールや Visual Studio を開き直してください（開いているプロセスには反映されません）
+
 ### サンプルデータベースのセットアップ
 
 #### [LocalServicesOnDocker](https://github.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker)を活用

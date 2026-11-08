@@ -40,6 +40,7 @@
 //*                                DCR（RFC 7591 / 7592）のクライアント側を追加（#634）
 //*  2026/10/22  玄人 幸道         処理区分ごとに partial クラスへ分割した（OAuth2AndOIDCClient.*.cs）
 //*  2026/10/22  玄人 幸道         公開情報を取りに行く GET を GetStringAsync（internal）に切り出した
+//*  2026/11/08  玄人 幸道         SetClientAuthentication で、空では認証として成り立たない値を送る前に ArgumentNullException にした（#678）
 //**********************************************************************************
 
 using System;
@@ -187,14 +188,44 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// HttpClientプロパティはstaticなので、差し替えはプロセス全体に効く。
         /// 1つのプロセスが複数のクライアントとして振る舞い、一部だけmTLSという構成では、
         /// 差し替えの順序に注意する。
+        ///
+        /// **空では認証として成り立たない値は、送る前に ArgumentNullException にする**（#676・#678）。
+        /// 空のまま送ると、認可サーバに断られるまで気付けないため。
+        /// 例外にするのは、本当にあり得ない組合せに絞る（組めるはずのプロファイルを塞がない）。
+        /// - private_key_jwt / client_secret_jwt：client_assertion（アサーションが資格情報そのもの。RFC 7523 §2.2）
+        /// - client_secret_basic / client_secret_post：client_id（RFC 6749 §2.3.1）
+        /// - tls_client_auth：client_id（RFC 8705 §2）
+        /// - alwaysSetClientId（PAR）：方式によらず client_id（RFC 9126 §2.1）
+        /// client_secret は検査しない（秘密を持たない公開クライアントが client_id だけを送る使い方がある。RFC 6749 §4.1.3）。
+        /// 知らない方式は、値を見る前に ArgumentException にする。
         /// </remarks>
         private static void SetClientAuthentication(
             HttpRequestMessage httpRequestMessage, Dictionary<string, string> body,
             string client_id, string client_secret, string client_assertion,
             OAuth2AndOIDCEnum.AuthMethods authMethod, bool alwaysSetClientId)
         {
+            // 方式と、空では成り立たない値を先に確かめる（本文・ヘッダに手を付ける前に）
+            if (authMethod == OAuth2AndOIDCEnum.AuthMethods.client_secret_basic
+                || authMethod == OAuth2AndOIDCEnum.AuthMethods.client_secret_post
+                || authMethod == OAuth2AndOIDCEnum.AuthMethods.tls_client_auth)
+            {
+                if (string.IsNullOrEmpty(client_id)) throw new ArgumentNullException(nameof(client_id));
+            }
+            else if (authMethod == OAuth2AndOIDCEnum.AuthMethods.private_key_jwt
+                || authMethod == OAuth2AndOIDCEnum.AuthMethods.client_secret_jwt)
+            {
+                if (string.IsNullOrEmpty(client_assertion)) throw new ArgumentNullException(nameof(client_assertion));
+            }
+            else
+            {
+                throw new ArgumentException(
+                    PublicExceptionMessage.ARGUMENT_INCORRECT, nameof(authMethod));
+            }
+
             if (alwaysSetClientId)
             {
+                // PAR（RFC 9126 §2.1）。basic・post・tls は上で確かめ済みなので、実際に効くのは jwt 系のとき
+                if (string.IsNullOrEmpty(client_id)) throw new ArgumentNullException(nameof(client_id));
                 body[OAuth2AndOIDCConst.client_id] = client_id;
             }
 
@@ -224,6 +255,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
             else
             {
+                // 知らない方式は上で弾くので、ここには来ない（上の分岐と、方式を足すときの漏れの備え）
                 throw new ArgumentException(
                     PublicExceptionMessage.ARGUMENT_INCORRECT, nameof(authMethod));
             }

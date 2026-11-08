@@ -25,13 +25,15 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（OAuth2AndOIDCClient.cs から処理区分ごとに分割した）
 //*  2026/11/07  玄人 幸道         アサーションと code_verifier を一緒に送る GetAccessTokenByCodeWithPkceAsync を追加（#670）
+//*  2026/11/08  玄人 幸道         クライアント認証の方式を問わない GetAccessTokenByCodeAsync を追加（private_key_jwt・tls_client_auth。#676）。
+//*                                型の並びが同じになるため、private の本体を GetAccessTokenByCodeCoreAsync に改名した
+//*  2026/11/08  玄人 幸道         既存の GetAccessTokenByCodeAsync が redirect_uri を HtmlEncode して送っていたのをやめた（受けた値のまま送る。#677）
 //**********************************************************************************
 
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-using System.Web;
 using System.Net.Http;
 
 using Touryo.Infrastructure.Public.Str;
@@ -59,7 +61,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             Uri tokenEndpointUri, string client_id, string client_secret, string redirect_uri, string code,
             OAuth2AndOIDCEnum.AuthMethods authMethod = OAuth2AndOIDCEnum.AuthMethods.client_secret_basic)
         {
-            return await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
+            return await OAuth2AndOIDCClient.GetAccessTokenByCodeCoreAsync(
                 tokenEndpointUri, client_id, client_secret, redirect_uri, code, null, null, authMethod);
         }
 
@@ -78,7 +80,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             Uri tokenEndpointUri, string client_id, string client_secret, string redirect_uri, string code, string code_verifier,
             OAuth2AndOIDCEnum.AuthMethods authMethod = OAuth2AndOIDCEnum.AuthMethods.client_secret_post)
         {
-            return await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
+            return await OAuth2AndOIDCClient.GetAccessTokenByCodeCoreAsync(
                 tokenEndpointUri, client_id, client_secret, redirect_uri, code, code_verifier, null, authMethod);
         }
 
@@ -99,7 +101,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             Uri tokenEndpointUri, string redirect_uri, string code, string assertion,
             OAuth2AndOIDCEnum.AuthMethods authMethod = OAuth2AndOIDCEnum.AuthMethods.private_key_jwt)
         {
-            return await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
+            return await OAuth2AndOIDCClient.GetAccessTokenByCodeCoreAsync(
                 tokenEndpointUri, null, null, redirect_uri, code, null, assertion, authMethod);
         }
 
@@ -138,9 +140,63 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 throw new ArgumentNullException(nameof(assertion));
             }
 
-            return await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
+            return await OAuth2AndOIDCClient.GetAccessTokenByCodeCoreAsync(
                 tokenEndpointUri, null, null, redirect_uri, code, code_verifier, assertion,
                 OAuth2AndOIDCEnum.AuthMethods.private_key_jwt);
+        }
+
+        /// <summary>
+        /// code（と code_verifier）からAccess Tokenを取得する（クライアント認証の方式を問わない）。
+        /// </summary>
+        /// <param name="tokenEndpointUri">TokenエンドポイントのUri</param>
+        /// <param name="client_id">client_id</param>
+        /// <param name="client_secret">client_secret（client_secret_basic / client_secret_postで使用）</param>
+        /// <param name="client_assertion">client_assertion（private_key_jwt / client_secret_jwtで使用）</param>
+        /// <param name="redirect_uri">redirect_uri</param>
+        /// <param name="code">code</param>
+        /// <param name="code_verifier">code_verifier（PKCE。空なら送らない）</param>
+        /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods（既定値は無い。必ず指定する）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>
+        /// **private_key_jwt と tls_client_auth でも引き換えられる**（#676）。
+        /// FAPI 2.0 Security Profile（5.3.2.1 の 6）は、認可サーバがクライアントを MTLS か private_key_jwt で認証することを求める。
+        ///
+        /// - 認証の付け方は SetClientAuthentication（PAR・CIBA と同じ）。client_id は、認証方式が要求するときだけ本文に載せる
+        ///   （client_secret_post / tls_client_auth）
+        /// - アサーションは RFC 7523 §2.2 の client_assertion_type ＋ client_assertion だけで送る
+        ///   （アサーションを受ける既存の版は、従来の assertion も送る。この版は送らない）
+        /// - **code_verifier が空なら送らない**（PKCE を使わない引き換えにも使える）
+        /// - **redirect_uri は、受けた値をそのまま送る**（RFC 6749 §4.1.3。認可要求と同じ値であること。既存の版も同じ。#677）
+        /// - **空では認証として成り立たない値は、送る前に ArgumentNullException**（jwt 系は client_assertion、client_secret_* と
+        ///   tls_client_auth は client_id）。client_secret は検査しない（公開クライアントが client_id だけを送る使い方がある）
+        /// - tls_client_auth では、クライアント証明書を載せた HttpClient を HttpClient プロパティに設定しておく
+        /// - **引数の順は、既存の版と違う**（client_id・client_secret・client_assertion を先に置く。GetAccessTokenByCibaAsync と同じ）。
+        ///   PKCE を受ける既存の版（code_verifier を 6 番目に受ける版）と取り違えないよう、名前付き引数で書くことを勧める
+        /// - PKCE を受けない形を同じ名前で足さなかったのは、既存の (Uri, string × 5, AuthMethods) の版と型の並びが同じになるため
+        /// - 既存の版の振る舞いは変えていない
+        /// </remarks>
+        public static async Task<string> GetAccessTokenByCodeAsync(
+            Uri tokenEndpointUri, string client_id, string client_secret, string client_assertion,
+            string redirect_uri, string code, string code_verifier,
+            OAuth2AndOIDCEnum.AuthMethods authMethod)
+        {
+            // body（RFC 6749 §4.1.3）
+            Dictionary<string, string> body = new Dictionary<string, string>
+            {
+                { OAuth2AndOIDCConst.grant_type, OAuth2AndOIDCConst.AuthorizationCodeGrantType },
+                { OAuth2AndOIDCConst.code, code },
+                { OAuth2AndOIDCConst.redirect_uri, redirect_uri },
+            };
+
+            // PKCE（RFC 7636 §4.5）
+            if (!string.IsNullOrEmpty(code_verifier))
+            {
+                body.Add(OAuth2AndOIDCConst.code_verifier, code_verifier);
+            }
+
+            // 認証情報を付けて送る（OAuth2AndOIDCClient.TokenManagement.cs）
+            return await OAuth2AndOIDCClient.PostWithClientAuthenticationAsync(
+                tokenEndpointUri, body, client_id, client_secret, client_assertion, authMethod).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -155,7 +211,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="assertion">assertion</param>
         /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods</param>
         /// <returns>結果のJSON文字列</returns>
-        private static async Task<string> GetAccessTokenByCodeAsync(Uri tokenEndpointUri,
+        /// <remarks>
+        /// redirect_uri は、受けた値をそのまま送る（RFC 6749 §4.1.3。認可要求と同じ値であること）。
+        /// フォームのエンコードは FormUrlEncodedContent が行う。
+        /// 以前は HtmlEncode してから送っており、&amp; などを含む redirect_uri では値が変わっていた（#677）。
+        /// </remarks>
+        private static async Task<string> GetAccessTokenByCodeCoreAsync(Uri tokenEndpointUri,
             string client_id, string client_secret, string redirect_uri,
             string code, string code_verifier, string assertion,
             OAuth2AndOIDCEnum.AuthMethods authMethod = OAuth2AndOIDCEnum.AuthMethods.client_secret_basic)
@@ -181,7 +242,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 {
                     { OAuth2AndOIDCConst.grant_type, OAuth2AndOIDCConst.AuthorizationCodeGrantType },
                     { OAuth2AndOIDCConst.code, code },
-                    { OAuth2AndOIDCConst.redirect_uri, HttpUtility.HtmlEncode(redirect_uri) },
+                    { OAuth2AndOIDCConst.redirect_uri, redirect_uri },
                 };
 
                 // 認証情報の付加
@@ -214,7 +275,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                         { OAuth2AndOIDCConst.code, code },
                         { OAuth2AndOIDCConst.client_id, client_id },
                         { OAuth2AndOIDCConst.code_verifier, code_verifier },
-                        { OAuth2AndOIDCConst.redirect_uri, HttpUtility.HtmlEncode(redirect_uri) },
+                        { OAuth2AndOIDCConst.redirect_uri, redirect_uri },
                     });
             }
             else if (!string.IsNullOrEmpty(assertion) &&
@@ -234,7 +295,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     { OAuth2AndOIDCConst.assertion, assertion },
                     { OAuth2AndOIDCConst.client_assertion_type, OAuth2AndOIDCConst.JwtBearerClientAssertionType },
                     { OAuth2AndOIDCConst.client_assertion, assertion },
-                    { OAuth2AndOIDCConst.redirect_uri, HttpUtility.HtmlEncode(redirect_uri) },
+                    { OAuth2AndOIDCConst.redirect_uri, redirect_uri },
                 };
 
                 // **PKCE を併用するなら、code_verifier も送る**（RFC 7636 §4.5。#670）。
