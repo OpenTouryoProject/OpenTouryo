@@ -38,6 +38,18 @@
   ・NuGet パッケージに入るか（Frameworks/Infrastructure 配下か）
 -->
 
+## チェック
+
+<!-- 該当するものだけで構いません。 -->
+
+- [ ] **秘密情報を差分に含めていない**（接続文字列のパスワード・鍵・トークン）
+- [ ] 新規の `.cs` にヘッダ コメント（Copyright ブロック・クラス名・日本語名・更新履歴）を付けた（CODING.md）
+- [ ] 既存の `.cs` の更新履歴に 1 行追記した
+- [ ] 期待値の変更（Golden の `Result*.txt`・テストの削除・`Ignore` の追加・`[Basis]` の削除）を含むなら、コミットに `Expectation-Change:` を付けた（QUALITY.md 3 節）
+- [ ] バグの修正（`fixed #NNN`）なら、コミットに `Found-By:` を付けた（QUALITY.md 5 節）
+- [ ] Golden の揺れ（日時・スレッド ID などだけの書き換え）をコミットに含めていない
+- [ ] `.ps1` を変えたなら、Windows PowerShell 5.1 でも動かした。`.bat` は ASCII のみ（CODING.md 4・5 節）
+
 ---
 
 <!--

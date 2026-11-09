@@ -113,20 +113,23 @@ CPU とメモリの使用状況を一定間隔で表示します。
 .\Register-RepoPaths.ps1                                  # 見るだけ
 Copy-Item .\_RepoPaths.csv .\RepoPaths.csv              # 手元の配置に直すとき（写して DefaultPath を直す）
 .\Register-RepoPaths.ps1 -Apply                           # RepoPaths.csv（無ければ _RepoPaths.csv）の既定の場所で登録する
-.\Register-RepoPaths.ps1 -Only MPAS_PATH,LSOD_PATH -Apply  # 絞る（CSV に無い名前は警告する）
+.\Register-RepoPaths.ps1 -Only OT_MPAS_PATH,OT_LSOD_PATH -Apply  # 絞る（CSV に無い名前は警告する）
 .\Register-RepoPaths.ps1 -Csv <パス> -Apply               # 別の CSV で登録する
 ```
 
 - **フォルダが無い行は登録しない**（打ち間違い・まだ clone していないリポジトリ）
 - **雛形（`_RepoPaths.csv`）の既定を使ったとき・雛形で登録するときは、警告を出す**（手元の配置と合っている保証が無い）
 - **登録した後は、コンソールや Visual Studio を開き直す**（開いているプロセスには反映されない）
-- **変数名は、リポジトリごとに略号を決める**（`OTR_PATH`・`MPAS_PATH`・`LSOD_PATH` など）。値はリポジトリの直下（`.git` のあるフォルダ）で、末尾に `\` を付けない
+- **変数名は `OT_<略号>_PATH`。略号はリポジトリごとに決める**（`OT_OTR_PATH`・`OT_MPAS_PATH`・`OT_LSOD_PATH` など）。値はリポジトリの直下（`.git` のあるフォルダ）で、末尾に `\` を付けない
+  - 頭の `OT_` は、Open棟梁 の関連の変数の印である（`OT_RESOURCE_ROOT` と同じ頭。環境変数の一覧で並ぶ）
+  - **2026/11/09 に、頭の `OT_` の無い名前（`OTR_PATH` など）から変えた**（#652）。古い名前は読まない。古い名前だけが登録されていれば、`Resolve-RepoPath` が警告を出す。
+    `Register-RepoPaths.ps1 -Apply` で登録し直し、表示される古い名前を消す。手元用の `RepoPaths.csv` も、`Variable` の列を直す
 - **docker compose（`${...}`）からも使える**よう、変数名は英数字と `_` だけにする
 - **共有のリソース（`C:\root\files`）は対象外**（開発者向けのリポジトリでは、昔からの慣習で固定のパス）
 
 ```powershell
 # 使う側（例：Sample4SpRp\Stub\StubCompose.ps1）
 . (Join-Path <root\files\tools\PowerShell> 'RepoPath.ps1')
-$MpasRoot = Resolve-RepoPath -Variable MPAS_PATH -Argument $MpasRoot -ArgumentName '-MpasRoot'
+$MpasRoot = Resolve-RepoPath -Variable OT_MPAS_PATH -Argument $MpasRoot -ArgumentName '-MpasRoot'
 if (-not $MpasRoot) { throw '...' }
 ```

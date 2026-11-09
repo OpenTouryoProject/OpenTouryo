@@ -41,7 +41,7 @@
     対象名の部分一致で絞る（複数可）
 
 .PARAMETER MpasRoot
-    MultiPurposeAuthSite のリポジトリの場所。**省けば、環境変数 MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**
+    MultiPurposeAuthSite のリポジトリの場所。**省けば、環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**
     （root\files\tools\PowerShell\RepoPath.ps1。#652）。どれを使ったかを表示する。
 
 .PARAMETER StubAppSettings
@@ -65,7 +65,7 @@
      日時        更新者            内容
      ----------  ----------------  -------------------------------------------------
      2026/11/04  玄人 幸道         新規（#649）
-     2026/11/07  玄人 幸道         MPAS の場所を、引数 ＞ 環境変数 MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定 で決める（#652）
+     2026/11/07  玄人 幸道         MPAS の場所を、引数 ＞ 環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定 で決める（#652）
 #>
 [CmdletBinding()]
 param(
@@ -432,9 +432,9 @@ if (@($targets | Where-Object { $_.Kind -eq 'WebForms' }).Count -gt 0)
 $appSettings = $StubAppSettings
 if ([string]::IsNullOrEmpty($appSettings))
 {
-    # **MPAS の場所は、引数 ＞ 環境変数 MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**（#652）
+    # **MPAS の場所は、引数 ＞ 環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**（#652）
     . (Join-Path $progRoot '..\files\tools\PowerShell\RepoPath.ps1')
-    $MpasRoot = Resolve-RepoPath -Variable MPAS_PATH -Argument $MpasRoot -ArgumentName '-MpasRoot'
+    $MpasRoot = Resolve-RepoPath -Variable OT_MPAS_PATH -Argument $MpasRoot -ArgumentName '-MpasRoot'
     $appSettings = $(if ($MpasRoot) { Join-Path $MpasRoot 'root\programs\MultiPurposeAuthSiteCore\MultiPurposeAuthSiteCore\appsettings.json' } else { '' })
 }
 $password = $null

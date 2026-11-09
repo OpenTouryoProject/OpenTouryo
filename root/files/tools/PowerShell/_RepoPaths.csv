@@ -1,7 +1,7 @@
 ﻿Variable,Repository,DefaultPath,UsedBy
-OTR_PATH,OpenTouryo,C:\OpenTouryo,汎用認証サイトの mpas_dev.bat・OpenTouryoCodingAgentAssets の AGENTS.md
-MPAS_PATH,MultiPurposeAuthSite,C:\MultiPurposeAuthSite,Sample4SpRp の StubCompose.ps1・E2E（-MpasRoot）・汎用認証サイトの mpas_dev.bat
-LSOD_PATH,LocalServicesOnDocker,C:\LocalServicesOnDocker,2_RunAllTests.ps1 -CrossDb / -Coverage（-LocalServicesDir）
-OTRWIKI_PATH,OpenTouryo.wiki,C:\OpenTouryo.wiki,OpenTouryoDocuments・OpenTouryoCodingAgentAssets の AGENTS.md
-OTRDOC_PATH,OpenTouryoDocuments,C:\OpenTouryoDocuments,OpenTouryoCodingAgentAssets の AGENTS.md
-DNDIWIKI_PATH,NetDevInfraWiki.wiki,C:\NetDevInfraWiki.wiki,NetDevInfraWiki の tools\README.md
+OT_OTR_PATH,OpenTouryo,C:\OpenTouryo,汎用認証サイトの mpas_dev.bat・OpenTouryoCodingAgentAssets の AGENTS.md
+OT_MPAS_PATH,MultiPurposeAuthSite,C:\MultiPurposeAuthSite,Sample4SpRp の StubCompose.ps1・E2E（-MpasRoot）・汎用認証サイトの mpas_dev.bat
+OT_LSOD_PATH,LocalServicesOnDocker,C:\LocalServicesOnDocker,2_RunAllTests.ps1 -CrossDb / -Coverage（-LocalServicesDir）
+OT_OTRWIKI_PATH,OpenTouryo.wiki,C:\OpenTouryo.wiki,OpenTouryoDocuments・OpenTouryoCodingAgentAssets の AGENTS.md
+OT_OTRDOC_PATH,OpenTouryoDocuments,C:\OpenTouryoDocuments,OpenTouryoCodingAgentAssets の AGENTS.md
+OT_DNDIWIKI_PATH,NetDevInfraWiki.wiki,C:\NetDevInfraWiki.wiki,NetDevInfraWiki の tools\README.md

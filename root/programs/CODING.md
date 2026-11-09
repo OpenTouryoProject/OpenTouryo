@@ -127,23 +127,35 @@ throw new ArgumentException("Length is less than 128 bits.", "cek");   // 引数
 
 ## 4. bat ファイルの文字コード
 
-**非 ASCII 文字（日本語）を含む `.bat` は UTF-8 BOM 付きにする。**
+**bat は、非 ASCII を一切書かない。** コメントも `echo` も英語にする。BOM も付けない（ASCII なら不要で、差分ノイズになるだけ）。
+**リポジトリのすべての bat が対象**である（#671。汎用認証サイトの方針に揃えた）。日本語の説明は、そのフォルダの `README.md` などに書く。
+**例外は、外部プログラムへ渡す引数が日本語の bat だけ**（下の「例外」）。
 
-BOM が無いと、cmd.exe がバッチをバイト オフセットで読み進める際に文字境界がずれ、
+- **新しく書く bat も同じ。** 重要な bat には、先頭に `NOTE: keep this file pure ASCII.` と理由を書く（`z_Common.bat`・`NuGet\*.bat` と同じ）
+- **英語にするときは、`if ( … )` などの括弧の中に半角の `)` を書かない**（`echo` でも `rem` でも、そこでブロックが閉じる）。
+  日本語の全角の括弧は問題にならなかったので、**訳すときに踏みやすい**
+- 確かめるには、非 ASCII のバイトを含む bat を探す（例外の 2 本だけが出るのが正）
+
+```powershell
+git ls-files '*.bat' | Where-Object { [IO.File]::ReadAllBytes($_) | Where-Object { $_ -gt 0x7F } | Select-Object -First 1 }
+```
+
+### なぜ ASCII にするか
+
+cmd.exe はバッチを**バイト オフセットで読み進める**ため、非 ASCII があると、コンソールのコード ページ次第で文字境界がずれ、
 **`@rem` コメントの途中から先がコマンドとして実行される**ことがある
 （`'xxx' は、内部コマンドまたは外部コマンド…として認識されていません` が出る）。
+
+以前は「非 ASCII を含む bat は UTF-8 BOM 付きにする」としていた。BOM で減りはするが、下のとおり保証にはならない。
 
 | BOM | 起動 CP=932 | 起動 CP=65001 |
 |---|---|---|
 | なし | エラーなし | **エラーあり（間欠）** |
-| **あり** | **エラーなし** | **エラーなし** |
+| あり | エラーなし（**ただし、対話コンソールで出ることがある**。下記） | エラーなし |
 
 - 実害は「紛らわしいエラー表示」に留まり、**後続の実コマンドは飛ばない**。
-- 純粋に ASCII のみの bat に BOM は不要（差分ノイズになるだけ）。
 
-  **日本語を書き足すときに BOM の有無を確認すること。**
-
-`root/programs/CS/` 配下で非 ASCII を含む bat は、すべて BOM 付きになっている。
+#671 の時点（2026/11/09）で、例外の 2 本を除くすべての bat を ASCII にした（BOM だけが非 ASCII だった 12 本は BOM を外し、コメント・`echo` に日本語があった 8 本は英語にした）。
 
 ### BOM は万能ではない。危ない bat は ASCII のみにする（#532）
 
@@ -167,12 +179,9 @@ BOM が無いと、cmd.exe がバッチをバイト オフセットで読み進�
 （#531 でも、エラー表示の後で push 自体は成功していた）。
 とはいえ、公開作業中に大量のエラーが出るのは危険である。
 
-> **重要な bat（リリース・公開に使うもの）は、非 ASCII を一切書かない。**
-> コメントも英語にする。ASCII のみなら BOM は不要で、
-> どのコードページから起動しても壊れない。
->
-> `root\programs\CS\NuGet\*.bat` と `root\programs\CS\0_Release4Nuget.bat` は
-> この方針にしてある（各ファイルの先頭に `NOTE: keep this file pure ASCII` と記載）。
+> **#532 では、重要な bat（リリース・公開に使うもの）だけを ASCII にした。**
+> `root\programs\CS\NuGet\*.bat` と `root\programs\CS\0_Release4Nuget.bat`（各ファイルの先頭に `NOTE: keep this file pure ASCII` と記載）。
+> #671 で、これをすべての bat に広げた（上の 4 節の冒頭）。
 
 **日本語を `echo` する場合も同じ。**
 cmd.exe は BOM 付き UTF-8 でも、内容をコンソールのコードページで解釈するため、
@@ -185,10 +194,11 @@ CP=932 では文字化けする（`chcp` を入れても、それ自体が解析
 
 | 非 ASCII の役割 | 対処 |
 |---|---|
-| コメント・`echo` | **ASCII 化する。** リリース・公開に使う bat は必ず |
+| コメント・`echo` | **ASCII 化する**（すべての bat。#671） |
 | **外部プログラムへ渡す引数** | **消せない。** コンソールのコードページに合わせて符号化する（この環境では **Shift-JIS・BOM なし**） |
 
-`root\programs\bak\BackupCICDLog\z_GrepResult*.bat` がこれに当たる。
+`root\programs\bak\BackupCICDLog\z_GrepResult1.bat`・`z_GrepResult2.bat` がこれに当たる（**リポジトリで非 ASCII が残る bat は、この 2 本だけ**）。
+`z_GrepResult3.bat` は検索キーワードが ASCII（`warning`）なので、#671 で ASCII にした。
 
 ```bat
 rem このファイルは、SJISでないと動かない。
@@ -201,7 +211,7 @@ sakura -GREPMODE -GKEY="ビルドに" -GFOLDER="." -GFILE="*.log" -GOPT=P -GCODE
 文字化けしたキーワードが渡り、grep が何も見つけない。**
 
 **エラーにならず、静かに結果が空になる**ため、解析ずれより気付きにくい。
-**この 3 本は Shift-JIS のままにしてある。BOM を付けてはならない。**
+**この 2 本は Shift-JIS のままにしてある。BOM を付けてはならない。**
 
 > `-GCODE` は**検索対象ファイル**の文字コード指定であって、
 > バッチ自身の符号化とは別である。

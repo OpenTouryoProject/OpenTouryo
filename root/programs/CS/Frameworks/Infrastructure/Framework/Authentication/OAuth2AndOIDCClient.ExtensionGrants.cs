@@ -27,6 +27,7 @@
 //*  2026/10/22  玄人 幸道         CIBAのTokenリクエストに、client_assertionを受ける版を追加
 //*                                （private_key_jwt / client_secret_jwt / tls_client_authで取れなかった）
 //*  2026/11/04  玄人 幸道         Device AuthZの認可リクエストに、scopeを受ける版を追加（#650）
+//*  2026/11/09  玄人 幸道         CIBA の remarks に、空の値で ArgumentNullException になることを書いた（#678 の追補。#680 のレビューの指摘）
 //**********************************************************************************
 
 using System;
@@ -222,6 +223,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <returns>結果のJSON文字列</returns>
         /// <remarks>
         /// private_key_jwt / client_secret_jwtには、client_assertionを取るオーバーロードを使用する。
+        /// 方式に必要な値が空なら、送らずに ArgumentNullException（jwt 系は client_assertion、client_secret_* と tls_client_auth は client_id。client_secret は検査しない。#678）。
         /// </remarks>
         public static async Task<string> CibaAuthZRequestAsync(
             Uri cibaAuthZUri, string requestObject,
@@ -245,6 +247,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// CIBA Core 1.0 は、署名付きJWTをrequestパラメタで送る形（§7.1.1）を定めており、
         /// バックチャネル認証エンドポイントには、Tokenエンドポイントと同じクライアント認証が要る。
         /// FAPI-CIBAは、この認証にprivate_key_jwt（またはMTLS）を要求する。
+        /// 方式に必要な値が空なら、送らずに ArgumentNullException（jwt 系は client_assertion、client_secret_* と tls_client_auth は client_id。client_secret は検査しない。#678）。
         /// </remarks>
         public static async Task<string> CibaAuthZRequestAsync(
             Uri cibaAuthZUri, string requestObject,
@@ -351,6 +354,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// client_id は、認証方式が要求するときだけ本文に載せる（client_secret_post / tls_client_auth）。
         /// tls_client_auth では、クライアント証明書を載せた HttpClient を HttpClient プロパティに設定しておく。
         /// 既存の版（client_assertion を受けない版）の振る舞いは変えていない。
+        /// 方式に必要な値が空なら、送らずに ArgumentNullException（jwt 系は client_assertion、client_secret_* と tls_client_auth は client_id。client_secret は検査しない。#678）。
         /// </remarks>
         public static async Task<string> GetAccessTokenByCibaAsync(
             Uri tokenEndpointUri, string client_id, string client_secret, string client_assertion, string auth_req_id,

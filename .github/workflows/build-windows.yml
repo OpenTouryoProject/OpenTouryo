@@ -43,6 +43,11 @@ on:
   pull_request:
     branches: [master]
   workflow_dispatch:
+  # 依存パッケージの脆弱性に、PR が無い間も気付くため（#681。下の「Check vulnerable packages」）。
+  # 毎週月曜 09:00 JST（00:00 UTC）。schedule は既定のブランチ（develop）の版で動く。
+  # 見つけたら、この実行は落ちる（失敗の通知で気付く）。通しも回るので、develop の健康診断を兼ねる。
+  schedule:
+    - cron: '0 0 * * 1'
 
 permissions:
   contents: read
@@ -73,6 +78,36 @@ jobs:
         shell: pwsh
         working-directory: root/programs
         run: .\1_BuildAll.ps1 -OutputDir "${{ runner.temp }}\BuildLogs" -IgnoreErrors 'error MSB(3482|3325|3321):.*WSClientWinCone_sample\.csproj'
+
+      # ------------------------------------------------------------------
+      # 依存パッケージの脆弱性（#681。AGENTS.md「依存パッケージの脆弱性を見つけたら」）
+      # ------------------------------------------------------------------
+      # ビルドの後に回す（restore の結果を読み、推移的な依存まで見る。packages.config の net48 も見る）。
+      # 判定の正は CheckVulnerability.ps1 にある。ここでは結果の扱いだけを決める。
+      #   ・deps への push・master 宛の PR … 警告（::warning:: とジョブのまとめ）に留める。
+      #     依存側の公表だけで、リリースの PR を止めないため
+      #   ・schedule・手動 … 最後の「Fail on vulnerable packages」で落とす（失敗の通知で気付く）
+      # どちらでも、後続の単体テスト・疎通は最後まで回す。
+      # 脆弱性データを取れなかった（終了コード 2）ときも、見つけたときと同じに扱う（確かめられていないため）。
+      # **run: の中は ASCII だけにする**（Windows PowerShell 5.1 が BOM 無しの一時ファイルを Shift_JIS で読むため。CODING.md 5 節）。
+      - name: Check vulnerable packages
+        id: vuln
+        shell: powershell
+        working-directory: root/programs
+        run: |
+          $out = & .\CheckVulnerability.ps1 -Check -Detail *>&1 | Out-String
+          $code = $LASTEXITCODE
+          Write-Host $out
+          "## Vulnerable packages (CheckVulnerability.ps1, exit $code)" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          '```' | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          $out | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          '```' | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append -Encoding utf8
+          if ($code -ne 0)
+          {
+            Write-Host "::warning::Vulnerable packages were found, or the vulnerability data could not be fetched (exit $code). See the job summary. Fix them on the spot (AGENTS.md)."
+            "found=1" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding ascii
+          }
+          exit 0
 
       # ------------------------------------------------------------------
       # 単体テストのための SQL Server
@@ -285,3 +320,12 @@ jobs:
           name: smoke-logs
           path: ${{ runner.temp }}\SmokeTest
           if-no-files-found: warn
+
+      # 週 1 回・手動の実行だけ、脆弱性で落とす（上の「Check vulnerable packages」）。
+      # 採取の後に置く（落としても、ログと結果は残す）。
+      - name: Fail on vulnerable packages (schedule / manual)
+        if: always() && steps.vuln.outputs.found == '1' && (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch')
+        shell: powershell
+        run: |
+          Write-Host "::error::Vulnerable packages were found (or could not be checked). See the 'Check vulnerable packages' step and the job summary."
+          exit 1

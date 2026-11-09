@@ -36,7 +36,7 @@
 | 指定できる名前を見る | `.\2_RunAllTests.ps1 -List` | 1 |
 | 実行せずに、いま手元にある結果ファイルだけを比べる | `.\2_RunAllTests.ps1 -SkipBuild` | 1 |
 | Linux でも回す（docker が要る） | `.\2_RunAllTests.ps1 -Linux` | 1 |
-| DB を Oracle / MySQL / PostgreSQL でも回す（LocalServicesOnDocker の場所は環境変数 `LSOD_PATH`。引数なら `-LocalServicesDir <dir>`） | `.\2_RunAllTests.ps1 -CrossDb` | 1 |
+| DB を Oracle / MySQL / PostgreSQL でも回す（LocalServicesOnDocker の場所は環境変数 `OT_LSOD_PATH`。引数なら `-LocalServicesDir <dir>`） | `.\2_RunAllTests.ps1 -CrossDb` | 1 |
 | カバレッジを測って COVERAGE.md と HTML（`Tests/CoverageHtml`）を更新する | `.\2_RunAllTests.ps1 -Coverage -LocalServicesDir D:\path\to\LocalServicesOnDocker` | 1 |
 
 ### ビルド・疎通を絞る
@@ -88,6 +88,9 @@
 | CS 版と VB 版の設定ファイルを突き合わせる（想定外の差分があれば 1） | `.\CompareConfig.ps1 -Check` | [`CONFIGURATION.md`](CONFIGURATION.md) 11 節 |
 | 設定ファイルの差分の内訳を見る | `.\CompareConfig.ps1 -Detail -Only "WebApp_sample"` | [`CONFIGURATION.md`](CONFIGURATION.md) 11 節 |
 | PR を出す前に、ブランチのコミットをまとめて見る（CI と同じ） | `.\CheckExpectationChange.ps1 -Range develop..HEAD` | [`QUALITY.md`](../../QUALITY.md) 3 節 |
+| 期待値の変更の検出器の、判定の用例を回す（CI と同じ） | `.\ExpectationGuard.Tests\Run-Tests.ps1` | [`QUALITY.md`](../../QUALITY.md) 3 節 |
+| 検出器の写しが、手で直されていないかを見る | `.\CheckExpectationChange.ps1 -VerifyCopy` | [`QUALITY.md`](../../QUALITY.md) 3 節 |
+| バグの修正を、見つけた手段ごとに数える | `git log --format='%h %(trailers:key=Found-By,valueonly,separator=\|)' <範囲>` | [`QUALITY.md`](../../QUALITY.md) 5・6 節 |
 
 ---
 
@@ -223,7 +226,7 @@ dotnet test CS\Frameworks\Tests\NUnit\TestPublic\TestPublic.csproj -f net10.0 --
 - **DB のコンテナは LocalServicesOnDocker の [`CHEATSHEET.md`](https://github.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker/blob/master/CHEATSHEET.md) に従う。**
   必要なものだけを名前で起動し、**必須でないものを同時に複数起動しない**（クロス DB は SQL Server に 1 つずつ足す）。
   使い終わったら止める。**メモリを使い切ると、コンテナがシステムごとハングさせる**（[`TESTING.md`](TESTING.md) の冒頭）
-- **クロス DB（`TestPublicDb`）は `.\2_RunAllTests.ps1 -CrossDb` で回す**（#623）。LocalServicesOnDocker の場所は、`-LocalServicesDir` ＞ 環境変数 `LSOD_PATH` ＞ `RepoPaths.csv`（無ければ `_RepoPaths.csv`）の既定（#652）。
+- **クロス DB（`TestPublicDb`）は `.\2_RunAllTests.ps1 -CrossDb` で回す**（#623）。LocalServicesOnDocker の場所は、`-LocalServicesDir` ＞ 環境変数 `OT_LSOD_PATH` ＞ `RepoPaths.csv`（無ければ `_RepoPaths.csv`）の既定（#652）。
   DBMS を 1 つずつ起動 → 回す → 停止まで自動で行う（`docker` が使えれば Rancher 版、使えなければ WSL2 版）。
   始める前から動いていた DBMS には触らない。`-CrossDb` を付けなければ、コンテナは起動も停止もしない
 - **カバレッジを [`Tests/COVERAGE.md`](CS/Frameworks/Tests/COVERAGE.md) に残すなら `.\2_RunAllTests.ps1 -Coverage -LocalServicesDir <LocalServicesOnDocker>`。**
@@ -246,6 +249,8 @@ dotnet test CS\Frameworks\Tests\NUnit\TestPublic\TestPublic.csproj -f net10.0 --
 ```powershell
 # エージェント : コミットの直前の状態で回す（手で確かめるものが残れば終了コード 1。手で確かめてから記録する）
 .\SelectTargets.ps1 -Run
+# エージェント : リスク「高」なら、別モデルのレビューを回し、指摘に判定を付ける（QUALITY.md 4 節）
+#   サブエージェント quality-reviewer に、Issue 番号・範囲・名前空間だけを渡す（主の解釈は渡さない）
 
 # 施主 : 1. Golden の揺れ（2_RunAllTests.ps1 が書き換えた Result*.txt。揺れだけのもの）を戻す
 git checkout -- CS/Frameworks/Tests/Golden
@@ -471,7 +476,8 @@ root\programs\VB\0_ExecAllBat.bat           ← 通し（先に CS 側を建て�
 
 ### `.bat` を書くとき
 
-- **リリース・公開に使う bat は非 ASCII を書かない**（コメントも英語）。BOM も不要
+- **bat は非 ASCII を書かない**（コメントも `echo` も英語。すべての bat。#671）。BOM も不要
+- 英語にするとき、`if ( … )` などの括弧の中に半角の `)` を書かない（そこでブロックが閉じる）
 - **`chcp` を bat の中で使わない**
 - 非 ASCII が**外部プログラムへ渡す引数**なら消せない。その場合は
   コンソールのコード ページに合わせる（Shift-JIS・BOM なし）

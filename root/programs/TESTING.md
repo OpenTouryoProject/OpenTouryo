@@ -39,7 +39,7 @@ cd root\programs
 .\2_RunAllTests.ps1 -Linux
 
 # クロス DB（2 節「NUnit のテスト」の TestPublicDb）。DBMS を 1 つずつ起動 → 回す → 停止
-#   LocalServicesOnDocker の場所は、-LocalServicesDir ＞ 環境変数 LSOD_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定（#652）
+#   LocalServicesOnDocker の場所は、-LocalServicesDir ＞ 環境変数 OT_LSOD_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定（#652）
 .\2_RunAllTests.ps1 -CrossDb -LocalServicesDir <LocalServicesOnDocker のフォルダ>
 
 # カバレッジを測って Tests\COVERAGE.md と Tests\CoverageHtml を書き直す（NUnit の全部・Linux の回・クロス DB。docker が要る）

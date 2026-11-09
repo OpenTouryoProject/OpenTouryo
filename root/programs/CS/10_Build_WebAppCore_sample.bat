@@ -1,4 +1,4 @@
-﻿setlocal
+setlocal
 
 @rem --------------------------------------------------
 @rem Turn off the echo function.
@@ -19,8 +19,8 @@ rem --------------------------------------------------
 rem Batch build of MVC_Sample.
 rem --------------------------------------------------
 
-@rem npm / grunt によるクライアント ライブラリの復元は廃止した。
-@rem （wwwroot\lib 配下をリポジトリに直接格納する方式に移行済み）
+@rem Restoring the client libraries with npm / grunt was discontinued.
+@rem The files under wwwroot\lib are now stored in the repository directly.
 
 dotnet restore "Samples4NetCore\Backend\MVC_Sample\MVC_Sample.sln"
 dotnet msbuild %COMMANDLINE% "Samples4NetCore\Backend\MVC_Sample\MVC_Sample.sln"

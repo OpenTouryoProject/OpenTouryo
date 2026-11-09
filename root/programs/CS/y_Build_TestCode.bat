@@ -1,4 +1,4 @@
-﻿@rem --------------------------------------------------
+@rem --------------------------------------------------
 @rem TestCode -> TestCodeFx, TestCodeCore
 @rem --------------------------------------------------
 echo | call y_Build_TestCode_Public.bat
@@ -7,7 +7,7 @@ echo | call y_Build_TestCode_Public.bat
 timeout 5
 
 @rem --------------------------------------------------
-@rem EncAndDecUtil -> 暗号GUIでビルドだけ
+@rem EncAndDecUtil -> build only, with the crypto GUI
 @rem --------------------------------------------------
 echo | call y_Build_TestCode_SecGUI.bat
 
@@ -15,7 +15,7 @@ echo | call y_Build_TestCode_SecGUI.bat
 timeout 5
 
 @rem --------------------------------------------------
-@rem EncAndDecUtilCUI -> 暗号CUIでビルド&テスト
+@rem EncAndDecUtilCUI -> build and test, with the crypto CUI
 @rem --------------------------------------------------
 echo | call y_Build_TestCode_SecCUI.bat
 
@@ -23,7 +23,7 @@ echo | call y_Build_TestCode_SecCUI.bat
 timeout 5
 
 @rem --------------------------------------------------
-@rem TestBatch -> SimpleBatchでDB接続
+@rem TestBatch -> DB connection with SimpleBatch
 @rem --------------------------------------------------
 echo | call y_Build_TestCode_Batch.bat
 

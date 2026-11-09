@@ -40,10 +40,10 @@ The E2E tests that use the stub of MultiPurposeAuthSite and the cross-DB tests t
 
 | Environment variable | Repository | Used by |
 |---|---|---|
-| `MPAS_PATH` | MultiPurposeAuthSite | The stub and E2E tests in `programs\CS\Sample4SpRp` (`-MpasRoot`) |
-| `LSOD_PATH` | LocalServicesOnDocker | `programs\2_RunAllTests.ps1 -CrossDb / -Coverage` (`-LocalServicesDir`) |
+| `OT_MPAS_PATH` | MultiPurposeAuthSite | The stub and E2E tests in `programs\CS\Sample4SpRp` (`-MpasRoot`) |
+| `OT_LSOD_PATH` | LocalServicesOnDocker | `programs\2_RunAllTests.ps1 -CrossDb / -Coverage` (`-LocalServicesDir`) |
 
-The list (including `OTR_PATH` and others used by other repositories) and the default locations are in `files\tools\PowerShell\_RepoPaths.csv` (the template). **If your local layout differs from the template, copy it to `RepoPaths.csv` in the same folder and edit it** (it is ignored by `.gitignore`, and takes precedence over the template when present). Register them as follows (user environment variables).
+The list (including `OT_OTR_PATH` and others used by other repositories) and the default locations are in `files\tools\PowerShell\_RepoPaths.csv` (the template). **If your local layout differs from the template, copy it to `RepoPaths.csv` in the same folder and edit it** (it is ignored by `.gitignore`, and takes precedence over the template when present). Register them as follows (user environment variables).
 
 ```powershell
 cd root\files\tools\PowerShell

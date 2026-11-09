@@ -1,4 +1,4 @@
-﻿setlocal
+setlocal
 
 @rem --------------------------------------------------
 @rem Turn off the echo function.
@@ -15,7 +15,7 @@ set CURRENT_DIR="%~dp0"
 @rem --------------------------------------------------
 call %CURRENT_DIR%z_Common.bat
 
-echo .NET Fx系のSystem.CommandLine と Sharprompt 問題で一時的？ドロップ
+echo Temporarily dropped on .NET Framework because of the System.CommandLine and Sharprompt issues
 
 pause
 
