@@ -41,6 +41,7 @@
 //*  2026/10/22  玄人 幸道         処理区分ごとに partial クラスへ分割した（OAuth2AndOIDCClient.*.cs）
 //*  2026/10/22  玄人 幸道         公開情報を取りに行く GET を GetStringAsync（internal）に切り出した
 //*  2026/11/08  玄人 幸道         SetClientAuthentication で、空では認証として成り立たない値を送る前に ArgumentNullException にした（#678）
+//*  2026/11/09  玄人 幸道         SetClientAuthentication の remarks の根拠に、RFC 6749 §2.3.1 を足した（#678 の追補。#680 のレビューの指摘）
 //**********************************************************************************
 
 using System;
@@ -196,7 +197,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// - client_secret_basic / client_secret_post：client_id（RFC 6749 §2.3.1）
         /// - tls_client_auth：client_id（RFC 8705 §2）
         /// - alwaysSetClientId（PAR）：方式によらず client_id（RFC 9126 §2.1）
-        /// client_secret は検査しない（秘密を持たない公開クライアントが client_id だけを送る使い方がある。RFC 6749 §4.1.3）。
+        /// client_secret は検査しない（秘密を持たない公開クライアントが client_id だけを送る使い方がある。RFC 6749 §4.1.3。
+        /// 秘密が空文字列なら client_secret を省いてよい：§2.3.1）。
         /// 知らない方式は、値を見る前に ArgumentException にする。
         /// </remarks>
         private static void SetClientAuthentication(

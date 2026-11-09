@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（OAuth2AndOIDCClient.cs から処理区分ごとに分割した）
+//*  2026/11/09  玄人 幸道         TokenRequestWithDPoPAsync（クライアント認証あり）の remarks に、空の値で ArgumentNullException になることを書いた（#678 の追補。#680 のレビューの指摘）
 //**********************************************************************************
 
 using System;
@@ -157,7 +158,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="signer">JWS（クライアントの DPoP の秘密鍵）</param>
         /// <param name="publicJwk">JObject（その鍵の公開鍵）</param>
         /// <returns>結果のJSON文字列</returns>
-        /// <remarks>自由に利用できる。引数の Dictionary は変えない。</remarks>
+        /// <remarks>
+        /// 自由に利用できる。引数の Dictionary は変えない。
+        /// 方式に必要な値が空なら、送らずに ArgumentNullException（jwt 系は client_assertion、client_secret_* と tls_client_auth は client_id。client_secret は検査しない。#678）。
+        /// </remarks>
         public static async Task<string> TokenRequestWithDPoPAsync(
             Uri tokenEndpointUri, Dictionary<string, string> body,
             string client_id, string client_secret, string client_assertion,

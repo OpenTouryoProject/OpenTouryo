@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（OAuth2AndOIDCClient.cs から処理区分ごとに分割した）
 //*  2026/10/30  玄人 幸道         RegisterRequestObjectAsync の remarks を直した（RFC 9101 5.2.1 は例であり、登録の方式は範囲外。#640）
+//*  2026/11/09  玄人 幸道         PAR の remarks に、空の値で ArgumentNullException になることを書いた（#678 の追補。#680 のレビューの指摘）
 //**********************************************************************************
 
 using System;
@@ -86,6 +87,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <remarks>
         /// Request Objectをrequestパラメタに載せて送る形（RFC 9126 §3、RFC 9101）。
         /// private_key_jwt / client_secret_jwtには、client_assertionを取るオーバーロードを使用する。
+        /// 方式に必要な値が空なら、送らずに ArgumentNullException（client_id は方式によらず要る。jwt 系は client_assertion も。client_secret は検査しない。#678）。
         /// </remarks>
         public static async Task<string> PushAuthorizationRequestAsync(
             Uri authRequestPushUri, string requestObject,
@@ -105,7 +107,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="client_assertion">client_assertion（private_key_jwt / client_secret_jwtで使用）</param>
         /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods</param>
         /// <returns>結果のJSON文字列（request_uri と expires_in）</returns>
-        /// <remarks>Request Objectをrequestパラメタに載せて送る形（RFC 9126 §3、RFC 9101）。</remarks>
+        /// <remarks>
+        /// Request Objectをrequestパラメタに載せて送る形（RFC 9126 §3、RFC 9101）。
+        /// 方式に必要な値が空なら、送らずに ArgumentNullException（client_id は方式によらず要る。jwt 系は client_assertion も。client_secret は検査しない。#678）。
+        /// </remarks>
         public static async Task<string> PushAuthorizationRequestAsync(
             Uri authRequestPushUri, string requestObject,
             string client_id, string client_secret, string client_assertion,
@@ -129,6 +134,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <returns>結果のJSON文字列（request_uri と expires_in）</returns>
         /// <remarks>
         /// private_key_jwt / client_secret_jwtには、client_assertionを取るオーバーロードを使用する。
+        /// 方式に必要な値が空なら、送らずに ArgumentNullException（client_id は方式によらず要る。jwt 系は client_assertion も。client_secret は検査しない。#678）。
         /// </remarks>
         public static async Task<string> PushAuthorizationRequestAsync(
             Uri authRequestPushUri, Dictionary<string, string> authZRequestParams,
@@ -154,6 +160,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// FAPI 2.0 は、この認証をprivate_key_jwtかMTLS（tls_client_auth）に限っている。
         /// client_idは認可リクエストの必須パラメタなので、認証方式に依らず本文に載せる（§2.1）。
         /// 応答のrequest_uriを、認可リクエストのrequest_uriパラメタに指定して使用する。
+        /// 方式に必要な値が空なら、送らずに ArgumentNullException（client_id は方式によらず要る。jwt 系は client_assertion も。client_secret は検査しない。#678）。
         /// </remarks>
         public static async Task<string> PushAuthorizationRequestAsync(
             Uri authRequestPushUri, Dictionary<string, string> authZRequestParams,

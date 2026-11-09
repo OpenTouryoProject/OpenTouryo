@@ -27,6 +27,7 @@
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //*  2026/11/08  玄人 幸道         クライアント認証の方式を問わない版（認可コード・Refresh・Revoke・Introspect）のテストを追加（#676）
 //*  2026/11/08  玄人 幸道         既存の口（PAR・CIBA）の、空の値の検査のテストを追加（#678）
+//*  2026/11/09  玄人 幸道         AnyAuth_EmptySecret・ExistingAuth_EmptySecret の根拠に、RFC 6749 2.3.1 を足した（#678 の追補。#680 のレビューの指摘）
 //**********************************************************************************
 
 using System;
@@ -322,6 +323,7 @@ namespace TestFramework.Authentication
         /// <summary>client_secret が空でも、client_secret_basic・client_secret_post は送る（公開クライアントの使い方を塞がない）。</summary>
         [Test]
         [Basis("RFC 6749 4.1.3（認証しないクライアントは client_id を送る）")]
+        [Basis("RFC 6749 2.3.1（client_secret が空文字列なら、省いてよい）")]
         [Basis("設計：OAuth2AndOIDCClient.PostWithClientAuthenticationAsync の remarks（client_secret は検査しない）")]
         [Basis("#676")]
         public void AnyAuth_EmptySecret()
@@ -454,6 +456,7 @@ namespace TestFramework.Authentication
         /// <summary>既存の口も、client_secret が空（null も）なら、Basic・Post で送る（公開クライアントの使い方を塞がない）。</summary>
         [Test]
         [Basis("RFC 6749 4.1.3（認証しないクライアントは client_id を送る）")]
+        [Basis("RFC 6749 2.3.1（client_secret が空文字列なら、省いてよい）")]
         [Basis("設計：OAuth2AndOIDCClient.SetClientAuthentication の remarks（client_secret は検査しない）")]
         [Basis("#678")]
         public void ExistingAuth_EmptySecret()
