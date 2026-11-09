@@ -1,4 +1,4 @@
-﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@a81584579945 src/quality/ExpectationGuard/CheckExpectationChange.ps1 sha256:4090217affb8199d8743407a2b1e626a24d9834078923cb6bd7e3fb622e2aaef
+﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@6a3d9f49bcc3 src/quality/ExpectationGuard/CheckExpectationChange.ps1 sha256:4090217affb8199d8743407a2b1e626a24d9834078923cb6bd7e3fb622e2aaef
 <#
 .SYNOPSIS
     期待値の変更を検出し、トレーラー Expectation-Change が付いているかを確かめる（共通の本体）。

@@ -1,4 +1,4 @@
-﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@a81584579945 src/quality/ExpectationGuard/rules.common.psd1 sha256:9c30e5bd2199cb562d1f5d1b3fc427c64198847ec34e0fb5cea05df625e02a7d
+﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@6a3d9f49bcc3 src/quality/ExpectationGuard/rules.common.psd1 sha256:9c30e5bd2199cb562d1f5d1b3fc427c64198847ec34e0fb5cea05df625e02a7d
 # 期待値の変更の検出器の、共通の規則（OpenTouryoCodingAgentAssets#3）。
 #   原本は OpenTouryoCodingAgentAssets の src/quality/ExpectationGuard/。導入先では写しであり、直さない。
 #   リポジトリごとの規則は rules.psd1（見本は rules.sample.psd1）。配列はここに足され、値は rules.psd1 で上書きされる。

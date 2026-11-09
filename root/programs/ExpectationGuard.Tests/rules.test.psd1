@@ -1,4 +1,4 @@
-﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@a81584579945 src/quality/ExpectationGuard/tests/rules.test.psd1 sha256:524776bd95532d8c16221668ef103f2edd9f230087e187a2dcd528a912ba40bd
+﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@6a3d9f49bcc3 src/quality/ExpectationGuard/tests/rules.test.psd1 sha256:524776bd95532d8c16221668ef103f2edd9f230087e187a2dcd528a912ba40bd
 # 判定の用例で使う規則（すべての種類を 1 つずつ持つ）。用例のリポジトリでは guard/rules.psd1 として置く。
 @{
     Guard = @(

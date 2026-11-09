@@ -1,4 +1,4 @@
-﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@a81584579945 src/quality/ExpectationGuard/tests/cases.psd1 sha256:cb93a0c5984a35319a13012551f100fad1f7d4f9610c9ad78bbf5693daa1563c
+﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@6a3d9f49bcc3 src/quality/ExpectationGuard/tests/cases.psd1 sha256:cb93a0c5984a35319a13012551f100fad1f7d4f9610c9ad78bbf5693daa1563c
 # 判定の用例（OpenTouryoCodingAgentAssets#3）。「この差分なら検出する／しない」を、文章ではなくテストで固定する。
 #
 #   各用例は、一時のリポジトリで次を行う。
