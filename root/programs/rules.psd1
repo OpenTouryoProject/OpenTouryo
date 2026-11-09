@@ -40,5 +40,13 @@
             Count = 'Removed'
             Match = @( @{ Pattern = '[\[,]\s*Basis\s*\(' } )
         }
+        @{
+            # 検証（Assert.）の削除。ファイルごとの差し引きなので、書き直し・同じファイルの中での移動は数えない。
+            #   Assert.Ignore は検証ではないので除く（足すほうは「Ignore の追加」が見る）。#671（汎用認証サイトの #324 に揃えた）
+            Name  = '検証の削除'
+            Paths = @('^root/programs/[^/]+/Frameworks/Tests/NUnit/.+\.cs$')
+            Count = 'Removed'
+            Match = @( @{ Pattern = '\bAssert\s*\.\s*(?!Ignore\b)\w+' } )
+        }
     )
 }

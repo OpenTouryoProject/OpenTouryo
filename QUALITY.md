@@ -78,11 +78,13 @@
 | 対象 | 期待値の変更に当たるもの |
 |---|---|
 | Golden（`root/programs/*/Frameworks/Tests/Golden/**/Result*.txt`） | **正規化しても差分が残る変更**（正規化は `CompareResult.ps1`。`2_RunAllTests.ps1` が判定に使うものと同じ） |
-| NUnit（`root/programs/*/Frameworks/Tests/NUnit/**/*.cs`） | テストの削除（`[Test]`・`[TestCase]`・`[TestCaseSource]` の行の削除）、`[Ignore]`・`[Explicit]`・`Assert.Ignore` の追加、**`[Basis]` の削除**（検証から観測への格下げ。7 節） |
+| NUnit（`root/programs/*/Frameworks/Tests/NUnit/**/*.cs`） | テストの削除（`[Test]`・`[TestCase]`・`[TestCaseSource]` の行の削除）、`[Ignore]`・`[Explicit]`・`Assert.Ignore` の追加、**`[Basis]` の削除**（検証から観測への格下げ。7 節）、**検証の削除**（`Assert.` の行の削除。`Assert.Ignore` を除く。#671） |
 
 - **Golden は、実行のたびに書き換わる。** 日時・スレッド ID・署名値などの揺れは、期待値の変更に数えない。
   数えると、ほぼ毎回の `fixed` のコミットに承認が要り、**承認が形だけになる**
 - `Assert.Ignore` には正当な使い方がある（管理者権限が無い、DB に接続できない）。**足すなら理由を書いて承認を受ける**
+- **行の数は、ファイルごとの差し引きで数える。** `Assert.` の行の書き直し・同じファイルの中での移動は数えない（#671 で、導入の後の 97 コミットに当てて過検出が 0 件であることを確かめた）。
+  裏返すと、**ある `Assert.` を消して別の `Assert.` を足す**と数えない
 - **アサーションの緩和**（比較を弱める、許容範囲を広げる）は、機械的な検出が難しい。4 節のレビューの観点で拾う
 
 ### 承認の記録：コミットのトレーラー
