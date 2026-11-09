@@ -311,7 +311,7 @@ allow_rebase_merge   false   … 同上
 
 | ファイル | 役割 |
 |---|---|
-| [`workflows/build-windows.yml`](.github/workflows/build-windows.yml) | 検証 3 本（ビルド・単体テスト・疎通）を windows-latest で |
+| [`workflows/build-windows.yml`](.github/workflows/build-windows.yml) | 検証 3 本（ビルド・単体テスト・疎通）を windows-latest で。ビルドの後に依存パッケージの脆弱性も見る（#681） |
 | [`workflows/build-windows-vb.yml`](.github/workflows/build-windows-vb.yml) | **VB 版**のビルドと疎通を windows-latest で（手動のみ） |
 | [`workflows/dependabot-retarget.yml`](.github/workflows/dependabot-retarget.yml) | Dependabot PR の向き先を `deps` へ変更 |
 | [`workflows/expectation-change.yml`](.github/workflows/expectation-change.yml) | PR のコミットに、トレーラーの無い期待値の変更が無いかを確かめる（#640。[`QUALITY.md`](QUALITY.md) 3 節の段 3） |
@@ -326,7 +326,7 @@ allow_rebase_merge   false   … 同上
 
 | ファイル | 発火 | `permissions` |
 |---|---|---|
-| `build-windows.yml` | `push: [deps]` / **`pull_request: [master]`** / 手動 | `contents: read` |
+| `build-windows.yml` | `push: [deps]` / **`pull_request: [master]`** / 手動 / **週 1 回**（`schedule`。月曜 09:00 JST。既定のブランチ develop の版で動く。#681） | `contents: read` |
 | `build-windows-vb.yml` | **手動のみ**（`workflow_dispatch`） | `contents: read` |
 | `dependabot-retarget.yml` | `pull_request_target`（`opened`） | `pull-requests: write` |
 | `expectation-change.yml` | **`pull_request: [develop, master]`** | `contents: read` |

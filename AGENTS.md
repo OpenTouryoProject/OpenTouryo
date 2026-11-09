@@ -222,6 +222,10 @@ https://github.com/OpenTouryoProject/OpenTouryo/security/advisories/new
 （#610 の時点で、レビュー済みのアドバイザリから 1.5 日経ってもアラートが出ていなかった）。
 仕組みは [`BUILDING.md`](root/programs/BUILDING.md) 13 節。
 
+**CI（`build-windows.yml`）も、ビルドの後に `CheckVulnerability.ps1` を回す**（#681）。
+`deps` への push・master 宛の PR では警告（ジョブのまとめ）に留め、**週 1 回・手動の実行では落とす**（失敗の通知で気付く）。
+CI の警告・失敗で知ったときも、下の手順で直す。
+
 **見つけたら、Issue を起こさずに、その場で直す。** 施主の方針である（2026-10-15）。
 先に直してしまえば、Dependabot の PR（`Bump X from A to B`。`deps` 経由の流れ）も発生しない。
 **公表済みの CVE（依存パッケージ側の脆弱性）は公開情報**なので、コミットや文書に書いてよい
