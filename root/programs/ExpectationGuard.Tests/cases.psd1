@@ -1,4 +1,4 @@
-﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@a3e6aee6233f src/quality/ExpectationGuard/tests/cases.psd1 sha256:5156187822e0be9ad59846cc6d4d71abf6b5d189f588ee3ab26cabb114fa6702
+﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@a81584579945 src/quality/ExpectationGuard/tests/cases.psd1 sha256:cb93a0c5984a35319a13012551f100fad1f7d4f9610c9ad78bbf5693daa1563c
 # 判定の用例（OpenTouryoCodingAgentAssets#3）。「この差分なら検出する／しない」を、文章ではなくテストで固定する。
 #
 #   各用例は、一時のリポジトリで次を行う。
@@ -21,6 +21,7 @@
         'tests/TESTCASES.md'     = "# TESTCASES`n"
         'golden/Result1.txt'     = "Time: 10:00`nOK 1`n"
         '.githooks/commit-msg'   = "#!/bin/sh`nexit 0`n"
+        '.claude/agents/reviewer.md' = "---`nname: reviewer`n---`nテストを自分で実行する`n"
     }
 
     Fixtures = @{
@@ -187,6 +188,11 @@ public class LoginTests
         @{
             Id = 'D10'; Category = '検出する'; Title = '仕組みのファイルの削除（共通の規則）'
             Commits = @(@{ Message = '共通の規則を消す'; Delete = @('guard/rules.common.psd1') })
+            Expect = @{ Exit = 1; Kinds = @('仕組みの変更') }
+        }
+        @{
+            Id = 'D19'; Category = '検出する'; Title = '仕組みのファイルの変更（.claude/agents のサブ エージェントの定義）'
+            Commits = @(@{ Message = 'レビュー役を緩める'; Files = @{ '.claude/agents/reviewer.md' = "---`nname: reviewer`n---`n報告を信じる`n" } })
             Expect = @{ Exit = 1; Kinds = @('仕組みの変更') }
         }
         @{

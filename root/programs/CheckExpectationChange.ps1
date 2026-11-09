@@ -1,4 +1,4 @@
-﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@a3e6aee6233f src/quality/ExpectationGuard/CheckExpectationChange.ps1 sha256:5efbcbca3d0da7da6878f5bbccbaa24d58fcedd481bd9a745cbfbb2ffe1ef495
+﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@a81584579945 src/quality/ExpectationGuard/CheckExpectationChange.ps1 sha256:4090217affb8199d8743407a2b1e626a24d9834078923cb6bd7e3fb622e2aaef
 <#
 .SYNOPSIS
     期待値の変更を検出し、トレーラー Expectation-Change が付いているかを確かめる（共通の本体）。
@@ -563,7 +563,8 @@ try
     # --- 写しの検査 ------------------------------------------------------
     if ($VerifyCopy)
     {
-        $files = (Invoke-GitChecked @("ls-files", "--", ":(top)")).Lines
+        # --full-name：どのフォルダで実行しても、ルートからのパスで受ける（無いとカレントからの相対になり、0 件を見て「違いは 0 件」になる）
+        $files = (Invoke-GitChecked @("ls-files", "--full-name", "--", ":(top)")).Lines
         $top = (Invoke-GitChecked @("rev-parse", "--show-toplevel")).Lines[0]
         $checked = 0; $bad = 0
         foreach ($f in $files)

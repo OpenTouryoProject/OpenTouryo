@@ -1,4 +1,4 @@
-﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@a3e6aee6233f src/quality/ExpectationGuard/tests/TestComparer.ps1 sha256:0a521f5338575d3cfa707cde9c0a18ca460524057cfddf35c21dc8d5f047bfd4
+﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@a81584579945 src/quality/ExpectationGuard/tests/TestComparer.ps1 sha256:0a521f5338575d3cfa707cde9c0a18ca460524057cfddf35c21dc8d5f047bfd4
 <#
 .SYNOPSIS
     判定の用例で使う、FileRules の Comparer の見本（Golden の正規化の代わり）。
