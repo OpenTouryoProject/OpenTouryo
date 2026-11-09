@@ -67,6 +67,9 @@ namespace SpRp_MVC.Models
         /// <summary>認可要求の預け先（FAPI2 : PAR / /ros。FAPI1 は空）</summary>
         public string PushedTo { get; set; }
 
+        /// <summary>id_token の形（FAPI2 : JWS / JWE の中の JWS。FAPI1 は空）</summary>
+        public string IdTokenForm { get; set; }
+
         /// <summary>flow</summary>
         public string Flow { get; set; }
 

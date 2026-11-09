@@ -21,6 +21,10 @@
         <tr><th>response_mode</th><td>@Model.ResponseMode</td></tr>
         <tr><th>クライアント認証</th><td>@Model.AuthMethod</td></tr>
         <tr><th>token_type</th><td>@Model.TokenType</td></tr>
+        @if (!string.IsNullOrEmpty(Model.IdTokenForm))
+        {
+            <tr><th>id_token の形</th><td>@Model.IdTokenForm</td></tr>
+        }
     </table>
     @if (!string.IsNullOrEmpty(Model.IdTokenClaims))
     {

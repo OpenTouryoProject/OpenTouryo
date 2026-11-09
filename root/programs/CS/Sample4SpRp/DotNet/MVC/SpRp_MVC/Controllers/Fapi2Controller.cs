@@ -39,6 +39,7 @@ using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Public.Security;
+using Touryo.Infrastructure.Public.Security.Jwt;
 using Touryo.Infrastructure.Public.Security.Pwd;
 using Touryo.Infrastructure.Public.Util;
 
@@ -63,6 +64,8 @@ namespace SpRp_MVC.Controllers
     ///   MPAS は、fapi2 の登録の `client_assertion` の `aud` を issuer に限る
     /// - **トークン要求は、方式を問わない版の `GetAccessTokenByCodeAsync`**（`client_assertion` ＋ `code_verifier`。OpenTouryo#676）
     /// - **response_mode は `query`（既定）か `query.jwt`（JARM）**（Request Object に入れる）。戻りの確かめは `Fapi1Controller` と同じ
+    /// - **id_token は、暗号化されて返ることがある**（MPAS は、fapi2 の登録に公開鍵があると Nested JWT（JWE の中に JWS）にする）。
+    ///   自分の秘密鍵で復号してから、中の JWS を検証する
     ///
     /// **MTLS（`tls_client_auth`）は扱わない。** MPAS のスタブがクライアント証明書を受けないため（MPAS の自己テストには MTLS のボタンがある）。
     /// </remarks>
@@ -348,6 +351,26 @@ namespace SpRp_MVC.Controllers
             if (string.IsNullOrEmpty(idToken))
             {
                 return "openid を求めたのに、id_token がありません。";
+            }
+
+            // **MPAS は、fapi2 の登録に公開鍵（jwk_rsa_publickey）があると、id_token を暗号化して返す**
+            //   （Nested JWT：外側が JWE（RSA-OAEP・A256GCM。鍵はクライアントの公開鍵）、内側が IdP の署名した JWS。RFC 7516、OpenID Connect Core 1.0 §10.2）。
+            //   **自分の秘密鍵（SpRp_RsaPfxFilePath）で復号し、中の JWS を FAPI1 と同じく検証する。** 暗号化されていなければ、そのまま検証する。
+            if (idToken.Split('.').Length == 5)
+            {
+                JWE_RsaOaepAesGcm_X509 jwe = new JWE_RsaOaepAesGcm_X509(
+                    CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword);
+                if (!jwe.Decrypt(idToken, out string innerJws) || string.IsNullOrEmpty(innerJws))
+                {
+                    return "id_token（JWE）を、自分の秘密鍵で復号できません。";
+                }
+
+                idToken = innerJws;
+                result.IdTokenForm = "JWE（RSA-OAEP・A256GCM）の中の JWS";
+            }
+            else
+            {
+                result.IdTokenForm = "JWS";
             }
 
             (string idError, JObject claims) = await OpJwt.VerifyIdTokenAsync(

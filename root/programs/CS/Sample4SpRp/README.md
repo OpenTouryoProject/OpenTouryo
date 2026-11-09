@@ -180,6 +180,35 @@ cd ..\E2E
   2.1・2.2 の E2E は、どちらの起動でも通る（雛形のクライアントは残る）
 - **アプリのログは `-OutputDir`（既定 `%TEMP%\OpenTouryoE2E`）の `app_SpRp_MVC.log`**
 
+## 2.4 MVC（FAPI 2.0）の E2E（[`E2E/MvcFapi2E2E.ps1`](E2E/MvcFapi2E2E.ps1)）
+
+**`SpRp_MVC`（4.2 節）の FAPI 2.0 のフローを、スタブで通す**（#668 の追加）。前提と起動は 2.3 節と同じ。
+
+```powershell
+cd root\programs\CS\Sample4SpRp\E2E
+.\MvcFapi2E2E.ps1                                  # 4 つのフロー × 正常・対照（12 件）
+.\MvcFapi2E2E.ps1 -Only "par" -SkipControl         # 絞る（ケース名の部分一致）
+```
+
+| flow / response_mode | 正常 | 対照（NG になること） |
+|---|---|---|
+| `par` / `query` | id_token の検証・UserInfo（`sub` の一致） | `state` を書き換える / **使った `request_uri` を使い回す** / **認可要求の `client_id` を書き換える** |
+| `par` / `query.jwt`（JARM） | 同上 | 応答（JWT）の署名を書き換える / 素の応答に落とす |
+| `ros` / `query` | 同上 | `state` を書き換える / **使った `request_uri` を使い回す** |
+| `ros` / `query.jwt` | 同上 | 応答（JWT）の署名を書き換える |
+
+- **正常の側で、認可要求が `client_id`・`request_uri` だけであることを見る**（値は、預けた署名付きの Request Object の中にある。RFC 9126 §4）
+- **IdP の側の対照**（Reuse・ClientId）は、**`code` を持った戻りがアプリに届かなければ OK**（スタブのエラー画面か、`error` を持った戻り）。
+  `request_uri` は 1 回だけ使うべき（RFC 9126 §4）。`client_id` は、預けたものと一致しなければならない
+- **アプリのログは `-OutputDir` の `app_SpRp_MVC_Fapi2.log`**
+
+> **2026/11/09 の時点で、正常の 4 件と Reuse の 2 件は NG になる**（スタブの作りは 2026/11/07）。
+> MPAS が fapi2 の id_token（Nested JWT）の中の JWS に、**IdP の署名鍵ではなくクライアントの鍵の `kid`** を入れるため、
+> `kid` で `jwks_uri` から鍵を引くこのサンプルは、署名を確かめられない（**OpenTouryoProject/MultiPurposeAuthSite#352**。サンプルには回避を入れない）。
+> Reuse は 1 回目の正常が要るので、同じ理由で止まる。
+> PAR・`/ros` に預けること、`private_key_jwt` ＋ PKCE での引き換え、id_token の JWE の復号、State・Signature・Plain・ClientId の対照は、通ることを確かめた。
+> **MPAS が直ったら、スタブを作り直して（MPAS の `container\Stub\1_PublishStub.ps1`）回し直す。**
+
 ## 3. 設定（サンプルと IdP で揃える値）
 
 **サンプル側の設定と、IdP のクライアントの登録は、1 文字も違ってはならない。**
@@ -380,6 +409,8 @@ cd root\programs\CS\Sample4SpRp\DotNet\MVC
 - **Request Object には、`code_challenge`（S256）と `exp`・`nbf`・`iat` を入れる**（`RequestObject.Create` の有効期間・PKCE を受ける版。#660・#675。FAPI 2.0 Security Profile §5.3.2.2、Message Signing §5.3.1）。署名鍵は `SpRp_RsaPfxFilePath`
 - **`aud` は、Request Object も `client_assertion` も IdP の issuer**（RFC 9101 §4、FAPI 2.0 Security Profile §5.3.2.1。MPAS は fapi2 の登録の `client_assertion` の `aud` を issuer に限る）
 - **預けられなければ、リダイレクトせずに結果の画面で NG を出す**（IdP の `error` を見せる）
+- **id_token は、暗号化されて返る**（MPAS は、fapi2 の登録に公開鍵があると Nested JWT にする。外側が JWE（RSA-OAEP・A256GCM。クライアントの公開鍵）、中が IdP の署名した JWS）。
+  **自分の秘密鍵（`SpRp_RsaPfxFilePath`）で復号し（`JWE_RsaOaepAesGcm_X509`）、中の JWS を FAPI1 と同じく検証する**。結果の画面に「id_token の形」を出す
 - 戻りの確かめは FAPI1 と同じ（下の表）。response_mode は Request Object に入れる
 
 **確かめていること**（サンプルとして、省かずに書いてある）
@@ -406,7 +437,7 @@ cd root\programs\CS\Sample4SpRp\DotNet\MVC
 
 | もの | 理由 |
 |---|---|
-| **mTLS**（`tls_client_auth`。MPAS の自己テストの「FAPI2 CC, PAR, MTLS」） | **スタブがクライアント証明書を受けない**（MPAS が MTLS を測れるのは、E2E の `-Launch` がテスト専用のフック `Tests/MtlsTestHook` を net10.0 版に読ませたときだけ）。MPAS に起票した（下記） |
+| **mTLS**（`tls_client_auth`。MPAS の自己テストの「FAPI2 CC, PAR, MTLS」） | **スタブがクライアント証明書を受けない**（MPAS が MTLS を測れるのは、E2E の `-Launch` がテスト専用のフック `Tests/MtlsTestHook` を net10.0 版に読ませたときだけ）。**OpenTouryoProject/MultiPurposeAuthSite#351** |
 | **CIBA**（FAPI2） | 認証デバイスの登録が要る（MPAS の E2E でも Skip） |
 | **net48**（ASP.NET MVC 5） | 後の段で、別のプロジェクトとして足す |
 
@@ -428,7 +459,8 @@ cd root\programs\CS\Sample4SpRp\DotNet\MVC
 - **単体テスト（`2_RunAllTests.ps1`）・疎通テスト（`3_SmokeTest.ps1`）・CI には載っていない。**
   外部の IdP（スタブ）が要るため。**WebApp のサンプルの外部ログインは `E2E/ExternalLoginE2E.ps1` で確かめる**（2.1 節。
   スタブと SQL Server の起動が要るので、**施主に確かめてから回す**）。**CLI は `E2E/CliLoginE2E.ps1` で確かめる**（2.2 節。スタブだけが要る。`cc`・`jwtbearer`・`ropc` は `Sample4SpRp.stub.json` を渡したスタブ）。
-  **MVC（FAPI 1.0）は `E2E/MvcFapi1E2E.ps1` で確かめる**（2.3 節。スタブには `Sample4SpRp.stub.json` が要る）
+  **MVC（FAPI 1.0）は `E2E/MvcFapi1E2E.ps1` で確かめる**（2.3 節。スタブには `Sample4SpRp.stub.json` が要る）。
+  **MVC（FAPI 2.0）は `E2E/MvcFapi2E2E.ps1`**（2.4 節。MultiPurposeAuthSite#352 が直るまで、正常の側は NG）
 - **`SelectTargets.ps1` は、ここを変えると「バッチ : 11_Build_SpRp_sample.bat ＋ 手で確かめる（SpRp）」に分ける**
   （ビルドだけを回し、通しにはしない）。**手で確かめるものが残るので、検証の記録は進まない**（確かめたら `-Record`）
 - **スタブは MPAS の net10.0 版**である。net48 版の MPAS に固有の振る舞いは再現しない
