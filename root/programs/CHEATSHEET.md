@@ -246,6 +246,8 @@ dotnet test CS\Frameworks\Tests\NUnit\TestPublic\TestPublic.csproj -f net10.0 --
 ```powershell
 # エージェント : コミットの直前の状態で回す（手で確かめるものが残れば終了コード 1。手で確かめてから記録する）
 .\SelectTargets.ps1 -Run
+# エージェント : リスク「高」なら、別モデルのレビューを回し、指摘に判定を付ける（QUALITY.md 4 節）
+#   サブエージェント quality-reviewer に、Issue 番号・範囲・名前空間だけを渡す（主の解釈は渡さない）
 
 # 施主 : 1. Golden の揺れ（2_RunAllTests.ps1 が書き換えた Result*.txt。揺れだけのもの）を戻す
 git checkout -- CS/Frameworks/Tests/Golden
