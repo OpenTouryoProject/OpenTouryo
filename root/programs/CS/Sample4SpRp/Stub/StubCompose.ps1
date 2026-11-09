@@ -36,7 +36,7 @@
     Up（起動。既定）/ Down（停止して消す）/ Config（設定の解決だけを見る。起動しない）
 
 .PARAMETER MpasRoot
-    MultiPurposeAuthSite のリポジトリの場所。**省けば、環境変数 MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**
+    MultiPurposeAuthSite のリポジトリの場所。**省けば、環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**
     （root\files\tools\PowerShell\RepoPath.ps1。#652）。どれを使ったかを表示する。
 
 .PARAMETER Settings
@@ -64,7 +64,7 @@
      2026/11/07  玄人 幸道         起動・停止を MPAS の 2_DockerComposeUp.bat・3_DockerComposeDown.bat に任せた（MPAS#340）
      2026/11/07  玄人 幸道         既定で Sample4SpRp.stub.json を渡すようにし、-MpasDefault を足した（#668）
      2026/11/07  玄人 幸道         MPAS のバッチを呼ぶ間だけコンソールを UTF-8 にした（日本語の echo が化けていた。#668）
-     2026/11/07  玄人 幸道         MPAS の場所を、引数 ＞ 環境変数 MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定 で決める（#652）
+     2026/11/07  玄人 幸道         MPAS の場所を、引数 ＞ 環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定 で決める（#652）
 #>
 [CmdletBinding()]
 param(
@@ -91,13 +91,13 @@ if (-not $MpasDefault -and [string]::IsNullOrEmpty($Settings))
     $Settings = Join-Path (Split-Path -Parent $PSCommandPath) 'Sample4SpRp.stub.json'
 }
 
-# **MPAS の場所は、引数 ＞ 環境変数 MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**（#652）
+# **MPAS の場所は、引数 ＞ 環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**（#652）
 #   パスの既定値は param() に書かない（5.1 の -File で $PSScriptRoot が空になる。CODING.md 5 節）
 . (Join-Path (Split-Path -Parent $PSCommandPath) '..\..\..\..\files\tools\PowerShell\RepoPath.ps1')
-$MpasRoot = Resolve-RepoPath -Variable MPAS_PATH -Argument $MpasRoot -ArgumentName '-MpasRoot'
+$MpasRoot = Resolve-RepoPath -Variable OT_MPAS_PATH -Argument $MpasRoot -ArgumentName '-MpasRoot'
 if (-not $MpasRoot)
 {
-    throw "MPAS の場所が決まりません（-MpasRoot で渡すか、環境変数 MPAS_PATH を登録してください）。"
+    throw "MPAS の場所が決まりません（-MpasRoot で渡すか、環境変数 OT_MPAS_PATH を登録してください）。"
 }
 
 $stubDir = Join-Path $MpasRoot 'container\Stub'
@@ -107,7 +107,7 @@ $downBat = Join-Path $stubDir '3_DockerComposeDown.bat'
 
 if (-not (Test-Path $compose))
 {
-    throw "MPAS のスタブが見つかりません : $compose（-MpasRoot か環境変数 MPAS_PATH で、MPAS の場所を指定してください）"
+    throw "MPAS のスタブが見つかりません : $compose（-MpasRoot か環境変数 OT_MPAS_PATH で、MPAS の場所を指定してください）"
 }
 
 if (($Action -ne 'Config') -and (-not (Test-Path $upBat) -or -not (Test-Path $downBat)))

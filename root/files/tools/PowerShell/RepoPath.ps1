@@ -5,7 +5,7 @@
 .DESCRIPTION
     ＜決め方（上ほど強い）＞
       1. 引数（呼び出し側の -MpasRoot など。空でなければ、そのまま使う）
-      2. 環境変数（MPAS_PATH など。Register-RepoPaths.ps1 で登録する）
+      2. 環境変数（OT_MPAS_PATH など。Register-RepoPaths.ps1 で登録する）
       3. CSV の既定のパス（DefaultPath）。**そのフォルダが在るときだけ**使う
       どれも無ければ $null を返す（止めるのは呼び出し側。登録すべき変数の名前を示すこと）。
 
@@ -19,7 +19,7 @@
 
     ＜使い方＞
       . (Join-Path <root\files\tools\PowerShell> 'RepoPath.ps1')
-      $MpasRoot = Resolve-RepoPath -Variable MPAS_PATH -Argument $MpasRoot -ArgumentName '-MpasRoot'
+      $MpasRoot = Resolve-RepoPath -Variable OT_MPAS_PATH -Argument $MpasRoot -ArgumentName '-MpasRoot'
 
 .NOTES
     作成者          ：玄人 幸道
@@ -28,6 +28,7 @@
      ----------  ----------------  -------------------------------------------------
      2026/11/07  玄人 幸道         新規（#652）
      2026/11/07  玄人 幸道         RepoPaths.csv は手元用（.gitignore）にし、無ければ雛形の _RepoPaths.csv を読む
+     2026/11/09  玄人 幸道         変数名の頭に OT_ を付けた（OTR_PATH → OT_OTR_PATH など）。古い名前だけが在れば警告する（読まない）
 #>
 
 # **CSV の場所は、読み込んだ時点で決める**（関数の中の $PSScriptRoot に頼らない。5.1 との差を避ける。CODING.md 5 節）
@@ -50,6 +51,15 @@ function Get-RepoPathRows
         return @()
     }
     return @(Import-Csv -Path $CsvPath -Encoding UTF8)
+}
+
+function Get-RepoPathOldName
+{
+    <# 頭に OT_ を付ける前の名前（2026/11/09 まで。OT_OTR_PATH → OTR_PATH）。OT_ で始まらなければ $null #>
+    param([string] $Variable)
+
+    if ($Variable -like 'OT_*') { return $Variable.Substring(3) }
+    return $null
 }
 
 function Resolve-RepoPath
@@ -83,6 +93,13 @@ function Resolve-RepoPath
         $value = $value.TrimEnd('\', '/')
         Write-Host ("  {0} : {1}（環境変数 {2}）" -f $label, $value, $Variable)
         return $value
+    }
+
+    # 古い名前（頭に OT_ が無いもの）だけが在れば、知らせる。**読まない**（互換の分岐を残さない）
+    $old = Get-RepoPathOldName $Variable
+    if ($old -and -not [string]::IsNullOrEmpty([Environment]::GetEnvironmentVariable($old)))
+    {
+        Write-Host ("    警告 : 環境変数の名前が変わりました（{0} → {1}）。古い名前は読みません。Register-RepoPaths.ps1 -Apply で登録し直してください。" -f $old, $Variable) -ForegroundColor Yellow
     }
 
     # 3. CSV の既定のパス（在るときだけ。合わないパスを黙って使わない）

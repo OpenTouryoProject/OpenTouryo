@@ -36,7 +36,7 @@
 | 指定できる名前を見る | `.\2_RunAllTests.ps1 -List` | 1 |
 | 実行せずに、いま手元にある結果ファイルだけを比べる | `.\2_RunAllTests.ps1 -SkipBuild` | 1 |
 | Linux でも回す（docker が要る） | `.\2_RunAllTests.ps1 -Linux` | 1 |
-| DB を Oracle / MySQL / PostgreSQL でも回す（LocalServicesOnDocker の場所は環境変数 `LSOD_PATH`。引数なら `-LocalServicesDir <dir>`） | `.\2_RunAllTests.ps1 -CrossDb` | 1 |
+| DB を Oracle / MySQL / PostgreSQL でも回す（LocalServicesOnDocker の場所は環境変数 `OT_LSOD_PATH`。引数なら `-LocalServicesDir <dir>`） | `.\2_RunAllTests.ps1 -CrossDb` | 1 |
 | カバレッジを測って COVERAGE.md と HTML（`Tests/CoverageHtml`）を更新する | `.\2_RunAllTests.ps1 -Coverage -LocalServicesDir D:\path\to\LocalServicesOnDocker` | 1 |
 
 ### ビルド・疎通を絞る
@@ -226,7 +226,7 @@ dotnet test CS\Frameworks\Tests\NUnit\TestPublic\TestPublic.csproj -f net10.0 --
 - **DB のコンテナは LocalServicesOnDocker の [`CHEATSHEET.md`](https://github.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker/blob/master/CHEATSHEET.md) に従う。**
   必要なものだけを名前で起動し、**必須でないものを同時に複数起動しない**（クロス DB は SQL Server に 1 つずつ足す）。
   使い終わったら止める。**メモリを使い切ると、コンテナがシステムごとハングさせる**（[`TESTING.md`](TESTING.md) の冒頭）
-- **クロス DB（`TestPublicDb`）は `.\2_RunAllTests.ps1 -CrossDb` で回す**（#623）。LocalServicesOnDocker の場所は、`-LocalServicesDir` ＞ 環境変数 `LSOD_PATH` ＞ `RepoPaths.csv`（無ければ `_RepoPaths.csv`）の既定（#652）。
+- **クロス DB（`TestPublicDb`）は `.\2_RunAllTests.ps1 -CrossDb` で回す**（#623）。LocalServicesOnDocker の場所は、`-LocalServicesDir` ＞ 環境変数 `OT_LSOD_PATH` ＞ `RepoPaths.csv`（無ければ `_RepoPaths.csv`）の既定（#652）。
   DBMS を 1 つずつ起動 → 回す → 停止まで自動で行う（`docker` が使えれば Rancher 版、使えなければ WSL2 版）。
   始める前から動いていた DBMS には触らない。`-CrossDb` を付けなければ、コンテナは起動も停止もしない
 - **カバレッジを [`Tests/COVERAGE.md`](CS/Frameworks/Tests/COVERAGE.md) に残すなら `.\2_RunAllTests.ps1 -Coverage -LocalServicesDir <LocalServicesOnDocker>`。**

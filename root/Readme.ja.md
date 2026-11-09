@@ -40,10 +40,10 @@ Open 棟梁は、.NET Framework と .NET Core をベースとしたアプリケ�
 
 | 環境変数 | リポジトリ | 使うもの |
 |---|---|---|
-| `MPAS_PATH` | MultiPurposeAuthSite | `programs\CS\Sample4SpRp` のスタブと E2E（`-MpasRoot`） |
-| `LSOD_PATH` | LocalServicesOnDocker | `programs\2_RunAllTests.ps1 -CrossDb / -Coverage`（`-LocalServicesDir`） |
+| `OT_MPAS_PATH` | MultiPurposeAuthSite | `programs\CS\Sample4SpRp` のスタブと E2E（`-MpasRoot`） |
+| `OT_LSOD_PATH` | LocalServicesOnDocker | `programs\2_RunAllTests.ps1 -CrossDb / -Coverage`（`-LocalServicesDir`） |
 
-一覧（ほかのリポジトリが使う `OTR_PATH` などを含む）と既定の場所は `files\tools\PowerShell\_RepoPaths.csv`（雛形）にあります。**手元の配置が雛形と違うなら、同じフォルダに `RepoPaths.csv` として写して直してください**（`.gitignore` の対象。在れば雛形より優先します）。登録は次のとおりです（ユーザーの環境変数）。
+一覧（ほかのリポジトリが使う `OT_OTR_PATH` などを含む）と既定の場所は `files\tools\PowerShell\_RepoPaths.csv`（雛形）にあります。**手元の配置が雛形と違うなら、同じフォルダに `RepoPaths.csv` として写して直してください**（`.gitignore` の対象。在れば雛形より優先します）。登録は次のとおりです（ユーザーの環境変数）。
 
 ```powershell
 cd root\files\tools\PowerShell
