@@ -1,6 +1,7 @@
 ﻿@model Fapi1Result
 @{
-    // 結果の画面（#668）。**E2E は id="result" の data-result（OK / NG）を見る。**
+    // 結果の画面（#668）。FAPI1・FAPI2 で共通（2026/11/09 に Views/Fapi1 から移した。#668 の追加）。
+    // **E2E は id="result" の data-result（OK / NG）を見る。**
 }
 <!DOCTYPE html>
 <html lang="ja">
@@ -9,10 +10,14 @@
     <title>SpRp_MVC - 結果</title>
 </head>
 <body>
-    <h1>FAPI1 の結果</h1>
+    <h1>@Model.Profile の結果</h1>
     <p id="result" data-result="@(Model.Ok ? "OK" : "NG")">@(Model.Ok ? "OK" : "NG : " + Model.Error)</p>
     <table>
         <tr><th>flow</th><td>@Model.Flow</td></tr>
+        @if (!string.IsNullOrEmpty(Model.PushedTo))
+        {
+            <tr><th>認可要求の預け先</th><td>@Model.PushedTo</td></tr>
+        }
         <tr><th>response_mode</th><td>@Model.ResponseMode</td></tr>
         <tr><th>クライアント認証</th><td>@Model.AuthMethod</td></tr>
         <tr><th>token_type</th><td>@Model.TokenType</td></tr>

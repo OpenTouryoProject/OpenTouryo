@@ -26,6 +26,7 @@
 //*  2026/11/07  玄人 幸道         新規作成（#668。汎用認証サイトの自己テストの FAPI1 を移した）
 //*  2026/11/07  玄人 幸道         oauth2・oidc は private_key_jwt に PKCE を併せた（GetAccessTokenByCodeWithPkceAsync。#670）
 //*  2026/11/07  玄人 幸道         Start は、照合した後に入力の文字列ではなく定数を使う（code scanning #59。振る舞いは変えない）
+//*  2026/11/09  玄人 幸道         補助（client_assertion・JSON・クエリ）を Fapi2Controller と共有する（internal に。振る舞いは変えない。#668 の追加）
 //**********************************************************************************
 
 using System;
@@ -390,7 +391,7 @@ namespace SpRp_MVC.Controllers
         /// **鍵は SpRp_RsaPfxFilePath（クライアントの秘密鍵）。** IdP には、その公開鍵（JWK）を登録してある。
         /// **有効期間は短くする**（使い回されても、すぐ使えなくなるように）。
         /// </remarks>
-        private static string CreateClientAssertion(string clientId, string aud)
+        internal static string CreateClientAssertion(string clientId, string aud)
         {
             DigitalSignX509 dsX509 = new DigitalSignX509(
                 CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword, HashAlgorithmName.SHA256);
@@ -403,7 +404,7 @@ namespace SpRp_MVC.Controllers
         /// <summary>JSON を読む（読めなければ null）</summary>
         /// <param name="json">JSON</param>
         /// <returns>JObject</returns>
-        private static JObject ParseJson(string json)
+        internal static JObject ParseJson(string json)
         {
             try
             {
@@ -418,7 +419,7 @@ namespace SpRp_MVC.Controllers
         /// <summary>クエリ文字列を組み立てる（値は URL 符号化する）</summary>
         /// <param name="query">パラメタ</param>
         /// <returns>a=1&amp;b=2</returns>
-        private static string BuildQuery(Dictionary<string, string> query)
+        internal static string BuildQuery(Dictionary<string, string> query)
         {
             List<string> pairs = new List<string>();
             foreach (KeyValuePair<string, string> kv in query)

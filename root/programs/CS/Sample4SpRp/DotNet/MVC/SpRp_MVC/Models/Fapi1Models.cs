@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/11/07  玄人 幸道         新規作成（#668）
+//*  2026/11/09  玄人 幸道         FAPI2 でも使う。結果に Profile（FAPI 1.0 / 2.0）と、預け先（PAR・/ros）を足した（#668 の追加）
 //**********************************************************************************
 
 namespace SpRp_MVC.Models
@@ -31,7 +32,7 @@ namespace SpRp_MVC.Models
     /// <summary>認可要求から戻りまでの間だけ、セッションに置く値</summary>
     public class Fapi1Session
     {
-        /// <summary>flow（oauth2 / oidc / pkce）</summary>
+        /// <summary>flow（FAPI1 : oauth2 / oidc / pkce、FAPI2 : ros / par）</summary>
         public string Flow { get; set; }
 
         /// <summary>client_id（flow で変わる）</summary>
@@ -59,6 +60,12 @@ namespace SpRp_MVC.Models
 
         /// <summary>失敗の理由</summary>
         public string Error { get; set; }
+
+        /// <summary>プロファイル（FAPI 1.0 / FAPI 2.0）</summary>
+        public string Profile { get; set; } = "FAPI 1.0";
+
+        /// <summary>認可要求の預け先（FAPI2 : PAR / /ros。FAPI1 は空）</summary>
+        public string PushedTo { get; set; }
 
         /// <summary>flow</summary>
         public string Flow { get; set; }

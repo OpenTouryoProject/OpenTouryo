@@ -35,6 +35,19 @@
         "redirect_uri_token": "-"
       },
 
+      // ---- SpRp_MVC_FAPI2（Fapi2Controller の par・ros の flow。#668 の追加）
+      //   **client_mode = fapi2**：MPAS の fapi2 の判定（PKCE S256・Request Object・private_key_jwt の assertion の aud は issuer）で通す。
+      //   鍵は FAPI1 のクライアントと同じ公開鍵（SHA256RSA_Client.cer の JWK）。Request Object の署名もこの鍵で確かめられる。
+      //   **MTLS（tls_client_auth）の登録は足さない**（スタブがクライアント証明書を受けないため）。
+      "0cb517873cca4afd86098316373eaffc": {
+        "client_mode": "fapi2",
+        "client_name": "SpRp_MVC_FAPI2",
+        "redirect_uri_code": "https://localhost:44336/Fapi2/Callback",
+        "redirect_uri_token": "-",
+        "token_endpoint_auth_method": "private_key_jwt",
+        "jwk_rsa_publickey": "eyJrdHkiOiJSU0EiLCJhbGciOiJSUzI1NiIsIm4iOiJybUxucTNjaHNudThrMTFWX2FjSjlFQXhjSFU4dzZCNzRMbU5tMFdGVkVRV1htOXQ4bTZRU2ZkQlR6ZWotMXpFYmV6WllOWVNzSkZDZ283WW4tTjFXY0FEU01neTZYaFliVDhuYmJwUTc5VG1rSV91aVNVdktycnhSaVNtMklUOVJ3WjdWN2Z0VWVibUI5YmJDME9PRFpfVGJMMFpVaE1sV05xMG5BbjBwYnFlYloySmwxWHRMRFRxOVVyeWxBdWVSZ3V2ekU3Mno1Qlh3VTE4S08yeWp5dTRBSkpIOU9aLVNmUktHeVlwU3J3OEdqRFhMNm5ObnA1TU9mTk1veTF4VWVIa0xWXzJaVUgtMktYV3hCVnJQbVhFWDNWbXlwN2VWSWFrV2ZrazNpeG41c2ZDZkxyekZIRmpfMjFlX3RlT1ZRVGVYUUlRcUpxN0FaQ0d1NmlxUVEiLCJlIjoiQVFBQiIsImtpZCI6IkVzSF9xS281eWNLeVU2c2xuaEVZRkN2a2RhWXRWUXhjSmxvX1pac3VJQncifQ"
+      },
+
       // ======== SpRp_CLI の cc・jwtbearer・ropc（DotNet/CLI。4 節） ========
       // **サーバで動くバッチを模したコンフィデンシャル クライアント**（秘密と鍵を、設定ファイルに持つ）。
       //   client_mode は normal（client_credentials・JWT Bearer・ROPC は normal にだけ開いている）。
