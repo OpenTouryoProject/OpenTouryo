@@ -1,26 +1,25 @@
-﻿@rem --------------------------------------------------
+@rem --------------------------------------------------
 @rem Execution of the common processing.
 @rem --------------------------------------------------
 
 @rem **************************************************
-@rem [経緯] 本バッチは z_Common.bat の devenv 版である。
-@rem   MSBuild.exe ではエラーになるが devenv.com では通る、という
-@rem   ケースが散在していた時期に、ビルド ツールを devenv.com へ
-@rem   差し替えるために用意された。
-@rem   z_Common.bat と同じインターフェイス（%BUILDFILEPATH% と
-@rem   %COMMANDLINE%）を提供するため、呼び出し側の bat は
-@rem   call するファイルを差し替えるだけで切り替えられる。
-@rem   ※ そのため COMMANDLINE は devenv 構文の "/build <構成>" であり、
-@rem      MSBuild 構文の "/p:Configuration=<構成>" ではない。
+@rem [HISTORY] This batch is the devenv version of z_Common.bat.
+@rem   It was prepared to switch the build tool to devenv.com at a time
+@rem   when some builds failed with MSBuild.exe but passed with devenv.com.
+@rem   It provides the same interface as z_Common.bat - %BUILDFILEPATH% and
+@rem   %COMMANDLINE% - so a calling batch can switch tools
+@rem   only by changing the file it calls.
+@rem   * Therefore COMMANDLINE is the devenv syntax "/build <config>",
+@rem     not the MSBuild syntax "/p:Configuration=<config>".
 @rem
-@rem [注意] 現在は未使用であり、かつこのままでは動作しない。
-@rem   ・リポジトリ内に z_Common2.bat を呼び出すバッチは存在しない。
-@rem   ・"set BUILDFILEPATH10.0 =..." は "=" の前に空白があるため、
-@rem     変数名に末尾の空白が含まれてしまう。
-@rem   ・"set BUILDFILEPATH=BUILDFILEPATH10.0" は "%" が抜けているため、
-@rem     パスではなく文字列そのものを代入している。
-@rem   通常は z_Common.bat（MSBuild 版）を使用すること。
-@rem   再び devenv でのビルドが必要になった場合は、上記を修正したうえで使用する。
+@rem [NOTE] Not used now, and it does not work as it is.
+@rem   - No batch in the repository calls z_Common2.bat.
+@rem   - "set BUILDFILEPATH10.0 =..." has a space before "=",
+@rem     so the variable name ends with a space.
+@rem   - "set BUILDFILEPATH=BUILDFILEPATH10.0" lacks the percent signs,
+@rem     so it assigns the literal string, not the path.
+@rem   Use z_Common.bat - the MSBuild version - normally.
+@rem   If a devenv build is needed again, fix the above before using it.
 @rem **************************************************
 
 @rem --------------------------------------------------

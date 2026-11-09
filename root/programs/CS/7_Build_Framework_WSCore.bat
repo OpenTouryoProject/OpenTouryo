@@ -1,4 +1,4 @@
-﻿setlocal
+setlocal
 
 @rem --------------------------------------------------
 @rem Turn off the echo function.
@@ -26,7 +26,7 @@ rem
 rem Keep this batch : 1_BuildAll.ps1 runs it as the Framework_WSCore step.
 rem   Removing it would make a skipped step look like a failed one.
 
-echo Core系のBinarySerializeの完全廃止対応
+echo Dropped on .NET Core : BinarySerialize was removed completely
 
 pause
 
