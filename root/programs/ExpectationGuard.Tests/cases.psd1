@@ -1,4 +1,4 @@
-﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@6a3d9f49bcc3 src/quality/ExpectationGuard/tests/cases.psd1 sha256:cb93a0c5984a35319a13012551f100fad1f7d4f9610c9ad78bbf5693daa1563c
+﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@d2f87d1f651f src/quality/ExpectationGuard/tests/cases.psd1 sha256:2485266a43648ea8dff8894ce36d0acdc7ff210f8fb92525a751b98e29fe4fb7
 # 判定の用例（OpenTouryoCodingAgentAssets#3）。「この差分なら検出する／しない」を、文章ではなくテストで固定する。
 #
 #   各用例は、一時のリポジトリで次を行う。
@@ -479,12 +479,173 @@ public class FooTests
         }
 
         # ==============================================================
+        # トレーラーの書き方・語彙（#12。git と同じ読み方で読む）
+        # ==============================================================
+        @{
+            Id = 'T01'; Category = '検出する'; Title = '語彙に無いテストの種類（Tested-with。List の項目ごと）'
+            Commits = @(@{ Message = "足した`n`nTested-with: unit, gut"; Files = @{ 'src/A.cs' = "class A {}`n" } })
+            Expect = @{ Exit = 1; Kinds = @(); Errors = 1 }
+        }
+        @{
+            Id = 'T02'; Category = '検出しない'; Title = '語彙にあるテストの種類（括弧の中の「,」では分けない）'
+            Commits = @(@{ Message = "足した`n`nTested-with: unit, e2e (net48, net10.0)"; Files = @{ 'src/A.cs' = "class A {}`n" } })
+            Expect = @{ Exit = 0; Kinds = @(); Errors = 0 }
+        }
+        @{
+            Id = 'T03'; Category = '検出する'; Title = '役の定義に無いレビュー役（Reviewed-with）'
+            Commits = @(@{ Message = "足した`n`nReviewed-with: quality-reviewer (claude-sonnet-5-5)"; Files = @{ 'src/A.cs' = "class A {}`n" } })
+            Expect = @{ Exit = 1; Kinds = @(); Errors = 1 }
+            Note = '用例のリポジトリの役の定義は .claude/agents/reviewer.md だけ'
+        }
+        @{
+            Id = 'T04'; Category = '検出しない'; Title = '役の定義にあるレビュー役と人（行を分ける）'
+            Commits = @(@{ Message = "足した`n`nReviewed-with: reviewer (claude-sonnet-5-5)`nReviewed-with: human"; Files = @{ 'src/A.cs' = "class A {}`n" } })
+            Expect = @{ Exit = 0; Kinds = @(); Errors = 0 }
+        }
+        @{
+            Id = 'T05'; Category = '検出しない'; Title = '同じコミットで足した役の定義（確かめるコミットの木から語彙を取る）'
+            Commits = @(@{ Message = "役を足した`n`nReviewed-with: new-reviewer"; Files = @{ '.claude/agents/new-reviewer.md' = "---`nname: new-reviewer`n---`n" } })
+            Expect = @{ Exit = 0; Kinds = @(); Errors = 0 }
+        }
+        @{
+            Id = 'T06'; Category = '検出しない'; Title = '同じ段で足した役の定義（ステージ。索引から語彙を取る）'
+            Mode = 'Staged'
+            Commits = @(@{ Message = "役を足した`n`nReviewed-with: new-reviewer"; Files = @{ '.claude/agents/new-reviewer.md' = "---`nname: new-reviewer`n---`n" } })
+            Expect = @{ Exit = 0; Kinds = @(); Errors = 0 }
+        }
+        @{
+            Id = 'T07'; Category = '検出する'; Title = '最後の段落に無いトレーラー（Co-Authored-By の前に空行）'
+            Commits = @(@{ Message = "fixed #12 直した`n`nFound-By: spec-check`n`nCo-Authored-By: A <a@example.com>"; Files = @{ 'src/A.cs' = "class A {}`n" } })
+            Expect = @{ Exit = 1; Kinds = @(); Errors = 1; Warnings = 0 }
+            Note = '書いたが読まれない行は、直す行に出す（書き忘れの警告にはしない）'
+        }
+        @{
+            Id = 'T08'; Category = '検出する'; Title = '最後の段落に本文の行が混じる'
+            Commits = @(@{ Message = "fixed #12 直した`n`n本文。`nFound-By: spec-check"; Files = @{ 'src/A.cs' = "class A {}`n" } })
+            Expect = @{ Exit = 1; Kinds = @(); Errors = 1 }
+        }
+        @{
+            Id = 'T09'; Category = '検出する'; Title = '全角の「：」・名前の綴りの違い'
+            Commits = @(@{ Message = "fixed #12 直した`n`nFound-By：spec-check`nTested-wiht: unit"; Files = @{ 'src/A.cs' = "class A {}`n" } })
+            Expect = @{ Exit = 1; Kinds = @(); Errors = 2 }
+        }
+        @{
+            Id = 'T10'; Category = '検出しない'; Title = '名前の大文字・小文字の違い（git は区別しない）'
+            Commits = @(@{ Message = "fixed #12 直した`n`nfound-by: spec-check`nTested-With: unit"; Files = @{ 'src/A.cs' = "class A {}`n" } })
+            Expect = @{ Exit = 0; Kinds = @(); Errors = 0; Warnings = 0 }
+        }
+        @{
+            Id = 'T11'; Category = '検出しない'; Title = '件名と本文の文章の中の「Found-By:」'
+            Commits = @(@{ Message = "Found-By: の語彙を足した`n`nFound-By: の語彙に 1 語を足した。`n理由は #5 を見る。"; Files = @{ 'src/A.cs' = "class A {}`n" } })
+            Expect = @{ Exit = 0; Kinds = @(); Errors = 0 }
+        }
+        @{
+            Id = 'T12'; Category = '検出する'; Title = '最後の段落に無い Expectation-Change は承認にしない'
+            Commits = @(@{ Message = "B を消す`n`nExpectation-Change: 仕様の変更（#1）`n`nCo-Authored-By: A <a@example.com>"; Files = @{ 'tests/FooTests.cs' = @'
+public class FooTests
+{
+    [Test]
+    public void A() { Assert.That(1, Is.EqualTo(1)); }
+}
+'@ } })
+            Expect = @{ Exit = 1; Kinds = @('テストの削除'); Errors = 1 }
+        }
+        @{
+            Id = 'T13'; Category = '検出する'; Title = '値の無い Expectation-Change'
+            Commits = @(@{ Message = "B を消す`n`nExpectation-Change:"; Files = @{ 'tests/FooTests.cs' = @'
+public class FooTests
+{
+    [Test]
+    public void A() { Assert.That(1, Is.EqualTo(1)); }
+}
+'@ } })
+            Expect = @{ Exit = 1; Kinds = @('テストの削除'); Errors = 1 }
+        }
+
+        # ==============================================================
         # 警告（止めない）
         # ==============================================================
         @{
             Id = 'W01'; Category = '警告'; Title = 'fixed #NNN に Found-By が無い'
             Commits = @(@{ Message = 'fixed #12 直した'; Files = @{ 'src/A.cs' = "class A {}`n" } })
             Expect = @{ Exit = 0; Kinds = @(); Warnings = 1 }
+        }
+
+        # ==============================================================
+        # 要確認（止めない・トレーラーを求めない。一覧に出すだけ）
+        # ==============================================================
+        @{
+            Id = 'R01'; Category = '要確認'; Title = '[Obsolete] の追加（旧版をオーバーロードで温存）'
+            Commits = @(@{ Message = '旧版を残す'; Files = @{ 'src/A.cs' = "class A`n{`n    [Obsolete(""Use B(int)."")]`n    public void B() { }`n    public void B(int x) { }`n}`n" } })
+            Expect = @{ Exit = 0; Kinds = @(); Review = 1; ReviewKinds = @('[Obsolete] の追加') }
+        }
+        @{
+            Id = 'R02'; Category = '要確認'; Title = '[Obsolete] の追加（属性の並び）'
+            Commits = @(@{ Message = '旧版を残す'; Files = @{ 'src/A.cs' = "class A`n{`n    [EditorBrowsable(EditorBrowsableState.Never), Obsolete]`n    public void B() { }`n}`n" } })
+            Expect = @{ Exit = 0; Kinds = @(); Review = 1; ReviewKinds = @('[Obsolete] の追加') }
+        }
+        @{
+            Id = 'R03'; Category = '要確認'; Title = '#pragma warning disable CS0618 の追加'
+            Commits = @(@{ Message = '旧版を呼ぶテスト'; Files = @{ 'tests/Unit/OldTests.cs' = "#pragma warning disable CS0612, CS0618`npublic class OldTests { }`n#pragma warning restore CS0612, CS0618`n" } })
+            Expect = @{ Exit = 0; Kinds = @(); Review = 1; ReviewKinds = @('#pragma warning disable CS0618 の追加') }
+        }
+        @{
+            Id = 'R04'; Category = '要確認'; Title = '番号の無い #pragma warning disable の追加（すべての警告を消す）'
+            Commits = @(@{ Message = '警告を消す'; Files = @{ 'tests/Unit/OldTests.cs' = "#pragma warning disable`npublic class OldTests { }`n" } })
+            Expect = @{ Exit = 0; Kinds = @(); Review = 1; ReviewKinds = @('#pragma warning disable CS0618 の追加') }
+        }
+        @{
+            Id = 'R05'; Category = '要確認'; Title = 'コメントの中の [Obsolete]・ほかの番号の #pragma は出さない'
+            Commits = @(@{ Message = 'コメント'; Files = @{ 'src/A.cs' = "class A`n{`n    // [Obsolete] は付けない`n#pragma warning disable CS0168`n    public void B() { }`n}`n" } })
+            Expect = @{ Exit = 0; Kinds = @(); Review = 0 }
+        }
+        @{
+            Id = 'R06'; Category = '要確認'; Title = '#pragma を消した（出さない）'
+            Commits = @(
+                @{ Message = '足す'; Files = @{ 'tests/Unit/OldTests.cs' = "#pragma warning disable CS0618`npublic class OldTests { }`n" } }
+                @{ Message = '消す'; Files = @{ 'tests/Unit/OldTests.cs' = "public class OldTests { }`n" } }
+            )
+            Expect = @{ Exit = 0; Kinds = @(); Review = 0 }
+        }
+        @{
+            Id = 'R07'; Category = '要確認'; Title = '[Obsolete] を同じファイルの中で移した（出さない）'
+            Commits = @(
+                @{ Message = '足す'; Files = @{ 'src/A.cs' = "class A`n{`n    [Obsolete]`n    public void B() { }`n    public void C() { }`n}`n" } }
+                @{ Message = '並べ替え'; Files = @{ 'src/A.cs' = "class A`n{`n    public void C() { }`n    [Obsolete]`n    public void B() { }`n}`n" } }
+            )
+            Expect = @{ Exit = 0; Kinds = @(); Review = 0 }
+        }
+        @{
+            Id = 'R08'; Category = '要確認'; Title = '要確認と期待値の変更が同じコミット（期待値の変更は止まる。要確認も出る）'
+            Commits = @(@{ Message = 'B を消し、旧版を残す'; Files = @{
+                'tests/FooTests.cs' = "public class FooTests`n{`n    [Test]`n    public void A() { Assert.That(1, Is.EqualTo(1)); }`n}`n"
+                'src/A.cs' = "class A`n{`n    [Obsolete]`n    public void B() { }`n}`n"
+            } })
+            Expect = @{ Exit = 1; Kinds = @('テストの削除'); Review = 1; ReviewKinds = @('[Obsolete] の追加') }
+        }
+        @{
+            Id = 'R09'; Category = '要確認'; Title = 'CS を付けない番号の #pragma warning disable 618 の追加（MultiPurposeAuthSite 399ac20b）'
+            Commits = @(@{ Message = '旧版を呼ぶ'; Files = @{ 'src/A.cs' = "#pragma warning disable 618`nclass A { }`n#pragma warning restore 618`n" } })
+            Expect = @{ Exit = 0; Kinds = @(); Review = 1; ReviewKinds = @('#pragma warning disable CS0618 の追加') }
+        }
+        @{
+            Id = 'R10'; Category = '要確認'; Title = 'DiffScope の外の [Obsolete] も出す（DiffScope はテストの在りか。MultiPurposeAuthSite a4ea8acc）'
+            Commits = @(
+                @{ Message = "テストの下だけを読む`n`nExpectation-Change: DiffScope を tests/ にした"; Files = @{ 'guard/rules.psd1' = "@{`n    DiffScope = @('tests/')`n}`n" } }
+                @{ Message = '旧版を残す'; Files = @{ 'src/A.cs' = "class A`n{`n    [Obsolete]`n    public void B() { }`n}`n" } }
+            )
+            Expect = @{ Exit = 0; Kinds = @(); Review = 1; ReviewKinds = @('[Obsolete] の追加') }
+        }
+        @{
+            Id = 'R11'; Category = '要確認'; Title = 'ReviewScope の外は出さない（範囲は導入先が選ぶ）'
+            Commits = @(
+                @{ Message = "要確認は src の下だけ`n`nExpectation-Change: ReviewScope を src/ にした"; Files = @{ 'guard/rules.psd1' = "@{`n    ReviewScope = @('src/')`n}`n" } }
+                @{ Message = '旧版を残す'; Files = @{
+                    'src/A.cs' = "class A`n{`n    [Obsolete]`n    public void B() { }`n}`n"
+                    'vendor/C.cs' = "class C`n{`n    [Obsolete]`n    public void D() { }`n}`n"
+                } }
+            )
+            Expect = @{ Exit = 0; Kinds = @(); Review = 1; ReviewKinds = @('[Obsolete] の追加') }
         }
 
         # ==============================================================

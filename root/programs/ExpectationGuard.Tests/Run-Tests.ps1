@@ -1,4 +1,4 @@
-﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@6a3d9f49bcc3 src/quality/ExpectationGuard/tests/Run-Tests.ps1 sha256:3d68a1088a9dfc3c0033052792dce854dc8a859c466ca98f75c3da6d521332c1
+﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@d2f87d1f651f src/quality/ExpectationGuard/tests/Run-Tests.ps1 sha256:8900e946e255b22e6f546a7258bbca8f957a78a8e7d666e8f7a9150c77770535
 <#
 .SYNOPSIS
     期待値の変更の検出器の、判定の用例（cases.psd1）を回す（OpenTouryoCodingAgentAssets#3）。
@@ -153,8 +153,12 @@ function Invoke-Case($Case)
         $r = @($r | Where-Object { $_ -and $_.PSObject.Properties["Findings"] })
         $kinds = @($r | ForEach-Object { $_.Findings } | ForEach-Object { $_.Kind } | Sort-Object -Unique)
         $warn = @($r | ForEach-Object { $_.Warnings }).Count
-        $detail = (@($r | ForEach-Object { $_.Findings } | ForEach-Object { "{0} : {1}" -f $_.Kind, $_.Path }) + @($r | ForEach-Object { $_.Errors })) -join " / "
-        return [pscustomobject]@{ Exit = $code; Kinds = $kinds; Warnings = $warn; Ask = $null; Detail = $detail }
+        # 要確認（ReviewRules）：種類の並び（重ねない）と、件数（ファイル×種類）
+        $reviewItems = @($r | Where-Object { $_.PSObject.Properties["Review"] } | ForEach-Object { $_.Review })
+        $reviewKinds = @($reviewItems | ForEach-Object { $_.Kind } | Sort-Object -Unique)
+        $detail = (@($r | ForEach-Object { $_.Findings } | ForEach-Object { "{0} : {1}" -f $_.Kind, $_.Path }) + @($reviewItems | ForEach-Object { "要確認 {0} : {1}" -f $_.Kind, $_.Path }) + @($r | ForEach-Object { $_.Errors })) -join " / "
+        $errs = @($r | ForEach-Object { $_.Errors }).Count
+        return [pscustomobject]@{ Exit = $code; Kinds = $kinds; Warnings = $warn; Errors = $errs; Review = $reviewItems.Count; ReviewKinds = $reviewKinds; Ask = $null; Detail = $detail }
     }
     finally
     {
@@ -178,6 +182,13 @@ foreach ($c in $cases)
             if (($want -join "|") -cne (@($a.Kinds) -join "|")) { $why += ("検出 [{0}]（期待 [{1}]）" -f (@($a.Kinds) -join ", "), ($want -join ", ")) }
         }
         if ($null -ne $e.Warnings -and $a.Warnings -ne [int]$e.Warnings) { $why += ("警告 {0} 件（期待 {1}）" -f $a.Warnings, $e.Warnings) }
+        if ($null -ne $e.Errors -and $a.Errors -ne [int]$e.Errors) { $why += ("誤り {0} 件（期待 {1}）" -f $a.Errors, $e.Errors) }
+        if ($null -ne $e.Review -and $a.Review -ne [int]$e.Review) { $why += ("要確認 {0} 件（期待 {1}）" -f $a.Review, $e.Review) }
+        if ($null -ne $e.ReviewKinds)
+        {
+            $want = @($e.ReviewKinds | Sort-Object -Unique)
+            if (($want -join "|") -cne (@($a.ReviewKinds) -join "|")) { $why += ("要確認 [{0}]（期待 [{1}]）" -f (@($a.ReviewKinds) -join ", "), ($want -join ", ")) }
+        }
         if ($null -ne $e.Ask -and $a.Ask -ne [bool]$e.Ask) { $why += ("ask {0}（期待 {1}）" -f $a.Ask, $e.Ask) }
     }
     catch

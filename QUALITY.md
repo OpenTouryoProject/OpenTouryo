@@ -138,7 +138,7 @@ OpenTouryoCodingAgentAssets#3）。汎用認証サイトも同じ本体を写し
 | ファイル（`root/programs/`） | 持ち主 | 中身 |
 |---|---|---|
 | `CheckExpectationChange.ps1` | 写し | 本体（段 1〜3 の判定。規則は持たない） |
-| `rules.common.psd1` | 写し | 共通の規則（仕組みのファイル・トレーラーの検査（`Found-By:`。5 節）・段 1 の判定） |
+| `rules.common.psd1` | 写し | 共通の規則（仕組みのファイル・トレーラーの検査（`Found-By:`・`Tested-with:`・`Reviewed-with:`。5 節）・段 1 の判定） |
 | `ExpectationGuard.Tests/` | 写し | 判定の用例（「この差分なら検出する／しない」） |
 | `rules.psd1` | このリポジトリ | OpenTouryo の規則（Golden・NUnit のテストの属性・無効化・`[Basis]` の削除） |
 | `CompareGolden.ps1` | このリポジトリ | Golden の比べ方（`CompareResult.ps1` で正規化して比べる。`rules.psd1` から差し込む） |
@@ -149,6 +149,8 @@ OpenTouryoCodingAgentAssets#3）。汎用認証サイトも同じ本体を写し
   写しの先頭の行に原本の版があり、CI（`Verify copies`）が、写しが手で直されていないかを確かめる（違えば警告）
 - **写し直しも「仕組みの変更」になる**（印の行の版が変わるだけでも）。理由に、版の変化と中身が変わったかを書く
 - **判定の用例は、CI（`expectation-guard-tests`）で回る。** 手元では `.\ExpectationGuard.Tests\Run-Tests.ps1`（`root\programs` で）
+- **要確認**（`[Obsolete]`・`#pragma warning disable CS0618` の追加）は止めない・トレーラーを求めない。一覧に出し、CI では足した行に注釈を付ける。
+  範囲は `rules.psd1` の `ReviewScope`（このリポジトリは書かない＝リポジトリ全体。`DiffScope` はテストの範囲で、要確認には使わない）
 
 ### エージェントがすること
 
@@ -269,6 +271,26 @@ Found-By: <手段> [<補足>]
 - 検出器が確かめる：**語彙に無い値は止める**（段 2・段 3）。`fixed #NNN` に無ければ**警告に留める**（バグかどうかは機械に分からない）
 - 導入の前のコミットには遡って付けない（遡るなら Wiki の集計で行い、コミットは書き換えない）
 
+### 確かめ方を残す：`Tested-with:`・`Reviewed-with:`（OpenTouryoCodingAgentAssets#12）
+
+**そのコミットをどう確かめたか（流したテストの種類・レビューした役）を、トレーラーで残す。** `Found-By:` と併せて、6 節で数える。
+
+```text
+fixed #NNN
+
+Found-By: <手段> [<補足>]
+Tested-with: <種類>[, <種類>]
+Reviewed-with: <役> [(<モデル ID>)]
+```
+
+- `<種類>` は `unit`・`e2e`・`golden`・`manual`・`none`。`<役>` は `.claude/agents/` の役の定義の名前（例 `quality-reviewer`）か、人なら `human`。
+  **語彙と意味の一次情報は [`rules.common.psd1`](root/programs/rules.common.psd1) の規則**（本書には写さない）
+- **流していないテスト・回していないレビューは書かない。** 記録であって証明ではない。人はコミットのときに、経緯と合っているかを見る
+- 指摘の数（採用・却下・別モデルでだけ見つかった数）は長いので、完了コメントに書く（4 節）。トレーラーは「何で・誰が」だけ
+- 検出器が確かめる：**語彙に無い値は止める**（段 2・段 3）。書き忘れは見ない
+- **トレーラーは最後の段落に並べる**（本文との間に空行を 1 つ。トレーラーの間に空行を挟まない）。git はそこしか読まないので、
+  検出器は最後の段落に無いトレーラー・全角の「：」・名前の綴りの誤りも止め、直した行と直し方を出す
+
 ---
 
 ## 6. 計測
@@ -282,6 +304,12 @@ Found-By: <手段> [<補足>]
 
   ```text
   git log --format='%h %(trailers:key=Found-By,valueonly,separator=|)' <範囲>
+  ```
+
+- コミットの、確かめ方の内訳（5 節の `Tested-with:`・`Reviewed-with:`。後でバグが見つかったコミットと突き合わせる）：
+
+  ```text
+  git log --format='%h %(trailers:key=Tested-with,valueonly,separator=|) %(trailers:key=Reviewed-with,valueonly,separator=|)' <範囲>
   ```
 
 ---
@@ -346,3 +374,4 @@ Golden（`Result*.txt`）は、コンソール EXE の出力を丸ごと写し�
       すべての指摘に判定を付け、判定後の重大度「高」が無くなるまで回したか。結果（モデル ID・数・内訳・別モデルでだけ見つかった数）を完了コメントに書くか
 - [ ] 見つけた問題を、5 節の 3 か所に戻したか（セキュリティの弱点なら、まず人に報告したか）
 - [ ] バグの修正（`fixed #NNN`）なら、コミット メッセージの案に `Found-By:` を入れたか（5 節。経緯を推測で埋めていないか）
+- [ ] 流したテスト・回したレビューを、`Tested-with:`・`Reviewed-with:` で書いたか。トレーラーを最後の段落に並べたか（5 節）

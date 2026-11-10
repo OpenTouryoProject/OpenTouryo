@@ -1,4 +1,4 @@
-﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@6a3d9f49bcc3 src/quality/ExpectationGuard/CheckExpectationChange.ps1 sha256:4090217affb8199d8743407a2b1e626a24d9834078923cb6bd7e3fb622e2aaef
+﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@d2f87d1f651f src/quality/ExpectationGuard/CheckExpectationChange.ps1 sha256:2be7f0fbcd3c74a8c5db9d42f2a53e1a789900be0d111be056a2ad577e614456
 <#
 .SYNOPSIS
     期待値の変更を検出し、トレーラー Expectation-Change が付いているかを確かめる（共通の本体）。
@@ -20,12 +20,19 @@
                          （コメント アウトは「消えた」と数える）。
       KeyedArgumentRules 呼び出しの引数を、**コミット全体で**キーごとに比べる（ファイルをまたいで移しただけなら数えない）。
       TrailerRules       トレーラーの値の検査。語彙に無い値は止め、必要なのに無いときは警告する。
-                         どちらのときも語彙の一覧（Meanings があれば意味も）を出す。
+                         語彙は Vocabulary と、VocabularyFiles（ファイルの名前。例 .claude/agents/*.md）。List なら「,」で分けて見る。
+                         止めたときは、書いた行・直した行・直した最後の段落・書き方（Syntax）・例（Example）・
+                         語彙の一覧（Meanings があれば意味も）・コミットの直し方を出す（人がそのまま写して直せるように）。
       GeneratedRules     -CheckGenerated のとき、生成物の作り直しの漏れを見る（期待値の変更の代わりに）。
+      ReviewRules        要確認。ファイルごとに、パターンに当たる行を足した数から消した数を引き、残れば一覧に出す。
+                         **止めない・トレーラーを求めない**（終了コードは変えない）。GitHub Actions では注釈（notice）にする。
+                         段 1（PreToolUse）では見ない。範囲は ReviewScope（省略時はリポジトリ全体）で、DiffScope は使わない。
     **アサーションの緩和は見ない**（機械的に判定できない）。レビューの観点で拾う。
 
     承認：コミット メッセージに「Expectation-Change: <理由>」の行があれば、人が承認したものとする。
     # で始まる行と、git commit -v の切り取り線から後は見ない。
+    **トレーラーは git と同じ読み方で読む**（git interpret-trailers。メッセージの最後の段落だけ）。集計（git log の %(trailers)）に
+    載らない書き方（最後の段落に無い・全角の「：」・名前の綴りの違い・値が空）は、規則のトレーラーと承認のトレーラーとも止める。
 
 .PARAMETER Staged
     ステージした差分（HEAD との差）を見る。commit-msg フックが使う。
@@ -54,7 +61,7 @@
 
 .OUTPUTS
     終了コード 0 = 期待値の変更が無い、またはトレーラーがある（警告はあってもよい）
-               1 = トレーラーの無い期待値の変更がある、語彙に無いトレーラーの値がある
+               1 = トレーラーの無い期待値の変更がある、語彙に無いトレーラーの値・git が読まないトレーラーの行がある
                    （-CheckGenerated では、作り直しの漏れがある）
                2 = 実行できない（引数の誤り・規則の誤り・git の失敗）
 
@@ -211,7 +218,7 @@ function Read-Rules([string]$CommonPath, [string]$RepoPath)
             else { $rules[$k] = $v }
         }
     }
-    foreach ($k in @("Guard", "FileRules", "LineRules", "KeyedArgumentRules", "TrailerRules", "GeneratedRules", "DiffScope"))
+    foreach ($k in @("Guard", "FileRules", "LineRules", "KeyedArgumentRules", "TrailerRules", "GeneratedRules", "ReviewRules", "DiffScope", "ReviewScope"))
     {
         if (-not $rules.ContainsKey($k)) { $rules[$k] = @() } else { $rules[$k] = @($rules[$k]) }
     }
@@ -257,6 +264,8 @@ function Get-MessageLines([string[]]$Lines)
     return , $out
 }
 
+#   行のどこにあっても拾う。生成物の作り直しの漏れ（範囲のメッセージをまとめて見る）でだけ使う。
+#   コミットごとの検査は、git と同じ読み方の Get-GitTrailers を使う。
 function Get-Trailer([string[]]$Lines, [string]$Name)
 {
     $found = @()
@@ -265,6 +274,171 @@ function Get-Trailer([string[]]$Lines, [string]$Name)
         if ($l -match ('^' + [regex]::Escape($Name) + ':\s*(\S.*)$')) { $found += $Matches[1].Trim() }
     }
     return , $found
+}
+
+# git がトレーラーとして読む行（メッセージの最後の段落）。**集計（git log の %(trailers)）と同じ読み方にするため、git に読ませる。**
+#   キーは大文字・小文字を区別しない（git と同じ）。値が空の行も返す。
+function Get-GitTrailers([string[]]$Lines)
+{
+    $tmp = [IO.Path]::GetTempFileName()
+    $script:tempFiles += $tmp
+    [IO.File]::WriteAllText($tmp, ((Get-MessageLines $Lines) -join "`n") + "`n", (New-Object Text.UTF8Encoding $false))
+    $r = Invoke-GitChecked @("interpret-trailers", "--parse", "--no-divider", $tmp)
+    $out = @()
+    foreach ($l in $r.Lines)
+    {
+        if ($l -match '^([^:]+):\s?(.*)$') { $out += [pscustomobject]@{ Key = $Matches[1].Trim(); Value = $Matches[2].Trim() } }
+    }
+    return , $out
+}
+
+function Select-Trailer($Parsed, [string]$Name)
+{
+    @($Parsed) | Where-Object { $_ -and $_.Key -ieq $Name } | ForEach-Object { $_.Value }
+}
+
+function Get-EditDistance([string]$A, [string]$B)
+{
+    # 1 行前と今の行だけを持つ（Windows PowerShell 5.1 は、2 次元の配列の添え字に式を書けない）
+    $prev = New-Object 'int[]' ($B.Length + 1)
+    $curr = New-Object 'int[]' ($B.Length + 1)
+    for ($j = 0; $j -le $B.Length; $j++) { $prev[$j] = $j }
+    for ($i = 1; $i -le $A.Length; $i++)
+    {
+        $curr[0] = $i
+        for ($j = 1; $j -le $B.Length; $j++)
+        {
+            $cost = $(if ($A[$i - 1] -ceq $B[$j - 1]) { 0 } else { 1 })
+            $curr[$j] = [Math]::Min([Math]::Min($prev[$j] + 1, $curr[$j - 1] + 1), $prev[$j - 1] + $cost)
+        }
+        $tmp = $prev; $prev = $curr; $curr = $tmp
+    }
+    return $prev[$B.Length]
+}
+
+# 綴りの違いを許す幅（長い語ほど広く）
+function Test-NearWord([string]$A, [string]$B)
+{
+    $limit = $(if ($B.Length -ge 10) { 2 } else { 1 })
+    return ((Get-EditDistance $A $B) -le $limit)
+}
+
+# 語彙のうち、書いた語に近いもの（大文字・小文字の違い、綴りの 1〜2 文字の違い）。無ければ $null
+function Get-NearestWord([string]$Word, [string[]]$Vocabulary)
+{
+    foreach ($v in $Vocabulary) { if ($v -ieq $Word) { return $v } }
+    foreach ($v in $Vocabulary) { if (Test-NearWord $Word.ToLowerInvariant() $v.ToLowerInvariant()) { return $v } }
+    return $null
+}
+
+# トレーラーの名前の比べ方（大文字・小文字・「-」・空白・「_」を無視）
+function Get-NameKey([string]$Name) { return ($Name -replace '[\s\-_]', '').ToLowerInvariant() }
+
+# トレーラーらしい行（名前・区切り・値）。区切りの全角の「：」と、名前の中の空白も拾う（直す対象として）
+$trailerLike = '^(?<lead>\s*)(?<name>[A-Za-z][A-Za-z0-9]*(?:[\s\-_]+[A-Za-z0-9]+)*)\s*(?<sep>[:：])\s*(?<value>.*)$'
+
+# **git に読まれない、トレーラーのつもりの行。** 書いた行・直した名前・理由を返す（値の語彙は呼ぶ側で見る）。
+#   見るのは、名前が規則のトレーラー（綴りの違いを含む）の行のうち、
+#   トレーラーらしい行だけの段落にある行と、最後の段落の末尾に続く行。本文の文章の中の行と、1 行目（件名）は見ない。
+function Find-TrailerProblems([string[]]$Lines, [string[]]$Names, $Parsed)
+{
+    $msg = [string[]](Get-MessageLines $Lines)
+    $paras = @(); $cur = @()
+    for ($i = 1; $i -lt $msg.Count; $i++)
+    {
+        if ($msg[$i].Trim() -eq "") { if ($cur.Count -gt 0) { $paras += , $cur; $cur = @() }; continue }
+        $cur += $msg[$i]
+    }
+    if ($cur.Count -gt 0) { $paras += , $cur }
+
+    $keys = @{}
+    foreach ($n in $Names) { if ($n) { $keys[(Get-NameKey $n)] = $n } }
+    $out = @()
+    for ($p = 0; $p -lt $paras.Count; $p++)
+    {
+        $isLast  = ($p -eq $paras.Count - 1)
+        $allLike = (@($paras[$p] | Where-Object { $_ -notmatch $trailerLike }).Count -eq 0)
+        if (-not $isLast -and -not $allLike) { continue }
+        # 本文が混じった最後の段落では、末尾に続くトレーラーらしい行だけを見る（本文の直後に空行なしで書いたもの）
+        $from = 0
+        if (-not $allLike)
+        {
+            for ($q = $paras[$p].Count - 1; $q -ge 0; $q--) { if ($paras[$p][$q] -notmatch $trailerLike) { $from = $q + 1; break } }
+        }
+        foreach ($l in @($paras[$p] | Select-Object -Skip $from))
+        {
+            if ($l -notmatch $trailerLike) { continue }
+            $written = $Matches['name']; $sep = $Matches['sep']; $lead = $Matches['lead']; $value = $Matches['value'].Trim()
+            $k = Get-NameKey $written
+            $canon = $null
+            if ($keys.ContainsKey($k)) { $canon = $keys[$k] }
+            else { foreach ($kk in $keys.Keys) { if (Test-NearWord $k $kk) { $canon = $keys[$kk]; break } } }
+            if (-not $canon) { continue }
+
+            $nameOk = ($written -ieq $canon)
+            $read = (@(@($Parsed) | Where-Object { $_ -and $_.Key -ieq $written -and $_.Value -ceq $value }).Count -gt 0)
+            if ($nameOk -and $read) { continue }
+
+            $reasons = @()
+            if (-not $nameOk) { $reasons += ("名前は {0}" -f $canon) }
+            if ($sep -ne ':')  { $reasons += "区切りは半角の「:」" }
+            if ($lead)         { $reasons += "行の頭に空白を入れない" }
+            if (-not $isLast)  { $reasons += "最後の段落に無い" }
+            elseif (-not $allLike) { $reasons += "最後の段落に本文の行が混じっている" }
+            elseif ($nameOk -and $sep -eq ':' -and -not $lead) { $reasons += "同じ段落のほかの行の誤りを直せば、git が読む" }
+            if ($reasons.Count -eq 0) { $reasons += "git がトレーラーとして読まない" }
+            $out += [pscustomobject]@{ Name = $canon; Written = $l; Value = $value; Reasons = $reasons; Read = $read }
+        }
+    }
+    return , $out
+}
+
+# 規則の語彙と意味。VocabularyFiles（ファイルの名前を語にする。例 .claude/agents/*.md → 役の定義の名前）は、
+#   確かめるコミット（ステージなら索引）の木から取る。
+function Get-RuleVocabulary($Rule, [string]$Sha)
+{
+    $words = @()
+    $meanings = @{}
+    foreach ($glob in @($Rule.VocabularyFiles))
+    {
+        if (-not $glob) { continue }
+        $dir = ($glob -replace '[^/]*$', '')
+        $files = $(if ($Sha) { (Invoke-GitChecked @("ls-tree", "--full-tree", "--name-only", $Sha, "--", $dir)).Lines }
+                   else      { (Invoke-GitChecked @("ls-files", "--full-name", "--", ":(top)$dir")).Lines })
+        foreach ($f in @($files | Where-Object { $_ -like $glob } | Sort-Object))
+        {
+            $w = [IO.Path]::GetFileNameWithoutExtension($f)
+            if ($words -ccontains $w) { continue }
+            $words += $w
+            $meanings[$w] = $(if ($Rule.VocabularyFilesMeaning) { $Rule.VocabularyFilesMeaning -f $f } else { $f })
+        }
+    }
+    foreach ($w in @($Rule.Vocabulary)) { if ($w -and ($words -cnotcontains $w)) { $words += $w } }
+    if ($Rule.Meanings) { foreach ($k in $Rule.Meanings.Keys) { $meanings[$k] = $Rule.Meanings[$k] } }
+    return [pscustomobject]@{ Words = $words; Meanings = $meanings; Checked = ($null -ne $Rule.Vocabulary -or $null -ne $Rule.VocabularyFiles) }
+}
+
+# 値を語彙で確かめる。List なら「,」で分けた項目ごと（括弧の中の「,」では分けない）。項目の最初の語を見る。
+#   Problems：誤りの説明。Fixed：直した値（近い語があれば置き換え、無ければ Placeholder のまま。補足は残す）
+function Test-TrailerValue($Rule, [string]$Value, $Vocab)
+{
+    $ph = $(if ($Rule.Placeholder) { $Rule.Placeholder } else { "<語>" })
+    if ($Value.Trim() -eq "") { return [pscustomobject]@{ Problems = @("値がありません"); Fixed = $ph } }
+    $items = $(if ($Rule.List) { @($Value -split ',(?![^(]*\))') } else { @($Value) })
+    $problems = @()
+    $fixed = @()
+    foreach ($it in $items)
+    {
+        $t = $it.Trim()
+        if ($t -eq "") { continue }
+        $word = ($t -split '\s+')[0]
+        $rest = $t.Substring($word.Length)
+        if (-not $Vocab.Checked -or ($word -cin @($Vocab.Words))) { $fixed += $t; continue }
+        $near = Get-NearestWord $word @($Vocab.Words)
+        if ($near) { $problems += ("{0} は語彙にありません（{1} のことなら、直した行のとおり）" -f $word, $near); $fixed += ($near + $rest) }
+        else       { $problems += ("{0} は語彙にありません（下の一覧から選ぶ）" -f $word); $fixed += ($ph + $rest) }
+    }
+    return [pscustomobject]@{ Problems = $problems; Fixed = ($fixed -join ", ") }
 }
 
 # ------------------------------------------------------------------
@@ -533,7 +707,7 @@ function Invoke-PreToolUse($Rules)
 # 本体
 # ------------------------------------------------------------------
 $tempFiles = @()
-$result = [pscustomobject]@{ Target = $null; Commit = $null; Findings = @(); Approved = @(); Warnings = @(); Errors = @(); ExitCode = 0 }
+$result = [pscustomobject]@{ Target = $null; Commit = $null; Findings = @(); Approved = @(); Review = @(); Warnings = @(); Errors = @(); ExitCode = 0 }
 
 function Complete([int]$Code)
 {
@@ -690,10 +864,6 @@ try
             if ($LASTEXITCODE -gt $worst) { $worst = $LASTEXITCODE }
         }
         if ($skipped -gt 0) { Write-Msg ("  導入より前のコミット {0} 件は見ていません" -f $skipped) }
-        if ($worst -eq 1)
-        {
-            Write-Msg "  既にあるコミットは、メッセージを書き直す（git rebase -i で reword）。push 済みなら force push になるので、人が判断する。"
-        }
         exit $worst
     }
 
@@ -869,77 +1039,239 @@ try
         }
     }
 
-    # --- トレーラーの検査 -------------------------------------------------
-    $body = (Get-MessageLines $message) -join "`n"
-    $helpRules = @()   # 語彙の一覧（語と意味）を出す規則
-    foreach ($t in @($rules.TrailerRules))
+    # --- 要確認（ReviewRules） ---------------------------------------------
+    #   止めない。ファイルごとに、当たる行の「足した数 − 消した数」が残れば一覧に出す（移しただけなら出ない）。
+    #   注釈のために、足した行の番号（新しい側）を覚えておく。
+    #   範囲は ReviewScope（省略時はリポジトリ全体）で、規則の Paths で絞る。**DiffScope は使わない。**
+    #   DiffScope はテストの在りかで、要確認が見たい製品のコードはその外にある（MultiPurposeAuthSite の DiffScope は root/programs/Tests/）。
+    if (@($rules.ReviewRules).Count -gt 0)
     {
-        $values = Get-Trailer $message $t.Name
-        $needHelp = $false
-        foreach ($v in $values)
+        $scope = @($rules.ReviewScope | ForEach-Object { ":(top)$_" })
+        if ($scope.Count -eq 0) { $scope = @(":(top)") }
+        $diff = (Invoke-GitChecked (@("diff", "-M", "-U0", "--no-color") + $diffEnds + @("--") + $scope)).Lines
+        $file = $null
+        $lineNo = 0
+        $rv = @{}   # パス → 規則の番号 → @{ Add; Del; Lines }
+        foreach ($l in $diff)
         {
-            $word = ($v -split '\s+')[0]
-            if ($t.Vocabulary -and ($word -cnotin @($t.Vocabulary)))
+            if ($l -match '^diff --git a/.+ b/(.+)$')
             {
-                $result.Errors += ("{0}: {1} は語彙にありません（{2}）" -f $t.Name, $word, (@($t.Vocabulary) -join " / "))
-                $needHelp = $true
+                $file = $Matches[1]
+                $active = @()
+                for ($k = 0; $k -lt @($rules.ReviewRules).Count; $k++) { if (Test-AnyMatch $file @($rules.ReviewRules)[$k].Paths) { $active += $k } }
+                if ($active.Count -eq 0) { $file = $null }
+                continue
+            }
+            if (-not $file) { continue }
+            if ($l -match '^@@ -\d+(,\d+)? \+(\d+)(,\d+)? @@') { $lineNo = [int]$Matches[2]; continue }
+            if ($l.StartsWith("+++") -or $l.StartsWith("---")) { continue }
+            if (-not ($l.StartsWith("+") -or $l.StartsWith("-"))) { continue }
+
+            $add = $l.StartsWith("+")
+            $body = $l.Substring(1)
+            $here = $lineNo
+            if ($add) { $lineNo++ }
+            if ($body -match $rules.CommentLine) { continue }
+            foreach ($k in $active)
+            {
+                if ($body -notmatch @($rules.ReviewRules)[$k].Pattern) { continue }
+                if (-not $rv.ContainsKey($file)) { $rv[$file] = @{} }
+                if (-not $rv[$file].ContainsKey($k)) { $rv[$file][$k] = @{ Add = 0; Del = 0; Lines = @() } }
+                if ($add) { $rv[$file][$k].Add++; $rv[$file][$k].Lines += $here } else { $rv[$file][$k].Del++ }
             }
         }
-        if ($values.Count -eq 0 -and $t.RequiredWhen -and $body -match $t.RequiredWhen)
+        foreach ($p in ($rv.Keys | Sort-Object))
+        {
+            foreach ($k in ($rv[$p].Keys | Sort-Object))
+            {
+                $r = @($rules.ReviewRules)[$k]; $c = $rv[$p][$k]
+                $n = $c.Add - $c.Del
+                if ($n -gt 0) { $result.Review += [pscustomobject]@{ Kind = $r.Name; Path = $p; Count = $n; Lines = @($c.Lines); Hint = $r.Hint } }
+            }
+        }
+        if ($result.Review.Count -gt 0)
+        {
+            Write-Msg ""
+            Write-Msg ("  要確認 {0} 件（{1}）。止めない。レビューで判断を確かめる" -f $result.Review.Count, $label) -ForegroundColor Cyan
+            foreach ($x in $result.Review)
+            {
+                $hint = $(if ($x.Hint) { "（" + $x.Hint + "）" } else { "" })
+                if ($env:GITHUB_ACTIONS -eq "true")
+                {
+                    foreach ($ln in $x.Lines) { Write-Msg ("::notice file={0},line={1},title=要確認：{2}::{3}{4}" -f $x.Path, $ln, $x.Kind, $label, $hint) }
+                }
+                Write-Msg ("    {0} : {1}（{2} 件。行 {3}）{4}" -f $x.Kind, $x.Path, $x.Count, ($x.Lines -join ","), $hint)
+            }
+        }
+    }
+
+    # --- トレーラーの検査 -------------------------------------------------
+    #   git と同じ読み方（メッセージの最後の段落）で読む。集計（git log の %(trailers)）に載らない行は、書き方の誤りとして止める。
+    #   誤りごとに、書いた行と直した行を出す（人がそのまま写して直せるように）。
+    $body = (Get-MessageLines $message) -join "`n"
+    $parsed = Get-GitTrailers $message
+    $approvalSyntax = "{0}: <何が・なぜ変わったか（仕様の該当箇所・Issue 番号）>" -f $rules.ApprovalTrailer
+    $vocabOf = @{}
+    foreach ($t in @($rules.TrailerRules)) { $vocabOf[$t.Name] = Get-RuleVocabulary $t $(if ($Staged) { $null } else { $sha }) }
+    $fixes = @()       # 直す行：Name・Written（書いた行）・Fixed（直した行）・Reasons
+    $helpNames = @()   # 書き方と語彙の一覧を出す規則の名前
+
+    # 書き方・置き場所（git に読まれない行）
+    $trailerNames = @(@($rules.TrailerRules) | ForEach-Object { $_.Name }) + @($rules.ApprovalTrailer)
+    foreach ($p in (Find-TrailerProblems $message $trailerNames $parsed))
+    {
+        $rule = @($rules.TrailerRules) | Where-Object { $_.Name -eq $p.Name } | Select-Object -First 1
+        $value = $p.Value
+        $reasons = @($p.Reasons)
+        if ($rule)
+        {
+            $v = Test-TrailerValue $rule $value $vocabOf[$rule.Name]
+            $reasons += $v.Problems
+            $value = $v.Fixed
+            $helpNames += $rule.Name
+        }
+        elseif ($value -eq "") { $reasons += "値（理由）がありません"; $value = ($approvalSyntax -replace '^[^:]+:\s*', '') }
+        $fixes += [pscustomobject]@{ Name = $p.Name; Written = $p.Written; Fixed = ("{0}: {1}" -f $p.Name, $value); Reasons = $reasons; Key = $(if ($p.Read) { $p.Written.Trim() } else { $null }) }
+    }
+
+    # 値（語彙）と、書き忘れ
+    foreach ($t in @($rules.TrailerRules))
+    {
+        foreach ($tr in @(@($parsed) | Where-Object { $_ -and $_.Key -ieq $t.Name }))
+        {
+            $v = Test-TrailerValue $t $tr.Value $vocabOf[$t.Name]
+            if ($v.Problems.Count -eq 0) { continue }
+            $fixes += [pscustomobject]@{ Name = $t.Name; Written = ("{0}: {1}" -f $tr.Key, $tr.Value); Fixed = ("{0}: {1}" -f $t.Name, $v.Fixed); Reasons = $v.Problems; Key = ("{0}: {1}" -f $tr.Key, $tr.Value) }
+            $helpNames += $t.Name
+        }
+        $values = @(Select-Trailer $parsed $t.Name)
+        $pending = @($fixes | Where-Object { $_.Name -eq $t.Name }).Count -gt 0   # 書いたが読まれない行は、直す行に出ている
+        if ($values.Count -eq 0 -and -not $pending -and $t.RequiredWhen -and $body -match $t.RequiredWhen)
         {
             $result.Warnings += ("{0}（{1}）に {2}: がありません。{3}" -f $label, $Matches[0].Trim(), $t.Name, $t.MissingHint)
-            $needHelp = $true
+            $helpNames += $t.Name
         }
-        if ($needHelp -and $t.Vocabulary) { $helpRules += $t }
     }
+    foreach ($tr in @(@($parsed) | Where-Object { $_ -and $_.Key -ieq $rules.ApprovalTrailer -and $_.Value -eq "" }))
+    {
+        $fixes += [pscustomobject]@{ Name = $rules.ApprovalTrailer; Written = ("{0}:" -f $tr.Key); Fixed = $approvalSyntax; Reasons = @("値（理由）がありません"); Key = ("{0}: " -f $tr.Key) }
+    }
+    foreach ($f in $fixes) { $result.Errors += ("{0}（{1}）" -f $f.Written.Trim(), ($f.Reasons -join "。")) }
     foreach ($w in $result.Warnings) { Write-Warn $w }
+
+    # 直し方（コミットを作り直す手順）。止めるときに最後に出す
+    function Write-FixHow
+    {
+        Write-Msg ""
+        Write-Msg "  直し方："
+        if ($Staged)
+        {
+            Write-Msg "    コミットは作られていません。書いたメッセージは残っているので、開き直して直し、もう一度コミットする。"
+            Write-Msg '      git commit -e -F "$(git rev-parse --git-path COMMIT_EDITMSG)"'
+            Write-Msg "    （最初に -a などを付けていたら、同じものを付ける。GUI なら、画面のメッセージを直してもう一度コミットする）"
+        }
+        else
+        {
+            $rebaseBase = $(if ($parents.Count -eq 0) { "--root" } else { $sha.Substring(0, 8) + "^" })
+            Write-Msg "    コミットのメッセージを書き直す。"
+            Write-Msg "      最新のコミットなら    : git commit --amend"
+            Write-Msg ("      それより前のコミットなら : git rebase -i {0}（このコミットの pick を reword にする）" -f $rebaseBase)
+            Write-Msg "    push 済みなら git push --force-with-lease が要る（PR の履歴が書き換わるので、人が判断する）。"
+        }
+        Write-Msg ""
+    }
 
     # --- 判定 -----------------------------------------------------------
     $exit = 0
-    if ($result.Errors.Count -gt 0)
+    if ($fixes.Count -gt 0)
     {
         Write-Msg ""
-        Write-Msg ("  **トレーラーの値が誤っています**（{0}）" -f $label) -ForegroundColor Red
-        foreach ($x in $result.Errors) { Write-Msg ("    " + $x) -ForegroundColor Yellow }
+        Write-Msg ("  **トレーラーを直してください**（{0}）" -f $label) -ForegroundColor Red
+        foreach ($f in $fixes)
+        {
+            if ($env:GITHUB_ACTIONS -eq "true") { Write-Msg ("::error title=トレーラー：{0}::{1}：{2} → {3}" -f $f.Name, $label, $f.Written.Trim(), $f.Fixed) }
+            Write-Msg ("    " + ($f.Reasons -join "。")) -ForegroundColor Yellow
+            Write-Msg ("      書いた行：" + $f.Written)
+            Write-Msg ("      直した行：" + $f.Fixed)
+        }
         $exit = 1
     }
-    # 語彙の一覧（語と意味）。意味は規則の Meanings（語 → 意味）。無い語は語だけ出す
-    foreach ($t in $helpRules)
+    # 書き方・例・語彙の一覧（語と意味）。意味の無い語は語だけ出す
+    foreach ($t in @($rules.TrailerRules | Where-Object { $helpNames -contains $_.Name }))
     {
+        $vocab = $vocabOf[$t.Name]
         Write-Msg ""
-        Write-Msg ("  {0}: の手段は次から選ぶ（{0}: <手段> [<補足>]）" -f $t.Name)
-        foreach ($w in @($t.Vocabulary))
+        Write-Msg ("  {0} の書き方：{1}" -f $t.Name, $(if ($t.Syntax) { $t.Syntax } else { "{0}: <語> [<補足>]" -f $t.Name }))
+        if ($t.Example) { Write-Msg ("    例：" + $t.Example) }
+        if ($vocab.Checked)
         {
-            $m = $(if ($t.Meanings -and $t.Meanings.ContainsKey($w)) { "：" + $t.Meanings[$w] } else { "" })
-            Write-Msg ("    {0}{1}" -f $w, $m)
+            Write-Msg ("    {0}は次から選ぶ" -f $(if ($t.Placeholder) { $t.Placeholder } else { "<語>" }))
+            foreach ($w in @($vocab.Words))
+            {
+                $m = $(if ($vocab.Meanings.ContainsKey($w)) { "：" + $vocab.Meanings[$w] } else { "" })
+                Write-Msg ("      {0}{1}" -f $w, $m)
+            }
         }
     }
-    if ($result.Errors.Count -gt 0 -or $helpRules.Count -gt 0)
+    if ($fixes.Count -gt 0 -or $helpNames.Count -gt 0)
     {
         Write-Msg ""
+        Write-Msg "  トレーラーは、メッセージの最後の段落（本文との間に空行を 1 つ）に、1 行に 1 つずつ書く。"
+        Write-Msg "  git は最後の段落だけをトレーラーとして読む（集計に載る）。Co-Authored-By などとは、空行を挟まずに同じ段落に並べる。"
     }
-    if ($result.Findings.Count -eq 0) { Complete $exit }
+    # 直した最後の段落（そのまま貼れる形）。読まれなかった行を前に、git が読んでいた行（直したものは直した行）を後に
+    if ($fixes.Count -gt 0)
+    {
+        $block = @($fixes | Where-Object { -not $_.Key } | ForEach-Object { $_.Fixed })
+        foreach ($tr in @($parsed))
+        {
+            if (-not $tr) { continue }
+            $line = "{0}: {1}" -f $tr.Key, $tr.Value
+            $f = @($fixes | Where-Object { $_.Key -and $_.Key.TrimEnd() -ceq $line.TrimEnd() }) | Select-Object -First 1
+            $block += $(if ($f) { $f.Fixed } else { $line })
+        }
+        Write-Msg ""
+        Write-Msg "  直した最後の段落（本文の後に空行を 1 つ置き、この行をそのまま置く。< > の所は書き換える。最後の段落に無かった行は、元の場所から消す）："
+        foreach ($l in $block) { Write-Msg ("    " + $l) }
+    }
+    if ($result.Findings.Count -eq 0)
+    {
+        if ($exit -eq 1) { Write-FixHow }
+        Complete $exit
+    }
 
-    $trailers = Get-Trailer $message $rules.ApprovalTrailer
+    $trailers = @(Select-Trailer $parsed $rules.ApprovalTrailer | Where-Object { $_ -ne "" })
     if ($trailers.Count -gt 0)
     {
         $result.Approved = $trailers
         Write-Msg ("  期待値の変更 {0} 件（{1}）。トレーラーで承認済み : {2}" -f $result.Findings.Count, $label, ($trailers -join " / "))
+        if ($exit -eq 1) { Write-FixHow }
         Complete $exit
     }
 
+    # 承認のトレーラーを書いたが git が読まない（直す行に出ている）なら、「無い」とは言わず、直した行で直すよう促す
+    $approvalWritten = @($fixes | Where-Object { $_.Name -eq $rules.ApprovalTrailer }).Count -gt 0
     $width = ($result.Findings | ForEach-Object { $_.Kind.Length } | Measure-Object -Maximum).Maximum
     Write-Msg ""
-    Write-Msg ("  **トレーラーの無い期待値の変更があります**（{0}{1}）" -f $label, $(if ($rules.Reference) { "。" + $rules.Reference } else { "" })) -ForegroundColor Red
+    $head = $(if ($approvalWritten) { "**期待値の変更が承認になっていません**（{0}。書いた {1}: の書き方が誤っているため）" } else { "**トレーラーの無い期待値の変更があります**（{0}" })
+    Write-Msg (($head -f $label, $rules.ApprovalTrailer) + $(if ($approvalWritten) { "" } else { $(if ($rules.Reference) { "。" + $rules.Reference } else { "" }) + "）" })) -ForegroundColor Red
     foreach ($x in $result.Findings)
     {
         $tail = $(if ($x.Count -gt 0) { "（{0} 件）" -f $x.Count } else { "" })
         Write-Msg ("    {0} : {1}{2}" -f $x.Kind.PadRight($width, [char]0x3000), $x.Path, $tail) -ForegroundColor Yellow
     }
     Write-Msg ""
-    Write-Msg "  差分を確かめたうえで、コミット メッセージの末尾に理由を書いてください。"
-    Write-Msg ("    {0}: <何が・なぜ変わったか（仕様の該当箇所・Issue 番号）>" -f $rules.ApprovalTrailer)
-    Write-Msg ""
+    if ($approvalWritten)
+    {
+        Write-Msg ("  上の「直した行」のとおりに {0}: を直せば、承認になる。" -f $rules.ApprovalTrailer)
+    }
+    else
+    {
+        Write-Msg "  差分を確かめたうえで、コミット メッセージの最後の段落に、理由を 1 行で書いてください。"
+        Write-Msg ("    " + $approvalSyntax)
+        Write-Msg ("    例：{0}: 一覧の初期表示の件数を 20 件に変えた（仕様の変更。#123）" -f $rules.ApprovalTrailer)
+    }
+    Write-FixHow
     Complete 1
 }
 catch
