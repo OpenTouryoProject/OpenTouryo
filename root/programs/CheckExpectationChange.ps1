@@ -1,4 +1,4 @@
-﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@b9da2ca0cc9d src/quality/ExpectationGuard/CheckExpectationChange.ps1 sha256:78634f35fbc0b11b1d0f1c260e30d5efdec1acdf6470b86103f820e0e156bc16
+﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@ade897953a72 src/quality/ExpectationGuard/CheckExpectationChange.ps1 sha256:112f828e4a20be73ec9614abee91936949372d3bd268386745fee10704e1a604
 <#
 .SYNOPSIS
     期待値の変更を検出し、トレーラー Expectation-Change が付いているかを確かめる（共通の本体）。
@@ -1294,18 +1294,14 @@ try
         Write-Msg "  直した最後の段落（本文の後に空行を 1 つ置き、この行をそのまま置く。< > の所は書き換える。最後の段落に無かった行は、元の場所から消す）："
         foreach ($l in $block) { Write-Msg ("    " + $l) }
     }
-    if ($result.Findings.Count -eq 0)
-    {
-        if ($exit -eq 1) { Write-FixHow }
-        Complete $exit
-    }
-
+    # 承認の理由。検出した変更が無くても、トレーラーがあれば結果に入れる（OpenTouryoCodingAgentAssets#6）。
+    #   検出器はアサーションの値の反転・緩和を見ないので、人が自分から付けた理由こそ、突き合わせ役（-Json の入力）が見る対象になる
+    #   （OpenTouryo 3bd7586d：既存のアサーションの入力を書き換えて期待値を反転。検出は 0 件、理由はあった）。
     $trailers = @(Select-Trailer $parsed $rules.ApprovalTrailer | Where-Object { $_ -ne "" })
     if ($trailers.Count -gt 0)
     {
         $result.Approved = $trailers
-        Write-Msg ("  期待値の変更 {0} 件（{1}）。トレーラーで承認済み : {2}" -f $result.Findings.Count, $label, ($trailers -join " / "))
-        # 理由の書式（OpenTouryoCodingAgentAssets#6）。止めない。Issue 番号・仕様の節の無い理由は、突き合わせ（根拠）ができない
+        # 理由の書式。止めない。Issue 番号・仕様の節の無い理由は、突き合わせ（根拠）ができない
         $patterns = @($rules.ApprovalReasonPatterns)
         if ($patterns.Count -gt 0)
         {
@@ -1317,6 +1313,18 @@ try
                 Write-Warn $w
             }
         }
+    }
+
+    if ($result.Findings.Count -eq 0)
+    {
+        if ($trailers.Count -gt 0) { Write-Msg ("  検出した期待値の変更は無いが、{0}: がある（{1}）。検出器が見ない変化（アサーションの値の反転など）の承認として扱う : {2}" -f $rules.ApprovalTrailer, $label, ($trailers -join " / ")) }
+        if ($exit -eq 1) { Write-FixHow }
+        Complete $exit
+    }
+
+    if ($trailers.Count -gt 0)
+    {
+        Write-Msg ("  期待値の変更 {0} 件（{1}）。トレーラーで承認済み : {2}" -f $result.Findings.Count, $label, ($trailers -join " / "))
         if ($exit -eq 1) { Write-FixHow }
         Complete $exit
     }

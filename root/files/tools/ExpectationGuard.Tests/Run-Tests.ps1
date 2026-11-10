@@ -1,4 +1,4 @@
-﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@b9da2ca0cc9d src/quality/ExpectationGuard/tests/Run-Tests.ps1 sha256:eac9ea0c8127077ce728aa84ec27d39aca41fc5a206ed2fae1e8e58fa4cca4d7
+﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@ade897953a72 src/quality/ExpectationGuard/tests/Run-Tests.ps1 sha256:498968d23a132db2e29bb37ed2c5b273c1784a09dcfe0fb535cf3f559f4fbf37
 <#
 .SYNOPSIS
     期待値の変更の検出器の、判定の用例（cases.psd1）を回す（OpenTouryoCodingAgentAssets#3）。
@@ -170,7 +170,8 @@ function Invoke-Case($Case)
         $reviewKinds = @($reviewItems | ForEach-Object { $_.Kind } | Sort-Object -Unique)
         $detail = (@($r | ForEach-Object { $_.Findings } | ForEach-Object { "{0} : {1}" -f $_.Kind, $_.Path }) + @($reviewItems | ForEach-Object { "要確認 {0} : {1}" -f $_.Kind, $_.Path }) + @($r | ForEach-Object { $_.Errors })) -join " / "
         $errs = @($r | ForEach-Object { $_.Errors }).Count
-        return [pscustomobject]@{ Exit = $code; Kinds = $kinds; Warnings = $warn; Errors = $errs; Review = $reviewItems.Count; ReviewKinds = $reviewKinds; Ask = $null; Detail = $detail }
+        $appr = @($r | ForEach-Object { $_.Approved }).Count
+        return [pscustomobject]@{ Exit = $code; Kinds = $kinds; Warnings = $warn; Errors = $errs; Approved = $appr; Review = $reviewItems.Count; ReviewKinds = $reviewKinds; Ask = $null; Detail = $detail }
     }
     finally
     {
@@ -194,6 +195,7 @@ foreach ($c in $cases)
             if (($want -join "|") -cne (@($a.Kinds) -join "|")) { $why += ("検出 [{0}]（期待 [{1}]）" -f (@($a.Kinds) -join ", "), ($want -join ", ")) }
         }
         if ($null -ne $e.Warnings -and $a.Warnings -ne [int]$e.Warnings) { $why += ("警告 {0} 件（期待 {1}）" -f $a.Warnings, $e.Warnings) }
+        if ($null -ne $e.Approved -and $a.Approved -ne [int]$e.Approved) { $why += ("承認の理由 {0} 件（期待 {1}）" -f $a.Approved, $e.Approved) }
         if ($null -ne $e.Errors -and $a.Errors -ne [int]$e.Errors) { $why += ("誤り {0} 件（期待 {1}）" -f $a.Errors, $e.Errors) }
         if ($null -ne $e.Review -and $a.Review -ne [int]$e.Review) { $why += ("要確認 {0} 件（期待 {1}）" -f $a.Review, $e.Review) }
         if ($null -ne $e.ReviewKinds)

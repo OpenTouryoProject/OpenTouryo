@@ -1,5 +1,5 @@
 ---
-# expectation-guard-source: OpenTouryoCodingAgentAssets@b9da2ca0cc9d src/quality/ExpectationGuard/opentouryo-expectation-reviewer.md sha256:3237b8433999de79f3be1bfdbf1aadb9e384b93d4cf7d0cc657302ff5b5d5003
+# expectation-guard-source: OpenTouryoCodingAgentAssets@ade897953a72 src/quality/ExpectationGuard/opentouryo-expectation-reviewer.md sha256:f4b64d5c318697a2b90b01f274711195746fe1fc36224d87286e9d6ca06ff240
 name: opentouryo-expectation-reviewer
 description: 期待値の変更のトレーラー（Expectation-Change:）の理由を、検出器が検出した一覧・差分と突き合わせる（書いたモデルとは別のモデル）。トレーラーの文面を提案したら、コミットの前に使う。止める判定はせず、観点ごとに「合う／合わない／判断できない」と根拠を返す。ファイルは編集しない。
 tools: Read, Grep, Glob, Bash, PowerShell, WebFetch
@@ -25,7 +25,9 @@ model: sonnet
 1. 検出器を JSON で動かし、検出した一覧・承認の理由・差分のコマンドを得る（リポジトリのルートで）。
    - ステージした変更：`powershell -NoProfile -ExecutionPolicy Bypass -File root/programs/CheckExpectationChange.ps1 -Staged -MessageFile <メッセージ> -Json`
    - コミット：`powershell -NoProfile -ExecutionPolicy Bypass -File root/programs/CheckExpectationChange.ps1 -Commit <sha> -Json`
-   - `Findings` が空なら、期待値の変更は無い。そう返して終わる。`Approved` が空なら、承認の理由が無い（読めない書き方を含む）。そう返して終わる。
+   - `Approved` が空なら、承認の理由が無い（読めない書き方を含む）。そう返して終わる。
+   - **`Findings` が空でも、`Approved` があれば突き合わせる。** 検出器はアサーションの値の反転・緩和を見ないので、
+     人が自分から付けた理由は、差分のテストのすべてと突き合わせる（網羅は「理由が述べる変化が差分にあるか」で見る）
 2. `DiffCommand` の差分を**すべて**読む。`Findings` のファイルは必ず読み、テストなら変わったテストの前後の全体を読む。
 3. 理由が挙げる根拠を、**自分で**読む。
    - Issue：`gh issue view <番号> --comments`
@@ -39,6 +41,11 @@ model: sonnet
 | 根拠 | 挙げた Issue・仕様の節が、その変化を支えるか（原典を読んで） |
 | 方向 | 期待値を緩める変更（Skip の追加・検証の削除・許容の拡大）なら、理由がそれを正当化しているか。厳しくしたと書いて緩めていないか |
 | 範囲外 | 理由に書かれていない期待値の変化が、同じ差分に無いか（検出器が見ない、アサーションの値の反転・緩和を含む） |
+
+- **Golden の比べ方（規則の `Comparer`）で消える差（乱数・日時・再生成の揺れ）は、期待値の変化ではない。** 網羅・範囲外に数えない。
+  - 検出器が動いたなら、**差分にあっても `Findings` に出ない Golden のファイルは、`Comparer` が「同じ」と判定したもの。** 読まずに数えない（判断しない）
+  - 検出器が止まった（`Errors` がある・`ExitCode` が 2）なら、その判定が無い。判定の値（True・False・例外など）の行が変わっていないかだけを確かめ、変わっていれば数える。見ていない範囲に「検出器が止まった」と書く
+- テストを包んだヘルパー（`SkipIf…` など）の呼び出しの追加も、Skip の追加として見る（検出器の規則に無いことがある）
 
 ## 守ること
 
