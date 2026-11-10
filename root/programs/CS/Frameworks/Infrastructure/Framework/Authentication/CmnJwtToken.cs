@@ -51,6 +51,9 @@
 //*  2026/11/06  玄人 幸道         CheckClaims：値がオブジェクト・配列でも例外にせず false にし、Obsolete（警告）にした。
 //*                                無い・読めないクレームを invalid_request で返す TryGetStringClaim を追加（#662）
 //*  2026/11/06  玄人 幸道         TryVerifySignature：ヘッダの alg が、検証鍵の alg と違えば false にする（RFC 8725 3.1。#664）
+//*  2026/11/10  玄人 幸道         Verify：署名の alg を JWE の有無で決め打ちしない。鍵（jws）を渡せば、扱う非対称の alg（JwsFactory.IsSupported）で鍵と同じものを受け、
+//*                                渡さなければ RS256・ES256 だけ。受けない alg・復号できない JWE は、例外ではなく false にした。
+//*                                復号の鍵（JWE）を受ける版を追加し、それを渡したときは素の JWS を受けない（#683）
 //**********************************************************************************
 
 using System;
@@ -109,173 +112,211 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// 自由に利用できる。
         ///
         /// JWE の復号には、従来どおり CmnClientParams.RsaPfxFilePath（自分の秘密鍵）を使う。
-        /// jws で替わるのは、署名の検証鍵だけである（#601）。
+        /// jws で替わるのは、署名の検証鍵だけである（#601）。復号の鍵も渡すなら、jwe を受ける版を使う（#683）。
+        /// 受ける alg・失敗の扱いは、jwe を受ける版の remarks のとおり。
         /// </remarks>
         public static bool Verify(string jwtToken, JWS jws, out string jwtPayload)
         {
+            return CmnJwtToken.Verify(jwtToken, jws, null, out jwtPayload);
+        }
+
+        /// <summary>JWT形式のTokenを、指定した検証鍵（と復号の鍵）で検証する。</summary>
+        /// <param name="jwtToken">JWT形式のToken（JWS か、JWS を入れた JWE（Nested JWT））</param>
+        /// <param name="jws">
+        /// 署名の検証に使う、相手（署名者）の鍵（JWS_RS256_Param, JWS_ES256_Param など）。
+        /// null なら、Verify(jwtToken, out jwtPayload) と同じ方法で選ぶ。
+        /// </param>
+        /// <param name="jwe">
+        /// JWE の復号に使う、自分の鍵（秘密鍵を持つ JWE_RsaOaepAesGcm_Param など）。
+        /// null なら、従来どおり CmnClientParams.RsaPfxFilePath（自分の秘密鍵）で、ヘッダの alg から選ぶ（RSA-OAEP・RSA1_5）。
+        /// </param>
+        /// <param name="jwtPayload">ペイロード（JWE なら、復号した中の JWS のペイロード）。失敗なら空</param>
+        /// <returns>検証結果</returns>
+        /// <remarks>
+        /// 自由に利用できる（#683）。
+        ///
+        /// **受ける署名の alg**（JWE の中か素の JWS かでは決めない。OpenID Connect Core 1.0 §2：id_token は署名し、任意で暗号化する。
+        /// §3.1.3.7 の 7：alg は既定の RS256 か、登録の id_token_signed_response_alg）
+        /// - **jws を渡したとき：扱う非対称の alg（JwsFactory.IsSupported。RS・PS・ES の 256/384/512）で、しかも jws の alg と同じもの。**
+        ///   呼ぶ側が、鍵と一緒に受ける alg を 1 つに決める（RFC 8725 §3.1。TryVerifySignature）。PS256 などは、この経路で受ける
+        /// - **jws を渡さないとき：RS256・ES256 だけ**（従来の 2 つ。鍵を jwks から kid で引くとき、1 本の RSA の鍵を RS*・PS* のどれでも通さないため。RFC 8725 §3.1）
+        /// - **実装していない alg（EdDSA など）・none・HS*（共有鍵）は、どちらでも受けない**
+        /// 2026/11/10 までは、JWE の中なら ES256、素の JWS なら RS256 だけを受け、ほかは NotSupportedException を投げていた
+        /// （jws を渡しても同じで、呼ぶ側が PS256 などの鍵を渡せなかった）。
+        ///
+        /// **jwe を渡したときは、暗号化されていない（素の）JWS を受けない**（OpenID Connect Core 1.0 §3.1.3.7 の 1：暗号化を取り決めたのに暗号化されていなければ、断る）。
+        ///
+        /// **次はすべて、例外ではなく false を返す**（2026/11/10 までは、2 つ目までは NotSupportedException だった）。
+        /// - 扱わない alg（署名。上の「受ける署名の alg」に無いもの）
+        /// - 扱わない alg（JWE。jwe を渡さないとき、RSA-OAEP・RSA1_5 以外）
+        /// - jwe を渡したのに、素の JWS（3 つに分かれる）
+        /// - 復号できない JWE（以前は、復号の失敗を見ていなかった）。中が JWS（3 つに分かれる）でない JWE
+        /// - 区切りの数が 3（JWS）でも 5（JWE）でもないもの
+        /// - **ヘッダの alg が、検証鍵（jws）の alg と違うもの**（RFC 8725 §3.1。TryVerifySignature。#664）
+        /// - 形の壊れた JWS（TryVerifySignature）
+        /// 設定の誤り（jwe を渡さず、CmnClientParams.RsaPfxFilePath の鍵を読めない、など）は、従来どおり例外になる。
+        ///
+        /// **JWE のヘッダの cty は見ない。** RFC 7519 §7.2 の 8 は、cty が JWT なら Nested JWT とする。
+        /// この実装は、復号した中が JWS（3 つに分かれる）なら、cty に依らず検証する（以前から同じ）。
+        ///
+        /// **jws を渡さないときの鍵の選び方**（SelectVerificationKey）
+        /// - **受ける alg は RS256・ES256 だけ**（上の「受ける署名の alg」）。以前は JWE の有無で 1 つに決めていたので、素の RS256・JWE の中の ES256 の振る舞いは変わらない
+        /// - ヘッダの kid で JWK を引けたら、**その JWK を alg で使う**（JwsFactory.CreateFromJwk。kty・crv が alg と合わなければ false）
+        /// - 引けなければ（kid が無い・JWK Set に無い）、証明書を使う：**RS256 は CmnClientParams.RsaCerFilePath、ES256 は EcdsaCerFilePath**
+        /// </remarks>
+        public static bool Verify(string jwtToken, JWS jws, JWE jwe, out string jwtPayload)
+        {
             jwtPayload = "";
 
-            JWE jwe = null;
-
-            // 復号化（JWEの場合）
-            bool isJWE_FAPI2 = false;
-            if (3 < jwtToken.Split('.').Length)
+            if (string.IsNullOrEmpty(jwtToken))
             {
-                isJWE_FAPI2 = true;
-
-                // ヘッダ
-                JWE_Header jweHeader = JsonConvert.DeserializeObject<JWE_Header>(
-                CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(jwtToken.Split('.')[0]), CustomEncode.UTF_8));
-
-                if (jweHeader.alg == JwtConst.RSA_OAEP)
-                {
-                    jwe = new JWE_RsaOaepAesGcm_X509(
-                        CmnClientParams.RsaPfxFilePath,
-                        CmnClientParams.RsaPfxPassword);
-                }
-                else if (jweHeader.alg == JwtConst.RSA1_5)
-                {
-                    jwe = new JWE_Rsa15A128CbcHS256_X509(
-                        CmnClientParams.RsaPfxFilePath,
-                        CmnClientParams.RsaPfxPassword);
-                }
-                else
-                {
-                    throw new NotSupportedException(string.Format(
-                        "This jwe alg of {0} is not supported.", jweHeader.alg));
-                }
-
-                jwe.Decrypt(jwtToken, out jwtToken);
-            }
-            else
-            {
-                isJWE_FAPI2 = false;
+                return false;
             }
 
-            // 検証
-            // ヘッダ
-            JWS_Header jwsHeader = JsonConvert.DeserializeObject<JWS_Header>(
-                CustomEncode.ByteToString(CustomEncode.FromBase64UrlString(jwtToken.Split('.')[0]), CustomEncode.UTF_8));
+            #region 復号化（JWE の場合）
 
-            if (jwsHeader.alg == JwtConst.ES256 && isJWE_FAPI2) { } // 正常
-            else if (jwsHeader.alg == JwtConst.RS256 && !isJWE_FAPI2) { } // 正常
-            else { throw new NotSupportedException("Unexpected combination of JWS and JWE."); }
+            int parts = jwtToken.Split('.').Length;
+            if (parts == 5)
+            {
+                if (jwe == null)
+                {
+                    // **ヘッダの alg で、設定の鍵（自分の秘密鍵）の JWE を選ぶ**（従来どおり）
+                    string jweAlg = JwtReader.TryReadAlg(jwtToken);
+                    if (jweAlg == JwtConst.RSA_OAEP)
+                    {
+                        jwe = new JWE_RsaOaepAesGcm_X509(
+                            CmnClientParams.RsaPfxFilePath,
+                            CmnClientParams.RsaPfxPassword);
+                    }
+                    else if (jweAlg == JwtConst.RSA1_5)
+                    {
+                        jwe = new JWE_Rsa15A128CbcHS256_X509(
+                            CmnClientParams.RsaPfxFilePath,
+                            CmnClientParams.RsaPfxPassword);
+                    }
+                    else
+                    {
+                        // 扱わない JWE の alg（以前は NotSupportedException）
+                        return false;
+                    }
+                }
 
-            // 証明書を使用するか、Jwkを使用するか判定
-            if (jws != null)
-            {
-                // 呼び出し側が指定した鍵を使用（#601）
-            }
-            else if ( //string.IsNullOrEmpty(jwsHeader.jku) || // jkuは非推奨
-                string.IsNullOrEmpty(jwsHeader.kid))
-            {
-                // 旧バージョン（証明書を使用
-                if (isJWE_FAPI2)
+                // **復号できなければ false**（以前は、Decrypt の戻り値を見ていなかった）
+                string innerJws;
+                if (!jwe.Decrypt(jwtToken, out innerJws) || string.IsNullOrEmpty(innerJws))
                 {
-                    jws = new JWS_ES256_X509(CmnClientParams.EcdsaCerFilePath, "");
+                    return false;
                 }
-                else
+
+                // **中は JWS（Nested JWT。RFC 7519 §7.2 の 7・8）**。JWE の中の JWE などは受けない
+                if (innerJws.Split('.').Length != 3)
                 {
-                    jws = new JWS_RS256_X509(CmnClientParams.RsaCerFilePath, "");
+                    return false;
+                }
+
+                jwtToken = innerJws;
+            }
+            else if (parts != 3)
+            {
+                return false;
+            }
+            else if (jwe != null)
+            {
+                // **jwe を渡した（暗号化を求めた）のに、素の JWS なら断る**（OpenID Connect Core 1.0 §3.1.3.7 の 1）
+                return false;
+            }
+
+            #endregion
+
+            #region 検証
+
+            // **受ける alg は、扱う非対称の alg だけ**（none・HS*・実装していない alg を受けない。RFC 8725 §3.1）
+            string alg = JwtReader.TryReadAlg(jwtToken);
+            if (!JwsFactory.IsSupported(alg))
+            {
+                return false;
+            }
+
+            if (jws == null)
+            {
+                // **鍵を渡されないときは、RS256・ES256 だけ**（jwks から kid で引いた 1 本の鍵を、RS*・PS* のどれでも通さない。RFC 8725 §3.1）
+                if (alg != JwtConst.RS256 && alg != JwtConst.ES256)
+                {
+                    return false;
+                }
+
+                jws = CmnJwtToken.SelectVerificationKey(jwtToken, alg);
+                if (jws == null)
+                {
+                    return false;
                 }
             }
-            else
+
+            // **ヘッダの alg が、検証鍵の alg と違えば false。形が壊れていても例外にしない**（TryVerifySignature。#654・#664）
+            if (!CmnJwtToken.TryVerifySignature(jws, jwtToken))
             {
-                // 新バージョン（Jwkを使用
+                return false;
+            }
+
+            jwtPayload = CustomEncode.ByteToString(
+                CustomEncode.FromBase64UrlString(jwtToken.Split('.')[1]), CustomEncode.us_ascii);
+
+            return true;
+
+            #endregion
+        }
+
+        /// <summary>jws を渡されないときの検証鍵を選ぶ（#683）</summary>
+        /// <param name="jwtToken">JWS</param>
+        /// <param name="alg">ヘッダの alg（RS256 か ES256。Verify が絞ってから呼ぶ）</param>
+        /// <returns>検証鍵（選べなければ null）</returns>
+        /// <remarks>
+        /// **kid で JWK を引けたら、その JWK を alg で使う**（JwsFactory.CreateFromJwk。kty・crv が alg と合わなければ null）。
+        /// JWK は、OAuth2AndOIDCParams.JwkSetFilePath が無ければ jwks_uri（JwkSetStore）から、在れば自分の JWK Set から引く（従来どおり）。
+        /// **引けなければ、証明書を使う**（RS256 は RsaCerFilePath、ES256 は EcdsaCerFilePath。ほかの alg は null）。
+        /// </remarks>
+        private static JWS SelectVerificationKey(string jwtToken, string alg)
+        {
+            string kid = JwtReader.TryReadKid(jwtToken);
+            JObject jwkObject = null;
+
+            if (!string.IsNullOrEmpty(kid))
+            {
                 if (string.IsNullOrEmpty(OAuth2AndOIDCParams.JwkSetFilePath))
                 {
-                    // jku(jwks_uri)使用のカバレッジ
-
-                    // Client側
-                    JObject jwkObject = JwkSetStore.GetInstance().GetJwkObject(jwsHeader.kid);
-
-                    // チェック
+                    // jku(jwks_uri)使用のカバレッジ（Client側）。jku は使わない（廃止）
+                    jwkObject = JwkSetStore.GetInstance().GetJwkObject(kid);
                     if (jwkObject == null)
                     {
-                        // 書込
-                        jwkObject = JwkSetStore.GetInstance().SetJwkSetObject(
-                            // jwsHeader.jku, // jku廃止
-                            jwsHeader.kid);
-                    }
-
-                    // チェック
-                    if (jwkObject == null)
-                    {
-                        // 証明書を使用
-                        if (isJWE_FAPI2)
-                        {
-                            jws = new JWS_ES256_X509(CmnClientParams.EcdsaCerFilePath, "");
-                        }
-                        else
-                        {
-                            jws = new JWS_RS256_X509(CmnClientParams.RsaCerFilePath, "");
-                        }
-                    }
-                    else
-                    {
-                        // Jwkを使用
-                        if (isJWE_FAPI2)
-                        {
-                            EccPublicKeyConverter epkc = new EccPublicKeyConverter();
-                            jws = new JWS_ES256_Param(epkc.JwkToParam(jwkObject), false);
-                        }
-                        else
-                        {
-                            RsaPublicKeyConverter rpkc = new RsaPublicKeyConverter();
-                            jws = new JWS_RS256_Param(rpkc.JwkToParam(jwkObject));
-                        }
+                        jwkObject = JwkSetStore.GetInstance().SetJwkSetObject(kid);
                     }
                 }
-                else
+                else if (ResourceLoader.Exists(OAuth2AndOIDCParams.JwkSetFilePath, false))
                 {
-                    // JwkSet使用のカバレッジ
-                    // AuthZ側でClient側テストを行うためのカバレージ
-                    JObject jwkObject = null;
-
-                    if (ResourceLoader.Exists(OAuth2AndOIDCParams.JwkSetFilePath, false))
-                    {
-                        JwkSet jwkSet = JwkSet.LoadJwkSet(OAuth2AndOIDCParams.JwkSetFilePath);
-                        jwkObject = JwkSet.GetJwkObject(jwkSet, jwsHeader.kid);
-                    }
-
-                    if (jwkObject == null)
-                    {
-                        // 証明書を使用
-                        if (isJWE_FAPI2)
-                        {
-                            jws = new JWS_ES256_X509(CmnClientParams.EcdsaCerFilePath, "");
-                        }
-                        else
-                        {
-                            jws = new JWS_RS256_X509(CmnClientParams.RsaCerFilePath, "");
-                        }
-                    }
-                    else
-                    {
-                        // Jwkを使用
-                        if (isJWE_FAPI2)
-                        {
-                            EccPublicKeyConverter epkc = new EccPublicKeyConverter();
-                            jws = new JWS_ES256_Param(epkc.JwkToParam(jwkObject), false);
-                        }
-                        else
-                        {
-                            RsaPublicKeyConverter rpkc = new RsaPublicKeyConverter();
-                            jws = new JWS_RS256_Param(rpkc.JwkToParam(jwkObject));
-                        }
-                    }
+                    // JwkSet使用のカバレッジ（AuthZ側でClient側テストを行うためのカバレージ）
+                    JwkSet jwkSet = JwkSet.LoadJwkSet(OAuth2AndOIDCParams.JwkSetFilePath);
+                    jwkObject = JwkSet.GetJwkObject(jwkSet, kid);
                 }
             }
 
-            bool ret = jws.Verify(jwtToken);
-
-            if (ret)
+            if (jwkObject != null)
             {
-                jwtPayload = CustomEncode.ByteToString(
-                    CustomEncode.FromBase64UrlString(jwtToken.Split('.')[1]), CustomEncode.us_ascii);
+                // **JWK を alg で使う**（kty・crv が alg と合わなければ null。アルゴリズムの取り違えを防ぐ）
+                return JwsFactory.CreateFromJwk(alg, jwkObject);
             }
 
-            return ret;
+            // 証明書を使用（旧バージョン・JWK Set に無い）
+            if (alg == JwtConst.RS256)
+            {
+                return new JWS_RS256_X509(CmnClientParams.RsaCerFilePath, "");
+            }
+
+            if (alg == JwtConst.ES256)
+            {
+                return new JWS_ES256_X509(CmnClientParams.EcdsaCerFilePath, "");
+            }
+
+            return null;
         }
 
         /// <summary>
