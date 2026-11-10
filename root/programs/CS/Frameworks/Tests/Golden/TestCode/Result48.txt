@@ -70,11 +70,11 @@ log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.Level
 log4net: Created Appender [OPERATION2]
 log4net: Adding appender named [OPERATION2] to logger [OPERATION].
 log4net: Hierarchy Threshold []
-[2026/11/10 14:09:14,532],[DEBUG],[1],LogIF.DebugLog("ACCESS");
-[2026/11/10 14:09:14,539],[INFO ],[1],LogIF.InfoLog("ACCESS");
-[2026/11/10 14:09:14,539],[WARN ],[1],LogIF.WarnLog("ACCESS");
-[2026/11/10 14:09:14,539],[ERROR],[1],LogIF.ErrorLog("ACCESS");
-[2026/11/10 14:09:14,539],[FATAL],[1],LogIF.FatalLog("ACCESS");
+[2026/11/10 16:53:04,941],[DEBUG],[1],LogIF.DebugLog("ACCESS");
+[2026/11/10 16:53:04,964],[INFO ],[1],LogIF.InfoLog("ACCESS");
+[2026/11/10 16:53:04,966],[WARN ],[1],LogIF.WarnLog("ACCESS");
+[2026/11/10 16:53:04,967],[ERROR],[1],LogIF.ErrorLog("ACCESS");
+[2026/11/10 16:53:04,967],[FATAL],[1],LogIF.FatalLog("ACCESS");
 LogIF.Is*Enabled - ACCESS : Debug True / Info True / Warn True / Error True / Fatal True
 log4net: configuring repository [log4net-default-repository] using stream
 log4net: loading XML configuration
@@ -2990,6 +2990,12 @@ aud が array（ClientID を含む） : True（期待値と一致 : True）
 aud が array（設定の値を含まない） : False（期待値と一致 : True）
 iss が SpRp_Isser と違う : False（期待値と一致 : True）
 ----------------------------------------------------------------------------------------------------
+IdToken.Verify（設定で判定する版。kid 無し。証明書で検証する）
+RS256（SpRp_RsaCerFilePath） : True（期待値と一致 : True）
+ES256（SpRp_EcdsaCerFilePath） : True（期待値と一致 : True）
+PS256（同じ RSA の鍵。証明書の経路では受けない） : False（期待値と一致 : True）
+RS256（別の鍵で署名） : False（期待値と一致 : True）
+----------------------------------------------------------------------------------------------------
 AccessToken.Verify（jws / iss / auds）
 発行者の鍵・iss・aud の集合 : True（期待値と一致 : True）、sub : user01、scopes : openid profile
 別の鍵 : False（期待値と一致 : True）
@@ -3016,6 +3022,10 @@ aud が ClientID : True（期待値と一致 : True）
 aud が ClientIDs に在る : True（期待値と一致 : True）
 aud が設定に無い : False（期待値と一致 : True）
 aud が array（ClientID を含む） : True（期待値と一致 : True）
+----------------------------------------------------------------------------------------------------
+ResponseObject.Verify（設定で判定する版。kid 無し。証明書で検証する）
+ES256（SpRp_EcdsaCerFilePath） : True（期待値と一致 : True）
+PS256（同じ RSA の鍵。証明書の経路では受けない） : False（期待値と一致 : True）
 ----------------------------------------------------------------------------------------------------
 SAML2Bindings.VerifyByXPath（Response）
 Success・Assertion あり : True（期待値と一致 : True）

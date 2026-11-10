@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/12  玄人 幸道         新規作成（#601）
 //*  2026/10/12  玄人 幸道         設定で判定するResponseObject.Verifyの、audの確認のテストを追加（#603）
+//*  2026/11/10  玄人 幸道         設定で判定するResponseObject.Verifyの、証明書の経路（kid 無し）のテストを追加（#684）
 //**********************************************************************************
 
 using System;
@@ -61,6 +62,10 @@ namespace TestCode
             MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
 
             TestResponseObject.TestVerifyBySettings();
+
+            MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+
+            TestResponseObject.TestVerifyByCertificate();
         }
 
         #endregion
@@ -128,6 +133,20 @@ namespace TestCode
             {
                 File.Delete(TestIdToken.TestJwkSetFilePath);
             }
+        }
+
+        /// <summary>Verify（設定で判定する版）の、証明書の経路（kid 無し）</summary>
+        /// <remarks>JARM も、id_token と同じく RS256・ES256 だけを受ける（#683・#684。TestIdToken.TestVerifyByCertificate と同じ）。</remarks>
+        private static void TestVerifyByCertificate()
+        {
+            MyDebug.OutputDebugAndConsole("ResponseObject.Verify（設定で判定する版。kid 無し。証明書で検証する）");
+
+            const string iss = TestIdToken.TestIssuer;
+
+            TestResponseObject.OutputVerifyBySettings("ES256（SpRp_EcdsaCerFilePath）",
+                TestResponseObject.CreateResponse(TestIdToken.CreateCertificateSigner(JwtConst.ES256), iss, "client01"), true);
+            TestResponseObject.OutputVerifyBySettings("PS256（同じ RSA の鍵。証明書の経路では受けない）",
+                TestResponseObject.CreateResponse(TestIdToken.CreateCertificateSigner(JwtConst.PS256), iss, "client01"), false);
         }
 
         #endregion
