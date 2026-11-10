@@ -13,6 +13,10 @@
       | par | query.jwt（JARM） | 同上 | 応答（JWT）の署名を書き換える / 素の応答に落とす |
       | ros（/ros ＋ 署名だけ） | query | 同上 | state を書き換える / **request_uri を使い回す** |
       | ros | query.jwt（JARM） | 同上 | 応答（JWT）の署名を書き換える |
+      | par_mtls（PAR ＋ tls_client_auth。**-Mtls のときだけ**） | query・query.jwt | 同上 | state を書き換える |
+
+      **par_mtls は、スタブが証明書を受け付けるときだけ通る**（..\Stub\StubCompose.ps1 -Mtls。MultiPurposeAuthSite#351）。
+      **-Mtls を付けなければ、par_mtls のケースは作らない**（既定のスタブでは、PAR が invalid_client で断られる）。
 
       **対照が要るのは、確かめる処理を省いた実装でも、正常の側は通ってしまうため**（MvcFapi1E2E.ps1 と同じ考え方）。
 
@@ -42,6 +46,9 @@
 .PARAMETER SkipControl
     対照のケースを省く
 
+.PARAMETER Mtls
+    par_mtls（tls_client_auth）のケースも回す。**スタブを StubCompose.ps1 -Mtls で起動しておく。**
+
 .PARAMETER MpasRoot
     MultiPurposeAuthSite のリポジトリの場所。**省けば、環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**
     （root\files\tools\PowerShell\RepoPath.ps1。#652）。どれを使ったかを表示する。
@@ -67,12 +74,15 @@
      日時        更新者            内容
      ----------  ----------------  -------------------------------------------------
      2026/11/09  玄人 幸道         新規（#668 の追加。MvcFapi1E2E.ps1 と同じ作り）
+     2026/11/10  玄人 幸道         -Mtls（par_mtls のケース）を足した（MultiPurposeAuthSite#351）
 #>
 [CmdletBinding()]
 param(
     [string[]] $Only,
 
     [switch] $SkipControl,
+
+    [switch] $Mtls,
 
     [string] $MpasRoot = '',
 
@@ -131,6 +141,15 @@ $cases = @(
     @{ Flow = 'ros'; Mode = 'query.jwt'; Tamper = 'None' }
     @{ Flow = 'ros'; Mode = 'query.jwt'; Tamper = 'Signature'; Expect = '応答（JARM）の検証に失敗' }
 )
+
+if ($Mtls)
+{
+    $cases += @(
+        @{ Flow = 'par_mtls'; Mode = '';          Tamper = 'None' }
+        @{ Flow = 'par_mtls'; Mode = '';          Tamper = 'State';     Expect = 'state が' }
+        @{ Flow = 'par_mtls'; Mode = 'query.jwt'; Tamper = 'None' }
+    )
+}
 
 foreach ($c in $cases)
 {
@@ -460,6 +479,7 @@ if ($lack.Count -gt 0)
     exit 2
 }
 Write-Output '  OK  スタブ・ビルド・ポート・テスト利用者'
+if (-not $Mtls) { Write-Output '  --  par_mtls（tls_client_auth）は回さない（-Mtls を付け、スタブを StubCompose.ps1 -Mtls で起動したときだけ）' }
 
 # ------------------------------------------------------------------
 # 実行

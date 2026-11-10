@@ -8,11 +8,13 @@
         new string[] { "Fapi1", "oidc",   "query.jwt", "FAPI1 : code ＋ OIDC ＋ private_key_jwt、JARM（query.jwt）" },
         new string[] { "Fapi1", "pkce",   "",          "FAPI1 : code ＋ OIDC ＋ PKCE（S256）" },
         new string[] { "Fapi1", "pkce",   "query.jwt", "FAPI1 : code ＋ OIDC ＋ PKCE（S256）、JARM（query.jwt）" },
-        // FAPI2（#668 の追加。MPAS の自己テストの FAPI2 のうち、CIBA と MTLS を除くもの）
+        // FAPI2（#668 の追加。MPAS の自己テストの FAPI2 のうち、CIBA を除くもの。par_mtls は StubCompose.ps1 -Mtls のスタブで通る）
         new string[] { "Fapi2", "par",    "",          "FAPI2 : PAR ＋ private_key_jwt ＋ PKCE（S256）" },
         new string[] { "Fapi2", "par",    "query.jwt", "FAPI2 : PAR ＋ private_key_jwt ＋ PKCE（S256）、JARM（query.jwt）" },
         new string[] { "Fapi2", "ros",    "",          "FAPI2 : Request Object を /ros に預ける ＋ private_key_jwt ＋ PKCE（S256）" },
         new string[] { "Fapi2", "ros",    "query.jwt", "FAPI2 : Request Object を /ros に預ける ＋ private_key_jwt ＋ PKCE（S256）、JARM（query.jwt）" },
+        new string[] { "Fapi2", "par_mtls", "",          "FAPI2 : PAR ＋ tls_client_auth（MTLS）＋ PKCE（S256）" },
+        new string[] { "Fapi2", "par_mtls", "query.jwt", "FAPI2 : PAR ＋ tls_client_auth（MTLS）＋ PKCE（S256）、JARM（query.jwt）" },
     };
 }
 <!DOCTYPE html>

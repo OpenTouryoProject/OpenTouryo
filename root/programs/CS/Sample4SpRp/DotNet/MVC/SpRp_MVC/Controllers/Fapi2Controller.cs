@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/11/09  玄人 幸道         新規作成（#668 の追加。汎用認証サイトの自己テストの FAPI2（CIBA を除く）を移した）
+//*  2026/11/10  玄人 幸道         暗号化した id_token は JWE のまま IdToken.Verify に渡す（復号は鍵を引くためだけ）。par_mtls（tls_client_auth）を足した
 //**********************************************************************************
 
 using System;
@@ -57,6 +58,7 @@ namespace SpRp_MVC.Controllers
     /// |---|---|---|---|
     /// | `par` | **PAR**（RFC 9126。`pushed_authorization_request_endpoint`） | `private_key_jwt` | `private_key_jwt` ＋ PKCE S256 |
     /// | `ros` | **MPAS 独自の `/ros`**（`request_object_endpoint`。後方互換の口で、RFC の口は PAR） | 無し（Request Object の署名だけ） | 同上 |
+    /// | `par_mtls` | PAR | **`tls_client_auth`**（RFC 8705 §2。クライアント証明書。本文には client_id だけ） | **`tls_client_auth` ＋ PKCE S256** |
     ///
     /// - **Request Object には、PKCE の `code_challenge`（S256）と `exp`・`nbf`・`iat` を入れる**
     ///   （`RequestObject.Create` の有効期間・PKCE を受ける版。OpenTouryo#660・#675。FAPI 2.0 Security Profile §5.3.2.2・Message Signing §5.3.1）
@@ -67,7 +69,9 @@ namespace SpRp_MVC.Controllers
     /// - **id_token は、暗号化されて返ることがある**（MPAS は、fapi2 の登録に公開鍵があると Nested JWT（JWE の中に JWS）にする）。
     ///   自分の秘密鍵で復号してから、中の JWS を検証する
     ///
-    /// **MTLS（`tls_client_auth`）は扱わない。** MPAS のスタブがクライアント証明書を受けないため（MPAS の自己テストには MTLS のボタンがある）。
+    /// **`par_mtls` は、クライアント証明書を求める IdP で通る**（スタブは `StubCompose.ps1 -Mtls`。MultiPurposeAuthSite#351）。
+    /// 証明書は、起動のときに部品の HttpClient に載せる（`Program.CreateHttpClient`。`SpRp_ClientCertPfxFilePath`）。
+    /// 求めない IdP（既定のスタブ）では、PAR が `invalid_client` で断られる。
     /// </remarks>
     public class Fapi2Controller : Controller
     {
@@ -78,6 +82,9 @@ namespace SpRp_MVC.Controllers
 
         /// <summary>flow : /ros に預ける（MPAS 独自。署名だけ）</summary>
         public const string FlowRos = "ros";
+
+        /// <summary>flow : PAR に預ける（tls_client_auth。クライアント証明書）</summary>
+        public const string FlowParMtls = "par_mtls";
 
         /// <summary>Request Object の有効期間（FAPI 2.0 Message Signing §5.3.1 は、exp - nbf を 60 分以下に求める）</summary>
         private static readonly TimeSpan RequestObjectLifetime = TimeSpan.FromMinutes(5);
@@ -90,15 +97,15 @@ namespace SpRp_MVC.Controllers
         #region 認可要求
 
         /// <summary>Request Object を預けて、IdP へリダイレクトする</summary>
-        /// <param name="flow">par / ros</param>
+        /// <param name="flow">par / ros / par_mtls</param>
         /// <param name="responseMode">空（query）/ query.jwt</param>
         /// <returns>IActionResult</returns>
         [HttpGet]
         public async Task<IActionResult> Start(string flow = FlowPar, string responseMode = "")
         {
-            if (flow != FlowPar && flow != FlowRos)
+            if (flow != FlowPar && flow != FlowRos && flow != FlowParMtls)
             {
-                return this.BadRequest("flow は par / ros のどちらかです。");
+                return this.BadRequest("flow は par / ros / par_mtls のどれかです。");
             }
 
             responseMode = responseMode ?? "";
@@ -108,7 +115,7 @@ namespace SpRp_MVC.Controllers
             }
 
             // **照合した後は、入力の文字列ではなく、定数を使う**（Fapi1Controller.Start と同じ。code scanning #59）
-            string checkedFlow = (flow == FlowRos) ? FlowRos : FlowPar;
+            string checkedFlow = (flow == FlowRos) ? FlowRos : (flow == FlowParMtls) ? FlowParMtls : FlowPar;
             string checkedMode = (responseMode == Fapi1Controller.ResponseModeQueryJwt) ? Fapi1Controller.ResponseModeQueryJwt : "";
 
             string issuer = CmnClientParams.Isser;
@@ -118,7 +125,7 @@ namespace SpRp_MVC.Controllers
             Fapi1Session s = new Fapi1Session
             {
                 Flow = checkedFlow,
-                ClientId = Fapi2Controller.ClientId,
+                ClientId = Fapi2Controller.ClientIdOf(checkedFlow),
                 ResponseMode = checkedMode,
                 State = GetPassword.Base64UrlSecret(32),
                 Nonce = GetPassword.Base64UrlSecret(32),
@@ -129,7 +136,7 @@ namespace SpRp_MVC.Controllers
             {
                 Profile = "FAPI 2.0",
                 Flow = checkedFlow,
-                PushedTo = checkedFlow == FlowPar ? "PAR" : "/ros",
+                PushedTo = Fapi2Controller.PushedToOf(checkedFlow),
                 ResponseMode = checkedMode == "" ? "query" : checkedMode,
             };
 
@@ -149,7 +156,7 @@ namespace SpRp_MVC.Controllers
             #region 預ける
 
             string response;
-            if (checkedFlow == FlowPar)
+            if (checkedFlow == FlowPar || checkedFlow == FlowParMtls)
             {
                 if (discovery.PushedAuthorizationRequestEndpoint == null)
                 {
@@ -158,10 +165,15 @@ namespace SpRp_MVC.Controllers
                 }
 
                 // **PAR は、トークン エンドポイントと同じクライアント認証を付ける**（RFC 9126 §2）。client_id は方式によらず送る（§2.1）
-                response = await OAuth2AndOIDCClient.PushAuthorizationRequestAsync(
-                    discovery.PushedAuthorizationRequestEndpoint, requestObject,
-                    s.ClientId, null, Fapi1Controller.CreateClientAssertion(s.ClientId, issuer),
-                    OAuth2AndOIDCEnum.AuthMethods.private_key_jwt);
+                //   par_mtls は tls_client_auth（RFC 8705 §2）：本文には client_id だけ。証明書は HttpClient が載せる
+                response = checkedFlow == FlowParMtls
+                    ? await OAuth2AndOIDCClient.PushAuthorizationRequestAsync(
+                        discovery.PushedAuthorizationRequestEndpoint, requestObject,
+                        s.ClientId, null, null, OAuth2AndOIDCEnum.AuthMethods.tls_client_auth)
+                    : await OAuth2AndOIDCClient.PushAuthorizationRequestAsync(
+                        discovery.PushedAuthorizationRequestEndpoint, requestObject,
+                        s.ClientId, null, Fapi1Controller.CreateClientAssertion(s.ClientId, issuer),
+                        OAuth2AndOIDCEnum.AuthMethods.private_key_jwt);
             }
             else
             {
@@ -247,7 +259,7 @@ namespace SpRp_MVC.Controllers
 
             Fapi1Session s = JsonConvert.DeserializeObject<Fapi1Session>(saved);
             result.Flow = s.Flow;
-            result.PushedTo = s.Flow == FlowPar ? "PAR" : "/ros";
+            result.PushedTo = Fapi2Controller.PushedToOf(s.Flow);
             result.ResponseMode = s.ResponseMode == "" ? "query" : s.ResponseMode;
 
             string issuer = CmnClientParams.Isser;
@@ -314,14 +326,15 @@ namespace SpRp_MVC.Controllers
 
             Discovery discovery = await Discovery.LoadAsync(CmnClientParams.SpRp_DiscoveryUri, issuer);
 
-            // **private_key_jwt（aud は issuer。FAPI 2.0 Security Profile §5.3.2.1）＋ PKCE の code_verifier**（OpenTouryo#676 の版）
-            result.AuthMethod = "private_key_jwt ＋ PKCE（S256）";
+            // **private_key_jwt（aud は issuer。FAPI 2.0 Security Profile §5.3.2.1）か tls_client_auth（RFC 8705 §2）＋ PKCE の code_verifier**（OpenTouryo#676 の版）
+            bool mtls = s.Flow == FlowParMtls;
+            result.AuthMethod = (mtls ? "tls_client_auth" : "private_key_jwt") + " ＋ PKCE（S256）";
             string tokenResponse = await OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
                 discovery.TokenEndpoint,
                 client_id: clientId, client_secret: null,
-                client_assertion: Fapi1Controller.CreateClientAssertion(clientId, issuer),
+                client_assertion: mtls ? null : Fapi1Controller.CreateClientAssertion(clientId, issuer),
                 redirect_uri: Fapi2Controller.RedirectUri, code: code, code_verifier: s.CodeVerifier,
-                authMethod: OAuth2AndOIDCEnum.AuthMethods.private_key_jwt);
+                authMethod: mtls ? OAuth2AndOIDCEnum.AuthMethods.tls_client_auth : OAuth2AndOIDCEnum.AuthMethods.private_key_jwt);
 
             JObject token = Fapi1Controller.ParseJson(tokenResponse);
             if (token == null)
@@ -355,7 +368,10 @@ namespace SpRp_MVC.Controllers
 
             // **MPAS は、fapi2 の登録に公開鍵（jwk_rsa_publickey）があると、id_token を暗号化して返す**
             //   （Nested JWT：外側が JWE（RSA-OAEP・A256GCM。鍵はクライアントの公開鍵）、内側が IdP の署名した JWS。RFC 7516、OpenID Connect Core 1.0 §10.2）。
-            //   **自分の秘密鍵（SpRp_RsaPfxFilePath）で復号し、中の JWS を FAPI1 と同じく検証する。** 暗号化されていなければ、そのまま検証する。
+            //   **復号は、署名の鍵を引くため（中の JWS のヘッダの kid を読むため）だけに行う。** JWE のヘッダには、署名の鍵の kid が無い。
+            //   **検証には、JWE のまま渡す**（IdToken.Verify（CmnJwtToken.Verify）が、自分の秘密鍵（SpRp_RsaPfxFilePath）で復号してから検証する。
+            //   **復号した JWS を渡すと断られる**：CmnJwtToken.Verify は、JWE の中なら ES256、素なら RS256 だけを受ける）。
+            string keySource = null;
             if (idToken.Split('.').Length == 5)
             {
                 JWE_RsaOaepAesGcm_X509 jwe = new JWE_RsaOaepAesGcm_X509(
@@ -365,16 +381,16 @@ namespace SpRp_MVC.Controllers
                     return "id_token（JWE）を、自分の秘密鍵で復号できません。";
                 }
 
-                idToken = innerJws;
-                result.IdTokenForm = "JWE（RSA-OAEP・A256GCM）の中の JWS";
+                keySource = innerJws;
+                result.IdTokenForm = "JWE（RSA-OAEP・A256GCM）の中の JWS（" + JwtReader.TryReadAlg(innerJws) + "）";
             }
             else
             {
-                result.IdTokenForm = "JWS";
+                result.IdTokenForm = "JWS（" + JwtReader.TryReadAlg(idToken) + "）";
             }
 
             (string idError, JObject claims) = await OpJwt.VerifyIdTokenAsync(
-                idToken, accessToken, code, issuer, clientId, s.Nonce);
+                idToken, accessToken, code, issuer, clientId, s.Nonce, keySource);
             if (idError != null)
             {
                 return idError;
@@ -412,10 +428,23 @@ namespace SpRp_MVC.Controllers
 
         #region 補助
 
-        /// <summary>client_id（fapi2 の登録。サンプル独自のキー）</summary>
-        private static string ClientId
+        /// <summary>flow で使う client_id（fapi2 の登録。サンプル独自のキー）</summary>
+        /// <param name="flow">flow</param>
+        /// <returns>client_id</returns>
+        /// <remarks>**par_mtls は、tls_client_auth を登録した別のクライアント**（登録の方法でしか通らない。MPAS#307）</remarks>
+        private static string ClientIdOf(string flow)
         {
-            get { return GetConfigParameter.GetConfigValue("SpRp_Fapi2ClientID"); }
+            return flow == FlowParMtls
+                ? GetConfigParameter.GetConfigValue("SpRp_Fapi2MtlsClientID")
+                : GetConfigParameter.GetConfigValue("SpRp_Fapi2ClientID");
+        }
+
+        /// <summary>flow の預け先（画面の表示）</summary>
+        /// <param name="flow">flow</param>
+        /// <returns>PAR / PAR（MTLS）/ /ros</returns>
+        private static string PushedToOf(string flow)
+        {
+            return flow == FlowRos ? "/ros" : flow == FlowParMtls ? "PAR（tls_client_auth）" : "PAR（private_key_jwt）";
         }
 
         /// <summary>戻り先（サンプル独自のキー。FAPI1 の SpRp_RedirectUri とは別の登録）</summary>

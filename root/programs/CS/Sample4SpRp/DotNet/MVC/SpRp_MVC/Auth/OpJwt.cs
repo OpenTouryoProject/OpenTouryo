@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/11/07  玄人 幸道         新規作成（#668。SpRp_CLI の IdTokenVerifier に、JARM の応答を足した）
+//*  2026/11/10  玄人 幸道         id_token の検証鍵を、別の JWT（JWE を復号した中の JWS）から引けるようにした（FAPI2。#668 の追加）
 //**********************************************************************************
 
 using System;
@@ -56,11 +57,16 @@ namespace SpRp_MVC.Auth
         /// <param name="client_id">期待する aud</param>
         /// <param name="expectedNonce">認可要求で送った nonce</param>
         /// <returns>（失敗の理由、クレーム）。成功なら理由は null</returns>
+        /// <param name="keySource">
+        /// 検証鍵を引くための JWT（ヘッダの alg・kid を読む）。省けば id_token そのもの。
+        /// **id_token が JWE（Nested JWT）のときは、復号した中の JWS を渡す**（JWE のヘッダには、署名の鍵の kid が無い）。
+        /// id_token には JWE のまま渡す（`IdToken.Verify`（`CmnJwtToken.Verify`）が、自分の秘密鍵で復号してから検証する）。
+        /// </param>
         public static async Task<(string Error, JObject Claims)> VerifyIdTokenAsync(
             string id_token, string access_token, string code,
-            string issuer, string client_id, string expectedNonce)
+            string issuer, string client_id, string expectedNonce, string keySource = null)
         {
-            (string error, JWS jws) = await OpJwt.ResolveKeyAsync(id_token, "id_token");
+            (string error, JWS jws) = await OpJwt.ResolveKeyAsync(keySource ?? id_token, "id_token");
             if (error != null)
             {
                 return (error, null);

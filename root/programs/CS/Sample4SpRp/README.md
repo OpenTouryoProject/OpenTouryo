@@ -16,7 +16,7 @@
 | net | EXE（CLI） | SAML2・AuthZCode・AuthNCode | 未（CLI には向かない。下記） | — |
 | net | EXE（CLI、旧サンプル・net10.0 のみ） | Device・PKCE（LIR） | **済**（スタブに合わせた。4 節） | `Samples4NetCore/Legacy/CLI_sample/` |
 | net | MVC | SAML2・AuthZCode・AuthNCode・PKCE・Device | **一部**：既存の `MVC_Sample`（C#・VB の net48、C# の net10.0）の外部ログイン（OIDC・SAML2）をスタブで通す（2.1 節）。専用のサンプルは未 | `Samples/`・`Samples4NetCore/` の `MVC_Sample` |
-| net | **MVC（net10.0 のみ）** | **FAPI 1.0**（認可コード ＋ `private_key_jwt` ＋ PKCE / PKCE だけ、JARM）、**FAPI 2.0**（PAR・`/ros` ＋ `private_key_jwt` ＋ PKCE、JARM） | **済**（#668。MPAS の自己テストから移した。`private_key_jwt` と PKCE の併用は #670。FAPI 2.0 は #668 の追加。4.2 節）。net48・FAPI 2.0 の mTLS は未 | [`DotNet/MVC/`](DotNet/MVC/) |
+| net | **MVC（net10.0 のみ）** | **FAPI 1.0**（認可コード ＋ `private_key_jwt` ＋ PKCE / PKCE だけ、JARM）、**FAPI 2.0**（PAR・`/ros` ＋ `private_key_jwt` ＋ PKCE、PAR ＋ `tls_client_auth`（MTLS）＋ PKCE、JARM） | **済**（#668。MPAS の自己テストから移した。`private_key_jwt` と PKCE の併用は #670。FAPI 2.0 は #668 の追加。4.2 節）。net48 は未 | [`DotNet/MVC/`](DotNet/MVC/) |
 | net | WebForms（net48 のみ） | 同上 | **一部**：既存の `WebForms_Sample`（C#・VB）の外部ログイン（OIDC・SAML2）をスタブで通す（2.1 節）。専用のサンプルは未 | `Samples/` の `WebForms_Sample` |
 | net | WinForms | 同上 | **一部**：既存の WS クライアント（`WSClientWin_sample`・`WSClientWinCone_sample`、VB・.NET 10 版）の外部ログインを、ROPC から PKCE（LIR）に替えた。専用のサンプルは未 | `Samples/WS_sample/WSClient_sample/` ほか |
 | browser | SPA（React・Blazor） | PKCE | **済**（Bearer でのリソース アクセスを含む。4.1 節） | [`SPA/`](SPA/) |
@@ -49,6 +49,7 @@ cd root\programs\CS\Sample4SpRp\Stub
 .\StubCompose.ps1 -Action Config   # 設定の解決だけを見る（起動しない）
 .\StubCompose.ps1 -Action Down     # 止めて消す（状態は残らない）
 .\StubCompose.ps1 -MpasDefault     # MPAS の既定（appsettings.Stub.sample.json）で起動する（雛形に無いクライアントは居ない）
+.\StubCompose.ps1 -Mtls            # クライアント証明書（MTLS）も受け付ける（FAPI2 の par_mtls。テスト専用。MultiPurposeAuthSite#351）
 ```
 
 > **`-Settings` を付けずに MPAS 側の `2_DockerComposeUp.bat` や `docker compose` で起動すると、MPAS の既定の設定になる。**
@@ -188,6 +189,7 @@ cd ..\E2E
 cd root\programs\CS\Sample4SpRp\E2E
 .\MvcFapi2E2E.ps1                                  # 4 つのフロー × 正常・対照（12 件）
 .\MvcFapi2E2E.ps1 -Only "par" -SkipControl         # 絞る（ケース名の部分一致）
+.\MvcFapi2E2E.ps1 -Mtls                            # par_mtls（tls_client_auth）も回す（15 件。スタブは StubCompose.ps1 -Mtls で起動する）
 ```
 
 | flow / response_mode | 正常 | 対照（NG になること） |
@@ -196,18 +198,16 @@ cd root\programs\CS\Sample4SpRp\E2E
 | `par` / `query.jwt`（JARM） | 同上 | 応答（JWT）の署名を書き換える / 素の応答に落とす |
 | `ros` / `query` | 同上 | `state` を書き換える / **使った `request_uri` を使い回す** |
 | `ros` / `query.jwt` | 同上 | 応答（JWT）の署名を書き換える |
+| `par_mtls` / `query`・`query.jwt`（**`-Mtls` のときだけ**） | 同上 | `state` を書き換える |
 
+- **`par_mtls` は、スタブが証明書を受け付けるときだけ通る**（`StubCompose.ps1 -Mtls`）。**既定のスタブでは、PAR が `invalid_client` で断られる**（証明書で認証していることの確かめになる。2026/11/10 に確かめた）
 - **正常の側で、認可要求が `client_id`・`request_uri` だけであることを見る**（値は、預けた署名付きの Request Object の中にある。RFC 9126 §4）
 - **IdP の側の対照**（Reuse・ClientId）は、**`code` を持った戻りがアプリに届かなければ OK**（スタブのエラー画面か、`error` を持った戻り）。
   `request_uri` は 1 回だけ使うべき（RFC 9126 §4）。`client_id` は、預けたものと一致しなければならない
 - **アプリのログは `-OutputDir` の `app_SpRp_MVC_Fapi2.log`**
 
-> **2026/11/09 の時点で、正常の 4 件と Reuse の 2 件は NG になる**（スタブの作りは 2026/11/07）。
-> MPAS が fapi2 の id_token（Nested JWT）の中の JWS に、**IdP の署名鍵ではなくクライアントの鍵の `kid`** を入れるため、
-> `kid` で `jwks_uri` から鍵を引くこのサンプルは、署名を確かめられない（**OpenTouryoProject/MultiPurposeAuthSite#352**。サンプルには回避を入れない）。
-> Reuse は 1 回目の正常が要るので、同じ理由で止まる。
-> PAR・`/ros` に預けること、`private_key_jwt` ＋ PKCE での引き換え、id_token の JWE の復号、State・Signature・Plain・ClientId の対照は、通ることを確かめた。
-> **MPAS が直ったら、スタブを作り直して（MPAS の `container\Stub\1_PublishStub.ps1`）回し直す。**
+- **スタブは、OpenTouryoProject/MultiPurposeAuthSite#352（fapi2 の id_token の中の JWS の `kid`）を直した作りが要る**（2026/11/10 以降。MPAS の `container\Stub\1_PublishStub.ps1` で作り直す）。
+  それより前の作りでは、中の JWS の `kid` がクライアントの鍵を指し、正常の側が「id_token の kid の鍵を、jwks_uri から引けません」で NG になる
 
 ## 3. 設定（サンプルと IdP で揃える値）
 
@@ -223,6 +223,7 @@ cd root\programs\CS\Sample4SpRp\E2E
 | MVC（`DotNet/MVC`）の `oauth2`・`oidc` | **雛形に無い**：`SpRp_MVC`（[`Stub/Sample4SpRp.stub.json`](Stub/Sample4SpRp.stub.json)。`fapi1`、`private_key_jwt`） | `75d74cb5a4ae44e3afec154623f0cbb4` | `https://localhost:44336/Fapi1/Callback` |
 | MVC（`DotNet/MVC`）の `pkce` | **雛形に無い**：`SpRp_MVC_PKCE`（同上。`fapi1`、秘密なし） | `9e53bded5e7d4ee4bc9e7e30f7a9f0a6` | 同上 |
 | MVC（`DotNet/MVC`）の FAPI2（`par`・`ros`） | **雛形に無い**：`SpRp_MVC_FAPI2`（同上。`fapi2`、`private_key_jwt`） | `0cb517873cca4afd86098316373eaffc` | `https://localhost:44336/Fapi2/Callback` |
+| MVC（`DotNet/MVC`）の FAPI2（`par_mtls`） | **雛形に無い**：`SpRp_MVC_FAPI2_MTLS`（同上。`fapi2`、`tls_client_auth`、`tls_client_auth_subject_dn` = `CN=MPAS Test Client`） | `a5a72235cf4946b58927dbf42b0d94a5` | 同上 |
 | CLI（`DotNet/CLI`）の `cc`・`jwtbearer`・`ropc` | **雛形に無い**：`SpRp_CLI_Batch`（同上。normal、秘密と `jwk_rsa_publickey`） | `b9582fe575bf4ba9984f3fc81147408c` | （使わない） |
 | SPA（`SPA/`）の Hybrid | **雛形に無い**：`SPA_Hybrid`（同上。normal、秘密なし） | `2ee77c67c8624f39a423c9b6c319c106` | **`redirect_uri_token`** = `http://localhost:5173/RedirectEndpoint`（Hybrid はこちらを使う） |
 
@@ -404,13 +405,18 @@ cd root\programs\CS\Sample4SpRp\DotNet\MVC
 |---|---|---|---|
 | `par` | **PAR**（RFC 9126。Discovery の `pushed_authorization_request_endpoint`） | `private_key_jwt` | **`private_key_jwt` ＋ PKCE S256**（方式を問わない版の `GetAccessTokenByCodeAsync`。#676） |
 | `ros` | **MPAS 独自の `/ros`**（Discovery の `request_object_endpoint`。**後方互換の口**で、RFC の口は PAR） | 無し（Request Object の署名だけ） | 同上 |
+| `par_mtls` | PAR | **`tls_client_auth`**（RFC 8705 §2。クライアント証明書。本文には `client_id` だけ） | **`tls_client_auth` ＋ PKCE S256** |
 
-- client_id は **`SpRp_Fapi2ClientID`**、戻り先は **`SpRp_Fapi2RedirectUri`**（`/Fapi2/Callback`）。どちらもサンプル独自のキーで、FAPI1 とは別の登録（`SpRp_MVC_FAPI2`）
+- client_id は **`SpRp_Fapi2ClientID`**（`par_mtls` は **`SpRp_Fapi2MtlsClientID`**）、戻り先は **`SpRp_Fapi2RedirectUri`**（`/Fapi2/Callback`）。どれもサンプル独自のキーで、FAPI1 とは別の登録（`SpRp_MVC_FAPI2`・`SpRp_MVC_FAPI2_MTLS`）
+- **クライアント証明書は `SpRp_ClientCertPfxFilePath`**（テスト用の `SHA256RSAClientCert.pfx`。Subject は `CN=MPAS Test Client`）。**起動のときに、部品の `HttpClient` に載せる**（`Program.CreateHttpClient`）。
+  **証明書は、サーバが求めたときだけ送られる**ので、既定のスタブにはこれまでどおり届く。**`HttpClient` は静的でプロセス全体に効く**ので、`-Mtls` のスタブでは、ほかの flow の要求にも証明書が付く（FAPI1・FAPI2 の E2E は、どちらのスタブでも通ることを確かめた）
 - **Request Object には、`code_challenge`（S256）と `exp`・`nbf`・`iat` を入れる**（`RequestObject.Create` の有効期間・PKCE を受ける版。#660・#675。FAPI 2.0 Security Profile §5.3.2.2、Message Signing §5.3.1）。署名鍵は `SpRp_RsaPfxFilePath`
 - **`aud` は、Request Object も `client_assertion` も IdP の issuer**（RFC 9101 §4、FAPI 2.0 Security Profile §5.3.2.1。MPAS は fapi2 の登録の `client_assertion` の `aud` を issuer に限る）
 - **預けられなければ、リダイレクトせずに結果の画面で NG を出す**（IdP の `error` を見せる）
 - **id_token は、暗号化されて返る**（MPAS は、fapi2 の登録に公開鍵があると Nested JWT にする。外側が JWE（RSA-OAEP・A256GCM。クライアントの公開鍵）、中が IdP の署名した JWS）。
-  **自分の秘密鍵（`SpRp_RsaPfxFilePath`）で復号し（`JWE_RsaOaepAesGcm_X509`）、中の JWS を FAPI1 と同じく検証する**。結果の画面に「id_token の形」を出す
+  **自分の秘密鍵（`SpRp_RsaPfxFilePath`）での復号（`JWE_RsaOaepAesGcm_X509`）は、署名の鍵を引くため（中の JWS のヘッダの `kid`）だけに行い、
+  検証には JWE のまま渡す**（`IdToken.Verify` が復号してから検証する）。結果の画面に「id_token の形」（中の JWS の `alg`）を出す
+  - **復号した JWS を `IdToken.Verify` に渡すと断られる**（`CmnJwtToken.Verify` は、JWE の中なら ES256、素なら RS256 だけを受ける）
 - 戻りの確かめは FAPI1 と同じ（下の表）。response_mode は Request Object に入れる
 
 **確かめていること**（サンプルとして、省かずに書いてある）
@@ -437,7 +443,6 @@ cd root\programs\CS\Sample4SpRp\DotNet\MVC
 
 | もの | 理由 |
 |---|---|
-| **mTLS**（`tls_client_auth`。MPAS の自己テストの「FAPI2 CC, PAR, MTLS」） | **スタブがクライアント証明書を受けない**（MPAS が MTLS を測れるのは、E2E の `-Launch` がテスト専用のフック `Tests/MtlsTestHook` を net10.0 版に読ませたときだけ）。**OpenTouryoProject/MultiPurposeAuthSite#351** |
 | **CIBA**（FAPI2） | 認証デバイスの登録が要る（MPAS の E2E でも Skip） |
 | **net48**（ASP.NET MVC 5） | 後の段で、別のプロジェクトとして足す |
 
