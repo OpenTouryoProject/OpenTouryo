@@ -1,4 +1,4 @@
-﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@d2f87d1f651f src/quality/ExpectationGuard/tests/cases.psd1 sha256:2485266a43648ea8dff8894ce36d0acdc7ff210f8fb92525a751b98e29fe4fb7
+﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@b9da2ca0cc9d src/quality/ExpectationGuard/tests/cases.psd1 sha256:77f8981d2ef6f8ce08819c1543eae970362d65765bbf96026000a9516c99946e
 # 判定の用例（OpenTouryoCodingAgentAssets#3）。「この差分なら検出する／しない」を、文章ではなくテストで固定する。
 #
 #   各用例は、一時のリポジトリで次を行う。
@@ -22,6 +22,7 @@
         'golden/Result1.txt'     = "Time: 10:00`nOK 1`n"
         '.githooks/commit-msg'   = "#!/bin/sh`nexit 0`n"
         '.claude/agents/reviewer.md' = "---`nname: reviewer`n---`nテストを自分で実行する`n"
+        '.claude/agents/opentouryo-expectation-reviewer.md' = "---`nname: opentouryo-expectation-reviewer`n---`n理由と差分を突き合わせる`n"
     }
 
     Fixtures = @{
@@ -238,7 +239,7 @@ public class FooTests
         }
         @{
             Id = 'D18'; Category = '検出する'; Title = 'トレーラーの規則は同じ Name で置き換わる（共通の語彙にあっても、リポジトリの語彙に無ければ止める）'
-            Commits = @(@{ Message = "fixed #12 直した`n`nFound-By: user-report"; Files = @{ 'src/A.cs' = "class A {}`n" } })
+            Commits = @(@{ Message = "fixed #12 直した`n`nFound-By: user-report`nTested-with: none"; Files = @{ 'src/A.cs' = "class A {}`n" } })
             Expect = @{ Exit = 1; Kinds = @(); Warnings = 0 }
             Note = 'W01 の警告が 1 件（共通とリポジトリで二重に数えない）ことと併せて見る'
         }
@@ -397,7 +398,7 @@ public class FooTests
         }
         @{
             Id = 'N09'; Category = '検出しない'; Title = '語彙にあるトレーラーの値'
-            Commits = @(@{ Message = "fixed #12 直した`n`nFound-By: type-review (#11 の派生)"; Files = @{ 'src/A.cs' = "class A {}`n" } })
+            Commits = @(@{ Message = "fixed #12 直した`n`nFound-By: type-review (#11 の派生)`nTested-with: none"; Files = @{ 'src/A.cs' = "class A {}`n" } })
             Expect = @{ Exit = 0; Kinds = @(); Warnings = 0 }
         }
         @{
@@ -515,7 +516,7 @@ public class FooTests
         }
         @{
             Id = 'T07'; Category = '検出する'; Title = '最後の段落に無いトレーラー（Co-Authored-By の前に空行）'
-            Commits = @(@{ Message = "fixed #12 直した`n`nFound-By: spec-check`n`nCo-Authored-By: A <a@example.com>"; Files = @{ 'src/A.cs' = "class A {}`n" } })
+            Commits = @(@{ Message = "fixed #12 直した`n`nFound-By: spec-check`n`nTested-with: none`nCo-Authored-By: A <a@example.com>"; Files = @{ 'src/A.cs' = "class A {}`n" } })
             Expect = @{ Exit = 1; Kinds = @(); Errors = 1; Warnings = 0 }
             Note = '書いたが読まれない行は、直す行に出す（書き忘れの警告にはしない）'
         }
@@ -567,7 +568,7 @@ public class FooTests
         # ==============================================================
         @{
             Id = 'W01'; Category = '警告'; Title = 'fixed #NNN に Found-By が無い'
-            Commits = @(@{ Message = 'fixed #12 直した'; Files = @{ 'src/A.cs' = "class A {}`n" } })
+            Commits = @(@{ Message = "fixed #12 直した`n`nTested-with: none"; Files = @{ 'src/A.cs' = "class A {}`n" } })
             Expect = @{ Exit = 0; Kinds = @(); Warnings = 1 }
         }
 
@@ -646,6 +647,78 @@ public class FooTests
                 } }
             )
             Expect = @{ Exit = 0; Kinds = @(); Review = 1; ReviewKinds = @('[Obsolete] の追加') }
+        }
+
+        # ==============================================================
+        # 承認の理由の書式（#6。止めない。Issue 番号・仕様の節が無ければ警告）
+        # ==============================================================
+        @{
+            Id = 'A01'; Category = '理由の書式'; Title = 'Issue 番号・仕様の節の無い理由は警告（承認にはなる）'
+            Commits = @(@{ Message = "B を消す`n`nExpectation-Change: 仕様の変更`nTested-with: unit`nReviewed-with: opentouryo-expectation-reviewer (claude-sonnet-5-5)"; Files = @{ 'tests/FooTests.cs' = "public class FooTests`n{`n    [Test]`n    public void A() { Assert.That(1, Is.EqualTo(1)); }`n}`n" } })
+            Expect = @{ Exit = 0; Kinds = @('テストの削除'); Warnings = 1 }
+        }
+        @{
+            Id = 'A02'; Category = '理由の書式'; Title = 'Issue 番号のある理由は警告しない'
+            Commits = @(@{ Message = "B を消す`n`nExpectation-Change: 仕様の変更（#123）`nTested-with: unit`nReviewed-with: opentouryo-expectation-reviewer (claude-sonnet-5-5)"; Files = @{ 'tests/FooTests.cs' = "public class FooTests`n{`n    [Test]`n    public void A() { Assert.That(1, Is.EqualTo(1)); }`n}`n" } })
+            Expect = @{ Exit = 0; Kinds = @('テストの削除'); Warnings = 0 }
+        }
+        @{
+            Id = 'A03'; Category = '理由の書式'; Title = '仕様の節のある理由は警告しない（RFC・仕様の名前と節番号）'
+            Commits = @(@{ Message = "B を消す`n`nExpectation-Change: RFC 7636 4.2 に合わせた`nExpectation-Change: JARM 2.1 の iss を必須にした`nTested-with: unit`nReviewed-with: opentouryo-expectation-reviewer (claude-sonnet-5-5)"; Files = @{ 'tests/FooTests.cs' = "public class FooTests`n{`n    [Test]`n    public void A() { Assert.That(1, Is.EqualTo(1)); }`n}`n" } })
+            Expect = @{ Exit = 0; Kinds = @('テストの削除'); Warnings = 0 }
+        }
+        @{
+            Id = 'A04'; Category = '理由の書式'; Title = 'リポジトリの規則で書き方を足せる（テストの ID RT-NNN）'
+            Commits = @(@{ Message = "規則を足す`n`nExpectation-Change: RT-352.1 の Skip に合わせた`nReviewed-with: opentouryo-expectation-reviewer";Files = @{ 'guard/rules.psd1' = "@{`n    ApprovalReasonPatterns = @('\bRT-\d+')`n}`n" } })
+            Expect = @{ Exit = 0; Kinds = @('仕組みの変更'); Warnings = 0 }
+        }
+
+        # ==============================================================
+        # トレーラーの書き忘れ（#6。TrailerRequirements。止めない）
+        # ==============================================================
+        @{
+            Id = 'M01'; Category = '書き忘れ'; Title = 'コードを変えたのに Tested-with が無い（警告）'
+            Commits = @(@{ Message = '直した'; Files = @{ 'src/A.cs' = "class A { int x = 1; }`n" } })
+            Expect = @{ Exit = 0; Kinds = @(); Warnings = 1 }
+        }
+        @{
+            Id = 'M02'; Category = '書き忘れ'; Title = 'Tested-with: none で満たせる'
+            Commits = @(@{ Message = "直した`n`nTested-with: none"; Files = @{ 'src/A.cs' = "class A { int x = 1; }`n" } })
+            Expect = @{ Exit = 0; Kinds = @(); Warnings = 0 }
+        }
+        @{
+            Id = 'M03'; Category = '書き忘れ'; Title = 'コメント・空行だけの変更は数えない（C# の //・VB の ''）'
+            Commits = @(
+                @{ Message = "足す`n`nTested-with: none"; Files = @{ 'src/A.cs' = "class A`n{`n}`n"; 'src/B.vb' = "Class B`nEnd Class`n" } }
+                @{ Message = 'コメントを足した'; Files = @{ 'src/A.cs' = "// A の説明`nclass A`n{`n    /// <summary>説明</summary>`n`n}`n"; 'src/B.vb' = "' B の説明`nClass B`nEnd Class`n" } }
+            )
+            Expect = @{ Exit = 0; Kinds = @(); Warnings = 0 }
+        }
+        @{
+            Id = 'M04'; Category = '書き忘れ'; Title = 'コード以外（文書）の変更は数えない'
+            Commits = @(@{ Message = '文書を直した'; Files = @{ 'docs/README.md' = "# 説明`n" } })
+            Expect = @{ Exit = 0; Kinds = @(); Warnings = 0 }
+        }
+        @{
+            Id = 'M05'; Category = '書き忘れ'; Title = '期待値の変更に突き合わせ役の Reviewed-with が無い（警告。ほかの役では満たさない）'
+            Commits = @(@{ Message = "B を消す`n`nExpectation-Change: 仕様の変更（#1）`nTested-with: unit`nReviewed-with: reviewer"; Files = @{ 'tests/FooTests.cs' = "public class FooTests`n{`n    [Test]`n    public void A() { Assert.That(1, Is.EqualTo(1)); }`n}`n" } })
+            Expect = @{ Exit = 0; Kinds = @('テストの削除'); Warnings = 1 }
+        }
+        @{
+            Id = 'M06'; Category = '書き忘れ'; Title = 'リポジトリの規則で組を足せる（リスク「高」の場所を fixed で変えたら Reviewed-with）'
+            Commits = @(
+                @{ Message = "規則を足す`n`nExpectation-Change: 書き忘れの組を足した（#6）`nReviewed-with: opentouryo-expectation-reviewer"; Files = @{ 'guard/rules.psd1' = "@{`n    TrailerRequirements = @(`n        @{ Name = 'Reviewed-with'; Message = '(?i)\bfixed\s+#\d+'; Paths = @('^src/Auth/'); Hint = 'リスク「高」' }`n    )`n}`n" } }
+                @{ Message = "fixed #12 直した`n`nFound-By: spec-check`nTested-with: unit"; Files = @{ 'src/Auth/A.cs' = "class A { int x = 1; }`n" } }
+            )
+            Expect = @{ Exit = 0; Kinds = @(); Warnings = 1 }
+        }
+        @{
+            Id = 'M07'; Category = '書き忘れ'; Title = 'リスク「高」の場所でも fixing（途中）は数えない'
+            Commits = @(
+                @{ Message = "規則を足す`n`nExpectation-Change: 書き忘れの組を足した（#6）`nReviewed-with: opentouryo-expectation-reviewer"; Files = @{ 'guard/rules.psd1' = "@{`n    TrailerRequirements = @(`n        @{ Name = 'Reviewed-with'; Message = '(?i)\bfixed\s+#\d+'; Paths = @('^src/Auth/'); Hint = 'リスク「高」' }`n    )`n}`n" } }
+                @{ Message = "fixing #12 途中`n`nTested-with: unit"; Files = @{ 'src/Auth/A.cs' = "class A { int x = 1; }`n" } }
+            )
+            Expect = @{ Exit = 0; Kinds = @(); Warnings = 0 }
         }
 
         # ==============================================================

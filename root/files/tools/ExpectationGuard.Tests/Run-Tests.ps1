@@ -1,4 +1,4 @@
-﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@d2f87d1f651f src/quality/ExpectationGuard/tests/Run-Tests.ps1 sha256:8900e946e255b22e6f546a7258bbca8f957a78a8e7d666e8f7a9150c77770535
+﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@b9da2ca0cc9d src/quality/ExpectationGuard/tests/Run-Tests.ps1 sha256:eac9ea0c8127077ce728aa84ec27d39aca41fc5a206ed2fae1e8e58fa4cca4d7
 <#
 .SYNOPSIS
     期待値の変更の検出器の、判定の用例（cases.psd1）を回す（OpenTouryoCodingAgentAssets#3）。
@@ -28,7 +28,19 @@ param(
 $ErrorActionPreference = "Stop"
 
 $here    = $PSScriptRoot
-$guard   = Split-Path -Parent $here
+# 本体の場所。install.ps1 が写すときに、導入先のルートからのフォルダで埋める（判定の用例を本体と別の場所に置けるように。#13）。
+#   埋まっていなければ（原本のまま）、1 つ上のフォルダ。
+$checkerDir = 'root/programs'
+if ($checkerDir.StartsWith('@@'))
+{
+    $guard = Split-Path -Parent $here
+}
+else
+{
+    $top = (& git -C $here rev-parse --show-toplevel 2>$null)
+    if ($LASTEXITCODE -ne 0 -or -not $top) { Write-Host ("  リポジトリの中で実行してください : {0}" -f $here) -ForegroundColor Red; exit 2 }
+    $guard = [IO.Path]::GetFullPath((Join-Path $top $checkerDir))
+}
 $checker = Join-Path $guard "CheckExpectationChange.ps1"
 $common  = Join-Path $guard "rules.common.psd1"
 foreach ($f in @($checker, $common, (Join-Path $here "cases.psd1"), (Join-Path $here "rules.test.psd1"), (Join-Path $here "TestComparer.ps1")))

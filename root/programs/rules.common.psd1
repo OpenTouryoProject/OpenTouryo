@@ -1,10 +1,22 @@
-﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@d2f87d1f651f src/quality/ExpectationGuard/rules.common.psd1 sha256:c60e7ff7ad7330e84247b0829ecfa50bb8f31dbdb7c192b7c5ff7b46cf52f046
+﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@b9da2ca0cc9d src/quality/ExpectationGuard/rules.common.psd1 sha256:0e31b6bc86bd6be0479054d220efe4157e7d6f74c02bc78cbf186a78c6e371a4
 # 期待値の変更の検出器の、共通の規則（OpenTouryoCodingAgentAssets#3）。
 #   原本は OpenTouryoCodingAgentAssets の src/quality/ExpectationGuard/。導入先では写しであり、直さない。
 #   リポジトリごとの規則は rules.psd1（見本は rules.sample.psd1）。配列はここに足され、値は rules.psd1 で上書きされる。
 @{
     # 承認のトレーラー
     ApprovalTrailer = 'Expectation-Change'
+
+    # 承認の理由の書式（OpenTouryoCodingAgentAssets#6）。どれにも当たらなければ警告（止めない）。
+    #   根拠（Issue 番号・仕様の節）の無い理由は、突き合わせ役が「根拠」の観点で確かめられない。
+    #   リポジトリの規則（rules.psd1）に書くと足される（例：MultiPurposeAuthSite のテストの ID 'RT-\d+'）。
+    ApprovalReasonPatterns = @(
+        '#\d+'                                                          # Issue 番号
+        '\bRFC\s*\d+'                                                   # RFC
+        '§\s*\d'                                                        # 節（§）
+        '\d+(\.\d+)*\s*節'                                              # 節（日本語）
+        '\b(OIDC|OpenID|FAPI|JARM|OAuth|PKCE|SAML|JWT|JWS|JWE|DPoP)\b[^。]*?\d+(\.\d+)+'  # 仕様の名前と節番号
+    )
+    ApprovalReasonHint = '理由に、根拠の Issue 番号（#NNN）か仕様の節（RFC 7636 4.2 など）を書く'
 
     # 数えない行（コメント。コメント アウトは「消えた」と数える）
     CommentLine = '^\s*//'
@@ -97,6 +109,26 @@
             Meanings               = @{
                 'human' = '人のレビュー（役の定義を使わずに、人が差分を見た）'
             }
+        }
+    )
+
+    # トレーラーの書き忘れ（OpenTouryoCodingAgentAssets#6）。止めない（警告）。
+    #   組の中の条件（Message：メッセージ・Trailer：ほかのトレーラーがある・Paths：変えたファイル）がすべて当たるのに、
+    #   Name のトレーラー（Value があれば、それに当たる値）が無ければ警告する。IgnoreLine に当たる行（コメント・空行）だけの変更は数えない。
+    #   リポジトリの規則（rules.psd1）に書くと、組が足される。例：リスク「高」の名前空間を fixed で変えたら、別モデルのレビュー
+    #     @{ Name = 'Reviewed-with'; Message = '(?i)\bfixed\s+#\d+'; Paths = @('^src/Auth/'); Hint = '…' }
+    TrailerRequirements = @(
+        @{
+            Name       = 'Tested-with'
+            Paths      = @('\.(cs|vb)$')
+            IgnoreLine = '^\s*(//|''|/\*|\*|$)'
+            Hint       = '流したテストの種類を書く。流していなければ Tested-with: none（書き忘れと区別する）'
+        }
+        @{
+            Name    = 'Reviewed-with'
+            Trailer = 'Expectation-Change'
+            Value   = '^opentouryo-expectation-reviewer\b'
+            Hint    = 'コミットの前に、突き合わせ役（opentouryo-expectation-reviewer）で理由と差分を突き合わせ、Reviewed-with: opentouryo-expectation-reviewer (<モデル ID>) を書く'
         }
     )
 

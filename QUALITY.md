@@ -99,6 +99,10 @@ Expectation-Change: <何が・なぜ変わったか（仕様の該当箇所・Is
 
 - **コミットするのは人なので、トレーラーを書くことが、人が差分を見て承認した記録になる**
 - 理由が複数あれば、行を分けて複数書く
+- **理由には、根拠の Issue 番号（`#NNN`）か仕様の節（`RFC 7636 4.2` など）を書く。** 無ければ検出器が警告する（止めない。OpenTouryoCodingAgentAssets#6）
+- **文面を提案したら、コミットの前に、突き合わせ役（サブエージェント [`opentouryo-expectation-reviewer`](.claude/agents/opentouryo-expectation-reviewer.md)。`model: sonnet`）で、理由と差分を突き合わせる。**
+  渡すのは対象（ステージした変更かコミット）とメッセージのファイルだけ。網羅・一致・根拠・方向・範囲外の観点で「合う／合わない／判断できない」が返る。
+  合わない点は理由を直すか人に聞き、回したら `Reviewed-with: opentouryo-expectation-reviewer (<モデル ID>)` を書く（無ければ警告。止めない）
 - 揺れだけの変更（上記）にはトレーラーは要らない
 
 ### 3 段で塞ぐ
@@ -139,23 +143,23 @@ OpenTouryoCodingAgentAssets#3）。汎用認証サイトも同じ本体を写し
 |---|---|---|
 | `CheckExpectationChange.ps1` | 写し | 本体（段 1〜3 の判定。規則は持たない） |
 | `rules.common.psd1` | 写し | 共通の規則（仕組みのファイル・トレーラーの検査（`Found-By:`・`Tested-with:`・`Reviewed-with:`。5 節）・段 1 の判定） |
-| `ExpectationGuard.Tests/` | 写し | 判定の用例（「この差分なら検出する／しない」） |
+| `../files/tools/ExpectationGuard.Tests/`（`root/files/tools/` の下） | 写し | 判定の用例（「この差分なら検出する／しない」）。製品のソースの隣を避けて、道具の置き場所に置く（`install.ps1 -QualityGuardTestsPath`） |
 | `rules.psd1` | このリポジトリ | OpenTouryo の規則（Golden・NUnit のテストの属性・無効化・`[Basis]` の削除） |
 | `CompareGolden.ps1` | このリポジトリ | Golden の比べ方（`CompareResult.ps1` で正規化して比べる。`rules.psd1` から差し込む） |
 
 `.claude/hooks/ExpectationGuard.ps1`・`.githooks/commit-msg` も写しである。`expectation-change.yml` は雛形から作り、このリポジトリが持つ。
 
-- **写しは、ここで直さない。** 直すなら原本を直し、`install.ps1 -IncludeQualityGuard -QualityGuardPath root/programs` で写し直す。
+- **写しは、ここで直さない。** 直すなら原本を直し、`install.ps1 -IncludeQualityGuard -QualityGuardPath root/programs -QualityGuardTestsPath root/files/tools/ExpectationGuard.Tests -Force` で写し直す。
   写しの先頭の行に原本の版があり、CI（`Verify copies`）が、写しが手で直されていないかを確かめる（違えば警告）
 - **写し直しも「仕組みの変更」になる**（印の行の版が変わるだけでも）。理由に、版の変化と中身が変わったかを書く
-- **判定の用例は、CI（`expectation-guard-tests`）で回る。** 手元では `.\ExpectationGuard.Tests\Run-Tests.ps1`（`root\programs` で）
+- **判定の用例は、CI（`expectation-guard-tests`）で回る。** 手元では `.\root\files\tools\ExpectationGuard.Tests\Run-Tests.ps1`（リポジトリのルートで）
 - **要確認**（`[Obsolete]`・`#pragma warning disable CS0618` の追加）は止めない・トレーラーを求めない。一覧に出し、CI では足した行に注釈を付ける。
   範囲は `rules.psd1` の `ReviewScope`（このリポジトリは書かない＝リポジトリ全体。`DiffScope` はテストの範囲で、要確認には使わない）
 
 ### エージェントがすること
 
 - **期待値を変えたら、報告の冒頭に書く。** どのファイルの、どの値が、なぜ変わったか
-- **トレーラーの文面を提案する。** コミットは人が行う（[`AGENTS.md`](AGENTS.md)「Git 操作は行わない」）
+- **トレーラーの文面を提案し、コミットの前に突き合わせ役を回す**（上の「承認の記録」）。コミットは人が行う（[`AGENTS.md`](AGENTS.md)「Git 操作は行わない」）
 - **テストを通すために期待値を変えない。** 先にコードを疑う。期待値が誤っていると判断したら、その根拠（仕様の該当箇所）を示す
 
 ---
@@ -235,7 +239,8 @@ OpenTouryoCodingAgentAssets#3）。汎用認証サイトも同じ本体を写し
 
 - **主のモデルは、各自の設定に任せる**（共有の `.claude/settings.json` では揃えない）。
   **主もレビュー役と同じモデル（Sonnet）なら、別モデルのレビューにならない。** そう報告し、6 節の計測には数えない
-- **呼んだかどうかの記録は、完了コメントによる**
+- **呼んだかどうかの記録は、完了コメントと、コミットのトレーラー `Reviewed-with: quality-reviewer (<モデル ID>)`（5 節）による。**
+  リスク「高」の名前空間を `fixed` で変えたのに無ければ、検出器が警告する（止めない。`rules.psd1` の `TrailerRequirements`。`fixing` では警告しない）
 - **判定は検収の材料であり、検収の代わりではない。** 人は判定の結果を読んで検収する
 
 > **見つけた問題がセキュリティの弱点なら、公開の文書に書かない。**
@@ -287,7 +292,7 @@ Reviewed-with: <役> [(<モデル ID>)]
   **語彙と意味の一次情報は [`rules.common.psd1`](root/programs/rules.common.psd1) の規則**（本書には写さない）
 - **流していないテスト・回していないレビューは書かない。** 記録であって証明ではない。人はコミットのときに、経緯と合っているかを見る
 - 指摘の数（採用・却下・別モデルでだけ見つかった数）は長いので、完了コメントに書く（4 節）。トレーラーは「何で・誰が」だけ
-- 検出器が確かめる：**語彙に無い値は止める**（段 2・段 3）。書き忘れは見ない
+- 検出器が確かめる：**語彙に無い値は止める**（段 2・段 3）。**書き忘れは警告する**（止めない）：コード（`.cs`・`.vb`。コメント・空行だけの変更を除く）を変えたのに `Tested-with:` が無い（流していなければ `Tested-with: none`）、期待値の変更に突き合わせ役の `Reviewed-with:` が無い、リスク「高」の名前空間の `fixed` に `quality-reviewer` の `Reviewed-with:` が無い（4 節）
 - **トレーラーは最後の段落に並べる**（本文との間に空行を 1 つ。トレーラーの間に空行を挟まない）。git はそこしか読まないので、
   検出器は最後の段落に無いトレーラー・全角の「：」・名前の綴りの誤りも止め、直した行と直し方を出す
 
@@ -367,7 +372,7 @@ Golden（`Result*.txt`）は、コンソール EXE の出力を丸ごと写し�
 
 - [ ] 作業の対象が、品質マップ（1 節）のどの名前空間で、リスクはどれか
 - [ ] 「人が必ず見る箇所」に触れたか。触れたなら、報告の冒頭に書いたか
-- [ ] 期待値の変更（3 節）を含むか。含むなら、報告の冒頭に書き、トレーラーの文面を提案したか
+- [ ] 期待値の変更（3 節）を含むか。含むなら、報告の冒頭に書き、トレーラーの文面を提案したか。理由に Issue 番号か仕様の節を書き、コミットの前に `opentouryo-expectation-reviewer` で突き合わせたか
 - [ ] テストを足したなら、`[Basis]`（根拠を原典で確かめて）か `[Observation]`（理由を書いて）を付けたか（7 節）
 - [ ] リスクが「高」なら、4 節の観点で見直したか（セルフレビューを書き留めたか）
 - [ ] リスクが「高」なら、`fixed` の前に `quality-reviewer` で別モデルのレビューを回したか（4 節）。

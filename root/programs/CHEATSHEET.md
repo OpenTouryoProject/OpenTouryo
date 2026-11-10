@@ -88,7 +88,7 @@
 | CS 版と VB 版の設定ファイルを突き合わせる（想定外の差分があれば 1） | `.\CompareConfig.ps1 -Check` | [`CONFIGURATION.md`](CONFIGURATION.md) 11 節 |
 | 設定ファイルの差分の内訳を見る | `.\CompareConfig.ps1 -Detail -Only "WebApp_sample"` | [`CONFIGURATION.md`](CONFIGURATION.md) 11 節 |
 | PR を出す前に、ブランチのコミットをまとめて見る（CI と同じ） | `.\CheckExpectationChange.ps1 -Range develop..HEAD` | [`QUALITY.md`](../../QUALITY.md) 3 節 |
-| 期待値の変更の検出器の、判定の用例を回す（CI と同じ） | `.\ExpectationGuard.Tests\Run-Tests.ps1` | [`QUALITY.md`](../../QUALITY.md) 3 節 |
+| 期待値の変更の検出器の、判定の用例を回す（CI と同じ） | `..\files\tools\ExpectationGuard.Tests\Run-Tests.ps1` | [`QUALITY.md`](../../QUALITY.md) 3 節 |
 | 検出器の写しが、手で直されていないかを見る | `.\CheckExpectationChange.ps1 -VerifyCopy` | [`QUALITY.md`](../../QUALITY.md) 3 節 |
 | バグの修正を、見つけた手段ごとに数える | `git log --format='%h %(trailers:key=Found-By,valueonly,separator=\|)' <範囲>` | [`QUALITY.md`](../../QUALITY.md) 5・6 節 |
 

@@ -26,14 +26,15 @@ https://github.com/OpenTouryoProject/OpenTouryo/
 
 **期待値の変更を含むコミットには、トレーラー `Expectation-Change: <理由>` が要る。**
 コミットは人が行うので、エージェントは**トレーラーの文面を提案する**に留める。
-定義と書式は同書 3 節。
+**文面を提案したら、コミットの前に突き合わせ役（サブエージェント `opentouryo-expectation-reviewer`）に、対象とメッセージのファイルだけを渡して回し、結果を報告に書く**（理由と差分が合っているか。OpenTouryoCodingAgentAssets#6）。
+理由には根拠の Issue 番号か仕様の節を書く。定義と書式は同書 3 節。
 
 **バグを直すコミット（`fixed #NNN`）には、見つけた手段のトレーラー `Found-By: <手段> [<補足>]` を付ける**（同書 5 節。#657）。
 **見つけた経緯は、そのセッションのエージェントが最もよく知っている。** コミット メッセージの案に入れる。
 推測で埋めず、分からなければ施主に聞く。機能の追加には付けない。語彙は `root/programs/rules.common.psd1`。
 
 **確かめ方も、トレーラーで残す**（同書 5 節。OpenTouryoCodingAgentAssets#12）。
-テストを流したら `Tested-with: <種類>[, <種類>]`、レビュー役（`.claude/agents/` の役の定義）か人がレビューしたら
+テストを流したら `Tested-with: <種類>[, <種類>]`（コードを変えて流していなければ `Tested-with: none`。無いと警告）、レビュー役（`.claude/agents/` の役の定義）か人がレビューしたら
 `Reviewed-with: <役> [(<モデル ID>)]`（人は `human`。役ごとに行を分ける）。**流していないテスト・回していないレビューは書かない。**
 
 ### Issue に対応する流れ

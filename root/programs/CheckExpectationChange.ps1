@@ -1,4 +1,4 @@
-﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@d2f87d1f651f src/quality/ExpectationGuard/CheckExpectationChange.ps1 sha256:2be7f0fbcd3c74a8c5db9d42f2a53e1a789900be0d111be056a2ad577e614456
+﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@b9da2ca0cc9d src/quality/ExpectationGuard/CheckExpectationChange.ps1 sha256:78634f35fbc0b11b1d0f1c260e30d5efdec1acdf6470b86103f820e0e156bc16
 <#
 .SYNOPSIS
     期待値の変更を検出し、トレーラー Expectation-Change が付いているかを確かめる（共通の本体）。
@@ -19,6 +19,8 @@
                          書き直し（引数を変えるなど）は数えない。CommentLine に当たる行は数えない
                          （コメント アウトは「消えた」と数える）。
       KeyedArgumentRules 呼び出しの引数を、**コミット全体で**キーごとに比べる（ファイルをまたいで移しただけなら数えない）。
+      TrailerRequirements トレーラーの書き忘れ。条件の組（Message・Trailer・Paths。すべて当たれば）なのに Name のトレーラー
+                         （Value があれば、それに当たる値）が無ければ警告する。IgnoreLine に当たる行だけの変更は数えない。
       TrailerRules       トレーラーの値の検査。語彙に無い値は止め、必要なのに無いときは警告する。
                          語彙は Vocabulary と、VocabularyFiles（ファイルの名前。例 .claude/agents/*.md）。List なら「,」で分けて見る。
                          止めたときは、書いた行・直した行・直した最後の段落・書き方（Syntax）・例（Example）・
@@ -58,6 +60,9 @@
     結果をオブジェクトでも返す（判定の用例・置き換えの前後の比較に使う）。
 .PARAMETER Quiet
     表示を出さない（-PassThru と併せて使う）。
+.PARAMETER Json
+    表示を出さず、結果を JSON で標準出力に出す（-Staged・-Commit で使う）。突き合わせ役（opentouryo-expectation-reviewer）の入力。
+      Target・Commit・DiffCommand（差分を見るコマンド）・Findings（Kind・Path・Count）・Approved（承認の理由）・Review・Warnings・Errors・ExitCode
 
 .OUTPUTS
     終了コード 0 = 期待値の変更が無い、またはトレーラーがある（警告はあってもよい）
@@ -70,9 +75,11 @@
 .EXAMPLE
     .\CheckExpectationChange.ps1 -Staged -MessageFile .git\COMMIT_EDITMSG
 .EXAMPLE
-    .\CheckExpectationChange.ps1 -Range develop..HEAD
+    .\CheckExpectationChange.ps1 -Range origin/develop..HEAD
+    PR の前に手元で、PR の CI と同じ範囲を見る（git fetch の後に）。手元の develop は古いことがあり、
+    取り込み済みのコミットまで範囲に入る（OpenTouryo で、手元の develop..HEAD が 320 件・origin/develop..HEAD が 5 件だった）。
 .EXAMPLE
-    .\CheckExpectationChange.ps1 -Range develop..HEAD -CheckGenerated
+    .\CheckExpectationChange.ps1 -Range origin/develop..HEAD -CheckGenerated
 
 .NOTES
     原本：OpenTouryoCodingAgentAssets の src/quality/ExpectationGuard/（OpenTouryoCodingAgentAssets#3）。
@@ -91,8 +98,10 @@ param(
     [switch]$VerifyCopy,
     [string]$RulesFile,
     [switch]$PassThru,
-    [switch]$Quiet
+    [switch]$Quiet,
+    [switch]$Json
 )
+if ($Json) { $Quiet = $true }
 
 $ErrorActionPreference = "Stop"
 
@@ -218,7 +227,7 @@ function Read-Rules([string]$CommonPath, [string]$RepoPath)
             else { $rules[$k] = $v }
         }
     }
-    foreach ($k in @("Guard", "FileRules", "LineRules", "KeyedArgumentRules", "TrailerRules", "GeneratedRules", "ReviewRules", "DiffScope", "ReviewScope"))
+    foreach ($k in @("Guard", "FileRules", "LineRules", "KeyedArgumentRules", "TrailerRules", "GeneratedRules", "ReviewRules", "DiffScope", "ReviewScope", "TrailerRequirements", "ApprovalReasonPatterns"))
     {
         if (-not $rules.ContainsKey($k)) { $rules[$k] = @() } else { $rules[$k] = @($rules[$k]) }
     }
@@ -707,12 +716,18 @@ function Invoke-PreToolUse($Rules)
 # 本体
 # ------------------------------------------------------------------
 $tempFiles = @()
-$result = [pscustomobject]@{ Target = $null; Commit = $null; Findings = @(); Approved = @(); Review = @(); Warnings = @(); Errors = @(); ExitCode = 0 }
+$result = [pscustomobject]@{ Target = $null; Commit = $null; DiffCommand = $null; Findings = @(); Approved = @(); Review = @(); Warnings = @(); Errors = @(); ExitCode = 0 }
+
+function Write-Result
+{
+    if ($PassThru) { Write-Output $result }
+    if ($Json) { Write-Output ($result | ConvertTo-Json -Depth 6) }
+}
 
 function Complete([int]$Code)
 {
     $result.ExitCode = $Code
-    if ($PassThru) { Write-Output $result }
+    Write-Result
     exit $Code
 }
 
@@ -851,7 +866,8 @@ try
     # --- 範囲は、コミットごとに自分自身を -Commit で呼ぶ。最も悪い終了コードを返す ---
     if ($Range)
     {
-        $commits = @((Invoke-GitChecked @("rev-list", "--no-merges", "--reverse", $Range)).Lines)
+        if ($Json) { throw "-Json は -Staged・-Commit で使う（範囲は、コミットごとに -Commit <sha> -Json で）" }
+        $commits =@((Invoke-GitChecked @("rev-list", "--no-merges", "--reverse", $Range)).Lines)
         Write-Msg ("  {0} の {1} 件のコミットを見ます" -f $Range, $commits.Count)
         $worst = 0
         $skipped = 0
@@ -898,6 +914,7 @@ try
         $label    = "コミット " + $sha.Substring(0, 8)
     }
     $result.Target = $label
+    $result.DiffCommand = "git diff -M " + ($diffEnds -join " ")
 
     function Add-Finding([string]$Kind, [string]$Path, [int]$Count = 0)
     {
@@ -1152,6 +1169,49 @@ try
             $helpNames += $t.Name
         }
     }
+
+    # 書き忘れ（TrailerRequirements。#6）。止めない。
+    #   組の中の条件（Message・Trailer・Paths）がすべて当たるのに、Name のトレーラー（Value があれば、それに当たる値）が無ければ警告する。
+    #   Paths は変えたファイルに当て、IgnoreLine があれば、それに当たる行（コメント・空行）だけの変更は数えない。
+    $changedPaths = @($names | Where-Object { $_ } | ForEach-Object { ($_ -split "`t")[-1] })
+    foreach ($q in @($rules.TrailerRequirements))
+    {
+        if (-not $q -or -not $q.Name) { continue }
+        $why = @()
+        if ($q.Message)
+        {
+            if (-not ($body -match $q.Message)) { continue }
+            $why += $Matches[0].Trim()
+        }
+        if ($q.Trailer)
+        {
+            if (@(Select-Trailer $parsed $q.Trailer | Where-Object { $_ -ne "" }).Count -eq 0) { continue }
+            $why += ("{0}: がある" -f $q.Trailer)
+        }
+        if (@($q.Paths | Where-Object { $_ }).Count -gt 0)   # 書いていない組は @($null) が 1 件になるので、空を除いて数える
+        {
+            $hit = @($changedPaths | Where-Object { Test-AnyMatch $_ @($q.Paths) })
+            if ($q.IgnoreLine -and $hit.Count -gt 0)
+            {
+                $hit = @($hit | Where-Object {
+                    $lines = (Invoke-GitChecked (@("diff", "-U0", "--no-color") + $diffEnds + @("--", ":(top)$_"))).Lines
+                    @($lines | Where-Object { ($_.StartsWith("+") -or $_.StartsWith("-")) -and -not ($_.StartsWith("+++") -or $_.StartsWith("---")) -and ($_.Substring(1) -notmatch $q.IgnoreLine) }).Count -gt 0
+                })
+            }
+            if ($hit.Count -eq 0) { continue }
+            $why += ("{0}{1}" -f $hit[0], $(if ($hit.Count -gt 1) { " ほか {0} 件" -f ($hit.Count - 1) } else { "" }))
+        }
+        if ($why.Count -eq 0) { continue }
+        $vals = @(Select-Trailer $parsed $q.Name | Where-Object { $_ -ne "" })
+        if ($q.Value) { $vals = @($vals | Where-Object { $_ -match $q.Value }) }
+        if ($vals.Count -gt 0) { continue }
+        if (@($fixes | Where-Object { $_.Name -eq $q.Name }).Count -gt 0) { continue }   # 書いたが読まれない行は、直す行に出ている
+        # Value は正規表現なので、表示では記号を除く（'^(quality-reviewer|human)\b' → 'quality-reviewer・human'）
+        $what = $(if ($q.Value) { "{0}: {1}" -f $q.Name, ($q.Value -replace '\\b|\^|\$|[()]', '' -replace '\|', '・') } else { "{0}:" -f $q.Name })
+        $result.Warnings += ("{0}（{1}）に {2} がありません。{3}" -f $label, ($why -join "・"), $what, $q.Hint)
+        if (@($rules.TrailerRules | Where-Object { $_.Name -eq $q.Name }).Count -gt 0) { $helpNames += $q.Name }
+    }
+
     foreach ($tr in @(@($parsed) | Where-Object { $_ -and $_.Key -ieq $rules.ApprovalTrailer -and $_.Value -eq "" }))
     {
         $fixes += [pscustomobject]@{ Name = $rules.ApprovalTrailer; Written = ("{0}:" -f $tr.Key); Fixed = $approvalSyntax; Reasons = @("値（理由）がありません"); Key = ("{0}: " -f $tr.Key) }
@@ -1245,6 +1305,18 @@ try
     {
         $result.Approved = $trailers
         Write-Msg ("  期待値の変更 {0} 件（{1}）。トレーラーで承認済み : {2}" -f $result.Findings.Count, $label, ($trailers -join " / "))
+        # 理由の書式（OpenTouryoCodingAgentAssets#6）。止めない。Issue 番号・仕様の節の無い理由は、突き合わせ（根拠）ができない
+        $patterns = @($rules.ApprovalReasonPatterns)
+        if ($patterns.Count -gt 0)
+        {
+            foreach ($t in $trailers)
+            {
+                if (@($patterns | Where-Object { $t -match $_ }).Count -gt 0) { continue }
+                $w = ("{0}: の理由に、Issue 番号・仕様の節がありません（{1}）。{2}" -f $rules.ApprovalTrailer, $t, $rules.ApprovalReasonHint)
+                $result.Warnings += $w
+                Write-Warn $w
+            }
+        }
         if ($exit -eq 1) { Write-FixHow }
         Complete $exit
     }
@@ -1279,7 +1351,7 @@ catch
     Write-Msg ("  期待値の変更を確かめられませんでした : {0}" -f $_.Exception.Message) -ForegroundColor Red
     $result.Errors += $_.Exception.Message
     $result.ExitCode = 2
-    if ($PassThru) { Write-Output $result }
+    Write-Result
     exit 2
 }
 finally
