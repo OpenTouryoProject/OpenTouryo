@@ -6,17 +6,20 @@
 
 | フォルダ | 中身 | 使い方の一次情報 |
 |---|---|---|
-| （直下） | 開発機の道具（コンテナ・システムの監視、関連リポジトリの場所） | 本書 |
+| `Monitor/` | 開発機の監視（コンテナの状況 `Check-Containers.ps1`、CPU・メモリ `SystemMonitor.ps1`） | 本書 |
+| `RepoPaths/` | 関連リポジトリの場所（`Register-RepoPaths.ps1`・`RepoPath.ps1`・`_RepoPaths.csv`、手元用の `RepoPaths.csv`） | 本書、[`Readme.ja.md`](../../../Readme.ja.md)「関連リポジトリの場所」 |
 | `Verify/` | 検証の補助（回す範囲の割り出し `SelectTargets.ps1`、設定・版・脆弱性の点検 `Compare*.ps1`・`CheckVulnerability.ps1`、カバレッジ・根拠の集計、入口が読む部品 `SummaryTable.ps1`・`Prerequisite.ps1`） | [`CHEATSHEET.md`](../../../programs/CHEATSHEET.md) 0・1 節 |
 | `SmokeTest/` | 疎通（`root/programs/3_SmokeTest.ps1`）がドット ソースで読む部品（`st_*.ps1`）。**単体では動かない** | [`SMOKETEST.md`](../../../programs/SMOKETEST.md) 8.5 節 |
 | `Dev/` | 開発環境の準備（エージェント用のスキルの取得 `GetAgentSkills.ps1`） | [`AGENTS.md`](../../../../AGENTS.md) |
 
 - **`Verify/`・`SmokeTest/`・`Dev/` のスクリプトは、`root/programs` を自分の場所からの相対パス（`..\..\..\..\programs`）で引く。** フォルダの深さを変えたら、そこを直す
 - `SelectTargets.ps1` の記録（`.verified-commit`）と、`CoverageReport.ps1` が使う ReportGenerator のマニフェスト（`.config/dotnet-tools.json`）は、`root/programs` に置いたまま
+- **`RepoPaths/` の 4 つは、同じフォルダに揃えて置く。** `RepoPath.ps1` は CSV を自分のフォルダから読み、`Register-RepoPaths.ps1` は `RepoPath.ps1` を自分のフォルダから読む。
+  外から読む側（`2_RunAllTests.ps1`・Sample4SpRp の `StubCompose.ps1` と E2E）は `RepoPaths\RepoPath.ps1` を指す
 
 ## ワンライナー集
 
-このフォルダで実行します。`powershell.exe`(5.1)でも `pwsh` でも動作します。
+`Monitor` フォルダで実行します（`cd root\files\tools\PowerShell\Monitor`）。`powershell.exe`(5.1)でも `pwsh` でも動作します。
 
 ```powershell
 # --- コンテナ状況 (Check-Containers.ps1) ---
@@ -114,7 +117,7 @@ CPU とメモリの使用状況を一定間隔で表示します。
 
 ## Register-RepoPaths.ps1・RepoPath.ps1・_RepoPaths.csv（関連リポジトリの場所。#652）
 
-**ほかのリポジトリの場所を、ユーザーの環境変数に登録し、スクリプトから引く。**
+**ほかのリポジトリの場所を、ユーザーの環境変数に登録し、スクリプトから引く。** 4 つとも `RepoPaths/` に置く（#687）。コマンドは `RepoPaths` フォルダで実行する。
 
 | ファイル | 役割 |
 |---|---|
@@ -143,7 +146,7 @@ Copy-Item .\_RepoPaths.csv .\RepoPaths.csv              # 手元の配置に直�
 
 ```powershell
 # 使う側（例：Sample4SpRp\Stub\StubCompose.ps1）
-. (Join-Path <root\files\tools\PowerShell> 'RepoPath.ps1')
+. (Join-Path <root\files\tools\PowerShell\RepoPaths> 'RepoPath.ps1')
 $MpasRoot = Resolve-RepoPath -Variable OT_MPAS_PATH -Argument $MpasRoot -ArgumentName '-MpasRoot'
 if (-not $MpasRoot) { throw '...' }
 ```

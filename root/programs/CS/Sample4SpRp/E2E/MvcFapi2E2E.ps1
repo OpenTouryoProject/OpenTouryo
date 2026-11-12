@@ -51,7 +51,7 @@
 
 .PARAMETER MpasRoot
     MultiPurposeAuthSite のリポジトリの場所。**省けば、環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**
-    （root\files\tools\PowerShell\RepoPath.ps1。#652）。どれを使ったかを表示する。
+    （root\files\tools\PowerShell\RepoPaths\RepoPath.ps1。#652）。どれを使ったかを表示する。
 
 .PARAMETER StubAppSettings
     スタブの土台にした appsettings.json（テスト利用者のパスワード TestUserPWD を読む）。
@@ -75,6 +75,7 @@
      ----------  ----------------  -------------------------------------------------
      2026/11/09  玄人 幸道         新規（#668 の追加。MvcFapi1E2E.ps1 と同じ作り）
      2026/11/10  玄人 幸道         -Mtls（par_mtls のケース）を足した（MultiPurposeAuthSite#351）
+     2026/11/13  玄人 幸道         RepoPath.ps1・SummaryTable.ps1 を root/files/tools/PowerShell の下（RepoPaths・Verify）から読む（#687）
 #>
 [CmdletBinding()]
 param(
@@ -459,7 +460,7 @@ $appSettings = $StubAppSettings
 if ([string]::IsNullOrEmpty($appSettings))
 {
     # **MPAS の場所は、引数 ＞ 環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**（#652）
-    . (Join-Path $progRoot '..\files\tools\PowerShell\RepoPath.ps1')
+    . (Join-Path $progRoot '..\files\tools\PowerShell\RepoPaths\RepoPath.ps1')
     $MpasRoot = Resolve-RepoPath -Variable OT_MPAS_PATH -Argument $MpasRoot -ArgumentName '-MpasRoot'
     $appSettings = $(if ($MpasRoot) { Join-Path $MpasRoot 'root\programs\MultiPurposeAuthSiteCore\MultiPurposeAuthSiteCore\appsettings.json' } else { '' })
 }

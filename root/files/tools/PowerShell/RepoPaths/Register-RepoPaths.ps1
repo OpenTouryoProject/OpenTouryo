@@ -45,6 +45,7 @@
      2026/11/07  玄人 幸道         新規（#652）
      2026/11/07  玄人 幸道         RepoPaths.csv は手元用（.gitignore）にし、無ければ雛形の _RepoPaths.csv を読む
      2026/11/09  玄人 幸道         変数名の頭に OT_ を付けた。古い名前（OTR_PATH など）が登録されていれば、消してよいものとして表示する（消さない）
+     2026/11/13  玄人 幸道         root/files/tools/PowerShell/RepoPaths に移した（RepoPath.ps1・CSV と同じフォルダ。#687）
 #>
 [CmdletBinding()]
 param(

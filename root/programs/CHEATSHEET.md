@@ -27,7 +27,7 @@
 | 単体テストだけ | `.\2_RunAllTests.ps1` | 1 |
 | 疎通だけ | `.\3_SmokeTest.ps1` | 1 |
 | VB 側を通しで | `.\0_RunAll.ps1 -Lang VB` | 3 |
-| 関連リポジトリ（MPAS・LocalServicesOnDocker など）の場所を、環境変数に登録する（`-Apply` を付けなければ見るだけ） | `..\files\tools\PowerShell\Register-RepoPaths.ps1 -Apply` | [`Readme.ja.md`](../Readme.ja.md)「関連リポジトリの場所」 |
+| 関連リポジトリ（MPAS・LocalServicesOnDocker など）の場所を、環境変数に登録する（`-Apply` を付けなければ見るだけ） | `..\files\tools\PowerShell\RepoPaths\Register-RepoPaths.ps1 -Apply` | [`Readme.ja.md`](../Readme.ja.md)「関連リポジトリの場所」 |
 
 ### 単体テストを絞る・広げる
 

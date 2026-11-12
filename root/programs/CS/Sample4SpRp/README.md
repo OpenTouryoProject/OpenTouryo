@@ -36,7 +36,7 @@
 **`StubCompose.ps1` は、既定で `Sample4SpRp.stub.json` を渡す**（#668）。**雛形（`_appsettings.json`）のクライアントも、そのまま残る**（3 節）。
 **スタブの使い方の一次情報は、MPAS の `container\Stub\README.md`** である。
 
-**前提** : Docker（compose v2）、.NET 10 SDK、MPAS のリポジトリ（場所は `-MpasRoot` ＞ 環境変数 `OT_MPAS_PATH` ＞ `root\files\tools\PowerShell\RepoPaths.csv`（無ければ雛形の `_RepoPaths.csv`）の既定。雛形は `C:\MultiPurposeAuthSite`。#652）、
+**前提** : Docker（compose v2）、.NET 10 SDK、MPAS のリポジトリ（場所は `-MpasRoot` ＞ 環境変数 `OT_MPAS_PATH` ＞ `root\files\tools\PowerShell\RepoPaths\RepoPaths.csv`（無ければ雛形の `_RepoPaths.csv`）の既定。雛形は `C:\MultiPurposeAuthSite`。#652）、
 リソース（`C:\root\files\resource`。`root\Readme.ja.md` の手順）。
 
 ```powershell
