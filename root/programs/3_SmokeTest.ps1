@@ -168,11 +168,16 @@ if ([Console]::OutputEncoding.CodePage -ne 65001)
 # **順序が要る。** st_Targets.ps1 は他の 3 つが定義したものを参照する。
 # **st_Utility.ps1 より先に読む。**（#588）
 #   st_Utility.ps1 が読み込み時に Get-ConnectionStringFromConfig を使う。
+#
+# **st_*.ps1 は root\files\tools\PowerShell\SmokeTest に置く**（#687）。
+#   中から root\programs を引くときは $csRoot・$configRoot を使う
+#   （読まれた側の $PSScriptRoot は、そのファイルのフォルダになる）。
+$smokeTestDir = Join-Path $PSScriptRoot "..\files\tools\PowerShell\SmokeTest"
 . (Join-Path $PSScriptRoot "Prerequisite.ps1")
-. (Join-Path $PSScriptRoot "st_Utility.ps1")
-. (Join-Path $PSScriptRoot "st_Server.ps1")
-. (Join-Path $PSScriptRoot "st_Flow.ps1")
-. (Join-Path $PSScriptRoot "st_Targets.ps1")
+. (Join-Path $smokeTestDir "st_Utility.ps1")
+. (Join-Path $smokeTestDir "st_Server.ps1")
+. (Join-Path $smokeTestDir "st_Flow.ps1")
+. (Join-Path $smokeTestDir "st_Targets.ps1")
 
 
 

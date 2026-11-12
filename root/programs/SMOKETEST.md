@@ -791,9 +791,11 @@ MVC_Sample (net10.0)              OK   ログイン後 /Crud1/Index = 200
 
 **1,477 行あったので分けた。** 本体には引数・環境の準備・実行ループ・サマリだけを残す。
 
+**`st_*.ps1` は [`root/files/tools/PowerShell/SmokeTest`](../files/tools/PowerShell/SmokeTest) に置く**（#687。`root/programs` の直下を、利用者が叩く入口に絞るため）。
+
 | ファイル | 役割 |
 |---|---|
-| `3_SmokeTest.ps1` | 引数・環境の準備・実行ループ・サマリ |
+| `3_SmokeTest.ps1`（`root/programs`） | 引数・環境の準備・実行ループ・サマリ |
 | `st_Utility.ps1` | 環境・基盤系（DB / ログ / DaoGen / DeployZip） |
 | `st_Server.ps1` | サーバー系（Web ホストの起動と停止、HTTP 要求） |
 | `st_Flow.ps1` | アプリケーション検証フロー（WebForms / MVC） |
@@ -806,11 +808,15 @@ MVC_Sample (net10.0)              OK   ログイン後 /Crud1/Index = 200
 （`Start-Process` で待ち受けさせる）。
 
 ```powershell
-. (Join-Path $PSScriptRoot "st_Utility.ps1")
-. (Join-Path $PSScriptRoot "st_Server.ps1")
-. (Join-Path $PSScriptRoot "st_Flow.ps1")
-. (Join-Path $PSScriptRoot "st_Targets.ps1")
+$smokeTestDir = Join-Path $PSScriptRoot "..\files\tools\PowerShell\SmokeTest"
+. (Join-Path $smokeTestDir "st_Utility.ps1")
+. (Join-Path $smokeTestDir "st_Server.ps1")
+. (Join-Path $smokeTestDir "st_Flow.ps1")
+. (Join-Path $smokeTestDir "st_Targets.ps1")
 ```
+
+**`st_*.ps1` の中から `root/programs` の下を引くときは、`$csRoot`・`$configRoot`（`3_SmokeTest.ps1` が決める）を使う。**
+`$PSScriptRoot` は、ドット ソースで読まれた側でも**そのファイル自身のフォルダ**を指すので、`root/programs` にはならない。
 
 **順序が要る。** `st_Targets.ps1` は他の 3 つが定義した関数と変数
 （`$batchArgs` / `$mvcLoginFlow` / `Start-ApiWeb` 等）を参照するため、**最後に読む。**

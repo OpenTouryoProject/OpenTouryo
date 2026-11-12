@@ -1,5 +1,14 @@
 # ClaudeSpace PowerShell ツール
 
+## フォルダ（#687）
+
+`root/programs` の直下を、利用者が叩く入口（`0_RunAll.ps1`〜`3_SmokeTest.ps1`）に絞るため、補助のスクリプトをここへ移した。
+
+| フォルダ | 中身 | 使い方の一次情報 |
+|---|---|---|
+| （直下） | 開発機の道具（コンテナ・システムの監視、関連リポジトリの場所） | 本書 |
+| `SmokeTest/` | 疎通（`root/programs/3_SmokeTest.ps1`）がドット ソースで読む部品（`st_*.ps1`）。**単体では動かない** | [`SMOKETEST.md`](../../../programs/SMOKETEST.md) 8.5 節 |
+
 ## ワンライナー集
 
 このフォルダで実行します。`powershell.exe`(5.1)でも `pwsh` でも動作します。

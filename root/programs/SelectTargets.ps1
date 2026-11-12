@@ -337,8 +337,10 @@ foreach ($f in $changed)
         $bats["$lang|$($Matches[2])"] = $f
         $kind = "バッチ : $($Matches[2])"
     }
-    elseif ($lf -match '^root/programs/([^/]+\.ps1)$')
+    elseif ($lf -match '^root/programs/([^/]+\.ps1)$' -or
+            $lf -match '^root/files/tools/powershell/(?:verify|smoketest|dev)/([^/]+\.ps1)$')
     {
+        # 検証のスクリプトと、そこから移した補助ツール・疎通の部品（#687）。
         # st_*.ps1 は 3_SmokeTest.ps1 がドット ソースで読む部品（#571）
         $name = $(if ($Matches[1] -like "st_*.ps1") { "3_smoketest.ps1" } else { $Matches[1] })
         if ($scriptUses.ContainsKey($name))
