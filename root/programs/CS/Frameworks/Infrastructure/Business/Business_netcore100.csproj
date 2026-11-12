@@ -57,11 +57,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.3.14" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.14" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.14" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Extensions" Version="2.3.14" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.3.14" />
+    <!--Http 2.3.14 が引く WebUtilities 2.3.13 に既知の脆弱性（CVE-2026-118750）があるため、修正版へ引き上げる。-->
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.3.14" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.5" />
     <!--**版の混在を止めるために明示する（#574）。**
 
