@@ -93,7 +93,7 @@ jobs:
       - name: Check vulnerable packages
         id: vuln
         shell: powershell
-        working-directory: root/programs
+        working-directory: root/files/tools/PowerShell/Verify
         run: |
           $out = & .\CheckVulnerability.ps1 -Check -Detail *>&1 | Out-String
           $code = $LASTEXITCODE

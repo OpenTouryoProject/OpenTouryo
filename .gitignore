@@ -366,7 +366,7 @@ __pycache__/
 # エージェント用スキル（#577）
 #   本体は OpenTouryoCodingAgentAssets にあり、ここに在るのは複製である。
 #   **コミットすると、向こうが更新されたときに古くなる。**
-#   取得は root/programs/GetAgentSkills.ps1 で行う。
+#   取得は root/files/tools/PowerShell/Dev/GetAgentSkills.ps1 で行う。
 /.claude/skills/
 
 # 関連リポジトリの場所の、手元用の一覧（#652）

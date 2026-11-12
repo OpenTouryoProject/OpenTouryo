@@ -70,11 +70,11 @@ log4net: Setting Collection Property [AddFilter] to object [log4net.Filter.Level
 log4net: Created Appender [OPERATION2]
 log4net: Adding appender named [OPERATION2] to logger [OPERATION].
 log4net: Hierarchy Threshold []
-[2026/11/10 16:53:11,915],[DEBUG],[2],LogIF.DebugLog("ACCESS");
-[2026/11/10 16:53:11,925],[INFO ],[2],LogIF.InfoLog("ACCESS");
-[2026/11/10 16:53:11,925],[WARN ],[2],LogIF.WarnLog("ACCESS");
-[2026/11/10 16:53:11,925],[ERROR],[2],LogIF.ErrorLog("ACCESS");
-[2026/11/10 16:53:11,926],[FATAL],[2],LogIF.FatalLog("ACCESS");
+[2026/11/12 23:21:32,045],[DEBUG],[2],LogIF.DebugLog("ACCESS");
+[2026/11/12 23:21:32,056],[INFO ],[2],LogIF.InfoLog("ACCESS");
+[2026/11/12 23:21:32,057],[WARN ],[2],LogIF.WarnLog("ACCESS");
+[2026/11/12 23:21:32,057],[ERROR],[2],LogIF.ErrorLog("ACCESS");
+[2026/11/12 23:21:32,058],[FATAL],[2],LogIF.FatalLog("ACCESS");
 LogIF.Is*Enabled - ACCESS : Debug True / Info True / Warn True / Error True / Fatal True
 log4net: configuring repository [log4net-default-repository] using stream
 log4net: loading XML configuration

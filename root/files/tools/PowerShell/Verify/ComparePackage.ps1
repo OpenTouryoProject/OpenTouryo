@@ -100,8 +100,9 @@ param(
 
 $ErrorActionPreference = "Continue"
 
-$root = $PSScriptRoot
-. (Join-Path $root "SummaryTable.ps1")
+# 本スクリプトは root\files\tools\PowerShell\Verify に置く（#687）。CS / VB は root\programs にある。
+$root = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot "..\..\..\..\programs"))
+. (Join-Path $PSScriptRoot "SummaryTable.ps1")
 
 if ([Console]::OutputEncoding.CodePage -ne 65001)
 {

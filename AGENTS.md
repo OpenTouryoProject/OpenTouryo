@@ -474,7 +474,7 @@ https://github.com/OpenTouryoProject/OpenTouryoCodingAgentAssets
 Claude Code は `.claude/skills/<名前>/SKILL.md` を探すため、実体が要る。
 
 ```powershell
-cd root\programs
+cd root\files\tools\PowerShell\Dev
 .\GetAgentSkills.ps1              # main から取得して .claude/skills へ配置
 .\GetAgentSkills.ps1 -List        # 何が対象になるかだけ見る
 ```

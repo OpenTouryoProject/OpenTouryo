@@ -209,11 +209,13 @@ $testsRoot = Join-Path $csRoot "Frameworks\Tests"
 $repoRoot  = (& git -C $testsRoot rev-parse --show-toplevel)
 New-Item -ItemType Directory -Force $OutputDir | Out-Null
 
+# 補助のスクリプトは root\files\tools\PowerShell\Verify に置く（#687）。
+$verifyDir = Join-Path $PSScriptRoot "..\files\tools\PowerShell\Verify"
 # サマリの整形。Format-Table は 5.1 で全角の桁を数えないため、自前で揃える。
-. (Join-Path $PSScriptRoot "SummaryTable.ps1")
-. (Join-Path $PSScriptRoot "Prerequisite.ps1")
+. (Join-Path $verifyDir "SummaryTable.ps1")
+. (Join-Path $verifyDir "Prerequisite.ps1")
 # NUnit のカバレッジを合算して Tests\COVERAGE.md に書く（-Coverage）
-. (Join-Path $PSScriptRoot "CoverageReport.ps1")
+. (Join-Path $verifyDir "CoverageReport.ps1")
 
 # 今回の実行で作られたカバレッジ ファイル（Get-NUnitResult が積む。-Coverage の最後に合算する）
 $coverageFiles = @()

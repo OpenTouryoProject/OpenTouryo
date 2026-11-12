@@ -10,17 +10,18 @@
 ## 0. ワンライナー集
 
 **すべて `root\programs` で実行する**（`cd root\programs`）。詳しくは右端の節。
+補助のスクリプトは `root\files\tools\PowerShell` の下（`Verify\`・`SmokeTest\`・`Dev\`）に置いてあるので、そこへの相対パスで書いている（#687）。
 
 ### 検証する
 
 | やりたいこと | コマンド | 節 |
 |---|---|---|
 | 全部を通しで（ビルド → 単体テスト → 疎通） | `.\0_RunAll.ps1` | 1 |
-| 変えた所に必要な分だけ回す（完了の `fixed` の前。通れば記録が進む） | `.\SelectTargets.ps1 -Run` | 1 |
-| 途中の `fixing` のコミットの前に、重いものを後回しにして回す（記録は進まない） | `.\SelectTargets.ps1 -Stage fixing -Run` | 1 |
-| 何が回るかだけ見る | `.\SelectTargets.ps1` | 1 |
-| 記録ではなく、develop からの差分で割り出す | `.\SelectTargets.ps1 -Since develop` | 1 |
-| 通しが通った後に、いまの HEAD を検証済みとして記録する（**fixed のコミットの後**） | `.\SelectTargets.ps1 -Record` | 1 |
+| 変えた所に必要な分だけ回す（完了の `fixed` の前。通れば記録が進む） | `..\files\tools\PowerShell\Verify\SelectTargets.ps1 -Run` | 1 |
+| 途中の `fixing` のコミットの前に、重いものを後回しにして回す（記録は進まない） | `..\files\tools\PowerShell\Verify\SelectTargets.ps1 -Stage fixing -Run` | 1 |
+| 何が回るかだけ見る | `..\files\tools\PowerShell\Verify\SelectTargets.ps1` | 1 |
+| 記録ではなく、develop からの差分で割り出す | `..\files\tools\PowerShell\Verify\SelectTargets.ps1 -Since develop` | 1 |
+| 通しが通った後に、いまの HEAD を検証済みとして記録する（**fixed のコミットの後**） | `..\files\tools\PowerShell\Verify\SelectTargets.ps1 -Record` | 1 |
 | 通しで揺れた Golden を戻す（揺れだけのとき。コミットの前） | `git checkout -- CS/Frameworks/Tests/Golden` | 1 |
 | 全ビルドだけ | `.\1_BuildAll.ps1 -IgnoreErrors 'error MSB(3482\|3325\|3321):.*WSClientWinCone_sample\.csproj'` | 1 |
 | 単体テストだけ | `.\2_RunAllTests.ps1` | 1 |
@@ -62,10 +63,10 @@
 
 | やりたいこと | コマンド | 節 |
 |---|---|---|
-| 脆弱性のある依存を見る（ビルドの後に） | `.\CheckVulnerability.ps1 -Detail` | 1 |
-| その場で直せないときに、Issue の文面の下書きを書き出す（投稿はしない） | `.\CheckVulnerability.ps1 -Detail -IssueDraft "$env:TEMP\vuln_issue.md"` | [`BUILDING.md`](BUILDING.md) 13 節 |
-| packages.config と csproj の版を突き合わせる | `.\ComparePackage.ps1 -Check` | 1 |
-| bindingRedirect と配布物の版を突き合わせる | `.\CompareRedirect.ps1 -Check` | 1 |
+| 脆弱性のある依存を見る（ビルドの後に） | `..\files\tools\PowerShell\Verify\CheckVulnerability.ps1 -Detail` | 1 |
+| その場で直せないときに、Issue の文面の下書きを書き出す（投稿はしない） | `..\files\tools\PowerShell\Verify\CheckVulnerability.ps1 -Detail -IssueDraft "$env:TEMP\vuln_issue.md"` | [`BUILDING.md`](BUILDING.md) 13 節 |
+| packages.config と csproj の版を突き合わせる | `..\files\tools\PowerShell\Verify\ComparePackage.ps1 -Check` | 1 |
+| bindingRedirect と配布物の版を突き合わせる | `..\files\tools\PowerShell\Verify\CompareRedirect.ps1 -Check` | 1 |
 
 ### リリースする
 
@@ -81,12 +82,12 @@
 
 | やりたいこと | コマンド | 節 |
 |---|---|---|
-| エージェント用のスキルを取ってくる | `.\GetAgentSkills.ps1` | [`AGENTS.md`](../../AGENTS.md) |
+| エージェント用のスキルを取ってくる | `..\files\tools\PowerShell\Dev\GetAgentSkills.ps1` | [`AGENTS.md`](../../AGENTS.md) |
 | 期待値の変更の commit-msg フックを有効にする（手元で 1 回） | `git config core.hooksPath .githooks` | [`QUALITY.md`](../../QUALITY.md) 3 節 |
 | コミットに、トレーラーの無い期待値の変更が無いかを見る | `.\CheckExpectationChange.ps1 -Commit <コミット>` | [`QUALITY.md`](../../QUALITY.md) 3 節 |
 | コミットの前に、ステージした変更を見る（commit-msg フックと同じ判定） | `.\CheckExpectationChange.ps1 -Staged -MessageFile <メッセージのファイル>` | [`QUALITY.md`](../../QUALITY.md) 3 節 |
-| CS 版と VB 版の設定ファイルを突き合わせる（想定外の差分があれば 1） | `.\CompareConfig.ps1 -Check` | [`CONFIGURATION.md`](CONFIGURATION.md) 11 節 |
-| 設定ファイルの差分の内訳を見る | `.\CompareConfig.ps1 -Detail -Only "WebApp_sample"` | [`CONFIGURATION.md`](CONFIGURATION.md) 11 節 |
+| CS 版と VB 版の設定ファイルを突き合わせる（想定外の差分があれば 1） | `..\files\tools\PowerShell\Verify\CompareConfig.ps1 -Check` | [`CONFIGURATION.md`](CONFIGURATION.md) 11 節 |
+| 設定ファイルの差分の内訳を見る | `..\files\tools\PowerShell\Verify\CompareConfig.ps1 -Detail -Only "WebApp_sample"` | [`CONFIGURATION.md`](CONFIGURATION.md) 11 節 |
 | PR を出す前に、ブランチのコミットをまとめて見る（CI と同じ） | `.\CheckExpectationChange.ps1 -Range develop..HEAD` | [`QUALITY.md`](../../QUALITY.md) 3 節 |
 | 期待値の変更の検出器の、判定の用例を回す（CI と同じ） | `..\files\tools\ExpectationGuard.Tests\Run-Tests.ps1` | [`QUALITY.md`](../../QUALITY.md) 3 節 |
 | 検出器の写しが、手で直されていないかを見る | `.\CheckExpectationChange.ps1 -VerifyCopy` | [`QUALITY.md`](../../QUALITY.md) 3 節 |
@@ -178,10 +179,10 @@ cd root\programs
 **未コミット・未追跡の変更も含む。**
 
 ```powershell
-.\SelectTargets.ps1                  # 回す範囲を表示するだけ
-.\SelectTargets.ps1 -Run             # その範囲で 1 → 2 → 3。全部 OK なら記録を進める
-.\SelectTargets.ps1 -Record          # 通しが通った後に、いまの HEAD を記録する
-.\SelectTargets.ps1 -Since develop   # 記録ではなく、指定した基点からの差分で見る
+..\files\tools\PowerShell\Verify\SelectTargets.ps1                  # 回す範囲を表示するだけ
+..\files\tools\PowerShell\Verify\SelectTargets.ps1 -Run             # その範囲で 1 → 2 → 3。全部 OK なら記録を進める
+..\files\tools\PowerShell\Verify\SelectTargets.ps1 -Record          # 通しが通った後に、いまの HEAD を記録する
+..\files\tools\PowerShell\Verify\SelectTargets.ps1 -Since develop   # 記録ではなく、指定した基点からの差分で見る
 ```
 
 | 表示 | 意味 |
@@ -208,8 +209,8 @@ cd root\programs
 dotnet test CS\Frameworks\Tests\NUnit\TestPublic\TestPublic.csproj -f net10.0 --filter "FullyQualifiedName~SQLUtilityTests"
 .\2_RunAllTests.ps1 -Only "TestCode (net10.0)"
 
-.\SelectTargets.ps1 -Stage fixing -Run    # 途中のコミットの前（記録は進まない）
-.\SelectTargets.ps1 -Run                  # 完了のコミットの前（既定は fixed。通れば記録が進む）
+..\files\tools\PowerShell\Verify\SelectTargets.ps1 -Stage fixing -Run    # 途中のコミットの前（記録は進まない）
+..\files\tools\PowerShell\Verify\SelectTargets.ps1 -Run                  # 完了のコミットの前（既定は fixed。通れば記録が進む）
 ```
 
 | | fixing | fixed |
@@ -248,7 +249,7 @@ dotnet test CS\Frameworks\Tests\NUnit\TestPublic\TestPublic.csproj -f net10.0 --
 
 ```powershell
 # エージェント : コミットの直前の状態で回す（手で確かめるものが残れば終了コード 1。手で確かめてから記録する）
-.\SelectTargets.ps1 -Run
+..\files\tools\PowerShell\Verify\SelectTargets.ps1 -Run
 # エージェント : リスク「高」なら、別モデルのレビューを回し、指摘に判定を付ける（QUALITY.md 4 節）
 #   サブエージェント quality-reviewer に、Issue 番号・範囲・名前空間だけを渡す（主の解釈は渡さない）
 
@@ -256,7 +257,7 @@ dotnet test CS\Frameworks\Tests\NUnit\TestPublic\TestPublic.csproj -f net10.0 --
 git checkout -- CS/Frameworks/Tests/Golden
 # 施主 : 2. fixed #NNN でコミットする（メッセージはエージェントの案）
 # 施主 : 3. コミットの後に、いまの HEAD を記録する（コミットの前に回すと、古い HEAD を記録する）
-.\SelectTargets.ps1 -Record
+..\files\tools\PowerShell\Verify\SelectTargets.ps1 -Record
 # エージェント : 完了コメントを、承認を得て投稿する。施主 : Issue を閉じる
 ```
 
@@ -331,15 +332,15 @@ Framework_Tool 系だけ     74.8 秒     ← ツールの変更で必要なの�
 **パッケージの版を触ったら、次の 2 本も見る**（`0_RunAll.ps1` は自動で回して警告する）。
 
 ```powershell
-.\ComparePackage.ps1 -Check     # packages.config と csproj の版（#569）
-.\CompareRedirect.ps1 -Check    # bindingRedirect と配布物の版（#556）
+..\files\tools\PowerShell\Verify\ComparePackage.ps1 -Check     # packages.config と csproj の版（#569）
+..\files\tools\PowerShell\Verify\CompareRedirect.ps1 -Check    # bindingRedirect と配布物の版（#556）
 ```
 
 **依存パッケージの脆弱性は、ビルドの警告に頼らず別に見る**（#610。`0_RunAll.ps1` は最後に自動で回して警告する）。
 
 ```powershell
-.\CheckVulnerability.ps1 -Detail                          # 推移的な依存を含めた一覧
-.\CheckVulnerability.ps1 -IssueDraft "$env:TEMP\vuln.md"  # Issue の文面の下書き（投稿はしない）
+..\files\tools\PowerShell\Verify\CheckVulnerability.ps1 -Detail                          # 推移的な依存を含めた一覧
+..\files\tools\PowerShell\Verify\CheckVulnerability.ps1 -IssueDraft "$env:TEMP\vuln.md"  # Issue の文面の下書き（投稿はしない）
 ```
 
 - **ビルドの後に回す。** restore 結果が無いと推移的な依存を見られない（「未リストア」として件数が出る）
@@ -506,7 +507,7 @@ powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.
 | `MSB4226`（`Microsoft.WebApplication.targets`） | nuget が別製品の MSBuild を拾った | `nuget.exe restore ... %NUGET_MSBUILD%` |
 | ビルドは通るのに `DllNotFoundException`（`...SNI...`） | `nuget restore` を呼んでおらず、ネイティブ DLL が出力に入らない | 該当 sln に restore を足す。[`BUILDING.md`](BUILDING.md) 10 節 |
 | `packages.config` の id が `csproj` に無い＝不要に見える | サテライト（`.ja`）とコンテンツ パッケージは**出なくて正常**（48 件中 44 件） | 消す前に [`BUILDING.md`](BUILDING.md) 11 節 |
-| ビルドは通るのに実行時 `FileNotFoundException` | **版は 4 か所に散らばる。** `<Reference>` の `Version=` がずれると、警告だけ出て参照が落ちる | `.\ComparePackage.ps1 -Check`。[`BUILDING.md`](BUILDING.md) 12 節 |
+| ビルドは通るのに実行時 `FileNotFoundException` | **版は 4 か所に散らばる。** `<Reference>` の `Version=` がずれると、警告だけ出て参照が落ちる | `..\files\tools\PowerShell\Verify\ComparePackage.ps1 -Check`。[`BUILDING.md`](BUILDING.md) 12 節 |
 | `MSB3021` / `MSB3027`（コピーできない・ロック）。`error CS` は 0 件 | **前回の疎通テストの残骸**（中断されたときに残る）が出力を掴んでいる。**疎通の「ポートが開かない」まで連鎖する** | 起動時刻で残存を見分けて停止。[`BUILDING.md`](BUILDING.md) 4 節 |
 
 **NuGet パッケージ作成の落とし穴は

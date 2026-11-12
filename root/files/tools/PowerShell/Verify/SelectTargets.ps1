@@ -94,6 +94,7 @@
      2026/11/04  玄人 幸道         SpRp のサンプル（Sample4SpRp）は、ビルドのバッチに加えて「手で確かめる」に出す（#649）
      2026/11/07  玄人 幸道         クリーンのバッチ（1_DeleteDir.bat・1_DeleteFile.bat）に触れたら、その言語のビルドを通しにする（#672）
      2026/11/07  玄人 幸道         root/files/tools の PowerShell は手で確かめる、DGenTemplates は DaoGen_Tool のバッチに対応付ける（#674）
+     2026/11/12  玄人 幸道         root/files/tools/PowerShell/Verify に移した。移した補助ツール・疎通の部品も、root/programs の .ps1 と同じく分類する（#687）
 #>
 [CmdletBinding()]
 param(
@@ -107,7 +108,8 @@ param(
 
 $ErrorActionPreference = "Continue"
 
-$progRoot   = $PSScriptRoot
+# 本スクリプトは root\files\tools\PowerShell\Verify に置く（#687）。検証の入口と CS / VB は root\programs にある。
+$progRoot   = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot "..\..\..\..\programs"))
 $repoRoot   = [IO.Path]::GetFullPath((& git -C $progRoot rev-parse --show-toplevel))
 # 検証の済んだコミットの記録。Git 管理外（.gitignore）。
 $recordFile = Join-Path $progRoot ".verified-commit"

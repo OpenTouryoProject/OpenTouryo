@@ -267,8 +267,8 @@ finally
 - **標準入力の BOM は、7 から動かすと起きない。** 5.1 から動かして確かめること（下の「変更したら 5.1 でも実行」）
 
 ```powershell
-# 集計表は Format-Table ではなく、桁数を自前で数える整形を使う
-. (Join-Path $PSScriptRoot "SummaryTable.ps1")
+# 集計表は Format-Table ではなく、桁数を自前で数える整形を使う（root\programs のスクリプトから。#687）
+. (Join-Path $PSScriptRoot "..\files\tools\PowerShell\Verify\SummaryTable.ps1")
 Write-SummaryTable $results
 ```
 

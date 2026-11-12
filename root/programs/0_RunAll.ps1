@@ -28,8 +28,10 @@ param(
 # UseIgnore = $true のものにだけ -IgnoreErrors を渡す。
 # 受け取るのは 1_BuildAll.ps1 だけである（2 と 3 は同名の引数を持たない）。
 
+# 補助のスクリプトは root\files\tools\PowerShell\Verify に置く（#687）。
+$verifyDir = Join-Path $PSScriptRoot "..\files\tools\PowerShell\Verify"
 # まとめの整形。Format-Table は 5.1 で全角の桁を数えないため、自前で揃える。
-. (Join-Path $PSScriptRoot "SummaryTable.ps1")
+. (Join-Path $verifyDir "SummaryTable.ps1")
 
 $scripts = @(
     @{ Name = "1_BuildAll.ps1";    UseLang = $true;  UseIgnore = $true }
@@ -51,7 +53,7 @@ function Test-ConfigSync
 {
     # **6>$null が要る。** Write-Host はパイプラインに流れないので、
     # | Out-Null では一覧を抑止できない（PowerShell 5.0 以降は情報ストリーム）。
-    & (Join-Path $PSScriptRoot "CompareConfig.ps1") -Check 6>$null | Out-Null
+    & (Join-Path $verifyDir "CompareConfig.ps1") -Check 6>$null | Out-Null
     return ($LASTEXITCODE -eq 0)
 }
 
@@ -60,7 +62,7 @@ if (-not $configOk)
 {
     Write-Host ""
     Write-Host "【警告】設定ファイルに想定外の差分があります。" -ForegroundColor Yellow
-    Write-Host "        .\CompareConfig.ps1 -Check で内容を確認してください。"
+    Write-Host "        ..\files\tools\PowerShell\Verify\CompareConfig.ps1 -Check で内容を確認してください。"
     Write-Host ""
 }
 
@@ -102,14 +104,14 @@ foreach ($s in $scripts)
     if ($s.Name -eq "1_BuildAll.ps1")
     {
         # 6>$null で一覧を抑止する（上と同じ理由）。
-        & (Join-Path $PSScriptRoot "CompareRedirect.ps1") -Check 6>$null | Out-Null
+        & (Join-Path $verifyDir "CompareRedirect.ps1") -Check 6>$null | Out-Null
         $redirectOk = ($LASTEXITCODE -eq 0)
 
         if (-not $redirectOk)
         {
             Write-Host ""
             Write-Host "【警告】bindingRedirect が、配布されないアセンブリの版を指しています。" -ForegroundColor Yellow
-            Write-Host "        .\CompareRedirect.ps1 -Check で内容を確認してください。"
+            Write-Host "        ..\files\tools\PowerShell\Verify\CompareRedirect.ps1 -Check で内容を確認してください。"
             Write-Host ""
         }
 
@@ -121,14 +123,14 @@ foreach ($s in $scripts)
         #
         # ③ は HintPath の DLL を読むため、**復元してからでないと判定できない。**
         # ここ（ビルドの直後）なら材料が揃っている。
-        & (Join-Path $PSScriptRoot "ComparePackage.ps1") -Check 6>$null | Out-Null
+        & (Join-Path $verifyDir "ComparePackage.ps1") -Check 6>$null | Out-Null
         $packageOk = ($LASTEXITCODE -eq 0)
 
         if (-not $packageOk)
         {
             Write-Host ""
             Write-Host "【警告】packages.config と csproj で、パッケージの版が食い違っています。" -ForegroundColor Yellow
-            Write-Host "        .\ComparePackage.ps1 -Check で内容を確認してください。"
+            Write-Host "        ..\files\tools\PowerShell\Verify\ComparePackage.ps1 -Check で内容を確認してください。"
             Write-Host ""
         }
     }
@@ -141,7 +143,7 @@ foreach ($s in $scripts)
 #
 # ビルドの NU190x は restore のときにしか出ないが、こちらは毎回 NuGet の脆弱性データを取りに行く。
 # **合否には影響させない**（上の 2 本と同じ）。終了コード 2 は取得の失敗。
-& (Join-Path $PSScriptRoot "CheckVulnerability.ps1") -Check 6>$null | Out-Null
+& (Join-Path $verifyDir "CheckVulnerability.ps1") -Check 6>$null | Out-Null
 $vulnCode = $LASTEXITCODE
 
 # --- 結果のまとめ ---
@@ -200,7 +202,7 @@ if ($vulnCode -eq 1)
 {
     Write-Host ""
     Write-Host "【警告】既知の脆弱性がある NuGet パッケージの版を使っています（推移的な依存を含む）。" -ForegroundColor Yellow
-    Write-Host "        .\CheckVulnerability.ps1 -Detail で内容を確認してください。合否には数えていません。"
+    Write-Host "        ..\files\tools\PowerShell\Verify\CheckVulnerability.ps1 -Detail で内容を確認してください。合否には数えていません。"
     Write-Host "        扱い方は AGENTS.md「依存パッケージの脆弱性を見つけたら」。"
 }
 elseif ($vulnCode -eq 2)

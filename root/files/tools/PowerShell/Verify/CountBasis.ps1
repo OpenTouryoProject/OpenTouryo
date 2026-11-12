@@ -35,6 +35,7 @@
      日時        更新者            内容
      ----------  ----------------  -------------------------------------------------
      2026/11/09  玄人 幸道         新規作成（#671。汎用認証サイトの CountBasis.ps1 を、NUnit の属性を数える形にした）
+     2026/11/12  玄人 幸道         root/files/tools/PowerShell/Verify に移した（#687）
 #>
 [CmdletBinding()]
 param(
@@ -46,7 +47,8 @@ $ErrorActionPreference = "Stop"
 # パスの既定値は param() に書かない（5.1 の -File で $PSScriptRoot が空になる。CODING.md 5 節）
 if (-not $Root)
 {
-    $Root = Join-Path (Split-Path -Parent $PSCommandPath) "CS\Frameworks\Tests\NUnit"
+    # 本スクリプトは root\files\tools\PowerShell\Verify に置く（#687）。NUnit のテストは root\programs の下にある。
+    $Root = Join-Path (Split-Path -Parent $PSCommandPath) "..\..\..\..\programs\CS\Frameworks\Tests\NUnit"
 }
 $Root = (Resolve-Path -LiteralPath $Root).Path
 

@@ -7,7 +7,12 @@
 | フォルダ | 中身 | 使い方の一次情報 |
 |---|---|---|
 | （直下） | 開発機の道具（コンテナ・システムの監視、関連リポジトリの場所） | 本書 |
+| `Verify/` | 検証の補助（回す範囲の割り出し `SelectTargets.ps1`、設定・版・脆弱性の点検 `Compare*.ps1`・`CheckVulnerability.ps1`、カバレッジ・根拠の集計、入口が読む部品 `SummaryTable.ps1`・`Prerequisite.ps1`） | [`CHEATSHEET.md`](../../../programs/CHEATSHEET.md) 0・1 節 |
 | `SmokeTest/` | 疎通（`root/programs/3_SmokeTest.ps1`）がドット ソースで読む部品（`st_*.ps1`）。**単体では動かない** | [`SMOKETEST.md`](../../../programs/SMOKETEST.md) 8.5 節 |
+| `Dev/` | 開発環境の準備（エージェント用のスキルの取得 `GetAgentSkills.ps1`） | [`AGENTS.md`](../../../../AGENTS.md) |
+
+- **`Verify/`・`SmokeTest/`・`Dev/` のスクリプトは、`root/programs` を自分の場所からの相対パス（`..\..\..\..\programs`）で引く。** フォルダの深さを変えたら、そこを直す
+- `SelectTargets.ps1` の記録（`.verified-commit`）と、`CoverageReport.ps1` が使う ReportGenerator のマニフェスト（`.config/dotnet-tools.json`）は、`root/programs` に置いたまま
 
 ## ワンライナー集
 

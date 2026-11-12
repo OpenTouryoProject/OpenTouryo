@@ -55,6 +55,7 @@
      日時        更新者            内容
      ----------  ----------------  -------------------------------------------------
      2026/08/21  玄人 幸道         新規作成（#577）
+     2026/11/12  玄人 幸道         root/files/tools/PowerShell/Dev に移した（#687）
 #>
 [CmdletBinding(SupportsShouldProcess)]
 param(
@@ -74,7 +75,8 @@ param(
 $ErrorActionPreference = "Stop"
 
 $Repo = "OpenTouryoProject/OpenTouryoCodingAgentAssets"
-$repoRoot = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
+# 本スクリプトは root\files\tools\PowerShell\Dev に置く（#687）。リポジトリの直下は 5 つ上。
+$repoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot "..\..\..\..\.."))
 
 if (-not $Destination) { $Destination = Join-Path $repoRoot ".claude\skills" }
 

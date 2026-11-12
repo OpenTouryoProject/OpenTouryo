@@ -162,9 +162,9 @@ cd C:\root\programs
 前回の検証からの変更を調べ、必要なビルド・テスト・疎通だけを選びます。
 
 ```powershell
-.\SelectTargets.ps1 -Record   # 通しが通ったら、いまのコミットを記録しておく
-.\SelectTargets.ps1           # 記録からの変更で、回す範囲を表示する
-.\SelectTargets.ps1 -Run      # その範囲で 1 → 2 → 3 を実行する
+..\files\tools\PowerShell\Verify\SelectTargets.ps1 -Record   # 通しが通ったら、いまのコミットを記録しておく
+..\files\tools\PowerShell\Verify\SelectTargets.ps1           # 記録からの変更で、回す範囲を表示する
+..\files\tools\PowerShell\Verify\SelectTargets.ps1 -Run      # その範囲で 1 → 2 → 3 を実行する
 ```
 
 手順と判定基準は、同じフォルダの

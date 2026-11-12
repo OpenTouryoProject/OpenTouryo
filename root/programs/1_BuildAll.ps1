@@ -95,8 +95,10 @@ param(
 # ビルド バッチはそれぞれの直下にあるため、ステップごとにそこへ移動して呼ぶ。
 New-Item -ItemType Directory -Force $OutputDir | Out-Null
 
+# 補助のスクリプトは root\files\tools\PowerShell\Verify に置く（#687）。
+$verifyDir = Join-Path $PSScriptRoot "..\files\tools\PowerShell\Verify"
 # サマリの整形。Format-Table は 5.1 で全角の桁を数えないため、自前で揃える。
-. (Join-Path $PSScriptRoot "SummaryTable.ps1")
+. (Join-Path $verifyDir "SummaryTable.ps1")
 
 # ------------------------------------------------------------------
 # コンソールのコード ページを先に UTF-8 にしておく
@@ -518,7 +520,7 @@ if ($vulnWarn.Count -gt 0)
     {
         Write-Host ("  {0}（{1}）" -f $g.Name, (($g.Group | ForEach-Object { $_.Step } | Sort-Object -Unique) -join ", ")) -ForegroundColor Yellow
     }
-    Write-Host "  **ビルドは成功扱いだが、放置しない。** .\CheckVulnerability.ps1 で推移的な依存を含めて確かめ、" -ForegroundColor Yellow
+    Write-Host "  **ビルドは成功扱いだが、放置しない。** ..\files\tools\PowerShell\Verify\CheckVulnerability.ps1 で推移的な依存を含めて確かめ、" -ForegroundColor Yellow
     Write-Host "  AGENTS.md「依存パッケージの脆弱性を見つけたら」に沿って扱うこと。" -ForegroundColor Yellow
 }
 

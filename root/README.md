@@ -164,9 +164,9 @@ If you changed only samples or tests, `SelectTargets.ps1` narrows down what to r
 It examines the changes since the last verification and selects only the builds, tests and smoke tests that are needed.
 
 ```powershell
-.\SelectTargets.ps1 -Record   # After a full run passes, record the current commit
-.\SelectTargets.ps1           # Show what to run, based on the changes since the record
-.\SelectTargets.ps1 -Run      # Run 1 -> 2 -> 3 within that scope
+..\files\tools\PowerShell\Verify\SelectTargets.ps1 -Record   # After a full run passes, record the current commit
+..\files\tools\PowerShell\Verify\SelectTargets.ps1           # Show what to run, based on the changes since the record
+..\files\tools\PowerShell\Verify\SelectTargets.ps1 -Run      # Run 1 -> 2 -> 3 within that scope
 ```
 
 For the procedures and the criteria, refer to

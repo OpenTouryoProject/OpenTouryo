@@ -97,7 +97,7 @@ if ([Console]::OutputEncoding.CodePage -ne 65001)
 # パスの既定値は param() に書かない（5.1 の -File で $PSScriptRoot が空になる。CODING.md 5 節）
 $here = Split-Path -Parent $PSCommandPath
 $progRoot = (Resolve-Path (Join-Path $here '..\..\..')).Path   # root\programs（E2E → Sample4SpRp → CS → programs）
-. (Join-Path $progRoot 'SummaryTable.ps1')
+. (Join-Path $progRoot '..\files\tools\PowerShell\Verify\SummaryTable.ps1')  # #687 で移した
 
 New-Item -ItemType Directory -Force $OutputDir | Out-Null
 

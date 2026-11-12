@@ -46,6 +46,7 @@
      2026/10/19  玄人 幸道         指定したアセンブリを、モジュールごとの行と計の行で出せるようにした（-Modules）
      2026/10/29  玄人 幸道         ReportGenerator の HTML を作る Write-CoverageHtml を追加
      2026/10/29  玄人 幸道         ReportGenerator をローカル ツール（.config\dotnet-tools.json）で用意するようにした
+     2026/11/12  玄人 幸道         root/files/tools/PowerShell/Verify に移した。ReportGenerator は引き続き root\programs\.config で用意する（#687）
 #>
 
 # 書き換える範囲の印
@@ -284,9 +285,10 @@ function Write-CoverageHtml([object[]]$Files, [string]$TargetDir)
     if ($paths.Count -eq 0) { return $false }
 
     # ReportGenerator は、.config\dotnet-tools.json（ローカル ツール）で版を固定している。
-    #   dotnet はマニフェストをカレントから上へ探すので、本ファイルの場所で restore → run する。
+    #   dotnet はマニフェストをカレントから上へ探すので、マニフェストの場所（root\programs）で restore → run する。
+    #   本ファイルは root\files\tools\PowerShell\Verify に置く（#687）。マニフェストは root\programs に残した。
     #   restore は、未取得のときだけ NuGet から取ってくる（取得済みなら何もしない）。
-    Push-Location $PSScriptRoot
+    Push-Location (Join-Path $PSScriptRoot "..\..\..\..\programs")
     try
     {
         $out = & dotnet tool restore 2>&1
