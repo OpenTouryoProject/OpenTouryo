@@ -226,6 +226,7 @@ cd ..\..\E2E
 .\CliLoginE2E.ps1 -Idp KCK         # device・pkce・cc・ropc（jwtbearer は回さない。下記）
 .\MvcFapi1E2E.ps1 -Idp KCK         # FAPI 1.0（13 件）
 .\MvcFapi2E2E.ps1 -Idp KCK -Mtls   # FAPI 2.0（par 7 件 ＋ par_mtls 3 件。ros は回さない。下記）
+.\ExternalLoginE2E.ps1 -Idp KCK    # 外部ログイン（OIDC 5 件。SAML2 は回さない。下記）
 ```
 
 | 値 | 内容 |
@@ -239,11 +240,14 @@ cd ..\..\E2E
 | 管理コンソール | `https://localhost:44320/admin/`（`admin` / `admin`。**テスト専用**） |
 
 **サンプルの設定は変えない。** E2E が、`SpRp_Issuer`・`SpRp_DiscoveryUri` だけを差し替えて動かす。
+**外部ログインのサンプル（`MVC_Sample`・`WebForms_Sample`）は、口を Discovery ではなく設定から読む**ので、口（認可・トークン・UserInfo・JWK・SAML2 のメタデータ）も差し替える（値は [`E2E/Idp.ps1`](E2E/Idp.ps1) の `WebConfig`）。
 
 | サンプル | 差し替え方 |
 |---|---|
 | CLI（`SpRp_CLI`・`DAG_Login_CLI`・`LIR_Login_CLI`） | 出力フォルダを `-OutputDir` に写し、設定ファイル（`appsettings.json` / `SpRp_CLI.exe.config`）の 2 つの値を書き換える（**対照の写しと同じ仕組み**） |
 | MVC（`SpRp_MVC`） | 環境変数 `appSettings__SpRp_Issuer`・`appSettings__SpRp_DiscoveryUri`（ASP.NET Core の構成は、環境変数が `appsettings.json` より優先する） |
+| 外部ログイン（net48。IIS Express） | サイトのフォルダ（`obj` を除く）を `-OutputDir` に写し、写しの `app.config` の値を書き換える（IIS Express はソースのフォルダで動くため） |
+| 外部ログイン（net10.0 の `MVC_Sample`） | 環境変数 `appSettings__<キー>`（`Host.CreateDefaultBuilder` が環境変数を構成に含める） |
 
 **スタブとの違い**（E2E が IdP ごとに分けているところ）
 
@@ -259,10 +263,12 @@ cd ..\..\E2E
 | FAPI2 の `par_mtls` | `StubCompose.ps1 -Mtls` で起動したとき | **常に**（`-Mtls` を付けるだけ）。登録は `client-x509`（Subject DN と発行者の DN を照合） |
 | FAPI2 の id_token | 暗号化（JWE。RSA-OAEP・A256GCM） | **同じく暗号化させる**（同じ公開鍵を `use=enc` でも登録した）。PAR は必須にしてある |
 | FAPI2 の IdP の対照（Reuse・ClientId） | スタブのエラー画面 | Keycloak の「Invalid Request」（400）。理由はサーバのログ（`PAR not found, not issued or used multiple times`・`PAR was issued for a different client`） |
+| 外部ログインの SAML2 | 回す | **回さない**（部品の SAML2 が、仕様どおりの IdP と 2 か所で合わない。**#693**）。AuthnRequest に `Destination` が無い（Keycloak は `missing_required_destination` で断る。SAML 2.0 Bindings §3.4.5.2）。応答の Audience を ACS の URL と照合する（Keycloak は SP の entityID を入れる。SAML 2.0 Profiles §4.1.4.2）。**realm には SP を登録してある**（`http://` ＋ client_id。署名の検証と `mail` の属性） |
+| 外部ログインの `MVC_Sample (net10.0)` | OK | **NG（既知。#694）**。`BouncyCastle.NetCore` が無く、Keycloak の id_token の `at_hash` の検証で落ちる（#691 と同じ形） |
 
 - **MPAS のスタブとは、ポート（44320）もプロジェクト名（`sprp-kck`）も分けてあるが、同時には起動しない**（メモリ。`TESTING.md` の冒頭）
 - **realm を変えたら、`-Action Down` してから起動し直す**（取り込みは、realm が無いときだけ行われる）
-- **まだ Keycloak で通していないもの**：外部ログイン（2.1 節。OIDC・SAML2）
+- **外部ログインの前提はスタブのときと同じ**（SQL Server・ASP.NET 状態サービス・ビルド。2.1 節）。`-OutputDir` に、net48 のサイトの写し（1 サイト約 58MB）ができる
 
 ## 3. 設定（サンプルと IdP で揃える値）
 

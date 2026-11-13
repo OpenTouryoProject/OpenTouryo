@@ -66,7 +66,7 @@
     {
       "clientId": "http://f53469c17c5a432f86ce563b7805ab89",
       "name": "MVC_Sample (SAML2)",
-      "description": "MVC_Sample external login (SAML2 SP). Issuer is http:// + client_id. Not run on KCK yet: the SP sends no Destination and checks Audience against the ACS URL.",
+      "description": "MVC_Sample external login (SAML2 SP). Issuer is http:// + client_id. Not run on KCK yet: the SP sends no Destination and checks Audience against the ACS URL (#693).",
       "enabled": true,
       "protocol": "saml",
       "frontchannelLogout": true,
@@ -92,7 +92,7 @@
     {
       "clientId": "http://b6b393fe861b430eb4ee061006826b03",
       "name": "WebForms_Sample (SAML2)",
-      "description": "WebForms_Sample external login (SAML2 SP). Issuer is http:// + client_id. Not run on KCK yet: the SP sends no Destination and checks Audience against the ACS URL.",
+      "description": "WebForms_Sample external login (SAML2 SP). Issuer is http:// + client_id. Not run on KCK yet: the SP sends no Destination and checks Audience against the ACS URL (#693).",
       "enabled": true,
       "protocol": "saml",
       "frontchannelLogout": true,

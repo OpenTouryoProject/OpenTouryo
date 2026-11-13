@@ -33,7 +33,7 @@
       |---|---|
       | IIS Express（net48） | サイトのフォルダ（obj を除く）を -OutputDir に写し、写しの app.config の値を書き換える |
       | Kestrel（net10.0） | 環境変数 appSettings__<キー>（Host.CreateDefaultBuilder が、appsettings.json より優先する） |
-      **SAML2 は回さない**（部品の SAML2 が、Keycloak と 2 か所で合わない。部品の側の問題として別に扱う。realm には SP を登録してある）。
+      **SAML2 は回さない**（部品の SAML2 が、Keycloak と 2 か所で合わない。部品の側の問題として #693 で扱う。realm には SP を登録してある）。
         - AuthnRequest に Destination が無い（署名した要求には要る。SAML 2.0 Bindings §3.4.5.2）。Keycloak は missing_required_destination で断る
         - 応答の Audience を ACS の URL と照合する（Audience には SP の entityID が入る。SAML 2.0 Profiles §4.1.4.2）
 
@@ -155,7 +155,7 @@ if ($Only)
 
 $flows = @(if ($Flow -eq 'Both') { 'OIDC', 'SAML2' } else { $Flow })
 
-# **Keycloak では SAML2 を回さない**（部品の SAML2 が Keycloak と合わない：AuthnRequest の Destination・応答の Audience。上の説明）
+# **Keycloak では SAML2 を回さない**（部品の SAML2 が Keycloak と合わない：AuthnRequest の Destination・応答の Audience。#693。上の説明）
 $skippedSaml2 = ($Idp -eq 'KCK' -and $flows -contains 'SAML2')
 if ($Idp -eq 'KCK') { $flows = @($flows | Where-Object { $_ -ne 'SAML2' }) }
 
@@ -529,7 +529,7 @@ if ($lack.Count -gt 0)
 }
 Write-Output "  OK  $($idpInfo.Name)（$($idpInfo.Issuer)）・SQL Server・状態サービス・テスト利用者"
 if ($Idp -eq 'KCK') { Write-Output "      （アプリの設定を差し替えて動かす。net48 はサイトの写し（$OutputDir\site_*）、net10.0 は環境変数）" }
-if ($skippedSaml2) { Write-Output '  --  SAML2 は回さない（部品の SAML2 が Keycloak と合わない：AuthnRequest に Destination が無い・Audience を ACS の URL と照合する）' }
+if ($skippedSaml2) { Write-Output '  --  SAML2 は回さない（部品の SAML2 が Keycloak と合わない：AuthnRequest に Destination が無い・Audience を ACS の URL と照合する。#693）' }
 
 # ------------------------------------------------------------------
 # 実行
