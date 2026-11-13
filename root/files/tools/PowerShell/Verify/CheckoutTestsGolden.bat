@@ -1,0 +1,1 @@
+git checkout -- ../../../../programs/CS/Frameworks/Tests/Golden
