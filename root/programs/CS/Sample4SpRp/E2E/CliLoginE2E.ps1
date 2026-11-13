@@ -40,10 +40,20 @@
       | MPAS のスタブ | https://localhost:44310 の Discovery が 200（..\README.md の 2 節。StubCompose.ps1） |
       | ビルド | SpRp_CLI : CS\11_Build_SpRp_sample.bat、旧 : CS\5_Build_CLICore_sample.bat |
       | ポート 12345 | 空いている（pkce の戻り先。**どの CLI も同じポートを使うので、1 つずつ動かす**） |
-      | cc・jwtbearer・ropc | **スタブに ..\Stub\Sample4SpRp.stub.json が要る**（StubCompose.ps1 の既定）（SpRp_CLI_Batch のクライアントと、ROPC を開ける設定） |
+      | cc・jwtbearer・ropc | **スタブに ..\container\Stub\Sample4SpRp.stub.json が要る**（StubCompose.ps1 の既定）（SpRp_CLI_Batch のクライアントと、ROPC を開ける設定） |
 
       SQL Server は要らない。
       **ropc の前に、スタブのログイン画面を一度開く**（MPAS は、アカウントの画面を初めて開いたときにテスト利用者を作る）。
+
+    ＜IdP を Keycloak にする（-Idp KCK）＞
+      **ケースと対照は同じ。** CLI は、出力フォルダを -OutputDir に写し、**SpRp_Issuer・SpRp_DiscoveryUri だけを差し替えて**動かす（Idp.ps1）。
+      | 違い | Stub | KCK |
+      |---|---|---|
+      | 起動 | ..\container\Stub\StubCompose.ps1 | ..\container\KCK\KckCompose.ps1 |
+      | device の対照 | 確認画面で Deny | **同意画面で拒否**（同意したことの無い利用者 deny_tanaka で。Keycloak は同意を覚える） |
+      | cc の対照の理由 | invalid_client | **unauthorized_client**（Keycloak の応答） |
+      | ropc の対照の理由 | access_denied | **invalid_grant**（同上） |
+      | jwtbearer | 回す | **回さない**（Keycloak に RFC 7523 §2.1 の認可グラントが無い） |
 
 .PARAMETER Flow
     device / pkce / cc / jwtbearer / ropc / All（既定）。Both は All と同じ（以前の名前）
@@ -54,13 +64,16 @@
 .PARAMETER SkipControl
     対照（拒否・state の書き換え）を回さない
 
+.PARAMETER Idp
+    Stub（MPAS のスタブ。既定）/ KCK（Keycloak。..\container\KCK）
+
 .PARAMETER MpasRoot
     MultiPurposeAuthSite のリポジトリの場所。**省けば、環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**
-    （root\files\tools\PowerShell\RepoPaths\RepoPath.ps1。#652）。どれを使ったかを表示する。
+    （root\files\tools\PowerShell\RepoPaths\RepoPath.ps1。#652）。どれを使ったかを表示する。-Idp KCK では使わない。
 
 .PARAMETER StubAppSettings
     スタブの土台にした appsettings.json（テスト利用者のパスワード TestUserPWD を読む）。
-    省けば MPAS の既定（MpasRoot\root\programs\MultiPurposeAuthSiteCore\MultiPurposeAuthSiteCore\appsettings.json）。
+    省けば MPAS の既定（MpasRoot\root\programs\MultiPurposeAuthSiteCore\MultiPurposeAuthSiteCore\appsettings.json）。-Idp KCK では使わない。
 
 .PARAMETER OutputDir
     CLI の出力（1 件ごとのログ）を置く場所
@@ -70,6 +83,9 @@
 
 .EXAMPLE
     .\CliLoginE2E.ps1 -Flow pkce -Only "net48"
+
+.EXAMPLE
+    .\CliLoginE2E.ps1 -Idp KCK
 
 .NOTES
     終了コード : 0 = すべて OK、1 = NG あり、2 = 前提が足りない
@@ -82,6 +98,7 @@
      2026/11/07  玄人 幸道         SpRp_CLI の cc・jwtbearer・ropc を足した（#668）
      2026/11/07  玄人 幸道         MPAS の場所を、引数 ＞ 環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定 で決める（#652）
      2026/11/13  玄人 幸道         RepoPath.ps1・SummaryTable.ps1 を root/files/tools/PowerShell の下（RepoPaths・Verify）から読む（#687）
+     2026/11/13  玄人 幸道         -Idp KCK（Keycloak）を足した。IdP の違いは Idp.ps1 にまとめた（#690）
 #>
 [CmdletBinding()]
 param(
@@ -91,6 +108,9 @@ param(
     [string[]] $Only,
 
     [switch] $SkipControl,
+
+    [ValidateSet('Stub', 'KCK')]
+    [string] $Idp = 'Stub',
 
     [string] $MpasRoot = '',
 
@@ -124,8 +144,15 @@ New-Item -ItemType Directory -Force $OutputDir | Out-Null
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 Add-Type -AssemblyName System.Net.Http
 
-$stubBase = 'https://localhost:44310'
-$testUser = 'tanaka@example.com'
+# **IdP の違い（URL・画面・サンプルの設定の差し替え）は Idp.ps1 にまとめてある**
+. (Join-Path $here 'Idp.ps1')
+$idpInfo = Get-E2EIdp $Idp $here
+$stubBase = $idpInfo.Base   # IdP の画面の URL の頭（KCK でも、この名前のまま使う）
+$testUser = $idpInfo.User
+
+# **対照の理由の文言は、IdP の応答による**（Keycloak は、秘密の誤りを unauthorized_client、パスワードの誤りを invalid_grant で返す）
+$grantControlWord = if ($Idp -eq 'KCK') { @{ cc = 'unauthorized_client'; jwtbearer = 'invalid_client'; ropc = 'invalid_grant' } }
+                    else { @{ cc = 'invalid_client'; jwtbearer = 'invalid_client'; ropc = 'access_denied' } }
 
 # **pkce の戻り先**（MPAS の雛形の Device_Client の redirect_uri_code。各 CLI の SpRp_RedirectUri と同じ）
 $redirectUri = 'http://localhost:12345/'
@@ -164,6 +191,10 @@ if ($Only)
 {
     $targets = @($targets | Where-Object { $t = $_; @($Only | Where-Object { $t.Name -like "*$_*" }).Count -gt 0 })
 }
+
+# **Keycloak に、JWT Bearer の認可グラント（RFC 7523 §2.1）は無い**（クライアント認証の private_key_jwt はある）。回さない
+$skippedJwtBearer = ($Idp -eq 'KCK' -and @($targets | Where-Object { $_.Flow -eq 'jwtbearer' }).Count -gt 0)
+if ($Idp -eq 'KCK') { $targets = @($targets | Where-Object { $_.Flow -ne 'jwtbearer' }) }
 
 $cases = @('正常')
 if (-not $SkipControl) { $cases += '対照' }
@@ -243,19 +274,30 @@ function Get-Field([string]$html, [string]$name)
 
 # **ログイン画面 → 同意画面**の順に出る（同意は、覚えていれば出ない）。出たものだけを通す。
 #   それ以外の画面（Device AuthZ の確認画面、エラー画面）や、スタブの外へのリダイレクトで戻る。
-function Invoke-IdpScreens($client, $res, [string]$password)
+#   $user    : ログインする利用者（省けば $testUser）
+#   $consent : Keycloak の同意画面で押すボタン（accept / cancel。Keycloak の device の対照で cancel）
+function Invoke-IdpScreens($client, $res, [string]$password, [string]$user = '', [string]$consent = 'accept')
 {
+    if (-not $user) { $user = $testUser }
+
     for ($i = 0; $i -lt 6; $i++)
     {
         $res = Invoke-Follow $client $res
 
         if ($res.Status -ne 200 -or -not $res.Url.StartsWith($stubBase)) { return $res }
 
-        if ($res.Body -match 'id="LoginForm"')
+        if ($Idp -eq 'KCK')
+        {
+            # **Keycloak の画面**（ログイン・同意。Idp.ps1）。それ以外の画面で戻る
+            $post = Get-KckFormPost $res $user $password $consent
+            if (-not $post) { return $res }
+            $res = Send-Http $client 'POST' $post.Url $post.Form
+        }
+        elseif ($res.Body -match 'id="LoginForm"')
         {
             $res = Send-Http $client 'POST' "$stubBase/Account/Login" @{
                 ReturnUrl = (Get-Field $res.Body 'ReturnUrl')
-                Email = $testUser; Password = $password
+                Email = $user; Password = $password
                 RememberMe = 'false'; SequenceNo = '0'; Fido2Data = ''; IdpKey = ''
                 submitButtonName = 'normal_signin'; submitButton = 'normal_signin'
                 __RequestVerificationToken = (Get-Field $res.Body '__RequestVerificationToken')
@@ -285,6 +327,8 @@ function Invoke-IdpScreens($client, $res, [string]$password)
 #   $stdin : 標準入力に渡す 1 行（ropc のパスワード。省けば何も渡さない）
 function Start-Cli($t, [string]$exe = '', [string]$stdin = $null)
 {
+    # **IdP がスタブでなければ、issuer・Discovery を差し替えた写しで動かす**（Copy-PatchedCli。ビルドの成果物は変えない）
+    if (-not $exe -and $idpInfo.Config.Count -gt 0) { $exe = Copy-PatchedCli $t @{} }
     if (-not $exe) { $exe = $t.Exe }
 
     $psi = New-Object System.Diagnostics.ProcessStartInfo
@@ -402,13 +446,33 @@ function Get-Tail($cli)
 function Invoke-Device($cli, [string]$case, [string]$password)
 {
     # 1. CLI が verification_uri_complete を表示する（**別の端末のブラウザで開く URL**）
-    $vuc = Wait-CliMatch $cli '(https://[A-Za-z0-9.:\-]+/device_verify\?user_code=[A-Za-z0-9_\-]+)' 30
+    $vucPattern = if ($Idp -eq 'KCK') { '(' + [regex]::Escape("$($idpInfo.Issuer)/device?user_code=") + '[A-Za-z0-9_\-]+)' }
+                  else { '(https://[A-Za-z0-9.:\-]+/device_verify\?user_code=[A-Za-z0-9_\-]+)' }
+    $vuc = Wait-CliMatch $cli $vucPattern 30
     if (-not $vuc) { return "verification_uri_complete が出ない（$(Get-Tail $cli)）" }
 
     # 2. ブラウザの代わりに開き、ログインする → 確認画面（Allow / Deny）
     $client = New-Browser
     try
     {
+        if ($Idp -eq 'KCK')
+        {
+            # **Keycloak は、ログインの後の同意画面で承認・拒否する**（確認画面は無い）。
+            #   **拒否は、同意したことの無い利用者で行う**（Keycloak は同意を覚え、二度目からは同意画面を出さない。Idp.ps1）
+            $user = if ($case -eq '正常') { $idpInfo.User } else { $idpInfo.DenyUser }
+            $consent = if ($case -eq '正常') { 'accept' } else { 'cancel' }
+            $r = Invoke-IdpScreens $client (Send-Http $client 'GET' $vuc $null) $password $user $consent
+            if ($r.Status -ne 200 -or $r.Url -notmatch '/device/status')
+            {
+                return "Device の結果の画面（/device/status）に着かない（$($r.Status) $(($r.Url -split '\?')[0])）"
+            }
+            if ($case -ne '正常' -and $r.Url -notmatch 'error=access_denied')
+            {
+                return "拒否したのに、結果の画面が access_denied ではない（$($r.Url)）"
+            }
+            return Test-CliResult $cli $case 'access_denied' 120
+        }
+
         $r = Invoke-IdpScreens $client (Send-Http $client 'GET' $vuc $null) $password
         $form = [regex]::Match($r.Body, '<form action="([^"]*device_verify[^"]*)"')
         if ($r.Status -ne 200 -or -not $form.Success -or $r.Body -notmatch 'name="allow"')
@@ -442,7 +506,7 @@ function Invoke-Device($cli, [string]$case, [string]$password)
 function Invoke-Pkce($cli, [string]$case, [string]$password)
 {
     # 1. CLI が認可要求の URL を表示する（**表示した後に待ち受けを始めている**）
-    $url = Wait-CliMatch $cli ('(' + [regex]::Escape("$stubBase/authorize?") + '\S+)') 30
+    $url = Wait-CliMatch $cli ('(' + [regex]::Escape("$($idpInfo.Authorize)?") + '\S+)') 30
     if (-not $url) { return "認可要求の URL が出ない（$(Get-Tail $cli)）" }
 
     # 2. ブラウザの代わりに開き、ログイン・同意する。**戻り先へのリダイレクトの手前で止まる**
@@ -479,8 +543,9 @@ function Invoke-Pkce($cli, [string]$case, [string]$password)
 # ------------------------------------------------------------------
 # ブラウザを使わないグラント（cc・jwtbearer・ropc）
 # ------------------------------------------------------------------
-# **出力フォルダを写し、設定ファイルの値だけを書き換える**（対照用。ビルドの成果物は変えない）。
+# **出力フォルダを写し、設定ファイルの値だけを書き換える**（対照用と、IdP の差し替え用。ビルドの成果物は変えない）。
 #   net10.0 は appsettings.json、net48 は SpRp_CLI.exe.config。戻り値は、写しの実行ファイル。
+#   **IdP の差し替え（$idpInfo.Config。-Idp KCK の issuer・Discovery）も、併せて書く。**
 function Copy-PatchedCli($t, [hashtable]$values)
 {
     $src = Split-Path $t.Exe
@@ -493,9 +558,13 @@ function Copy-PatchedCli($t, [hashtable]$values)
     $config = if ($t.Exe.EndsWith('.dll')) { Join-Path $dst 'appsettings.json' } else { Join-Path $dst 'SpRp_CLI.exe.config' }
     $text = [IO.File]::ReadAllText($config)
 
-    foreach ($k in $values.Keys)
+    $all = @{}
+    foreach ($k in $idpInfo.Config.Keys) { $all[$k] = $idpInfo.Config[$k] }
+    foreach ($k in $values.Keys) { $all[$k] = $values[$k] }
+
+    foreach ($k in $all.Keys)
     {
-        $v = [string]$values[$k]
+        $v = [string]$all[$k]
         $pattern = if ($t.Exe.EndsWith('.dll')) { '("' + [regex]::Escape($k) + '"\s*:\s*")[^"]*(")' }
                    else { '(key="' + [regex]::Escape($k) + '"\s+value=")[^"]*(")' }
         if (-not [regex]::IsMatch($text, $pattern)) { throw "設定に $k がありません : $config" }
@@ -553,7 +622,7 @@ function Test-GrantResult($cli, [string]$flow, [string]$case, [int]$seconds)
         return ''
     }
 
-    $word = if ($flow -eq 'ropc') { 'access_denied' } else { 'invalid_client' }
+    $word = $grantControlWord[$flow]   # IdP の応答による（上の $grantControlWord）
     if ($code -ne 1) { return "対照なのに終了コード $code（$(Get-Tail $cli)）" }
     if ($out -notmatch [regex]::Escape($word)) { return "対照の理由（$word）が出ていない（$(Get-Tail $cli)）" }
     return ''
@@ -601,9 +670,9 @@ Write-Output '=== 前提 ==='
 $lack = @()
 
 $probe = New-Browser
-$d = Send-Http $probe 'GET' "$stubBase/.well-known/openid-configuration" $null
+$d = Send-Http $probe 'GET' $idpInfo.Discovery $null
 $probe.Dispose()
-if ($d.Status -ne 200) { $lack += "MPAS のスタブが応答しません（$stubBase。..\README.md の 2 節の StubCompose.ps1 で起動する）" }
+if ($d.Status -ne 200) { $lack += "$($idpInfo.Name) が応答しません（$($idpInfo.Discovery)。$($idpInfo.StartHint)）" }
 
 foreach ($exe in @($targets | ForEach-Object { $_.Exe } | Select-Object -Unique))
 {
@@ -615,9 +684,14 @@ if (@($targets | Where-Object { $_.Flow -eq 'pkce' }).Count -gt 0 -and (Test-Por
     $lack += 'ポート 12345 が使用中です（pkce の戻り先。他の CLI を動かしていないか）'
 }
 
-#   **テスト利用者のパスワードは、スタブの土台の appsettings.json の TestUserPWD**（MPAS の container\Stub\README.md 3 節）
+#   **テスト利用者のパスワードは、スタブの土台の appsettings.json の TestUserPWD**（MPAS の container\Stub\README.md 3 節）。
+#   **Keycloak は、realm の定義（container\KCK\realm\sprp-realm.json）の値**
 $appSettings = $StubAppSettings
-if ([string]::IsNullOrEmpty($appSettings))
+if ($Idp -eq 'KCK')
+{
+    $appSettings = $idpInfo.RealmFile
+}
+elseif ([string]::IsNullOrEmpty($appSettings))
 {
     # **MPAS の場所は、引数 ＞ 環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**（#652）
     . (Join-Path $progRoot '..\files\tools\PowerShell\RepoPaths\RepoPath.ps1')
@@ -625,12 +699,16 @@ if ([string]::IsNullOrEmpty($appSettings))
     $appSettings = $(if ($MpasRoot) { Join-Path $MpasRoot 'root\programs\MultiPurposeAuthSiteCore\MultiPurposeAuthSiteCore\appsettings.json' } else { '' })
 }
 $password = $null
-if (Test-Path $appSettings)
+if ($Idp -eq 'KCK')
+{
+    $password = Get-KckPassword $idpInfo $ropcUser
+}
+elseif (Test-Path $appSettings)
 {
     $m = [regex]::Match([IO.File]::ReadAllText($appSettings), '"TestUserPWD"\s*:\s*"([^"]*)"')
     if ($m.Success) { $password = $m.Groups[1].Value }
 }
-if (-not $password) { $lack += "テスト利用者のパスワードを読めません（$appSettings の TestUserPWD。-MpasRoot か -StubAppSettings で場所を指定する）" }
+if (-not $password) { $lack += "テスト利用者のパスワードを読めません（$appSettings。-Idp Stub なら TestUserPWD。-MpasRoot か -StubAppSettings で場所を指定する）" }
 
 #   **jwtbearer の対照は、別の鍵（スタブ自身の署名鍵 SHA256RSA_Server.pfx）で署名させる**。
 #   パスワードは、スタブの土台の appsettings.json の RsaPfxPassword（テスト用）。
@@ -652,7 +730,8 @@ if (-not $SkipControl -and @($targets | Where-Object { $_.Flow -eq 'jwtbearer' }
 }
 
 #   **ropc は、テスト利用者が居ないと通らない**。MPAS は、アカウントの画面を初めて開いたときに作るので、ログイン画面を一度開く
-if (@($targets | Where-Object { $_.Flow -eq 'ropc' }).Count -gt 0 -and $d.Status -eq 200)
+#   （Keycloak は、realm の取り込みで利用者を作るので要らない）
+if ($Idp -eq 'Stub' -and @($targets | Where-Object { $_.Flow -eq 'ropc' }).Count -gt 0 -and $d.Status -eq 200)
 {
     $probe = New-Browser
     $l = Send-Http $probe 'GET' "$stubBase/Account/Login" $null
@@ -667,10 +746,18 @@ if ($lack.Count -gt 0)
     foreach ($l in $lack) { Write-Output "  NG  $l" }
     exit 2
 }
-Write-Output '  OK  スタブ・ビルド・ポート 12345・テスト利用者'
-if (@($targets | Where-Object { $grants -contains $_.Flow }).Count -gt 0)
+Write-Output "  OK  $($idpInfo.Name)（$($idpInfo.Issuer)）・ビルド・ポート 12345・テスト利用者"
+if ($Idp -eq 'Stub' -and @($targets | Where-Object { $grants -contains $_.Flow }).Count -gt 0)
 {
     Write-Output '      （cc・jwtbearer・ropc は、スタブに Sample4SpRp.stub.json が要る。StubCompose.ps1 の既定）'
+}
+if ($Idp -eq 'KCK')
+{
+    Write-Output "      （CLI は、issuer・Discovery を差し替えた写し（$OutputDir\cli_patched_*）で動かす）"
+}
+if ($skippedJwtBearer)
+{
+    Write-Output '      （jwtbearer は回さない。Keycloak に JWT Bearer の認可グラント（RFC 7523 §2.1）が無い）'
 }
 
 # ------------------------------------------------------------------
@@ -737,9 +824,9 @@ foreach ($t in $targets)
                       {
                           'device'    { '拒否すると access_denied で終了コード 1' }
                           'pkce'      { 'state を書き換えると、不一致で終了コード 1' }
-                          'cc'        { '秘密を書き換えると invalid_client で終了コード 1' }
-                          'jwtbearer' { '別の鍵で署名すると invalid_client で終了コード 1' }
-                          default     { '違うパスワードでは access_denied で終了コード 1' }
+                          'cc'        { "秘密を書き換えると $($grantControlWord.cc) で終了コード 1" }
+                          'jwtbearer' { "別の鍵で署名すると $($grantControlWord.jwtbearer) で終了コード 1" }
+                          default     { "違うパスワードでは $($grantControlWord.ropc) で終了コード 1" }
                       }
                   }
 

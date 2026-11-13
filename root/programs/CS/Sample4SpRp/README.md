@@ -31,8 +31,11 @@
 
 ## 2. IdP（MPAS スタブ）を動かす
 
-**スタブの定義は MPAS 側に在り、ここには起動の手順（[`Stub/StubCompose.ps1`](Stub/StubCompose.ps1)）と、
-雛形に無いクライアントの設定（[`Stub/Sample4SpRp.stub.json`](Stub/Sample4SpRp.stub.json)）だけを置く。**
+**IdP のコンテナは `container\` の下に並べる。** 既定は MPAS のスタブ（`container\Stub`）。
+**同じサンプル・同じ E2E を、Keycloak（`container\KCK`）でも通せる**（2.5 節）。
+
+**スタブの定義は MPAS 側に在り、ここには起動の手順（[`container/Stub/StubCompose.ps1`](container/Stub/StubCompose.ps1)）と、
+雛形に無いクライアントの設定（[`container/Stub/Sample4SpRp.stub.json`](container/Stub/Sample4SpRp.stub.json)）だけを置く。**
 **`StubCompose.ps1` は、既定で `Sample4SpRp.stub.json` を渡す**（#668）。**雛形（`_appsettings.json`）のクライアントも、そのまま残る**（3 節）。
 **スタブの使い方の一次情報は、MPAS の `container\Stub\README.md`** である。
 
@@ -44,7 +47,7 @@
 C:\MultiPurposeAuthSite\container\Stub\1_PublishStub.ps1
 
 # 2. このリポジトリ側で、起動・停止する
-cd root\programs\CS\Sample4SpRp\Stub
+cd root\programs\CS\Sample4SpRp\container\Stub
 .\StubCompose.ps1                  # 起動（Sample4SpRp.stub.json を渡す）
 .\StubCompose.ps1 -Action Config   # 設定の解決だけを見る（起動しない）
 .\StubCompose.ps1 -Action Down     # 止めて消す（状態は残らない）
@@ -154,7 +157,7 @@ cd root\programs\CS\Sample4SpRp\E2E
 **`SpRp_MVC`（4.2 節）の FAPI 1.0 のフローを、スタブで通す**（#668）。**スタブには、`SpRp_MVC` のクライアントを登録して起動する。**
 
 ```powershell
-cd root\programs\CS\Sample4SpRp\Stub
+cd root\programs\CS\Sample4SpRp\container\Stub
 .\StubCompose.ps1                                     # 既定で Sample4SpRp.stub.json を渡す（SpRp_MVC ほか。雛形のクライアントも残る）
 
 cd ..\E2E
@@ -209,6 +212,52 @@ cd root\programs\CS\Sample4SpRp\E2E
 - **スタブは、OpenTouryoProject/MultiPurposeAuthSite#352（fapi2 の id_token の中の JWS の `kid`）を直した作りが要る**（2026/11/10 以降。MPAS の `container\Stub\1_PublishStub.ps1` で作り直す）。
   それより前の作りでは、中の JWS の `kid` がクライアントの鍵を指し、正常の側が「id_token の kid の鍵を、jwks_uri から引けません」で NG になる
 
+## 2.5 IdP を Keycloak にする（[`container/KCK/`](container/KCK/)）
+
+**MPAS のスタブで通している E2E を、別の IdP（Keycloak）でも通す。** MPAS だけに合わせた作りになっていないかを確かめるためである。
+**ケースと対照は同じスクリプトで、`-Idp KCK` を付けるだけ**（IdP ごとの違いは [`E2E/Idp.ps1`](E2E/Idp.ps1) にまとめた）。
+
+```powershell
+cd root\programs\CS\Sample4SpRp\container\KCK
+.\KckCompose.ps1                   # 起動（証明書を書き出し、Discovery が 200 になるまで待つ）
+.\KckCompose.ps1 -Action Down      # 止めて消す（状態は残らない）
+
+cd ..\..\E2E
+.\CliLoginE2E.ps1 -Idp KCK         # device・pkce・cc・ropc（jwtbearer は回さない。下記）
+.\MvcFapi1E2E.ps1 -Idp KCK         # FAPI 1.0（13 件）
+```
+
+| 値 | 内容 |
+|---|---|
+| 版 | `quay.io/keycloak/keycloak:26.8.1`（**固定**。`docker-compose.yml`）。`start-dev`、メモリは 1 GiB まで（起動して約 600 MiB） |
+| issuer | `https://localhost:44320/realms/sprp`（Discovery は `…/.well-known/openid-configuration`） |
+| 証明書 | **ASP.NET Core の開発用証明書**（`dotnet dev-certs https`）を `cert\` に書き出して使う（この PC で信頼済み。`cert\` は `.gitignore` の対象） |
+| 利用者・クライアント | [`realm/sprp-realm.json`](container/KCK/realm/sprp-realm.json)。**クライアントは、スタブと同じ client_id・戻り先・秘密・公開鍵**で登録してある |
+| テスト利用者 | `tanaka`（`tanaka@example.com`）と、**Device の拒否に使う `deny_tanaka`**。パスワードは realm の定義（**テスト専用**） |
+| 管理コンソール | `https://localhost:44320/admin/`（`admin` / `admin`。**テスト専用**） |
+
+**サンプルの設定は変えない。** E2E が、`SpRp_Issuer`・`SpRp_DiscoveryUri` だけを差し替えて動かす。
+
+| サンプル | 差し替え方 |
+|---|---|
+| CLI（`SpRp_CLI`・`DAG_Login_CLI`・`LIR_Login_CLI`） | 出力フォルダを `-OutputDir` に写し、設定ファイル（`appsettings.json` / `SpRp_CLI.exe.config`）の 2 つの値を書き換える（**対照の写しと同じ仕組み**） |
+| MVC（`SpRp_MVC`） | 環境変数 `appSettings__SpRp_Issuer`・`appSettings__SpRp_DiscoveryUri`（ASP.NET Core の構成は、環境変数が `appsettings.json` より優先する） |
+
+**スタブとの違い**（E2E が IdP ごとに分けているところ）
+
+| 違い | スタブ | Keycloak |
+|---|---|---|
+| 画面 | `LoginForm`・`submit.Grant` | `kc-form-login`・`/login-actions/consent`（`accept` / `cancel`） |
+| Device の承認・拒否 | 確認画面（Allow / Deny） | **ログインの後の同意画面**。**Keycloak は同意を利用者ごとに覚える**ので、拒否（対照）は同意したことの無い `deny_tanaka` で行う |
+| cc の対照の理由 | `invalid_client` | **`unauthorized_client`**（Keycloak の応答） |
+| ropc の対照の理由 | `access_denied` | **`invalid_grant`**（同上） |
+| `jwtbearer` | 回す | **回さない**（Keycloak に、JWT Bearer の認可グラント（RFC 7523 §2.1）が無い。クライアント認証の `private_key_jwt` はある） |
+| `Device_Client` の PKCE | — | **強制しない**（Keycloak は、PKCE を強制したクライアントには、Device の要求にも `code_challenge` を求める。`pkce` は S256 を付けて送る） |
+
+- **MPAS のスタブとは、ポート（44320）もプロジェクト名（`sprp-kck`）も分けてあるが、同時には起動しない**（メモリ。`TESTING.md` の冒頭）
+- **realm を変えたら、`-Action Down` してから起動し直す**（取り込みは、realm が無いときだけ行われる）
+- **まだ Keycloak で通していないもの**：FAPI 2.0（2.4 節）・外部ログイン（2.1 節。OIDC・SAML2）
+
 ## 3. 設定（サンプルと IdP で揃える値）
 
 **サンプル側の設定と、IdP のクライアントの登録は、1 文字も違ってはならない。**
@@ -220,19 +269,19 @@ cd root\programs\CS\Sample4SpRp\E2E
 | CLI（`DotNet/CLI`） | `Device_Client`（`client_mode` = `device`。秘密なし。旧 `TestClient3`） | `ae5a179813234ca290c8de93ef2e31dc` | `http://localhost:12345/` |
 | SPA（`SPA/SpRp_React`・`SPA/SpRp_Blazor`） | `SPA_Application`（**秘密を外して使う**。4.1 節） | `f374a155909d486a9234693c34e94479` | `http://localhost:5173/RedirectEndpoint` |
 | WS クライアントの外部ログイン（`Samples/WS_sample/WSClient_sample/WSClientWin_sample`・`WSClientWinCone_sample`、VB・.NET 10 版の `WSClientWin_sample`） | 同上（LIR で使う） | 同上 | 同上 |
-| MVC（`DotNet/MVC`）の `oauth2`・`oidc` | **雛形に無い**：`SpRp_MVC`（[`Stub/Sample4SpRp.stub.json`](Stub/Sample4SpRp.stub.json)。`fapi1`、`private_key_jwt`） | `75d74cb5a4ae44e3afec154623f0cbb4` | `https://localhost:44336/Fapi1/Callback` |
+| MVC（`DotNet/MVC`）の `oauth2`・`oidc` | **雛形に無い**：`SpRp_MVC`（[`container/Stub/Sample4SpRp.stub.json`](container/Stub/Sample4SpRp.stub.json)。`fapi1`、`private_key_jwt`） | `75d74cb5a4ae44e3afec154623f0cbb4` | `https://localhost:44336/Fapi1/Callback` |
 | MVC（`DotNet/MVC`）の `pkce` | **雛形に無い**：`SpRp_MVC_PKCE`（同上。`fapi1`、秘密なし） | `9e53bded5e7d4ee4bc9e7e30f7a9f0a6` | 同上 |
 | MVC（`DotNet/MVC`）の FAPI2（`par`・`ros`） | **雛形に無い**：`SpRp_MVC_FAPI2`（同上。`fapi2`、`private_key_jwt`） | `0cb517873cca4afd86098316373eaffc` | `https://localhost:44336/Fapi2/Callback` |
 | MVC（`DotNet/MVC`）の FAPI2（`par_mtls`） | **雛形に無い**：`SpRp_MVC_FAPI2_MTLS`（同上。`fapi2`、`tls_client_auth`、`tls_client_auth_subject_dn` = `CN=MPAS Test Client`） | `a5a72235cf4946b58927dbf42b0d94a5` | 同上 |
 | CLI（`DotNet/CLI`）の `cc`・`jwtbearer`・`ropc` | **雛形に無い**：`SpRp_CLI_Batch`（同上。normal、秘密と `jwk_rsa_publickey`） | `b9582fe575bf4ba9984f3fc81147408c` | （使わない） |
 | SPA（`SPA/`）の Hybrid | **雛形に無い**：`SPA_Hybrid`（同上。normal、秘密なし） | `2ee77c67c8624f39a423c9b6c319c106` | **`redirect_uri_token`** = `http://localhost:5173/RedirectEndpoint`（Hybrid はこちらを使う） |
 
-**`Stub/Sample4SpRp.stub.json` は、雛形に無いクライアントと設定を 1 つに集めたもの**（スタブに渡せる JSON は 1 つ）。
+**`container/Stub/Sample4SpRp.stub.json` は、雛形に無いクライアントと設定を 1 つに集めたもの**（スタブに渡せる JSON は 1 つ）。
 **ROPC も、ここで開けている**（雛形は `EnableResourceOwnerPasswordCredentialsGrantType` = false）。
 
 **雛形には、ほかのフェーズで使えそうなものも在る**（`MVC_Sample`・`WebForms_Sample`・`SPA_Application`・`Native_Application`・
 `IdFederation`（SAML2））。**どれを使うかは、そのフェーズで決める。**
-**雛形に無いクライアントが要るときは、`Stub/Sample4SpRp.stub.json` に足す**（`StubCompose.ps1` が既定で渡す。別のファイルを渡すなら `-Settings <パス>`）
+**雛形に無いクライアントが要るときは、`container/Stub/Sample4SpRp.stub.json` に足す**（`StubCompose.ps1` が既定で渡す。別のファイルを渡すなら `-Settings <パス>`）
 （書き方は MPAS の `container\Stub\appsettings.Stub.sample.json`）。
 
 | サンプル側のキー | 意味 | IdP 側（雛形） |
@@ -358,7 +407,7 @@ UserInfo の `sub` が id_token と同じか。**乱数は Web Crypto API / `Ran
 
 | | 内容 |
 |---|---|
-| クライアント | **`SPA_Hybrid`**（`2ee77c67c8624f39a423c9b6c319c106`。秘密なし）。**雛形に無い**（MPAS は Hybrid の戻り先を `redirect_uri_token` から引き、`SPA_Application` はそこが空）。`Stub/Sample4SpRp.stub.json` に登録 |
+| クライアント | **`SPA_Hybrid`**（`2ee77c67c8624f39a423c9b6c319c106`。秘密なし）。**雛形に無い**（MPAS は Hybrid の戻り先を `redirect_uri_token` から引き、`SPA_Application` はそこが空）。`container/Stub/Sample4SpRp.stub.json` に登録 |
 | code の引き換え | **PKCE**（`code_verifier`。秘密は送らない） |
 | 認可応答の id_token | **署名を確かめる**（フロント チャネルで届くので、TLS で発行者を確かめられない。§3.3.2.12 → §3.2.2.11）。鍵は `jwks_uri` から `kid` で引き、**alg は RS256・ES256・ES384・ES512 だけ**。**検証は Web Crypto**（Blazor は `wwwroot/js/jwsVerify.js` を JS 相互運用で呼ぶ。ブラウザでは .NET の RSA・ECDSA を使えない） |
 | | `iss`・`aud`・`exp`・`nonce`、**`c_hash`（必須。§3.3.2.11）** |
@@ -448,7 +497,7 @@ cd root\programs\CS\Sample4SpRp\DotNet\MVC
 
 ## 5. サンプルを足すとき
 
-1. **MPAS の雛形から、使うクライアントを選ぶ**（3 節の表に足す）。**無ければ、`Stub/Sample4SpRp.stub.json` に足す**
+1. **MPAS の雛形から、使うクライアントを選ぶ**（3 節の表に足す）。**無ければ、`container/Stub/Sample4SpRp.stub.json` に足す**
 2. サンプル側の設定（3 節）を、その値に揃える
 3. **1 節の表の状態を更新する**
 

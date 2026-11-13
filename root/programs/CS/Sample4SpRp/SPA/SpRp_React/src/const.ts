@@ -6,7 +6,7 @@
 //
 //   **Hybrid（code id_token）は、別のクライアント SPA_Hybrid で送る**（#668）。
 //   MPAS は Hybrid の戻り先を redirect_uri_token から引き、雛形の SPA_Application はそこが空のため。
-//   登録は Sample4SpRp/Stub/Sample4SpRp.stub.json（StubCompose.ps1 が既定で渡す）。
+//   登録は Sample4SpRp/container/Stub/Sample4SpRp.stub.json（StubCompose.ps1 が既定で渡す）。
 // ---------------------------------------------------------------
 
 export const FrontendHostRootUrl = 'http://localhost:5173';

@@ -5,7 +5,7 @@ rem
 rem Resource Owner Password Credentials (RFC 6749 4.3) with SpRp_CLI (#668).
 rem NOT RECOMMENDED (RFC 9700 2.4). Ported from the MPAS self-test; use device or pkce instead.
 rem The password is read from the console (not echoed).
-rem The IdP stub must be started with ..\..\Stub\Sample4SpRp.stub.json (it enables ROPC).
+rem The IdP stub must be started with ..\..\container\Stub\Sample4SpRp.stub.json (it enables ROPC).
 rem The user name is not the e-mail address (the test user is "tanaka").
 rem Usage: 6_Ropc.bat [user] [net48|net10.0]   (default: tanaka, net10.0)
 

@@ -145,7 +145,7 @@ Copy-Item .\_RepoPaths.csv .\RepoPaths.csv              # 手元の配置に直�
 - **共有のリソース（`C:\root\files`）は対象外**（開発者向けのリポジトリでは、昔からの慣習で固定のパス）
 
 ```powershell
-# 使う側（例：Sample4SpRp\Stub\StubCompose.ps1）
+# 使う側（例：Sample4SpRp\container\Stub\StubCompose.ps1）
 . (Join-Path <root\files\tools\PowerShell\RepoPaths> 'RepoPath.ps1')
 $MpasRoot = Resolve-RepoPath -Variable OT_MPAS_PATH -Argument $MpasRoot -ArgumentName '-MpasRoot'
 if (-not $MpasRoot) { throw '...' }

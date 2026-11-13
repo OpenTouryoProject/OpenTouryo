@@ -382,7 +382,7 @@ foreach ($f in $changed)
         $leaf = ($lf -split '/')[-1]
         $how = $(switch -Regex ($leaf)
             {
-                '^(repopath\.ps1|_repopaths\.csv)$' { "Sample4SpRp\Stub\StubCompose.ps1 -Action Config と Register-RepoPaths.ps1（-Apply 無し）を 5.1・7 で" }
+                '^(repopath\.ps1|_repopaths\.csv)$' { "Sample4SpRp\container\Stub\StubCompose.ps1 -Action Config と Register-RepoPaths.ps1（-Apply 無し）を 5.1・7 で" }
                 '^register-repopaths\.ps1$'         { "-Apply を付けずに 5.1・7 で" }
                 default                             { "そのスクリプトを 5.1・7 で" }
             })

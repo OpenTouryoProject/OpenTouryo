@@ -1,0 +1,111 @@
+{
+  "realm": "sprp",
+  "displayName": "Sample4SpRp (Keycloak, test only)",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "bruteForceProtected": false,
+  "accessTokenLifespan": 300,
+  "oauth2DeviceCodeLifespan": 600,
+  "oauth2DevicePollingInterval": 5,
+  "users": [
+    {
+      "username": "tanaka",
+      "email": "tanaka@example.com",
+      "emailVerified": true,
+      "firstName": "Taro",
+      "lastName": "Tanaka",
+      "enabled": true,
+      "credentials": [ { "type": "password", "value": "Kck-E2E-Test-Only-1", "temporary": false } ]
+    },
+    {
+      "username": "deny_tanaka",
+      "email": "deny_tanaka@example.com",
+      "emailVerified": true,
+      "firstName": "Deny",
+      "lastName": "Tanaka",
+      "enabled": true,
+      "credentials": [ { "type": "password", "value": "Kck-E2E-Test-Only-1", "temporary": false } ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "ae5a179813234ca290c8de93ef2e31dc",
+      "name": "Device_Client",
+      "description": "SpRp_CLI device / pkce, DAG_Login_CLI, LIR_Login_CLI (public). Consent on: the device control denies it. PKCE not enforced (KC would require it on the device request too); pkce sends S256.",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "consentRequired": true,
+      "redirectUris": [ "http://localhost:12345/" ],
+      "webOrigins": [],
+      "attributes": {
+        "oauth2.device.authorization.grant.enabled": "true"
+      }
+    },
+    {
+      "clientId": "b9582fe575bf4ba9984f3fc81147408c",
+      "name": "SpRp_CLI_Batch",
+      "description": "SpRp_CLI cc / ropc (confidential, client_secret_basic). jwtbearer (RFC 7523 2.1) is not supported by Keycloak.",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "RLVKAIIrbMO9pRCPBbv899IZtJ87EajfVWR9AhfD5a4",
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "consentRequired": false,
+      "redirectUris": [],
+      "webOrigins": []
+    },
+    {
+      "clientId": "75d74cb5a4ae44e3afec154623f0cbb4",
+      "name": "SpRp_MVC",
+      "description": "SpRp_MVC FAPI1 oauth2 / oidc (private_key_jwt + PKCE S256, JARM).",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-jwt",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "consentRequired": false,
+      "redirectUris": [ "https://localhost:44336/Fapi1/Callback" ],
+      "webOrigins": [],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "token.endpoint.auth.signing.alg": "RS256",
+        "authorization.signed.response.alg": "RS256",
+        "use.jwks.url": "false",
+        "use.jwks.string": "true",
+        "jwks.string": "{\"keys\":[{\"kty\":\"RSA\",\"alg\":\"RS256\",\"use\":\"sig\",\"n\":\"rmLnq3chsnu8k11V_acJ9EAxcHU8w6B74LmNm0WFVEQWXm9t8m6QSfdBTzej-1zEbezZYNYSsJFCgo7Yn-N1WcADSMgy6XhYbT8nbbpQ79TmkI_uiSUvKrrxRiSm2IT9RwZ7V7ftUebmB9bbC0OODZ_TbL0ZUhMlWNq0nAn0pbqebZ2Jl1XtLDTq9UrylAueRguvzE72z5BXwU18KO2yjyu4AJJH9OZ-SfRKGyYpSrw8GjDXL6nNnp5MOfNMoy1xUeHkLV_2ZUH-2KXWxBVrPmXEX3Vmyp7eVIakWfkk3ixn5sfCfLrzFHFj_21e_teOVQTeXQIQqJq7AZCGu6iqQQ\",\"e\":\"AQAB\",\"kid\":\"EsH_qKo5ycKyU6slnhEYFCvkdaYtVQxcJlo_ZZsuIBw\"}]}"
+      }
+    },
+    {
+      "clientId": "9e53bded5e7d4ee4bc9e7e30f7a9f0a6",
+      "name": "SpRp_MVC_PKCE",
+      "description": "SpRp_MVC FAPI1 pkce (public client, PKCE S256, JARM).",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "consentRequired": false,
+      "redirectUris": [ "https://localhost:44336/Fapi1/Callback" ],
+      "webOrigins": [],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "authorization.signed.response.alg": "RS256"
+      }
+    }
+  ]
+}

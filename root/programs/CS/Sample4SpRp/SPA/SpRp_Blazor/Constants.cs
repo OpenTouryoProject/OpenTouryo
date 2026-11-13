@@ -20,7 +20,7 @@ public static class Constants
     /// <summary>client_id（Hybrid : code id_token。#668）</summary>
     /// <remarks>
     /// **別のクライアント SPA_Hybrid**（秘密なし）。MPAS は Hybrid の戻り先を redirect_uri_token から引き、
-    /// 雛形の SPA_Application はそこが空のため。登録は Sample4SpRp/Stub/Sample4SpRp.stub.json（StubCompose.ps1 が既定で渡す）。
+    /// 雛形の SPA_Application はそこが空のため。登録は Sample4SpRp/container/Stub/Sample4SpRp.stub.json（StubCompose.ps1 が既定で渡す）。
     /// </remarks>
     public const string HybridClientId = "2ee77c67c8624f39a423c9b6c319c106";
 

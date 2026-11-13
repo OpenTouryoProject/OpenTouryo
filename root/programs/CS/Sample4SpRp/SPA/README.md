@@ -27,7 +27,7 @@
 2. **スタブを起動し直す**（土台の設定は起動時に読む）
 
    ```powershell
-   cd root\programs\CS\Sample4SpRp\Stub
+   cd root\programs\CS\Sample4SpRp\container\Stub
    .\StubCompose.ps1 -Action Down
    .\StubCompose.ps1 -Action Up
    ```

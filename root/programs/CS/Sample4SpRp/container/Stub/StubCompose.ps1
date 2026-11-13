@@ -75,6 +75,7 @@
      2026/11/07  玄人 幸道         MPAS の場所を、引数 ＞ 環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定 で決める（#652）
      2026/11/10  玄人 幸道         -Mtls を足した（スタブにクライアント証明書を受け付けさせる。MultiPurposeAuthSite#351。#668 の追加）
      2026/11/13  玄人 幸道         RepoPath.ps1 を root/files/tools/PowerShell/RepoPaths から読む（#687）
+     2026/11/13  玄人 幸道         Sample4SpRp\Stub から Sample4SpRp\container\Stub へ移した（Keycloak の KCK と並べる。#690）
 #>
 [CmdletBinding()]
 param(
@@ -105,7 +106,7 @@ if (-not $MpasDefault -and [string]::IsNullOrEmpty($Settings))
 
 # **MPAS の場所は、引数 ＞ 環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**（#652）
 #   パスの既定値は param() に書かない（5.1 の -File で $PSScriptRoot が空になる。CODING.md 5 節）
-. (Join-Path (Split-Path -Parent $PSCommandPath) '..\..\..\..\files\tools\PowerShell\RepoPaths\RepoPath.ps1')
+. (Join-Path (Split-Path -Parent $PSCommandPath) '..\..\..\..\..\files\tools\PowerShell\RepoPaths\RepoPath.ps1')
 $MpasRoot = Resolve-RepoPath -Variable OT_MPAS_PATH -Argument $MpasRoot -ArgumentName '-MpasRoot'
 if (-not $MpasRoot)
 {

@@ -32,7 +32,7 @@ echo.
 echo [OK] Built:
 echo        SpRp_CLI\bin\Debug\net48\SpRp_CLI.exe
 echo        SpRp_CLI\bin\Debug\net10.0\SpRp_CLI.dll
-echo      Next: start the IdP stub ^(..\..\Stub\StubCompose.ps1^), then 2_Device.bat / 3_Pkce.bat.
+echo      Next: start the IdP stub ^(..\..\container\Stub\StubCompose.ps1^), then 2_Device.bat / 3_Pkce.bat.
 set RC=0
 goto :end
 

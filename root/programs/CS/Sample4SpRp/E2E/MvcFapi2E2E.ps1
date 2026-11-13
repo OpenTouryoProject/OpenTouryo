@@ -15,7 +15,7 @@
       | ros | query.jwt（JARM） | 同上 | 応答（JWT）の署名を書き換える |
       | par_mtls（PAR ＋ tls_client_auth。**-Mtls のときだけ**） | query・query.jwt | 同上 | state を書き換える |
 
-      **par_mtls は、スタブが証明書を受け付けるときだけ通る**（..\Stub\StubCompose.ps1 -Mtls。MultiPurposeAuthSite#351）。
+      **par_mtls は、スタブが証明書を受け付けるときだけ通る**（..\container\Stub\StubCompose.ps1 -Mtls。MultiPurposeAuthSite#351）。
       **-Mtls を付けなければ、par_mtls のケースは作らない**（既定のスタブでは、PAR が invalid_client で断られる）。
 
       **対照が要るのは、確かめる処理を省いた実装でも、正常の側は通ってしまうため**（MvcFapi1E2E.ps1 と同じ考え方）。
@@ -30,7 +30,7 @@
     ＜前提（このスクリプトは起動しない）＞
       | 前提 | 確かめ方 |
       |---|---|
-      | MPAS のスタブ | **SpRp_MVC のクライアントを登録して起動する**（..\Stub\StubCompose.ps1。既定で Sample4SpRp.stub.json を渡す） |
+      | MPAS のスタブ | **SpRp_MVC のクライアントを登録して起動する**（..\container\Stub\StubCompose.ps1。既定で Sample4SpRp.stub.json を渡す） |
       | ビルド | CS\11_Build_SpRp_sample.bat（または DotNet\MVC\1_Build.bat） |
       | ポート 44336 | 空いている（SpRp_MVC は、IdP に登録した戻り先の URL で動かす） |
 
@@ -449,7 +449,7 @@ $lack = @()
 $probe = New-Browser
 $d = Send-Http $probe 'GET' "$stubBase/.well-known/openid-configuration" $null
 $probe.Dispose()
-if ($d.Status -ne 200) { $lack += "MPAS のスタブが応答しません（$stubBase。..\Stub\StubCompose.ps1 で起動する）" }
+if ($d.Status -ne 200) { $lack += "MPAS のスタブが応答しません（$stubBase。..\container\Stub\StubCompose.ps1 で起動する）" }
 
 if (-not (Test-Path $appDll)) { $lack += "ビルドされていません : $appDll（CS\11_Build_SpRp_sample.bat）" }
 
