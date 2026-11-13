@@ -264,8 +264,6 @@ cd ..\..\E2E
 | FAPI2 の id_token | 暗号化（JWE。RSA-OAEP・A256GCM） | **同じく暗号化させる**（同じ公開鍵を `use=enc` でも登録した）。PAR は必須にしてある |
 | FAPI2 の IdP の対照（Reuse・ClientId） | スタブのエラー画面 | Keycloak の「Invalid Request」（400）。理由はサーバのログ（`PAR not found, not issued or used multiple times`・`PAR was issued for a different client`） |
 | 外部ログインの SAML2 | 回す | **回さない**（部品の SAML2 が、仕様どおりの IdP と 2 か所で合わない。**#693**）。AuthnRequest に `Destination` が無い（Keycloak は `missing_required_destination` で断る。SAML 2.0 Bindings §3.4.5.2）。応答の Audience を ACS の URL と照合する（Keycloak は SP の entityID を入れる。SAML 2.0 Profiles §4.1.4.2）。**realm には SP を登録してある**（`http://` ＋ client_id。署名の検証と `mail` の属性） |
-| 外部ログインの `MVC_Sample (net10.0)` | OK | **NG（既知。#694）**。`BouncyCastle.NetCore` が無く、Keycloak の id_token の `at_hash` の検証で落ちる（#691 と同じ形） |
-
 - **MPAS のスタブとは、ポート（44320）もプロジェクト名（`sprp-kck`）も分けてあるが、同時には起動しない**（メモリ。`TESTING.md` の冒頭）
 - **realm を変えたら、`-Action Down` してから起動し直す**（取り込みは、realm が無いときだけ行われる）
 - **外部ログインの前提はスタブのときと同じ**（SQL Server・ASP.NET 状態サービス・ビルド。2.1 節）。`-OutputDir` に、net48 のサイトの写し（1 サイト約 58MB）ができる
