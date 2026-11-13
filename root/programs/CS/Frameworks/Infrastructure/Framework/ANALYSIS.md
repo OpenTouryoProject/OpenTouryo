@@ -258,7 +258,8 @@ DCR の口の認可、クライアント登録の持ち方。
 |---|---|
 | `SpRp_Issuer` / `SpRp_*Uri` / `SpRp_*CerFilePath` / `SpRp_JwkSetUri` | **相手（OP / IdP）の値**（Issuer・エンドポイント・検証用の公開鍵・JWK Set の URL） |
 | `SpRp_DiscoveryUri` / `SpRp_Saml2MetadataUri` / `SpRp_Saml2EntityId` | **相手（OP / IdP）の値**（Discovery・SAML2 メタデータの所在、期待する entityID）。#634 で追加 |
-| `SpRp_Saml2AcsUri` | **自分の ACS の URL**（SAML2 の Audience / Recipient に照合する。空なら照合しない）。#634 で追加 |
+| `SpRp_Saml2AcsUri` | **自分の ACS の URL**（SAML2 の Recipient に照合する。`SpRp_Saml2SpEntityId` が空なら Audience にも照合する（従来）。空なら照合しない）。#634 で追加 |
+| `SpRp_Saml2SpEntityId` | **自分（SP）の entityID**（SAML2 の Audience に照合する。SAML Profiles 4.1.4.2。**空なら、従来どおり Audience を `SpRp_Saml2AcsUri` と照合する**）。要求の Issuer と同じ値にする。#693 で追加 |
 | `SpRp_*PfxFilePath` / `SpRp_*PfxPassword` | **クライアント自身の鍵**（要求の署名・JWE の復号） |
 | `JwkSetFilePath` | **認可サーバ自身の JWK Set**（`CmnJwtToken.Verify` の分岐にも使われる） |
 
@@ -302,7 +303,7 @@ DCR の口の認可、クライアント登録の持ち方。
 | `RemoteJwkSetStore.GetJwkAsync(kid)` | `SpRp_JwkSetUri` |
 | `RemoteJwkSetStore.GetJwkByDiscoveryAsync(kid)` | `SpRp_DiscoveryUri`・`SpRp_Issuer` |
 | `SAML2Metadata.GetAsync()` | `SpRp_Saml2MetadataUri`・`SpRp_Saml2EntityId` |
-| `SAML2Client.VerifyResponseWithReason(queryString, samlResponse, expectedInResponseTo, relayState, expectedRelayState)` | `SpRp_RsaCerFilePath`・`SpRp_Saml2EntityId`・`SpRp_Saml2AcsUri` |
+| `SAML2Client.VerifyResponseWithReason(queryString, samlResponse, expectedInResponseTo, relayState, expectedRelayState)` | `SpRp_RsaCerFilePath`・`SpRp_Saml2EntityId`・`SpRp_Saml2SpEntityId`（#693）・`SpRp_Saml2AcsUri` |
 
 **配布している設定ファイル（サンプルの `appsettings.json` / `app.config`）には、これらのキーを書いていない**（どのサンプルもこの口を使っていないため）。使うアプリが足すこと。
 調整値（取り直しの下限・DPoP の `iat` の窓・メタデータのキャッシュの期間）は設定にしていない。引数か static プロパティで変える。
@@ -480,6 +481,20 @@ SAML の署名・検証は SP と IdP の双方が使うため、**IdP 側の処
 - **RSA-PSS・ECDSA も、RFC 9231 の URI で書く**（`sha256-rsa-MGF1`・`ecdsa-sha256` など。2.3.10・2.3.6。#643）。
   **決められないアルゴリズム（RSA-PSS の SHA1 など）は `ArgumentException`**。2026/10/30 までは、どちらも `rsa-sha1` と書いていた。
   **RSA-PSS・ECDSA で署名し、`DigitalSign` 版の `VerifyRedirect` で受けている相手とは、版を揃える**（古い版の `rsa-sha1` は照合で落ちる）
+
+**仕様どおりの IdP・SP と通るための版がある**（#693。Keycloak で確かめた）。**従来の版の振る舞いは変えていない。**
+
+| 何を | 従来の版 | 足した版 |
+|---|---|---|
+| 要求（`AuthnRequest`）の `Destination` | **入れない**（`CreateRedirectRequest` / `CreatePostRequest` の 4 つ。**`[Obsolete]`（警告）**） | `destination`（送り先。IdP の SSO の口）を受ける版。**null・空は `ArgumentNullException`**（要求は必ず署名するので。SAML Bindings 3.4.5.2・3.5.5.2：署名した要求には `Destination` が要る）。`SAML2Bindings.CreateRequest` にも受ける版 |
+| SP：応答の `Audience` の照合 | **ACS URL と照合する**（最初の `Audience`） | `expectedSpEntityId` を受ける `VerifyResponseWithReason`（10 引数。`sigAlgs` も省略できない。従来の版の呼び出しと区別するため）。**すべての `AudienceRestriction` に entityID が在ること**を見る（SAML Profiles 4.1.4.2・Core 2.5.1.4）。null・空なら従来の照合。設定を読む版は `SpRp_Saml2SpEntityId` |
+| IdP：応答の `Audience` | **ACS URL を入れる** | `audience`（SP の entityID）を受ける `CreateRedirectResponse` / `CreatePostResponse`（鍵を受ける版）と `SAML2Bindings.CreateAssertion`。**値は要素の値として入れる**（特殊な文字もエスケープされる） |
+
+- **汎用認証サイト（MPAS）は、今は Audience に ACS URL を入れ、要求の `Destination` を見ない。** そのため、SP の設定（`SpRp_Saml2SpEntityId`）は、相手が仕様どおりの IdP のときだけ入れる。MPAS が `audience` を受ける版に替われば、どちらとも通る
+- **要求に `Destination` を足しても、従来の IdP の側（`VerifyRequest`）は断らない**（要素の有無しか見ない）。**IdP の側で `Destination` を確かめることはしていない**（今の SP を断ることになるため。別に扱う）
+- **構造の確かめ（`SAML2Bindings.VerifyByXPath`）は、`Audience` をちょうど 1 つに限っている**（以前から）。仕様は複数を許す（Core 2.5.1.4）が、#693 では広げていない。
+  そのため、`AudienceRestriction` や `Audience` が複数の応答は、照合の前に `SignatureInvalid`（構造）で断る
+- **`Destination` を受ける版と受けない版は、`null` のリテラルで呼ぶと区別できないことがある**（文字列と鍵の位置が重なるため）。鍵は型を付けて渡す
 
 **`VerifyRedirect` は 2 つ在る**（#604）。
 
