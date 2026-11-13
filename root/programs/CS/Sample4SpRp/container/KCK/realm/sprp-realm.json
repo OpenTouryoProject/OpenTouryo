@@ -30,6 +30,92 @@
   ],
   "clients": [
     {
+      "clientId": "f53469c17c5a432f86ce563b7805ab89",
+      "name": "MVC_Sample",
+      "description": "MVC_Sample external login (OIDC, authorization code, client_secret).",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "cKdwJb6mRKVIJpGxEWjIC94zquQltw_ECfO-55p21YM",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "consentRequired": false,
+      "redirectUris": [ "https://localhost:44334/Home/OAuth2AuthorizationCodeGrantClient" ],
+      "webOrigins": []
+    },
+    {
+      "clientId": "b6b393fe861b430eb4ee061006826b03",
+      "name": "WebForms_Sample",
+      "description": "WebForms_Sample external login (OIDC, authorization code, client_secret).",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "p2RgAFKF-JaF0A9F1tyDXp4wMq-uQZYyvTBM8wr_v8g",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "consentRequired": false,
+      "redirectUris": [ "https://localhost:44333/Aspx/OAuth2/OAuth2AuthorizationCodeGrantClient.aspx" ],
+      "webOrigins": []
+    },
+    {
+      "clientId": "http://f53469c17c5a432f86ce563b7805ab89",
+      "name": "MVC_Sample (SAML2)",
+      "description": "MVC_Sample external login (SAML2 SP). Issuer is http:// + client_id. Not run on KCK yet: the SP sends no Destination and checks Audience against the ACS URL.",
+      "enabled": true,
+      "protocol": "saml",
+      "frontchannelLogout": true,
+      "redirectUris": [ "https://localhost:44334/Home/Saml2AssertionConsumerService" ],
+      "attributes": {
+        "saml_assertion_consumer_url_redirect": "https://localhost:44334/Home/Saml2AssertionConsumerService",
+        "saml.force.post.binding": "false",
+        "saml.server.signature": "true",
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml.client.signature": "true",
+        "saml.signing.certificate": "MIICljCCAX4CCQC1XAfk7CceaDANBgkqhkiG9w0BAQsFADAMMQowCAYDVQQDDAF4MCAXDTE4MTEwNzA1NTYyOVoYDzMwMTgwMzEwMDU1NjI5WjAMMQowCAYDVQQDDAF4MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArmLnq3chsnu8k11V/acJ9EAxcHU8w6B74LmNm0WFVEQWXm9t8m6QSfdBTzej+1zEbezZYNYSsJFCgo7Yn+N1WcADSMgy6XhYbT8nbbpQ79TmkI/uiSUvKrrxRiSm2IT9RwZ7V7ftUebmB9bbC0OODZ/TbL0ZUhMlWNq0nAn0pbqebZ2Jl1XtLDTq9UrylAueRguvzE72z5BXwU18KO2yjyu4AJJH9OZ+SfRKGyYpSrw8GjDXL6nNnp5MOfNMoy1xUeHkLV/2ZUH+2KXWxBVrPmXEX3Vmyp7eVIakWfkk3ixn5sfCfLrzFHFj/21e/teOVQTeXQIQqJq7AZCGu6iqQQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQB0pwxYX6CZl7z8vtgyGDoEFh8ngR2vD9+BVBqLQg+5lbE5fJmW8IIFAf6q16fz45oeN1AcyNiIcZOuvwa/yUxMmyDc4qVpmeTsOVJCyTysZte9NMx3JMRnUE+VLS/K4/TsiChsjkVC11ibAeX/eWKPPVI7CH2a5C8UaHBGCu7fUdUAFINj0KFAtBDRwe54mOuEm539jzhi1MBuosdAHIF4SD9B9PFGkVS9Iagzw75eNS/9wP1ZQs1+1n46k1s44d4poEHwx5tsy7ZiH9RZfM8SwUPxLW5BnaJI2FEO4i0lfjRhmAcOrQwcRbLcfv1lG6wXIKNQ4fQTKoY0zQYsYsRd",
+        "saml_name_id_format": "persistent"
+      },
+      "protocolMappers": [
+        {
+          "name": "mail",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "config": { "user.attribute": "email", "attribute.name": "mail", "attribute.nameformat": "Basic" }
+        }
+      ]
+    },
+    {
+      "clientId": "http://b6b393fe861b430eb4ee061006826b03",
+      "name": "WebForms_Sample (SAML2)",
+      "description": "WebForms_Sample external login (SAML2 SP). Issuer is http:// + client_id. Not run on KCK yet: the SP sends no Destination and checks Audience against the ACS URL.",
+      "enabled": true,
+      "protocol": "saml",
+      "frontchannelLogout": true,
+      "redirectUris": [ "https://localhost:44333/Aspx/Saml2/Saml2AssertionConsumerService.aspx" ],
+      "attributes": {
+        "saml_assertion_consumer_url_redirect": "https://localhost:44333/Aspx/Saml2/Saml2AssertionConsumerService.aspx",
+        "saml.force.post.binding": "false",
+        "saml.server.signature": "true",
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml.client.signature": "true",
+        "saml.signing.certificate": "MIICljCCAX4CCQC1XAfk7CceaDANBgkqhkiG9w0BAQsFADAMMQowCAYDVQQDDAF4MCAXDTE4MTEwNzA1NTYyOVoYDzMwMTgwMzEwMDU1NjI5WjAMMQowCAYDVQQDDAF4MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArmLnq3chsnu8k11V/acJ9EAxcHU8w6B74LmNm0WFVEQWXm9t8m6QSfdBTzej+1zEbezZYNYSsJFCgo7Yn+N1WcADSMgy6XhYbT8nbbpQ79TmkI/uiSUvKrrxRiSm2IT9RwZ7V7ftUebmB9bbC0OODZ/TbL0ZUhMlWNq0nAn0pbqebZ2Jl1XtLDTq9UrylAueRguvzE72z5BXwU18KO2yjyu4AJJH9OZ+SfRKGyYpSrw8GjDXL6nNnp5MOfNMoy1xUeHkLV/2ZUH+2KXWxBVrPmXEX3Vmyp7eVIakWfkk3ixn5sfCfLrzFHFj/21e/teOVQTeXQIQqJq7AZCGu6iqQQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQB0pwxYX6CZl7z8vtgyGDoEFh8ngR2vD9+BVBqLQg+5lbE5fJmW8IIFAf6q16fz45oeN1AcyNiIcZOuvwa/yUxMmyDc4qVpmeTsOVJCyTysZte9NMx3JMRnUE+VLS/K4/TsiChsjkVC11ibAeX/eWKPPVI7CH2a5C8UaHBGCu7fUdUAFINj0KFAtBDRwe54mOuEm539jzhi1MBuosdAHIF4SD9B9PFGkVS9Iagzw75eNS/9wP1ZQs1+1n46k1s44d4poEHwx5tsy7ZiH9RZfM8SwUPxLW5BnaJI2FEO4i0lfjRhmAcOrQwcRbLcfv1lG6wXIKNQ4fQTKoY0zQYsYsRd",
+        "saml_name_id_format": "persistent"
+      },
+      "protocolMappers": [
+        {
+          "name": "mail",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "config": { "user.attribute": "email", "attribute.name": "mail", "attribute.nameformat": "Basic" }
+        }
+      ]
+    },
+    {
       "clientId": "ae5a179813234ca290c8de93ef2e31dc",
       "name": "Device_Client",
       "description": "SpRp_CLI device / pkce, DAG_Login_CLI, LIR_Login_CLI (public). Consent on: the device control denies it. PKCE not enforced (KC would require it on the device request too); pkce sends S256.",

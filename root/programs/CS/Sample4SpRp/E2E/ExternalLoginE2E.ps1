@@ -27,6 +27,16 @@
       net48 は IIS Express（生成した applicationhost.config）、net10.0 は Kestrel。**1 つずつ起動して止める。**
       **そのポートを他のプロセス（Visual Studio など）が使っていれば、その対象は NG にする**（止めはしない）。
 
+    ＜IdP を Keycloak にする（-Idp KCK）＞
+      **アプリの設定（issuer・Discovery と、口：認可・トークン・UserInfo・JWK）を差し替えて動かす**（値は Idp.ps1 の WebConfig。ソースは変えない）。
+      | ホスト | 差し替え方 |
+      |---|---|
+      | IIS Express（net48） | サイトのフォルダ（obj を除く）を -OutputDir に写し、写しの app.config の値を書き換える |
+      | Kestrel（net10.0） | 環境変数 appSettings__<キー>（Host.CreateDefaultBuilder が、appsettings.json より優先する） |
+      **SAML2 は回さない**（部品の SAML2 が、Keycloak と 2 か所で合わない。部品の側の問題として別に扱う。realm には SP を登録してある）。
+        - AuthnRequest に Destination が無い（署名した要求には要る。SAML 2.0 Bindings §3.4.5.2）。Keycloak は missing_required_destination で断る
+        - 応答の Audience を ACS の URL と照合する（Audience には SP の entityID が入る。SAML 2.0 Profiles §4.1.4.2）
+
     ＜ブラウザの代わり＞
       HttpClient（リダイレクトは自分で辿る。Cookie の入れ物は 1 つ）。
       **スタブとアプリは同じ localhost なので、Cookie はポートを問わず共有される**（ブラウザと同じ）。
@@ -40,22 +50,28 @@
 .PARAMETER Only
     対象名の部分一致で絞る（複数可）
 
+.PARAMETER Idp
+    Stub（MPAS のスタブ。既定）/ KCK（Keycloak。..\container\KCK。SAML2 は回さない）
+
 .PARAMETER MpasRoot
     MultiPurposeAuthSite のリポジトリの場所。**省けば、環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**
-    （root\files\tools\PowerShell\RepoPaths\RepoPath.ps1。#652）。どれを使ったかを表示する。
+    （root\files\tools\PowerShell\RepoPaths\RepoPath.ps1。#652）。どれを使ったかを表示する。-Idp KCK では使わない。
 
 .PARAMETER StubAppSettings
     スタブの土台にした appsettings.json（テスト利用者のパスワード TestUserPWD を読む）。
-    省けば MPAS の既定（MpasRoot\root\programs\MultiPurposeAuthSiteCore\MultiPurposeAuthSiteCore\appsettings.json）。
+    省けば MPAS の既定（MpasRoot\root\programs\MultiPurposeAuthSiteCore\MultiPurposeAuthSiteCore\appsettings.json）。-Idp KCK では使わない。
 
 .PARAMETER OutputDir
-    アプリのログと、生成した IIS Express の構成を置く場所
+    アプリのログと、生成した IIS Express の構成を置く場所（-Idp KCK では、net48 のサイトの写しも）
 
 .EXAMPLE
     .\ExternalLoginE2E.ps1
 
 .EXAMPLE
     .\ExternalLoginE2E.ps1 -Lang CS -Flow OIDC -Only "net10.0"
+
+.EXAMPLE
+    .\ExternalLoginE2E.ps1 -Idp KCK
 
 .NOTES
     終了コード : 0 = すべて OK、1 = NG あり、2 = 前提が足りない
@@ -67,6 +83,7 @@
      2026/11/04  玄人 幸道         新規（#649）
      2026/11/07  玄人 幸道         MPAS の場所を、引数 ＞ 環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定 で決める（#652）
      2026/11/13  玄人 幸道         RepoPath.ps1・SummaryTable.ps1 を root/files/tools/PowerShell の下（RepoPaths・Verify）から読む（#687）
+     2026/11/13  玄人 幸道         -Idp KCK（Keycloak）を足した。IdP の違いは Idp.ps1 にまとめた（#692）
 #>
 [CmdletBinding()]
 param(
@@ -77,6 +94,9 @@ param(
     [string] $Flow = 'Both',
 
     [string[]] $Only,
+
+    [ValidateSet('Stub', 'KCK')]
+    [string] $Idp = 'Stub',
 
     [string] $MpasRoot = '',
 
@@ -104,8 +124,11 @@ New-Item -ItemType Directory -Force $OutputDir | Out-Null
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 Add-Type -AssemblyName System.Net.Http
 
-$stubBase = 'https://localhost:44310'
-$testUser = 'tanaka@example.com'
+# **IdP の違い（URL・画面・サンプルの設定の差し替え）は Idp.ps1 にまとめてある**
+. (Join-Path $here 'Idp.ps1')
+$idpInfo = Get-E2EIdp $Idp $here
+$stubBase = $idpInfo.Base   # IdP の画面の URL の頭（KCK でも、この名前のまま使う）
+$testUser = $idpInfo.User
 
 # ------------------------------------------------------------------
 # 対象
@@ -131,6 +154,10 @@ if ($Only)
 }
 
 $flows = @(if ($Flow -eq 'Both') { 'OIDC', 'SAML2' } else { $Flow })
+
+# **Keycloak では SAML2 を回さない**（部品の SAML2 が Keycloak と合わない：AuthnRequest の Destination・応答の Audience。上の説明）
+$skippedSaml2 = ($Idp -eq 'KCK' -and $flows -contains 'SAML2')
+if ($Idp -eq 'KCK') { $flows = @($flows | Where-Object { $_ -ne 'SAML2' }) }
 
 # ------------------------------------------------------------------
 # HTTP（ブラウザの代わり）
@@ -216,7 +243,14 @@ function Invoke-IdpScreens($client, $res, [string]$password)
 
         if ($res.Status -ne 200 -or -not $res.Url.StartsWith($stubBase)) { return $res }
 
-        if ($res.Body -match 'id="LoginForm"')
+        if ($Idp -eq 'KCK')
+        {
+            # **Keycloak の画面**（ログイン・同意。Idp.ps1）。それ以外の画面（エラー画面など）で戻る
+            $post = Get-KckFormPost $res $testUser $password 'accept'
+            if (-not $post) { return $res }
+            $res = Send-Http $client 'POST' $post.Url $post.Form
+        }
+        elseif ($res.Body -match 'id="LoginForm"')
         {
             $res = Send-Http $client 'POST' "$stubBase/Account/Login" @{
                 ReturnUrl = (Get-Field $res.Body 'ReturnUrl')
@@ -299,7 +333,7 @@ function Invoke-Case($t, [string]$flow, [string]$password)
 
         # 1. 外部ログインのボタン → スタブへリダイレクトするか
         $r = Invoke-ExternalLoginButton $client $t $base $flow
-        $expected = if ($flow -eq 'OIDC') { "$stubBase/authorize" } else { "$stubBase/saml2request" }
+        $expected = if ($flow -eq 'OIDC') { $idpInfo.Authorize } else { $idpInfo.Saml2Path }
 
         if ($r.Status -lt 300 -or $r.Status -ge 400 -or -not $r.Location.StartsWith($expected))
         {
@@ -312,7 +346,7 @@ function Invoke-Case($t, [string]$flow, [string]$password)
         {
             $hint = if ($flow -eq 'SAML2') { '。MPAS の雛形の redirect_uri_saml は在るか' } else { '' }
             # クエリ（SAMLRequest など）は長いので、パスまでを出す
-            return "スタブから戻らない（$($r.Status) $(($r.Url -split '\?')[0])$hint）"
+            return "$($idpInfo.Name) から戻らない（$($r.Status) $(($r.Url -split '\?')[0])$hint）"
         }
 
         # 3. 認証が要る画面に届くか（未認証ならログイン画面へ 302 される）
@@ -354,10 +388,19 @@ function Start-App($t)
     {
         if (-not (Test-Path $t.Path)) { throw "ビルドされていません : $($t.Path)" }
 
-        # コンテンツ ルートを合わせるため、出力フォルダを作業ディレクトリにする（st_Server.ps1 と同じ）
-        return Start-Process 'dotnet' -ArgumentList "`"$($t.Path)`"", '--urls', "https://localhost:$($t.Port)" `
-            -PassThru -WindowStyle Hidden -WorkingDirectory (Split-Path $t.Path) `
-            -RedirectStandardOutput $log -RedirectStandardError "$log.err"
+        # **IdP がスタブでなければ、設定を環境変数で差し替える**（appSettings__<キー>。起動したら、このプロセスからは消す）
+        foreach ($k in $idpInfo.WebConfig.Keys) { [Environment]::SetEnvironmentVariable("appSettings__$k", $idpInfo.WebConfig[$k]) }
+        try
+        {
+            # コンテンツ ルートを合わせるため、出力フォルダを作業ディレクトリにする（st_Server.ps1 と同じ）
+            return Start-Process 'dotnet' -ArgumentList "`"$($t.Path)`"", '--urls', "https://localhost:$($t.Port)" `
+                -PassThru -WindowStyle Hidden -WorkingDirectory (Split-Path $t.Path) `
+                -RedirectStandardOutput $log -RedirectStandardError "$log.err"
+        }
+        finally
+        {
+            foreach ($k in $idpInfo.WebConfig.Keys) { [Environment]::SetEnvironmentVariable("appSettings__$k", $null) }
+        }
     }
 
     $iis = Join-Path $env:ProgramFiles 'IIS Express\iisexpress.exe'
@@ -365,11 +408,32 @@ function Start-App($t)
     if (-not (Test-Path $iis) -or -not (Test-Path $template)) { throw 'IIS Express が見つかりません。' }
     if (-not (Test-Path (Join-Path $t.Path 'bin'))) { throw "ビルドされていません : $($t.Path)" }
 
+    # **IdP がスタブでなければ、サイトを写し、写しの app.config の値を書き換える**（ソースのフォルダは変えない）
+    $physical = $t.Path
+    if ($idpInfo.WebConfig.Count -gt 0)
+    {
+        $physical = Join-Path $OutputDir "site_$safe"
+        Remove-Item -Recurse -Force $physical -ErrorAction SilentlyContinue
+        & robocopy $t.Path $physical /E /XD obj /NFL /NDL /NJH /NJS /NP | Out-Null
+        if ($LASTEXITCODE -ge 8) { throw "サイトを写せません（robocopy の終了コード $LASTEXITCODE）: $($t.Path)" }
+
+        $appConfig = Join-Path $physical 'app.config'
+        $text = [IO.File]::ReadAllText($appConfig)
+        foreach ($k in $idpInfo.WebConfig.Keys)
+        {
+            $v = [string]$idpInfo.WebConfig[$k]
+            $pattern = '(key="' + [regex]::Escape($k) + '"\s+value=")[^"]*(")'
+            if (-not [regex]::IsMatch($text, $pattern)) { throw "設定に $k がありません : $appConfig" }
+            $text = [regex]::Replace($text, $pattern, { param($m) $m.Groups[1].Value + $v + $m.Groups[2].Value })
+        }
+        [IO.File]::WriteAllText($appConfig, $text, (New-Object Text.UTF8Encoding $true))
+    }
+
     # **https で待ち受けるには構成ファイルが要る**（/path:・/port: は http だけ）。
     #   雛形の既定のサイトを、この対象のサイトに差し替える。証明書は IIS Express の開発用（44300〜44399 に登録済み）。
     $site = '<site name="E2E" id="1" serverAutoStart="true">' +
         '<application path="/" applicationPool="Clr4IntegratedAppPool">' +
-        '<virtualDirectory path="/" physicalPath="' + $t.Path + '" /></application>' +
+        '<virtualDirectory path="/" physicalPath="' + $physical + '" /></application>' +
         '<bindings><binding protocol="https" bindingInformation="*:' + $t.Port + ':localhost" /></bindings></site>'
     $xml = [IO.File]::ReadAllText($template)
     $xml = [regex]::Replace($xml, '<site name="WebSite1"[\s\S]*?</site>', $site.Replace('$', '$$'))
@@ -417,9 +481,9 @@ Write-Output '=== 前提 ==='
 $lack = @()
 
 $probe = New-Browser
-$d = Send-Http $probe 'GET' "$stubBase/.well-known/openid-configuration" $null
+$d = Send-Http $probe 'GET' $idpInfo.Discovery $null
 $probe.Dispose()
-if ($d.Status -ne 200) { $lack += "MPAS のスタブが応答しません（$stubBase。..\README.md の 2 節の StubCompose.ps1 で起動する）" }
+if ($d.Status -ne 200) { $lack += "$($idpInfo.Name) が応答しません（$($idpInfo.Discovery)。$($idpInfo.StartHint)）" }
 
 if (-not (Test-PortInUse 1433)) { $lack += 'SQL Server（localhost:1433）に繋がりません（LocalServicesOnDocker の Start-Services.ps1 sqlserver）' }
 
@@ -430,8 +494,13 @@ if (@($targets | Where-Object { $_.Kind -eq 'WebForms' }).Count -gt 0)
 }
 
 #   **テスト利用者のパスワードは、スタブの土台の appsettings.json の TestUserPWD**（MPAS の container\Stub\README.md 3 節）
+#   **Keycloak は、realm の定義（container\KCK\realm\sprp-realm.json）の値**
 $appSettings = $StubAppSettings
-if ([string]::IsNullOrEmpty($appSettings))
+if ($Idp -eq 'KCK')
+{
+    $appSettings = $idpInfo.RealmFile
+}
+elseif ([string]::IsNullOrEmpty($appSettings))
 {
     # **MPAS の場所は、引数 ＞ 環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**（#652）
     . (Join-Path $progRoot '..\files\tools\PowerShell\RepoPaths\RepoPath.ps1')
@@ -439,21 +508,28 @@ if ([string]::IsNullOrEmpty($appSettings))
     $appSettings = $(if ($MpasRoot) { Join-Path $MpasRoot 'root\programs\MultiPurposeAuthSiteCore\MultiPurposeAuthSiteCore\appsettings.json' } else { '' })
 }
 $password = $null
-if (Test-Path $appSettings)
+if ($Idp -eq 'KCK')
+{
+    $password = Get-KckPassword $idpInfo 'tanaka'
+}
+elseif (Test-Path $appSettings)
 {
     $m = [regex]::Match([IO.File]::ReadAllText($appSettings), '"TestUserPWD"\s*:\s*"([^"]*)"')
     if ($m.Success) { $password = $m.Groups[1].Value }
 }
-if (-not $password) { $lack += "テスト利用者のパスワードを読めません（$appSettings の TestUserPWD。-MpasRoot か -StubAppSettings で場所を指定する）" }
+if (-not $password) { $lack += "テスト利用者のパスワードを読めません（$appSettings。-Idp Stub なら TestUserPWD。-MpasRoot か -StubAppSettings で場所を指定する）" }
 
 if ($targets.Count -eq 0) { $lack += '対象がありません（-Lang / -Only を確かめる）' }
+if ($flows.Count -eq 0) { $lack += 'フローがありません（-Idp KCK では SAML2 を回さない。-Flow を確かめる）' }
 
 if ($lack.Count -gt 0)
 {
     foreach ($l in $lack) { Write-Output "  NG  $l" }
     exit 2
 }
-Write-Output '  OK  スタブ・SQL Server・状態サービス・テスト利用者'
+Write-Output "  OK  $($idpInfo.Name)（$($idpInfo.Issuer)）・SQL Server・状態サービス・テスト利用者"
+if ($Idp -eq 'KCK') { Write-Output "      （アプリの設定を差し替えて動かす。net48 はサイトの写し（$OutputDir\site_*）、net10.0 は環境変数）" }
+if ($skippedSaml2) { Write-Output '  --  SAML2 は回さない（部品の SAML2 が Keycloak と合わない：AuthnRequest に Destination が無い・Audience を ACS の URL と照合する）' }
 
 # ------------------------------------------------------------------
 # 実行

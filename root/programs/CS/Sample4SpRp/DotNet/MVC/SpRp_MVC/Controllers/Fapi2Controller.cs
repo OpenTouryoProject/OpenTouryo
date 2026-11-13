@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/11/09  玄人 幸道         新規作成（#668 の追加。汎用認証サイトの自己テストの FAPI2（CIBA を除く）を移した）
 //*  2026/11/10  玄人 幸道         暗号化した id_token は JWE のまま IdToken.Verify に渡す（復号は鍵を引くためだけ）。par_mtls（tls_client_auth）を足した
+//*  2026/11/13  玄人 幸道         id_token の検証のコメントを、今の部品（JWE の中でも RS256・ES256 を受ける。#683）に合わせた（#692）
 //**********************************************************************************
 
 using System;
@@ -66,7 +67,8 @@ namespace SpRp_MVC.Controllers
     ///   MPAS は、fapi2 の登録の `client_assertion` の `aud` を issuer に限る
     /// - **トークン要求は、方式を問わない版の `GetAccessTokenByCodeAsync`**（`client_assertion` ＋ `code_verifier`。OpenTouryo#676）
     /// - **response_mode は `query`（既定）か `query.jwt`（JARM）**（Request Object に入れる）。戻りの確かめは `Fapi1Controller` と同じ
-    /// - **id_token は、暗号化されて返ることがある**（MPAS は、fapi2 の登録に公開鍵があると Nested JWT（JWE の中に JWS）にする）。
+    /// - **id_token は、暗号化されて返ることがある**（MPAS は、fapi2 の登録に公開鍵があると Nested JWT（JWE の中に JWS）にする。
+    ///   Keycloak は、登録で暗号化を指定したとき。`Sample4SpRp/container/KCK`）。
     ///   自分の秘密鍵で復号してから、中の JWS を検証する
     ///
     /// **`par_mtls` は、クライアント証明書を求める IdP で通る**（スタブは `StubCompose.ps1 -Mtls`。MultiPurposeAuthSite#351）。
@@ -369,8 +371,9 @@ namespace SpRp_MVC.Controllers
             // **MPAS は、fapi2 の登録に公開鍵（jwk_rsa_publickey）があると、id_token を暗号化して返す**
             //   （Nested JWT：外側が JWE（RSA-OAEP・A256GCM。鍵はクライアントの公開鍵）、内側が IdP の署名した JWS。RFC 7516、OpenID Connect Core 1.0 §10.2）。
             //   **復号は、署名の鍵を引くため（中の JWS のヘッダの kid を読むため）だけに行う。** JWE のヘッダには、署名の鍵の kid が無い。
-            //   **検証には、JWE のまま渡す**（IdToken.Verify（CmnJwtToken.Verify）が、自分の秘密鍵（SpRp_RsaPfxFilePath）で復号してから検証する。
-            //   **復号した JWS を渡すと断られる**：CmnJwtToken.Verify は、JWE の中なら ES256、素なら RS256 だけを受ける）。
+            //   **検証には、JWE のまま渡す**（IdToken.Verify（CmnJwtToken.Verify）が、自分の秘密鍵（SpRp_RsaPfxFilePath）で復号してから、中の JWS を検証する）。
+            //   **中の JWS の alg は RS256・ES256 のどちらでもよい**（#683 から。それまでは、JWE の中なら ES256 だけを受けていた。
+            //   Keycloak は、暗号化した id_token の中も RS256 で署名する。#692）。
             string keySource = null;
             if (idToken.Split('.').Length == 5)
             {
