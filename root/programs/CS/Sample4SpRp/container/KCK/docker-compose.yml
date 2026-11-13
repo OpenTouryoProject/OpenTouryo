@@ -15,6 +15,10 @@ services:
       - --https-port=8443
       - --https-certificate-file=/opt/keycloak/conf/cert/localhost.pem
       - --https-certificate-key-file=/opt/keycloak/conf/cert/localhost.key
+      # **クライアント証明書（MTLS）を常に受け付ける**（request：求めるが、無くても通す。FAPI2 の par_mtls の tls_client_auth が使う）。
+      #   信頼するのは、テスト用のクライアント証明書（自己署名の CN=MPAS Test Client）だけ。KckCompose.ps1 が cert\ に写す
+      - --https-client-auth=request
+      - --truststore-paths=/opt/keycloak/conf/cert/mpas-test-client.pem
       # **issuer を https://localhost:44320/realms/sprp に固定する**（ホストから見た URL）
       - --hostname=https://localhost:44320
     environment:

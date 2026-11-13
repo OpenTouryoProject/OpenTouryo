@@ -19,6 +19,11 @@
       **この PC で信頼済みの証明書を使う**ので、サンプル（net48・net10.0）は、そのまま HTTPS で Keycloak を呼べる。
       cert\ は .gitignore の対象（秘密鍵を含む）。
 
+    ＜クライアント証明書（MTLS）＞
+      **常に受け付ける**（https-client-auth=request。求めるが、無くても通す）。FAPI2 の par_mtls（tls_client_auth）が使う。
+      **信頼するのは、テスト用のクライアント証明書（C:\root\files\resource\X509\SHA256RSAClientCert.cer。自己署名）だけ**で、Up のたびに cert\ に写す。
+      証明書を持たないクライアント（CLI など）は、そのまま通る。
+
     ＜状態は残らない＞
       **start-dev で動かし、Down でコンテナごと消す**（利用者・同意・セッションは、再起動で realm の定義に戻る）。
 
@@ -45,6 +50,7 @@
      日時        更新者            内容
      ----------  ----------------  -------------------------------------------------
      2026/11/13  玄人 幸道         新規（#690）
+     2026/11/13  玄人 幸道         クライアント証明書（MTLS）を常に受け付ける。信頼先の証明書を cert\ に写す（#690 ph2）
 #>
 [CmdletBinding()]
 param(
@@ -81,6 +87,15 @@ if ($Action -eq 'Up')
     {
         Write-Output "  証明書 : $pem"
     }
+
+    # **クライアント証明書（MTLS）の信頼先を写す**（テスト用の自己署名の証明書。FAPI2 の par_mtls。毎回写して、元と揃える）
+    $clientCer = 'C:\root\files\resource\X509\SHA256RSAClientCert.cer'
+    if (-not (Test-Path $clientCer))
+    {
+        throw "テスト用のクライアント証明書がありません : $clientCer（リソースを C:\root\files\resource に置く。root\Readme.ja.md）"
+    }
+    Copy-Item $clientCer (Join-Path $certDir 'mpas-test-client.pem') -Force
+    Write-Output "  MTLS : $clientCer を信頼する（https-client-auth=request）"
 }
 
 switch ($Action)

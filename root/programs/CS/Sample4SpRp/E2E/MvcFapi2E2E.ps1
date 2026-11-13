@@ -36,6 +36,14 @@
 
       **SQL Server は要らない。**
 
+    ＜IdP を Keycloak にする（-Idp KCK）＞
+      **ケースと対照は同じ**（MvcFapi1E2E.ps1 と同じく、SpRp_MVC の issuer・Discovery だけを環境変数で差し替える。Idp.ps1）。
+      **Keycloak は ..\container\KCK\KckCompose.ps1 で起動する**（クライアント証明書は常に受け付けるので、-Mtls もそのまま回せる）。
+      | 違い | Stub | KCK |
+      |---|---|---|
+      | ros | 回す | **回さない**（/ros は MPAS 独自。Keycloak の Discovery に request_object_endpoint が無い） |
+      | par_mtls | StubCompose.ps1 -Mtls で起動したとき | 常に（Keycloak を https-client-auth=request で起動している） |
+
     ＜ブラウザの代わり＞
       HttpClient（リダイレクトは自分で辿る。Cookie の入れ物は 1 つ。部品は MvcFapi1E2E.ps1 と同じ作り）。
       **1 件ごとに入れ物を作り直す**（アプリのセッション = state などを、前の件から持ち越さない）。
@@ -49,13 +57,16 @@
 .PARAMETER Mtls
     par_mtls（tls_client_auth）のケースも回す。**スタブを StubCompose.ps1 -Mtls で起動しておく。**
 
+.PARAMETER Idp
+    Stub（MPAS のスタブ。既定）/ KCK（Keycloak。..\container\KCK）
+
 .PARAMETER MpasRoot
     MultiPurposeAuthSite のリポジトリの場所。**省けば、環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**
-    （root\files\tools\PowerShell\RepoPaths\RepoPath.ps1。#652）。どれを使ったかを表示する。
+    （root\files\tools\PowerShell\RepoPaths\RepoPath.ps1。#652）。どれを使ったかを表示する。-Idp KCK では使わない。
 
 .PARAMETER StubAppSettings
     スタブの土台にした appsettings.json（テスト利用者のパスワード TestUserPWD を読む）。
-    省けば MPAS の既定（MpasRoot\root\programs\MultiPurposeAuthSiteCore\MultiPurposeAuthSiteCore\appsettings.json）。
+    省けば MPAS の既定（MpasRoot\root\programs\MultiPurposeAuthSiteCore\MultiPurposeAuthSiteCore\appsettings.json）。-Idp KCK では使わない。
 
 .PARAMETER OutputDir
     アプリのログを置く場所
@@ -65,6 +76,9 @@
 
 .EXAMPLE
     .\MvcFapi2E2E.ps1 -Only "par" -SkipControl
+
+.EXAMPLE
+    .\MvcFapi2E2E.ps1 -Idp KCK -Mtls
 
 .NOTES
     終了コード : 0 = すべて OK、1 = NG あり、2 = 前提が足りない
@@ -76,6 +90,7 @@
      2026/11/09  玄人 幸道         新規（#668 の追加。MvcFapi1E2E.ps1 と同じ作り）
      2026/11/10  玄人 幸道         -Mtls（par_mtls のケース）を足した（MultiPurposeAuthSite#351）
      2026/11/13  玄人 幸道         RepoPath.ps1・SummaryTable.ps1 を root/files/tools/PowerShell の下（RepoPaths・Verify）から読む（#687）
+     2026/11/13  玄人 幸道         -Idp KCK（Keycloak）を足した。IdP の違いは Idp.ps1 にまとめた（#690）
 #>
 [CmdletBinding()]
 param(
@@ -84,6 +99,9 @@ param(
     [switch] $SkipControl,
 
     [switch] $Mtls,
+
+    [ValidateSet('Stub', 'KCK')]
+    [string] $Idp = 'Stub',
 
     [string] $MpasRoot = '',
 
@@ -111,8 +129,11 @@ New-Item -ItemType Directory -Force $OutputDir | Out-Null
 [Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 Add-Type -AssemblyName System.Net.Http
 
-$stubBase = 'https://localhost:44310'
-$testUser = 'tanaka@example.com'
+# **IdP の違い（URL・画面・サンプルの設定の差し替え）は Idp.ps1 にまとめてある**
+. (Join-Path $here 'Idp.ps1')
+$idpInfo = Get-E2EIdp $Idp $here
+$stubBase = $idpInfo.Base   # IdP の画面の URL の頭（KCK でも、この名前のまま使う）
+$testUser = $idpInfo.User
 
 $appPort = 44336
 $appBase = "https://localhost:$appPort"
@@ -157,6 +178,10 @@ foreach ($c in $cases)
     $c.Name = $c.Flow + ' / ' + $(if ($c.Mode) { $c.Mode } else { 'query' })
     $c.Kind = if ($c.Tamper -eq 'None') { '正常' } else { '対照（' + $c.Tamper + '）' }
 }
+
+# **/ros は MPAS 独自**（Keycloak の Discovery に request_object_endpoint が無い）。Keycloak では回さない
+$skippedRos = ($Idp -eq 'KCK' -and @($cases | Where-Object { $_.Flow -eq 'ros' }).Count -gt 0)
+if ($Idp -eq 'KCK') { $cases = @($cases | Where-Object { $_.Flow -ne 'ros' }) }
 
 if ($SkipControl) { $cases = @($cases | Where-Object { $_.Tamper -eq 'None' }) }
 if ($Only)
@@ -249,7 +274,18 @@ function Invoke-UntilCallback($client, $res, [string]$password)
             return @{ Error = "スタブで止まった（$($res.Status) $(($res.Url -split '\?')[0])）" }
         }
 
-        if ($res.Body -match 'id="LoginForm"')
+        if ($Idp -eq 'KCK')
+        {
+            # **Keycloak の画面**（ログイン・同意。Idp.ps1）。それ以外の画面は、エラー画面として止める
+            $post = Get-KckFormPost $res $testUser $password 'accept'
+            if (-not $post)
+            {
+                $msg = [regex]::Match($res.Body, 'class="[^"]*kc-feedback-text[^"]*"[^>]*>([^<]*)<')
+                return @{ Error = "Keycloak のエラー画面（$(($res.Url -split '\?')[0])。$($msg.Groups[1].Value.Trim())）" }
+            }
+            $res = Send-Http $client 'POST' $post.Url $post.Form
+        }
+        elseif ($res.Body -match 'id="LoginForm"')
         {
             $res = Send-Http $client 'POST' "$stubBase/Account/Login" @{
                 ReturnUrl = (Get-Field $res.Body 'ReturnUrl')
@@ -368,11 +404,11 @@ function Invoke-Case($c, [string]$password)
     {
         $start = "$appBase/Fapi2/Start?flow=$($c.Flow)&responseMode=$([Uri]::EscapeDataString($c.Mode))"
         $r = Send-Http $client 'GET' $start $null
-        if ($r.Status -lt 300 -or $r.Status -ge 400 -or -not $r.Location.StartsWith("$stubBase/authorize"))
+        if ($r.Status -lt 300 -or $r.Status -ge 400 -or -not $r.Location.StartsWith($idpInfo.Authorize))
         {
             $m = [regex]::Match($r.Body, 'id="result" data-result="(OK|NG)">([^<]*)<')
             $why = if ($m.Success) { [System.Net.WebUtility]::HtmlDecode($m.Groups[2].Value) } else { "$($r.Status)" }
-            return "Start の後が $stubBase/authorize へのリダイレクトではない（$why）"
+            return "Start の後が $($idpInfo.Authorize) へのリダイレクトではない（$why）"
         }
 
         # **認可要求は client_id と request_uri だけ**（値は、預けた署名付きの Request Object の中にある。RFC 9126 §4）
@@ -447,17 +483,22 @@ Write-Output '=== 前提 ==='
 $lack = @()
 
 $probe = New-Browser
-$d = Send-Http $probe 'GET' "$stubBase/.well-known/openid-configuration" $null
+$d = Send-Http $probe 'GET' $idpInfo.Discovery $null
 $probe.Dispose()
-if ($d.Status -ne 200) { $lack += "MPAS のスタブが応答しません（$stubBase。..\container\Stub\StubCompose.ps1 で起動する）" }
+if ($d.Status -ne 200) { $lack += "$($idpInfo.Name) が応答しません（$($idpInfo.Discovery)。$($idpInfo.StartHint)）" }
 
 if (-not (Test-Path $appDll)) { $lack += "ビルドされていません : $appDll（CS\11_Build_SpRp_sample.bat）" }
 
 if (Test-PortInUse $appPort) { $lack += "ポート $appPort が使用中です（Visual Studio などで SpRp_MVC を動かしていないか）" }
 
 #   **テスト利用者のパスワードは、スタブの土台の appsettings.json の TestUserPWD**（MPAS の container\Stub\README.md 3 節）
+#   **Keycloak は、realm の定義（container\KCK\realm\sprp-realm.json）の値**
 $appSettings = $StubAppSettings
-if ([string]::IsNullOrEmpty($appSettings))
+if ($Idp -eq 'KCK')
+{
+    $appSettings = $idpInfo.RealmFile
+}
+elseif ([string]::IsNullOrEmpty($appSettings))
 {
     # **MPAS の場所は、引数 ＞ 環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**（#652）
     . (Join-Path $progRoot '..\files\tools\PowerShell\RepoPaths\RepoPath.ps1')
@@ -465,12 +506,16 @@ if ([string]::IsNullOrEmpty($appSettings))
     $appSettings = $(if ($MpasRoot) { Join-Path $MpasRoot 'root\programs\MultiPurposeAuthSiteCore\MultiPurposeAuthSiteCore\appsettings.json' } else { '' })
 }
 $password = $null
-if ($appSettings -and (Test-Path $appSettings))
+if ($Idp -eq 'KCK')
+{
+    $password = Get-KckPassword $idpInfo 'tanaka'
+}
+elseif ($appSettings -and (Test-Path $appSettings))
 {
     $m = [regex]::Match([IO.File]::ReadAllText($appSettings), '"TestUserPWD"\s*:\s*"([^"]*)"')
     if ($m.Success) { $password = $m.Groups[1].Value }
 }
-if (-not $password) { $lack += "テスト利用者のパスワードを読めません（$appSettings の TestUserPWD。-MpasRoot か -StubAppSettings で場所を指定する）" }
+if (-not $password) { $lack += "テスト利用者のパスワードを読めません（$appSettings。-Idp Stub なら TestUserPWD。-MpasRoot か -StubAppSettings で場所を指定する）" }
 
 if ($cases.Count -eq 0) { $lack += 'ケースがありません（-Only を確かめる）' }
 
@@ -479,8 +524,13 @@ if ($lack.Count -gt 0)
     foreach ($l in $lack) { Write-Output "  NG  $l" }
     exit 2
 }
-Write-Output '  OK  スタブ・ビルド・ポート・テスト利用者'
-if (-not $Mtls) { Write-Output '  --  par_mtls（tls_client_auth）は回さない（-Mtls を付け、スタブを StubCompose.ps1 -Mtls で起動したときだけ）' }
+Write-Output "  OK  $($idpInfo.Name)（$($idpInfo.Issuer)）・ビルド・ポート・テスト利用者"
+if (-not $Mtls)
+{
+    $hint = if ($Idp -eq 'KCK') { '-Mtls を付けたときだけ。Keycloak は常に証明書を受け付ける' } else { '-Mtls を付け、スタブを StubCompose.ps1 -Mtls で起動したときだけ' }
+    Write-Output "  --  par_mtls（tls_client_auth）は回さない（$hint）"
+}
+if ($skippedRos) { Write-Output '  --  ros は回さない（/ros は MPAS 独自。Keycloak の Discovery に request_object_endpoint が無い）' }
 
 # ------------------------------------------------------------------
 # 実行
@@ -493,9 +543,19 @@ try
 {
     # **コンテンツ ルートを合わせるため、出力フォルダを作業ディレクトリにする**（appsettings.json の Kestrel の節で 44336 を待ち受ける）
     $dllFull = (Resolve-Path $appDll).Path
-    $proc = Start-Process 'dotnet' -ArgumentList "`"$dllFull`"" `
-        -PassThru -WindowStyle Hidden -WorkingDirectory (Split-Path $dllFull) `
-        -RedirectStandardOutput $log -RedirectStandardError "$log.err"
+
+    # **IdP がスタブでなければ、issuer・Discovery を環境変数で差し替える**（MvcFapi1E2E.ps1 と同じ。起動したら、このプロセスからは消す）
+    foreach ($k in $idpInfo.Config.Keys) { [Environment]::SetEnvironmentVariable("appSettings__$k", $idpInfo.Config[$k]) }
+    try
+    {
+        $proc = Start-Process 'dotnet' -ArgumentList "`"$dllFull`"" `
+            -PassThru -WindowStyle Hidden -WorkingDirectory (Split-Path $dllFull) `
+            -RedirectStandardOutput $log -RedirectStandardError "$log.err"
+    }
+    finally
+    {
+        foreach ($k in $idpInfo.Config.Keys) { [Environment]::SetEnvironmentVariable("appSettings__$k", $null) }
+    }
 
     $up = $false
     $probe = New-Browser

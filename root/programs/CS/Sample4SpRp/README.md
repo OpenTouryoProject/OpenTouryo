@@ -225,6 +225,7 @@ cd root\programs\CS\Sample4SpRp\container\KCK
 cd ..\..\E2E
 .\CliLoginE2E.ps1 -Idp KCK         # device・pkce・cc・ropc（jwtbearer は回さない。下記）
 .\MvcFapi1E2E.ps1 -Idp KCK         # FAPI 1.0（13 件）
+.\MvcFapi2E2E.ps1 -Idp KCK -Mtls   # FAPI 2.0（par 7 件 ＋ par_mtls 3 件。ros は回さない。下記）
 ```
 
 | 値 | 内容 |
@@ -232,6 +233,7 @@ cd ..\..\E2E
 | 版 | `quay.io/keycloak/keycloak:26.8.1`（**固定**。`docker-compose.yml`）。`start-dev`、メモリは 1 GiB まで（起動して約 600 MiB） |
 | issuer | `https://localhost:44320/realms/sprp`（Discovery は `…/.well-known/openid-configuration`） |
 | 証明書 | **ASP.NET Core の開発用証明書**（`dotnet dev-certs https`）を `cert\` に書き出して使う（この PC で信頼済み。`cert\` は `.gitignore` の対象） |
+| クライアント証明書（MTLS） | **常に受け付ける**（`https-client-auth=request`。求めるが、無くても通す）。信頼するのは、テスト用の `SHA256RSAClientCert.cer`（自己署名の `CN=MPAS Test Client`）だけ |
 | 利用者・クライアント | [`realm/sprp-realm.json`](container/KCK/realm/sprp-realm.json)。**クライアントは、スタブと同じ client_id・戻り先・秘密・公開鍵**で登録してある |
 | テスト利用者 | `tanaka`（`tanaka@example.com`）と、**Device の拒否に使う `deny_tanaka`**。パスワードは realm の定義（**テスト専用**） |
 | 管理コンソール | `https://localhost:44320/admin/`（`admin` / `admin`。**テスト専用**） |
@@ -253,10 +255,14 @@ cd ..\..\E2E
 | ropc の対照の理由 | `access_denied` | **`invalid_grant`**（同上） |
 | `jwtbearer` | 回す | **回さない**（Keycloak に、JWT Bearer の認可グラント（RFC 7523 §2.1）が無い。クライアント認証の `private_key_jwt` はある） |
 | `Device_Client` の PKCE | — | **強制しない**（Keycloak は、PKCE を強制したクライアントには、Device の要求にも `code_challenge` を求める。`pkce` は S256 を付けて送る） |
+| FAPI2 の `ros` | 回す | **回さない**（`/ros` は MPAS 独自。Keycloak の Discovery に `request_object_endpoint` が無い） |
+| FAPI2 の `par_mtls` | `StubCompose.ps1 -Mtls` で起動したとき | **常に**（`-Mtls` を付けるだけ）。登録は `client-x509`（Subject DN と発行者の DN を照合） |
+| FAPI2 の id_token | 暗号化（JWE。RSA-OAEP・A256GCM） | **同じく暗号化させる**（同じ公開鍵を `use=enc` でも登録した）。PAR は必須にしてある |
+| FAPI2 の IdP の対照（Reuse・ClientId） | スタブのエラー画面 | Keycloak の「Invalid Request」（400）。理由はサーバのログ（`PAR not found, not issued or used multiple times`・`PAR was issued for a different client`） |
 
 - **MPAS のスタブとは、ポート（44320）もプロジェクト名（`sprp-kck`）も分けてあるが、同時には起動しない**（メモリ。`TESTING.md` の冒頭）
 - **realm を変えたら、`-Action Down` してから起動し直す**（取り込みは、realm が無いときだけ行われる）
-- **まだ Keycloak で通していないもの**：FAPI 2.0（2.4 節）・外部ログイン（2.1 節。OIDC・SAML2）
+- **まだ Keycloak で通していないもの**：外部ログイン（2.1 節。OIDC・SAML2）
 
 ## 3. 設定（サンプルと IdP で揃える値）
 

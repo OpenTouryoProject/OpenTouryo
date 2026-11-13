@@ -106,6 +106,64 @@
         "pkce.code.challenge.method": "S256",
         "authorization.signed.response.alg": "RS256"
       }
+    },
+    {
+      "clientId": "0cb517873cca4afd86098316373eaffc",
+      "name": "SpRp_MVC_FAPI2",
+      "description": "SpRp_MVC FAPI2 par (PAR required, signed request object, private_key_jwt + PKCE S256, JARM, id_token JWE).",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-jwt",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "consentRequired": false,
+      "redirectUris": [ "https://localhost:44336/Fapi2/Callback" ],
+      "webOrigins": [],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "require.pushed.authorization.requests": "true",
+        "request.object.signature.alg": "RS256",
+        "token.endpoint.auth.signing.alg": "RS256",
+        "authorization.signed.response.alg": "RS256",
+        "id.token.encrypted.response.alg": "RSA-OAEP",
+        "id.token.encrypted.response.enc": "A256GCM",
+        "use.jwks.url": "false",
+        "use.jwks.string": "true",
+        "jwks.string": "{\"keys\":[{\"kty\":\"RSA\",\"alg\":\"RS256\",\"use\":\"sig\",\"n\":\"rmLnq3chsnu8k11V_acJ9EAxcHU8w6B74LmNm0WFVEQWXm9t8m6QSfdBTzej-1zEbezZYNYSsJFCgo7Yn-N1WcADSMgy6XhYbT8nbbpQ79TmkI_uiSUvKrrxRiSm2IT9RwZ7V7ftUebmB9bbC0OODZ_TbL0ZUhMlWNq0nAn0pbqebZ2Jl1XtLDTq9UrylAueRguvzE72z5BXwU18KO2yjyu4AJJH9OZ-SfRKGyYpSrw8GjDXL6nNnp5MOfNMoy1xUeHkLV_2ZUH-2KXWxBVrPmXEX3Vmyp7eVIakWfkk3ixn5sfCfLrzFHFj_21e_teOVQTeXQIQqJq7AZCGu6iqQQ\",\"e\":\"AQAB\",\"kid\":\"EsH_qKo5ycKyU6slnhEYFCvkdaYtVQxcJlo_ZZsuIBw\"},{\"kty\":\"RSA\",\"alg\":\"RSA-OAEP\",\"use\":\"enc\",\"n\":\"rmLnq3chsnu8k11V_acJ9EAxcHU8w6B74LmNm0WFVEQWXm9t8m6QSfdBTzej-1zEbezZYNYSsJFCgo7Yn-N1WcADSMgy6XhYbT8nbbpQ79TmkI_uiSUvKrrxRiSm2IT9RwZ7V7ftUebmB9bbC0OODZ_TbL0ZUhMlWNq0nAn0pbqebZ2Jl1XtLDTq9UrylAueRguvzE72z5BXwU18KO2yjyu4AJJH9OZ-SfRKGyYpSrw8GjDXL6nNnp5MOfNMoy1xUeHkLV_2ZUH-2KXWxBVrPmXEX3Vmyp7eVIakWfkk3ixn5sfCfLrzFHFj_21e_teOVQTeXQIQqJq7AZCGu6iqQQ\",\"e\":\"AQAB\",\"kid\":\"EsH_qKo5ycKyU6slnhEYFCvkdaYtVQxcJlo_ZZsuIBw-enc\"}]}"
+      }
+    },
+    {
+      "clientId": "a5a72235cf4946b58927dbf42b0d94a5",
+      "name": "SpRp_MVC_FAPI2_MTLS",
+      "description": "SpRp_MVC FAPI2 par_mtls (PAR required, tls_client_auth by subject DN, signed request object, PKCE S256, JARM, id_token JWE).",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-x509",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "consentRequired": false,
+      "redirectUris": [ "https://localhost:44336/Fapi2/Callback" ],
+      "webOrigins": [],
+      "attributes": {
+        "x509.subjectdn": "CN=MPAS Test Client",
+        "x509.casubjectdn": "CN=MPAS Test Client",
+        "x509.allow.regex.pattern.comparison": "false",
+        "pkce.code.challenge.method": "S256",
+        "require.pushed.authorization.requests": "true",
+        "request.object.signature.alg": "RS256",
+        "authorization.signed.response.alg": "RS256",
+        "id.token.encrypted.response.alg": "RSA-OAEP",
+        "id.token.encrypted.response.enc": "A256GCM",
+        "use.jwks.url": "false",
+        "use.jwks.string": "true",
+        "jwks.string": "{\"keys\":[{\"kty\":\"RSA\",\"alg\":\"RS256\",\"use\":\"sig\",\"n\":\"rmLnq3chsnu8k11V_acJ9EAxcHU8w6B74LmNm0WFVEQWXm9t8m6QSfdBTzej-1zEbezZYNYSsJFCgo7Yn-N1WcADSMgy6XhYbT8nbbpQ79TmkI_uiSUvKrrxRiSm2IT9RwZ7V7ftUebmB9bbC0OODZ_TbL0ZUhMlWNq0nAn0pbqebZ2Jl1XtLDTq9UrylAueRguvzE72z5BXwU18KO2yjyu4AJJH9OZ-SfRKGyYpSrw8GjDXL6nNnp5MOfNMoy1xUeHkLV_2ZUH-2KXWxBVrPmXEX3Vmyp7eVIakWfkk3ixn5sfCfLrzFHFj_21e_teOVQTeXQIQqJq7AZCGu6iqQQ\",\"e\":\"AQAB\",\"kid\":\"EsH_qKo5ycKyU6slnhEYFCvkdaYtVQxcJlo_ZZsuIBw\"},{\"kty\":\"RSA\",\"alg\":\"RSA-OAEP\",\"use\":\"enc\",\"n\":\"rmLnq3chsnu8k11V_acJ9EAxcHU8w6B74LmNm0WFVEQWXm9t8m6QSfdBTzej-1zEbezZYNYSsJFCgo7Yn-N1WcADSMgy6XhYbT8nbbpQ79TmkI_uiSUvKrrxRiSm2IT9RwZ7V7ftUebmB9bbC0OODZ_TbL0ZUhMlWNq0nAn0pbqebZ2Jl1XtLDTq9UrylAueRguvzE72z5BXwU18KO2yjyu4AJJH9OZ-SfRKGyYpSrw8GjDXL6nNnp5MOfNMoy1xUeHkLV_2ZUH-2KXWxBVrPmXEX3Vmyp7eVIakWfkk3ixn5sfCfLrzFHFj_21e_teOVQTeXQIQqJq7AZCGu6iqQQ\",\"e\":\"AQAB\",\"kid\":\"EsH_qKo5ycKyU6slnhEYFCvkdaYtVQxcJlo_ZZsuIBw-enc\"}]}"
+      }
     }
   ]
 }
