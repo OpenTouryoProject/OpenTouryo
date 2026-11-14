@@ -162,6 +162,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         ///
         /// **署名した要求には、Destination に送り先の URL を入れなければならない**（SAML Bindings 3.4.5.2。#693）。
         /// 送り先は、相手のメタデータの SingleSignOnService の Location（SAML2Metadata.SsoRedirectLocation）。
+        ///
+        /// **この版を足したので、従来の鍵を受ける版に、鍵の null をリテラルで渡す呼び出しは、曖昧になる（CS0121）。**
+        /// 引数の数が同じで、7 番目の string（relayState）にも null が当てはまるため。鍵は型を付けて渡す（(DigitalSign)null など）。
         /// </remarks>
         public static string CreateRedirectRequest(
             SAML2Enum.RequestOrResponse createRoR,
@@ -193,6 +196,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// 相手（IdP）ごとに鍵を替える場合は、rsa を受けるオーバーロードを使う。
         ///
         /// **署名した要求には、Destination に送り先の URL を入れなければならない**（SAML Bindings 3.5.5.2。#693）。
+        ///
+        /// **この版を足したので、従来の鍵を受ける版に、鍵の null をリテラルで渡す呼び出しは、曖昧になる（CS0121）。**
+        /// 引数の数が同じで、6 番目の string（relayState）にも null が当てはまるため。鍵は型を付けて渡す（(RSA)null など）。
         /// </remarks>
         public static string CreatePostRequest(
             SAML2Enum.ProtocolBinding protocolBinding,

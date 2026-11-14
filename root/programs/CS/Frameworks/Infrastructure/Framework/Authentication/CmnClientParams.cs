@@ -167,6 +167,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// **空なら、従来どおり Audience を SpRp_Saml2AcsUri と照合する**（仕様と違うが、ACS の URL を Audience に入れる IdP と通るため。
         /// 汎用認証サイトがそうである）。
         /// 値は、要求（AuthnRequest）の Issuer に入れる値と同じにする。
+        /// **Audience が複数の応答（AudienceRestriction・Audience が 2 つ以上）は、設定によらず受けない**
+        /// （構造の確かめ SAML2Bindings.VerifyByXPath が Audience をちょうど 1 つに限るため。理由は SignatureInvalid になる）。
         /// </remarks>
         public static string SpRp_Saml2SpEntityId
         {

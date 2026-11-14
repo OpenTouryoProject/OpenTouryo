@@ -28,6 +28,7 @@
 //*  2026/10/22  玄人 幸道         NotOnOrAfter の比較・期限切れ・InResponseTo の食い違い・エラー応答・Recipient・SigAlg のテストを足した（カバレッジの拡充）
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //*  2026/11/05  玄人 幸道         SAML2Client.VerifyResponse の Obsolete の警告（CS0618）を抑えた
+//*  2026/11/14  玄人 幸道         Destination を入れる版（鍵を受けない版）のテストを足した（#693 のレビュー）
 //**********************************************************************************
 
 using System;
@@ -449,6 +450,55 @@ namespace TestFramework.Authentication
                 Assert.That(SAML2Client.VerifyResponse(null, PostResponse(SAML2Enum.StatusCode.Success, true),
                     out nameId, out iss, out aud, out inResponseTo, out recipient, out notOnOrAfter,
                     out statusCode, out nameIDFormat, out authnContextClassRef, out doc), Is.True);
+            }
+            finally
+            {
+                Touryo.Infrastructure.Public.Util.GetConfigParameter.InitConfiguration(
+                    new Microsoft.Extensions.Configuration.ConfigurationBuilder()
+                        .AddInMemoryCollection(new System.Collections.Generic.Dictionary<string, string>()).Build());
+            }
+        }
+
+        /// <summary>
+        /// Destination を入れる版（鍵を受けない版）も、設定の鍵で署名し、要求の Destination に送り先を入れる（#693）。
+        /// </summary>
+        [Test]
+        [Basis("SAML 2.0 Bindings 3.4.5.2（HTTP-Redirect。署名した要求の Destination には、送り先の URL を入れなければならない）")]
+        [Basis("SAML 2.0 Bindings 3.5.5.2（HTTP-POST。同上）")]
+        [Basis("設計：SAML2Client.CreateRedirectRequest・CreatePostRequest（Destination を入れる版・鍵を受けない版）の remarks（CmnClientParams の鍵を使う）")]
+        public void ConfigOverloads_Destination()
+        {
+            const string sso = "https://idp.example.com/sso";
+            System.Collections.Generic.Dictionary<string, string> values = new System.Collections.Generic.Dictionary<string, string>
+            {
+                { "appSettings:SpRp_RsaPfxFilePath", TestCertificates.RsaPfx },
+                { "appSettings:SpRp_RsaPfxPassword", TestCertificates.Password }
+            };
+
+            try
+            {
+                Touryo.Infrastructure.Public.Util.GetConfigParameter.InitConfiguration(
+                    new Microsoft.Extensions.Configuration.ConfigurationBuilder().AddInMemoryCollection(values).Build());
+
+                string id;
+                RSA pub = TestCertificates.RsaPublicKey();
+
+                string query = SAML2Client.CreateRedirectRequest(
+                    SAML2Enum.RequestOrResponse.Request, SAML2Enum.ProtocolBinding.HttpRedirect, SAML2Enum.NameIDFormat.Unspecified,
+                    "https://sp.example.com/", SAML2BindingsTests.Recipient, sso, "relay01", out id);
+                Assert.That(SAML2Bindings.VerifyRedirect(query, pub), Is.True);
+                XmlDocument redirect = new XmlDocument();
+                redirect.LoadXml(SAML2Bindings.DecodeRedirect(query));
+                Assert.That(redirect.DocumentElement.GetAttribute(SAML2Const.AttrDestination), Is.EqualTo(sso));
+
+                string encoded = SAML2Client.CreatePostRequest(
+                    SAML2Enum.ProtocolBinding.HttpPost, SAML2Enum.NameIDFormat.Unspecified,
+                    "https://sp.example.com/", SAML2BindingsTests.Recipient, sso, "relay01", out id);
+                string decoded = SAML2Bindings.DecodePost(encoded);
+                Assert.That(SAML2Bindings.VerifyPost(decoded, id, pub), Is.True);
+                XmlDocument posted = new XmlDocument();
+                posted.LoadXml(decoded);
+                Assert.That(posted.DocumentElement.GetAttribute(SAML2Const.AttrDestination), Is.EqualTo(sso));
             }
             finally
             {

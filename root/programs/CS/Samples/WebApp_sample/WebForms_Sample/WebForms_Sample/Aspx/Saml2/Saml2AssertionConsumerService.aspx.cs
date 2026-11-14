@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/11/04  玄人 幸道         新規作成（#649）
+//*  2026/11/14  玄人 幸道         Audience を SP の entityID（SpRp_Saml2SpEntityId）と照合する版に替えた（空なら従来どおり ACS の URL。#693）
 //**********************************************************************************
 
 using System;
@@ -75,10 +76,11 @@ namespace WebForms_Sample.Aspx.Saml2
             SAML2Metadata metadata = await SAML2Metadata.GetAsync();
             List<RSA> keys = (metadata == null) ? new List<RSA>() : metadata.GetSigningKeys();
 
+            // **Audience は、自分（SP）の entityID（SpRp_Saml2SpEntityId）と照合する**（SAML Profiles 4.1.4.2。空なら、従来どおり ACS の URL と。#693）
             SAML2VerifyResult result = SAML2Client.VerifyResponseWithReason(
                 queryString, null, keys,
-                CmnClientParams.SpRp_Saml2EntityId, CmnClientParams.SpRp_Saml2AcsUri,
-                expectedRequestId, Request.QueryString["RelayState"], expectedRelayState);
+                CmnClientParams.SpRp_Saml2EntityId, CmnClientParams.SpRp_Saml2SpEntityId, CmnClientParams.SpRp_Saml2AcsUri,
+                expectedRequestId, Request.QueryString["RelayState"], expectedRelayState, null);
 
             //  **識別子は NameID**（IdP の entityID と組で使う）。**Transient は受けない**（毎回変わる。SAML Core 8.3.8）。
             if (!result.IsValid

@@ -31,6 +31,8 @@
 //*  2026/11/14  玄人 幸道         Audience を SP の entityID と照合する版を追加し、設定を読む版は SpRp_Saml2SpEntityId が在ればそれを使う。
 //*                                Audience は、すべての AudienceRestriction に entityID が在ることを見る（SAML Profiles 4.1.4.2・Core 2.5.1.4）。
 //*                                entityID を与えなければ、従来どおり Audience を ACS URL と照合する（振る舞いは変えていない。#693）
+//*  2026/11/14  玄人 幸道         entityID との照合を、Audience の 1 つとの比較にした（構造の確かめが Audience を 1 つに限るので、
+//*                                すべての AudienceRestriction を見る照合は届かなかった。#693 のレビュー）
 //**********************************************************************************
 
 using System;
@@ -146,8 +148,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// 自由に利用できる（#693）。判定は、expectedSpEntityId を受けない版と同じで、Audience の照合だけが違う。
         ///
         /// - **Audience には、SP の一意の識別子（entityID）が入る**（SAML Profiles 4.1.4.2）。
-        ///   **AudienceRestriction も Audience も複数あり得るので、すべての AudienceRestriction に entityID が在ることを見る**（SAML Core 2.5.1.4）。
-        ///   AudienceRestriction が 1 つも無ければ、一致しないものとする（bearer の確認を持つ assertion には要る。Profiles 4.1.4.2）
+        ///   **Audience と entityID を、完全一致で比べる**（大文字・小文字を区別する。SAML Core 1.3.1 の文字列の比較に合わせる）。
+        ///   **構造の確かめ（SAML2Bindings.VerifyByXPath）が Audience をちょうど 1 つに限るので、その 1 つと比べる。**
+        ///   仕様は AudienceRestriction も Audience も複数を許す（SAML Core 2.5.1.4）。複数を受けるように広げるなら、
+        ///   すべての AudienceRestriction に entityID が在ることを見る照合に替える（SAML2Bindings.GetAudiencesInAssertion で読める）
         /// - expectedSpEntityId が null・空なら、従来どおり（最初の Audience を expectedAcsUrl と照合する）。
         ///   ACS URL を Audience に入れる IdP（汎用認証サイト）と通るため
         /// - sigAlgs は省略できない（null を渡せば既定）。省略できる引数にすると、従来の版の呼び出しと区別できなくなるため
@@ -355,9 +359,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             if (!string.IsNullOrEmpty(expectedSpEntityId))
             {
-                // **SP の entityID と照合する**（すべての AudienceRestriction に在ること。#693）
-                ret.AudienceMatched = SAML2Client.ContainsAudience(
-                    SAML2Bindings.GetAudiencesInAssertion(samlResponse2, samlNsMgr), expectedSpEntityId);
+                // **SP の entityID と照合する**（#693）。
+                //   構造の確かめ（VerifyByXPath）が Audience をちょうど 1 つに限っているので、その 1 つと比べれば足りる。
+                //   構造の確かめを広げて複数を受けるなら、ここも「すべての AudienceRestriction に在ること」の照合に替える（SAML Core 2.5.1.4）
+                ret.AudienceMatched = (ret.Audience == expectedSpEntityId);
             }
             else if (!string.IsNullOrEmpty(expectedAcsUrl))
             {
@@ -386,7 +391,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 return SAML2Client.SetReason(ret, SAML2VerifyResult.Reasons.AudienceMismatch,
                     string.IsNullOrEmpty(expectedSpEntityId)
                         ? "The Audience does not match the ACS URL."
-                        : "The AudienceRestriction does not contain the SP entityID.");
+                        : "The Audience does not match the SP entityID.");
             }
 
             if (ret.RecipientMatched == false)
@@ -417,35 +422,6 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #endregion
 
         #region private
-
-        /// <summary>すべての AudienceRestriction に、期待する Audience が在るか</summary>
-        /// <param name="restrictions">AudienceRestriction ごとの Audience の並び（SAML2Bindings.GetAudiencesInAssertion）</param>
-        /// <param name="expected">期待する Audience（SP の entityID）</param>
-        /// <returns>在れば true。AudienceRestriction が 1 つも無ければ false</returns>
-        /// <remarks>
-        /// 条件（Conditions）は、すべてを満たして初めて有効（SAML Core 2.5.1.4：AudienceRestriction が複数なら、
-        /// それぞれに自分が居なければならない。1 つの AudienceRestriction の中では、どれか 1 つの Audience でよい）。
-        /// 比較は完全一致（大文字・小文字を区別する。SAML Core 1.3.1 の文字列の比較に合わせる）。
-        /// 前後の空白は、読むときに除いてある（Audience は xs:anyURI（Core 1.3.2）で、スキーマの whiteSpace が collapse のため。
-        /// GetAudienceInAssertion と同じ）。
-        /// </remarks>
-        private static bool ContainsAudience(List<List<string>> restrictions, string expected)
-        {
-            if (restrictions == null || restrictions.Count == 0)
-            {
-                return false;
-            }
-
-            foreach (List<string> audiences in restrictions)
-            {
-                if (audiences == null || !audiences.Contains(expected))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
 
         /// <summary>理由を設定する</summary>
         /// <param name="ret">SAML2VerifyResult</param>

@@ -66,7 +66,7 @@
     {
       "clientId": "http://f53469c17c5a432f86ce563b7805ab89",
       "name": "MVC_Sample (SAML2)",
-      "description": "MVC_Sample external login (SAML2 SP). Issuer is http:// + client_id. Not run on KCK yet: the SP sends no Destination and checks Audience against the ACS URL (#693).",
+      "description": "MVC_Sample external login (SAML2 SP). Issuer is http:// + client_id. Run on KCK since #693 (Destination in the request, Audience = SP entityID).",
       "enabled": true,
       "protocol": "saml",
       "frontchannelLogout": true,
@@ -78,7 +78,8 @@
         "saml.signature.algorithm": "RSA_SHA256",
         "saml.client.signature": "true",
         "saml.signing.certificate": "MIICljCCAX4CCQC1XAfk7CceaDANBgkqhkiG9w0BAQsFADAMMQowCAYDVQQDDAF4MCAXDTE4MTEwNzA1NTYyOVoYDzMwMTgwMzEwMDU1NjI5WjAMMQowCAYDVQQDDAF4MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArmLnq3chsnu8k11V/acJ9EAxcHU8w6B74LmNm0WFVEQWXm9t8m6QSfdBTzej+1zEbezZYNYSsJFCgo7Yn+N1WcADSMgy6XhYbT8nbbpQ79TmkI/uiSUvKrrxRiSm2IT9RwZ7V7ftUebmB9bbC0OODZ/TbL0ZUhMlWNq0nAn0pbqebZ2Jl1XtLDTq9UrylAueRguvzE72z5BXwU18KO2yjyu4AJJH9OZ+SfRKGyYpSrw8GjDXL6nNnp5MOfNMoy1xUeHkLV/2ZUH+2KXWxBVrPmXEX3Vmyp7eVIakWfkk3ixn5sfCfLrzFHFj/21e/teOVQTeXQIQqJq7AZCGu6iqQQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQB0pwxYX6CZl7z8vtgyGDoEFh8ngR2vD9+BVBqLQg+5lbE5fJmW8IIFAf6q16fz45oeN1AcyNiIcZOuvwa/yUxMmyDc4qVpmeTsOVJCyTysZte9NMx3JMRnUE+VLS/K4/TsiChsjkVC11ibAeX/eWKPPVI7CH2a5C8UaHBGCu7fUdUAFINj0KFAtBDRwe54mOuEm539jzhi1MBuosdAHIF4SD9B9PFGkVS9Iagzw75eNS/9wP1ZQs1+1n46k1s44d4poEHwx5tsy7ZiH9RZfM8SwUPxLW5BnaJI2FEO4i0lfjRhmAcOrQwcRbLcfv1lG6wXIKNQ4fQTKoY0zQYsYsRd",
-        "saml_name_id_format": "persistent"
+        "saml_name_id_format": "persistent",
+        "saml.authnstatement": "true"
       },
       "protocolMappers": [
         {
@@ -92,7 +93,7 @@
     {
       "clientId": "http://b6b393fe861b430eb4ee061006826b03",
       "name": "WebForms_Sample (SAML2)",
-      "description": "WebForms_Sample external login (SAML2 SP). Issuer is http:// + client_id. Not run on KCK yet: the SP sends no Destination and checks Audience against the ACS URL (#693).",
+      "description": "WebForms_Sample external login (SAML2 SP). Issuer is http:// + client_id. Run on KCK since #693 (Destination in the request, Audience = SP entityID).",
       "enabled": true,
       "protocol": "saml",
       "frontchannelLogout": true,
@@ -104,7 +105,8 @@
         "saml.signature.algorithm": "RSA_SHA256",
         "saml.client.signature": "true",
         "saml.signing.certificate": "MIICljCCAX4CCQC1XAfk7CceaDANBgkqhkiG9w0BAQsFADAMMQowCAYDVQQDDAF4MCAXDTE4MTEwNzA1NTYyOVoYDzMwMTgwMzEwMDU1NjI5WjAMMQowCAYDVQQDDAF4MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArmLnq3chsnu8k11V/acJ9EAxcHU8w6B74LmNm0WFVEQWXm9t8m6QSfdBTzej+1zEbezZYNYSsJFCgo7Yn+N1WcADSMgy6XhYbT8nbbpQ79TmkI/uiSUvKrrxRiSm2IT9RwZ7V7ftUebmB9bbC0OODZ/TbL0ZUhMlWNq0nAn0pbqebZ2Jl1XtLDTq9UrylAueRguvzE72z5BXwU18KO2yjyu4AJJH9OZ+SfRKGyYpSrw8GjDXL6nNnp5MOfNMoy1xUeHkLV/2ZUH+2KXWxBVrPmXEX3Vmyp7eVIakWfkk3ixn5sfCfLrzFHFj/21e/teOVQTeXQIQqJq7AZCGu6iqQQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQB0pwxYX6CZl7z8vtgyGDoEFh8ngR2vD9+BVBqLQg+5lbE5fJmW8IIFAf6q16fz45oeN1AcyNiIcZOuvwa/yUxMmyDc4qVpmeTsOVJCyTysZte9NMx3JMRnUE+VLS/K4/TsiChsjkVC11ibAeX/eWKPPVI7CH2a5C8UaHBGCu7fUdUAFINj0KFAtBDRwe54mOuEm539jzhi1MBuosdAHIF4SD9B9PFGkVS9Iagzw75eNS/9wP1ZQs1+1n46k1s44d4poEHwx5tsy7ZiH9RZfM8SwUPxLW5BnaJI2FEO4i0lfjRhmAcOrQwcRbLcfv1lG6wXIKNQ4fQTKoY0zQYsYsRd",
-        "saml_name_id_format": "persistent"
+        "saml_name_id_format": "persistent",
+        "saml.authnstatement": "true"
       },
       "protocolMappers": [
         {

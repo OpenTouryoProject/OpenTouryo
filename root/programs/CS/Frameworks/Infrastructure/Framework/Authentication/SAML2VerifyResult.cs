@@ -117,7 +117,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>
         /// Audience が自分と一致したか（期待値が無ければ null。SAML Core 2.5.1.4）。
-        /// SP の entityID を与えたら、すべての AudienceRestriction に在るか。与えなければ、最初の Audience が ACS URL と同じか（#693）
+        /// SP の entityID を与えたら、Audience がそれと同じか。与えなければ、Audience が ACS URL と同じか（#693）
         /// </summary>
         public bool? AudienceMatched { get; internal set; }
 

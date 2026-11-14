@@ -21,6 +21,7 @@
 //*  2026/11/04  玄人 幸道         SAML2 の外部ログインを追加した（Redirect Binding。NameID は Persistent、表示名は mail 属性。#649）
 //*  2026/11/04  玄人 幸道         並びを統一し、Region でまとめた（定数・プロパティ・画面・OIDC・SAML2・共通。net48 版と同じ。#649）
 //*  2026/11/06  玄人 幸道         コメントの設定キーを、改名後の SpRp_Issuer にした（#666）
+//*  2026/11/14  玄人 幸道         SAML2 の要求に送り先（Destination）を入れる版と、Audience を SP の entityID（SpRp_Saml2SpEntityId）と照合する版に替えた（#693）
 //**********************************************************************************
 
 using MVC_Sample.Models.ViewModels;
@@ -410,12 +411,13 @@ namespace MVC_Sample.Controllers
             // **RelayState と要求の ID を控え、応答と照合する**（CSRF・応答の差し替え）
             string relayState = GetPassword.Base64UrlSecret(32);
             string id = "";
+            // **送り先（Destination）は、メタデータの SSO の口**（署名した要求には要る。SAML Bindings 3.4.5.2。#693）
             string queryString = SAML2Client.CreateRedirectRequest(
                 SAML2Enum.RequestOrResponse.Request,
                 SAML2Enum.ProtocolBinding.HttpRedirect,
                 SAML2Enum.NameIDFormat.Persistent,
                 "http://" + OAuth2AndOIDCParams.ClientID,
-                CmnClientParams.SpRp_Saml2AcsUri, relayState, out id);
+                CmnClientParams.SpRp_Saml2AcsUri, metadata.SsoRedirectLocation, relayState, out id);
 
             Session[HomeController.SessionKeySaml2RelayState] = relayState;
             Session[HomeController.SessionKeySaml2RequestId] = id;
@@ -458,10 +460,11 @@ namespace MVC_Sample.Controllers
             SAML2Metadata metadata = await SAML2Metadata.GetAsync();
             List<RSA> keys = (metadata == null) ? new List<RSA>() : metadata.GetSigningKeys();
 
+            // **Audience は、自分（SP）の entityID（SpRp_Saml2SpEntityId）と照合する**（SAML Profiles 4.1.4.2。空なら、従来どおり ACS の URL と。#693）
             SAML2VerifyResult result = SAML2Client.VerifyResponseWithReason(
                 queryString, null, keys,
-                CmnClientParams.SpRp_Saml2EntityId, CmnClientParams.SpRp_Saml2AcsUri,
-                expectedRequestId, Request.QueryString["RelayState"], expectedRelayState);
+                CmnClientParams.SpRp_Saml2EntityId, CmnClientParams.SpRp_Saml2SpEntityId, CmnClientParams.SpRp_Saml2AcsUri,
+                expectedRequestId, Request.QueryString["RelayState"], expectedRelayState, null);
 
             //  **識別子は NameID**（IdP の entityID と組で使う）。**Transient は受けない**（毎回変わる。SAML Core 8.3.8）。
             if (!result.IsValid

@@ -42,6 +42,8 @@
 //*                                形の壊れた入力を、例外にせず false にした（#654 のレビューの指摘 1・5）
 //*  2026/11/06  玄人 幸道         期待する iss・aud を受ける Verify に、検証鍵（JWS）を受けて署名の alg を選べるオーバーロードを追加（#664）
 //*  2026/11/06  玄人 幸道         remarks に、登録どおりの鍵の型だけを渡すことを書いた（#664 のレビューの指摘 2）
+//*  2026/11/14  玄人 幸道         aud を唯一の値に限る根拠を、改訂案（draft-ietf-oauth-rfc7523bis）から、発行された RFC 10070 4 に書き換えた。
+//*                                振る舞いは変えていない（issuer を含む、要素 2 つ以上の配列の aud は、唯一の値ではないので受けない。#697）
 //**********************************************************************************
 
 using System;
@@ -370,8 +372,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="jwtAssertion">string</param>
         /// <param name="iss">期待する iss（client_id）</param>
         /// <param name="auds">
-        /// 期待する aud の集合。**認可サーバの issuer だけを渡すのを推奨する**（draft-ietf-oauth-rfc7523bis 4）。
-        /// トークン エンドポイントの URL などを並べるのは、それを aud にする旧いクライアントとの互換のためだけにする。
+        /// 期待する aud の集合。**認可サーバの issuer だけを渡すのを推奨する**（RFC 10070 4）。
+        /// トークン エンドポイントの URL などを並べるのは、それを aud にする旧いクライアントとの互換（RFC 10070 6）か、
+        /// 認可グラントに使うとき（issuer かトークン エンドポイントの URL。RFC 10070 4）のためだけにする。
         /// JWT の aud が唯一の値で、それがこのいずれかと一致すれば通す
         /// </param>
         /// <param name="sub">out string（JWT の sub）</param>
@@ -427,13 +430,17 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// |---|---|
         /// | iss | 期待する値と一致する（1） |
         /// | sub | 在る（2）。**client_id と一致するかは見ない**（クライアント認証なら client_id、認可グラントなら利用者。2 の A・B）。**クライアント認証に使うなら、out sub が iss と一致することを、呼び出し側で必ず照合する**（照合しないと、別の sub の JWT が通る） |
-        /// | aud | **唯一の値**（文字列か、要素 1 つの配列）で、それが期待する値のいずれかと一致する（3。draft-ietf-oauth-rfc7523bis 4） |
+        /// | aud | **唯一の値**（文字列か、要素 1 つの配列）で、それが期待する値のいずれかと一致する（3。RFC 10070 4 で置き換えられた 3） |
         /// | exp | 在り、過ぎていない（4） |
         /// | nbf | 在れば、その時刻以後である（5） |
         ///
         /// - **aud は唯一の値に限る。** ほかの値も並べた aud（例：issuer とトークン エンドポイントの URL）は断る。
-        ///   RFC 7523 3 の 3 は、自分を含めば受けるが、別の用途の JWT を流用される攻撃（audience injection）があるため、
-        ///   改訂案（draft-ietf-oauth-rfc7523bis 4）は issuer を唯一の値とすることを求めている。**auds にも issuer だけを渡すのを推奨する**
+        ///   RFC 7523 3 の 3 は、自分を含めば受けるとしていたが、別の用途の JWT を流用される攻撃（audience injection）があるため、
+        ///   **RFC 10070（RFC 7523 を更新）の 4 がこの 3 を置き換え、クライアント認証の JWT は、issuer を唯一の audience としなければ断らなければならない（MUST）とした。**
+        ///   **要素 2 つ以上の配列の aud は、issuer を含んでも受けない**（唯一の値ではないため。#697）。
+        ///   要素 1 つの配列は、その値を唯一の値として受ける（RFC 10070 は配列の形に触れていない。この実装の判断）。**auds にも issuer だけを渡すのを推奨する**
+        ///   （クライアント認証では、トークン エンドポイントの URL を audience にしてはならない。RFC 10070 4）
+        /// - 認可グラント（JWT Bearer）の JWT は、RFC 10070 4 が配列を断ることを求めていないが、この版は用途を問わず唯一の値に限る
         /// - 比較は大文字・小文字を区別する完全一致で、**正規化しない**（末尾のスラッシュの有無も別物）
         /// - **時計のずれは許さない**（許容幅 0。IdToken などと同じ。#647）
         /// - **jti の使い回しは見ない**（7。MAY。状態を持つので、呼び出し側の台帳で行う）
@@ -511,7 +518,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="aud">aud のクレーム</param>
         /// <param name="auds">期待する aud の集合</param>
         /// <returns>文字列か、要素 1 つの配列で、その値が auds のいずれかと一致すれば true</returns>
-        /// <remarks>draft-ietf-oauth-rfc7523bis 4（issuer を唯一の値とする。audience injection の対策）。</remarks>
+        /// <remarks>RFC 10070 4（クライアント認証の JWT は、issuer を唯一の audience とする。audience injection の対策）。</remarks>
         private static bool IsSoleAud(JToken aud, string[] auds)
         {
             if (aud != null && aud.Type == JTokenType.Array)

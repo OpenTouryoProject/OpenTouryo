@@ -226,7 +226,7 @@ cd ..\..\E2E
 .\CliLoginE2E.ps1 -Idp KCK         # device・pkce・cc・ropc（jwtbearer は回さない。下記）
 .\MvcFapi1E2E.ps1 -Idp KCK         # FAPI 1.0（13 件）
 .\MvcFapi2E2E.ps1 -Idp KCK -Mtls   # FAPI 2.0（par 7 件 ＋ par_mtls 3 件。ros は回さない。下記）
-.\ExternalLoginE2E.ps1 -Idp KCK    # 外部ログイン（OIDC 5 件。SAML2 は回さない。下記）
+.\ExternalLoginE2E.ps1 -Idp KCK    # 外部ログイン（OIDC・SAML2 の 10 件）
 ```
 
 | 値 | 内容 |
@@ -263,7 +263,10 @@ cd ..\..\E2E
 | FAPI2 の `par_mtls` | `StubCompose.ps1 -Mtls` で起動したとき | **常に**（`-Mtls` を付けるだけ）。登録は `client-x509`（Subject DN と発行者の DN を照合） |
 | FAPI2 の id_token | 暗号化（JWE。RSA-OAEP・A256GCM） | **同じく暗号化させる**（同じ公開鍵を `use=enc` でも登録した）。PAR は必須にしてある |
 | FAPI2 の IdP の対照（Reuse・ClientId） | スタブのエラー画面 | Keycloak の「Invalid Request」（400）。理由はサーバのログ（`PAR not found, not issued or used multiple times`・`PAR was issued for a different client`） |
-| 外部ログインの SAML2 | 回す | **回さない**（部品の SAML2 が、仕様どおりの IdP と 2 か所で合わない。**#693**）。AuthnRequest に `Destination` が無い（Keycloak は `missing_required_destination` で断る。SAML 2.0 Bindings §3.4.5.2）。応答の Audience を ACS の URL と照合する（Keycloak は SP の entityID を入れる。SAML 2.0 Profiles §4.1.4.2）。**realm には SP を登録してある**（`http://` ＋ client_id。署名の検証と `mail` の属性） |
+| 外部ログインの SAML2 の Audience | ACS の URL（`SpRp_Saml2SpEntityId` は空のまま） | **SP の entityID**（SAML 2.0 Profiles §4.1.4.2）。E2E が、対象ごとに `SpRp_Saml2SpEntityId` を `http://` ＋ client_id に差し替える（#693） |
+| 外部ログインの SAML2 の SP の登録 | — | `http://` ＋ client_id。要求の署名を確かめ、`mail` の属性を出す。**`saml.authnstatement` を `true` にする**（JSON で取り込むと既定で入らず、assertion に `AuthnStatement` が無くなる。Profiles §4.1.4.2 で必須） |
+
+- **要求の `Destination`**（SAML 2.0 Bindings §3.4.5.2）は、サンプルが常に入れる（#693）。Keycloak は、無いと `missing_required_destination` で断る。スタブは見ない
 - **MPAS のスタブとは、ポート（44320）もプロジェクト名（`sprp-kck`）も分けてあるが、同時には起動しない**（メモリ。`TESTING.md` の冒頭）
 - **realm を変えたら、`-Action Down` してから起動し直す**（取り込みは、realm が無いときだけ行われる）
 - **外部ログインの前提はスタブのときと同じ**（SQL Server・ASP.NET 状態サービス・ビルド。2.1 節）。`-OutputDir` に、net48 のサイトの写し（1 サイト約 58MB）ができる
