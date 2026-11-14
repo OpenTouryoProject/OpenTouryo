@@ -36,6 +36,7 @@
 //*  2026/11/06  玄人 幸道         従来の振る舞い（数値・真偽値の字面・null）を Observation に分け、日付の形の文字列のテストを足した（#662 のレビューの指摘 3・4）
 //*  2026/11/10  玄人 幸道         CmnJwtToken.Verify：扱わない alg は例外ではなく false にした（UnexpectedAlg の期待値を変えた）。
 //*                                素の JWS・JWE の中の、扱う非対称の alg が通ること、alg と鍵の不一致、壊れた入力のテストを足した（#683）
+//*  2026/11/14  玄人 幸道         AccessToken.Verify・IdToken.Verify（鍵を受ける版）で、暗号化しない ES・PS・RS384 が通ることの回帰テストを足した（#695）
 //**********************************************************************************
 
 using System;
@@ -543,6 +544,37 @@ namespace TestFramework.Authentication
             Assert.That(AccessToken.Verify(this.Sign(p), this._opPublic, Iss, new[] { Aud }, out sub, out roles, out scopes, out jobj), Is.False, "aud が無い");
         }
 
+        /// <summary>
+        /// AccessToken.Verify（jws / iss / auds）：暗号化しない JWT も、渡した鍵の alg（ES・PS・RS）で通る。別の鍵では通らない。
+        /// 2026/11/10 より前は、暗号化しない JWT は RS256 だけで、ほかは NotSupportedException だった（#683 で直した）。
+        /// </summary>
+        [Test]
+        [Basis("#695")]
+        [Basis("#683")]
+        [TestCase(JwtConst.ES256)]
+        [TestCase(JwtConst.ES384)]
+        [TestCase(JwtConst.PS256)]
+        [TestCase(JwtConst.RS384)]
+        public void AccessToken_Verify_PlainAsymmetricAlgs(string alg)
+        {
+            (JWS signer, JWS verifier) = CreateKeyPair(alg);
+            JObject p = new JObject
+            {
+                [OAuth2AndOIDCConst.iss] = Iss,
+                [OAuth2AndOIDCConst.aud] = Aud,
+                [OAuth2AndOIDCConst.sub] = "user01",
+                [OAuth2AndOIDCConst.exp] = DateTimeOffset.Now.AddHours(1).ToUnixTimeSeconds().ToString()
+            };
+            string at = signer.Create(p.ToString(Formatting.None));
+
+            string sub; List<string> roles, scopes; JObject jobj;
+            Assert.That(AccessToken.Verify(at, verifier, Iss, new[] { Aud }, out sub, out roles, out scopes, out jobj), Is.True, alg);
+            Assert.That(sub, Is.EqualTo("user01"));
+
+            (JWS _, JWS other) = CreateKeyPair(alg);
+            Assert.That(AccessToken.Verify(at, other, Iss, new[] { Aud }, out sub, out roles, out scopes, out jobj), Is.False, "別の鍵");
+        }
+
         /// <summary>期待値（iss・auds）を渡さないのは誤用（設定に落とさず、ArgumentNullException）。</summary>
         [Test]
         public void AccessToken_Verify_NoExpectation_Throws()
@@ -612,6 +644,40 @@ namespace TestFramework.Authentication
 
             Assert.Throws<ArgumentNullException>(() => IdToken.Verify(idToken, "", "", "", this._opPublic, "", Aud, out sub, out nonce, out jobj));
             Assert.Throws<ArgumentNullException>(() => IdToken.Verify(idToken, "", "", "", this._opPublic, Iss, "", out sub, out nonce, out jobj));
+        }
+
+        /// <summary>
+        /// IdToken.Verify（jws / iss / aud）：暗号化しない id_token も、渡した鍵の alg（ES・PS・RS）で通る。別の鍵では通らない。
+        /// 2026/11/10 より前は、暗号化しない id_token は RS256 だけで、ほかは NotSupportedException だった（#683 で直した）。
+        /// </summary>
+        [Test]
+        [Basis("#695")]
+        [Basis("#683")]
+        [Basis("OpenID Connect Core 1.0 3.1.3.7 の 7（id_token の alg は、既定の RS256 か、登録の id_token_signed_response_alg）")]
+        [TestCase(JwtConst.ES256)]
+        [TestCase(JwtConst.ES384)]
+        [TestCase(JwtConst.PS256)]
+        [TestCase(JwtConst.RS384)]
+        public void IdToken_Verify_PlainAsymmetricAlgs(string alg)
+        {
+            (JWS signer, JWS verifier) = CreateKeyPair(alg);
+            JObject p = new JObject
+            {
+                [OAuth2AndOIDCConst.iss] = Iss,
+                [OAuth2AndOIDCConst.aud] = Aud,
+                [OAuth2AndOIDCConst.sub] = "user01",
+                [OAuth2AndOIDCConst.nonce] = "nonce01",
+                [OAuth2AndOIDCConst.exp] = DateTimeOffset.Now.AddHours(1).ToUnixTimeSeconds().ToString()
+            };
+            string idToken = signer.Create(p.ToString(Formatting.None));
+
+            string sub, nonce; JObject jobj;
+            Assert.That(IdToken.Verify(idToken, "", "", "", verifier, Iss, Aud, out sub, out nonce, out jobj), Is.True, alg);
+            Assert.That(sub, Is.EqualTo("user01"));
+            Assert.That(nonce, Is.EqualTo("nonce01"));
+
+            (JWS _, JWS other) = CreateKeyPair(alg);
+            Assert.That(IdToken.Verify(idToken, "", "", "", other, Iss, Aud, out sub, out nonce, out jobj), Is.False, "別の鍵");
         }
 
         #endregion
