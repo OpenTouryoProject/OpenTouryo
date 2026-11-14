@@ -2,7 +2,7 @@
 
 対象: `root/programs/CS/Frameworks/Tests/NUnit`（C# 側の NUnit テスト）
 
-本書の表は、**`2_RunAllTests.ps1 -Coverage` が書く**（[`CoverageReport.ps1`](../../../CoverageReport.ps1)）。
+本書の表は、**`2_RunAllTests.ps1 -Coverage` が書く**（[`CoverageReport.ps1`](../../../../files/tools/PowerShell/Verify/CoverageReport.ps1)）。
 **`COVERAGE:BEGIN` から `COVERAGE:END` の間は手で直さない。** 次の `-Coverage` で上書きされる。
 
 > **カバレッジは判定に使わない。** どこを書き足すかを選ぶための指針である（[`README.md`](README.md)「カバレッジを見て対象を選ぶ」）。

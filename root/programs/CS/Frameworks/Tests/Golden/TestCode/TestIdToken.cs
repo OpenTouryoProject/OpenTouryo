@@ -26,6 +26,7 @@
 //*  2026/09/10  玄人 幸道         新規作成（#584）
 //*  2026/10/11  玄人 幸道         IdToken.Verifyの、検証鍵とiss / audを渡す版のテストを追加（#601）
 //*  2026/10/12  玄人 幸道         設定で判定するIdToken.Verifyの、audの確認のテストを追加（#603）
+//*  2026/11/10  玄人 幸道         設定で判定するIdToken.Verifyの、証明書の経路（kid 無し）のテストを追加（#684）
 //**********************************************************************************
 
 using System;
@@ -86,6 +87,10 @@ namespace TestCode
             MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
 
             TestIdToken.TestVerifyBySettings();
+
+            MyDebug.OutputDebugAndConsole("----------------------------------------------------------------------------------------------------");
+
+            TestIdToken.TestVerifyByCertificate();
         }
 
         #endregion
@@ -202,9 +207,52 @@ namespace TestCode
             }
         }
 
+        /// <summary>Verify（設定で判定する版）の、証明書の経路（kid 無し）</summary>
+        /// <remarks>
+        /// 鍵を渡さず、ヘッダに kid が無いときは、証明書で検証する（#683・#684）。
+        /// **受けるのは RS256（SpRp_RsaCerFilePath）と ES256（SpRp_EcdsaCerFilePath）だけ**。
+        /// PS256 は、同じ RSA の鍵で署名しても通さない（鍵を渡さないときは、呼ぶ側が alg を決められないため。RFC 8725 3.1）。
+        /// 署名は、設定の証明書と組の秘密鍵（*_Server.pfx）で行う。
+        /// </remarks>
+        private static void TestVerifyByCertificate()
+        {
+            MyDebug.OutputDebugAndConsole("IdToken.Verify（設定で判定する版。kid 無し。証明書で検証する）");
+
+            const string iss = TestIdToken.TestIssuer;
+
+            TestIdToken.OutputVerifyBySettings("RS256（SpRp_RsaCerFilePath）",
+                TestIdToken.CreateIdToken(TestIdToken.CreateCertificateSigner(JwtConst.RS256), iss, "client01"), true);
+            TestIdToken.OutputVerifyBySettings("ES256（SpRp_EcdsaCerFilePath）",
+                TestIdToken.CreateIdToken(TestIdToken.CreateCertificateSigner(JwtConst.ES256), iss, "client01"), true);
+            TestIdToken.OutputVerifyBySettings("PS256（同じ RSA の鍵。証明書の経路では受けない）",
+                TestIdToken.CreateIdToken(TestIdToken.CreateCertificateSigner(JwtConst.PS256), iss, "client01"), false);
+            TestIdToken.OutputVerifyBySettings("RS256（別の鍵で署名）",
+                TestIdToken.CreateIdToken(new JWS_RS256_Param(), iss, "client01"), false);
+        }
+
         #endregion
 
         #region 設定で判定する版のヘルパ（TestResponseObject からも使う）
+
+        /// <summary>設定の証明書と組の秘密鍵（C:\root\files\resource\X509 の *_Server.pfx）</summary>
+        internal const string ServerRsaPfx = @"C:\root\files\resource\X509\SHA256RSA_Server.pfx";
+
+        /// <summary>同上（ES256）</summary>
+        internal const string ServerEcdsaPfx = @"C:\root\files\resource\X509\SHA256ECDSA_Server.pfx";
+
+        /// <summary>
+        /// 証明書の経路で検証される署名鍵を作る（**kid を付けない**。kid が在ると、JWK Set を先に引く）。
+        /// RS256・PS256 は SHA256RSA_Server.pfx、ES256 は SHA256ECDSA_Server.pfx。
+        /// </summary>
+        /// <param name="alg">RS256 / PS256 / ES256</param>
+        /// <returns>JWS</returns>
+        internal static JWS CreateCertificateSigner(string alg)
+        {
+            JWS jws = JwsFactory.CreateFromPfx(alg,
+                alg == JwtConst.ES256 ? TestIdToken.ServerEcdsaPfx : TestIdToken.ServerRsaPfx, "test");
+            jws.JWSHeader.kid = null;
+            return jws;
+        }
 
         /// <summary>App.config / appsettings.json の SpRp_Isser</summary>
         internal const string TestIssuer = "https://as.example.com/";

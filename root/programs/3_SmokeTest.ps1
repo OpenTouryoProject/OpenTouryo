@@ -124,8 +124,10 @@ $configRoot = if ($Lang -eq "VB") { Join-Path $PSScriptRoot "VB" } else { $csRoo
 
 New-Item -ItemType Directory -Force $OutputDir | Out-Null
 
+# 補助のスクリプトは root\files\tools\PowerShell\Verify に置く（#687）。
+$verifyDir = Join-Path $PSScriptRoot "..\files\tools\PowerShell\Verify"
 # サマリの整形。Format-Table は 5.1 で全角の桁を数えないため、自前で揃える。
-. (Join-Path $PSScriptRoot "SummaryTable.ps1")
+. (Join-Path $verifyDir "SummaryTable.ps1")
 
 # 対象に与える stdin（空）。
 # Start-Process -RedirectStandardInput は実在するファイルを要求するため、先に作る。
@@ -168,11 +170,16 @@ if ([Console]::OutputEncoding.CodePage -ne 65001)
 # **順序が要る。** st_Targets.ps1 は他の 3 つが定義したものを参照する。
 # **st_Utility.ps1 より先に読む。**（#588）
 #   st_Utility.ps1 が読み込み時に Get-ConnectionStringFromConfig を使う。
-. (Join-Path $PSScriptRoot "Prerequisite.ps1")
-. (Join-Path $PSScriptRoot "st_Utility.ps1")
-. (Join-Path $PSScriptRoot "st_Server.ps1")
-. (Join-Path $PSScriptRoot "st_Flow.ps1")
-. (Join-Path $PSScriptRoot "st_Targets.ps1")
+#
+# **st_*.ps1 は root\files\tools\PowerShell\SmokeTest に置く**（#687）。
+#   中から root\programs を引くときは $csRoot・$configRoot を使う
+#   （読まれた側の $PSScriptRoot は、そのファイルのフォルダになる）。
+$smokeTestDir = Join-Path $PSScriptRoot "..\files\tools\PowerShell\SmokeTest"
+. (Join-Path $verifyDir "Prerequisite.ps1")
+. (Join-Path $smokeTestDir "st_Utility.ps1")
+. (Join-Path $smokeTestDir "st_Server.ps1")
+. (Join-Path $smokeTestDir "st_Flow.ps1")
+. (Join-Path $smokeTestDir "st_Targets.ps1")
 
 
 

@@ -1,0 +1,36 @@
+# Sample4SpRp の IdP（Keycloak）。MPAS のスタブ（..\Stub）と同じサンプル・E2E を、別の IdP で通すためのもの。
+#   **起動・停止は KckCompose.ps1 で行う**（証明書の書き出しと、Discovery が応答するまでの待ちを含む）。
+#   **テスト専用**（start-dev。状態は残らない。利用者・秘密・管理者のパスワードは、すべてテスト用の値）。
+#   **MPAS のスタブ（44310）とは、ポートもプロジェクト名も分けてある**が、同時には起動しない（メモリ。TESTING.md の冒頭）。
+name: sprp-kck
+
+services:
+  keycloak:
+    # **版は固定する**（タグの付け替えで、こちらが何も変えなくても動くものが変わらないように）
+    image: quay.io/keycloak/keycloak:26.8.1
+    command:
+      - start-dev
+      - --import-realm
+      - --http-enabled=false
+      - --https-port=8443
+      - --https-certificate-file=/opt/keycloak/conf/cert/localhost.pem
+      - --https-certificate-key-file=/opt/keycloak/conf/cert/localhost.key
+      # **クライアント証明書（MTLS）を常に受け付ける**（request：求めるが、無くても通す。FAPI2 の par_mtls の tls_client_auth が使う）。
+      #   信頼するのは、テスト用のクライアント証明書（自己署名の CN=MPAS Test Client）だけ。KckCompose.ps1 が cert\ に写す
+      - --https-client-auth=request
+      - --truststore-paths=/opt/keycloak/conf/cert/mpas-test-client.pem
+      # **issuer を https://localhost:44320/realms/sprp に固定する**（ホストから見た URL）
+      - --hostname=https://localhost:44320
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      # ヒープは、コンテナのメモリ（mem_limit）の 65% まで
+      JAVA_OPTS_KC_HEAP: "-XX:MaxRAMPercentage=65"
+    ports:
+      - "44320:8443"
+    volumes:
+      # realm（クライアント・利用者）。sprp-realm.json は MPAS のスタブと同じ client_id・戻り先で登録してある
+      - ./realm:/opt/keycloak/data/import:ro
+      # 証明書（KckCompose.ps1 が dotnet dev-certs で書き出す。.gitignore の対象）
+      - ./cert:/opt/keycloak/conf/cert:ro
+    mem_limit: 1g

@@ -28,6 +28,9 @@
 //*                                Pick を bool 版と共有するため、null を空文字にしない形にした
 //*  2026/10/22  玄人 幸道         StringExtractor.GetParameterFromQueryString（Obsolete）を UriOperator に置き換えた
 //*  2026/11/05  玄人 幸道         SigAlg を、VerifyRedirect と同じ読み方（SAML2Bindings.TryReadRedirectParameters）で読む（#649）
+//*  2026/11/14  玄人 幸道         Audience を SP の entityID と照合する版を追加し、設定を読む版は SpRp_Saml2SpEntityId が在ればそれを使う。
+//*                                Audience は、すべての AudienceRestriction に entityID が在ることを見る（SAML Profiles 4.1.4.2・Core 2.5.1.4）。
+//*                                entityID を与えなければ、従来どおり Audience を ACS URL と照合する（振る舞いは変えていない。#693）
 //**********************************************************************************
 
 using System;
@@ -60,7 +63,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// |---|---|
         /// | 署名を検証する鍵 | CmnClientParams.RsaCerFilePath（SpRp_RsaCerFilePath。VerifyResponse と同じ） |
         /// | 期待する Issuer | CmnClientParams.SpRp_Saml2EntityId |
-        /// | 自分の ACS URL | CmnClientParams.SpRp_Saml2AcsUri（空なら Audience / Recipient を照合しない） |
+        /// | 自分（SP）の entityID | CmnClientParams.SpRp_Saml2SpEntityId（**在れば Audience に照合する**。#693） |
+        /// | 自分の ACS URL | CmnClientParams.SpRp_Saml2AcsUri（Recipient に照合する。**SpRp_Saml2SpEntityId が空なら、Audience にも照合する**（従来）。空なら照合しない） |
         ///
         /// SpRp_RsaCerFilePath が空なら、鍵が無いものとして NoKey を返す。
         /// メタデータの鍵（ロールオーバー中は複数）で検証するなら、
@@ -78,9 +82,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 keys.Add(new DigitalSignX509(cerFilePath, "", HashAlgorithmName.SHA256).X509Certificate.GetRSAPublicKey());
             }
 
+            // **SP の entityID が在れば、Audience はそれと照合する**（空なら従来どおり ACS URL と。#693）
             return SAML2Client.VerifyResponseWithReason(queryString, samlResponse, keys,
-                CmnClientParams.SpRp_Saml2EntityId, CmnClientParams.SpRp_Saml2AcsUri,
-                expectedInResponseTo, relayState, expectedRelayState);
+                CmnClientParams.SpRp_Saml2EntityId, CmnClientParams.SpRp_Saml2SpEntityId, CmnClientParams.SpRp_Saml2AcsUri,
+                expectedInResponseTo, relayState, expectedRelayState, null);
         }
 
         #endregion
@@ -109,11 +114,48 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// - Redirect の SigAlg は sigAlgs から選ぶ（SAML2Bindings.VerifyRedirect の RSA の版）
         /// - 外から来た値なので、読めなくても例外にせず、結果を返す
         /// - **認証の判断には IsValid だけを使うこと**
+        ///
+        /// **Audience を ACS URL と照合する**（従来の照合。仕様は SP の entityID。SAML Profiles 4.1.4.2）。
+        /// SP の entityID と照合するなら、expectedSpEntityId を受ける版を使う（#693）。
         /// </remarks>
         public static SAML2VerifyResult VerifyResponseWithReason(
             string queryString, string samlResponse, IEnumerable<RSA> rsaKeys,
             string expectedIssuer, string expectedAcsUrl, string expectedInResponseTo,
             string relayState, string expectedRelayState, string[] sigAlgs = null)
+        {
+            return SAML2Client.VerifyResponseWithReason(queryString, samlResponse, rsaKeys,
+                expectedIssuer, null, expectedAcsUrl, expectedInResponseTo,
+                relayState, expectedRelayState, sigAlgs);
+        }
+
+        /// <summary>VerifyResponseWithReason（理由を返す応答の検証。Audience を SP の entityID と照合する版）</summary>
+        /// <param name="queryString">string（Redirect Binding のときのクエリ文字列。POST なら null か空文字）</param>
+        /// <param name="samlResponse">string（POST Binding のときの SAMLResponse）</param>
+        /// <param name="rsaKeys">IEnumerable（署名を検証する相手の鍵。ロールオーバー中は複数。SAML2Metadata.GetSigningKeys）</param>
+        /// <param name="expectedIssuer">string（期待する Issuer＝相手の entityID）</param>
+        /// <param name="expectedSpEntityId">
+        /// string（自分（SP）の entityID。Audience に照合する。**null・空なら、従来どおり Audience を expectedAcsUrl と照合する**）
+        /// </param>
+        /// <param name="expectedAcsUrl">string（自分の ACS URL。Recipient に照合する。空なら照合しない）</param>
+        /// <param name="expectedInResponseTo">string（送った AuthnRequest の ID。空なら照合しない）</param>
+        /// <param name="relayState">string（受け取った RelayState）</param>
+        /// <param name="expectedRelayState">string（送った state。空なら照合しない）</param>
+        /// <param name="sigAlgs">string[]（Redirect で受け入れる SigAlg。null なら SHA256 / 384 / 512）</param>
+        /// <returns>SAML2VerifyResult</returns>
+        /// <remarks>
+        /// 自由に利用できる（#693）。判定は、expectedSpEntityId を受けない版と同じで、Audience の照合だけが違う。
+        ///
+        /// - **Audience には、SP の一意の識別子（entityID）が入る**（SAML Profiles 4.1.4.2）。
+        ///   **AudienceRestriction も Audience も複数あり得るので、すべての AudienceRestriction に entityID が在ることを見る**（SAML Core 2.5.1.4）。
+        ///   AudienceRestriction が 1 つも無ければ、一致しないものとする（bearer の確認を持つ assertion には要る。Profiles 4.1.4.2）
+        /// - expectedSpEntityId が null・空なら、従来どおり（最初の Audience を expectedAcsUrl と照合する）。
+        ///   ACS URL を Audience に入れる IdP（汎用認証サイト）と通るため
+        /// - sigAlgs は省略できない（null を渡せば既定）。省略できる引数にすると、従来の版の呼び出しと区別できなくなるため
+        /// </remarks>
+        public static SAML2VerifyResult VerifyResponseWithReason(
+            string queryString, string samlResponse, IEnumerable<RSA> rsaKeys,
+            string expectedIssuer, string expectedSpEntityId, string expectedAcsUrl, string expectedInResponseTo,
+            string relayState, string expectedRelayState, string[] sigAlgs)
         {
             SAML2VerifyResult ret = new SAML2VerifyResult();
 
@@ -311,9 +353,20 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             ret.IssuerMatched = !string.IsNullOrEmpty(ret.Issuer) && ret.Issuer == expectedIssuer;
 
+            if (!string.IsNullOrEmpty(expectedSpEntityId))
+            {
+                // **SP の entityID と照合する**（すべての AudienceRestriction に在ること。#693）
+                ret.AudienceMatched = SAML2Client.ContainsAudience(
+                    SAML2Bindings.GetAudiencesInAssertion(samlResponse2, samlNsMgr), expectedSpEntityId);
+            }
+            else if (!string.IsNullOrEmpty(expectedAcsUrl))
+            {
+                // 従来の照合（最初の Audience を ACS URL と）
+                ret.AudienceMatched = (ret.Audience == expectedAcsUrl);
+            }
+
             if (!string.IsNullOrEmpty(expectedAcsUrl))
             {
-                ret.AudienceMatched = (ret.Audience == expectedAcsUrl);
                 ret.RecipientMatched = (ret.Recipient == expectedAcsUrl);
             }
 
@@ -331,7 +384,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
             if (ret.AudienceMatched == false)
             {
                 return SAML2Client.SetReason(ret, SAML2VerifyResult.Reasons.AudienceMismatch,
-                    "The Audience does not match the ACS URL.");
+                    string.IsNullOrEmpty(expectedSpEntityId)
+                        ? "The Audience does not match the ACS URL."
+                        : "The AudienceRestriction does not contain the SP entityID.");
             }
 
             if (ret.RecipientMatched == false)
@@ -362,6 +417,35 @@ namespace Touryo.Infrastructure.Framework.Authentication
         #endregion
 
         #region private
+
+        /// <summary>すべての AudienceRestriction に、期待する Audience が在るか</summary>
+        /// <param name="restrictions">AudienceRestriction ごとの Audience の並び（SAML2Bindings.GetAudiencesInAssertion）</param>
+        /// <param name="expected">期待する Audience（SP の entityID）</param>
+        /// <returns>在れば true。AudienceRestriction が 1 つも無ければ false</returns>
+        /// <remarks>
+        /// 条件（Conditions）は、すべてを満たして初めて有効（SAML Core 2.5.1.4：AudienceRestriction が複数なら、
+        /// それぞれに自分が居なければならない。1 つの AudienceRestriction の中では、どれか 1 つの Audience でよい）。
+        /// 比較は完全一致（大文字・小文字を区別する。SAML Core 1.3.1 の文字列の比較に合わせる）。
+        /// 前後の空白は、読むときに除いてある（Audience は xs:anyURI（Core 1.3.2）で、スキーマの whiteSpace が collapse のため。
+        /// GetAudienceInAssertion と同じ）。
+        /// </remarks>
+        private static bool ContainsAudience(List<List<string>> restrictions, string expected)
+        {
+            if (restrictions == null || restrictions.Count == 0)
+            {
+                return false;
+            }
+
+            foreach (List<string> audiences in restrictions)
+            {
+                if (audiences == null || !audiences.Contains(expected))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
 
         /// <summary>理由を設定する</summary>
         /// <param name="ret">SAML2VerifyResult</param>

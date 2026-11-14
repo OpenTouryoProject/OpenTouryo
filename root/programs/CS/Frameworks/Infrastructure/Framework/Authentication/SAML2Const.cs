@@ -39,6 +39,7 @@
 //*  2026/10/22  玄人 幸道         SAML2Bindings の直書きを寄せるため、XPathAssertion、要求・応答・アサーション・
 //*                                メタデータの要素名・属性名、ID の接頭辞を追加
 //*  2026/10/30  玄人 幸道         RSA-PSS・ECDSA の SigAlg の URI を追加し、RSA の注記を RFC 9231 にした（#643）
+//*  2026/11/14  玄人 幸道         AudienceRestriction の XPath、要素名 Audience、属性名 Destination を追加（#693）
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Framework.Authentication
@@ -204,6 +205,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>XPathAudienceInAssertion</summary>
         public const string XPathAudienceInAssertion =
             XPathConditionsInAssertion + @"/saml:AudienceRestriction/saml:Audience";
+
+        /// <summary>XPathAudienceRestrictionInAssertion（AudienceRestriction は複数あり得る。SAML Core 2.5.1.4）</summary>
+        public const string XPathAudienceRestrictionInAssertion =
+            XPathConditionsInAssertion + @"/saml:AudienceRestriction";
+
+        /// <summary>XPathAudienceInAudienceRestriction（AudienceRestriction からの相対。Audience も複数あり得る）</summary>
+        public const string XPathAudienceInAudienceRestriction = @"saml:Audience";
         #endregion
 
         #region AuthnStatement
@@ -296,6 +304,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>属性名：AssertionConsumerServiceURL（AuthnRequest）</summary>
         public const string AttrAssertionConsumerServiceURL = "AssertionConsumerServiceURL";
+
+        /// <summary>属性名：Destination（AuthnRequest / Response。署名した要求・応答には要る。SAML Bindings 3.4.5.2・3.5.5.2）</summary>
+        public const string AttrDestination = "Destination";
+
+        /// <summary>要素名：Audience（AudienceRestriction）</summary>
+        public const string ElementAudience = "Audience";
 
         /// <summary>属性名：InResponseTo（Response / SubjectConfirmationData）</summary>
         public const string AttrInResponseTo = "InResponseTo";

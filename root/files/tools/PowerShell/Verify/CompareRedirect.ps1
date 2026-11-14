@@ -91,6 +91,7 @@
      日時        更新者            内容
      ----------  ----------------  -------------------------------------------------
      2026/08/17  玄人 幸道         新規作成（#556）
+     2026/11/12  玄人 幸道         root/files/tools/PowerShell/Verify に移した（#687）
 
     -Check を付けない限り、終了コードは常に 0。
 
@@ -106,8 +107,9 @@ param(
 
 $ErrorActionPreference = "Continue"
 
-$root = $PSScriptRoot
-. (Join-Path $root "SummaryTable.ps1")
+# 本スクリプトは root\files\tools\PowerShell\Verify に置く（#687）。CS / VB は root\programs にある。
+$root = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot "..\..\..\..\programs"))
+. (Join-Path $PSScriptRoot "SummaryTable.ps1")
 
 if ([Console]::OutputEncoding.CodePage -ne 65001)
 {

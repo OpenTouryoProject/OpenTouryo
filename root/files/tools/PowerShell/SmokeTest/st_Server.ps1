@@ -36,7 +36,7 @@ function Start-ApiWeb([string]$kind, [int]$port)
         $iis = Join-Path $env:ProgramFiles "IIS Express\iisexpress.exe"
         if (-not (Test-Path $iis)) { return $false }
 
-        $site = Join-Path $PSScriptRoot "CS\Samples\WS_sample\ASPNETWebService\ASPNETWebService"
+        $site = Join-Path $csRoot "Samples\WS_sample\ASPNETWebService\ASPNETWebService"
         $script:apiWebProc = Start-Process $iis `
             -ArgumentList "/path:`"$site`"", "/port:$port", "/systray:false" `
             -PassThru -WindowStyle Hidden `
@@ -44,7 +44,7 @@ function Start-ApiWeb([string]$kind, [int]$port)
     }
     else
     {
-        $dll = Join-Path $PSScriptRoot ("CS\Samples4NetCore\Backend\ASPNETWebService" +
+        $dll = Join-Path $csRoot ("Samples4NetCore\Backend\ASPNETWebService" +
             "\ASPNETWebService\bin\Debug\net10.0\ASPNETWebService.dll")
         if (-not (Test-Path $dll)) { return $false }
 

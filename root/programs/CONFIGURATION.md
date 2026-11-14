@@ -553,14 +553,14 @@ git diff --numstat
 ```
 
 **値が変わっていないことは、機械的に確かめられる。**
-[`CompareConfig.ps1`](CompareConfig.ps1) が、XML の要素・属性だけを取り出して突き合わせる。
+[`CompareConfig.ps1`](../files/tools/PowerShell/Verify/CompareConfig.ps1) が、XML の要素・属性だけを取り出して突き合わせる。
 コメント・空白・改行・BOM の差は落ちるので、**値の差だけが残る。**
 
 ```powershell
 cd root\programs
-.\CompareConfig.ps1                               # 一覧
-.\CompareConfig.ps1 -Detail -Only "WebApp_sample" # 内訳
-.\CompareConfig.ps1 -Check                        # 合否（想定外の差分があれば 1）
+..\files\tools\PowerShell\Verify\CompareConfig.ps1                               # 一覧
+..\files\tools\PowerShell\Verify\CompareConfig.ps1 -Detail -Only "WebApp_sample" # 内訳
+..\files\tools\PowerShell\Verify\CompareConfig.ps1 -Check                        # 合否（想定外の差分があれば 1）
 ```
 
 **`-Check` は「差分の有無」ではなく「想定外の差分の有無」を見る。**

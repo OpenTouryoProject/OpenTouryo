@@ -102,7 +102,7 @@
     -Only / -SkipBuild / -Linux / -CrossDb とは同時に指定できない（全部をそろえて測るため）。
 .PARAMETER LocalServicesDir
     LocalServicesOnDocker のフォルダ（-CrossDb / -Coverage で使う）。
-    **省けば、環境変数 OT_LSOD_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**（root\files\tools\PowerShell\RepoPath.ps1。#652）。
+    **省けば、環境変数 OT_LSOD_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**（root\files\tools\PowerShell\RepoPaths\RepoPath.ps1。#652）。
     **docker コマンドが使えれば Rancher Desktop 版（*.ps1）、使えなければ WSL2 版（*_wsl2.ps1）を使う。**
 .PARAMETER Linux
     Windows でのビルドとテストの後に、**net10.0 の出力をそのまま Linux のコンテナで回す**（#632）。
@@ -170,6 +170,7 @@
      2026/10/29  玄人 幸道         -Coverage の回に、ReportGenerator の HTML（Tests\CoverageHtml）も作るようにした
      2026/10/29  玄人 幸道         -List -PassThru に Result・Kind・SkipLog4net・NormBase64 を加え、-List では chcp しないようにした（#640）
      2026/11/07  玄人 幸道         -LocalServicesDir を省いたら、環境変数 OT_LSOD_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定 で決める（#652）
+     2026/11/13  玄人 幸道         RepoPath.ps1 を root/files/tools/PowerShell/RepoPaths から読む（#687）
 #>
 [CmdletBinding()]
 param(
@@ -209,11 +210,13 @@ $testsRoot = Join-Path $csRoot "Frameworks\Tests"
 $repoRoot  = (& git -C $testsRoot rev-parse --show-toplevel)
 New-Item -ItemType Directory -Force $OutputDir | Out-Null
 
+# 補助のスクリプトは root\files\tools\PowerShell\Verify に置く（#687）。
+$verifyDir = Join-Path $PSScriptRoot "..\files\tools\PowerShell\Verify"
 # サマリの整形。Format-Table は 5.1 で全角の桁を数えないため、自前で揃える。
-. (Join-Path $PSScriptRoot "SummaryTable.ps1")
-. (Join-Path $PSScriptRoot "Prerequisite.ps1")
+. (Join-Path $verifyDir "SummaryTable.ps1")
+. (Join-Path $verifyDir "Prerequisite.ps1")
 # NUnit のカバレッジを合算して Tests\COVERAGE.md に書く（-Coverage）
-. (Join-Path $PSScriptRoot "CoverageReport.ps1")
+. (Join-Path $verifyDir "CoverageReport.ps1")
 
 # 今回の実行で作られたカバレッジ ファイル（Get-NUnitResult が積む。-Coverage の最後に合算する）
 $coverageFiles = @()
@@ -513,7 +516,7 @@ $crossDbMode = $(if ($Coverage) { "-Coverage" } else { "-CrossDb" })
 if ($crossDbRun)
 {
     # **LocalServicesOnDocker の場所は、引数 ＞ 環境変数 OT_LSOD_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**（#652）
-    . (Join-Path $PSScriptRoot '..\files\tools\PowerShell\RepoPath.ps1')
+    . (Join-Path $PSScriptRoot '..\files\tools\PowerShell\RepoPaths\RepoPath.ps1')
     $LocalServicesDir = Resolve-RepoPath -Variable OT_LSOD_PATH -Argument $LocalServicesDir -ArgumentName '-LocalServicesDir'
 
     if (-not $LocalServicesDir -or -not (Test-Path (Join-Path $LocalServicesDir "Start-Services.ps1")))

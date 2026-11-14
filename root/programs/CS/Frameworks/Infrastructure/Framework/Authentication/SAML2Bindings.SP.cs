@@ -25,9 +25,12 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（SAML2Bindings.cs から処理区分ごとに分割した）
 //*  2026/10/22  玄人 幸道         属性名・XPath・要素名・ID の接頭辞の直書きを SAML2Const に寄せた
+//*  2026/11/14  玄人 幸道         CreateRequest に、Destination（送り先）を入れる版を追加。AudienceRestriction ごとの Audience を読む
+//*                                GetAudiencesInAssertion を追加（#693）
 //**********************************************************************************
 
 using System;
+using System.Collections.Generic;
 using System.Xml;
 
 using Touryo.Infrastructure.Public.Str;
@@ -51,6 +54,28 @@ namespace Touryo.Infrastructure.Framework.Authentication
             SAML2Enum.ProtocolBinding protocolBinding,
             SAML2Enum.NameIDFormat nameIDFormat,
             string assertionConsumerServiceURL, out string id)
+        {
+            return SAML2Bindings.CreateRequest(issuer, protocolBinding, nameIDFormat,
+                assertionConsumerServiceURL, null, out id);
+        }
+
+        /// <summary>CreateRequest（Destination を入れる版）</summary>
+        /// <param name="issuer">string</param>
+        /// <param name="protocolBinding">SAML2Enum.ProtocolBinding</param>
+        /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
+        /// <param name="assertionConsumerServiceURL">string</param>
+        /// <param name="destination">string（送り先。IdP の SSO の口。null・空なら Destination を入れない）</param>
+        /// <param name="id">string</param>
+        /// <returns>SAMLRequest</returns>
+        /// <remarks>
+        /// **署名した要求には、Destination に送り先の URL を入れなければならない**
+        /// （SAML Bindings 3.4.5.2（HTTP-Redirect）・3.5.5.2（HTTP-POST）。#693）。
+        /// 値は、XML を組み立てた後に属性として入れる（文字列の置換ではないので、特殊な文字もエスケープされる）。
+        /// </remarks>
+        public static XmlDocument CreateRequest(string issuer,
+            SAML2Enum.ProtocolBinding protocolBinding,
+            SAML2Enum.NameIDFormat nameIDFormat,
+            string assertionConsumerServiceURL, string destination, out string id)
         {
             // idの先頭は[A-Za-z]のみで、s2とするのが慣例っぽい。
             id = SAML2Const.IdPrefix + Guid.NewGuid().ToString("N");
@@ -97,6 +122,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
             {
                 attr = xmlDoc.CreateAttribute(SAML2Const.AttrAssertionConsumerServiceURL);
                 attr.Value = assertionConsumerServiceURL;
+                node.Attributes.Append(attr);
+            }
+            // - Destination属性（#693）
+            if (!string.IsNullOrEmpty(destination))
+            {
+                attr = xmlDoc.CreateAttribute(SAML2Const.AttrDestination);
+                attr.Value = destination;
                 node.Attributes.Append(attr);
             }
             #endregion
@@ -278,6 +310,49 @@ namespace Touryo.Infrastructure.Framework.Authentication
             {
                 return aud.InnerText.Trim();
             }
+        }
+
+        /// <summary>GetAudiencesInAssertion（AudienceRestriction ごとの Audience を、すべて読む）</summary>
+        /// <param name="xmlDoc">XmlDocument</param>
+        /// <param name="samlNsMgr">XmlNamespaceManager</param>
+        /// <returns>AudienceRestriction ごとの Audience の並び（AudienceRestriction が無ければ、空の並び）</returns>
+        /// <remarks>
+        /// 自由に利用できる。
+        /// **AudienceRestriction も Audience も、複数あり得る**（SAML Core 2.5.1.4）。
+        /// 受け手は、**すべての AudienceRestriction に、自分を指す Audience が 1 つ以上あるとき**だけ、宛先が自分だと言える。
+        /// GetAudienceInAssertion は、最初の Audience だけを返す（従来の版）。
+        /// </remarks>
+        public static List<List<string>> GetAudiencesInAssertion(
+            XmlDocument xmlDoc, XmlNamespaceManager samlNsMgr)
+        {
+            List<List<string>> ret = new List<List<string>>();
+
+            XmlNodeList restrictions = xmlDoc.SelectNodes(
+                SAML2Const.XPathAudienceRestrictionInAssertion, samlNsMgr);
+
+            if (restrictions == null)
+            {
+                return ret;
+            }
+
+            foreach (XmlNode restriction in restrictions)
+            {
+                List<string> audiences = new List<string>();
+                XmlNodeList nodes = restriction.SelectNodes(
+                    SAML2Const.XPathAudienceInAudienceRestriction, samlNsMgr);
+
+                if (nodes != null)
+                {
+                    foreach (XmlNode node in nodes)
+                    {
+                        audiences.Add(node.InnerText.Trim());
+                    }
+                }
+
+                ret.Add(audiences);
+            }
+
+            return ret;
         }
 
         /// <summary>GetAuthnContextClassRefInAssertion</summary>

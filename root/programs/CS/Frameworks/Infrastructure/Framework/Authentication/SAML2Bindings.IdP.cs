@@ -27,6 +27,7 @@
 //*  2026/10/22  玄人 幸道         属性名・XPath・要素名・ID の接頭辞の直書きを SAML2Const に寄せた
 //*  2026/10/22  玄人 幸道         メタデータに署名用の証明書を書き足す AppendSigningCertificates を追加（汎用認証サイトから移した。#634）
 //*  2026/10/22  玄人 幸道         AppendSigningCertificates に、証明書を設定（CmnServerParams.PreviousSigningCerFilePaths）から読む版を追加
+//*  2026/11/14  玄人 幸道         CreateAssertion に、Audience（SP の entityID）を指定する版を追加（受けない版は従来どおり recipient。#693）
 //**********************************************************************************
 
 using System;
@@ -113,6 +114,58 @@ namespace Touryo.Infrastructure.Framework.Authentication
             double expiresFromSecond, string recipient,
             out string id, RSA rsa = null)
         {
+            return SAML2Bindings.CreateAssertionCore(inResponseTo, issuer, nameID, nameIDFormat,
+                authnContextClassRef, expiresFromSecond, recipient, null, out id, rsa);
+        }
+
+        /// <summary>CreateAssertion（Audience を指定する版）</summary>
+        /// <param name="inResponseTo">string</param>
+        /// <param name="issuer">string</param>
+        /// <param name="nameID">string</param>
+        /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
+        /// <param name="authnContextClassRef">SAML2Enum.AuthnContextClassRef</param>
+        /// <param name="expiresFromSecond">double</param>
+        /// <param name="recipient">string（ACS URL。Recipient になる）</param>
+        /// <param name="audience">string（Audience に入れる値。SP の entityID。null・空なら、従来どおり recipient）</param>
+        /// <param name="id">string</param>
+        /// <param name="rsa">RSA</param>
+        /// <returns>SAMLAssertion</returns>
+        /// <remarks>
+        /// 自由に利用できる（#693）。
+        /// **Audience には、SP の一意の識別子（entityID）を入れる**（SAML Profiles 4.1.4.2）。
+        /// 受けない版は、Audience に recipient（ACS URL）を入れる（従来の振る舞い）。
+        /// 値は、XML を組み立てた後に要素の値として入れる（文字列の置換ではないので、特殊な文字もエスケープされる）。
+        /// </remarks>
+        public static XmlDocument CreateAssertion(
+            string inResponseTo, string issuer, string nameID,
+            SAML2Enum.NameIDFormat nameIDFormat,
+            SAML2Enum.AuthnContextClassRef authnContextClassRef,
+            double expiresFromSecond, string recipient, string audience,
+            out string id, RSA rsa = null)
+        {
+            return SAML2Bindings.CreateAssertionCore(inResponseTo, issuer, nameID, nameIDFormat,
+                authnContextClassRef, expiresFromSecond, recipient, audience, out id, rsa);
+        }
+
+        /// <summary>CreateAssertion の本体</summary>
+        /// <param name="inResponseTo">string</param>
+        /// <param name="issuer">string</param>
+        /// <param name="nameID">string</param>
+        /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
+        /// <param name="authnContextClassRef">SAML2Enum.AuthnContextClassRef</param>
+        /// <param name="expiresFromSecond">double</param>
+        /// <param name="recipient">string</param>
+        /// <param name="audience">string（null・空なら recipient）</param>
+        /// <param name="id">string</param>
+        /// <param name="rsa">RSA</param>
+        /// <returns>SAMLAssertion</returns>
+        private static XmlDocument CreateAssertionCore(
+            string inResponseTo, string issuer, string nameID,
+            SAML2Enum.NameIDFormat nameIDFormat,
+            SAML2Enum.AuthnContextClassRef authnContextClassRef,
+            double expiresFromSecond, string recipient, string audience,
+            out string id, RSA rsa)
+        {
             // idの先頭は[A-Za-z]のみで、s2とするのが慣例っぽい。
             id = SAML2Const.IdPrefix + Guid.NewGuid().ToString("N");
             string xmlString = SAML2Const.AssertionTemplate;
@@ -156,6 +209,13 @@ namespace Touryo.Infrastructure.Framework.Authentication
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.PreserveWhitespace = false;
             xmlDoc.LoadXml(xmlString);
+
+            // - Audience（SP の entityID。SAML Profiles 4.1.4.2。#693）
+            //   **要素の値として入れる**（特殊な文字もエスケープされる）。署名の前に入れる
+            if (!string.IsNullOrEmpty(audience))
+            {
+                xmlDoc.GetElementsByTagName(SAML2Const.ElementAudience, SAML2Const.UrnAssertion)[0].InnerText = audience;
+            }
             #endregion
 
             #region Sign

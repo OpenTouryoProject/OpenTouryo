@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/11/07  玄人 幸道         新規作成（#668。SpRp_CLI の Discovery と同じ作り）
+//*  2026/11/09  玄人 幸道         PAR と /ros のエンドポイントを足した（FAPI2。#668 の追加）
 //**********************************************************************************
 
 using System;
@@ -53,6 +54,12 @@ namespace SpRp_MVC.Auth
 
         /// <summary>userinfo_endpoint</summary>
         public Uri UserInfoEndpoint { get; private set; }
+
+        /// <summary>pushed_authorization_request_endpoint（PAR。RFC 9126 §5。無ければ null）</summary>
+        public Uri PushedAuthorizationRequestEndpoint { get; private set; }
+
+        /// <summary>request_object_endpoint（MPAS 独自の /ros。Request Object を預けて request_uri を受ける。無ければ null）</summary>
+        public Uri RequestObjectEndpoint { get; private set; }
 
         /// <summary>Discovery を読む</summary>
         /// <param name="discoveryUri">Discovery の URL</param>
@@ -84,6 +91,8 @@ namespace SpRp_MVC.Auth
                 AuthorizationEndpoint = Discovery.ToUri(doc, "authorization_endpoint"),
                 TokenEndpoint = Discovery.ToUri(doc, "token_endpoint"),
                 UserInfoEndpoint = Discovery.ToUri(doc, "userinfo_endpoint"),
+                PushedAuthorizationRequestEndpoint = Discovery.ToUri(doc, "pushed_authorization_request_endpoint"),
+                RequestObjectEndpoint = Discovery.ToUri(doc, "request_object_endpoint"),
             };
         }
 

@@ -33,6 +33,7 @@
 //*                                （汎用認証サイトで IdFederation* の設定だった値。#634）
 //*  2026/11/06  玄人 幸道         設定キー SpRp_Isser を SpRp_Issuer に改名した。改名前の名前も読み、
 //*                                改名前の名前が残っている設定を返す OldKeysStillUsed・RenamedKeysInConflict を追加（#666）
+//*  2026/11/14  玄人 幸道         自分（SP）の entityID（SpRp_Saml2SpEntityId）を追加（SAML2 の Audience の照合。#693）
 //**********************************************************************************
 
 using System.Collections.Generic;
@@ -149,14 +150,29 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>SpRp_Saml2AcsUri（自分の ACS の URL）</summary>
         /// <remarks>
-        /// 設定を読む版の SAML2Client.VerifyResponseWithReason が、Audience と Recipient に照合する。
-        /// 空なら照合しない。
+        /// 設定を読む版の SAML2Client.VerifyResponseWithReason が、Recipient に照合する。空なら照合しない。
+        /// **Audience にも照合するのは、SpRp_Saml2SpEntityId が空のときだけ**（従来の照合。#693）。
         /// </remarks>
         public static string SpRp_Saml2AcsUri
         {
             get
             {
                 return GetConfigParameter.GetConfigValue("SpRp_Saml2AcsUri");
+            }
+        }
+
+        /// <summary>SpRp_Saml2SpEntityId（自分（SP）の entityID）</summary>
+        /// <remarks>
+        /// 設定を読む版の SAML2Client.VerifyResponseWithReason が、**Audience に照合する**（SAML Profiles 4.1.4.2。#693）。
+        /// **空なら、従来どおり Audience を SpRp_Saml2AcsUri と照合する**（仕様と違うが、ACS の URL を Audience に入れる IdP と通るため。
+        /// 汎用認証サイトがそうである）。
+        /// 値は、要求（AuthnRequest）の Issuer に入れる値と同じにする。
+        /// </remarks>
+        public static string SpRp_Saml2SpEntityId
+        {
+            get
+            {
+                return GetConfigParameter.GetConfigValue("SpRp_Saml2SpEntityId");
             }
         }
         #endregion

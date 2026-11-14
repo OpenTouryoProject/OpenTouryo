@@ -37,13 +37,18 @@
 
 .PARAMETER MpasRoot
     MultiPurposeAuthSite のリポジトリの場所。**省けば、環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**
-    （root\files\tools\PowerShell\RepoPath.ps1。#652）。どれを使ったかを表示する。
+    （root\files\tools\PowerShell\RepoPaths\RepoPath.ps1。#652）。どれを使ったかを表示する。
 
 .PARAMETER Settings
     スタブに渡すアプリの設定（appsettings.json と同じ書き方の JSON）。省けば、このフォルダの Sample4SpRp.stub.json。
 
 .PARAMETER MpasDefault
     Sample4SpRp.stub.json を渡さず、MPAS の既定（appsettings.Stub.sample.json）で動かす。-Settings とは併せて使えない。
+
+.PARAMETER Mtls
+    **スタブに、クライアント証明書（MTLS）を受け付けさせる**（MultiPurposeAuthSite#351。SpRp_MVC の FAPI2 の par_mtls が使う。#668 の追加）。
+    MPAS の container\Stub\hooks\MtlsTestHook.dll を、環境変数 STUB_MTLS_HOOK で渡す（1_PublishStub.ps1 が作る）。
+    **テスト専用**（発行元を問わずに証明書を受け、Subject と登録の一致だけを見る）。**付けなければ、今までどおり受け付けない。**
 
 .EXAMPLE
     .\StubCompose.ps1
@@ -53,6 +58,9 @@
 
 .EXAMPLE
     .\StubCompose.ps1 -MpasDefault
+
+.EXAMPLE
+    .\StubCompose.ps1 -Mtls
 
 .NOTES
     作成者          ：玄人 幸道
@@ -65,6 +73,9 @@
      2026/11/07  玄人 幸道         既定で Sample4SpRp.stub.json を渡すようにし、-MpasDefault を足した（#668）
      2026/11/07  玄人 幸道         MPAS のバッチを呼ぶ間だけコンソールを UTF-8 にした（日本語の echo が化けていた。#668）
      2026/11/07  玄人 幸道         MPAS の場所を、引数 ＞ 環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定 で決める（#652）
+     2026/11/10  玄人 幸道         -Mtls を足した（スタブにクライアント証明書を受け付けさせる。MultiPurposeAuthSite#351。#668 の追加）
+     2026/11/13  玄人 幸道         RepoPath.ps1 を root/files/tools/PowerShell/RepoPaths から読む（#687）
+     2026/11/13  玄人 幸道         Sample4SpRp\Stub から Sample4SpRp\container\Stub へ移した（Keycloak の KCK と並べる。#690）
 #>
 [CmdletBinding()]
 param(
@@ -75,7 +86,9 @@ param(
 
     [string] $Settings = '',
 
-    [switch] $MpasDefault
+    [switch] $MpasDefault,
+
+    [switch] $Mtls
 )
 
 $ErrorActionPreference = 'Stop'
@@ -93,7 +106,7 @@ if (-not $MpasDefault -and [string]::IsNullOrEmpty($Settings))
 
 # **MPAS の場所は、引数 ＞ 環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**（#652）
 #   パスの既定値は param() に書かない（5.1 の -File で $PSScriptRoot が空になる。CODING.md 5 節）
-. (Join-Path (Split-Path -Parent $PSCommandPath) '..\..\..\..\files\tools\PowerShell\RepoPath.ps1')
+. (Join-Path (Split-Path -Parent $PSCommandPath) '..\..\..\..\..\files\tools\PowerShell\RepoPaths\RepoPath.ps1')
 $MpasRoot = Resolve-RepoPath -Variable OT_MPAS_PATH -Argument $MpasRoot -ArgumentName '-MpasRoot'
 if (-not $MpasRoot)
 {
@@ -142,6 +155,23 @@ else
     }
     $env:STUB_SETTINGS = (Resolve-Path $Settings).Path
     Write-Output "  設定 : $($env:STUB_SETTINGS)"
+}
+
+# **MTLS（-Mtls）は、環境変数 STUB_MTLS_HOOK でスタブに渡る**（MPAS の docker-compose.yml が DOTNET_STARTUP_HOOKS に入れる。MultiPurposeAuthSite#351）。
+#   **前の実行で残った値を使わないよう、付けないときは消す**（STUB_SETTINGS と同じ）。
+if ($Mtls)
+{
+    $hook = Join-Path $stubDir 'hooks\MtlsTestHook.dll'
+    if (($Action -eq 'Up') -and -not (Test-Path $hook))
+    {
+        throw "MTLS のフックがありません : $hook（MPAS の $stubDir\1_PublishStub.ps1 を実行し直してください。MultiPurposeAuthSite#351 より前の版です）"
+    }
+    $env:STUB_MTLS_HOOK = '/hooks/MtlsTestHook.dll'
+    Write-Output "  MTLS : クライアント証明書を受け付ける（STUB_MTLS_HOOK=$($env:STUB_MTLS_HOOK)。テスト専用）"
+}
+else
+{
+    Remove-Item Env:\STUB_MTLS_HOOK -ErrorAction SilentlyContinue
 }
 
 # **MPAS のバッチを呼ぶ間だけ、コンソールを UTF-8（65001）にする**（#668）。

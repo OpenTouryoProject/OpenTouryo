@@ -30,6 +30,8 @@
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を広げた（#640）
 //*  2026/10/30  玄人 幸道         VerifyPkce：メソッド名の大文字小文字を区別することにした（#643）
 //*  2026/10/31  玄人 幸道         VerifyPkce：大文字小文字の根拠を RFC 6749 1.9 を主にして書き分けた（RFC 7636 6.2.1 は登録名の規定。#643）
+//*  2026/11/14  玄人 幸道         仕様どおりの IdP・SP との相互運用（要求の Destination・応答の Audience に SP の entityID）のテストを足した。
+//*                                Destination を受けない要求の作成（Obsolete）の警告（CS0618）を抑えた（#693）
 //**********************************************************************************
 
 using System;
@@ -56,6 +58,10 @@ using Touryo.Infrastructure.Framework.Exceptions;
 using Touryo.Infrastructure.Public.Str;
 using Touryo.Infrastructure.Public.Security;
 using Touryo.Infrastructure.Public.Security.Jwt;
+
+// Destination を受けない SAML2Client.CreateRedirectRequest / CreatePostRequest は Obsolete だが（#693）、
+// 利用者が使い続ける版なので、IdP の側の検証と往復させて振る舞いを確かめ続ける。
+#pragma warning disable CS0618
 
 namespace TestFramework.Authentication
 {
@@ -205,6 +211,248 @@ namespace TestFramework.Authentication
             Assert.Throws<ArgumentNullException>(() => SAML2Client.CreatePostResponse(IdPEntityId, "", "req01",
                 SAML2Enum.StatusCode.Success, "u", SAML2Enum.NameIDFormat.Unspecified, SAML2Enum.AuthnContextClassRef.Unspecified,
                 3600, null, idp), "ACS URL が無い");
+        }
+
+        #endregion
+
+        #region SAML2 : 仕様どおりの IdP・SP との相互運用（#693）
+
+        /// <summary>SSO の口（送り先）。特殊な文字（&amp;）を含め、属性としてエスケープされることも見る</summary>
+        private const string Sso = "https://idp.example.com/sso?tenant=a&b=1";
+
+        /// <summary>
+        /// Destination を受ける版の要求（Redirect / POST）は、Destination に送り先を入れる。
+        /// 署名は通り、IdP の側の検証（Destination を見ない従来の版）とも往復できる。
+        /// </summary>
+        [Test]
+        [Basis("SAML 2.0 Bindings 3.4.5.2（HTTP-Redirect。署名した要求の Destination には、送り先の URL を入れなければならない）")]
+        [Basis("SAML 2.0 Bindings 3.5.5.2（HTTP-POST。同上）")]
+        public void CreateRequest_Destination()
+        {
+            using (RSA sp = RSA.Create(2048))
+            {
+                string id, iss, reqId;
+                XmlDocument doc;
+
+                string query = SAML2Client.CreateRedirectRequest(SAML2Enum.RequestOrResponse.Request,
+                    SAML2Enum.ProtocolBinding.HttpRedirect, SAML2Enum.NameIDFormat.Persistent,
+                    SpEntityId, Acs, Sso, "relay01", Signer(sp), out id);
+
+                XmlDocument redirect = new XmlDocument();
+                redirect.LoadXml(SAML2Bindings.DecodeRedirect(query));
+                Assert.That(redirect.DocumentElement.GetAttribute(SAML2Const.AttrDestination), Is.EqualTo(Sso));
+                Assert.That(SAML2Client.VerifyRequest(query, null, new RSA[] { sp }, out iss, out reqId, out doc), Is.True);
+                Assert.That(reqId, Is.EqualTo(id));
+
+                string post = SAML2Client.CreatePostRequest(SAML2Enum.ProtocolBinding.HttpPost, SAML2Enum.NameIDFormat.Persistent,
+                    SpEntityId, Acs, Sso, "relay01", sp, out id);
+
+                XmlDocument posted = new XmlDocument();
+                posted.LoadXml(SAML2Bindings.DecodePost(post));
+                Assert.That(posted.DocumentElement.GetAttribute(SAML2Const.AttrDestination), Is.EqualTo(Sso));
+                Assert.That(SAML2Client.VerifyRequest(null, post, new RSA[] { sp }, out iss, out reqId, out doc), Is.True);
+                Assert.That(reqId, Is.EqualTo(id));
+
+                // 従来の版（Destination を受けない）は、Destination を入れない（振る舞いは変えていない）
+                string legacy = SAML2Client.CreatePostRequest(SAML2Enum.ProtocolBinding.HttpPost, SAML2Enum.NameIDFormat.Persistent,
+                    SpEntityId, Acs, "relay01", sp, out id);
+                XmlDocument legacyDoc = new XmlDocument();
+                legacyDoc.LoadXml(SAML2Bindings.DecodePost(legacy));
+                Assert.That(legacyDoc.DocumentElement.HasAttribute(SAML2Const.AttrDestination), Is.False);
+            }
+        }
+
+        /// <summary>Destination を受ける版は、送り先・鍵の null・空を ArgumentNullException にする（黙って Destination の無い要求を出さない）。</summary>
+        [Test]
+        [Basis("設計：SAML2Client.CreateRedirectRequest・CreatePostRequest（Destination を入れる版）の remarks（要求は必ず署名するので、destination の null・空は ArgumentNullException）")]
+        public void CreateRequest_DestinationRequired()
+        {
+            using (RSA sp = RSA.Create(2048))
+            {
+                string id;
+                Assert.That(Assert.Throws<ArgumentNullException>(() => SAML2Client.CreateRedirectRequest(
+                    SAML2Enum.RequestOrResponse.Request, SAML2Enum.ProtocolBinding.HttpRedirect, SAML2Enum.NameIDFormat.Persistent,
+                    SpEntityId, Acs, "", "relay01", Signer(sp), out id)).ParamName, Is.EqualTo("destination"));
+                Assert.That(Assert.Throws<ArgumentNullException>(() => SAML2Client.CreatePostRequest(
+                    SAML2Enum.ProtocolBinding.HttpPost, SAML2Enum.NameIDFormat.Persistent,
+                    SpEntityId, Acs, null, "relay01", sp, out id)).ParamName, Is.EqualTo("destination"));
+                Assert.That(Assert.Throws<ArgumentNullException>(() => SAML2Client.CreateRedirectRequest(
+                    SAML2Enum.RequestOrResponse.Request, SAML2Enum.ProtocolBinding.HttpRedirect, SAML2Enum.NameIDFormat.Persistent,
+                    SpEntityId, Acs, Sso, "relay01", (DigitalSign)null, out id)).ParamName, Is.EqualTo("digitalSign"));
+                Assert.That(Assert.Throws<ArgumentNullException>(() => SAML2Client.CreatePostRequest(
+                    SAML2Enum.ProtocolBinding.HttpPost, SAML2Enum.NameIDFormat.Persistent,
+                    SpEntityId, Acs, Sso, "relay01", (RSA)null, out id)).ParamName, Is.EqualTo("rsa"));
+            }
+        }
+
+        /// <summary>
+        /// Audience を指定する版の応答は、Audience に SP の entityID、Recipient に ACS URL を入れる。
+        /// SP の側は、entityID を受ける版で通り、従来の版（Audience を ACS URL と照合）では AudienceMismatch になる。
+        /// </summary>
+        [Test]
+        [Basis("SAML 2.0 Profiles 4.1.4.2（bearer の確認を持つ assertion は、SP の一意の識別子を Audience に入れた AudienceRestriction を持たなければならない）")]
+        public void Response_AudienceIsSpEntityId()
+        {
+            RSA idp = TestCertificates.RsaPrivateKey();
+            RSA[] idpPublic = new RSA[] { TestCertificates.RsaPublicKey() };
+
+            string query = SAML2Client.CreateRedirectResponse(IdPEntityId, Acs, SpEntityId, "req01", SAML2Enum.StatusCode.Success,
+                "user01", SAML2Enum.NameIDFormat.Persistent, SAML2Enum.AuthnContextClassRef.PasswordProtectedTransport,
+                3600, null, "relay01", Signer(idp));
+
+            SAML2VerifyResult r = SAML2Client.VerifyResponseWithReason(query, null, idpPublic,
+                IdPEntityId, SpEntityId, Acs, "req01", "relay01", "relay01", null);
+            Assert.That(r.IsValid, Is.True, r.ReasonDescription);
+            Assert.That(r.Audience, Is.EqualTo(SpEntityId));
+            Assert.That(r.Recipient, Is.EqualTo(Acs), "Recipient は ACS URL のまま");
+            Assert.That(r.AudienceMatched, Is.True);
+
+            Assert.That(SAML2Client.VerifyResponseWithReason(query, null, idpPublic,
+                IdPEntityId, Acs, "req01", "relay01", "relay01").Reason,
+                Is.EqualTo(SAML2VerifyResult.Reasons.AudienceMismatch), "従来の版は ACS URL と照合する");
+
+            string post = SAML2Client.CreatePostResponse(IdPEntityId, Acs, SpEntityId, "req01", SAML2Enum.StatusCode.Success,
+                "user01", SAML2Enum.NameIDFormat.Persistent, SAML2Enum.AuthnContextClassRef.PasswordProtectedTransport,
+                3600, null, idp);
+
+            SAML2VerifyResult r2 = SAML2Client.VerifyResponseWithReason(null, post, idpPublic,
+                IdPEntityId, SpEntityId, Acs, "req01", null, null, null);
+            Assert.That(r2.IsValid, Is.True, r2.ReasonDescription);
+        }
+
+        /// <summary>
+        /// 従来の応答（Audience に ACS URL）を、entityID を受ける版で検証すると AudienceMismatch。
+        /// entityID を与えなければ（null・空）、従来どおり ACS URL と照合して通る。
+        /// </summary>
+        [Test]
+        [Basis("SAML 2.0 Profiles 4.1.4.2（Audience は SP の一意の識別子）")]
+        [Basis("設計：SAML2Client.VerifyResponseWithReason（Audience を SP の entityID と照合する版）の remarks（null・空なら従来どおり）")]
+        public void Response_LegacyAudience()
+        {
+            RSA idp = TestCertificates.RsaPrivateKey();
+            RSA[] idpPublic = new RSA[] { TestCertificates.RsaPublicKey() };
+
+            string post = SAML2Client.CreatePostResponse(IdPEntityId, Acs, "req01", SAML2Enum.StatusCode.Success,
+                "user01", SAML2Enum.NameIDFormat.Persistent, SAML2Enum.AuthnContextClassRef.PasswordProtectedTransport,
+                3600, null, idp);
+
+            SAML2VerifyResult r = SAML2Client.VerifyResponseWithReason(null, post, idpPublic,
+                IdPEntityId, SpEntityId, Acs, "req01", null, null, null);
+            Assert.That(r.Reason, Is.EqualTo(SAML2VerifyResult.Reasons.AudienceMismatch));
+            Assert.That(r.IsValid, Is.False);
+
+            foreach (string none in new string[] { null, "" })
+            {
+                SAML2VerifyResult r2 = SAML2Client.VerifyResponseWithReason(null, post, idpPublic,
+                    IdPEntityId, none, Acs, "req01", null, null, null);
+                Assert.That(r2.IsValid, Is.True, r2.ReasonDescription);
+            }
+        }
+
+        /// <summary>Audience の値は、要素の値として入る（特殊な文字もエスケープされ、読み戻すと同じ値）。</summary>
+        [Test]
+        [Basis("設計：SAML2Bindings.CreateAssertion（Audience を指定する版）の remarks（要素の値として入れるので、特殊な文字もエスケープされる）")]
+        public void Response_AudienceEscaped()
+        {
+            const string special = "urn:sp:a&b<c>\"d'";
+            RSA idp = TestCertificates.RsaPrivateKey();
+
+            string post = SAML2Client.CreatePostResponse(IdPEntityId, Acs, special, "req01", SAML2Enum.StatusCode.Success,
+                "user01", SAML2Enum.NameIDFormat.Persistent, SAML2Enum.AuthnContextClassRef.Unspecified, 3600, null, idp);
+
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(SAML2Bindings.DecodePost(post));
+            List<List<string>> audiences = SAML2Bindings.GetAudiencesInAssertion(doc, SAML2Bindings.CreateNamespaceManager(doc));
+            Assert.That(audiences.Count, Is.EqualTo(1));
+            Assert.That(audiences[0], Is.EqualTo(new List<string> { special }));
+
+            Assert.That(SAML2Client.VerifyResponseWithReason(null, post, new RSA[] { TestCertificates.RsaPublicKey() },
+                IdPEntityId, special, Acs, "req01", null, null, null).IsValid, Is.True);
+        }
+
+        /// <summary>
+        /// 手で組み立てた応答（AudienceRestriction が 1 つ、Audience が SP の entityID の 1 つ）は通る。
+        /// 下の Response_MultipleAudiences の対照（組み立てと署名が正しいことを見る）。
+        /// </summary>
+        [Test]
+        [Basis("SAML 2.0 Profiles 4.1.4.2（bearer の確認を持つ assertion は、SP の一意の識別子を Audience に入れた AudienceRestriction を持たなければならない）")]
+        public void Response_SingleAudienceRestriction()
+        {
+            string post = IdPSideTests.BuildResponseWithAudiences(new string[] { SpEntityId }, null);
+
+            SAML2VerifyResult r = SAML2Client.VerifyResponseWithReason(null, post, new RSA[] { TestCertificates.RsaPublicKey() },
+                IdPEntityId, SpEntityId, Acs, "req01", null, null, null);
+            Assert.That(r.IsValid, Is.True, r.Reason + " : " + r.ReasonDescription);
+            Assert.That(r.AudienceMatched, Is.True);
+        }
+
+        /// <summary>
+        /// Audience が 1 つでない応答（AudienceRestriction が複数・1 つの中に複数・無い）は、照合の前に、構造の確かめで断る。
+        /// </summary>
+        /// <remarks>
+        /// 仕様（SAML Core 2.5.1.4）は、AudienceRestriction も Audience も複数を許す
+        /// （1 つの中は「または」、複数の AudienceRestriction はそれぞれ独立に評価する）。
+        /// **今の構造の確かめ（SAML2Bindings.VerifyByXPath）は、Audience をちょうど 1 つに限っている**（#693 では変えていない。
+        /// 変えるなら、受ける応答を広げることになる）。照合（ContainsAudience）は複数の AudienceRestriction に備えてある。
+        /// </remarks>
+        [TestCase(new string[] { SpEntityId }, new string[] { "https://other.example.com/" }, Description = "AudienceRestriction が 2 つ（2 つ目に居ない）")]
+        [TestCase(new string[] { SpEntityId }, new string[] { "https://other.example.com/", SpEntityId }, Description = "AudienceRestriction が 2 つ（どちらにも居る）")]
+        [TestCase(new string[] { "https://other.example.com/", SpEntityId }, null, Description = "1 つの中に Audience が 2 つ")]
+        [TestCase(null, null, Description = "AudienceRestriction が無い")]
+        [Observation("今の構造の確かめ（VerifyByXPath）は Audience をちょうど 1 つに限る。仕様（SAML Core 2.5.1.4）は複数を許すので、仕様からは決まらない振る舞いを写した（#693）")]
+        public void Response_MultipleAudiences(string[] first, string[] second)
+        {
+            string post = IdPSideTests.BuildResponseWithAudiences(first, second);
+
+            SAML2VerifyResult r = SAML2Client.VerifyResponseWithReason(null, post, new RSA[] { TestCertificates.RsaPublicKey() },
+                IdPEntityId, SpEntityId, Acs, "req01", null, null, null);
+            Assert.That(r.IsValid, Is.False);
+            Assert.That(r.Reason, Is.EqualTo(SAML2VerifyResult.Reasons.SignatureInvalid), "構造の確かめで断る");
+            Assert.That(r.AudienceMatched, Is.Null, "照合まで進まない");
+        }
+
+        /// <summary>AudienceRestriction を作り直した応答（POST。署名済み）を組み立てる</summary>
+        /// <param name="first">1 つ目の AudienceRestriction の Audience の並び（null なら置かない）</param>
+        /// <param name="second">2 つ目の AudienceRestriction の Audience の並び（null なら置かない）</param>
+        /// <returns>SAMLResponse</returns>
+        /// <remarks>SAML2Client.BuildResponse と同じ手順で組み立て、AudienceRestriction を作り直してから署名する。</remarks>
+        private static string BuildResponseWithAudiences(string[] first, string[] second)
+        {
+            RSA idp = TestCertificates.RsaPrivateKey();
+
+            string id;
+            XmlDocument response = SAML2Bindings.CreateResponse(IdPEntityId, Acs, "req01", SAML2Enum.StatusCode.Success, out id);
+
+            string assertionId;
+            XmlDocument assertion = SAML2Bindings.CreateAssertion("req01", IdPEntityId, "user01",
+                SAML2Enum.NameIDFormat.Persistent, SAML2Enum.AuthnContextClassRef.Unspecified, 3600, Acs, SpEntityId, out assertionId);
+
+            // AudienceRestriction を作り直す（first・second の並び。null なら AudienceRestriction を置かない）
+            XmlNode conditions = assertion.GetElementsByTagName("Conditions", SAML2Const.UrnAssertion)[0];
+            List<XmlNode> olds = new List<XmlNode>();
+            foreach (XmlNode old in conditions.SelectNodes("*[local-name()='AudienceRestriction']"))
+            {
+                olds.Add(old);
+            }
+            foreach (XmlNode old in olds)
+            {
+                conditions.RemoveChild(old);
+            }
+            foreach (string[] audiences in new string[][] { first, second })
+            {
+                if (audiences == null) continue;
+                XmlElement restriction = assertion.CreateElement("saml", "AudienceRestriction", SAML2Const.UrnAssertion);
+                foreach (string audience in audiences)
+                {
+                    XmlElement e = assertion.CreateElement("saml", SAML2Const.ElementAudience, SAML2Const.UrnAssertion);
+                    e.InnerText = audience;
+                    restriction.AppendChild(e);
+                }
+                conditions.AppendChild(restriction);
+            }
+
+            response.DocumentElement.AppendChild(response.ImportNode(assertion.DocumentElement, true));
+            return SAML2Bindings.EncodeAndSignPost(response.OuterXml, id, idp);
         }
 
         #endregion

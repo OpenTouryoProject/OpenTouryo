@@ -79,6 +79,7 @@
      2026/08/16  玄人 幸道         新規作成（#553）
      2026/08/16  玄人 幸道         -Check を追加（#553）
      2026/08/17  玄人 幸道         説明を訂正（#558）packages.config は対象である。
+     2026/11/12  玄人 幸道         root/files/tools/PowerShell/Verify に移した（#687）
      　　　　　　　　　　　　　　　 対応づけは相対パスのみで、探しには行かない。
 
     -Check を付けない限り、終了コードは常に 0。
@@ -109,8 +110,9 @@ $ErrorActionPreference = "Continue"
 # ------------------------------------------------------------------
 # カレント ディレクトリからの実行を許可する
 # ------------------------------------------------------------------
-$root = $PSScriptRoot
-. (Join-Path $root "SummaryTable.ps1")
+# 本スクリプトは root\files\tools\PowerShell\Verify に置く（#687）。CS / VB は root\programs にある。
+$root = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot "..\..\..\..\programs"))
+. (Join-Path $PSScriptRoot "SummaryTable.ps1")
 
 # Windows PowerShell 5.1 は既定で ANSI 出力になるため、UTF-8 に揃える。
 if ([Console]::OutputEncoding.CodePage -ne 65001)

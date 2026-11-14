@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（汎用認証サイトから移した。#634 の C-3）
 //*  2026/10/22  玄人 幸道         Expired に「NotOnOrAfter が読めない」を含めた
+//*  2026/11/14  玄人 幸道         AudienceMatched・AudienceMismatch の説明を、SP の entityID との照合（#693）に合わせた
 //**********************************************************************************
 
 using System;
@@ -77,7 +78,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             /// <summary>Issuer が期待値と違う</summary>
             IssuerMismatch,
 
-            /// <summary>Audience が自分の ACS URL と違う</summary>
+            /// <summary>Audience が自分と違う（SP の entityID を与えたら、それが無い。与えなければ、ACS URL と違う。#693）</summary>
             AudienceMismatch,
 
             /// <summary>Recipient が自分の ACS URL と違う</summary>
@@ -114,7 +115,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>Issuer が期待値と一致したか</summary>
         public bool IssuerMatched { get; internal set; }
 
-        /// <summary>Audience が自分の ACS URL と一致したか（期待値が無ければ null。SAML Core 2.5.1.4）</summary>
+        /// <summary>
+        /// Audience が自分と一致したか（期待値が無ければ null。SAML Core 2.5.1.4）。
+        /// SP の entityID を与えたら、すべての AudienceRestriction に在るか。与えなければ、最初の Audience が ACS URL と同じか（#693）
+        /// </summary>
         public bool? AudienceMatched { get; internal set; }
 
         /// <summary>Recipient が自分の ACS URL と一致したか（期待値が無ければ null）</summary>
@@ -154,7 +158,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>NameIDFormat</summary>
         public SAML2Enum.NameIDFormat? NameIdFormat { get; internal set; }
 
-        /// <summary>Audience</summary>
+        /// <summary>Audience（最初の 1 つ。すべてを読むなら SAML2Bindings.GetAudiencesInAssertion）</summary>
         public string Audience { get; internal set; }
 
         /// <summary>InResponseTo</summary>

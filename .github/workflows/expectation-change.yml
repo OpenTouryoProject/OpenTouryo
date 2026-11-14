@@ -95,5 +95,5 @@ jobs:
       - name: Run the cases
         shell: powershell
         run: |
-          & (Join-Path $env:GITHUB_WORKSPACE "root\programs\ExpectationGuard.Tests\Run-Tests.ps1")
+          & (Join-Path $env:GITHUB_WORKSPACE "root\files\tools\ExpectationGuard.Tests\Run-Tests.ps1")
           exit $LASTEXITCODE

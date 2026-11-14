@@ -26,11 +26,16 @@ https://github.com/OpenTouryoProject/OpenTouryo/
 
 **期待値の変更を含むコミットには、トレーラー `Expectation-Change: <理由>` が要る。**
 コミットは人が行うので、エージェントは**トレーラーの文面を提案する**に留める。
-定義と書式は同書 3 節。
+**文面を提案したら、コミットの前に突き合わせ役（サブエージェント `opentouryo-expectation-reviewer`）に、対象とメッセージのファイルだけを渡して回し、結果を報告に書く**（理由と差分が合っているか。OpenTouryoCodingAgentAssets#6）。
+理由には根拠の Issue 番号か仕様の節を書く。定義と書式は同書 3 節。
 
 **バグを直すコミット（`fixed #NNN`）には、見つけた手段のトレーラー `Found-By: <手段> [<補足>]` を付ける**（同書 5 節。#657）。
 **見つけた経緯は、そのセッションのエージェントが最もよく知っている。** コミット メッセージの案に入れる。
 推測で埋めず、分からなければ施主に聞く。機能の追加には付けない。語彙は `root/programs/rules.common.psd1`。
+
+**確かめ方も、トレーラーで残す**（同書 5 節。OpenTouryoCodingAgentAssets#12）。
+テストを流したら `Tested-with: <種類>[, <種類>]`（コードを変えて流していなければ `Tested-with: none`。無いと警告）、レビュー役（`.claude/agents/` の役の定義）か人がレビューしたら
+`Reviewed-with: <役> [(<モデル ID>)]`（人は `human`。役ごとに行を分ける）。**流していないテスト・回していないレビューは書かない。**
 
 ### Issue に対応する流れ
 
@@ -126,7 +131,8 @@ Git 操作は人が手動で行う。
 - 既存の履歴は `fixed #NNN` で始まる簡潔な文面が主で、**署名行はその流儀から浮く**
 - セッションの URL は**外部から参照できない**。履歴に残しても辿れない
 
-付けるトレーラーは、`Expectation-Change:`・`Found-By:` だけである（[`QUALITY.md`](QUALITY.md) 3 節・5 節）。
+付けるトレーラーは、`Expectation-Change:`・`Found-By:`・`Tested-with:`・`Reviewed-with:` だけである（[`QUALITY.md`](QUALITY.md) 3 節・5 節）。
+トレーラーは**最後の段落**（本文との間に空行を 1 つ）に、空行を挟まずに並べる。git はそこしか読まない（検出器も止める）。
 エージェント自身がコミットするよう指示された場合は、その時の指定に従う（上記は**提示する文面**の話）。
 
 **状態を報告する直前に、必ず取り直すこと。** 前のターンの出力や記憶から書かない。
@@ -468,7 +474,7 @@ https://github.com/OpenTouryoProject/OpenTouryoCodingAgentAssets
 Claude Code は `.claude/skills/<名前>/SKILL.md` を探すため、実体が要る。
 
 ```powershell
-cd root\programs
+cd root\files\tools\PowerShell\Dev
 .\GetAgentSkills.ps1              # main から取得して .claude/skills へ配置
 .\GetAgentSkills.ps1 -List        # 何が対象になるかだけ見る
 ```

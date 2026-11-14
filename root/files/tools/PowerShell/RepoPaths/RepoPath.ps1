@@ -18,7 +18,7 @@
       **雛形の既定を使ったときは、警告を出す**（手元の配置と合っている保証が無い）。
 
     ＜使い方＞
-      . (Join-Path <root\files\tools\PowerShell> 'RepoPath.ps1')
+      . (Join-Path <root\files\tools\PowerShell\RepoPaths> 'RepoPath.ps1')
       $MpasRoot = Resolve-RepoPath -Variable OT_MPAS_PATH -Argument $MpasRoot -ArgumentName '-MpasRoot'
 
 .NOTES
@@ -29,6 +29,7 @@
      2026/11/07  玄人 幸道         新規（#652）
      2026/11/07  玄人 幸道         RepoPaths.csv は手元用（.gitignore）にし、無ければ雛形の _RepoPaths.csv を読む
      2026/11/09  玄人 幸道         変数名の頭に OT_ を付けた（OTR_PATH → OT_OTR_PATH など）。古い名前だけが在れば警告する（読まない）
+     2026/11/13  玄人 幸道         root/files/tools/PowerShell/RepoPaths に移した（CSV と同じフォルダ。#687）
 #>
 
 # **CSV の場所は、読み込んだ時点で決める**（関数の中の $PSScriptRoot に頼らない。5.1 との差を避ける。CODING.md 5 節）
@@ -120,6 +121,6 @@ function Resolve-RepoPath
     }
 
     $hint = $(if ($row) { "（{0} の場所。{1} の既定の {2} も無い）" -f $row.Repository, $script:RepoPathsCsvName, $row.DefaultPath } else { "（{0} に {1} の行が無い）" -f $script:RepoPathsCsvName, $Variable })
-    Write-Host ("  **{0} が決まりません**{1}。引数で渡すか、環境変数 {2} を登録してください（root\files\tools\PowerShell\Register-RepoPaths.ps1）。" -f $label, $hint, $Variable) -ForegroundColor Red
+    Write-Host ("  **{0} が決まりません**{1}。引数で渡すか、環境変数 {2} を登録してください（root\files\tools\PowerShell\RepoPaths\Register-RepoPaths.ps1）。" -f $label, $hint, $Variable) -ForegroundColor Red
     return $null
 }

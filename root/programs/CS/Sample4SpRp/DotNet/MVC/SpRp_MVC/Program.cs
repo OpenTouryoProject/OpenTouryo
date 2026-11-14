@@ -24,10 +24,12 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/11/07  玄人 幸道         新規作成（#668）
+//*  2026/11/10  玄人 幸道         SpRp_ClientCertPfxFilePath が在れば、部品の HttpClient にクライアント証明書を載せる（FAPI2 の MTLS。#668 の追加）
 //**********************************************************************************
 
 using System;
 using System.Net.Http;
+using System.Security.Cryptography.X509Certificates;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -57,7 +59,7 @@ namespace SpRp_MVC
             GetConfigParameter.InitConfiguration((IConfiguration)builder.Configuration);
 
             // **HttpClient は 1 つを使い回す**（OAuth2AndOIDCClient の静的プロパティ。設定しないと、どの要求も送られない）
-            OAuth2AndOIDCClient.HttpClient = new HttpClient();
+            OAuth2AndOIDCClient.HttpClient = Program.CreateHttpClient();
 
             builder.Services.AddControllersWithViews();
 
@@ -84,6 +86,33 @@ namespace SpRp_MVC
                 pattern: "{controller=Home}/{action=Index}");
 
             app.Run();
+        }
+
+        /// <summary>部品（OAuth2AndOIDCClient）が使う HttpClient を作る</summary>
+        /// <returns>HttpClient</returns>
+        /// <remarks>
+        /// **SpRp_ClientCertPfxFilePath が在れば、そのクライアント証明書を載せる**（FAPI2 の par_mtls。tls_client_auth・RFC 8705。#668 の追加）。
+        /// - **証明書は、サーバが求めたときだけ送られる**（TLS のハンドシェイク）。求めない IdP には、今までどおり証明書なしで届く
+        /// - **HttpClient は静的プロパティで、プロセス全体に効く**（OAuth2AndOIDCClient.HttpClient の remarks）。
+        ///   そのため、**証明書を求める IdP（MTLS を有効にしたスタブ）では、ほかの flow の要求にも証明書が付く**
+        ///   （トークンが証明書に縛られても、UserInfo も同じ HttpClient で呼ぶので、そのまま通る）
+        /// </remarks>
+        private static HttpClient CreateHttpClient()
+        {
+            string pfx = CmnClientParams.ClientCertPfxFilePath;
+            if (string.IsNullOrEmpty(pfx))
+            {
+                return new HttpClient();
+            }
+
+            HttpClientHandler handler = new HttpClientHandler
+            {
+                ClientCertificateOptions = ClientCertificateOption.Manual,
+            };
+            handler.ClientCertificates.Add(
+                X509CertificateLoader.LoadPkcs12FromFile(pfx, CmnClientParams.ClientCertPfxPassword));
+
+            return new HttpClient(handler);
         }
     }
 }

@@ -34,10 +34,13 @@
 //*  2026/11/06  玄人 幸道         仕様の外の振る舞い（exp と同じ秒・文字列）を、Observation のテストに分けた（#661 のレビューの指摘 1・2）
 //*  2026/11/06  玄人 幸道         CheckClaims（Obsolete）の警告を抑え、文字列でない値と TryGetStringClaim のテストを足した（#662）
 //*  2026/11/06  玄人 幸道         従来の振る舞い（数値・真偽値の字面・null）を Observation に分け、日付の形の文字列のテストを足した（#662 のレビューの指摘 3・4）
+//*  2026/11/10  玄人 幸道         CmnJwtToken.Verify：扱わない alg は例外ではなく false にした（UnexpectedAlg の期待値を変えた）。
+//*                                素の JWS・JWE の中の、扱う非対称の alg が通ること、alg と鍵の不一致、壊れた入力のテストを足した（#683）
 //**********************************************************************************
 
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -47,6 +50,7 @@ using NUnit.Framework;
 using TestCommon;
 
 using Touryo.Infrastructure.Framework.Authentication;
+using Touryo.Infrastructure.Public.Security;
 using Touryo.Infrastructure.Public.Security.Jwt;
 
 // CheckClaims は Obsolete（#662）だが、利用者が使い続ける版なので、振る舞いを確かめ続ける。
@@ -281,14 +285,218 @@ namespace TestFramework.Authentication
             Assert.That(payload, Is.Empty);
         }
 
-        /// <summary>Verify：JWE でない（3 つに分かれる）のに RS256 以外なら NotSupportedException。</summary>
+        /// <summary>
+        /// Verify：扱わない alg（HS256・none・実装していない EdDSA）は、鍵を渡しても false（例外にしない）。
+        /// 2026/11/10 までは NotSupportedException だった（#683）。
+        /// </summary>
         [Test]
+        [Basis("RFC 8725 3.1（ライブラリは、受ける alg の集合を決められ、ほかの alg を使ってはならない）")]
+        [Basis("#683")]
         public void CmnJwtToken_Verify_UnexpectedAlg()
         {
             string hs256 = new JWS_HS256(new byte[32]).Create("{\"sub\":\"x\"}");
+            string none = Base64Url("{\"alg\":\"none\",\"typ\":\"JWT\"}") + "." + Base64Url("{\"sub\":\"x\"}") + ".";
             string payload;
 
-            Assert.Throws<NotSupportedException>(() => CmnJwtToken.Verify(hs256, this._opPublic, out payload));
+            Assert.That(CmnJwtToken.Verify(hs256, this._opPublic, out payload), Is.False);
+            Assert.That(payload, Is.Empty);
+            Assert.That(CmnJwtToken.Verify(none, this._opPublic, out payload), Is.False);
+            Assert.That(payload, Is.Empty);
+
+            // **実装していない alg**（EdDSA は FAPI 2.0 が認めるが、Open棟梁 の JWS は扱わない）
+            string eddsa = Base64Url("{\"alg\":\"EdDSA\"}") + "." + Base64Url("{\"sub\":\"x\"}") + ".AAAA";
+            Assert.That(CmnJwtToken.Verify(eddsa, this._opPublic, out payload), Is.False);
+            Assert.That(payload, Is.Empty);
+        }
+
+        /// <summary>
+        /// Verify（jws を渡す）：扱う非対称の alg（RS・PS・ES）は、渡した鍵の alg と同じなら、素の JWS でも通る。
+        /// 2026/11/10 までは、素の JWS は RS256 だけで、ほかは NotSupportedException だった（#683）。
+        /// </summary>
+        [Test]
+        [Basis("OpenID Connect Core 1.0 3.1.3.7 の 7（id_token の alg は、既定の RS256 か、登録の id_token_signed_response_alg）")]
+        [Basis("#683")]
+        [TestCase(JwtConst.RS256)]
+        [TestCase(JwtConst.RS384)]
+        [TestCase(JwtConst.PS256)]
+        [TestCase(JwtConst.PS512)]
+        [TestCase(JwtConst.ES256)]
+        [TestCase(JwtConst.ES384)]
+        [TestCase(JwtConst.ES512)]
+        public void CmnJwtToken_Verify_AsymmetricAlgs(string alg)
+        {
+            (JWS signer, JWS verifier) = CreateKeyPair(alg);
+            string jwt = signer.Create("{\"sub\":\"user01\"}");
+            string payload;
+
+            Assert.That(CmnJwtToken.Verify(jwt, verifier, out payload), Is.True, alg);
+            Assert.That((string)JObject.Parse(payload)[OAuth2AndOIDCConst.sub], Is.EqualTo("user01"));
+
+            // 別の鍵では通らない
+            (JWS _, JWS other) = CreateKeyPair(alg);
+            Assert.That(CmnJwtToken.Verify(jwt, other, out payload), Is.False, alg);
+        }
+
+        /// <summary>
+        /// Verify：ヘッダの alg が、渡した検証鍵の alg と違えば false（同じ RSA の鍵でも、RS256 の鍵で PS256 の JWS は通さない）。
+        /// </summary>
+        [Test]
+        [Basis("RFC 8725 3.1（使う alg は、その鍵で決めた alg に限る）")]
+        [Basis("#683")]
+        public void CmnJwtToken_Verify_AlgMismatch()
+        {
+            using (RSA rsa = RSA.Create(2048))
+            {
+                string ps256 = JwsFactory.CreateFromRsaParameters(JwtConst.PS256, rsa.ExportParameters(true)).Create("{\"sub\":\"x\"}");
+                string payload;
+
+                // 同じ RSA の鍵の、PS256 の検証鍵なら通る（鍵そのものは正しい）
+                Assert.That(CmnJwtToken.Verify(ps256,
+                    JwsFactory.CreateFromRsaParameters(JwtConst.PS256, rsa.ExportParameters(false)), out payload), Is.True);
+
+                // 同じ RSA の鍵の、RS256 の検証鍵では通らない
+                Assert.That(CmnJwtToken.Verify(ps256,
+                    JwsFactory.CreateFromRsaParameters(JwtConst.RS256, rsa.ExportParameters(false)), out payload), Is.False);
+                Assert.That(payload, Is.Empty);
+            }
+        }
+
+        /// <summary>
+        /// Verify（jwe を受ける版）：JWE（Nested JWT）の中の JWS は、alg を問わず（扱う非対称の alg なら）通る。
+        /// 2026/11/10 までは、JWE の中は ES256 だけで、ほかは NotSupportedException だった（#683）。
+        /// </summary>
+        [Test]
+        [Basis("OpenID Connect Core 1.0 2（id_token は署名し、暗号化するなら署名してから暗号化する）・3.1.3.7 の 1（暗号化されていれば、登録の鍵と alg で復号する）")]
+        [Basis("RFC 7519 7.2 の 7（JWE なら JWE の検証の手順に従う）・8（Nested JWT なら、中を JWT として検証し直す。この実装は cty を見ず、中が JWS なら検証する）")]
+        [Basis("#683")]
+        [TestCase(JwtConst.ES256)]
+        [TestCase(JwtConst.PS256)]
+        [TestCase(JwtConst.RS256)]
+        public void CmnJwtToken_Verify_NestedJwt(string alg)
+        {
+            (JWS signer, JWS verifier) = CreateKeyPair(alg);
+            JWE jwe = new JWE_RsaOaepAesGcm_Param(EnumASymmetricAlgorithm.RsaCng);
+            string nested = jwe.Create(signer.Create("{\"sub\":\"user01\"}"));
+            string payload;
+
+            Assert.That(nested.Split('.').Length, Is.EqualTo(5));
+            Assert.That(CmnJwtToken.Verify(nested, verifier, jwe, out payload), Is.True, alg);
+            Assert.That((string)JObject.Parse(payload)[OAuth2AndOIDCConst.sub], Is.EqualTo("user01"));
+
+            // 中の JWS の alg と、渡した鍵の alg が違えば false（PS256 の中身に、同じ形の RS256 の鍵）
+            if (alg == JwtConst.PS256)
+            {
+                Assert.That(CmnJwtToken.Verify(nested, JwsFactory.CreateFromRsaParameters(JwtConst.RS256,
+                    ((JWS_PS256_Param)verifier).RsaPublicParameters), jwe, out payload), Is.False);
+            }
+
+            // 復号の鍵が違えば false（例外にしない。以前は Decrypt の失敗を見ていなかった）
+            JWE otherJwe = new JWE_RsaOaepAesGcm_Param(EnumASymmetricAlgorithm.RsaCng);
+            Assert.That(CmnJwtToken.Verify(nested, verifier, otherJwe, out payload), Is.False, alg);
+            Assert.That(payload, Is.Empty);
+        }
+
+        /// <summary>Verify（jwe を受ける版）：jwe を渡した（暗号化を求めた）のに、素の JWS なら false（同じ JWS も、jwe を渡さなければ通る）。</summary>
+        [Test]
+        [Basis("OpenID Connect Core 1.0 3.1.3.7 の 1（暗号化を取り決めたのに暗号化されていなければ、RP は断るべき）")]
+        [Basis("#683")]
+        public void CmnJwtToken_Verify_PlainJwsWithJwe()
+        {
+            (JWS signer, JWS verifier) = CreateKeyPair(JwtConst.ES256);
+            string jws = signer.Create("{\"sub\":\"x\"}");
+            JWE jwe = new JWE_RsaOaepAesGcm_Param(EnumASymmetricAlgorithm.RsaCng);
+            string payload;
+
+            Assert.That(CmnJwtToken.Verify(jws, verifier, jwe, out payload), Is.False);
+            Assert.That(payload, Is.Empty);
+            Assert.That(CmnJwtToken.Verify(jws, verifier, null, out payload), Is.True);
+        }
+
+        /// <summary>Verify（jwe を受ける版）：JWE の中が JWS でない、区切りの数が合わない、空の入力は false。</summary>
+        [Test]
+        [Basis("RFC 7519 7.2 の 6（JWS か JWE かを見分ける）")]
+        [Basis("設計：CmnJwtToken.Verify（jwe を受ける版）の remarks（区切りの数が 3 でも 5 でもないもの、中が JWS でない JWE は false）")]
+        [Basis("#683")]
+        public void CmnJwtToken_Verify_Malformed()
+        {
+            JWE jwe = new JWE_RsaOaepAesGcm_Param(EnumASymmetricAlgorithm.RsaCng);
+            string payload;
+
+            // JWE の中が JWE（Nested の入れ子）
+            Assert.That(CmnJwtToken.Verify(jwe.Create(jwe.Create("{\"sub\":\"x\"}")), this._opPublic, jwe, out payload), Is.False);
+            // JWE の中が JWS でない（素の JSON）
+            Assert.That(CmnJwtToken.Verify(jwe.Create("{\"sub\":\"x\"}"), this._opPublic, jwe, out payload), Is.False);
+            // 区切りが 2 つ・4 つ
+            Assert.That(CmnJwtToken.Verify("a.b", this._opPublic, out payload), Is.False);
+            Assert.That(CmnJwtToken.Verify("a.b.c.d", this._opPublic, out payload), Is.False);
+            // 空
+            Assert.That(CmnJwtToken.Verify("", this._opPublic, out payload), Is.False);
+            Assert.That(payload, Is.Empty);
+        }
+
+        /// <summary>
+        /// Verify（jws を渡さない）：受ける alg は RS256・ES256 だけ。ほかの alg（PS256・ES384 など）は false（例外にしない）。
+        /// 鍵を選ぶ前に断るので、設定（証明書・JWK Set）が無くても確かめられる。kid で JWK を引く経路は、配備の設定に依るので対象外。
+        /// </summary>
+        [Test]
+        [Basis("RFC 8725 3.1（受ける alg の集合を決める。鍵を渡さないときは、呼ぶ側が alg を決められないので、従来の 2 つに限る）")]
+        [Basis("設計：CmnJwtToken.Verify（jwe を受ける版）の remarks（jws を渡さないとき、RS256・ES256 だけ）")]
+        [Basis("#683")]
+        [TestCase(JwtConst.PS256)]
+        [TestCase(JwtConst.ES384)]
+        public void CmnJwtToken_Verify_NoKey_OnlyRs256Es256(string alg)
+        {
+            (JWS signer, JWS _) = CreateKeyPair(alg);
+            string jwt = signer.Create("{\"sub\":\"x\"}");
+            string payload;
+
+            Assert.That(JwtReader.TryReadKid(jwt), Is.Null.Or.Empty);
+            Assert.That(CmnJwtToken.Verify(jwt, out payload), Is.False, alg);
+            Assert.That(payload, Is.Empty);
+        }
+
+        /// <summary>
+        /// Verify（jwe を渡さない）：扱わない JWE の alg（RSA-OAEP・RSA1_5 以外）は false。
+        /// 2026/11/10 までは NotSupportedException だった。鍵を読む前に断るので、設定が無くても確かめられる（#683）。
+        /// </summary>
+        [Test]
+        [Basis("設計：CmnJwtToken.Verify（jwe を受ける版）の remarks（jwe を渡さないとき、扱わない JWE の alg は false）")]
+        [Basis("#683")]
+        public void CmnJwtToken_Verify_UnsupportedJweAlg()
+        {
+            string dir = Base64Url("{\"alg\":\"dir\",\"enc\":\"A256GCM\"}") + "..AAAA.AAAA.AAAA";
+            string payload;
+
+            Assert.That(dir.Split('.').Length, Is.EqualTo(5));
+            Assert.That(CmnJwtToken.Verify(dir, this._opPublic, out payload), Is.False);
+            Assert.That(payload, Is.Empty);
+        }
+
+        /// <summary>alg に合った鍵の組（署名する JWS と、公開鍵だけの検証する JWS）を作る</summary>
+        private static (JWS Signer, JWS Verifier) CreateKeyPair(string alg)
+        {
+            if (JwsFactory.GetKty(alg) == JwtConst.RSA)
+            {
+                using (RSA rsa = RSA.Create(2048))
+                {
+                    return (JwsFactory.CreateFromRsaParameters(alg, rsa.ExportParameters(true)),
+                        JwsFactory.CreateFromRsaParameters(alg, rsa.ExportParameters(false)));
+                }
+            }
+
+            ECCurve curve = alg == JwtConst.ES256 ? ECCurve.NamedCurves.nistP256
+                : alg == JwtConst.ES384 ? ECCurve.NamedCurves.nistP384 : ECCurve.NamedCurves.nistP521;
+            using (ECDsa ec = ECDsa.Create(curve))
+            {
+                return (JwsFactory.CreateFromEcParameters(alg, ec.ExportParameters(true), true),
+                    JwsFactory.CreateFromEcParameters(alg, ec.ExportParameters(false)));
+            }
+        }
+
+        /// <summary>base64url（区切りの無い none の JWT を作るため）</summary>
+        private static string Base64Url(string s)
+        {
+            return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(s)).TrimEnd('=').Replace('+', '-').Replace('/', '_');
         }
 
         #endregion

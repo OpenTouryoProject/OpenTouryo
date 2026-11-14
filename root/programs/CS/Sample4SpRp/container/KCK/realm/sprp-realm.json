@@ -1,0 +1,255 @@
+{
+  "realm": "sprp",
+  "displayName": "Sample4SpRp (Keycloak, test only)",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "bruteForceProtected": false,
+  "accessTokenLifespan": 300,
+  "oauth2DeviceCodeLifespan": 600,
+  "oauth2DevicePollingInterval": 5,
+  "users": [
+    {
+      "username": "tanaka",
+      "email": "tanaka@example.com",
+      "emailVerified": true,
+      "firstName": "Taro",
+      "lastName": "Tanaka",
+      "enabled": true,
+      "credentials": [ { "type": "password", "value": "Kck-E2E-Test-Only-1", "temporary": false } ]
+    },
+    {
+      "username": "deny_tanaka",
+      "email": "deny_tanaka@example.com",
+      "emailVerified": true,
+      "firstName": "Deny",
+      "lastName": "Tanaka",
+      "enabled": true,
+      "credentials": [ { "type": "password", "value": "Kck-E2E-Test-Only-1", "temporary": false } ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "f53469c17c5a432f86ce563b7805ab89",
+      "name": "MVC_Sample",
+      "description": "MVC_Sample external login (OIDC, authorization code, client_secret).",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "cKdwJb6mRKVIJpGxEWjIC94zquQltw_ECfO-55p21YM",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "consentRequired": false,
+      "redirectUris": [ "https://localhost:44334/Home/OAuth2AuthorizationCodeGrantClient" ],
+      "webOrigins": []
+    },
+    {
+      "clientId": "b6b393fe861b430eb4ee061006826b03",
+      "name": "WebForms_Sample",
+      "description": "WebForms_Sample external login (OIDC, authorization code, client_secret).",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "p2RgAFKF-JaF0A9F1tyDXp4wMq-uQZYyvTBM8wr_v8g",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "consentRequired": false,
+      "redirectUris": [ "https://localhost:44333/Aspx/OAuth2/OAuth2AuthorizationCodeGrantClient.aspx" ],
+      "webOrigins": []
+    },
+    {
+      "clientId": "http://f53469c17c5a432f86ce563b7805ab89",
+      "name": "MVC_Sample (SAML2)",
+      "description": "MVC_Sample external login (SAML2 SP). Issuer is http:// + client_id. Not run on KCK yet: the SP sends no Destination and checks Audience against the ACS URL (#693).",
+      "enabled": true,
+      "protocol": "saml",
+      "frontchannelLogout": true,
+      "redirectUris": [ "https://localhost:44334/Home/Saml2AssertionConsumerService" ],
+      "attributes": {
+        "saml_assertion_consumer_url_redirect": "https://localhost:44334/Home/Saml2AssertionConsumerService",
+        "saml.force.post.binding": "false",
+        "saml.server.signature": "true",
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml.client.signature": "true",
+        "saml.signing.certificate": "MIICljCCAX4CCQC1XAfk7CceaDANBgkqhkiG9w0BAQsFADAMMQowCAYDVQQDDAF4MCAXDTE4MTEwNzA1NTYyOVoYDzMwMTgwMzEwMDU1NjI5WjAMMQowCAYDVQQDDAF4MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArmLnq3chsnu8k11V/acJ9EAxcHU8w6B74LmNm0WFVEQWXm9t8m6QSfdBTzej+1zEbezZYNYSsJFCgo7Yn+N1WcADSMgy6XhYbT8nbbpQ79TmkI/uiSUvKrrxRiSm2IT9RwZ7V7ftUebmB9bbC0OODZ/TbL0ZUhMlWNq0nAn0pbqebZ2Jl1XtLDTq9UrylAueRguvzE72z5BXwU18KO2yjyu4AJJH9OZ+SfRKGyYpSrw8GjDXL6nNnp5MOfNMoy1xUeHkLV/2ZUH+2KXWxBVrPmXEX3Vmyp7eVIakWfkk3ixn5sfCfLrzFHFj/21e/teOVQTeXQIQqJq7AZCGu6iqQQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQB0pwxYX6CZl7z8vtgyGDoEFh8ngR2vD9+BVBqLQg+5lbE5fJmW8IIFAf6q16fz45oeN1AcyNiIcZOuvwa/yUxMmyDc4qVpmeTsOVJCyTysZte9NMx3JMRnUE+VLS/K4/TsiChsjkVC11ibAeX/eWKPPVI7CH2a5C8UaHBGCu7fUdUAFINj0KFAtBDRwe54mOuEm539jzhi1MBuosdAHIF4SD9B9PFGkVS9Iagzw75eNS/9wP1ZQs1+1n46k1s44d4poEHwx5tsy7ZiH9RZfM8SwUPxLW5BnaJI2FEO4i0lfjRhmAcOrQwcRbLcfv1lG6wXIKNQ4fQTKoY0zQYsYsRd",
+        "saml_name_id_format": "persistent"
+      },
+      "protocolMappers": [
+        {
+          "name": "mail",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "config": { "user.attribute": "email", "attribute.name": "mail", "attribute.nameformat": "Basic" }
+        }
+      ]
+    },
+    {
+      "clientId": "http://b6b393fe861b430eb4ee061006826b03",
+      "name": "WebForms_Sample (SAML2)",
+      "description": "WebForms_Sample external login (SAML2 SP). Issuer is http:// + client_id. Not run on KCK yet: the SP sends no Destination and checks Audience against the ACS URL (#693).",
+      "enabled": true,
+      "protocol": "saml",
+      "frontchannelLogout": true,
+      "redirectUris": [ "https://localhost:44333/Aspx/Saml2/Saml2AssertionConsumerService.aspx" ],
+      "attributes": {
+        "saml_assertion_consumer_url_redirect": "https://localhost:44333/Aspx/Saml2/Saml2AssertionConsumerService.aspx",
+        "saml.force.post.binding": "false",
+        "saml.server.signature": "true",
+        "saml.signature.algorithm": "RSA_SHA256",
+        "saml.client.signature": "true",
+        "saml.signing.certificate": "MIICljCCAX4CCQC1XAfk7CceaDANBgkqhkiG9w0BAQsFADAMMQowCAYDVQQDDAF4MCAXDTE4MTEwNzA1NTYyOVoYDzMwMTgwMzEwMDU1NjI5WjAMMQowCAYDVQQDDAF4MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArmLnq3chsnu8k11V/acJ9EAxcHU8w6B74LmNm0WFVEQWXm9t8m6QSfdBTzej+1zEbezZYNYSsJFCgo7Yn+N1WcADSMgy6XhYbT8nbbpQ79TmkI/uiSUvKrrxRiSm2IT9RwZ7V7ftUebmB9bbC0OODZ/TbL0ZUhMlWNq0nAn0pbqebZ2Jl1XtLDTq9UrylAueRguvzE72z5BXwU18KO2yjyu4AJJH9OZ+SfRKGyYpSrw8GjDXL6nNnp5MOfNMoy1xUeHkLV/2ZUH+2KXWxBVrPmXEX3Vmyp7eVIakWfkk3ixn5sfCfLrzFHFj/21e/teOVQTeXQIQqJq7AZCGu6iqQQIDAQABMA0GCSqGSIb3DQEBCwUAA4IBAQB0pwxYX6CZl7z8vtgyGDoEFh8ngR2vD9+BVBqLQg+5lbE5fJmW8IIFAf6q16fz45oeN1AcyNiIcZOuvwa/yUxMmyDc4qVpmeTsOVJCyTysZte9NMx3JMRnUE+VLS/K4/TsiChsjkVC11ibAeX/eWKPPVI7CH2a5C8UaHBGCu7fUdUAFINj0KFAtBDRwe54mOuEm539jzhi1MBuosdAHIF4SD9B9PFGkVS9Iagzw75eNS/9wP1ZQs1+1n46k1s44d4poEHwx5tsy7ZiH9RZfM8SwUPxLW5BnaJI2FEO4i0lfjRhmAcOrQwcRbLcfv1lG6wXIKNQ4fQTKoY0zQYsYsRd",
+        "saml_name_id_format": "persistent"
+      },
+      "protocolMappers": [
+        {
+          "name": "mail",
+          "protocol": "saml",
+          "protocolMapper": "saml-user-property-mapper",
+          "config": { "user.attribute": "email", "attribute.name": "mail", "attribute.nameformat": "Basic" }
+        }
+      ]
+    },
+    {
+      "clientId": "ae5a179813234ca290c8de93ef2e31dc",
+      "name": "Device_Client",
+      "description": "SpRp_CLI device / pkce, DAG_Login_CLI, LIR_Login_CLI (public). Consent on: the device control denies it. PKCE not enforced (KC would require it on the device request too); pkce sends S256.",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "consentRequired": true,
+      "redirectUris": [ "http://localhost:12345/" ],
+      "webOrigins": [],
+      "attributes": {
+        "oauth2.device.authorization.grant.enabled": "true"
+      }
+    },
+    {
+      "clientId": "b9582fe575bf4ba9984f3fc81147408c",
+      "name": "SpRp_CLI_Batch",
+      "description": "SpRp_CLI cc / ropc (confidential, client_secret_basic). jwtbearer (RFC 7523 2.1) is not supported by Keycloak.",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "RLVKAIIrbMO9pRCPBbv899IZtJ87EajfVWR9AhfD5a4",
+      "standardFlowEnabled": false,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "consentRequired": false,
+      "redirectUris": [],
+      "webOrigins": []
+    },
+    {
+      "clientId": "75d74cb5a4ae44e3afec154623f0cbb4",
+      "name": "SpRp_MVC",
+      "description": "SpRp_MVC FAPI1 oauth2 / oidc (private_key_jwt + PKCE S256, JARM).",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-jwt",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "consentRequired": false,
+      "redirectUris": [ "https://localhost:44336/Fapi1/Callback" ],
+      "webOrigins": [],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "token.endpoint.auth.signing.alg": "RS256",
+        "authorization.signed.response.alg": "RS256",
+        "use.jwks.url": "false",
+        "use.jwks.string": "true",
+        "jwks.string": "{\"keys\":[{\"kty\":\"RSA\",\"alg\":\"RS256\",\"use\":\"sig\",\"n\":\"rmLnq3chsnu8k11V_acJ9EAxcHU8w6B74LmNm0WFVEQWXm9t8m6QSfdBTzej-1zEbezZYNYSsJFCgo7Yn-N1WcADSMgy6XhYbT8nbbpQ79TmkI_uiSUvKrrxRiSm2IT9RwZ7V7ftUebmB9bbC0OODZ_TbL0ZUhMlWNq0nAn0pbqebZ2Jl1XtLDTq9UrylAueRguvzE72z5BXwU18KO2yjyu4AJJH9OZ-SfRKGyYpSrw8GjDXL6nNnp5MOfNMoy1xUeHkLV_2ZUH-2KXWxBVrPmXEX3Vmyp7eVIakWfkk3ixn5sfCfLrzFHFj_21e_teOVQTeXQIQqJq7AZCGu6iqQQ\",\"e\":\"AQAB\",\"kid\":\"EsH_qKo5ycKyU6slnhEYFCvkdaYtVQxcJlo_ZZsuIBw\"}]}"
+      }
+    },
+    {
+      "clientId": "9e53bded5e7d4ee4bc9e7e30f7a9f0a6",
+      "name": "SpRp_MVC_PKCE",
+      "description": "SpRp_MVC FAPI1 pkce (public client, PKCE S256, JARM).",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "consentRequired": false,
+      "redirectUris": [ "https://localhost:44336/Fapi1/Callback" ],
+      "webOrigins": [],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "authorization.signed.response.alg": "RS256"
+      }
+    },
+    {
+      "clientId": "0cb517873cca4afd86098316373eaffc",
+      "name": "SpRp_MVC_FAPI2",
+      "description": "SpRp_MVC FAPI2 par (PAR required, signed request object, private_key_jwt + PKCE S256, JARM, id_token JWE).",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-jwt",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "consentRequired": false,
+      "redirectUris": [ "https://localhost:44336/Fapi2/Callback" ],
+      "webOrigins": [],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "require.pushed.authorization.requests": "true",
+        "request.object.signature.alg": "RS256",
+        "token.endpoint.auth.signing.alg": "RS256",
+        "authorization.signed.response.alg": "RS256",
+        "id.token.encrypted.response.alg": "RSA-OAEP",
+        "id.token.encrypted.response.enc": "A256GCM",
+        "use.jwks.url": "false",
+        "use.jwks.string": "true",
+        "jwks.string": "{\"keys\":[{\"kty\":\"RSA\",\"alg\":\"RS256\",\"use\":\"sig\",\"n\":\"rmLnq3chsnu8k11V_acJ9EAxcHU8w6B74LmNm0WFVEQWXm9t8m6QSfdBTzej-1zEbezZYNYSsJFCgo7Yn-N1WcADSMgy6XhYbT8nbbpQ79TmkI_uiSUvKrrxRiSm2IT9RwZ7V7ftUebmB9bbC0OODZ_TbL0ZUhMlWNq0nAn0pbqebZ2Jl1XtLDTq9UrylAueRguvzE72z5BXwU18KO2yjyu4AJJH9OZ-SfRKGyYpSrw8GjDXL6nNnp5MOfNMoy1xUeHkLV_2ZUH-2KXWxBVrPmXEX3Vmyp7eVIakWfkk3ixn5sfCfLrzFHFj_21e_teOVQTeXQIQqJq7AZCGu6iqQQ\",\"e\":\"AQAB\",\"kid\":\"EsH_qKo5ycKyU6slnhEYFCvkdaYtVQxcJlo_ZZsuIBw\"},{\"kty\":\"RSA\",\"alg\":\"RSA-OAEP\",\"use\":\"enc\",\"n\":\"rmLnq3chsnu8k11V_acJ9EAxcHU8w6B74LmNm0WFVEQWXm9t8m6QSfdBTzej-1zEbezZYNYSsJFCgo7Yn-N1WcADSMgy6XhYbT8nbbpQ79TmkI_uiSUvKrrxRiSm2IT9RwZ7V7ftUebmB9bbC0OODZ_TbL0ZUhMlWNq0nAn0pbqebZ2Jl1XtLDTq9UrylAueRguvzE72z5BXwU18KO2yjyu4AJJH9OZ-SfRKGyYpSrw8GjDXL6nNnp5MOfNMoy1xUeHkLV_2ZUH-2KXWxBVrPmXEX3Vmyp7eVIakWfkk3ixn5sfCfLrzFHFj_21e_teOVQTeXQIQqJq7AZCGu6iqQQ\",\"e\":\"AQAB\",\"kid\":\"EsH_qKo5ycKyU6slnhEYFCvkdaYtVQxcJlo_ZZsuIBw-enc\"}]}"
+      }
+    },
+    {
+      "clientId": "a5a72235cf4946b58927dbf42b0d94a5",
+      "name": "SpRp_MVC_FAPI2_MTLS",
+      "description": "SpRp_MVC FAPI2 par_mtls (PAR required, tls_client_auth by subject DN, signed request object, PKCE S256, JARM, id_token JWE).",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "clientAuthenticatorType": "client-x509",
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "consentRequired": false,
+      "redirectUris": [ "https://localhost:44336/Fapi2/Callback" ],
+      "webOrigins": [],
+      "attributes": {
+        "x509.subjectdn": "CN=MPAS Test Client",
+        "x509.casubjectdn": "CN=MPAS Test Client",
+        "x509.allow.regex.pattern.comparison": "false",
+        "pkce.code.challenge.method": "S256",
+        "require.pushed.authorization.requests": "true",
+        "request.object.signature.alg": "RS256",
+        "authorization.signed.response.alg": "RS256",
+        "id.token.encrypted.response.alg": "RSA-OAEP",
+        "id.token.encrypted.response.enc": "A256GCM",
+        "use.jwks.url": "false",
+        "use.jwks.string": "true",
+        "jwks.string": "{\"keys\":[{\"kty\":\"RSA\",\"alg\":\"RS256\",\"use\":\"sig\",\"n\":\"rmLnq3chsnu8k11V_acJ9EAxcHU8w6B74LmNm0WFVEQWXm9t8m6QSfdBTzej-1zEbezZYNYSsJFCgo7Yn-N1WcADSMgy6XhYbT8nbbpQ79TmkI_uiSUvKrrxRiSm2IT9RwZ7V7ftUebmB9bbC0OODZ_TbL0ZUhMlWNq0nAn0pbqebZ2Jl1XtLDTq9UrylAueRguvzE72z5BXwU18KO2yjyu4AJJH9OZ-SfRKGyYpSrw8GjDXL6nNnp5MOfNMoy1xUeHkLV_2ZUH-2KXWxBVrPmXEX3Vmyp7eVIakWfkk3ixn5sfCfLrzFHFj_21e_teOVQTeXQIQqJq7AZCGu6iqQQ\",\"e\":\"AQAB\",\"kid\":\"EsH_qKo5ycKyU6slnhEYFCvkdaYtVQxcJlo_ZZsuIBw\"},{\"kty\":\"RSA\",\"alg\":\"RSA-OAEP\",\"use\":\"enc\",\"n\":\"rmLnq3chsnu8k11V_acJ9EAxcHU8w6B74LmNm0WFVEQWXm9t8m6QSfdBTzej-1zEbezZYNYSsJFCgo7Yn-N1WcADSMgy6XhYbT8nbbpQ79TmkI_uiSUvKrrxRiSm2IT9RwZ7V7ftUebmB9bbC0OODZ_TbL0ZUhMlWNq0nAn0pbqebZ2Jl1XtLDTq9UrylAueRguvzE72z5BXwU18KO2yjyu4AJJH9OZ-SfRKGyYpSrw8GjDXL6nNnp5MOfNMoy1xUeHkLV_2ZUH-2KXWxBVrPmXEX3Vmyp7eVIakWfkk3ixn5sfCfLrzFHFj_21e_teOVQTeXQIQqJq7AZCGu6iqQQ\",\"e\":\"AQAB\",\"kid\":\"EsH_qKo5ycKyU6slnhEYFCvkdaYtVQxcJlo_ZZsuIBw-enc\"}]}"
+      }
+    }
+  ]
+}

@@ -33,6 +33,7 @@
 //*                                SpRp_AuthRequestPushUri は読まない）と、改名前の名前が残っている設定の検出のテストを足した。
 //*                                Properties_ReadTheirKeys の Isser を、新しい名前（SpRp_Issuer）で確かめるようにした。
 //*                                RemoteJwkSetStore_ReadsConfig は、JWK Set の URL を SpRp_JwkSetUri で渡すようにした（改名前の名前を読まなくしたため。#666）
+//*  2026/11/14  玄人 幸道         SpRp_Saml2SpEntityId の読み方（在れば Audience に照合する）のテストと、キーの対応を足した（#693）
 //**********************************************************************************
 
 using System;
@@ -211,6 +212,52 @@ namespace TestFramework.Authentication
             SAML2Metadata.Clear();
         }
 
+        /// <summary>
+        /// VerifyResponseWithReason（設定の版）：SpRp_Saml2SpEntityId が在れば、Audience をそれと照合する（#693）。
+        /// 無ければ、従来どおり SpRp_Saml2AcsUri と照合する。
+        /// </summary>
+        [Test]
+        [Basis("設計：SAML2Client.VerifyResponseWithReason（設定の版）の remarks（SpRp_Saml2SpEntityId が在れば Audience に照合する。空なら SpRp_Saml2AcsUri）")]
+        [Basis("SAML 2.0 Profiles 4.1.4.2（Audience は SP の一意の識別子）")]
+        public void Saml2_ReadsSpEntityId()
+        {
+            const string spEntityId = "http://sp.example.com/";
+            RSA idp = TestCertificates.RsaPrivateKey();
+
+            // Audience に SP の entityID を入れた応答と、従来の応答（Audience に ACS URL）
+            string toEntityId = SAML2Client.CreatePostResponse(SAML2BindingsTests.Issuer, SAML2BindingsTests.Recipient, spEntityId,
+                "req01", SAML2Enum.StatusCode.Success, "user01", SAML2Enum.NameIDFormat.Persistent,
+                SAML2Enum.AuthnContextClassRef.Unspecified, 3600, null, idp);
+            string toAcs = SAML2Client.CreatePostResponse(SAML2BindingsTests.Issuer, SAML2BindingsTests.Recipient,
+                "req01", SAML2Enum.StatusCode.Success, "user01", SAML2Enum.NameIDFormat.Persistent,
+                SAML2Enum.AuthnContextClassRef.Unspecified, 3600, null, idp);
+
+            Dictionary<string, string> config = new Dictionary<string, string>
+            {
+                { "SpRp_Saml2EntityId", SAML2BindingsTests.Issuer },
+                { "SpRp_Saml2AcsUri", SAML2BindingsTests.Recipient },
+                { "SpRp_Saml2SpEntityId", spEntityId },
+                { "SpRp_RsaCerFilePath", TestCertificates.RsaCer }
+            };
+
+            WithConfig(config, () =>
+            {
+                SAML2VerifyResult r = SAML2Client.VerifyResponseWithReason(null, toEntityId, "req01", "", "");
+                Assert.That(r.IsValid, Is.True, r.ReasonDescription);
+                Assert.That(r.RecipientMatched, Is.True, "Recipient は ACS URL と照合する");
+                Assert.That(SAML2Client.VerifyResponseWithReason(null, toAcs, "req01", "", "").Reason,
+                    Is.EqualTo(SAML2VerifyResult.Reasons.AudienceMismatch), "entityID が在れば、ACS URL の Audience は通さない");
+            });
+
+            config["SpRp_Saml2SpEntityId"] = "";
+            WithConfig(config, () =>
+            {
+                Assert.That(SAML2Client.VerifyResponseWithReason(null, toAcs, "req01", "", "").IsValid, Is.True, "空なら従来どおり");
+                Assert.That(SAML2Client.VerifyResponseWithReason(null, toEntityId, "req01", "", "").Reason,
+                    Is.EqualTo(SAML2VerifyResult.Reasons.AudienceMismatch), "空なら ACS URL と照合する");
+            });
+        }
+
         /// <summary>各プロパティは、対応する SpRp_* のキーを読む（キー名の取り違えが無いこと）。</summary>
         [Test]
         public void Properties_ReadTheirKeys()
@@ -226,6 +273,7 @@ namespace TestFramework.Authentication
                 { "SpRp_Saml2MetadataUri", () => CmnClientParams.SpRp_Saml2MetadataUri },
                 { "SpRp_Saml2EntityId", () => CmnClientParams.SpRp_Saml2EntityId },
                 { "SpRp_Saml2AcsUri", () => CmnClientParams.SpRp_Saml2AcsUri },
+                { "SpRp_Saml2SpEntityId", () => CmnClientParams.SpRp_Saml2SpEntityId },
                 { "SpRp_RsaCerFilePath", () => CmnClientParams.RsaCerFilePath },
                 { "SpRp_EcdsaCerFilePath", () => CmnClientParams.EcdsaCerFilePath },
                 { "SpRp_RsaPfxPassword", () => CmnClientParams.RsaPfxPassword },

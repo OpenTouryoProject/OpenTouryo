@@ -1100,8 +1100,8 @@ Microsoft.Data.SqlClient.SNI                6.0.2   （SqlClient 7.0.0 でも据
 
 # 3. ③④を、復元された DLL の実体版に合わせる
 # 4. 検査する（不一致 0 であること）
-.\ComparePackage.ps1 -Check     # ②③
-.\CompareRedirect.ps1 -Check    # ④
+..\files\tools\PowerShell\Verify\ComparePackage.ps1 -Check     # ②③
+..\files\tools\PowerShell\Verify\CompareRedirect.ps1 -Check    # ④
 
 # 5. 検証する。**VB 側にも packages.config がある**ので Both で回す
 .\0_RunAll.ps1 -Lang Both
@@ -1115,9 +1115,9 @@ Microsoft.Data.SqlClient.SNI                6.0.2   （SqlClient 7.0.0 でも据
 ## 13. 依存パッケージの脆弱性（#610）
 
 ```powershell
-.\CheckVulnerability.ps1                         # 一覧（推移的な依存を含む）
-.\CheckVulnerability.ps1 -Detail                 # 該当するプロジェクトも出す
-.\CheckVulnerability.ps1 -IssueDraft <パス>      # Issue の文面の下書きを書き出す（投稿はしない）
+..\files\tools\PowerShell\Verify\CheckVulnerability.ps1                         # 一覧（推移的な依存を含む）
+..\files\tools\PowerShell\Verify\CheckVulnerability.ps1 -Detail                 # 該当するプロジェクトも出す
+..\files\tools\PowerShell\Verify\CheckVulnerability.ps1 -IssueDraft <パス>      # Issue の文面の下書きを書き出す（投稿はしない）
 ```
 
 終了コードは `0` = 無し、`1` = あり（`-Check` のとき）、`2` = 脆弱性データを取得できない。

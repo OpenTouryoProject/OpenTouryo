@@ -231,7 +231,7 @@ sakura -GREPMODE -GKEY="ビルドに" -GFOLDER="." -GFILE="*.log" -GOPT=P -GCODE
 | 実行中に画面がクリアされ、それまでの結果が消える | 子プロセスの `chcp 65001` はコンソール全体に影響する | スクリプト冒頭で先に切り替える |
 | 表の見出し・罫線・データがずれる | 5.1 の `Format-Table` は**桁数ではなく文字数**で幅を決める（全角は 1 文字で 2 桁） | `SummaryTable.ps1` の `Write-SummaryTable` を使う |
 | 子プロセスの標準入力に渡した値（パスワードなど）が合わない。**5.1 からだけ**起き、7 からは通る | 5.1（.NET Framework）は子プロセスの標準入力を `[Console]::InputEncoding` で開き、**それが BOM 付きの UTF-8 だと、起動した時点で BOM を書く**。net10.0 の子プロセスは、それを値の先頭の 1 文字（U+FEFF）として読む（net48 の子プロセスは読み飛ばす） | 子プロセスを起動する前に **`[Console]::InputEncoding` を BOM 無しの UTF-8 にする**。受け取る側も、先頭の BOM を読み飛ばすとよい（#668。`Sample4SpRp\E2E\CliLoginE2E.ps1`・`SpRp_CLI`） |
-| 非 ASCII の `echo` を持つ `.bat` を呼ぶと、その行が化ける | **cmd は、バッチをコンソールの出力のコード ページで読む**（日本語の Windows の既定は 932）。UTF-8 で書いた bat の日本語は、932 では読み違える | **呼ぶ間だけ `[Console]::OutputEncoding` を UTF-8 にし、`finally` で戻す**（#668。`Sample4SpRp\Stub\StubCompose.ps1`）。根本は bat を ASCII にする（4 節） |
+| 非 ASCII の `echo` を持つ `.bat` を呼ぶと、その行が化ける | **cmd は、バッチをコンソールの出力のコード ページで読む**（日本語の Windows の既定は 932）。UTF-8 で書いた bat の日本語は、932 では読み違える | **呼ぶ間だけ `[Console]::OutputEncoding` を UTF-8 にし、`finally` で戻す**（#668。`Sample4SpRp\container\Stub\StubCompose.ps1`）。根本は bat を ASCII にする（4 節） |
 
 ```powershell
 # 7 専用の引数は、バージョンを見て付け外しする
@@ -267,8 +267,8 @@ finally
 - **標準入力の BOM は、7 から動かすと起きない。** 5.1 から動かして確かめること（下の「変更したら 5.1 でも実行」）
 
 ```powershell
-# 集計表は Format-Table ではなく、桁数を自前で数える整形を使う
-. (Join-Path $PSScriptRoot "SummaryTable.ps1")
+# 集計表は Format-Table ではなく、桁数を自前で数える整形を使う（root\programs のスクリプトから。#687）
+. (Join-Path $PSScriptRoot "..\files\tools\PowerShell\Verify\SummaryTable.ps1")
 Write-SummaryTable $results
 ```
 

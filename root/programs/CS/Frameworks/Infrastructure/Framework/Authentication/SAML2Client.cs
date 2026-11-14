@@ -44,6 +44,9 @@
 //*                                鍵を受ける版は null・空を ArgumentNullException にする（黙って無署名にしないため）
 //*  2026/10/22  玄人 幸道         処理区分ごとに partial クラスへ分割した（SAML2Client.*.cs）
 //*  2026/10/22  玄人 幸道         IdP 側の要求の検証・応答の作成を追加（SAML2Client.VerifyRequest.cs / CreateResponse.cs。#634）
+//*  2026/11/14  玄人 幸道         CreateRedirectRequest / CreatePostRequest に、Destination（送り先）を受ける版を追加し、
+//*                                受けない従来の 4 つを Obsolete（警告）にした。署名した要求に Destination が無く、
+//*                                仕様（SAML Bindings 3.4.5.2・3.5.5.2）に反していた。従来の版の振る舞いは変えていない（#693）
 //**********************************************************************************
 
 using System;
@@ -90,7 +93,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <remarks>
         /// 署名には CmnClientParams.RsaPfxFilePath の鍵を使う。
         /// 相手（IdP）ごとに鍵を替える場合は、digitalSign を受けるオーバーロードを使う（#606）。
+        ///
+        /// **Destination を入れない**（署名した要求には要る。SAML Bindings 3.4.5.2）。destination を受ける版を使う（#693）。
         /// </remarks>
+        [Obsolete("This overload does not set the Destination of the signed request, please use the overload that receives the destination instead.")]
         public static string CreateRedirectRequest(
             SAML2Enum.RequestOrResponse createRoR,
             SAML2Enum.ProtocolBinding protocolBinding,
@@ -119,7 +125,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <remarks>
         /// 署名には CmnClientParams.RsaPfxFilePath の鍵を使う。
         /// 相手（IdP）ごとに鍵を替える場合は、rsa を受けるオーバーロードを使う（#606）。
+        ///
+        /// **Destination を入れない**（署名した要求には要る。SAML Bindings 3.5.5.2）。destination を受ける版を使う（#693）。
         /// </remarks>
+        [Obsolete("This overload does not set the Destination of the signed request, please use the overload that receives the destination instead.")]
         public static string CreatePostRequest(
             SAML2Enum.ProtocolBinding protocolBinding,
             SAML2Enum.NameIDFormat nameIDFormat,
@@ -134,6 +143,70 @@ namespace Touryo.Infrastructure.Framework.Authentication
             return SAML2Client.CreatePostRequest(
                 protocolBinding, nameIDFormat,
                 iss, assertionConsumerService, relayState, x509.GetRSAPrivateKey(), out id);
+        }
+
+        /// <summary>CreateRedirectRequest（Destination を入れる版）</summary>
+        /// <param name="createRoR">SAML2Enum.RequestOrResponse</param>
+        /// <param name="protocolBinding">SAML2Enum.ProtocolBinding</param>
+        /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
+        /// <param name="iss">string</param>
+        /// <param name="assertionConsumerService">string</param>
+        /// <param name="destination">string（送り先。IdP の SSO の口（HTTP-Redirect）。null・空は受けない）</param>
+        /// <param name="relayState">string</param>
+        /// <param name="id">out string</param>
+        /// <param name="hashAlgorithmName">HashAlgorithmName</param>
+        /// <returns>queryString</returns>
+        /// <remarks>
+        /// 自由に利用できる。署名には CmnClientParams.RsaPfxFilePath の鍵を使う。
+        /// 相手（IdP）ごとに鍵を替える場合は、digitalSign を受けるオーバーロードを使う。
+        ///
+        /// **署名した要求には、Destination に送り先の URL を入れなければならない**（SAML Bindings 3.4.5.2。#693）。
+        /// 送り先は、相手のメタデータの SingleSignOnService の Location（SAML2Metadata.SsoRedirectLocation）。
+        /// </remarks>
+        public static string CreateRedirectRequest(
+            SAML2Enum.RequestOrResponse createRoR,
+            SAML2Enum.ProtocolBinding protocolBinding,
+            SAML2Enum.NameIDFormat nameIDFormat,
+            string iss, string assertionConsumerService, string destination, string relayState, out string id,
+            HashAlgorithmName? hashAlgorithmName = null)
+        {
+            HashAlgorithmName han = hashAlgorithmName ?? HashAlgorithmName.SHA256;
+            DigitalSignX509 dsX509 = new DigitalSignX509(
+                CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword, han);
+
+            return SAML2Client.CreateRedirectRequest(
+                createRoR, protocolBinding, nameIDFormat,
+                iss, assertionConsumerService, destination, relayState, dsX509, out id);
+        }
+
+        /// <summary>CreatePostRequest（Destination を入れる版）</summary>
+        /// <param name="protocolBinding">SAML2Enum.ProtocolBinding</param>
+        /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
+        /// <param name="iss">string</param>
+        /// <param name="assertionConsumerService">string</param>
+        /// <param name="destination">string（送り先。IdP の SSO の口（HTTP-POST）。null・空は受けない）</param>
+        /// <param name="relayState">string</param>
+        /// <param name="id">out string</param>
+        /// <returns>samlRequest</returns>
+        /// <remarks>
+        /// 自由に利用できる。署名には CmnClientParams.RsaPfxFilePath の鍵を使う。
+        /// 相手（IdP）ごとに鍵を替える場合は、rsa を受けるオーバーロードを使う。
+        ///
+        /// **署名した要求には、Destination に送り先の URL を入れなければならない**（SAML Bindings 3.5.5.2。#693）。
+        /// </remarks>
+        public static string CreatePostRequest(
+            SAML2Enum.ProtocolBinding protocolBinding,
+            SAML2Enum.NameIDFormat nameIDFormat,
+            string iss, string assertionConsumerService, string destination, string relayState, out string id)
+        {
+#if NETSTD
+            X509Certificate2 x509 = X509CertificateLoader.LoadPkcs12FromFile(CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword);
+#else
+            X509Certificate2 x509 = new X509Certificate2(CmnClientParams.RsaPfxFilePath, CmnClientParams.RsaPfxPassword);
+#endif
+            return SAML2Client.CreatePostRequest(
+                protocolBinding, nameIDFormat,
+                iss, assertionConsumerService, destination, relayState, x509.GetRSAPrivateKey(), out id);
         }
 
         #endregion
@@ -159,7 +232,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// 設定（CmnClientParams.RsaPfxFilePath）の鍵で署名するなら、digitalSign を受けない版を使う。
         /// SAML2Bindings.EncodeAndSignRedirect は null なら署名しないので、
         /// null を素通しにすると、黙って無署名の要求を出すことになる。そのため null は例外にする。
+        ///
+        /// **Destination を入れない**（署名した要求には要る。SAML Bindings 3.4.5.2）。destination を受ける版を使う（#693）。
         /// </remarks>
+        [Obsolete("This overload does not set the Destination of the signed request, please use the overload that receives the destination instead.")]
         public static string CreateRedirectRequest(
             SAML2Enum.RequestOrResponse createRoR,
             SAML2Enum.ProtocolBinding protocolBinding,
@@ -201,7 +277,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// 設定（CmnClientParams.RsaPfxFilePath）の鍵で署名するなら、rsa を受けない版を使う。
         /// SAML2Bindings.EncodeAndSignPost は null なら署名しないので、
         /// null を素通しにすると、黙って無署名の要求を出すことになる。そのため null は例外にする。
+        ///
+        /// **Destination を入れない**（署名した要求には要る。SAML Bindings 3.5.5.2）。destination を受ける版を使う（#693）。
         /// </remarks>
+        [Obsolete("This overload does not set the Destination of the signed request, please use the overload that receives the destination instead.")]
         public static string CreatePostRequest(
             SAML2Enum.ProtocolBinding protocolBinding,
             SAML2Enum.NameIDFormat nameIDFormat,
@@ -218,6 +297,97 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string samlRequest = SAML2Bindings.CreateRequest(
                 iss, protocolBinding, nameIDFormat,
                 assertionConsumerService, out id).OuterXml;
+
+            // SamlRequestのエンコと署名
+            return SAML2Bindings.EncodeAndSignPost(samlRequest, id, rsa);
+        }
+
+        /// <summary>CreateRedirectRequest（Destination を入れる版）</summary>
+        /// <param name="createRoR">SAML2Enum.RequestOrResponse</param>
+        /// <param name="protocolBinding">SAML2Enum.ProtocolBinding</param>
+        /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
+        /// <param name="iss">string</param>
+        /// <param name="assertionConsumerService">string</param>
+        /// <param name="destination">string（送り先。IdP の SSO の口（HTTP-Redirect）。null・空は受けない）</param>
+        /// <param name="relayState">string</param>
+        /// <param name="digitalSign">
+        /// 署名に使う DigitalSign（自分の秘密鍵）。SigAlg も、この DigitalSign のアルゴリズムから決まる。
+        /// null は受けない（ArgumentNullException）。
+        /// </param>
+        /// <param name="id">out string</param>
+        /// <returns>queryString</returns>
+        /// <remarks>
+        /// 自由に利用できる。
+        ///
+        /// **署名した要求には、Destination に送り先の URL を入れなければならない**（SAML Bindings 3.4.5.2。#693）。
+        /// 要求は必ず署名するので、destination の null・空は ArgumentNullException にする（黙って Destination の無い要求を出さない）。
+        /// </remarks>
+        public static string CreateRedirectRequest(
+            SAML2Enum.RequestOrResponse createRoR,
+            SAML2Enum.ProtocolBinding protocolBinding,
+            SAML2Enum.NameIDFormat nameIDFormat,
+            string iss, string assertionConsumerService, string destination, string relayState,
+            DigitalSign digitalSign, out string id)
+        {
+            if (string.IsNullOrEmpty(destination))
+            {
+                throw new ArgumentNullException(nameof(destination));
+            }
+
+            if (digitalSign == null)
+            {
+                throw new ArgumentNullException(nameof(digitalSign));
+            }
+
+            // SamlRequestの生成（Destination を入れる）
+            string samlRequest = SAML2Bindings.CreateRequest(
+                iss, protocolBinding, nameIDFormat,
+                assertionConsumerService, destination, out id).OuterXml;
+
+            // SamlRequestのエンコと、QueryStringを生成（ + 署名）
+            return SAML2Bindings.EncodeAndSignRedirect(
+                createRoR, samlRequest, relayState, digitalSign);
+        }
+
+        /// <summary>CreatePostRequest（Destination を入れる版）</summary>
+        /// <param name="protocolBinding">SAML2Enum.ProtocolBinding</param>
+        /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
+        /// <param name="iss">string</param>
+        /// <param name="assertionConsumerService">string</param>
+        /// <param name="destination">string（送り先。IdP の SSO の口（HTTP-POST）。null・空は受けない）</param>
+        /// <param name="relayState">string</param>
+        /// <param name="rsa">
+        /// 署名に使う RSA（自分の秘密鍵）。
+        /// null は受けない（ArgumentNullException）。
+        /// </param>
+        /// <param name="id">out string</param>
+        /// <returns>samlRequest</returns>
+        /// <remarks>
+        /// 自由に利用できる。
+        ///
+        /// **署名した要求には、Destination に送り先の URL を入れなければならない**（SAML Bindings 3.5.5.2。#693）。
+        /// 要求は必ず署名するので、destination の null・空は ArgumentNullException にする。
+        /// </remarks>
+        public static string CreatePostRequest(
+            SAML2Enum.ProtocolBinding protocolBinding,
+            SAML2Enum.NameIDFormat nameIDFormat,
+            string iss, string assertionConsumerService, string destination, string relayState,
+            RSA rsa, out string id)
+        {
+            if (string.IsNullOrEmpty(destination))
+            {
+                throw new ArgumentNullException(nameof(destination));
+            }
+
+            if (rsa == null)
+            {
+                throw new ArgumentNullException(nameof(rsa));
+            }
+
+            // SamlRequestの生成（Destination を入れる）
+            string samlRequest = SAML2Bindings.CreateRequest(
+                iss, protocolBinding, nameIDFormat,
+                assertionConsumerService, destination, out id).OuterXml;
 
             // SamlRequestのエンコと署名
             return SAML2Bindings.EncodeAndSignPost(samlRequest, id, rsa);
