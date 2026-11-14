@@ -31,6 +31,7 @@
 //*  2026/11/05  玄人 幸道         sub が iss と違っても通すこと（観測）・形の壊れた入力・scope の有無・ES256 の期限切れを足した（#654 のレビューの指摘 3・5）
 //*  2026/11/05  玄人 幸道         aud を唯一の値に限ったことのテストを足した（#654 のレビューの指摘 1）
 //*  2026/11/06  玄人 幸道         検証鍵（JWS）を受ける Verify のテストを追加（#664）
+//*  2026/11/14  玄人 幸道         aud の根拠を、改訂案から発行された RFC 10070 4 に書き換え、issuer を含む配列を断るケースを足した（#697）
 //**********************************************************************************
 
 using System;
@@ -291,7 +292,7 @@ namespace TestFramework.Authentication
         [Test]
         [Basis("RFC 7523 3 の 1〜5（iss・sub・aud・exp を持つ。aud が自分を示さなければ断る。exp を過ぎたら・nbf より前なら断る）")]
         [Basis("RFC 7519 4.1.3（aud は StringOrURI か、その配列）")]
-        [Basis("draft-ietf-oauth-rfc7523bis-11 4（aud は issuer を唯一の値とし、ほかの値を含むものは断る。audience injection の対策）")]
+        [Basis("RFC 10070 4（クライアント認証の JWT は、issuer を唯一の audience としなければ、認可サーバは断らなければならない。RFC 7523 を更新し、3 の 3 を置き換えた）")]
         [Basis("#654")]
         public void Rsa_ExpectedIssAud()
         {
@@ -356,6 +357,7 @@ namespace TestFramework.Authentication
                     new { Label = "aud の末尾のスラッシュが違う（正規化しない）", Apply = (Action<JObject>)(p => p[OAuth2AndOIDCConst.aud] = "https://as.example.com") },
                     new { Label = "aud の配列が含まない", Apply = (Action<JObject>)(p => p[OAuth2AndOIDCConst.aud] = new JArray("a", "b")) },
                     new { Label = "aud の配列に、期待する値とほかの値（唯一の値でない）", Apply = (Action<JObject>)(p => p[OAuth2AndOIDCConst.aud] = new JArray("other", Aud)) },
+                    new { Label = "aud の配列に、issuer とほかの値（唯一の値でない。#697）", Apply = (Action<JObject>)(p => p[OAuth2AndOIDCConst.aud] = new JArray(AsIssuer, "https://other.example")) },
                     new { Label = "aud の配列に、期待する値が 2 つ（唯一の値でない）", Apply = (Action<JObject>)(p => p[OAuth2AndOIDCConst.aud] = new JArray(AsIssuer, Aud)) },
                     new { Label = "aud が空の配列", Apply = (Action<JObject>)(p => p[OAuth2AndOIDCConst.aud] = new JArray()) },
                     new { Label = "aud の配列に文字列でない要素", Apply = (Action<JObject>)(p => p[OAuth2AndOIDCConst.aud] = new JArray(Aud, 1)) },
