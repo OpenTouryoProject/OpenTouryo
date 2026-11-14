@@ -18,6 +18,7 @@
 //*  2026/11/04  玄人 幸道         外部ログインの要求を、MPAS のスタブに合わせた（prompt=none を外す・値をエンコード。#649）
 //*  2026/11/04  玄人 幸道         SAML2 の外部ログイン（btnButton3）を追加した（#649）
 //*  2026/11/05  玄人 幸道         外部ログインの IdP へは、基盤の画面遷移を通さずに送る（ウィンドウ GUID を付け足さない。#649）
+//*  2026/11/14  玄人 幸道         SAML2 の要求に送り先（Destination）を入れる版に替えた（#693）
 //**********************************************************************************
 
 using System;
@@ -200,12 +201,13 @@ namespace WebForms_Sample.Aspx.Start
             // **RelayState と要求の ID を控え、応答と照合する**（CSRF・応答の差し替え）
             string relayState = GetPassword.Base64UrlSecret(32);
             string id = "";
+            // **送り先（Destination）は、メタデータの SSO の口**（署名した要求には要る。SAML Bindings 3.4.5.2。#693）
             string queryString = SAML2Client.CreateRedirectRequest(
                 SAML2Enum.RequestOrResponse.Request,
                 SAML2Enum.ProtocolBinding.HttpRedirect,
                 SAML2Enum.NameIDFormat.Persistent,
                 "http://" + OAuth2AndOIDCParams.ClientID,
-                CmnClientParams.SpRp_Saml2AcsUri, relayState, out id);
+                CmnClientParams.SpRp_Saml2AcsUri, metadata.SsoRedirectLocation, relayState, out id);
 
             Session["saml2_relay_state"] = relayState;
             Session["saml2_request_id"] = id;

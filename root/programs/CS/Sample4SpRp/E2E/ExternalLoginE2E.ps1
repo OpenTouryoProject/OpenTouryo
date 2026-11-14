@@ -33,9 +33,9 @@
       |---|---|
       | IIS Express（net48） | サイトのフォルダ（obj を除く）を -OutputDir に写し、写しの app.config の値を書き換える |
       | Kestrel（net10.0） | 環境変数 appSettings__<キー>（Host.CreateDefaultBuilder が、appsettings.json より優先する） |
-      **SAML2 は回さない**（部品の SAML2 が、Keycloak と 2 か所で合わない。部品の側の問題として #693 で扱う。realm には SP を登録してある）。
-        - AuthnRequest に Destination が無い（署名した要求には要る。SAML 2.0 Bindings §3.4.5.2）。Keycloak は missing_required_destination で断る
-        - 応答の Audience を ACS の URL と照合する（Audience には SP の entityID が入る。SAML 2.0 Profiles §4.1.4.2）
+      **SAML2 は、SpRp_Saml2SpEntityId（自分（SP）の entityID）も差し替える**（対象ごと。要求の Issuer と同じ http:// ＋ client_id。#693）。
+        - Keycloak は、応答の Audience に SP の entityID を入れる（SAML 2.0 Profiles §4.1.4.2）。スタブは ACS の URL を入れるので、スタブでは差し替えない（空のまま）
+        - 要求の Destination（SAML 2.0 Bindings §3.4.5.2）は、サンプルが常に入れる（Keycloak は、無いと missing_required_destination で断る）
 
     ＜ブラウザの代わり＞
       HttpClient（リダイレクトは自分で辿る。Cookie の入れ物は 1 つ）。
@@ -51,7 +51,7 @@
     対象名の部分一致で絞る（複数可）
 
 .PARAMETER Idp
-    Stub（MPAS のスタブ。既定）/ KCK（Keycloak。..\container\KCK。SAML2 は回さない）
+    Stub（MPAS のスタブ。既定）/ KCK（Keycloak。..\container\KCK）
 
 .PARAMETER MpasRoot
     MultiPurposeAuthSite のリポジトリの場所。**省けば、環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**
@@ -84,6 +84,7 @@
      2026/11/07  玄人 幸道         MPAS の場所を、引数 ＞ 環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定 で決める（#652）
      2026/11/13  玄人 幸道         RepoPath.ps1・SummaryTable.ps1 を root/files/tools/PowerShell の下（RepoPaths・Verify）から読む（#687）
      2026/11/13  玄人 幸道         -Idp KCK（Keycloak）を足した。IdP の違いは Idp.ps1 にまとめた（#692）
+     2026/11/14  玄人 幸道         Keycloak でも SAML2 を回す。対象ごとの SP の entityID（SpRp_Saml2SpEntityId）を差し替える（#693）
 #>
 [CmdletBinding()]
 param(
@@ -139,12 +140,16 @@ $mvcCore = Join-Path $progRoot 'CS\Samples4NetCore\Backend\MVC_Sample\MVC_Sample
 $mvcVb   = Join-Path $progRoot 'VB\Samples\WebApp_sample\MVC_Sample\MVC_Sample'
 $wfVb    = Join-Path $progRoot 'VB\Samples\WebApp_sample\WebForms_Sample\WebForms_Sample'
 
+# SP の entityID（SAML2）は、要求の Issuer と同じ http:// ＋ client_id（MPAS の雛形・realm のクライアント。サンプルが Issuer に入れる値）
+$spMvc = 'http://f53469c17c5a432f86ce563b7805ab89'
+$spWf  = 'http://b6b393fe861b430eb4ee061006826b03'
+
 $targets = @(
-    @{ Name = 'MVC_Sample (net48)';          Lang = 'CS'; Kind = 'MVC';      Host = 'IISExpress'; Path = $mvcCs;   Port = 44334 }
-    @{ Name = 'MVC_Sample (net10.0)';        Lang = 'CS'; Kind = 'MVC';      Host = 'Kestrel';    Path = $mvcCore; Port = 44334 }
-    @{ Name = 'WebForms_Sample (net48)';     Lang = 'CS'; Kind = 'WebForms'; Host = 'IISExpress'; Path = $wfCs;    Port = 44333 }
-    @{ Name = 'MVC_Sample (VB net48)';       Lang = 'VB'; Kind = 'MVC';      Host = 'IISExpress'; Path = $mvcVb;   Port = 44334 }
-    @{ Name = 'WebForms_Sample (VB net48)';  Lang = 'VB'; Kind = 'WebForms'; Host = 'IISExpress'; Path = $wfVb;    Port = 44333 }
+    @{ Name = 'MVC_Sample (net48)';          Lang = 'CS'; Kind = 'MVC';      Host = 'IISExpress'; Path = $mvcCs;   Port = 44334; SpEntityId = $spMvc }
+    @{ Name = 'MVC_Sample (net10.0)';        Lang = 'CS'; Kind = 'MVC';      Host = 'Kestrel';    Path = $mvcCore; Port = 44334; SpEntityId = $spMvc }
+    @{ Name = 'WebForms_Sample (net48)';     Lang = 'CS'; Kind = 'WebForms'; Host = 'IISExpress'; Path = $wfCs;    Port = 44333; SpEntityId = $spWf }
+    @{ Name = 'MVC_Sample (VB net48)';       Lang = 'VB'; Kind = 'MVC';      Host = 'IISExpress'; Path = $mvcVb;   Port = 44334; SpEntityId = $spMvc }
+    @{ Name = 'WebForms_Sample (VB net48)';  Lang = 'VB'; Kind = 'WebForms'; Host = 'IISExpress'; Path = $wfVb;    Port = 44333; SpEntityId = $spWf }
 )
 
 $targets = @($targets | Where-Object { $Lang -eq 'Both' -or $_.Lang -eq $Lang })
@@ -155,9 +160,14 @@ if ($Only)
 
 $flows = @(if ($Flow -eq 'Both') { 'OIDC', 'SAML2' } else { $Flow })
 
-# **Keycloak では SAML2 を回さない**（部品の SAML2 が Keycloak と合わない：AuthnRequest の Destination・応答の Audience。#693。上の説明）
-$skippedSaml2 = ($Idp -eq 'KCK' -and $flows -contains 'SAML2')
-if ($Idp -eq 'KCK') { $flows = @($flows | Where-Object { $_ -ne 'SAML2' }) }
+# アプリの設定の差し替え（IdP がスタブなら空）。**SP の entityID は対象ごと**なので、ここで足す（#693）
+function Get-AppConfig($t)
+{
+    $config = @{}
+    foreach ($k in $idpInfo.WebConfig.Keys) { $config[$k] = $idpInfo.WebConfig[$k] }
+    if ($config.Count -gt 0) { $config['SpRp_Saml2SpEntityId'] = $t.SpEntityId }
+    return $config
+}
 
 # ------------------------------------------------------------------
 # HTTP（ブラウザの代わり）
@@ -384,12 +394,15 @@ function Start-App($t)
     $safe = ($t.Name -replace '[^A-Za-z0-9.]', '_')
     $log = Join-Path $OutputDir "app_$safe.log"
 
+    # 差し替える設定（IdP がスタブなら空。Get-AppConfig）
+    $appSettings = Get-AppConfig $t
+
     if ($t.Host -eq 'Kestrel')
     {
         if (-not (Test-Path $t.Path)) { throw "ビルドされていません : $($t.Path)" }
 
         # **IdP がスタブでなければ、設定を環境変数で差し替える**（appSettings__<キー>。起動したら、このプロセスからは消す）
-        foreach ($k in $idpInfo.WebConfig.Keys) { [Environment]::SetEnvironmentVariable("appSettings__$k", $idpInfo.WebConfig[$k]) }
+        foreach ($k in $appSettings.Keys) { [Environment]::SetEnvironmentVariable("appSettings__$k", $appSettings[$k]) }
         try
         {
             # コンテンツ ルートを合わせるため、出力フォルダを作業ディレクトリにする（st_Server.ps1 と同じ）
@@ -399,7 +412,7 @@ function Start-App($t)
         }
         finally
         {
-            foreach ($k in $idpInfo.WebConfig.Keys) { [Environment]::SetEnvironmentVariable("appSettings__$k", $null) }
+            foreach ($k in $appSettings.Keys) { [Environment]::SetEnvironmentVariable("appSettings__$k", $null) }
         }
     }
 
@@ -410,7 +423,7 @@ function Start-App($t)
 
     # **IdP がスタブでなければ、サイトを写し、写しの app.config の値を書き換える**（ソースのフォルダは変えない）
     $physical = $t.Path
-    if ($idpInfo.WebConfig.Count -gt 0)
+    if ($appSettings.Count -gt 0)
     {
         $physical = Join-Path $OutputDir "site_$safe"
         Remove-Item -Recurse -Force $physical -ErrorAction SilentlyContinue
@@ -419,9 +432,9 @@ function Start-App($t)
 
         $appConfig = Join-Path $physical 'app.config'
         $text = [IO.File]::ReadAllText($appConfig)
-        foreach ($k in $idpInfo.WebConfig.Keys)
+        foreach ($k in $appSettings.Keys)
         {
-            $v = [string]$idpInfo.WebConfig[$k]
+            $v = [string]$appSettings[$k]
             $pattern = '(key="' + [regex]::Escape($k) + '"\s+value=")[^"]*(")'
             if (-not [regex]::IsMatch($text, $pattern)) { throw "設定に $k がありません : $appConfig" }
             $text = [regex]::Replace($text, $pattern, { param($m) $m.Groups[1].Value + $v + $m.Groups[2].Value })
@@ -520,7 +533,6 @@ elseif (Test-Path $appSettings)
 if (-not $password) { $lack += "テスト利用者のパスワードを読めません（$appSettings。-Idp Stub なら TestUserPWD。-MpasRoot か -StubAppSettings で場所を指定する）" }
 
 if ($targets.Count -eq 0) { $lack += '対象がありません（-Lang / -Only を確かめる）' }
-if ($flows.Count -eq 0) { $lack += 'フローがありません（-Idp KCK では SAML2 を回さない。-Flow を確かめる）' }
 
 if ($lack.Count -gt 0)
 {
@@ -528,8 +540,7 @@ if ($lack.Count -gt 0)
     exit 2
 }
 Write-Output "  OK  $($idpInfo.Name)（$($idpInfo.Issuer)）・SQL Server・状態サービス・テスト利用者"
-if ($Idp -eq 'KCK') { Write-Output "      （アプリの設定を差し替えて動かす。net48 はサイトの写し（$OutputDir\site_*）、net10.0 は環境変数）" }
-if ($skippedSaml2) { Write-Output '  --  SAML2 は回さない（部品の SAML2 が Keycloak と合わない：AuthnRequest に Destination が無い・Audience を ACS の URL と照合する。#693）' }
+if ($Idp -eq 'KCK') { Write-Output "      （アプリの設定（SAML2 の SP の entityID を含む）を差し替えて動かす。net48 はサイトの写し（$OutputDir\site_*）、net10.0 は環境変数）" }
 
 # ------------------------------------------------------------------
 # 実行

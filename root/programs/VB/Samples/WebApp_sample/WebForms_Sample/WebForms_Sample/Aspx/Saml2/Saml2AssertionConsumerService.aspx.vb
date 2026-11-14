@@ -24,6 +24,7 @@
 '*  日時        更新者            内容
 '*  ----------  ----------------  -------------------------------------------------
 '*  2026/11/04  玄人 幸道         新規作成（C# 版から移植。#649）
+'*  2026/11/14  玄人 幸道         Audience を SP の entityID（SpRp_Saml2SpEntityId）と照合する版に替えた（空なら従来どおり ACS の URL。#693）
 '**********************************************************************************
 
 Imports System.Security.Cryptography
@@ -69,10 +70,11 @@ Namespace Aspx.Saml2
             Dim metadata As SAML2Metadata = Await SAML2Metadata.GetAsync()
             Dim keys As List(Of RSA) = If(metadata Is Nothing, New List(Of RSA)(), metadata.GetSigningKeys())
 
+            ' **Audience は、自分（SP）の entityID（SpRp_Saml2SpEntityId）と照合する**（SAML Profiles 4.1.4.2。空なら、従来どおり ACS の URL と。#693）
             Dim result As SAML2VerifyResult = SAML2Client.VerifyResponseWithReason(
                 queryString, Nothing, keys,
-                CmnClientParams.SpRp_Saml2EntityId, CmnClientParams.SpRp_Saml2AcsUri,
-                expectedRequestId, Request.QueryString("RelayState"), expectedRelayState)
+                CmnClientParams.SpRp_Saml2EntityId, CmnClientParams.SpRp_Saml2SpEntityId, CmnClientParams.SpRp_Saml2AcsUri,
+                expectedRequestId, Request.QueryString("RelayState"), expectedRelayState, Nothing)
 
             '  **識別子は NameID**（IdP の entityID と組で使う）。**Transient は受けない**（毎回変わる。SAML Core 8.3.8）。
             If Not result.IsValid _
