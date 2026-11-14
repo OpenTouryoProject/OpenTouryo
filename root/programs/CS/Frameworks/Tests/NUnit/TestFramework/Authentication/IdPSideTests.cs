@@ -349,6 +349,24 @@ namespace TestFramework.Authentication
             }
         }
 
+        /// <summary>
+        /// entityID を与え、ACS URL を空にすると、Audience は entityID と照合し、Recipient は照合しない（RecipientMatched は null）。
+        /// </summary>
+        [Test]
+        [Basis("設計：SAML2Client.VerifyResponseWithReason（Audience を SP の entityID と照合する版）の param（expectedAcsUrl は Recipient に照合する。空なら照合しない）")]
+        public void Response_EntityIdWithoutAcs()
+        {
+            string post = SAML2Client.CreatePostResponse(IdPEntityId, Acs, SpEntityId, "req01", SAML2Enum.StatusCode.Success,
+                "user01", SAML2Enum.NameIDFormat.Persistent, SAML2Enum.AuthnContextClassRef.Unspecified, 3600, null,
+                TestCertificates.RsaPrivateKey());
+
+            SAML2VerifyResult r = SAML2Client.VerifyResponseWithReason(null, post, new RSA[] { TestCertificates.RsaPublicKey() },
+                IdPEntityId, SpEntityId, "", "req01", null, null, null);
+            Assert.That(r.IsValid, Is.True, r.ReasonDescription);
+            Assert.That(r.AudienceMatched, Is.True);
+            Assert.That(r.RecipientMatched, Is.Null, "ACS URL が空なら Recipient は照合しない");
+        }
+
         /// <summary>Audience の値は、要素の値として入る（特殊な文字もエスケープされ、読み戻すと同じ値）。</summary>
         [Test]
         [Basis("設計：SAML2Bindings.CreateAssertion（Audience を指定する版）の remarks（要素の値として入れるので、特殊な文字もエスケープされる）")]
@@ -393,7 +411,7 @@ namespace TestFramework.Authentication
         /// 仕様（SAML Core 2.5.1.4）は、AudienceRestriction も Audience も複数を許す
         /// （1 つの中は「または」、複数の AudienceRestriction はそれぞれ独立に評価する）。
         /// **今の構造の確かめ（SAML2Bindings.VerifyByXPath）は、Audience をちょうど 1 つに限っている**（#693 では変えていない。
-        /// 変えるなら、受ける応答を広げることになる）。照合（ContainsAudience）は複数の AudienceRestriction に備えてある。
+        /// 変えるなら、受ける応答を広げることになる。そのときは、entityID との照合も、すべての AudienceRestriction を見る形に替える）。
         /// </remarks>
         [TestCase(new string[] { SpEntityId }, new string[] { "https://other.example.com/" }, Description = "AudienceRestriction が 2 つ（2 つ目に居ない）")]
         [TestCase(new string[] { SpEntityId }, new string[] { "https://other.example.com/", SpEntityId }, Description = "AudienceRestriction が 2 つ（どちらにも居る）")]

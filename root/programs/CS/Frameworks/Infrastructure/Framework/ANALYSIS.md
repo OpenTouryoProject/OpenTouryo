@@ -487,13 +487,14 @@ SAML の署名・検証は SP と IdP の双方が使うため、**IdP 側の処
 | 何を | 従来の版 | 足した版 |
 |---|---|---|
 | 要求（`AuthnRequest`）の `Destination` | **入れない**（`CreateRedirectRequest` / `CreatePostRequest` の 4 つ。**`[Obsolete]`（警告）**） | `destination`（送り先。IdP の SSO の口）を受ける版。**null・空は `ArgumentNullException`**（要求は必ず署名するので。SAML Bindings 3.4.5.2・3.5.5.2：署名した要求には `Destination` が要る）。`SAML2Bindings.CreateRequest` にも受ける版 |
-| SP：応答の `Audience` の照合 | **ACS URL と照合する**（最初の `Audience`） | `expectedSpEntityId` を受ける `VerifyResponseWithReason`（10 引数。`sigAlgs` も省略できない。従来の版の呼び出しと区別するため）。**すべての `AudienceRestriction` に entityID が在ること**を見る（SAML Profiles 4.1.4.2・Core 2.5.1.4）。null・空なら従来の照合。設定を読む版は `SpRp_Saml2SpEntityId` |
+| SP：応答の `Audience` の照合 | **ACS URL と照合する**（最初の `Audience`） | `expectedSpEntityId` を受ける `VerifyResponseWithReason`（10 引数。`sigAlgs` も省略できない。従来の版の呼び出しと区別するため）。**Audience を entityID と完全一致で比べる**（SAML Profiles 4.1.4.2）。null・空なら従来の照合。設定を読む版は `SpRp_Saml2SpEntityId` |
 | IdP：応答の `Audience` | **ACS URL を入れる** | `audience`（SP の entityID）を受ける `CreateRedirectResponse` / `CreatePostResponse`（鍵を受ける版）と `SAML2Bindings.CreateAssertion`。**値は要素の値として入れる**（特殊な文字もエスケープされる） |
 
 - **汎用認証サイト（MPAS）は、今は Audience に ACS URL を入れ、要求の `Destination` を見ない。** そのため、SP の設定（`SpRp_Saml2SpEntityId`）は、相手が仕様どおりの IdP のときだけ入れる。MPAS が `audience` を受ける版に替われば、どちらとも通る
 - **要求に `Destination` を足しても、従来の IdP の側（`VerifyRequest`）は断らない**（要素の有無しか見ない）。**IdP の側で `Destination` を確かめることはしていない**（今の SP を断ることになるため。別に扱う）
 - **構造の確かめ（`SAML2Bindings.VerifyByXPath`）は、`Audience` をちょうど 1 つに限っている**（以前から）。仕様は複数を許す（Core 2.5.1.4）が、#693 では広げていない。
-  そのため、`AudienceRestriction` や `Audience` が複数の応答は、照合の前に `SignatureInvalid`（構造）で断る
+  そのため、`AudienceRestriction` や `Audience` が複数の応答は、照合の前に `SignatureInvalid`（構造）で断る。
+  **広げるなら、entityID との照合も「すべての `AudienceRestriction` に在ること」に替える**（今は 1 つの Audience と比べている。`SAML2Bindings.GetAudiencesInAssertion` で、`AudienceRestriction` ごとに読める）
 - **`Destination` を受ける版と受けない版は、`null` のリテラルで呼ぶと区別できないことがある**（文字列と鍵の位置が重なるため）。鍵は型を付けて渡す
 
 **`VerifyRedirect` は 2 つ在る**（#604）。
