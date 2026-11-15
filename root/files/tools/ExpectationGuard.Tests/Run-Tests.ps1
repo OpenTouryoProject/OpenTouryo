@@ -1,4 +1,4 @@
-﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@ade897953a72 src/quality/ExpectationGuard/tests/Run-Tests.ps1 sha256:498968d23a132db2e29bb37ed2c5b273c1784a09dcfe0fb535cf3f559f4fbf37
+﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@945878daf458 src/quality/ExpectationGuard/tests/Run-Tests.ps1 sha256:148ff74fef45d3c648a327a2bdda0f90b56c1c16092b0cb8c32b88415900a1a0
 <#
 .SYNOPSIS
     期待値の変更の検出器の、判定の用例（cases.psd1）を回す（OpenTouryoCodingAgentAssets#3）。
@@ -109,16 +109,25 @@ function Invoke-Case($Case)
         $mode = $(if ($Case.Mode) { $Case.Mode } else { "Commit" })
         $commits = @($Case.Commits | Where-Object { $_ })
         $msgFile = Join-Path $repo ".git\CASE_MSG"
+        $shas = @()   # Commits の番目（1 から）のコミットの sha。メッセージの「@SHA<番目>@」を、その先頭 8 文字に置き換える（#14）
         for ($i = 0; $i -lt $commits.Count; $i++)
         {
             $c = $commits[$i]
             if ($guardAt -eq $i + 1) { Add-Guard $repo }
             if ($c.Files) { foreach ($k in $c.Files.Keys) { Write-RepoFile $repo $k $c.Files[$k] } }
             foreach ($d in @($c.Delete)) { if ($d) { Remove-Item -LiteralPath (Join-Path $repo $d) -Force } }
-            Invoke-GitQuiet $repo @("add", "-A")
-            [IO.File]::WriteAllText($msgFile, (Get-Content2 $c.Message), $utf8)
+            if ($mode -eq "Proposed" -and $i -eq $commits.Count - 1)
+            {
+                # 提案の検査：最後の 1 つはステージしない（Stage に書いたものだけステージする）
+                foreach ($s in @($c.Stage)) { if ($s) { Invoke-GitQuiet $repo @("add", "--", $s) } }
+            }
+            else { Invoke-GitQuiet $repo @("add", "-A") }
+            $text = [regex]::Replace((Get-Content2 $c.Message), '@SHA(\d+)@', { param($m) $shas[[int]$m.Groups[1].Value - 1].Substring(0, 8) })
+            [IO.File]::WriteAllText($msgFile, $text, $utf8)
             if ($mode -eq "Staged" -and $i -eq $commits.Count - 1) { break }
+            if ($mode -eq "Proposed" -and $i -eq $commits.Count - 1) { break }
             Invoke-GitQuiet $repo @("commit", "-q", "--allow-empty", "-F", $msgFile)
+            $shas += (& git -C $repo rev-parse HEAD)
         }
 
         $body = Join-Path $repo "guard\CheckExpectationChange.ps1"
@@ -154,11 +163,17 @@ function Invoke-Case($Case)
             {
                 "Commit"    { $r = @(& $body -Commit HEAD -PassThru -Quiet) }
                 "Staged"    { $r = @(& $body -Staged -MessageFile $msgFile -PassThru -Quiet) }
+                "Proposed"  {
+                    $before = (& git diff --cached --name-status) -join "`n"
+                    $r = @(& $body -Proposed -MessageFile $msgFile -PassThru -Quiet)
+                    $proposedCode = $LASTEXITCODE   # 後の git が $LASTEXITCODE を上書きする
+                    $indexChanged = ((& git diff --cached --name-status) -join "`n") -cne $before
+                }
                 "Range"     { $r = @(& $body -Range "$root..HEAD" -PassThru -Quiet) }
                 "Generated" { $r = @(& $body -Range "$root..HEAD" -CheckGenerated -PassThru -Quiet) }
                 default     { throw "不明な Mode : $mode" }
             }
-            $code = $LASTEXITCODE
+            $code = $(if ($mode -eq "Proposed") { $proposedCode } else { $LASTEXITCODE })
         }
         finally { Pop-Location }
 
@@ -171,7 +186,8 @@ function Invoke-Case($Case)
         $detail = (@($r | ForEach-Object { $_.Findings } | ForEach-Object { "{0} : {1}" -f $_.Kind, $_.Path }) + @($reviewItems | ForEach-Object { "要確認 {0} : {1}" -f $_.Kind, $_.Path }) + @($r | ForEach-Object { $_.Errors })) -join " / "
         $errs = @($r | ForEach-Object { $_.Errors }).Count
         $appr = @($r | ForEach-Object { $_.Approved }).Count
-        return [pscustomobject]@{ Exit = $code; Kinds = $kinds; Warnings = $warn; Errors = $errs; Approved = $appr; Review = $reviewItems.Count; ReviewKinds = $reviewKinds; Ask = $null; Detail = $detail }
+        if ($indexChanged) { $detail = "本物の索引が変わった / " + $detail }
+        return [pscustomobject]@{ IndexChanged = [bool]$indexChanged; Exit = $code; Kinds = $kinds; Warnings = $warn; Errors = $errs; Approved = $appr; Review = $reviewItems.Count; ReviewKinds = $reviewKinds; Ask = $null; Detail = $detail }
     }
     finally
     {
@@ -203,6 +219,7 @@ foreach ($c in $cases)
             $want = @($e.ReviewKinds | Sort-Object -Unique)
             if (($want -join "|") -cne (@($a.ReviewKinds) -join "|")) { $why += ("要確認 [{0}]（期待 [{1}]）" -f (@($a.ReviewKinds) -join ", "), ($want -join ", ")) }
         }
+        if ($a.PSObject.Properties["IndexChanged"] -and $a.IndexChanged) { $why += "本物の索引が変わった（提案の検査は索引を変えない）" }
         if ($null -ne $e.Ask -and $a.Ask -ne [bool]$e.Ask) { $why += ("ask {0}（期待 {1}）" -f $a.Ask, $e.Ask) }
     }
     catch
