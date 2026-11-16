@@ -1,5 +1,5 @@
 ---
-# expectation-guard-source: OpenTouryoCodingAgentAssets@945878daf458 src/quality/ExpectationGuard/opentouryo-expectation-reviewer.md sha256:f4b64d5c318697a2b90b01f274711195746fe1fc36224d87286e9d6ca06ff240
+# expectation-guard-source: OpenTouryoCodingAgentAssets@b1665b271e4f src/quality/ExpectationGuard/opentouryo-expectation-reviewer.md sha256:724d47c957adcba20ca1e8365bd0a0a92a4b8a50ac312b0ae92ded13374f452c
 name: opentouryo-expectation-reviewer
 description: 期待値の変更のトレーラー（Expectation-Change:）の理由を、検出器が検出した一覧・差分と突き合わせる（書いたモデルとは別のモデル）。トレーラーの文面を提案したら、コミットの前に使う。止める判定はせず、観点ごとに「合う／合わない／判断できない」と根拠を返す。ファイルは編集しない。
 tools: Read, Grep, Glob, Bash, PowerShell, WebFetch
@@ -30,7 +30,7 @@ model: sonnet
      人が自分から付けた理由は、差分のテストのすべてと突き合わせる（網羅は「理由が述べる変化が差分にあるか」で見る）
 2. `DiffCommand` の差分を**すべて**読む。`Findings` のファイルは必ず読み、テストなら変わったテストの前後の全体を読む。
 3. 理由が挙げる根拠を、**自分で**読む。
-   - Issue：`gh issue view <番号> --comments`
+   - Issue：`gh issue view <番号> --json title,body,comments`（`--comments` は端末につながっていないと本文を出さないので使わない。本文が読めなければ「判断できない」にする）
    - 仕様の節：WebFetch で原典の該当の節を読む（続きは offset で）。読めなければ「判断できない」にする
 4. 次の観点で判定する。
 
