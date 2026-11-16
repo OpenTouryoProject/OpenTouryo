@@ -19,7 +19,7 @@ https://github.com/OpenTouryoProject/OpenTouryo/
 
 ### 変更の前に QUALITY.md を読む（#640）
 
-**どこを・何で・どれだけ確かめるかは [`QUALITY.md`](QUALITY.md)（品質の羅針盤）が決める。**
+**どこを・何で・どれだけ確かめるかは [`QUALITY.md`](QUALITY.md)（品質の羅針盤）と、共通の決まり [`QUALITY.common.md`](QUALITY.common.md) が決める**（節の番号は同じ。common は OpenTouryoCodingAgentAssets の配布物で、ここでは直さない）。
 作業の対象がどの名前空間で、リスクはどれか。人が必ず見る箇所に触れるか。
 **期待値の変更**（Golden の `Result*.txt`・テストの削除・`Ignore` の追加）を含むか。
 これらを着手の前に引き、報告の冒頭に書く。
@@ -27,13 +27,13 @@ https://github.com/OpenTouryoProject/OpenTouryo/
 **期待値の変更を含むコミットには、トレーラー `Expectation-Change: <理由>` が要る。**
 コミットは人が行うので、エージェントは**トレーラーの文面を提案する**に留める。
 **文面を提案したら、コミットの前に突き合わせ役（サブエージェント `opentouryo-expectation-reviewer`）に、対象とメッセージのファイルだけを渡して回し、結果を報告に書く**（理由と差分が合っているか。OpenTouryoCodingAgentAssets#6）。
-理由には根拠の Issue 番号か仕様の節を書く。定義と書式は同書 3 節。
+理由には根拠の Issue 番号か仕様の節を書く。定義と書式は `QUALITY.common.md` 3 節。
 
-**バグを直すコミット（`fixed #NNN`）には、見つけた手段のトレーラー `Found-By: <手段> [<補足>]` を付ける**（同書 5 節。#657）。
+**バグを直すコミット（`fixed #NNN`）には、見つけた手段のトレーラー `Found-By: <手段> [<補足>]` を付ける**（`QUALITY.common.md` 5 節。#657）。
 **見つけた経緯は、そのセッションのエージェントが最もよく知っている。** コミット メッセージの案に入れる。
 推測で埋めず、分からなければ施主に聞く。機能の追加には付けない。語彙は `root/programs/rules.common.psd1`。
 
-**確かめ方も、トレーラーで残す**（同書 5 節。OpenTouryoCodingAgentAssets#12）。
+**確かめ方も、トレーラーで残す**（`QUALITY.common.md` 5 節。OpenTouryoCodingAgentAssets#12）。
 テストを流したら `Tested-with: <種類>[, <種類>]`（コードを変えて流していなければ `Tested-with: none`。無いと警告）、レビュー役（`.claude/agents/` の役の定義）か人がレビューしたら
 `Reviewed-with: <役> [(<モデル ID>)]`（人は `human`。役ごとに行を分ける）。**流していないテスト・回していないレビューは書かない。**
 
@@ -107,6 +107,15 @@ https://github.com/OpenTouryoProject/OpenTouryo/
 - **推測と、動かして確かめたことを分けて書く。** 起票の前に確かめられるなら、確かめる
 - **依存パッケージの脆弱性は、この節ではなく「依存パッケージの脆弱性を見つけたら」に従う**（その場で直す）
 
+### 作業の見える化（`AGENT-DASHBOARD.md`）
+
+**サブ エージェントを呼ぶか、施主に依頼・判断を仰ぐ作業では、ルートの `AGENT-DASHBOARD.md`（git の管理外）を書き続ける**（OpenTouryoCodingAgentAssets#19）。
+途中で呼ぶことになったら、**呼ぶ前に**作る（`quality-reviewer`・`opentouryo-expectation-reviewer` を回すときも同じ）。
+
+- 書くのは主のセッションだけ。形はルートの `AGENT-DASHBOARD.sample.md`（最初に作るときに読む）。セッションごとの節で、自分の節だけを書く直前に読み直して書き換える
+- 書き直すのは、作業の始まりと終わり・サブ エージェントを呼んだときと報告を受けたとき・施主に聞いたときと答えを受けたとき（時刻はそのとき取る）
+- 終わったら自分の節を「終了」にし、次に始めたら終了した節を消す（施主への依頼が残る節は、消さずに施主に確かめる）
+
 ### Git 操作は行わない（状態を変える操作をしない）
 
 **成果物の検収は人が行う。** エージェントは作業結果をワーキング ツリーに残すところまでを担当し、
@@ -131,8 +140,11 @@ Git 操作は人が手動で行う。
 - 既存の履歴は `fixed #NNN` で始まる簡潔な文面が主で、**署名行はその流儀から浮く**
 - セッションの URL は**外部から参照できない**。履歴に残しても辿れない
 
-付けるトレーラーは、`Expectation-Change:`・`Found-By:`・`Tested-with:`・`Reviewed-with:` だけである（[`QUALITY.md`](QUALITY.md) 3 節・5 節）。
+付けるトレーラーは、`Expectation-Change:`・`Found-By:`・`Tested-with:`・`Reviewed-with:` だけである（[`QUALITY.common.md`](QUALITY.common.md) 3 節・5 節）。
 トレーラーは**最後の段落**（本文との間に空行を 1 つ）に、空行を挟まずに並べる。git はそこしか読まない（検出器も止める）。
+コミット メッセージの案は、**人に出す前に検出器で確かめる**（OpenTouryoCodingAgentAssets#18）。
+案を**リポジトリの外**（一時フォルダ）のファイルに書き、`root\programs` で `.\CheckExpectationChange.ps1 -Proposed -MessageFile <案のファイル>` を動かす。
+作業ツリーの変更をすべてステージしたとして判定し、索引は変えない。止まれば、直してから出す。
 エージェント自身がコミットするよう指示された場合は、その時の指定に従う（上記は**提示する文面**の話）。
 
 **状態を報告する直前に、必ず取り直すこと。** 前のターンの出力や記憶から書かない。

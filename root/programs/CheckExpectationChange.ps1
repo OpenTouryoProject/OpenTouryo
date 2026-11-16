@@ -1,4 +1,4 @@
-﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@ade897953a72 src/quality/ExpectationGuard/CheckExpectationChange.ps1 sha256:112f828e4a20be73ec9614abee91936949372d3bd268386745fee10704e1a604
+﻿# expectation-guard-source: OpenTouryoCodingAgentAssets@b1665b271e4f src/quality/ExpectationGuard/CheckExpectationChange.ps1 sha256:d65d8b97c5ffa12e3cfad6a22d8cb4eccd3573677c2329c1fbf238c30cce430a
 <#
 .SYNOPSIS
     期待値の変更を検出し、トレーラー Expectation-Change が付いているかを確かめる（共通の本体）。
@@ -35,17 +35,30 @@
     # で始まる行と、git commit -v の切り取り線から後は見ない。
     **トレーラーは git と同じ読み方で読む**（git interpret-trailers。メッセージの最後の段落だけ）。集計（git log の %(trailers)）に
     載らない書き方（最後の段落に無い・全角の「：」・名前の綴りの違い・値が空）は、規則のトレーラーと承認のトレーラーとも止める。
+    **後のコミットでの承認**（OpenTouryoCodingAgentAssets#14）：-Range では、範囲の中の後のコミットの
+    「Expectation-Change-For: <sha> <理由>」（承認のトレーラーの名前＋「-For」）を、前のコミットの承認として扱う。
+    <sha> は 7 文字以上の前方一致で、範囲の中のそのコミットより前の 1 件に当たること（当たらなければ警告し、承認にしない）。
+    1 行に sha は 1 つ、理由は必須（書式の誤りは、どの動かし方でも止める）。-Staged・-Commit では、後の承認を見ない。
+    後のコミットで承認されたコミットは、トレーラーの書き方の誤りも止めずに警告にする（push したメッセージは書き直さないため）。
 
 .PARAMETER Staged
     ステージした差分（HEAD との差）を見る。commit-msg フックが使う。
     **マージの途中（MERGE_HEAD がある）なら見ない。** 取り込む側のコミットで確かめ済みのため。
 .PARAMETER MessageFile
-    -Staged のときの、コミット メッセージのファイル（commit-msg フックの第 1 引数）。
+    -Staged・-Proposed のときの、コミット メッセージのファイル（commit-msg フックの第 1 引数）。
+.PARAMETER Proposed
+    **提案の検査**（OpenTouryoCodingAgentAssets#18）。今の作業ツリーの変更をすべてステージしたとしたら（git add -A）を、
+    -Staged と同じ規則で、-MessageFile のメッセージで判定する。コーディング エージェントが、コミット メッセージの案を人に出す前に使う。
+    一時的な索引（今の索引の写し）に git add -A するので、**本物の索引・作業ツリー・履歴は変えない**
+    （書くのは .git/objects の blob だけ。参照されないので gc で消える）。人が変更の一部だけをコミットすると判定は変わるが、
+    そのときは commit-msg フック（-Staged）が改めて判定する。
 .PARAMETER Commit
     コミットと、その最初の親との差を見る。メッセージはそのコミットのもの。**マージ コミットは見ない。**
 .PARAMETER Range
     <base>..<head> の範囲の、マージでないコミットを 1 つずつ -Commit で見る。PR の CI が使う。
     **導入より前のコミット（規則の IntroducedBy が木に無いコミット）は見ない。**
+.PARAMETER LaterApproval
+    -Range が -Commit を呼ぶときに渡す、後のコミットでの承認の理由（内部用。人は指定しない）。
 .PARAMETER CheckGenerated
     -Range と併せて、GeneratedRules（生成物の作り直しの漏れ）を見る。
 .PARAMETER PreToolUse
@@ -75,6 +88,9 @@
 .EXAMPLE
     .\CheckExpectationChange.ps1 -Staged -MessageFile .git\COMMIT_EDITMSG
 .EXAMPLE
+    .\CheckExpectationChange.ps1 -Proposed -MessageFile <コミット メッセージの案のファイル>
+    コミット メッセージの案を、人に出す前に確かめる（索引を変えない。#18）。
+.EXAMPLE
     .\CheckExpectationChange.ps1 -Range origin/develop..HEAD
     PR の前に手元で、PR の CI と同じ範囲を見る（git fetch の後に）。手元の develop は古いことがあり、
     取り込み済みのコミットまで範囲に入る（OpenTouryo で、手元の develop..HEAD が 320 件・origin/develop..HEAD が 5 件だった）。
@@ -90,9 +106,11 @@
 [CmdletBinding()]
 param(
     [switch]$Staged,
+    [switch]$Proposed,
     [string]$MessageFile,
     [string]$Commit,
     [string]$Range,
+    [string[]]$LaterApproval,
     [switch]$CheckGenerated,
     [switch]$PreToolUse,
     [switch]$VerifyCopy,
@@ -132,6 +150,8 @@ function Invoke-Git([string[]]$Arguments, [string]$OutFile, [string]$WorkingDire
     $psi.RedirectStandardOutput = $true
     $psi.RedirectStandardError = $true
     $psi.StandardOutputEncoding = New-Object Text.UTF8Encoding $false
+    # 提案の検査（-Proposed）の一時的な索引。プロセスの環境は変えず、呼ぶ git にだけ渡す
+    if ($script:indexFile) { $psi.EnvironmentVariables["GIT_INDEX_FILE"] = $script:indexFile }
 
     $p = [Diagnostics.Process]::Start($psi)
     # 標準エラーは別に読む（両方を順に読むと、バッファが詰まって止まることがある）
@@ -304,6 +324,19 @@ function Get-GitTrailers([string[]]$Lines)
 function Select-Trailer($Parsed, [string]$Name)
 {
     @($Parsed) | Where-Object { $_ -and $_.Key -ieq $Name } | ForEach-Object { $_.Value }
+}
+
+# 後のコミットでの承認の値（#14）：「<sha 7〜40 文字> <理由>」。1 行に sha は 1 つ、理由は必須
+function Test-LaterApproval([string]$Value)
+{
+    if ($Value -notmatch '^(?<sha>[0-9A-Fa-f]{7,40})(?:\s+(?<why>.*))?$')
+    {
+        return [pscustomobject]@{ Ok = $false; Problem = "先頭に、承認するコミットの sha（7 文字以上の 16 進）を書く" }
+    }
+    $sha = $Matches['sha'].ToLowerInvariant(); $why = ("" + $Matches['why']).Trim()
+    if ($why -eq "") { return [pscustomobject]@{ Ok = $false; Problem = "sha の後に、理由（何が・なぜ変わったか）を書く" } }
+    if ($why -match '^[0-9A-Fa-f]{7,40}(\s|$)') { return [pscustomobject]@{ Ok = $false; Problem = "1 行に sha は 1 つ（コミットごとに行を分ける）" } }
+    return [pscustomobject]@{ Ok = $true; Sha = $sha; Reason = $why }
 }
 
 function Get-EditDistance([string]$A, [string]$B)
@@ -796,9 +829,9 @@ try
     $introducedBy = $rules.IntroducedBy
     if (-not $introducedBy -and $self) { $introducedBy = $self.Prefix + [IO.Path]::GetFileName($PSCommandPath) }
 
-    if (@(@($Staged.IsPresent, [bool]$Commit, [bool]$Range) | Where-Object { $_ }).Count -ne 1)
+    if (@(@($Staged.IsPresent, $Proposed.IsPresent, [bool]$Commit, [bool]$Range) | Where-Object { $_ }).Count -ne 1)
     {
-        Write-Msg "  -Staged・-Commit・-Range のどれか 1 つを指定してください。" -ForegroundColor Red
+        Write-Msg "  -Staged・-Proposed・-Commit・-Range のどれか 1 つを指定してください。" -ForegroundColor Red
         Complete 2
     }
     if ($CheckGenerated -and -not $Range)
@@ -869,6 +902,29 @@ try
         if ($Json) { throw "-Json は -Staged・-Commit で使う（範囲は、コミットごとに -Commit <sha> -Json で）" }
         $commits =@((Invoke-GitChecked @("rev-list", "--no-merges", "--reverse", $Range)).Lines)
         Write-Msg ("  {0} の {1} 件のコミットを見ます" -f $Range, $commits.Count)
+        # 後のコミットでの承認（#14）。範囲の中の後のコミットだけが、前のコミットを承認できる。
+        #   書式の誤りは、そのコミット自身の -Commit が止める（ここでは承認に数えないだけ）。
+        $laterName = $rules.ApprovalTrailer + "-For"
+        $later = @{}
+        for ($i = 0; $i -lt $commits.Count; $i++)
+        {
+            $msg = @((Invoke-GitChecked @("log", "-1", "--format=%B", $commits[$i])).Lines)
+            foreach ($v in @(Select-Trailer (Get-GitTrailers $msg) $laterName))
+            {
+                $t = Test-LaterApproval $v
+                if (-not $t.Ok) { continue }
+                $by = $commits[$i].Substring(0, 8)
+                $hit = @(); for ($j = 0; $j -lt $i; $j++) { if ($commits[$j].StartsWith($t.Sha)) { $hit += $commits[$j] } }
+                if ($hit.Count -ne 1)
+                {
+                    $why = $(if ($hit.Count -eq 0) { "範囲の中の、このコミットより前のコミットに当たりません（rebase・amend で sha が変わったなら、今の sha に書き直す）" } else { "複数のコミットに当たります（sha を長く書く）" })
+                    Write-Warn ("{0}: {1}（コミット {2}）は承認になりません。{3}" -f $laterName, $v, $by, $why)
+                    continue
+                }
+                if (-not $later.ContainsKey($hit[0])) { $later[$hit[0]] = @() }
+                $later[$hit[0]] += ("{0}（後のコミット {1} で承認）" -f $t.Reason, $by)
+            }
+        }
         $worst = 0
         $skipped = 0
         foreach ($c in $commits)
@@ -876,11 +932,31 @@ try
             # **導入より前のコミットは見ない。** 規約が無かった時点のコミットに、トレーラーは求められない。
             #   IntroducedBy がそのコミットの木に在るかで判定する（-Commit で個別に見れば、導入前でも見る）。
             if ($introducedBy -and (Invoke-Git @("cat-file", "-e", "${c}:$introducedBy")).ExitCode -ne 0) { $skipped++; continue }
-            & $PSCommandPath -Commit $c -RulesFile $RulesFile -PassThru:$PassThru -Quiet:$Quiet
+            $la = $(if ($later.ContainsKey($c)) { [string[]]$later[$c] } else { [string[]]@() })
+            & $PSCommandPath -Commit $c -RulesFile $RulesFile -LaterApproval $la -PassThru:$PassThru -Quiet:$Quiet
             if ($LASTEXITCODE -gt $worst) { $worst = $LASTEXITCODE }
         }
         if ($skipped -gt 0) { Write-Msg ("  導入より前のコミット {0} 件は見ていません" -f $skipped) }
         exit $worst
+    }
+
+    # --- 提案の検査：一時的な索引に、作業ツリーの変更をすべてステージする（#18） ---
+    if ($Proposed)
+    {
+        if (-not $MessageFile -or -not (Test-Path $MessageFile))
+        {
+            Write-Msg ("  -MessageFile が見つかりません : {0}" -f $MessageFile) -ForegroundColor Red
+            Complete 2
+        }
+        $realIndex = (Invoke-GitChecked @("rev-parse", "--git-path", "index")).Lines[0]
+        if (-not [IO.Path]::IsPathRooted($realIndex)) { $realIndex = Join-Path (Get-Location).ProviderPath $realIndex }
+        $tmpIndex = [IO.Path]::GetTempFileName()
+        $tempFiles += $tmpIndex
+        # 索引が無い（コミットの無いリポジトリ）なら、空のファイルを置かない（git が壊れた索引と読む）
+        if (Test-Path -LiteralPath $realIndex) { Copy-Item -LiteralPath $realIndex -Destination $tmpIndex -Force } else { Remove-Item -LiteralPath $tmpIndex -Force }
+        $script:indexFile = $tmpIndex
+        [void](Invoke-GitChecked @("add", "-A", "--", ":(top)"))
+        $Staged = [switch]$true
     }
 
     # --- 比較の両端と、メッセージ ---------------------------------------
@@ -898,7 +974,7 @@ try
         $diffEnds = @("--cached", $base)
         $newSpec  = { param($path) ":$path" }
         $message  = @(Get-Content -LiteralPath $MessageFile -Encoding UTF8)
-        $label    = "ステージした変更"
+        $label    = $(if ($Proposed) { "作業ツリーの変更（提案の検査）" } else { "ステージした変更" })
     }
     else
     {
@@ -1128,13 +1204,15 @@ try
     $body = (Get-MessageLines $message) -join "`n"
     $parsed = Get-GitTrailers $message
     $approvalSyntax = "{0}: <何が・なぜ変わったか（仕様の該当箇所・Issue 番号）>" -f $rules.ApprovalTrailer
+    $laterName = $rules.ApprovalTrailer + "-For"
+    $laterSyntax = "{0}: <承認するコミットの sha（7 文字以上）> <何が・なぜ変わったか（仕様の該当箇所・Issue 番号）>" -f $laterName
     $vocabOf = @{}
     foreach ($t in @($rules.TrailerRules)) { $vocabOf[$t.Name] = Get-RuleVocabulary $t $(if ($Staged) { $null } else { $sha }) }
     $fixes = @()       # 直す行：Name・Written（書いた行）・Fixed（直した行）・Reasons
     $helpNames = @()   # 書き方と語彙の一覧を出す規則の名前
 
     # 書き方・置き場所（git に読まれない行）
-    $trailerNames = @(@($rules.TrailerRules) | ForEach-Object { $_.Name }) + @($rules.ApprovalTrailer)
+    $trailerNames = @(@($rules.TrailerRules) | ForEach-Object { $_.Name }) + @($rules.ApprovalTrailer, $laterName)
     foreach ($p in (Find-TrailerProblems $message $trailerNames $parsed))
     {
         $rule = @($rules.TrailerRules) | Where-Object { $_.Name -eq $p.Name } | Select-Object -First 1
@@ -1147,7 +1225,7 @@ try
             $value = $v.Fixed
             $helpNames += $rule.Name
         }
-        elseif ($value -eq "") { $reasons += "値（理由）がありません"; $value = ($approvalSyntax -replace '^[^:]+:\s*', '') }
+        elseif ($value -eq "") { $reasons += "値（理由）がありません"; $value = ($(if ($p.Name -eq $laterName) { $laterSyntax } else { $approvalSyntax }) -replace '^[^:]+:\s*', '') }
         $fixes += [pscustomobject]@{ Name = $p.Name; Written = $p.Written; Fixed = ("{0}: {1}" -f $p.Name, $value); Reasons = $reasons; Key = $(if ($p.Read) { $p.Written.Trim() } else { $null }) }
     }
 
@@ -1216,7 +1294,24 @@ try
     {
         $fixes += [pscustomobject]@{ Name = $rules.ApprovalTrailer; Written = ("{0}:" -f $tr.Key); Fixed = $approvalSyntax; Reasons = @("値（理由）がありません"); Key = ("{0}: " -f $tr.Key) }
     }
-    foreach ($f in $fixes) { $result.Errors += ("{0}（{1}）" -f $f.Written.Trim(), ($f.Reasons -join "。")) }
+    # 後のコミットでの承認の書式（#14）：1 行に sha は 1 つ・理由は必須
+    foreach ($tr in @(@($parsed) | Where-Object { $_ -and $_.Key -ieq $laterName }))
+    {
+        $t = Test-LaterApproval $tr.Value
+        if ($t.Ok) { continue }
+        $fixes += [pscustomobject]@{ Name = $laterName; Written = ("{0}: {1}" -f $tr.Key, $tr.Value); Fixed = $laterSyntax; Reasons = @($t.Problem); Key = ("{0}: {1}" -f $tr.Key, $tr.Value) }
+    }
+    # 後のコミットで承認されたコミット（-Range が -LaterApproval を渡す。#14）では、書き方の誤りも止めずに警告にする。
+    #   push したメッセージは書き直さない（共有のブランチで、ほかの手元が壊れる）ので、後のコミットのほかに直し方が無いため。
+    #   誤った行は履歴に残り、集計（%(trailers)）には載らない。正しい行は、後のコミットの理由に書いてもらう
+    $excused = $fixes.Count -gt 0 -and @($LaterApproval | Where-Object { $_ }).Count -gt 0
+    foreach ($f in $fixes)
+    {
+        $m = "{0}（{1}）" -f $f.Written.Trim(), ($f.Reasons -join "。")
+        if ($excused) { $result.Warnings += ("{0}。後のコミットの {1}: で承認済みなので止めない（この行は集計に載らない）" -f $m, $laterName) }
+        else { $result.Errors += $m }
+    }
+    if ($excused) { $fixes = @() }
     foreach ($w in $result.Warnings) { Write-Warn $w }
 
     # 直し方（コミットを作り直す手順）。止めるときに最後に出す
@@ -1224,7 +1319,12 @@ try
     {
         Write-Msg ""
         Write-Msg "  直し方："
-        if ($Staged)
+        if ($Proposed)
+        {
+            Write-Msg "    コミット メッセージの案を直し、もう一度 -Proposed -MessageFile で確かめてから、人に出す。"
+            Write-Msg "    （索引・作業ツリーは変えていない。期待値を変えたなら、理由を Expectation-Change: に書く）"
+        }
+        elseif ($Staged)
         {
             Write-Msg "    コミットは作られていません。書いたメッセージは残っているので、開き直して直し、もう一度コミットする。"
             Write-Msg '      git commit -e -F "$(git rev-parse --git-path COMMIT_EDITMSG)"'
@@ -1232,11 +1332,13 @@ try
         }
         else
         {
-            $rebaseBase = $(if ($parents.Count -eq 0) { "--root" } else { $sha.Substring(0, 8) + "^" })
-            Write-Msg "    コミットのメッセージを書き直す。"
-            Write-Msg "      最新のコミットなら    : git commit --amend"
-            Write-Msg ("      それより前のコミットなら : git rebase -i {0}（このコミットの pick を reword にする）" -f $rebaseBase)
-            Write-Msg "    push 済みなら git push --force-with-lease が要る（PR の履歴が書き換わるので、人が判断する）。"
+            Write-Msg "    後のコミットで承認する（履歴を書き換えない。PR の CI〔-Range〕でだけ効く。手元のフックの判定は変わらない）："
+            Write-Msg ('      git commit --allow-empty -m "期待値の変更を承認する" -m "{0}: {1} <何が・なぜ変わったか（Issue 番号）>"' -f $laterName, $sha.Substring(0, 8))
+            Write-Msg "    トレーラーの書き方の誤りも、これで止まらなくなる（理由に、直した行を書く。誤った行は履歴に残り、集計に載らない）。"
+            Write-Msg "    push したコミットのメッセージは書き直さない（--amend・rebase と force push。共有のブランチで、ほかの人・セッションの手元が壊れる）。"
+            Write-Msg "    できないとき（宛先のブランチの検出器が、この書き方を知らない版など）：管理者が、その PR だけ保護を迂回してマージし、理由を PR のコメントに残す。"
+            Write-Msg "      必須のチェックを外す・ワークフローを止めるは使わない（ほかの PR の保護も外れる・チェックが結果を返さず PR が止まる）。"
+            Write-Msg ("    手順の全体：{0}原本 OpenTouryoCodingAgentAssets の docs/expectation-guard.md「CI で止まったとき」" -f $(if ($rules.Reference) { $rules.Reference + "・" } else { "" }))
         }
         Write-Msg ""
     }
@@ -1298,6 +1400,8 @@ try
     #   検出器はアサーションの値の反転・緩和を見ないので、人が自分から付けた理由こそ、突き合わせ役（-Json の入力）が見る対象になる
     #   （OpenTouryo 3bd7586d：既存のアサーションの入力を書き換えて期待値を反転。検出は 0 件、理由はあった）。
     $trailers = @(Select-Trailer $parsed $rules.ApprovalTrailer | Where-Object { $_ -ne "" })
+    # 後のコミットでの承認（-Range が渡す。#14）も、承認の理由に加える
+    $trailers += @($LaterApproval | Where-Object { $_ })
     if ($trailers.Count -gt 0)
     {
         $result.Approved = $trailers
@@ -1364,5 +1468,6 @@ catch
 }
 finally
 {
+    $script:indexFile = $null
     foreach ($t in $tempFiles) { Remove-Item -LiteralPath $t -Force -ErrorAction SilentlyContinue }
 }

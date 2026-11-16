@@ -1,0 +1,9 @@
+{
+  "note": "install.ps1 が書いたファイルの目録（OpenTouryoCodingAgentAssets#20）。入れ直しで、導入先で手を入れたファイルを見分けるのに使う。install.ps1 と install/INSTALL.md の手順のほかで直さない",
+  "source": "OpenTouryoCodingAgentAssets",
+  "revision": "a65e55564449",
+  "files": {
+    "QUALITY.common.md": { "revision": "a65e55564449", "source": "src/compass/QUALITY.common.md", "sha256": "6c853c653b82dc7773cf2c1417abdac41a1845f479b35f888e0aaf7a6bc266a4" }
+  },
+  "gitignore": []
+}

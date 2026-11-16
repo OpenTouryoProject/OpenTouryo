@@ -372,3 +372,6 @@ __pycache__/
 # 関連リポジトリの場所の、手元用の一覧（#652）
 #   雛形は _RepoPaths.csv（コミットする）。手元の配置に直すなら、写して RepoPaths.csv にする。
 /root/files/tools/PowerShell/RepoPaths/RepoPaths.csv
+
+# 作業の見える化のダッシュボード（主のセッションが書き続ける。OpenTouryoCodingAgentAssets#19）
+AGENT-DASHBOARD.md
