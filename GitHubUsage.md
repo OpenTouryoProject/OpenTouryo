@@ -721,10 +721,9 @@ PR #641 の `mergeStateStatus` は `CLEAN` のまま（必須のチェックを�
 ```
 actions/checkout@v7                      GitHub 製・タグ
 actions/upload-artifact@v7               GitHub 製・タグ（3 箇所）
-ankane/setup-sqlserver@82b78e23...  # v1 ★第三者製・SHA 固定済み
 ```
 
-**最も危険な「第三者製」は、既に SHA 固定されている。**
+**第三者製のアクションは使っていない**（SQL Server は、以前の `ankane/setup-sqlserver` をやめ、ISO を直接取って SHA-256 で確かめる）。
 被害範囲も限定的である（`Secrets` は 0 件、`GITHUB_TOKEN` の既定は `read`、
 `build-windows.yml` の `permissions` は `contents: read`）。
 
@@ -736,7 +735,7 @@ ankane/setup-sqlserver@82b78e23...  # v1 ★第三者製・SHA 固定済み
 1. actions/* の 4 箇所を SHA へ書き換える
 2. build-windows.yml を手動実行して通ることを確かめる
 3. sha_pinning_required を true にする
-4. allowed_actions を selected にし、GitHub 製 ＋ ankane/* を許可する
+4. allowed_actions を selected にし、GitHub 製だけを許可する
 ```
 
 **`.github/dependabot.yml` とセットにするのが合理的。**

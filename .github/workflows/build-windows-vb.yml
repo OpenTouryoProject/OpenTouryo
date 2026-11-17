@@ -50,7 +50,7 @@ jobs:
     timeout-minutes: 90
 
     env:
-      # ankane/setup-sqlserver が設定する既定のパスワード。
+      # SQL Server を導入するときの sa のパスワード（Set up Northwind で SA_PASSWORD に変える）。
       INITIAL_SA_PASSWORD: 'YourStrong!Passw0rd'
       # サンプルの構成ファイルに直書きされている値。
       #   Data Source=localhost;Initial Catalog=Northwind;User ID=sa;Password=seigi@123;Encrypt=false;
@@ -74,15 +74,45 @@ jobs:
       # ------------------------------------------------------------------
       # 疎通のための SQL Server
       # ------------------------------------------------------------------
-      # 第三者のアクションなのでコミットで固定する（v1 はタグではなくブランチ）。
+      # build-windows.yml の同名のステップと同じ（理由もそちら）。
       - name: Install SQL Server
-        # 通常は 6 分前後（取得 2〜3 分、導入 3 分）。Microsoft からの取得が止まると、
-        # 打ち切られずにジョブ全体の timeout-minutes（90）まで待ち続けるため、ここで切る。
+        # 取得が止まると、打ち切られずにジョブ全体の timeout-minutes（90）まで待ち続けるため、ここで切る。
         timeout-minutes: 20
-        uses: ankane/setup-sqlserver@82b78e23506d0c8acfb64e05728ac450ff8a98c6 # v1
-        with:
-          accept-eula: true
-          sqlserver-version: 2022
+        shell: pwsh
+        env:
+          # SQL Server 2022 Developer（英語版、約 1.1 GB）。URL とハッシュは Chocolatey の sql-server-2022 パッケージと同じ。
+          SQLSERVER_ISO_URL: https://download.microsoft.com/download/3/8/d/38de7036-2433-4207-8eae-06e247e17b25/SQLServer2022-x64-ENU-Dev.iso
+          SQLSERVER_ISO_SHA256: 80D2CD75DD2B28098C0182F50AD86BD44F9B3A9F357C30FF617480A1497DAFFD
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $iso = Join-Path $env:RUNNER_TEMP 'SQLServer2022-x64-ENU-Dev.iso'
+
+          # 60 秒間 1 MB/s を下回ったら打ち切り、取り直す。
+          & curl.exe -fL --retry 3 --retry-all-errors --connect-timeout 30 --speed-limit 1048576 --speed-time 60 -o $iso $env:SQLSERVER_ISO_URL
+          if ($LASTEXITCODE -ne 0) { throw "ISO を取得できない（curl の終了コード $LASTEXITCODE）" }
+
+          $hash = (Get-FileHash -Path $iso -Algorithm SHA256).Hash
+          if ($hash -ne $env:SQLSERVER_ISO_SHA256) { throw "ISO のハッシュが違う（$hash）" }
+
+          # 引数は ankane/setup-sqlserver が渡していたものと同じ。
+          $drive = (Mount-DiskImage -ImagePath $iso -PassThru | Get-Volume).DriveLetter
+          $setupArgs = @(
+              '/Q', '/IACCEPTSQLSERVERLICENSETERMS', '/ACTION="install"',
+              '/FEATURES=SQL,Tools', '/INSTANCENAME=MSSQLSERVER',
+              '/SQLSVCACCOUNT="NT AUTHORITY\SYSTEM"', '/SQLSYSADMINACCOUNTS="BUILTIN\ADMINISTRATORS"',
+              "/SAPWD=`"$env:INITIAL_SA_PASSWORD`"", '/SECURITYMODE=SQL', '/ERRORREPORTING=0'
+          )
+          $p = Start-Process -FilePath "${drive}:\setup.exe" -ArgumentList $setupArgs -Wait -PassThru -NoNewWindow
+          if ($p.ExitCode -notin 0, 3010)
+          {
+              Get-Content 'C:\Program Files\Microsoft SQL Server\160\Setup Bootstrap\Log\Summary.txt' -ErrorAction SilentlyContinue
+              throw "SQL Server を導入できない（setup.exe の終了コード $($p.ExitCode)）"
+          }
+          Dismount-DiskImage -ImagePath $iso | Out-Null
+          Remove-Item -Path $iso
+
+          # sqlcmd を後続のステップの PATH に足す（ankane/setup-sqlserver と同じ場所）。
+          'C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\170\Tools\Binn' | Out-File -FilePath $env:GITHUB_PATH -Append -Encoding utf8
 
       - name: Set up Northwind
         shell: pwsh

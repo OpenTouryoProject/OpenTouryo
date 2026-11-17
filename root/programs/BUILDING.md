@@ -497,7 +497,7 @@ Linux コンテナには Hyper-V による VM が要り、runner 自体が既に
 
 | 要素 | 入手先 |
 |---|---|
-| SQL Server 2022 | `ankane/setup-sqlserver`（**コミットで固定**。`v1` はタグではなくブランチ） |
+| SQL Server 2022 | Microsoft の Developer の ISO を直接取る（**SHA-256 で固定**）。以前の `ankane/setup-sqlserver` は、中の SSEI の取得が 2026-10 から止まるため外した |
 | `instnwnd.sql`（Microsoft 公式の Northwind DDL、約 1 MB） | `LocalServicesOnDocker`（**コミットで固定**） |
 | `CREATE ORDERS2.sql` | 本リポジトリに同梱 |
 
