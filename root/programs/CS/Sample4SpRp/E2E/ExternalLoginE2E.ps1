@@ -498,7 +498,7 @@ $d = Send-Http $probe 'GET' $idpInfo.Discovery $null
 $probe.Dispose()
 if ($d.Status -ne 200) { $lack += "$($idpInfo.Name) が応答しません（$($idpInfo.Discovery)。$($idpInfo.StartHint)）" }
 
-if (-not (Test-PortInUse 1433)) { $lack += 'SQL Server（localhost:1433）に繋がりません（LocalServicesOnDocker の Start-Services.ps1 sqlserver）' }
+if (-not (Test-PortInUse 1433)) { $lack += 'SQL Server（localhost:1433）に繋がりません（LocalServicesOnDocker の tools\Start-Services.ps1 sqlserver）' }
 
 if (@($targets | Where-Object { $_.Kind -eq 'WebForms' }).Count -gt 0)
 {

@@ -104,6 +104,7 @@
     LocalServicesOnDocker のフォルダ（-CrossDb / -Coverage で使う）。
     **省けば、環境変数 OT_LSOD_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**（root\files\tools\PowerShell\RepoPaths\RepoPath.ps1。#652）。
     **docker コマンドが使えれば Rancher Desktop 版（*.ps1）、使えなければ WSL2 版（*_wsl2.ps1）を使う。**
+    スクリプトは tools\ の下を先に探し、無ければ直下を探す（LocalServicesOnDocker の 331bba5 で tools\ に移った。#704）。
 .PARAMETER Linux
     Windows でのビルドとテストの後に、**net10.0 の出力をそのまま Linux のコンテナで回す**（#632）。
     対象は EncAndDecUtilCUI（期待値は ResultCore100OnLinux.txt）と NUnit の TestPublic。
@@ -179,6 +180,7 @@
      2026/11/07  玄人 幸道         -LocalServicesDir を省いたら、環境変数 OT_LSOD_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定 で決める（#652）
      2026/11/13  玄人 幸道         RepoPath.ps1 を root/files/tools/PowerShell/RepoPaths から読む（#687）
      2026/11/17  玄人 幸道         Linux の上では、-Linux の対象を docker を使わずに直接回すようにした（#703）
+     2026/11/17  玄人 幸道         LocalServicesOnDocker のスクリプトを tools\ の下から探すようにした（無ければ直下。#704）
 #>
 [CmdletBinding()]
 param(
@@ -549,10 +551,21 @@ if ($crossDbRun)
     . (Join-Path $PSScriptRoot '..\files\tools\PowerShell\RepoPaths\RepoPath.ps1')
     $LocalServicesDir = Resolve-RepoPath -Variable OT_LSOD_PATH -Argument $LocalServicesDir -ArgumentName '-LocalServicesDir'
 
-    if (-not $LocalServicesDir -or -not (Test-Path (Join-Path $LocalServicesDir "Start-Services.ps1")))
+    # **スクリプトは tools\ の下を先に探し、無ければ直下を探す**（#704）。
+    #   LocalServicesOnDocker は 331bba5（2026-11-13）で *.ps1 を直下から tools\ に移した。
+    #   移す前の版を使っている手元でも動くよう、直下も残す。
+    $svcDir = $null
+    if ($LocalServicesDir)
+    {
+        foreach ($cand in @((Join-Path $LocalServicesDir "tools"), $LocalServicesDir))
+        {
+            if (Test-Path (Join-Path $cand "Start-Services.ps1")) { $svcDir = $cand; break }
+        }
+    }
+    if (-not $svcDir)
     {
         Write-Host ("  **{0} には -LocalServicesDir（LocalServicesOnDocker のフォルダ。環境変数 OT_LSOD_PATH でもよい）が要ります。**" -f $crossDbMode) -ForegroundColor Red
-        Write-Host ("  指定 : '{0}'（Start-Services.ps1 が見つかりません）" -f $LocalServicesDir) -ForegroundColor Yellow
+        Write-Host ("  指定 : '{0}'（tools\Start-Services.ps1 も Start-Services.ps1 も見つかりません）" -f $LocalServicesDir) -ForegroundColor Yellow
         exit 1
     }
 
@@ -582,8 +595,8 @@ if ($crossDbRun)
         & docker info *> $null
         if ($LASTEXITCODE -eq 0) { $suffix = "" }
     }
-    $svcStart = Join-Path $LocalServicesDir ("Start-Services{0}.ps1" -f $suffix)
-    $svcStop  = Join-Path $LocalServicesDir ("Stop-Services{0}.ps1" -f $suffix)
+    $svcStart = Join-Path $svcDir ("Start-Services{0}.ps1" -f $suffix)
+    $svcStop  = Join-Path $svcDir ("Stop-Services{0}.ps1" -f $suffix)
     Write-Host ("  {0} : {1} を使います" -f $crossDbMode, $(if ($suffix) { "WSL2 版（*_wsl2.ps1）" } else { "Rancher Desktop 版（*.ps1）" })) -ForegroundColor Yellow
 
     foreach ($s in @($svcStart, $svcStop))

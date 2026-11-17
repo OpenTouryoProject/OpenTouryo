@@ -15,6 +15,7 @@
 > - **必須でないコンテナを同時に複数起動しない。** クロス DB は、SQL Server（必須）に 1 つずつ足して回し、測り終えたら止める
 >   （`2_RunAllTests.ps1 -CrossDb` がこれを自動で行う。下の `TestPublicDb` の説明）
 > - **使い終わったら止める**（`Stop-Services.ps1 <サービス名>`）。状態は `Show-Services.ps1`（読み取り専用）で確かめる
+> - スクリプトは LocalServicesOnDocker の **`tools\` の下**にある（331bba5 で直下から移った。#704）
 > - Rancher Desktop 版（`*.ps1`）と WSL2 版（`*_wsl2.ps1`）は**別の Docker を見る。** 混ぜて使うと、同じサービスが二重に立つ
 > - `oracle` と `sqlserver` は特に大きい
 
@@ -438,7 +439,7 @@ Northwind は起動のたびに `start-up.sh` が再作成するため、
 | WSL2 内の Docker を使う場合 | `Stop-Services_wsl2.ps1 sqlserver` → `Start-Services_wsl2.ps1 sqlserver` |
 
 ```powershell
-cd <LocalServicesOnDocker>
+cd <LocalServicesOnDocker>\tools
 .\Stop-Services.ps1 sqlserver      # docker compose down（コンテナを破棄）
 .\Start-Services.ps1 sqlserver     # docker compose up -d ＋ DB 初期化完了待ち
 ```
