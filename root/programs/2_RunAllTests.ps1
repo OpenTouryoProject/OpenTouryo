@@ -81,6 +81,12 @@
 
     **始める前から動いていた DBMS は、起動も停止もしない。**
     **起動したのに、その DBMS のテストが 1 件も実行されなければ NG にする**（スキップのまま OK にしない）。
+
+    ＜Linux の上で動かしたとき（#703 ph2）＞
+      上の 3. の net10.0 の回だけを、ビルドせずに回す。受け取った出力（NUnit\TestPublicDb\bin\Debug\net10.0）の
+      DLL を、dotnet test で直接回す（CI の build-windows.yml の linux-crossdb が artifact で渡す）。
+      net48 と 2.（SQL Server だけの回）は回さない。カバレッジは取らない。
+      -Linux・-Coverage とは同時に指定できない（-Only も、対象が無いので空振りで止まる）。
 .PARAMETER Coverage
     **カバレッジを測る専用の実行。** 結果を Tests\COVERAGE.md に書く。**-LocalServicesDir が必須。**
 
@@ -115,7 +121,7 @@
       （Windows の対象は外す。ビルドしないまま比べると、回していないのに OK になるため）。
       net10.0 の出力（Golden\EncAndDecUtilCUI\core100\bin・NUnit\TestPublic\bin）は、
       Windows でビルドしたものを置いておく（CI の build-windows.yml が artifact で渡す）。
-      -Linux 以外（-CrossDb・-Coverage）は指定できない。
+      -Coverage は指定できない。-CrossDb は、-Linux を付けずに指定する（-CrossDb の説明）。
 
     ＜なぜビルドした出力をそのまま使うか＞
       net10.0 の DLL は OS によらない。Windows で作ったものを Linux へ配置する、という
@@ -181,6 +187,7 @@
      2026/11/13  玄人 幸道         RepoPath.ps1 を root/files/tools/PowerShell/RepoPaths から読む（#687）
      2026/11/17  玄人 幸道         Linux の上では、-Linux の対象を docker を使わずに直接回すようにした（#703）
      2026/11/17  玄人 幸道         LocalServicesOnDocker のスクリプトを tools\ の下から探すようにした（無ければ直下。#704）
+     2026/11/17  玄人 幸道         Linux の上でも -CrossDb の net10.0 の回を、ビルドせずに直接回せるようにした（#703）
 #>
 [CmdletBinding()]
 param(
@@ -486,16 +493,26 @@ if (-not ($Linux -or $Coverage))
 #   Windows の対象（バッチでビルドして回すもの）は外す。外さないと、ビルドしないまま
 #   ワーキング ツリーの Result*.txt（取りたての作業ツリーでは HEAD と同じ）と比べ、回していないのに OK になる。
 #   ビルドの出力（net10.0）は、Windows でビルドしたものを受け取って置いておく（CI の build-windows.yml）。
+#   -CrossDb も回せる（#703 ph2）。対象は TestPublicDb の net10.0 だけで、DBMS ごとの回（下の「クロス DB」）だけを回す
+#   （net48 は Windows でしか動かない。SQL Server だけの回は、DBMS ごとの回が SQL Server の分も含むので回さない）。
 if ($onLinux)
 {
-    if (-not $Linux -or $Coverage -or $CrossDb)
+    if ($Coverage -or ($Linux -eq $CrossDb))
     {
-        Write-Host "  **Linux の上では、-Linux だけを指定できます。**（Windows でビルドした net10.0 の出力を、この機械で回す）" -ForegroundColor Red
+        Write-Host "  **Linux の上では、-Linux か -CrossDb のどちらか 1 つだけを指定できます。**（Windows でビルドした net10.0 の出力を、この機械で回す）" -ForegroundColor Red
         exit 1
     }
-    $tests = @($tests | Where-Object { $_.Linux })
     $SkipBuild = $true
-    Write-Host ("  Linux : -Linux の対象 {0} 件を、この機械で直接回します（ビルドはしない）" -f $tests.Count) -ForegroundColor Yellow
+    if ($Linux)
+    {
+        $tests = @($tests | Where-Object { $_.Linux })
+        Write-Host ("  Linux : -Linux の対象 {0} 件を、この機械で直接回します（ビルドはしない）" -f $tests.Count) -ForegroundColor Yellow
+    }
+    else
+    {
+        $tests = @()
+        Write-Host "  Linux : -CrossDb の net10.0 の回だけを、この機械で直接回します（ビルドはしない）" -ForegroundColor Yellow
+    }
 }
 
 # **-Only は複数指定できる。どれかに当たれば対象。**（#610）
@@ -575,7 +592,7 @@ if ($crossDbRun)
         $tests = @($tests | Where-Object { $_.Kind -eq "NUnit" })
         Write-Host ("  -Coverage : 対象を NUnit の {0} 件に絞りました（Linux の回を含む。続けてクロス DB を回します）" -f $tests.Count) -ForegroundColor Yellow
     }
-    else
+    elseif (-not $onLinux)
     {
         # **対象は TestPublicDb だけにする。** 他のテストは DBMS を切り替えても結果が変わらない。
         $tests = @($tests | Where-Object { $_.Name -like "*$crossDbProject*" })
@@ -1217,6 +1234,9 @@ elseif ($crossDbRun)
         Write-Host ""
         Write-Host ("=== クロス DB : {0}（{1}） ===" -f $db.Service, $db.Dbms) -ForegroundColor Cyan
 
+        # Linux の上では net10.0 だけ（#703 ph2。net48 は Windows でしか動かない）
+        $tfms = @($db.Tfms | Where-Object { -not $onLinux -or $_ -eq "net10.0" })
+
         # **始める前から動いていたものは、起動も停止もしない。**（人の作業状態を変えない）
         $wasRunning = Test-LocalPort $db.Port
         if ($wasRunning)
@@ -1231,7 +1251,7 @@ elseif ($crossDbRun)
                 Write-Host ("  **{0} を起動できませんでした。**" -f $db.Service) -ForegroundColor Red
                 # 中途半端に立ったものを残さない
                 Invoke-LocalService $svcStop $db.Service | Out-Null
-                foreach ($tfm in $db.Tfms)
+                foreach ($tfm in $tfms)
                 {
                     $results += [pscustomobject]@{ テスト = ("{0} ({1}) [{2}]" -f $crossDbProject, $tfm, $db.Service); 結果 = "起動失敗"; 差分 = "-" }
                 }
@@ -1259,23 +1279,35 @@ elseif ($crossDbRun)
             $resDir = Join-Path $nunitDir ("TestResults\CrossDb\{0}" -f $db.Service)
             if (Test-Path $resDir) { Remove-Item $resDir -Recurse -Force }
 
-            foreach ($tfm in $db.Tfms)
+            foreach ($tfm in $tfms)
             {
                 $name = "{0} ({1}) [{2}]" -f $crossDbProject, $tfm, $db.Service
                 $trxName = "{0}_{1}.trx" -f $crossDbProject, $tfm
                 Write-Host ""
                 Write-Host ("=== {0} ===" -f $name) -ForegroundColor Cyan
 
-                $testArgs = @("test", $csproj, "--no-build", "-c", "Debug", "-f", $tfm,
-                    "--results-directory", $resDir, "--logger", "trx;LogFileName=$trxName")
+                # **Linux の上では、受け取ったビルドの出力（DLL）を直接回す**（#703 ph2）。
+                #   csproj を --no-build で回すには obj（Windows のパスを持つ）が要る。
+                #   カバレッジは取らない（Windows 形式の PDB を Linux の coverlet が読めない。-Linux の節）。
+                $withCoverage = ($tfm -eq "net10.0" -and -not $onLinux)
+                if ($onLinux)
+                {
+                    $dll = Join-Path $nunitDir ("{0}\bin\Debug\{1}\{0}.dll" -f $crossDbProject, $tfm)
+                    $testArgs = @("test", $dll, "--results-directory", $resDir, "--logger", "trx;LogFileName=$trxName")
+                }
+                else
+                {
+                    $testArgs = @("test", $csproj, "--no-build", "-c", "Debug", "-f", $tfm,
+                        "--results-directory", $resDir, "--logger", "trx;LogFileName=$trxName")
+                }
                 # カバレッジは net10.0 だけで取る（y_Build_TestCode_NUnit.bat と同じ）
-                if ($tfm -eq "net10.0") { $testArgs += @("--settings", $runsettings, "--collect", "XPlat Code Coverage") }
+                if ($withCoverage) { $testArgs += @("--settings", $runsettings, "--collect", "XPlat Code Coverage") }
 
                 $log = Join-Path $OutputDir ("crossdb_{0}_{1}.log" -f $db.Service, ($tfm -replace '[^A-Za-z0-9]', '_'))
                 & dotnet @testArgs *>&1 | Out-File $log -Encoding UTF8
 
                 $results += Get-NUnitResult -Name $name -Trx (Join-Path $resDir $trxName) `
-                    -ShowCoverage ($tfm -eq "net10.0") -RequireDbms $db.Dbms
+                    -ShowCoverage $withCoverage -RequireDbms $db.Dbms
             }
         }
         finally

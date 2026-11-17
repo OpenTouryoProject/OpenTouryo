@@ -11,11 +11,14 @@
 #
 #   続けて、Linux のジョブ（linux）が、net10.0 の出力を ubuntu-latest で回す
 #   （2_RunAllTests.ps1 -Linux と同じ対象。#703）。
+#   クロス DB のジョブ（linux-crossdb）が、TestPublicDb の net10.0 を Oracle・MySQL・PostgreSQL で回す
+#   （2_RunAllTests.ps1 -CrossDb の net10.0 の分。#703）。
 #
 # ＜対象外＞
 #   ・GUI アプリケーション（WinForms / WPF / 各ツールの画面）… RELEASE.md 4 節の手作業
-#   ・SQL Server 以外の DBMS への接続 … 自動テストは /Dap SQL のみを使う
-#     （TestSQLUtility は 4 DBMS の SQL 生成を検証するが、接続はしない）
+#   ・SQL Server 以外の DBMS への接続（net48 と、Golden の TestDataAccess）… Windows のジョブは /Dap SQL のみを使う
+#     （TestSQLUtility は 4 DBMS の SQL 生成を検証するが、接続はしない。net48 のクロス DB は
+#     Windows とコンテナが同じ機械に要るので、手元の -CrossDb で回す）
 #
 # ＜署名エラーを除外している理由＞
 #   WSClientWinCone_sample.csproj は ClickOnce の署名が有効で、証明書を拇印で指定し、
@@ -302,8 +305,9 @@ jobs:
         working-directory: root/programs
         run: .\2_RunAllTests.ps1 -OutputDir "${{ runner.temp }}\TestResults"
 
-      # Linux のジョブ（下の linux）へ、net10.0 の出力を渡す（#703）。
-      # 2_RunAllTests.ps1 -Linux がコンテナで回しているものと同じ 2 つ（EncAndDecUtilCUI・TestPublic）。
+      # Linux のジョブ（下の linux・linux-crossdb）へ、net10.0 の出力を渡す（#703）。
+      # 2_RunAllTests.ps1 -Linux がコンテナで回しているものと同じ 2 つ（EncAndDecUtilCUI・TestPublic）と、
+      # -CrossDb が回す TestPublicDb。
       # テストが NG でも渡す（Linux の回は、Windows の回とは別に結果を出す）。
       - name: Upload net10.0 output for Linux
         if: always()
@@ -313,6 +317,7 @@ jobs:
           path: |
             root/programs/CS/Frameworks/Tests/Golden/EncAndDecUtilCUI/core100/bin/Debug/net10.0/
             root/programs/CS/Frameworks/Tests/NUnit/TestPublic/bin/Debug/net10.0/
+            root/programs/CS/Frameworks/Tests/NUnit/TestPublicDb/bin/Debug/net10.0/
           if-no-files-found: error
           retention-days: 1
 
@@ -427,4 +432,68 @@ jobs:
             ${{ runner.temp }}/TestResults
             root/programs/CS/Frameworks/Tests/Golden/EncAndDecUtilCUI/ResultCore100OnLinux.txt
             root/programs/CS/Frameworks/Tests/NUnit/TestResults/Linux/**
+          if-no-files-found: warn
+
+  # --------------------------------------------------------------------
+  # クロス DB の net10.0（#703 ph2）
+  # --------------------------------------------------------------------
+  # TestPublicDb（net10.0）を、Oracle・MySQL・PostgreSQL で回す。手元の 2_RunAllTests.ps1 -CrossDb と同じ。
+  # DB は LocalServicesOnDocker の Start-Services.ps1 で、SQL Server（必須）に 1 つずつ足して起動・停止する
+  # （手元と同じ経路。起動・準備完了の待ち・停止は 2_RunAllTests.ps1 が行う）。
+  # net48 は Windows とコンテナが同じ機械に要るので、ここでは回さない（#703 の「扱わないもの」）。
+  #
+  # ＜LocalServicesOnDocker はコミットで固定する＞
+  #   向こうの変更（スクリプトの場所・初期化の SQL）が、こちらの CI に黙って届かないようにする。
+  #   上げるときは、手元の -CrossDb で確かめてから LSOD_REF を変える。
+  #
+  # ＜回す契機＞
+  #   ワークフローの契機すべて（deps への push・master 宛の PR・手動・週 1 回）。
+  #   DB のドライバの更新（deps）で壊れたものを、その場で捕まえるため。
+  linux-crossdb:
+    needs: build
+    # Windows の回が NG でも回す（出力が渡っていなければ、受け取りで落ちる）
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      LSOD_REPO: NetDevInfraWGinOSSConsortium/LocalServicesOnDocker
+      LSOD_REF: 269e717939033e230835d0325eec255c1e03f71a
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Checkout LocalServicesOnDocker
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ env.LSOD_REPO }}
+          ref: ${{ env.LSOD_REF }}
+          path: LocalServicesOnDocker
+          persist-credentials: false
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      # 上の「Upload net10.0 output for Linux」が、Tests の下の相対パスで置いたもの
+      - name: Download net10.0 output
+        uses: actions/download-artifact@v8
+        with:
+          name: linux-input
+          path: root/programs/CS/Frameworks/Tests
+
+      - name: Run cross DB tests on Linux
+        shell: pwsh
+        working-directory: root/programs
+        run: ./2_RunAllTests.ps1 -CrossDb -LocalServicesDir "${{ github.workspace }}/LocalServicesOnDocker" -OutputDir "${{ runner.temp }}/TestResults"
+
+      - name: Upload test results (cross DB)
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-crossdb
+          path: |
+            ${{ runner.temp }}/TestResults
+            root/programs/CS/Frameworks/Tests/NUnit/TestResults/CrossDb/**
           if-no-files-found: warn
