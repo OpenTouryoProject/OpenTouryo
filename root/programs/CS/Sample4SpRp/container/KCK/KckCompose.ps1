@@ -52,6 +52,7 @@
      2026/11/13  玄人 幸道         新規（#690）
      2026/11/13  玄人 幸道         クライアント証明書（MTLS）を常に受け付ける。信頼先の証明書を cert\ に写す（#690 ph2）
      2026/11/18  玄人 幸道         信頼先の証明書が C:\root に無ければ、このリポジトリの root\files\resource から写す（#703）
+     2026/11/18  玄人 幸道         Linux では、コンテナが読めるよう cert\ の読み取りを開く（#703）
 #>
 [CmdletBinding()]
 param(
@@ -90,7 +91,8 @@ if ($Action -eq 'Up')
     }
 
     # **クライアント証明書（MTLS）の信頼先を写す**（テスト用の自己署名の証明書。FAPI2 の par_mtls。毎回写して、元と揃える）
-    #   **C:\root に無ければ（Linux など）、このリポジトリの root\files\resource から写す**（#703。中身は同じ）
+    #   **C:\root に無ければ（Linux など）、このリポジトリの root\files\resource から写す**（#703）。
+    #   このリポジトリには .cer が無い（正本は MPAS）。CI では、build-windows.yml の linux-sts が MPAS の正本をそこに置く
     $clientCer = 'C:\root\files\resource\X509\SHA256RSAClientCert.cer'
     if (-not (Test-Path $clientCer))
     {
@@ -103,6 +105,17 @@ if ($Action -eq 'Up')
     }
     Copy-Item $clientCer (Join-Path $certDir 'mpas-test-client.pem') -Force
     Write-Output "  MTLS : $clientCer を信頼する（https-client-auth=request）"
+
+    # **Linux では、コンテナの中の Keycloak の利用者が読めるよう、cert\ の読み取りを開く**（#703）。
+    #   dotnet dev-certs は、書き出すファイルを所有者だけが読める（0600）にする。マウントしたファイルは、
+    #   ホストの所有者・権限のまま見えるので、Keycloak（ホストとは別の利用者）は読めずに起動で止まる。
+    #   Windows（Rancher Desktop・WSL2）では、マウントしたファイルにこの制限が掛からないので要らない。
+    #   開くのは、cert\ に書き出した写し（.gitignore の対象。localhost だけの開発用証明書と、テスト用の公開の証明書）だけ。
+    if ([bool]$IsLinux)
+    {
+        & chmod 0644 $pem $key (Join-Path $certDir 'mpas-test-client.pem')
+        if ($LASTEXITCODE -ne 0) { throw "cert\ の読み取りを開けません（chmod の終了コード $LASTEXITCODE）。" }
+    }
 }
 
 switch ($Action)
