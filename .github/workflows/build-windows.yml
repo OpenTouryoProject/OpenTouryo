@@ -13,7 +13,7 @@
 #   （2_RunAllTests.ps1 -Linux と同じ対象。#703）。
 #   クロス DB のジョブ（linux-crossdb）が、TestPublicDb の net10.0 を Oracle・MySQL・PostgreSQL で回す
 #   （2_RunAllTests.ps1 -CrossDb の net10.0 の分。#703）。
-#   E2E のジョブ（linux-e2e）が、SpRp のサンプルの E2E（Sample4SpRp\E2E）の net10.0 を、IdP を Keycloak にして回す（#703）。
+#   認証の E2E のジョブ（linux-sts）が、SpRp のサンプルの E2E（Sample4SpRp\E2E）の net10.0 を、IdP（STS）を Keycloak にして回す（#703）。
 #
 # ＜対象外＞
 #   ・GUI アプリケーション（WinForms / WPF / 各ツールの画面）… RELEASE.md 4 節の手作業
@@ -323,13 +323,13 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-      # Linux の E2E のジョブ（下の linux-e2e）へ、SpRp の E2E が動かすサンプルの net10.0 の出力を渡す（#703 ph3）。
+      # 認証の E2E のジョブ（下の linux-sts）へ、SpRp の E2E が動かすサンプルの net10.0 の出力を渡す（#703 ph3）。
       # 1_BuildAll.ps1 がビルドしたもの（11_Build_SpRp_sample.bat・5_Build_CLICore_sample.bat・10_Build_WebAppCore_sample.bat）。
-      - name: Upload net10.0 samples for Linux E2E
+      - name: Upload net10.0 samples for Linux STS E2E
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: linux-e2e-input
+          name: linux-sts-input
           path: |
             root/programs/CS/Sample4SpRp/DotNet/MVC/SpRp_MVC/bin/Debug/net10.0/
             root/programs/CS/Sample4SpRp/DotNet/CLI/SpRp_CLI/bin/Debug/net10.0/
@@ -517,16 +517,16 @@ jobs:
           if-no-files-found: warn
 
   # --------------------------------------------------------------------
-  # SpRp のサンプルの E2E の net10.0（#703 ph3）
+  # 認証（STS）の E2E の net10.0（#703 ph3）
   # --------------------------------------------------------------------
-  # Sample4SpRp\E2E の 4 本を、IdP を Keycloak（-Idp KCK）にして回す。Linux の上では、各 E2E が net10.0 の対象だけに絞る。
+  # Sample4SpRp\E2E の 4 本を、IdP（STS）を Keycloak（-Idp KCK）にして回す。Linux の上では、各 E2E が net10.0 の対象だけに絞る。
   # 判定は各 E2E が行う（終了コード 0 = 全部 OK、1 = NG あり、2 = 前提が足りない）。
   # MPAS のスタブは、Linux で起動する手段が無いので回さない（MultiPurposeAuthSite#401）。
   # Keycloak で回らないケース（CLI の jwtbearer・FAPI2 の ros）は、手元のスタブで回す。
+  # **DB は使わない**（4 本とも、辿る画面は DB を読まない）。
   #
-  # ＜取ってくるもの（どれもコミットで固定する。上げるときは、手元で回してから）＞
-  #   ・LocalServicesOnDocker … SQL Server（外部ログインの MVC_Sample が Northwind を読む）
-  #   ・MultiPurposeAuthSite  … MTLS のテスト用のクライアント証明書（SHA256RSAClientCert.pfx・.cer）だけ（sparse）。
+  # ＜取ってくるもの（コミットで固定する。上げるときは、手元で回してから）＞
+  #   ・MultiPurposeAuthSite … MTLS のテスト用のクライアント証明書（SHA256RSAClientCert.pfx・.cer）だけ（sparse）。
   #     正本は MPAS にある（MultiPurposeAuthSite#351）。このリポジトリの同名の .pfx は別の（古い）証明書で、.cer は無い。
   #     CI の作業ツリーの root/files/resource/X509 に置く（Keycloak が信頼し、SpRp_MVC が FAPI2 の par_mtls で出す）
   #
@@ -536,29 +536,19 @@ jobs:
   #
   # ＜回す契機＞
   #   linux-crossdb と同じ（ワークフローの契機すべて。認証まわりの依存の更新を deps で捕まえるため）。
-  linux-e2e:
+  linux-sts:
     needs: build
     # Windows の回が NG でも回す（出力が渡っていなければ、受け取りで落ちる）
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
     env:
-      LSOD_REPO: NetDevInfraWGinOSSConsortium/LocalServicesOnDocker
-      LSOD_REF: 269e717939033e230835d0325eec255c1e03f71a
       MPAS_REPO: OpenTouryoProject/MultiPurposeAuthSite
       MPAS_REF: e57f826b18aba3bd28e7993d3d128f6d5c242c3e
 
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-
-      - name: Checkout LocalServicesOnDocker
-        uses: actions/checkout@v7
-        with:
-          repository: ${{ env.LSOD_REPO }}
-          ref: ${{ env.LSOD_REF }}
-          path: LocalServicesOnDocker
-          persist-credentials: false
 
       - name: Checkout MultiPurposeAuthSite (test client certificate only)
         uses: actions/checkout@v7
@@ -584,22 +574,27 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      # 上の「Upload net10.0 samples for Linux E2E」が、CS の下の相対パスで置いたもの
+      # 上の「Upload net10.0 samples for Linux STS E2E」が、CS の下の相対パスで置いたもの
       - name: Download net10.0 samples
         uses: actions/download-artifact@v8
         with:
-          name: linux-e2e-input
+          name: linux-sts-input
           path: root/programs/CS
 
+      # **終了コード 4 は「一部のクライアントでは信頼できなかった」で、ここでは止めない**。
+      #   Linux の dev-certs は、OpenSSL（.NET が使う）向けに ~/.aspnet/dev-certs/trust へ置き、
+      #   ブラウザ（NSS）向けの登録は、ランナーにブラウザのプロファイルが無いので失敗する（4 になる）。
+      #   .NET が信頼できるかは、trust のフォルダに証明書が置かれたかで確かめる（無ければ止める）。
       - name: Trust the development certificate
         shell: bash
         run: |
-          dotnet dev-certs https --trust
-          echo "SSL_CERT_DIR=$HOME/.aspnet/dev-certs/trust:/usr/lib/ssl/certs" >> "$GITHUB_ENV"
-
-      - name: Start SQL Server
-        shell: pwsh
-        run: ./LocalServicesOnDocker/tools/Start-Services.ps1 sqlserver -NoPause
+          rc=0
+          dotnet dev-certs https --trust || rc=$?
+          if [ "$rc" -ne 0 ] && [ "$rc" -ne 4 ]; then exit "$rc"; fi
+          trust="$HOME/.aspnet/dev-certs/trust"
+          ls -l "$trust"
+          if [ -z "$(ls -A "$trust" 2>/dev/null)" ]; then echo "::error::No certificate in $trust"; exit 1; fi
+          echo "SSL_CERT_DIR=$trust:/usr/lib/ssl/certs" >> "$GITHUB_ENV"
 
       - name: Start Keycloak
         id: kck
@@ -643,6 +638,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: e2e-logs-linux
+          name: sts-logs-linux
           path: ${{ runner.temp }}/E2E
           if-no-files-found: warn

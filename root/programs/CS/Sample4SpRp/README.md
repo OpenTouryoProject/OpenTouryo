@@ -97,7 +97,7 @@ cd root\programs\CS\Sample4SpRp\E2E
 3. スタブのログイン画面・同意画面を、テスト利用者で通す
 4. アプリへ戻り、**認証が要る画面が 200 を返す**
 
-- **前提（起動はしない）** : スタブ、SQL Server（MVC の `/Crud1/Index` が DB を読む）、ASP.NET 状態サービス（WebForms）、ビルド。
+- **前提（起動はしない）** : スタブ、ASP.NET 状態サービス（WebForms）、ビルド。**SQL Server は要らない**（辿る画面は DB を読まない。#703）。
   **足りなければ終了コード 2**（0 = すべて OK、1 = NG あり）
 - **戻り先は MPAS に登録された URL なので、アプリをその URL で動かす。** **ポートが使用中なら、その対象は NG**（Visual Studio で動かしていないか）
 - **ブラウザの代わりは HttpClient**（リダイレクトは自分で辿る。**Cookie の入れ物は 1 つ** — スタブとアプリは同じ localhost なので、ブラウザと同じく Cookie を共有する）
@@ -269,7 +269,7 @@ cd ..\..\E2E
 - **要求の `Destination`**（SAML 2.0 Bindings §3.4.5.2）は、サンプルが常に入れる（#693）。Keycloak は、無いと `missing_required_destination` で断る。スタブは見ない
 - **MPAS のスタブとは、ポート（44320）もプロジェクト名（`sprp-kck`）も分けてあるが、同時には起動しない**（メモリ。`TESTING.md` の冒頭）
 - **realm を変えたら、`-Action Down` してから起動し直す**（取り込みは、realm が無いときだけ行われる）
-- **外部ログインの前提はスタブのときと同じ**（SQL Server・ASP.NET 状態サービス・ビルド。2.1 節）。`-OutputDir` に、net48 のサイトの写し（1 サイト約 58MB）ができる
+- **外部ログインの前提はスタブのときと同じ**（ASP.NET 状態サービス・ビルド。2.1 節）。`-OutputDir` に、net48 のサイトの写し（1 サイト約 58MB）ができる
 
 ## 3. 設定（サンプルと IdP で揃える値）
 
@@ -525,7 +525,7 @@ cd root\programs\CS\Sample4SpRp\DotNet\MVC
   **SpRp のサンプルを足したら、このバッチに足す**（net48 と net10.0 の両方。`SpRp_MVC` は、いまは net10.0 だけ）
 - **単体テスト（`2_RunAllTests.ps1`）・疎通テスト（`3_SmokeTest.ps1`）・CI には載っていない。**
   外部の IdP（スタブ）が要るため。**WebApp のサンプルの外部ログインは `E2E/ExternalLoginE2E.ps1` で確かめる**（2.1 節。
-  スタブと SQL Server の起動が要るので、**施主に確かめてから回す**）。**CLI は `E2E/CliLoginE2E.ps1` で確かめる**（2.2 節。スタブだけが要る。`cc`・`jwtbearer`・`ropc` は `Sample4SpRp.stub.json` を渡したスタブ）。
+  スタブの起動が要るので、**施主に確かめてから回す**）。**CLI は `E2E/CliLoginE2E.ps1` で確かめる**（2.2 節。スタブだけが要る。`cc`・`jwtbearer`・`ropc` は `Sample4SpRp.stub.json` を渡したスタブ）。
   **MVC（FAPI 1.0）は `E2E/MvcFapi1E2E.ps1` で確かめる**（2.3 節。スタブには `Sample4SpRp.stub.json` が要る）。
   **MVC（FAPI 2.0）は `E2E/MvcFapi2E2E.ps1`**（2.4 節。MultiPurposeAuthSite#352 が直るまで、正常の側は NG）
 - **`SelectTargets.ps1` は、ここを変えると「バッチ : 11_Build_SpRp_sample.bat ＋ 手で確かめる（SpRp）」に分ける**

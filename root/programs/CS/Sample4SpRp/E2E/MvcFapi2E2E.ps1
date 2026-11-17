@@ -91,6 +91,7 @@
      2026/11/10  玄人 幸道         -Mtls（par_mtls のケース）を足した（MultiPurposeAuthSite#351）
      2026/11/13  玄人 幸道         RepoPath.ps1・SummaryTable.ps1 を root/files/tools/PowerShell の下（RepoPaths・Verify）から読む（#687）
      2026/11/13  玄人 幸道         -Idp KCK（Keycloak）を足した。IdP の違いは Idp.ps1 にまとめた（#690）
+     2026/11/18  玄人 幸道         Linux の上でも回せるようにした（窓の指定・TEMP・C:/root のパスの読み替え。#703）
 #>
 [CmdletBinding()]
 param(

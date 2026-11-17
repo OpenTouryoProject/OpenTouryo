@@ -17,7 +17,6 @@
       | 前提 | 確かめ方 |
       |---|---|
       | MPAS のスタブ | https://localhost:44310 の Discovery が 200（..\README.md の 2 節。StubCompose.ps1） |
-      | SQL Server（Northwind） | localhost:1433 に繋がる（MVC の /Crud1/Index が DB を読む） |
       | ASP.NET 状態サービス | aspnet_state が動いている（WebForms のセッション） |
       | ビルド | 1_BuildAll.ps1（C#・VB の WebApp_sample、WebAppCore_sample） |
       | SAML2 | **MPAS の雛形のクライアントに redirect_uri_saml が要る**（無いと IdP は応答を返さない） |
@@ -85,6 +84,7 @@
      2026/11/13  玄人 幸道         RepoPath.ps1・SummaryTable.ps1 を root/files/tools/PowerShell の下（RepoPaths・Verify）から読む（#687）
      2026/11/13  玄人 幸道         -Idp KCK（Keycloak）を足した。IdP の違いは Idp.ps1 にまとめた（#692）
      2026/11/14  玄人 幸道         Keycloak でも SAML2 を回す。対象ごとの SP の entityID（SpRp_Saml2SpEntityId）を差し替える（#693）
+     2026/11/18  玄人 幸道         Linux の上で net10.0 の対象を回せるようにした。前提から SQL Server を外した（辿る画面は DB を読まない。#703）
 #>
 [CmdletBinding()]
 param(
@@ -505,7 +505,7 @@ $d = Send-Http $probe 'GET' $idpInfo.Discovery $null
 $probe.Dispose()
 if ($d.Status -ne 200) { $lack += "$($idpInfo.Name) が応答しません（$($idpInfo.Discovery)。$($idpInfo.StartHint)）" }
 
-if (-not (Test-PortInUse 1433)) { $lack += 'SQL Server（localhost:1433）に繋がりません（LocalServicesOnDocker の tools\Start-Services.ps1 sqlserver）' }
+#   **SQL Server は要らない**（#703）。辿る画面（ログイン・戻り先・/Crud1/Index の GET・menu.aspx）は DB を読まない
 
 if (@($targets | Where-Object { $_.Kind -eq 'WebForms' }).Count -gt 0)
 {
@@ -546,7 +546,7 @@ if ($lack.Count -gt 0)
     foreach ($l in $lack) { Write-Output "  NG  $l" }
     exit 2
 }
-Write-Output "  OK  $($idpInfo.Name)（$($idpInfo.Issuer)）・SQL Server・状態サービス・テスト利用者"
+Write-Output "  OK  $($idpInfo.Name)（$($idpInfo.Issuer)）・状態サービス・テスト利用者"
 if ($Idp -eq 'KCK') { Write-Output "      （アプリの設定（SAML2 の SP の entityID を含む）を差し替えて動かす。net48 はサイトの写し（$OutputDir\site_*）、net10.0 は環境変数）" }
 
 # ------------------------------------------------------------------

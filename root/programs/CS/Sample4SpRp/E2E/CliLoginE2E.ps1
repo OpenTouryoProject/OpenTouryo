@@ -99,6 +99,7 @@
      2026/11/07  玄人 幸道         MPAS の場所を、引数 ＞ 環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定 で決める（#652）
      2026/11/13  玄人 幸道         RepoPath.ps1・SummaryTable.ps1 を root/files/tools/PowerShell の下（RepoPaths・Verify）から読む（#687）
      2026/11/13  玄人 幸道         -Idp KCK（Keycloak）を足した。IdP の違いは Idp.ps1 にまとめた（#690）
+     2026/11/18  玄人 幸道         Linux の上では net10.0 の CLI だけを回す。TEMP・C:/root のパスの読み替え（#703）
 #>
 [CmdletBinding()]
 param(
