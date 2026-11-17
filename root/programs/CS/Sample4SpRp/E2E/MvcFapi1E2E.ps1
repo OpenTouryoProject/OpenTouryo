@@ -99,7 +99,8 @@ param(
 
     [string] $StubAppSettings = '',
 
-    [string] $OutputDir = (Join-Path $env:TEMP 'OpenTouryoE2E')
+    # Linux には TEMP が無い（#703）
+    [string] $OutputDir = (Join-Path $(if ($env:TEMP) { $env:TEMP } else { [IO.Path]::GetTempPath() }) 'OpenTouryoE2E')
 )
 
 $ErrorActionPreference = 'Stop'
@@ -486,16 +487,20 @@ try
 
     # **IdP がスタブでなければ、issuer・Discovery を環境変数で差し替える**（appSettings__<キー>。appsettings.json より優先する）。
     #   アプリは起動のときに環境変数を写し取るので、**起動したら、このプロセスからは消す**（後に動かすものへ残さない）
-    foreach ($k in $idpInfo.Config.Keys) { [Environment]::SetEnvironmentVariable("appSettings__$k", $idpInfo.Config[$k]) }
+    #   **Linux の上では、設定の C:/root/... も、このリポジトリの root/... に差し替える**（Idp.ps1 の Get-E2EPathConfig。#703）
+    $envConfig = Get-E2EPathConfig (Join-Path (Split-Path $dllFull) 'appsettings.json') $here
+    foreach ($k in $idpInfo.Config.Keys) { $envConfig[$k] = $idpInfo.Config[$k] }
+    foreach ($k in $envConfig.Keys) { [Environment]::SetEnvironmentVariable("appSettings__$k", $envConfig[$k]) }
     try
     {
+        $hidden = Get-E2EHiddenWindow
         $proc = Start-Process 'dotnet' -ArgumentList "`"$dllFull`"" `
-            -PassThru -WindowStyle Hidden -WorkingDirectory (Split-Path $dllFull) `
+            -PassThru @hidden -WorkingDirectory (Split-Path $dllFull) `
             -RedirectStandardOutput $log -RedirectStandardError "$log.err"
     }
     finally
     {
-        foreach ($k in $idpInfo.Config.Keys) { [Environment]::SetEnvironmentVariable("appSettings__$k", $null) }
+        foreach ($k in $envConfig.Keys) { [Environment]::SetEnvironmentVariable("appSettings__$k", $null) }
     }
 
     $up = $false

@@ -89,7 +89,13 @@ if ($Action -eq 'Up')
     }
 
     # **クライアント証明書（MTLS）の信頼先を写す**（テスト用の自己署名の証明書。FAPI2 の par_mtls。毎回写して、元と揃える）
+    #   **C:\root に無ければ（Linux など）、このリポジトリの root\files\resource から写す**（#703。中身は同じ）
     $clientCer = 'C:\root\files\resource\X509\SHA256RSAClientCert.cer'
+    if (-not (Test-Path $clientCer))
+    {
+        # KCK → container → Sample4SpRp → CS → programs → root
+        $clientCer = Join-Path $here '..\..\..\..\..\files\resource\X509\SHA256RSAClientCert.cer'
+    }
     if (-not (Test-Path $clientCer))
     {
         throw "テスト用のクライアント証明書がありません : $clientCer（リソースを C:\root\files\resource に置く。root\Readme.ja.md）"

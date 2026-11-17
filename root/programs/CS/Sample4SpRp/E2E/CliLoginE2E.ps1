@@ -116,7 +116,8 @@ param(
 
     [string] $StubAppSettings = '',
 
-    [string] $OutputDir = (Join-Path $env:TEMP 'OpenTouryoE2E')
+    # Linux には TEMP が無い（#703）
+    [string] $OutputDir = (Join-Path $(if ($env:TEMP) { $env:TEMP } else { [IO.Path]::GetTempPath() }) 'OpenTouryoE2E')
 )
 
 $ErrorActionPreference = 'Stop'
@@ -187,6 +188,8 @@ $targets = @(
 $grants = @('cc', 'jwtbearer', 'ropc')
 
 $targets = @($targets | Where-Object { $Flow -eq 'All' -or $Flow -eq 'Both' -or $_.Flow -eq $Flow })
+# **Linux の上では、net10.0（.dll）だけ**（net48 の .exe は Windows でしか動かない。#703）
+if (Test-E2EOnLinux) { $targets = @($targets | Where-Object { $_.Exe.EndsWith('.dll') }) }
 if ($Only)
 {
     $targets = @($targets | Where-Object { $t = $_; @($Only | Where-Object { $t.Name -like "*$_*" }).Count -gt 0 })
@@ -328,7 +331,11 @@ function Invoke-IdpScreens($client, $res, [string]$password, [string]$user = '',
 function Start-Cli($t, [string]$exe = '', [string]$stdin = $null)
 {
     # **IdP がスタブでなければ、issuer・Discovery を差し替えた写しで動かす**（Copy-PatchedCli。ビルドの成果物は変えない）
-    if (-not $exe -and $idpInfo.Config.Count -gt 0) { $exe = Copy-PatchedCli $t @{} }
+    #   **Linux の上で、設定に C:/root/... があるときも**（Copy-PatchedCli が読み替える。#703）
+    if (-not $exe -and ($idpInfo.Config.Count -gt 0 -or (Get-E2EPathConfig (Get-CliConfigPath $t.Exe) $here).Count -gt 0))
+    {
+        $exe = Copy-PatchedCli $t @{}
+    }
     if (-not $exe) { $exe = $t.Exe }
 
     $psi = New-Object System.Diagnostics.ProcessStartInfo
@@ -546,6 +553,13 @@ function Invoke-Pkce($cli, [string]$case, [string]$password)
 # **出力フォルダを写し、設定ファイルの値だけを書き換える**（対照用と、IdP の差し替え用。ビルドの成果物は変えない）。
 #   net10.0 は appsettings.json、net48 は SpRp_CLI.exe.config。戻り値は、写しの実行ファイル。
 #   **IdP の差し替え（$idpInfo.Config。-Idp KCK の issuer・Discovery）も、併せて書く。**
+#   CLI の設定ファイル（実行ファイルの隣。net10.0 は appsettings.json、net48 は SpRp_CLI.exe.config）
+function Get-CliConfigPath([string]$exe)
+{
+    if ($exe.EndsWith('.dll')) { return Join-Path (Split-Path $exe) 'appsettings.json' }
+    return Join-Path (Split-Path $exe) 'SpRp_CLI.exe.config'
+}
+
 function Copy-PatchedCli($t, [hashtable]$values)
 {
     $src = Split-Path $t.Exe
@@ -555,10 +569,11 @@ function Copy-PatchedCli($t, [hashtable]$values)
     Remove-Item -Recurse -Force $dst -ErrorAction SilentlyContinue
     Copy-Item -Recurse $src $dst
 
-    $config = if ($t.Exe.EndsWith('.dll')) { Join-Path $dst 'appsettings.json' } else { Join-Path $dst 'SpRp_CLI.exe.config' }
+    $config = Get-CliConfigPath (Join-Path $dst (Split-Path -Leaf $t.Exe))
     $text = [IO.File]::ReadAllText($config)
 
-    $all = @{}
+    # **Linux の上では、設定の C:/root/... を、このリポジトリの root/... に読み替える**（Idp.ps1。#703。Windows では空）
+    $all = Get-E2EPathConfig $config $here
     foreach ($k in $idpInfo.Config.Keys) { $all[$k] = $idpInfo.Config[$k] }
     foreach ($k in $values.Keys) { $all[$k] = $values[$k] }
 
@@ -719,7 +734,7 @@ if (-not $SkipControl -and @($targets | Where-Object { $_.Flow -eq 'jwtbearer' }
     if ($m -and $m.Success)
     {
         $wrongKey = @{
-            SpRp_RsaPfxFilePath = 'C:/root/files/resource/X509/SHA256RSA_Server.pfx'
+            SpRp_RsaPfxFilePath = Convert-E2EPath 'C:/root/files/resource/X509/SHA256RSA_Server.pfx' $here
             SpRp_RsaPfxPassword = $m.Groups[1].Value
         }
     }

@@ -103,7 +103,8 @@ param(
 
     [string] $StubAppSettings = '',
 
-    [string] $OutputDir = (Join-Path $env:TEMP 'OpenTouryoE2E')
+    # Linux には TEMP が無い（#703）
+    [string] $OutputDir = (Join-Path $(if ($env:TEMP) { $env:TEMP } else { [IO.Path]::GetTempPath() }) 'OpenTouryoE2E')
 )
 
 $ErrorActionPreference = 'Stop'
@@ -153,6 +154,8 @@ $targets = @(
 )
 
 $targets = @($targets | Where-Object { $Lang -eq 'Both' -or $_.Lang -eq $Lang })
+# **Linux の上では、net10.0（Kestrel）だけ**（IIS Express は Windows でしか動かない。#703）
+if (Test-E2EOnLinux) { $targets = @($targets | Where-Object { $_.Host -eq 'Kestrel' }) }
 if ($Only)
 {
     $targets = @($targets | Where-Object { $t = $_; @($Only | Where-Object { $t.Name -like "*$_*" }).Count -gt 0 })
@@ -402,12 +405,16 @@ function Start-App($t)
         if (-not (Test-Path $t.Path)) { throw "ビルドされていません : $($t.Path)" }
 
         # **IdP がスタブでなければ、設定を環境変数で差し替える**（appSettings__<キー>。起動したら、このプロセスからは消す）
+        #   **Linux の上では、設定の C:/root/... も、このリポジトリの root/... に差し替える**（Idp.ps1 の Get-E2EPathConfig。#703）
+        $pathConfig = Get-E2EPathConfig (Join-Path (Split-Path $t.Path) 'appsettings.json') $here
+        foreach ($k in $pathConfig.Keys) { if (-not $appSettings.ContainsKey($k)) { $appSettings[$k] = $pathConfig[$k] } }
         foreach ($k in $appSettings.Keys) { [Environment]::SetEnvironmentVariable("appSettings__$k", $appSettings[$k]) }
         try
         {
             # コンテンツ ルートを合わせるため、出力フォルダを作業ディレクトリにする（st_Server.ps1 と同じ）
+            $hidden = Get-E2EHiddenWindow
             return Start-Process 'dotnet' -ArgumentList "`"$($t.Path)`"", '--urls', "https://localhost:$($t.Port)" `
-                -PassThru -WindowStyle Hidden -WorkingDirectory (Split-Path $t.Path) `
+                -PassThru @hidden -WorkingDirectory (Split-Path $t.Path) `
                 -RedirectStandardOutput $log -RedirectStandardError "$log.err"
         }
         finally
