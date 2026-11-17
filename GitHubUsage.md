@@ -565,7 +565,7 @@ grep -A3 '^permissions:' .github/workflows/*.yml
 `develop → master` の PR で `build-windows.yml` を発火させ（`pull_request: [master]`）、
 その成功をマージの条件にする。**リリースの関所。**
 
-**チェック名は `build`**（ワークフロー名 `Build on Windows` ではなく **ジョブ名**）。
+**チェック名は `build`**（ワークフロー名 `Build and test`（#703 の前は `Build on Windows`）ではなく **ジョブ名**）。
 実測で確認すること。**名前を誤ると、通らないチェックを待ち続けてマージできなくなる。**
 
 ```bash

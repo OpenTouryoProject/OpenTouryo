@@ -9,6 +9,9 @@
 #   ここには判定を書かない（書くと二重管理になる）。
 #   順序も入れ替えない（1 のクリーンとアセンブリ配置が 2・3 の前提になる）。
 #
+#   続けて、Linux のジョブ（linux）が、net10.0 の出力を ubuntu-latest で回す
+#   （2_RunAllTests.ps1 -Linux と同じ対象。#703）。
+#
 # ＜対象外＞
 #   ・GUI アプリケーション（WinForms / WPF / 各ツールの画面）… RELEASE.md 4 節の手作業
 #   ・SQL Server 以外の DBMS への接続 … 自動テストは /Dap SQL のみを使う
@@ -27,7 +30,9 @@
 #   このため 3 つのコードを対象にし、さらに当該プロジェクトに限定する。
 #   除外した内容はログに一覧されるので、握り潰しにはならない。
 
-name: Build on Windows
+# Linux のジョブ（#703）を足したので、名前は「Build and test」にした。
+# ファイル名は変えない（必須のチェックはジョブ名の build、文書の参照・実行の履歴を壊さないため）。
+name: Build and test
 
 on:
   push:
@@ -297,6 +302,20 @@ jobs:
         working-directory: root/programs
         run: .\2_RunAllTests.ps1 -OutputDir "${{ runner.temp }}\TestResults"
 
+      # Linux のジョブ（下の linux）へ、net10.0 の出力を渡す（#703）。
+      # 2_RunAllTests.ps1 -Linux がコンテナで回しているものと同じ 2 つ（EncAndDecUtilCUI・TestPublic）。
+      # テストが NG でも渡す（Linux の回は、Windows の回とは別に結果を出す）。
+      - name: Upload net10.0 output for Linux
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-input
+          path: |
+            root/programs/CS/Frameworks/Tests/Golden/EncAndDecUtilCUI/core100/bin/Debug/net10.0/
+            root/programs/CS/Frameworks/Tests/NUnit/TestPublic/bin/Debug/net10.0/
+          if-no-files-found: error
+          retention-days: 1
+
       # ------------------------------------------------------------------
       # 疎通（3_SmokeTest.ps1）
       # ------------------------------------------------------------------
@@ -361,3 +380,51 @@ jobs:
         run: |
           Write-Host "::error::Vulnerable packages were found (or could not be checked). See the 'Check vulnerable packages' step and the job summary."
           exit 1
+
+  # --------------------------------------------------------------------
+  # Linux（#703）
+  # --------------------------------------------------------------------
+  # Windows でビルドした net10.0 の出力を、Linux のランナーでそのまま回す。
+  # 手元の 2_RunAllTests.ps1 -Linux が、Linux のコンテナで回しているものと同じ。
+  # windows-latest は Linux のコンテナを動かせないため、ランナーを分ける。
+  # 判定は 2_RunAllTests.ps1 が行う（Linux の上で -Linux を付けると、docker を使わずに直接回す）。
+  #
+  # ビルドの出力は同じ実行の中でしか渡せないので、別のファイルにせず、このワークフローに置く。
+  linux:
+    needs: build
+    # Windows の回が NG でも回す（出力が渡っていなければ、受け取りで落ちる）
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      # 上の「Upload net10.0 output for Linux」が、Tests の下の相対パスで置いたもの
+      - name: Download net10.0 output
+        uses: actions/download-artifact@v8
+        with:
+          name: linux-input
+          path: root/programs/CS/Frameworks/Tests
+
+      - name: Run tests on Linux
+        shell: pwsh
+        working-directory: root/programs
+        run: ./2_RunAllTests.ps1 -Linux -OutputDir "${{ runner.temp }}/TestResults"
+
+      - name: Upload test results (Linux)
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-linux
+          path: |
+            ${{ runner.temp }}/TestResults
+            root/programs/CS/Frameworks/Tests/Golden/EncAndDecUtilCUI/ResultCore100OnLinux.txt
+            root/programs/CS/Frameworks/Tests/NUnit/TestResults/Linux/**
+          if-no-files-found: warn

@@ -421,7 +421,7 @@ Dependabot は**古い PR を閉じて新しい PR を開く**。既にマージ
 `build-windows.yml` は `workflow_dispatch` を持つので、**`deps` 以外のブランチでも同じ検証を回せる。**
 
 ```
-Actions → Build on Windows → Run workflow → Branch: <任意のブランチ>
+Actions → Build and test（#703 の前は Build on Windows）→ Run workflow → Branch: <任意のブランチ>
 ```
 
 実行されるのは**選んだブランチ側の定義**。`deps` への push と同じ内容
