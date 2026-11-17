@@ -437,9 +437,10 @@ Actions → Build and test（#703 の前は Build on Windows）→ Run workflow 
 2 つ目が実務上の注意になる。**`develop` より前に分岐した古いブランチにはファイルが無い**ので、
 選んでも動かない。先に `develop` を取り込むこと。
 
-> **手動実行でもクロス DB にはならない。** 対象は `SQLONLY`（SQL Server のみ）のまま。
+> **Windows のジョブ（`build`）の対象は `SQLONLY`（SQL Server のみ）のまま。**
 > 各 DBMS は Linux コンテナで、`windows-latest` では動かせない。
-> クロス DB は手元で行う（[`TESTING.md`](TESTING.md)）。
+> **クロス DB のうち NUnit の `TestPublicDb`（net10.0）は、Linux のジョブ（`linux-crossdb`）が回す**（下の「Linux のジョブ」。#703）。
+> net48 と Golden の `TestDataAccess` のクロス DB は手元で行う（[`TESTING.md`](TESTING.md)）。
 
 ### ワークフローの前提
 
@@ -474,11 +475,47 @@ Dependabot が起こしたイベントでは `GITHUB_TOKEN` が既定で read-on
 
 **リリース時の検証 3 本が、そのまま同じ順で回っている。**
 
+続けて、**Linux のジョブ**が、コンテナが要る検証のうち net10.0 の分を回す（下の「Linux のジョブ」。#703）。
+
+| 検証 | ジョブ | 備考 |
+|---|---|---|
+| `2_RunAllTests.ps1 -Linux` | `linux` | Golden の EncAndDecUtilCUI・NUnit の TestPublic |
+| `2_RunAllTests.ps1 -CrossDb` の net10.0 | `linux-crossdb` | NUnit の TestPublicDb を Oracle・MySQL・PostgreSQL で |
+| SpRp のサンプルの E2E（`Sample4SpRp\E2E`）の net10.0 | `linux-sts` | IdP（STS）は Keycloak。DB は使わない |
+| `2_RunAllTests.ps1 -Coverage` | × | NUnit の全部とクロス DB を 1 回の実行で回して合算する作りなので、ジョブに分けられない。手元で取る |
+
 **対象外は明示しておく。**
 
 - **GUI アプリケーション**（WinForms / WPF / 各ツールの画面）… `RELEASE.md` 4 節の手作業
-- **SQL Server 以外の DBMS への接続** … 自動テストは `/Dap SQL` しか使わない
-  （`TestSQLUtility` は 4 DBMS 分の SQL 生成を検証するが、**接続はしない**ので対象内）
+- **SQL Server 以外の DBMS への net48 での接続と、Golden の `TestDataAccess` のクロス DB** … Windows のジョブは `/Dap SQL` しか使わない
+  （`TestSQLUtility` は 4 DBMS 分の SQL 生成を検証するが、**接続はしない**ので対象内）。net48 は Windows とコンテナが同じ機械に要るので、手元の `-CrossDb` で回す
+- **SpRp の E2E の net48・WebForms と、IdP を MPAS のスタブにした回** … 手元で回す
+  （スタブは Linux で起動する手段が無い。MultiPurposeAuthSite#401。Keycloak で回らない CLI の jwtbearer・FAPI2 の ros も手元のスタブで回す）
+
+### Linux のジョブ（#703）
+
+**`windows-latest` は Linux コンテナを動かせない**（下の「SQL Server をどう用意するか」）。そこで、コンテナが要る検証は `ubuntu-latest` のジョブで回す。
+
+- **同じワークフロー（`build-windows.yml`）に置く。** Windows のジョブ（`build`）がビルドした net10.0 の出力を artifact にし、
+  Linux のジョブが受け取ってそのまま回す（`needs: build`）。**artifact は同じ実行の中でしか渡せない**ので、ファイルを分けない
+- **Linux ではビルドしない。** net10.0 の DLL は OS によらないので、Windows で作ったものを Linux へ配置する実際の使われ方をそのまま確かめられる
+- **判定は各スクリプトが行う**（`2_RunAllTests.ps1` は Linux の上では `-Linux` か `-CrossDb` を直接回す。E2E は Linux の上では net10.0 の対象だけに絞る）
+- `build` が NG でも回す（`if: !cancelled()`）。出力が渡っていなければ、受け取りで落ちる
+- 回す契機は、ワークフローの契機すべて（`deps` への push・master 宛の PR・手動・週 1 回）。DB のドライバや認証まわりの依存の更新を、`deps` で捕まえるため
+- **必須のチェックは `build` のまま**（[`GitHubUsage.md`](../../GitHubUsage.md) 2 節）。Linux のジョブは必須にしていない
+
+**ほかのリポジトリから取るものは、コミットで固定する。** 向こうの変更が、こちらの CI に黙って届かないようにするため。
+**上げるときは、手元で同じ検証を回してから、ワークフローの値を変える。**
+
+| ジョブ | 取るもの | 値 |
+|---|---|---|
+| `linux-crossdb` | LocalServicesOnDocker（DB の compose と `tools/Start-Services.ps1`） | `LSOD_REF` |
+| `linux-sts` | MultiPurposeAuthSite の `root/files/resource/X509` だけ（MTLS のテスト用のクライアント証明書 `SHA256RSAClientCert.pfx`・`.cer`。正本は MPAS。このリポジトリの同名の `.pfx` は別の古い証明書で、`.cer` は無い） | `MPAS_REF` |
+
+**`linux-sts` の HTTPS の信頼。** サンプル（Kestrel）と Keycloak は ASP.NET Core の開発用証明書で待ち受ける。
+`dotnet dev-certs https --trust` で信頼させ、`SSL_CERT_DIR` で .NET に見せる。
+**`--trust` は Linux では終了コード 4 で終わる**（ブラウザ（NSS）向けの登録だけが失敗する。.NET が使う OpenSSL 向けの `~/.aspnet/dev-certs/trust` には置かれる）。
+ワークフローは 4 では止めず、そのフォルダに証明書が無ければ止める。
 
 ### SQL Server をどう用意するか
 

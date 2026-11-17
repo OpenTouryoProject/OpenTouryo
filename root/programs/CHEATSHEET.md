@@ -229,14 +229,16 @@ dotnet test CS\Frameworks\Tests\NUnit\TestPublic\TestPublic.csproj -f net10.0 --
   使い終わったら止める。**メモリを使い切ると、コンテナがシステムごとハングさせる**（[`TESTING.md`](TESTING.md) の冒頭）
 - **クロス DB（`TestPublicDb`）は `.\2_RunAllTests.ps1 -CrossDb` で回す**（#623）。LocalServicesOnDocker の場所は、`-LocalServicesDir` ＞ 環境変数 `OT_LSOD_PATH` ＞ `RepoPaths.csv`（無ければ `_RepoPaths.csv`）の既定（#652）。
   DBMS を 1 つずつ起動 → 回す → 停止まで自動で行う（`docker` が使えれば Rancher 版、使えなければ WSL2 版）。
-  始める前から動いていた DBMS には触らない。`-CrossDb` を付けなければ、コンテナは起動も停止もしない
+  始める前から動いていた DBMS には触らない。`-CrossDb` を付けなければ、コンテナは起動も停止もしない。
+  **CI では、net10.0 の分を Linux のジョブ `linux-crossdb` が回す**（net48 は手元。#703。[`BUILDING.md`](BUILDING.md) 9 節）
 - **カバレッジを [`Tests/COVERAGE.md`](CS/Frameworks/Tests/COVERAGE.md) に残すなら `.\2_RunAllTests.ps1 -Coverage -LocalServicesDir <LocalServicesOnDocker>`。**
   NUnit の全部（Linux の回を含む）とクロス DB を 1 回で回し、全部 OK ならアセンブリごとに合算して書く
   （`OpenTouryo.Framework` だけは、TestFramework の対象モジュールごと）。`docker` が要る。普通の実行は COVERAGE.md を書かない。
   同じ計測から HTML（`Tests/CoverageHtml`。Git 管理外）も作る。ReportGenerator はローカル ツール（`.config/dotnet-tools.json`）で、導入は要らない
 - **Linux（Golden の EncAndDecUtilCUI と NUnit の TestPublic）は `.\2_RunAllTests.ps1 -Linux` で回す**（#632）。
   Windows でビルドした net10.0 の出力を、Linux のコンテナ（1 つ、`--rm`）でそのまま動かす。`docker` が要る（[`TESTING.md`](TESTING.md) 2 節）。
-  **Public・Public.Security に触れた fixed では、`SelectTargets.ps1` が自動で付ける**（fixing では後回し）
+  **Public・Public.Security に触れた fixed では、`SelectTargets.ps1` が自動で付ける**（fixing では後回し）。
+  **CI では、Linux のジョブ `linux` が同じ対象を ubuntu-latest で直接回す**（#703）
 - `dotnet test` の `-f net10.0` を外すと net48 も回る。**net48 / net10.0 で実装が違う箇所は両方回す**
 
 - **基盤だけのビルドでもクリーンは外さない。** 外すと #574 の罠

@@ -15,8 +15,9 @@
 
 ## 実行モード（`/MODE`）
 
-**クロス DB は CI では実行できない。** LocalServicesOnDocker の各 DBMS は Linux コンテナで、
-`windows-latest` は Linux コンテナを動かせないため（[`BUILDING.md`](../../../../../BUILDING.md) 9 節）。
+**このテストのクロス DB は CI では実行できない。** LocalServicesOnDocker の各 DBMS は Linux コンテナで、
+`windows-latest` は Linux コンテナを動かせないため（[`BUILDING.md`](../../../../../BUILDING.md) 9 節。
+CI の Linux のジョブ `linux-crossdb` が回すのは、NUnit の `TestPublicDb` の net10.0 だけ。#703）。
 このため対象を切り替えられるようにしてある。
 
 ```

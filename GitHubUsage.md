@@ -311,7 +311,7 @@ allow_rebase_merge   false   … 同上
 
 | ファイル | 役割 |
 |---|---|
-| [`workflows/build-windows.yml`](.github/workflows/build-windows.yml) | 検証 3 本（ビルド・単体テスト・疎通）を windows-latest で。ビルドの後に依存パッケージの脆弱性も見る（#681） |
+| [`workflows/build-windows.yml`](.github/workflows/build-windows.yml) | 検証 3 本（ビルド・単体テスト・疎通）を windows-latest で。ビルドの後に依存パッケージの脆弱性も見る（#681）。続けて、コンテナが要る検証の net10.0 の分（`-Linux`・クロス DB・SpRp の E2E）を ubuntu-latest のジョブ（`linux`・`linux-crossdb`・`linux-sts`）で回す（#703。[`BUILDING.md`](root/programs/BUILDING.md) 9 節） |
 | [`workflows/build-windows-vb.yml`](.github/workflows/build-windows-vb.yml) | **VB 版**のビルドと疎通を windows-latest で（手動のみ） |
 | [`workflows/dependabot-retarget.yml`](.github/workflows/dependabot-retarget.yml) | Dependabot PR の向き先を `deps` へ変更 |
 | [`workflows/expectation-change.yml`](.github/workflows/expectation-change.yml) | PR のコミットに、トレーラーの無い期待値の変更が無いかを確かめる（#640。[`QUALITY.md`](QUALITY.md) 3 節の段 3） |
@@ -719,11 +719,16 @@ PR #641 の `mergeStateStatus` は `CLEAN` のまま（必須のチェックを�
 #### 現状
 
 ```
-actions/checkout@v7                      GitHub 製・タグ
-actions/upload-artifact@v7               GitHub 製・タグ（3 箇所）
+actions/checkout@v7                      GitHub 製・タグ（build-windows.yml・build-windows-vb.yml）
+actions/upload-artifact@v7               GitHub 製・タグ（同上）
+actions/setup-dotnet@v6                  GitHub 製・タグ（build-windows.yml の Linux のジョブ。#703）
+actions/download-artifact@v8             GitHub 製・タグ（同上）
 ```
 
+expectation-change.yml・publish-wiki-site.yml は SHA で固定済み（3 節）。
+
 **第三者製のアクションは使っていない**（SQL Server は、以前の `ankane/setup-sqlserver` をやめ、ISO を直接取って SHA-256 で確かめる）。
+**ほかのリポジトリ（LocalServicesOnDocker・MultiPurposeAuthSite）を取るときは、コミットで固定する**（#703。`build-windows.yml` の `LSOD_REF`・`MPAS_REF`）。
 被害範囲も限定的である（`Secrets` は 0 件、`GITHUB_TOKEN` の既定は `read`、
 `build-windows.yml` の `permissions` は `contents: read`）。
 
@@ -732,7 +737,7 @@ actions/upload-artifact@v7               GitHub 製・タグ（3 箇所）
 **順序を誤るとワークフローが動かなくなる。**
 
 ```
-1. actions/* の 4 箇所を SHA へ書き換える
+1. タグで指している actions/* を SHA へ書き換える（上の「現状」）
 2. build-windows.yml を手動実行して通ることを確かめる
 3. sha_pinning_required を true にする
 4. allowed_actions を selected にし、GitHub 製だけを許可する

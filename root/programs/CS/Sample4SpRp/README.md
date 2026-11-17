@@ -523,8 +523,11 @@ cd root\programs\CS\Sample4SpRp\DotNet\MVC
 - **コンテナを勝手に起動・停止しない**（`AGENTS.md`）。`StubCompose.ps1 -Action Config` は起動しないので、設定の確認に使える
 - **ビルドは `CS\11_Build_SpRp_sample.bat` に詰める**（`1_BuildAll.ps1` の `SpRp_sample`、`CS\0_ExecAllBat.bat` から呼ばれる）。
   **SpRp のサンプルを足したら、このバッチに足す**（net48 と net10.0 の両方。`SpRp_MVC` は、いまは net10.0 だけ）
-- **単体テスト（`2_RunAllTests.ps1`）・疎通テスト（`3_SmokeTest.ps1`）・CI には載っていない。**
-  外部の IdP（スタブ）が要るため。**WebApp のサンプルの外部ログインは `E2E/ExternalLoginE2E.ps1` で確かめる**（2.1 節。
+- **単体テスト（`2_RunAllTests.ps1`）・疎通テスト（`3_SmokeTest.ps1`）には載っていない。**
+  外部の IdP（スタブ）が要るため。
+  **CI では、Linux のジョブ `linux-sts` が、E2E の 4 本の net10.0 の対象を、IdP を Keycloak（`-Idp KCK`）にして回す**（#703。[`BUILDING.md`](../../BUILDING.md) 9 節）。
+  net48・WebForms と、IdP をスタブにした回（スタブでだけ回る CLI の jwtbearer・FAPI2 の ros を含む）は手元で回す（スタブは Linux で起動できない。MultiPurposeAuthSite#401）。
+  **E2E は Linux の上でも動く**（`E2E/Idp.ps1`）。net10.0 の対象だけに絞り、サンプルの設定の `C:/root/...` を、ソースを変えずにこのリポジトリの `root/...` へ読み替えて渡す。**WebApp のサンプルの外部ログインは `E2E/ExternalLoginE2E.ps1` で確かめる**（2.1 節。
   スタブの起動が要るので、**施主に確かめてから回す**）。**CLI は `E2E/CliLoginE2E.ps1` で確かめる**（2.2 節。スタブだけが要る。`cc`・`jwtbearer`・`ropc` は `Sample4SpRp.stub.json` を渡したスタブ）。
   **MVC（FAPI 1.0）は `E2E/MvcFapi1E2E.ps1` で確かめる**（2.3 節。スタブには `Sample4SpRp.stub.json` が要る）。
   **MVC（FAPI 2.0）は `E2E/MvcFapi2E2E.ps1`**（2.4 節。MultiPurposeAuthSite#352 が直るまで、正常の側は NG）

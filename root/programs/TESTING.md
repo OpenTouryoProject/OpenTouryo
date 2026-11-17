@@ -56,8 +56,10 @@ cd root\programs
 - **コンテナを起動するのは `-Linux` / `-CrossDb` / `-Coverage` を付けたときだけ。** 付けなければ、今までどおり手元の DB を使うだけ
 - `-Coverage` は `-Only` / `-SkipBuild` / `-Linux` / `-CrossDb` と、`-Linux` は `-CrossDb` と、同時に指定できない
 - Linux のコンテナのイメージとメモリの上限は `-LinuxImage` / `-LinuxMemory` で変えられる（既定は `mcr.microsoft.com/dotnet/sdk:10.0` / `4g`）
-- **CI（GitHub Actions）は、オプション無しの通常の実行だけ**を回す（windows-latest は Linux のコンテナを動かせない）。
-  Linux・クロス DB・カバレッジは手元で回す
+- **CI（GitHub Actions）の Windows のジョブは、オプション無しの通常の実行だけ**を回す（windows-latest は Linux のコンテナを動かせない）。
+  **`-Linux` と、`-CrossDb` の net10.0 の分は、Linux のジョブ（`linux`・`linux-crossdb`）が回す**（Windows でビルドした出力を受け取り、
+  Linux の上で `2_RunAllTests.ps1 -Linux` / `-CrossDb` を直接回す。#703。[`BUILDING.md`](BUILDING.md) 9 節）。
+  `-CrossDb` の net48 と、カバレッジは手元で回す
 
 ---
 
@@ -219,8 +221,9 @@ net10.0 の DLL は OS によらないので、Windows で作ったものを Lin
 
 ### `TestDataAccess` の実行モード
 
-**クロス DB は CI では実行できない。** LocalServicesOnDocker の各 DBMS は Linux コンテナで、
-`windows-latest` は Linux コンテナを動かせないため（[`BUILDING.md`](BUILDING.md) 9 節）。
+**`TestDataAccess` のクロス DB は CI では実行できない。** LocalServicesOnDocker の各 DBMS は Linux コンテナで、
+`windows-latest` は Linux コンテナを動かせないため（[`BUILDING.md`](BUILDING.md) 9 節。
+CI の Linux のジョブ `linux-crossdb` が回すのは、NUnit の `TestPublicDb` の net10.0 だけ。#703）。
 このため `/MODE` で対象を切り替える。**期待値は `SQLONLY`（SQL Server のみ）で記録している。**
 
 ```
