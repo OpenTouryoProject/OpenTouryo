@@ -510,7 +510,10 @@ Dependabot が起こしたイベントでは `GITHUB_TOKEN` が既定で read-on
 | ジョブ | 取るもの | 値 |
 |---|---|---|
 | `linux-crossdb` | LocalServicesOnDocker（DB の compose と `tools/Start-Services.ps1`） | `LSOD_REF` |
-| `linux-sts` | MultiPurposeAuthSite の `root/files/resource/X509` だけ（MTLS のテスト用のクライアント証明書 `SHA256RSAClientCert.pfx`・`.cer`。正本は MPAS。このリポジトリの同名の `.pfx` は別の古い証明書で、`.cer` は無い） | `MPAS_REF` |
+
+**MTLS のテスト用のクライアント証明書（`root/files/resource/X509/SHA256RSAClientCert.pfx`・`.cer`）は、このリポジトリのものを使う**（#705。以前は `linux-sts` が MPAS から取って置き換えていた）。
+MPAS（`root/files/resource/X509`）の現行のものと同じで、自己署名（`CN=MPAS Test Client`）・2126 年まで有効。
+**MPAS が作り直したら、`.pfx`・`.cer` を手で写す**（MPAS が正本。作り直す手順は同じフォルダの `GenClientCertByOpenSSL.bat`）。ずれたことを知らせる仕組みは置いていない。
 
 **`linux-sts` の HTTPS の信頼。** サンプル（Kestrel）と Keycloak は ASP.NET Core の開発用証明書で待ち受ける。
 `dotnet dev-certs https --trust` で信頼させ、`SSL_CERT_DIR` で .NET に見せる。

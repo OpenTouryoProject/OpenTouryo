@@ -728,7 +728,7 @@ actions/download-artifact@v8             GitHub 製・タグ（同上）
 expectation-change.yml・publish-wiki-site.yml は SHA で固定済み（3 節）。
 
 **第三者製のアクションは使っていない**（SQL Server は、以前の `ankane/setup-sqlserver` をやめ、ISO を直接取って SHA-256 で確かめる）。
-**ほかのリポジトリ（LocalServicesOnDocker・MultiPurposeAuthSite）を取るときは、コミットで固定する**（#703。`build-windows.yml` の `LSOD_REF`・`MPAS_REF`）。
+**ほかのリポジトリ（LocalServicesOnDocker）を取るときは、コミットで固定する**（#703。`build-windows.yml` の `LSOD_REF`）。
 被害範囲も限定的である（`Secrets` は 0 件、`GITHUB_TOKEN` の既定は `read`、
 `build-windows.yml` の `permissions` は `contents: read`）。
 

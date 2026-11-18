@@ -53,6 +53,7 @@
      2026/11/13  玄人 幸道         クライアント証明書（MTLS）を常に受け付ける。信頼先の証明書を cert\ に写す（#690 ph2）
      2026/11/18  玄人 幸道         信頼先の証明書が C:\root に無ければ、このリポジトリの root\files\resource から写す（#703）
      2026/11/18  玄人 幸道         Linux では、コンテナが読めるよう cert\ の読み取りを開く（#703）
+     2026/11/19  玄人 幸道         コメントを直した（このリポジトリの .cer を、MPAS の現行のものに揃えた。#705）
 #>
 [CmdletBinding()]
 param(
@@ -92,7 +93,7 @@ if ($Action -eq 'Up')
 
     # **クライアント証明書（MTLS）の信頼先を写す**（テスト用の自己署名の証明書。FAPI2 の par_mtls。毎回写して、元と揃える）
     #   **C:\root に無ければ（Linux など）、このリポジトリの root\files\resource から写す**（#703）。
-    #   このリポジトリには .cer が無い（正本は MPAS）。CI では、build-windows.yml の linux-sts が MPAS の正本をそこに置く
+    #   このリポジトリの .cer は、MPAS の現行のものと同じ（#705。MPAS が作り直したら手で写す。BUILDING.md 9 節）
     $clientCer = 'C:\root\files\resource\X509\SHA256RSAClientCert.cer'
     if (-not (Test-Path $clientCer))
     {

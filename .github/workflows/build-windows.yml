@@ -525,10 +525,9 @@ jobs:
   # Keycloak で回らないケース（CLI の jwtbearer・FAPI2 の ros）は、手元のスタブで回す。
   # **DB は使わない**（4 本とも、辿る画面は DB を読まない）。
   #
-  # ＜取ってくるもの（コミットで固定する。上げるときは、手元で回してから）＞
-  #   ・MultiPurposeAuthSite … MTLS のテスト用のクライアント証明書（SHA256RSAClientCert.pfx・.cer）だけ（sparse）。
-  #     正本は MPAS にある（MultiPurposeAuthSite#351）。このリポジトリの同名の .pfx は別の（古い）証明書で、.cer は無い。
-  #     CI の作業ツリーの root/files/resource/X509 に置く（Keycloak が信頼し、SpRp_MVC が FAPI2 の par_mtls で出す）
+  # ＜MTLS のテスト用のクライアント証明書＞
+  #   このリポジトリの root/files/resource/X509/SHA256RSAClientCert.{pfx,cer} を使う（Keycloak が信頼し、SpRp_MVC が FAPI2 の par_mtls で出す）。
+  #   MPAS の現行のものと同じ（#705。以前は MPAS から取って置き換えていた）。MPAS が作り直したら、手で写す（BUILDING.md 9 節）。
   #
   # ＜HTTPS の信頼＞
   #   サンプル（Kestrel）と Keycloak は、ASP.NET Core の開発用証明書で待ち受ける（KckCompose.ps1 が書き出す）。
@@ -542,32 +541,10 @@ jobs:
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
-    env:
-      MPAS_REPO: OpenTouryoProject/MultiPurposeAuthSite
-      MPAS_REF: e57f826b18aba3bd28e7993d3d128f6d5c242c3e
 
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-
-      - name: Checkout MultiPurposeAuthSite (test client certificate only)
-        uses: actions/checkout@v7
-        with:
-          repository: ${{ env.MPAS_REPO }}
-          ref: ${{ env.MPAS_REF }}
-          path: MultiPurposeAuthSite
-          persist-credentials: false
-          sparse-checkout: |
-            root/files/resource/X509
-
-      - name: Place test client certificate
-        shell: pwsh
-        run: |
-          foreach ($n in 'SHA256RSAClientCert.pfx', 'SHA256RSAClientCert.cer')
-          {
-              Copy-Item "MultiPurposeAuthSite/root/files/resource/X509/$n" "root/files/resource/X509/$n" -Force
-              Write-Host ("{0} : {1}" -f $n, (Get-FileHash "root/files/resource/X509/$n").Hash)
-          }
 
       - name: Set up .NET
         uses: actions/setup-dotnet@v6
