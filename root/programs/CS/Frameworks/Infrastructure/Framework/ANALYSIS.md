@@ -494,7 +494,7 @@ SAML の署名・検証は SP と IdP の双方が使うため、**IdP 側の処
 | SP：応答の `Audience` の照合 | **ACS URL と照合する**（最初の `Audience`） | `expectedSpEntityId` を受ける `VerifyResponseWithReason`（10 引数。`sigAlgs` も省略できない。従来の版の呼び出しと区別するため）。**Audience を entityID と完全一致で比べる**（SAML Profiles 4.1.4.2）。null・空なら従来の照合。設定を読む版は `SpRp_Saml2SpEntityId` |
 | IdP：応答の `Audience` | **ACS URL を入れる** | `audience`（SP の entityID）を受ける `CreateRedirectResponse` / `CreatePostResponse`（鍵を受ける版）と `SAML2Bindings.CreateAssertion`。**値は要素の値として入れる**（特殊な文字もエスケープされる） |
 
-- **汎用認証サイト（MPAS）は、今は Audience に ACS URL を入れ、要求の `Destination` を見ない。** そのため、SP の設定（`SpRp_Saml2SpEntityId`）は、相手が仕様どおりの IdP のときだけ入れる。MPAS が `audience` を受ける版に替われば、どちらとも通る
+- **汎用認証サイト（MPAS）は、MultiPurposeAuthSite#389 から、Audience に SP の entityID（要求の `Issuer`）を入れ、要求の `Destination` も照合する（#392）。** そのため、MPAS と組む SP は、`SpRp_Saml2SpEntityId` に entityID を入れる（空のままだと `AudienceMismatch` で断る）。Sample4SpRp のサンプルは、既定値を入れてある
 - **要求に `Destination` を足しても、従来の IdP の側（`VerifyRequest`）は断らない**（要素の有無しか見ない）。**IdP の側で `Destination` を確かめることはしていない**（今の SP を断ることになるため。別に扱う）
 - **構造の確かめ（`SAML2Bindings.VerifyByXPath`）は、`Audience` をちょうど 1 つに限っている**（以前から）。仕様は複数を許す（Core 2.5.1.4）が、#693 では広げていない。
   そのため、`AudienceRestriction` や `Audience` が複数の応答は、照合の前に `SignatureInvalid`（構造）で断る。

@@ -33,7 +33,8 @@
       | IIS Express（net48） | サイトのフォルダ（obj を除く）を -OutputDir に写し、写しの app.config の値を書き換える |
       | Kestrel（net10.0） | 環境変数 appSettings__<キー>（Host.CreateDefaultBuilder が、appsettings.json より優先する） |
       **SAML2 は、SpRp_Saml2SpEntityId（自分（SP）の entityID）も差し替える**（対象ごと。要求の Issuer と同じ http:// ＋ client_id。#693）。
-        - Keycloak は、応答の Audience に SP の entityID を入れる（SAML 2.0 Profiles §4.1.4.2）。スタブは ACS の URL を入れるので、スタブでは差し替えない（空のまま）
+        - Keycloak も MPAS のスタブも、応答の Audience に SP の entityID を入れる（SAML 2.0 Profiles §4.1.4.2。スタブは MPAS#389 から）。
+          **サンプルの既定値も同じ値**にしてあるので、スタブでは差し替えず、その値で通る（差し替えは -Idp KCK のときだけ）
         - 要求の Destination（SAML 2.0 Bindings §3.4.5.2）は、サンプルが常に入れる（Keycloak は、無いと missing_required_destination で断る）
 
     ＜ブラウザの代わり＞
@@ -85,6 +86,7 @@
      2026/11/13  玄人 幸道         -Idp KCK（Keycloak）を足した。IdP の違いは Idp.ps1 にまとめた（#692）
      2026/11/14  玄人 幸道         Keycloak でも SAML2 を回す。対象ごとの SP の entityID（SpRp_Saml2SpEntityId）を差し替える（#693）
      2026/11/18  玄人 幸道         Linux の上で net10.0 の対象を回せるようにした。前提から SQL Server を外した（辿る画面は DB を読まない。#703）
+     2026/11/19  玄人 幸道         スタブの SAML2 の Audience が entityID になった（MPAS#389）ので、サンプルの既定値を entityID にし、スタブでは差し替えない旨を直した
 #>
 [CmdletBinding()]
 param(

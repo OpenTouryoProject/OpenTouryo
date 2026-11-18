@@ -263,10 +263,10 @@ cd ..\..\E2E
 | FAPI2 の `par_mtls` | `StubCompose.ps1 -Mtls` で起動したとき | **常に**（`-Mtls` を付けるだけ）。登録は `client-x509`（Subject DN と発行者の DN を照合） |
 | FAPI2 の id_token | 暗号化（JWE。RSA-OAEP・A256GCM） | **同じく暗号化させる**（同じ公開鍵を `use=enc` でも登録した）。PAR は必須にしてある |
 | FAPI2 の IdP の対照（Reuse・ClientId） | スタブのエラー画面 | Keycloak の「Invalid Request」（400）。理由はサーバのログ（`PAR not found, not issued or used multiple times`・`PAR was issued for a different client`） |
-| 外部ログインの SAML2 の Audience | ACS の URL（`SpRp_Saml2SpEntityId` は空のまま） | **SP の entityID**（SAML 2.0 Profiles §4.1.4.2）。E2E が、対象ごとに `SpRp_Saml2SpEntityId` を `http://` ＋ client_id に差し替える（#693） |
+| 外部ログインの SAML2 の Audience | **SP の entityID**（MPAS#389 から。以前は ACS の URL）。サンプルの既定の `SpRp_Saml2SpEntityId`（`http://` ＋ client_id）のままで通る | **SP の entityID**（SAML 2.0 Profiles §4.1.4.2）。E2E が、対象ごとに `SpRp_Saml2SpEntityId` を `http://` ＋ client_id に差し替える（#693。既定値と同じ） |
 | 外部ログインの SAML2 の SP の登録 | — | `http://` ＋ client_id。要求の署名を確かめ、`mail` の属性を出す。**`saml.authnstatement` を `true` にする**（JSON で取り込むと既定で入らず、assertion に `AuthnStatement` が無くなる。Profiles §4.1.4.2 で必須） |
 
-- **要求の `Destination`**（SAML 2.0 Bindings §3.4.5.2）は、サンプルが常に入れる（#693）。Keycloak は、無いと `missing_required_destination` で断る。スタブは見ない
+- **要求の `Destination`**（SAML 2.0 Bindings §3.4.5.2）は、サンプルが常に入れる（#693）。Keycloak は、無いと `missing_required_destination` で断る。スタブも、MPAS#392 から、メタデータの口と合わなければ捨てる（署名した要求に無くても捨てる）
 - **MPAS のスタブとは、ポート（44320）もプロジェクト名（`sprp-kck`）も分けてあるが、同時には起動しない**（メモリ。`TESTING.md` の冒頭）
 - **realm を変えたら、`-Action Down` してから起動し直す**（取り込みは、realm が無いときだけ行われる）
 - **外部ログインの前提はスタブのときと同じ**（ASP.NET 状態サービス・ビルド。2.1 節）。`-OutputDir` に、net48 のサイトの写し（1 サイト約 58MB）ができる
