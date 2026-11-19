@@ -27,12 +27,15 @@
 //*  2026/10/22  玄人 幸道         取得を OAuth2AndOIDCClient.GetStringAsync に変えた（discovery も読むため）
 //*  2026/10/22  玄人 幸道         設定（JwkSetUri / SpRp_DiscoveryUri / SpRp_Isser）を読む版を追加
 //*  2026/11/06  玄人 幸道         remarks の設定キーを、改名後の名前（SpRp_JwkSetUri・SpRp_Issuer）にした（#666）
+//*  2026/11/20  玄人 幸道         jwks_uri などを取りに行く HttpClient を差し替える HttpClient プロパティを追加（#707）
 //**********************************************************************************
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+
+using System.Net.Http;
 
 using Newtonsoft.Json.Linq;
 
@@ -54,6 +57,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// | PickJwksFromCache | **同期の経路**から、キャッシュだけを読む（取りに行かない） |
     /// | RefillInBackground | 同期の経路で鍵が無かったとき、要求の外で補充する（待たない） |
     /// | WarmUpAsync | 登録のときなど、待てる経路で取りに行く |
+    /// | HttpClient（プロパティ） | 取りに行く HttpClient を差し替える（既定は null＝共有の OAuth2AndOIDCClient.HttpClient。#707） |
     ///
     /// **同期の経路では待たない。** net48 の ASP.NET では、同期の経路で await を待つと、
     /// 継続が AspNetSynchronizationContext に積まれ、その順番を握っている自分が待つので止まる。
@@ -101,6 +105,31 @@ namespace Touryo.Infrastructure.Framework.Authentication
         {
             get { return RemoteJwkSetStore._minRefetchInterval; }
             set { RemoteJwkSetStore._minRefetchInterval = value; }
+        }
+
+        /// <summary>取得に使う HttpClient（null なら、OAuth2AndOIDCClient.HttpClient の共有のもの）</summary>
+        private static volatile HttpClient _httpClient = null;
+
+        /// <summary>jwks_uri（と discovery）を取りに行く HttpClient（既定は null。#707）</summary>
+        /// <remarks>
+        /// 自由に利用できる。**null なら、いまどおり OAuth2AndOIDCClient.HttpClient（共有）で取りに行く。**
+        ///
+        /// 登録できる相手が jwks_uri を書き、こちらに取りに行かせる構成（動的登録。RFC 7591）で、
+        /// **取りに行く先を絞った HttpClient**（リダイレクトを追わない・接続の時点のアドレスを判定する、など）を使うための口である。
+        /// 共有の HttpClient は、上流の IdP・Back-Channel Logout など正規の行き先も通るので、絞れない。
+        ///
+        /// **プロセス全体に効く**（OAuth2AndOIDCClient.HttpClient と同じ）。
+        /// **この部品が取りに行くものは、すべてこの HttpClient で取りに行く**（jwks_uri・discovery・GetJwkByDiscoveryAsync が読む jwks_uri）。
+        /// 上流の IdP の jwks_uri も同じ口を通るので、絞った HttpClient を渡すと、上流にも掛かる。
+        /// **この部品を通らない取得には効かない**（OAuth2AndOIDCClient.GetJwkSetAsync・Discovery を直接読む口は、共有の HttpClient のまま）。
+        ///
+        /// 取得のたびに読むので、設定した後の取得から効く（取得済みのキャッシュは、そのまま）。
+        /// OAuth2AndOIDCClient.HttpClient とは別に持つ（こちらが null でなければ、jwks_uri・discovery の取得は共有のものを使わない）。
+        /// </remarks>
+        public static HttpClient HttpClient
+        {
+            get { return RemoteJwkSetStore._httpClient; }
+            set { RemoteJwkSetStore._httpClient = value; }
         }
 
         /// <summary>キャッシュを消す</summary>
@@ -476,13 +505,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="url">string</param>
         /// <returns>JObject（読めなければ null）</returns>
         /// <remarks>
-        /// 取得は OAuth2AndOIDCClient の HttpClient で行う（TLS・プロキシの扱いが揃う）。
+        /// 取得は、既定では OAuth2AndOIDCClient の HttpClient で行う（TLS・プロキシの扱いが揃う）。
+        /// RemoteJwkSetStore.HttpClient が設定されていれば、そちらで行う（#707）。
         /// </remarks>
         private static async Task<JObject> GetJsonAsync(string url)
         {
             try
             {
-                string json = await OAuth2AndOIDCClient.GetStringAsync(new Uri(url)).ConfigureAwait(false);
+                string json = await OAuth2AndOIDCClient.GetStringAsync(new Uri(url), RemoteJwkSetStore._httpClient).ConfigureAwait(false);
 
                 if (string.IsNullOrEmpty(json))
                 {

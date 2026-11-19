@@ -42,6 +42,7 @@
 //*  2026/10/22  玄人 幸道         公開情報を取りに行く GET を GetStringAsync（internal）に切り出した
 //*  2026/11/08  玄人 幸道         SetClientAuthentication で、空では認証として成り立たない値を送る前に ArgumentNullException にした（#678）
 //*  2026/11/09  玄人 幸道         SetClientAuthentication の remarks の根拠に、RFC 6749 §2.3.1 を足した（#678 の追補。#680 のレビューの指摘）
+//*  2026/11/20  玄人 幸道         GetStringAsync（internal）に、使う HttpClient を指定できる版を追加（RemoteJwkSetStore.HttpClient のため。#707）
 //**********************************************************************************
 
 using System;
@@ -123,8 +124,23 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// 取れなくても例外にしない（呼び出し側が、設定の値など別の手段に倒せるように）。
         /// 状態コードは見ない（エラーの本文もそのまま返す。従来の GetJwkSetAsync と同じ）。
         /// </remarks>
-        internal static async Task<string> GetStringAsync(Uri uri)
+        internal static Task<string> GetStringAsync(Uri uri)
         {
+            return OAuth2AndOIDCClient.GetStringAsync(uri, null);
+        }
+
+        /// <summary>URL を GET して、本文を返す（失敗しても例外にしない。使う HttpClient を指定できる版）</summary>
+        /// <param name="uri">Uri</param>
+        /// <param name="httpClient">HttpClient（null なら、HttpClient プロパティの共有のもの。#707）</param>
+        /// <returns>本文（HttpClient が無い・通信に失敗したときは空文字）</returns>
+        /// <remarks>
+        /// RemoteJwkSetStore.HttpClient（jwks_uri などを取りに行く専用の HttpClient）を使うための口。
+        /// 取れなくても例外にしない・状態コードを見ないことは、上の版と同じ。
+        /// </remarks>
+        internal static async Task<string> GetStringAsync(Uri uri, HttpClient httpClient)
+        {
+            HttpClient client = httpClient ?? OAuth2AndOIDCClient._HttpClient;
+
             // 通信用の変数
             HttpRequestMessage httpRequestMessage = null;
             HttpResponseMessage httpResponseMessage = null;
@@ -139,7 +155,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // HttpResponseMessage
 
             // ピーキーな jwks_uri 実装に例外処理を追加
-            if (OAuth2AndOIDCClient._HttpClient == null)
+            if (client == null)
             {
                 // HttpClientが無い。
                 Debug.WriteLine("HttpClient is not set in OAuth2AndOIDCClient.GetStringAsync method.");
@@ -148,7 +164,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             {
                 try
                 {
-                    httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+                    httpResponseMessage = await client.SendAsync(httpRequestMessage).ConfigureAwait(false);
                     return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
                 catch (Exception ex)

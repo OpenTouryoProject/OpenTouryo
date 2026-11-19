@@ -26,6 +26,7 @@
 //*  2026/10/22  玄人 幸道         新規作成（#634）
 //*  2026/10/22  玄人 幸道         取れない・壊れた応答の扱いのテストを足した（カバレッジの拡充）
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
+//*  2026/11/20  玄人 幸道         HttpClient プロパティ（取得に使う HttpClient の差し替え）のテストを追加（#707）
 //**********************************************************************************
 
 using System;
@@ -34,6 +35,7 @@ using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Threading;
+using System.Threading.Tasks;
 
 using Newtonsoft.Json.Linq;
 
@@ -64,6 +66,7 @@ namespace TestFramework.Authentication
         {
             RemoteJwkSetStore.Clear();
             RemoteJwkSetStore.MinRefetchInterval = TimeSpan.FromMinutes(1);
+            RemoteJwkSetStore.HttpClient = null;
 
             using (RSA rsa = RSA.Create(2048))
             {
@@ -77,6 +80,7 @@ namespace TestFramework.Authentication
         {
             RemoteJwkSetStore.Clear();
             RemoteJwkSetStore.MinRefetchInterval = TimeSpan.FromMinutes(1);
+            RemoteJwkSetStore.HttpClient = null;
         }
 
         /// <summary>discovery と jwks_uri に答える</summary>
@@ -360,6 +364,79 @@ namespace TestFramework.Authentication
             Assert.That(RemoteJwkSetStore.PickJwksFromCache(JwksUri, "", 5).Count, Is.EqualTo(2), "オブジェクトでない要素は飛ばす");
             Assert.That(RemoteJwkSetStore.PickJwksFromCache(JwksUri, "", 1).Count, Is.EqualTo(1), "上限の本数まで");
             Assert.That((string)RemoteJwkSetStore.PickJwksFromCache(JwksUri, "second", 5)[0]["kid"], Is.EqualTo("second"));
+        }
+
+        /// <summary>RemoteJwkSetStore.HttpClient 用の、要求を数えて JWK Set・discovery に答える HttpMessageHandler</summary>
+        private sealed class CountingHandler : HttpMessageHandler
+        {
+            private readonly Func<HttpRequestMessage, HttpResponseMessage> _respond;
+
+            /// <summary>受けた要求の URL</summary>
+            public List<string> Urls = new List<string>();
+
+            public CountingHandler(Func<HttpRequestMessage, HttpResponseMessage> respond)
+            {
+                this._respond = respond;
+            }
+
+            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+            {
+                this.Urls.Add(request.RequestUri.AbsoluteUri);
+                return Task.FromResult(this._respond(request));
+            }
+        }
+
+        /// <summary>
+        /// HttpClient を設定すると、jwks_uri・discovery の取得はそちらで行い、共有の HttpClient は使わない。
+        /// null に戻せば共有に戻る。設定した HttpClient が失敗しても、共有には倒さない（絞った行き先を、共有で迂回しない）。#707
+        /// </summary>
+        [Test]
+        [Basis("設計：RemoteJwkSetStore.HttpClient の remarks（null なら共有の HttpClient。設定すれば jwks_uri・discovery の取得はそちら）")]
+        public void HttpClient_Dedicated()
+        {
+            string kid = (string)this._jwk["kid"];
+            string jwks = new JObject(new JProperty("keys", new JArray(this._jwk))).ToString();
+
+            CountingHandler dedicated = new CountingHandler(req =>
+            {
+                if (req.RequestUri.AbsoluteUri == Discovery)
+                {
+                    return StubHttp.Json(HttpStatusCode.OK,
+                        new JObject(new JProperty("issuer", Issuer), new JProperty("jwks_uri", JwksUri)).ToString());
+                }
+                return StubHttp.Json(req.RequestUri.AbsoluteUri == JwksUri ? HttpStatusCode.OK : HttpStatusCode.NotFound, jwks);
+            });
+
+            // 共有の HttpClient は、使われたら分かるようにしておく
+            using (StubHttp shared = this.Server(Issuer))
+            {
+                RemoteJwkSetStore.HttpClient = new HttpClient(dedicated, false);
+
+                // jwks_uri
+                Assert.That(RemoteJwkSetStore.GetJwkAsync(JwksUri, kid).Result, Is.Not.Null);
+                Assert.That(dedicated.Urls, Is.EqualTo(new List<string> { JwksUri }));
+                Assert.That(shared.Requests.Count, Is.EqualTo(0), "共有の HttpClient は使わない");
+
+                // discovery（と、そこから引いた jwks_uri）
+                RemoteJwkSetStore.Clear();
+                dedicated.Urls.Clear();
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, Issuer, kid).Result, Is.Not.Null);
+                Assert.That(dedicated.Urls, Is.EqualTo(new List<string> { Discovery, JwksUri }));
+                Assert.That(shared.Requests.Count, Is.EqualTo(0));
+
+                // 設定した HttpClient が失敗しても、共有には倒さない
+                RemoteJwkSetStore.Clear();
+                RemoteJwkSetStore.HttpClient = new HttpClient(new CountingHandler(
+                    req => { throw new HttpRequestException("down"); }), false);
+                Assert.That(RemoteJwkSetStore.GetJwkAsync(JwksUri, kid).Result, Is.Null);
+                Assert.That(shared.Requests.Count, Is.EqualTo(0), "共有に倒さない");
+
+                // null に戻せば、共有の HttpClient（既定）
+                RemoteJwkSetStore.HttpClient = null;
+                RemoteJwkSetStore.Clear();
+                Assert.That(RemoteJwkSetStore.GetJwkAsync(JwksUri, kid).Result, Is.Not.Null);
+                Assert.That(shared.Requests.Count, Is.EqualTo(1));
+            }
         }
 
         /// <summary>取り直しに失敗しても、前に取れた JWK Set を残す（相手の一時的な障害で、鍵を失わない）。</summary>

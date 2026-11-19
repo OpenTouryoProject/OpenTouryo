@@ -207,7 +207,7 @@ UOC は `UOC_PreQuery` / `UOC_AfterQuery(sql)` / `UOC_AfterQuery(sql, ex)`。
 |---|---|---|
 | `DPoPProof` | **DPoP の証明（RFC 9449）を作る・検証する**。`VerifyForResource` は `ath` と `cnf.jkt` も照合する | クライアント / AS / RS |
 | `OAuth2AndOIDCClient` | `HttpClient` の get・`SendAsync`（H-1）、**`SendWithDPoPAsync`**（`DPoP-Nonce` を覚え、`use_dpop_nonce` なら 1 回だけ送り直す）・`TokenRequestWithDPoPAsync`・`GetUserInfoAsync`（DPoP 版）、**DCR**（`GetRegistrationEndpointAsync`・`RegisterClientAsync`・`Read` / `Update` / `DeleteClientRegistrationAsync`） | クライアント |
-| `RemoteJwkSetStore` | **相手の `jwks_uri`（discovery）から `kid` で鍵を引く**。URL ごとのキャッシュ、取得の下限（既定 1 分）と同時 1 本、**同期の経路は `PickJwksFromCache` で待たない**（背景で補充） | RP / AS |
+| `RemoteJwkSetStore` | **相手の `jwks_uri`（discovery）から `kid` で鍵を引く**。URL ごとのキャッシュ、取得の下限（既定 1 分）と同時 1 本、**同期の経路は `PickJwksFromCache` で待たない**（背景で補充）。**取りに行く `HttpClient` は、静的な `HttpClient` プロパティで差し替えられる**（既定は null＝共有の `OAuth2AndOIDCClient.HttpClient`。プロセス全体に効き、jwks_uri・discovery の両方に掛かる。#707） | RP / AS |
 | `SAML2Metadata` | **相手のメタデータを読む**（`entityID` を必ず照合。署名鍵は複数） | SP |
 | `SAML2Attributes` | **`AttributeStatement` を書く（IdP）・読む（SP）**。メアド・利用者名・`email_verified` の別名を吸収 | IdP / SP |
 | `SAML2Client.VerifyResponseWithReason` / `SAML2VerifyResult` | **落ちた理由を返す**応答の検証（鍵は複数を順に試す） | SP |
