@@ -35,7 +35,7 @@
       docker compose を wsl 経由で呼び、compose ファイルのパスを wslpath で WSL のパスにする。
       **Up のとき、WSL2 の VM が止まらないよう、常駐のプロセス（sleep infinity）を立てる**（VM は、wsl のプロセスが無いとアイドルで止まり、
       コンテナに SIGTERM が届く。LocalServicesOnDocker の WSL2 版と同じ理由）。Down で止める。
-      **Discovery の待ちは Windows から https://localhost:44320 を呼ぶので、開発用証明書を、Windows が信頼しておく**（CI は win-sts のステップで入れる）。
+      **Discovery の待ちは Windows から https://localhost:44320 を呼ぶので、開発用証明書を、Windows が信頼しておく**（CI は win-kck のステップで入れる）。
 
 .PARAMETER Action
     Up（起動し、Discovery が 200 を返すまで待つ。既定）/ Down（停止して消す）/ Config（設定の解決だけを見る。起動しない）

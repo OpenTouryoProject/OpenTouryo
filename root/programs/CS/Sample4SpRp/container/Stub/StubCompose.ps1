@@ -32,6 +32,15 @@
     ＜前提＞
       **MPAS 側で、先に一度 container\Stub\1_PublishStub.ps1 を実行しておく**（publish と証明書。**MPAS を更新したときも**）。
 
+    ＜WSL2 の Docker で動かす（-Wsl2。#713）＞
+      **Windows に docker コマンドが無い（または Windows コンテナ用の docker しか無い）ときに、WSL2 の中の Docker で動かす**（windows-latest など）。
+      MPAS のバッチ（.bat）は Windows の docker を呼ぶので使わず、**docker compose を wsl 経由で呼ぶ**。compose ファイルと、環境変数で渡すパス
+      （STUB_SETTINGS・STUB_APPSETTINGS・STUB_RESOURCE_DIR）は、wslpath で WSL のパスにする。
+      STUB_RESOURCE_DIR・STUB_APPSETTINGS を呼んだ側が決めていなければ、Linux と同じ既定（MPAS の root/files/resource と、appsettings.json（無ければ _appsettings.json））にする。
+      **Up のとき、WSL2 の VM が止まらないよう、常駐のプロセス（sleep infinity）を立てる**（VM は、wsl のプロセスが無いとアイドルで止まり、
+      コンテナに SIGTERM が届く。KckCompose.ps1 -Wsl2 と同じ理由）。Down で止める。
+      **MPAS の publish（1_PublishStub.ps1）は、Windows で行う**（この -Wsl2 は、起動・停止だけ）。
+
 .PARAMETER Action
     Up（起動。既定）/ Down（停止して消す）/ Config（設定の解決だけを見る。起動しない）
 
@@ -44,6 +53,12 @@
 
 .PARAMETER MpasDefault
     Sample4SpRp.stub.json を渡さず、MPAS の既定（appsettings.Stub.sample.json）で動かす。-Settings とは併せて使えない。
+
+.PARAMETER Wsl2
+    WSL2 の中の Docker で動かす（上の「WSL2 の Docker で動かす」。#713）。
+
+.PARAMETER Distro
+    -Wsl2 で使う WSL のディストリビューション名（省けば既定のもの）。
 
 .PARAMETER Mtls
     **スタブに、クライアント証明書（MTLS）を受け付けさせる**（MultiPurposeAuthSite#351。SpRp_MVC の FAPI2 の par_mtls が使う。#668 の追加）。
@@ -77,6 +92,7 @@
      2026/11/13  玄人 幸道         RepoPath.ps1 を root/files/tools/PowerShell/RepoPaths から読む（#687）
      2026/11/13  玄人 幸道         Sample4SpRp\Stub から Sample4SpRp\container\Stub へ移した（Keycloak の KCK と並べる。#690）
      2026/11/19  玄人 幸道         Linux でも起動・停止できるようにした（MPAS の pwsh 版を呼ぶ。STUB_RESOURCE_DIR・STUB_APPSETTINGS の既定を差し替える。#703）
+     2026/11/19  玄人 幸道         -Wsl2（と -Distro）を追加した（WSL2 の Docker で動かす。windows-latest 用。#713）
 #>
 [CmdletBinding()]
 param(
@@ -89,7 +105,11 @@ param(
 
     [switch] $MpasDefault,
 
-    [switch] $Mtls
+    [switch] $Mtls,
+
+    [switch] $Wsl2,
+
+    [string] $Distro = ''
 )
 
 $ErrorActionPreference = 'Stop'
@@ -117,6 +137,24 @@ if (-not $MpasRoot)
 $stubDir = Join-Path $MpasRoot 'container/Stub'
 $compose = Join-Path $stubDir 'docker-compose.yml'
 
+# **-Wsl2 なら、docker compose は wsl 経由で WSL2 の中の docker を呼ぶ**（#713）
+$keepAliveFile = Join-Path ([IO.Path]::GetTempPath()) 'stub-wsl-keepalive.pid'
+$wslBase = @()
+if ($Wsl2)
+{
+    if ($Distro) { $wslBase += @('-d', $Distro) }
+    $wslBase += @('-u', 'root', '--')
+}
+
+# Windows のパス（C:\... や D:/...）を WSL のパスにする。それ以外（/ で始まる WSL のパス・コンテナの中のパス）は、そのまま
+function ConvertTo-WslPath([string]$path)
+{
+    if ($path -notmatch '^[A-Za-z]:[\\/]') { return $path }
+    $r = (& wsl @wslBase wslpath -a ($path -replace '\\', '/')).Trim()
+    if ($LASTEXITCODE -ne 0 -or -not $r) { throw "WSL のパスにできません（wslpath）: $path" }
+    return $r
+}
+
 # **Linux では、MPAS の pwsh 版（2_DockerComposeUp.ps1・3_DockerComposeDown.ps1。MultiPurposeAuthSite#401）を呼ぶ**（.bat は Windows だけ。#703）
 $onUnix = ([Environment]::OSVersion.Platform -eq 'Unix')
 $ext = if ($onUnix) { 'ps1' } else { 'bat' }
@@ -128,7 +166,7 @@ if (-not (Test-Path $compose))
     throw "MPAS のスタブが見つかりません : $compose（-MpasRoot か環境変数 OT_MPAS_PATH で、MPAS の場所を指定してください）"
 }
 
-if (($Action -ne 'Config') -and (-not (Test-Path $upBat) -or -not (Test-Path $downBat)))
+if (-not $Wsl2 -and ($Action -ne 'Config') -and (-not (Test-Path $upBat) -or -not (Test-Path $downBat)))
 {
     throw "MPAS のスタブの起動バッチが見つかりません : $stubDir（MPAS#340 より前の版です。MPAS を更新してください）"
 }
@@ -183,7 +221,7 @@ else
 #   STUB_RESOURCE_DIR : 署名鍵などのリソース（既定は C:/root/files/resource）→ MPAS の root/files/resource
 #   STUB_APPSETTINGS  : アプリの設定の土台（既定は開発者の手元の appsettings.json。CI には無い）→ 在ればそれ、無ければ雛形（_appsettings.json）
 #   **呼んだ側が環境変数を決めていれば、それを使う**
-if ($onUnix)
+if ($onUnix -or $Wsl2)
 {
     if (-not $env:STUB_RESOURCE_DIR)
     {
@@ -198,8 +236,25 @@ if ($onUnix)
         $env:STUB_APPSETTINGS = $base
     }
 
-    Write-Output "  Linux : STUB_RESOURCE_DIR=$($env:STUB_RESOURCE_DIR)"
+    Write-Output "  $(if ($Wsl2) { 'WSL2' } else { 'Linux' }) : STUB_RESOURCE_DIR=$($env:STUB_RESOURCE_DIR)"
     Write-Output "          STUB_APPSETTINGS=$($env:STUB_APPSETTINGS)"
+}
+
+# **-Wsl2 では、環境変数を wsl の中の docker compose へ、env で渡す**（Windows の環境変数は、wsl の中の docker には届かない）。パスは WSL のパスにする
+$stubEnv = @()
+if ($Wsl2)
+{
+    foreach ($name in 'STUB_SETTINGS', 'STUB_APPSETTINGS', 'STUB_RESOURCE_DIR', 'STUB_MTLS_HOOK')
+    {
+        $v = [Environment]::GetEnvironmentVariable($name)
+        if ($v) { $stubEnv += ('{0}={1}' -f $name, (ConvertTo-WslPath $v)) }
+    }
+}
+
+function Invoke-StubCompose([string[]]$ComposeArgs)
+{
+    $composeUnix = ConvertTo-WslPath ((Resolve-Path $compose).Path)
+    & wsl @wslBase env @stubEnv docker compose -f $composeUnix @ComposeArgs
 }
 
 # **MPAS のバッチを呼ぶ間だけ、コンソールを UTF-8（65001）にする**（#668）。
@@ -214,11 +269,44 @@ try
         [Console]::OutputEncoding = New-Object Text.UTF8Encoding $false
     }
 
-    switch ($Action)
+    if ($Wsl2)
     {
-        'Up'     { & $upBat }
-        'Down'   { & $downBat }
-        'Config' { docker compose -f $compose config }
+        switch ($Action)
+        {
+            'Up'
+            {
+                # publish の成果物が古ければ警告（起動は止めない）。MPAS の Windows 側のスクリプトを呼ぶ
+                $fresh = Join-Path $stubDir '../Common/CheckPublishFreshness.ps1'
+                if (Test-Path $fresh) { & $fresh -PublishDir (Join-Path $stubDir 'app/publish') }
+
+                # **WSL2 の VM が止まらないよう、常駐のプロセスを立てる**（Down で止める）
+                $keep = Start-Process -FilePath wsl -ArgumentList ($wslBase + @('sleep', 'infinity')) -PassThru -WindowStyle Hidden
+                Set-Content -Path $keepAliveFile -Value $keep.Id
+                Start-Sleep -Seconds 3
+
+                Invoke-StubCompose @('up', '-d', '--build')
+            }
+            'Down'
+            {
+                Invoke-StubCompose @('down')
+                if (Test-Path $keepAliveFile)
+                {
+                    $keepId = [int](Get-Content $keepAliveFile -ErrorAction SilentlyContinue)
+                    if ($keepId) { Stop-Process -Id $keepId -ErrorAction SilentlyContinue }
+                    Remove-Item $keepAliveFile -ErrorAction SilentlyContinue
+                }
+            }
+            'Config' { Invoke-StubCompose @('config') }
+        }
+    }
+    else
+    {
+        switch ($Action)
+        {
+            'Up'     { & $upBat }
+            'Down'   { & $downBat }
+            'Config' { docker compose -f $compose config }
+        }
     }
 }
 finally
