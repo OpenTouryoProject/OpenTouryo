@@ -53,6 +53,11 @@ on:
   pull_request:
     branches: [master]
   workflow_dispatch:
+    inputs:
+      probe_win_wsl2:
+        description: '#712 の実験（Windows ランナー＋WSL2 で DB・IIS Express）だけを回す（一時。実験が終わったら外す）'
+        type: boolean
+        default: false
   # 依存パッケージの脆弱性に、PR が無い間も気付くため（#681。下の「Check vulnerable packages」）。
   # 毎週月曜 09:00 JST（00:00 UTC）。schedule は既定のブランチ（develop）の版で動く。
   # 見つけたら、この実行は落ちる（失敗の通知で気付く）。通しも回るので、develop の健康診断を兼ねる。
@@ -64,6 +69,7 @@ permissions:
 
 jobs:
   build:
+    if: ${{ !inputs.probe_win_wsl2 }}
     runs-on: windows-latest
     # ローカルの実測はビルド 5.8 分＋テスト 1.3 分。DB の導入と初期化を足して余裕を持たせる。
     timeout-minutes: 120
@@ -431,7 +437,7 @@ jobs:
   linux:
     needs: build
     # Windows の回が NG でも回す（出力が渡っていなければ、受け取りで落ちる）
-    if: ${{ !cancelled() }}
+    if: ${{ !cancelled() && !inputs.probe_win_wsl2 }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -485,7 +491,7 @@ jobs:
   linux-crossdb:
     needs: build
     # Windows の回が NG でも回す（出力が渡っていなければ、受け取りで落ちる）
-    if: ${{ !cancelled() }}
+    if: ${{ !cancelled() && !inputs.probe_win_wsl2 }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
     env:
@@ -552,7 +558,7 @@ jobs:
   linux-kck:
     needs: build
     # Windows の回が NG でも回す（出力が渡っていなければ、受け取りで落ちる）
-    if: ${{ !cancelled() }}
+    if: ${{ !cancelled() && !inputs.probe_win_wsl2 }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
 
@@ -650,7 +656,7 @@ jobs:
   linux-stub:
     needs: build
     # Windows の回が NG でも回す（出力が渡っていなければ、受け取りで落ちる）
-    if: ${{ !cancelled() }}
+    if: ${{ !cancelled() && !inputs.probe_win_wsl2 }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
     env:
@@ -776,3 +782,120 @@ jobs:
           name: stub-logs-linux
           path: ${{ runner.temp }}/E2E
           if-no-files-found: warn
+
+  # --------------------------------------------------------------------
+  # #712 の実験（一時）：Windows ランナー＋WSL2 で、net48 の DB・IIS Express が使えるか
+  # --------------------------------------------------------------------
+  # 手動で probe_win_wsl2 を true にしたときだけ回る（ほかのジョブは回らない）。
+  # **実験が終わったら、このジョブと probe_win_wsl2 の入力、ほかのジョブの `!inputs.probe_win_wsl2` を外す。**
+  #   ・IIS Express・ASP.NET 状態サービスがあるか
+  #   ・WSL2 に Docker を入れ（systemd）、LocalServicesOnDocker の Start-Services_wsl2.ps1 で DB を起動できるか
+  #   ・Oracle・MySQL のコンテナが、メモリに収まるか
+  probe-win-wsl2:
+    if: ${{ inputs.probe_win_wsl2 }}
+    runs-on: windows-latest
+    timeout-minutes: 45
+    env:
+      LSOD_REPO: NetDevInfraWGinOSSConsortium/LocalServicesOnDocker
+      LSOD_REF: 269e717939033e230835d0325eec255c1e03f71a
+
+    steps:
+      - name: Checkout LocalServicesOnDocker
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ env.LSOD_REPO }}
+          ref: ${{ env.LSOD_REF }}
+          path: LocalServicesOnDocker
+          persist-credentials: false
+
+      - name: IIS Express and ASP.NET
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          foreach ($p in 'C:\Program Files\IIS Express\iisexpress.exe', 'C:\Program Files (x86)\IIS Express\iisexpress.exe')
+          {
+              "{0} : {1}" -f $p, (Test-Path $p)
+          }
+          Get-Service aspnet_state, W3SVC -ErrorAction Continue | Format-Table Name, Status, StartType -AutoSize
+          (Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full').Release
+          $ms = Get-ChildItem 'C:\Program Files\Microsoft Visual Studio' -Directory -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Name
+          "Visual Studio : $ms"
+
+      - name: Install WSL2 and Ubuntu
+        id: wsl
+        shell: pwsh
+        run: |
+          wsl --update --web-download
+          wsl --set-default-version 2
+          wsl --install -d Ubuntu-24.04 --no-launch --web-download
+          wsl --set-default Ubuntu-24.04
+          wsl -d Ubuntu-24.04 -u root -- bash -c "uname -r; nproc; free -m"
+
+      # systemd を有効にして、Docker（docker.io）が WSL の起動で自動的に上がるようにする
+      - name: Install Docker in WSL2 (systemd)
+        id: docker
+        if: ${{ steps.wsl.outcome == 'success' }}
+        shell: pwsh
+        run: |
+          $script = @'
+          set -e
+          export DEBIAN_FRONTEND=noninteractive
+          printf '[boot]\nsystemd=true\n' > /etc/wsl.conf
+          apt-get update -qq
+          apt-get install -y -qq docker.io docker-compose-v2 >/dev/null
+          systemctl enable docker || true
+          '@
+          [IO.File]::WriteAllText("$env:RUNNER_TEMP/docker-install.sh", $script.Replace("`r`n", "`n"))
+          $unix = (wsl -d Ubuntu-24.04 -u root -- wslpath -a ($env:RUNNER_TEMP -replace '\\','/')).Trim()
+          wsl -d Ubuntu-24.04 -u root -- bash "$unix/docker-install.sh"
+          if ($LASTEXITCODE -ne 0) { throw "docker のインストールに失敗（$LASTEXITCODE）" }
+          # systemd を有効にするため、再起動する
+          wsl --terminate Ubuntu-24.04
+          Start-Sleep -Seconds 5
+          for ($i = 0; $i -lt 20; $i++)
+          {
+              $s = (wsl -d Ubuntu-24.04 -u root -- bash -c "systemctl is-active docker" 2>$null)
+              "docker : $s"
+              if ($s -eq 'active') { break }
+              Start-Sleep -Seconds 3
+          }
+          wsl -d Ubuntu-24.04 -u root -- docker version --format '{{.Server.Version}}'
+          wsl -d Ubuntu-24.04 -u root -- docker compose version
+
+      # LocalServicesOnDocker の WSL2 版で、MySQL・Oracle を 1 つずつ起動する（メモリの測定つき）
+      - name: Start MySQL (LocalServicesOnDocker WSL2)
+        id: mysql
+        if: ${{ steps.docker.outcome == 'success' }}
+        shell: pwsh
+        working-directory: LocalServicesOnDocker
+        run: |
+          ./tools/Start-Services_wsl2.ps1 up mysql -NoPause
+          wsl -d Ubuntu-24.04 -u root -- bash -c "free -m; docker stats --no-stream --format '{{.Name}} {{.MemUsage}}'"
+
+      - name: Start Oracle (LocalServicesOnDocker WSL2)
+        id: oracle
+        if: ${{ steps.docker.outcome == 'success' }}
+        continue-on-error: true
+        shell: pwsh
+        working-directory: LocalServicesOnDocker
+        run: |
+          ./tools/Start-Services_wsl2.ps1 up oracle -NoPause
+          wsl -d Ubuntu-24.04 -u root -- bash -c "free -m; docker stats --no-stream --format '{{.Name}} {{.MemUsage}}'"
+
+      - name: Reachable from Windows
+        if: ${{ always() && steps.docker.outcome == 'success' }}
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          foreach ($port in 3306, 1521)
+          {
+              $r = Test-NetConnection -ComputerName localhost -Port $port -WarningAction SilentlyContinue
+              "localhost:{0} -> {1}" -f $port, $r.TcpTestSucceeded
+          }
+
+      - name: Stop services
+        if: ${{ always() && steps.docker.outcome == 'success' }}
+        shell: pwsh
+        continue-on-error: true
+        working-directory: LocalServicesOnDocker
+        run: ./tools/Stop-Services_wsl2.ps1 down -NoPause
