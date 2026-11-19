@@ -342,8 +342,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <remarks>
         /// - **署名の alg 以外は、alg を受けない版（RSAParameters を受ける、code_challenge を受けるもの）と同じ**。
         ///   alg に JwtConst.RS256 を渡せば、その版と同じ Request Object ができる（既存の版は変えていない）
-        /// - **FAPI の登録は、Request Object の署名を PS256 か ES256 に限る**（FAPI 1.0 Advanced 8.6、FAPI 2.0 Security Profile 5.4.1）。
+        /// - **FAPI は、JWS の署名に PS256 か ES256 を使うとする**（FAPI 1.0 Advanced 8.6、FAPI 2.0 Security Profile 5.4.1）。
+        ///   汎用認証サイト（MPAS）は、FAPI の登録の Request Object の署名を、それに限る。
         ///   RSA の鍵なら、JwtConst.PS256（RSASSA-PSS using SHA-256。RFC 7518 3.5）を渡す。同じ RSA の鍵で、RS256 と PS256 を使い分けられる
+        /// - **この版は RSA の鍵だけ**（ES256 の口は無い。ES256 が要るなら、別に足す。JwtAssertion には CreateByECDsa がある）
         /// - **alg が RSA の alg（RS* / PS*）でなければ ArgumentException**（null・空・ES256・HS256 など。黙って RS256 にしない）
         /// </remarks>
         public static string Create(

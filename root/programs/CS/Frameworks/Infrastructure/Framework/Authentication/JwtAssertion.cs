@@ -122,8 +122,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <returns>JwtAssertion</returns>
         /// <remarks>
         /// - **署名の alg 以外は、alg を受けない版と同じ**。alg に JwtConst.RS256 を渡せば、その版と同じ assertion ができる（既存の版は変えていない）
-        /// - **FAPI の登録は、client_assertion の署名を PS256 か ES256 に限る**（FAPI 2.0 Security Profile 5.4.1）。
+        /// - **FAPI 2.0 は、JWS の署名に PS256・ES256・EdDSA を使うとする**（FAPI 2.0 Security Profile 5.4.1）。
+        ///   汎用認証サイト（MPAS）は、FAPI の登録の client_assertion の署名を、PS256 か ES256 に限る。
         ///   RSA の鍵なら、JwtConst.PS256（RSASSA-PSS using SHA-256。RFC 7518 3.5）を渡す。同じ RSA の鍵で、RS256 と PS256 を使い分けられる
+        /// - **EC の鍵（ES256）は、CreateByECDsa を使う**
         /// - **alg が RSA の alg（RS* / PS*）でなければ ArgumentException**（null・空・ES256・HS256 など。黙って RS256 にしない）
         /// </remarks>
         public static string CreateByRsa(
