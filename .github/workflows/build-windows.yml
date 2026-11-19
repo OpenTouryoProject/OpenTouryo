@@ -834,8 +834,13 @@ jobs:
           set -e
           export DEBIAN_FRONTEND=noninteractive
           printf '[boot]\nsystemd=true\n' > /etc/wsl.conf
-          apt-get update -qq
-          apt-get install -y -qq docker.io docker-compose-v2 >/dev/null
+          # apt が 7 分以上止まることがある（run 44479764197。2 回とも）ので、IPv4 に固定し、タイムアウトと再試行を付け、進み具合を表示する
+          APT='-o Acquire::ForceIPv4=true -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30'
+          echo "== apt-get update : $(date)"
+          apt-get $APT update
+          echo "== apt-get install : $(date)"
+          apt-get $APT install -y docker.io docker-compose-v2
+          echo "== done : $(date)"
           systemctl enable docker || true
           '@
           # Windows の here-string は CRLF なので、LF にして書く（bash が行末の CR で落ちる）
