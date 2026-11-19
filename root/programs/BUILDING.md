@@ -483,6 +483,7 @@ Dependabot が起こしたイベントでは `GITHUB_TOKEN` が既定で read-on
 | `2_RunAllTests.ps1 -CrossDb` の net10.0 | `linux-crossdb` | NUnit の TestPublicDb を Oracle・MySQL・PostgreSQL で |
 | `2_RunAllTests.ps1 -CrossDb -Wsl2`（net48 と net10.0） | `win-crossdb` | Windows ランナー＋WSL2 の Docker（#712）。SQL Server に Oracle・MySQL（net48・net10.0）・PostgreSQL（net10.0）を 1 つずつ足す |
 | SpRp の外部ログインの E2E（`ExternalLoginE2E.ps1 -Idp KCK -Only net48`）の net48・WebForms | `win-kck` | Windows ランナー＋WSL2 の Docker（#712）。IdP は Keycloak（`KckCompose.ps1 -Wsl2`）。C#・VB の MVC・WebForms（OIDC・SAML2 の 8 件） |
+| SpRp の外部ログインの E2E（`ExternalLoginE2E.ps1 -Only net48`）と、CLI の E2E（`CliLoginE2E.ps1 -Only net48`）。IdP は MPAS のスタブ | `win-stub` | Windows ランナー＋WSL2 の Docker（#713）。スタブは `StubCompose.ps1 -Wsl2`。外部ログイン 8 件・CLI（SpRp_CLI の device・pkce・cc・jwtbearer・ropc）10 件 |
 | SpRp のサンプルの E2E（`Sample4SpRp\E2E`）の net10.0 | `linux-kck`・`linux-stub` | IdP（STS）は、`linux-kck` が Keycloak、`linux-stub` が MPAS のスタブ（Keycloak で回らない CLI の jwtbearer・FAPI2 の ros は、スタブの回で回る）。DB は使わない |
 | `2_RunAllTests.ps1 -Coverage` | × | NUnit の全部とクロス DB を 1 回の実行で回して合算する作りなので、ジョブに分けられない。手元で取る |
 
@@ -491,7 +492,7 @@ Dependabot が起こしたイベントでは `GITHUB_TOKEN` が既定で read-on
 - **GUI アプリケーション**（WinForms / WPF / 各ツールの画面）… `RELEASE.md` 4 節の手作業
 - **Golden の `TestDataAccess` のクロス DB** … `build` は `/Dap SQL` しか使わない
   （`TestSQLUtility` は 4 DBMS 分の SQL 生成を検証するが、**接続はしない**ので対象内）。手元の `-CrossDb` で回す。NUnit の `TestPublicDb` の net48 のクロス DB は、`win-crossdb` が回す
-- **SpRp の E2E のうち、MPAS のスタブの回（net48）と、CLI・FAPI の E2E の net48** … 手元で回す。外部ログインの E2E の net48・WebForms は、`win-kck` が Keycloak で回す
+- **SpRp の E2E のうち、FAPI の E2E の net48** … 手元で回す（SpRp_MVC は net10.0 だけなので、実質、対象が無い。FAPI は `linux-stub` が回す）。外部ログインの E2E の net48・WebForms は `win-kck`（Keycloak）と `win-stub`（スタブ）、CLI の net48 は `win-stub` が回す
 
 ### Windows ランナー＋WSL2 のジョブ（#711・#712）
 
@@ -515,6 +516,15 @@ Windows の net48 と Linux のコンテナを、同じランナーで使える�
 - **`aspnet_state` は `Start-Service` で起動する**（WebForms のセッション）
 - **サンプルのビルドには、`WSSrv_sample`・`Framework_WS`（`WS_sample\Build\WSIFType_sample.dll` を作る）も要る。** WebForms_Sample・MVC_Sample が参照するため（C#・VB の両方）
 - net10.0 の対象は、`linux-kck` が回す（`win-kck` は `-Only net48`）
+
+**`win-stub`（SpRp の外部ログイン・CLI の E2E の net48。IdP は MPAS のスタブ）の作り**（#713）
+
+- WSL2・Docker・`aspnet_state`・証明書は、`win-kck` と同じ。**Keycloak とスタブを同時に起動しない**（メモリ）ので、別のジョブ（別のランナー）で並列に回す
+- **MPAS は、`MPAS_REF`（`linux-stub` と同じコミット）で取る。** ビルドした net10.0 の部品（`OpenTouryo.Business`・`Framework`・`Public`・`Public.Security`）を `OpenTouryoAssemblies/Build_netcore100/net10.0` に置く
+- **スタブの publish（`1_PublishStub.ps1`）は Windows の `dotnet` で行い、起動・停止だけを WSL2 で行う**（`StubCompose.ps1 -Wsl2`。MPAS の `.bat` は Windows の `docker` を呼ぶので使わない）。
+  `docker compose` を `wsl` 経由で呼び、`STUB_SETTINGS`・`STUB_APPSETTINGS`・`STUB_RESOURCE_DIR`・`STUB_MTLS_HOOK` は `env` で渡す（パスは `wslpath`）。`Up` で、WSL2 の VM が止まらないよう常駐のプロセスを立てる（`win-kck` と同じ理由）
+- 設定の土台は MPAS の `_appsettings.json`。`TestUserPWD` だけをテスト用の値に替えた写しを、`STUB_APPSETTINGS` と E2E の `-StubAppSettings` に渡す
+- FAPI の E2E は、SpRp_MVC が net10.0 だけなので `linux-stub` が回す
 
 ### Linux のジョブ（#703）
 

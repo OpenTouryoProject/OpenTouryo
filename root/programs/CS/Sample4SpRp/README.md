@@ -529,7 +529,8 @@ cd root\programs\CS\Sample4SpRp\DotNet\MVC
   外部の IdP（スタブ）が要るため。
   **CI では、Linux のジョブ `linux-kck` が、E2E の 4 本の net10.0 の対象を、IdP を Keycloak（`-Idp KCK`）にして回し、`linux-stub` が、IdP を MPAS のスタブにして回す**（スタブでだけ回る CLI の jwtbearer・FAPI2 の ros を含む。#703。[`BUILDING.md`](../../BUILDING.md) 9 節）。
   **net48・WebForms のうち、外部ログインの E2E（`ExternalLoginE2E.ps1 -Idp KCK -Only net48`。C#・VB の MVC・WebForms。OIDC・SAML2）は、Windows ランナー＋WSL2 の Docker のジョブ `win-kck` が、Keycloak（`KckCompose.ps1 -Wsl2`）で回す**（#712）。
-  MPAS のスタブの回（net48）と、CLI・FAPI の E2E の net48 は手元で回す。
+  **MPAS のスタブでの外部ログイン・CLI の E2E の net48（`ExternalLoginE2E.ps1 -Only net48`・`CliLoginE2E.ps1 -Only net48`）は、ジョブ `win-stub` が、スタブ（`StubCompose.ps1 -Wsl2`）で回す**（#713）。
+  FAPI の E2E は、SpRp_MVC が net10.0 だけなので `linux-stub` が回す。
   **E2E は Linux の上でも動く**（`E2E/Idp.ps1`）。net10.0 の対象だけに絞り、サンプルの設定の `C:/root/...` を、ソースを変えずにこのリポジトリの `root/...` へ読み替えて渡す。**WebApp のサンプルの外部ログインは `E2E/ExternalLoginE2E.ps1` で確かめる**（2.1 節。
   スタブの起動が要るので、**施主に確かめてから回す**）。**CLI は `E2E/CliLoginE2E.ps1` で確かめる**（2.2 節。スタブだけが要る。`cc`・`jwtbearer`・`ropc` は `Sample4SpRp.stub.json` を渡したスタブ）。
   **MVC（FAPI 1.0）は `E2E/MvcFapi1E2E.ps1` で確かめる**（2.3 節。スタブには `Sample4SpRp.stub.json` が要る）。
