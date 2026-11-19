@@ -339,6 +339,21 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
+      # MPAS のスタブの回（linux-stub）へ、このリポジトリがビルドした部品（net10.0）を渡す。
+      # MPAS は、部品を OpenTouryoAssemblies/（.gitignore）から参照する。**取ってきた MPAS をビルドするのに、いまのこのリポジトリの部品を使う**（#703）。
+      - name: Upload net10.0 assemblies for the Linux stub
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-stub-input
+          path: |
+            root/programs/CS/Frameworks/Infrastructure/Build_netcore100/net10.0/OpenTouryo.Business.dll
+            root/programs/CS/Frameworks/Infrastructure/Build_netcore100/net10.0/OpenTouryo.Framework.dll
+            root/programs/CS/Frameworks/Infrastructure/Build_netcore100/net10.0/OpenTouryo.Public.dll
+            root/programs/CS/Frameworks/Infrastructure/Build_netcore100/net10.0/OpenTouryo.Public.Security.dll
+          if-no-files-found: error
+          retention-days: 1
+
       # ------------------------------------------------------------------
       # 疎通（3_SmokeTest.ps1）
       # ------------------------------------------------------------------
@@ -626,7 +641,8 @@ jobs:
   # **DB は使わない**（スタブは組み込みのストアで動く）。
   #
   # ＜取ってくるもの（コミットで固定する。上げるときは、手元で回してから）＞
-  #   ・MultiPurposeAuthSite（MPAS_REF）… スタブの publish に、ソース一式が要る
+  #   ・MultiPurposeAuthSite（MPAS_REF）… スタブの publish に、ソース一式が要る。
+  #     MPAS がビルドで参照する部品（OpenTouryoAssemblies/）は、build が作った、いまのこのリポジトリの net10.0 の部品を置く（linux-stub-input）
   #
   # ＜テスト用の設定＞
   #   スタブの設定の土台は、MPAS の雛形（_appsettings.json）。TestUserPWD が雛形のままの文字列なので、CI で生成した値に替えた写しを使う
@@ -664,6 +680,13 @@ jobs:
         with:
           name: linux-sts-input
           path: root/programs/CS
+
+      # MPAS は、部品を OpenTouryoAssemblies/（.gitignore）から参照する。build が作った、いまのこのリポジトリの部品を置く
+      - name: Download net10.0 assemblies
+        uses: actions/download-artifact@v8
+        with:
+          name: linux-stub-input
+          path: MultiPurposeAuthSite/root/programs/OpenTouryoAssemblies/Build_netcore100/net10.0
 
       # linux-kck と同じ（理由もそちら）。MPAS の 1_PublishStub.ps1 は、この開発用証明書を書き出す
       - name: Trust the development certificate
