@@ -851,7 +851,8 @@ jobs:
           echo "inside WSL: $(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080)"
           sleep 90
           '@
-          $script | Set-Content -Path "$env:RUNNER_TEMP/probe.sh" -Encoding ascii
+          # Windows の here-string は CRLF なので、LF にして書く（bash が行末の CR で落ちる）
+          [IO.File]::WriteAllText("$env:RUNNER_TEMP/probe.sh", $script.Replace("`r`n", "`n"))
           $unix = (wsl -d Ubuntu-24.04 -u root -- wslpath -a ($env:RUNNER_TEMP -replace '\\','/')).Trim()
           $job = Start-Process -FilePath wsl -ArgumentList @('-d','Ubuntu-24.04','-u','root','--','bash',"$unix/probe.sh") -PassThru -NoNewWindow
           $ok = $false
