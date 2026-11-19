@@ -888,30 +888,48 @@ jobs:
         shell: powershell
         continue-on-error: true
         run: |
-          "--- netstat 1433"
-          netstat -ano | Select-String ':1433'
-          "--- Test-NetConnection"
-          foreach ($h in 'localhost', '127.0.0.1', '::1')
-          {
-              $r = Test-NetConnection -ComputerName $h -Port 1433 -WarningAction SilentlyContinue
-              "{0} -> {1} (remote {2})" -f $h, $r.TcpTestSucceeded, $r.RemoteAddress
-          }
-          "--- SqlClient"
-          foreach ($ds in 'localhost', 'tcp:localhost,1433', 'tcp:127.0.0.1,1433', 'tcp:[::1],1433')
+          function Try-Open($ds, $db)
           {
               try
               {
-                  $c = New-Object System.Data.SqlClient.SqlConnection ("Data Source=$ds;Initial Catalog=master;User ID=sa;Password=seigi@123;Encrypt=false;Connect Timeout=15")
+                  $c = New-Object System.Data.SqlClient.SqlConnection ("Data Source=$ds;Initial Catalog=$db;User ID=sa;Password=seigi@123;Encrypt=false;Connect Timeout=15")
                   $c.Open()
-                  "{0} : OK {1}" -f $ds, $c.ServerVersion
+                  $v = $c.ServerVersion
                   $c.Close()
+                  return "OK $v"
               }
-              catch { "{0} : NG {1}" -f $ds, $_.Exception.GetBaseException().Message }
+              catch { return "NG " + $_.Exception.GetBaseException().Message }
           }
-          "--- docker logs"
-          wsl -d Ubuntu-24.04 -u root -- bash -c "docker ps -a --format '{{.Names}} {{.Status}}'; docker logs --tail 25 localservicesondocker-sqlserver-1 2>&1"
-          "--- WSL ss 1433"
-          wsl -d Ubuntu-24.04 -u root -- bash -c "ss -ltnp | grep 1433 || true"
+          # wait until SQL Server answers on 127.0.0.1 (up to 3 min); right after start only the port forwarding is open and refuses
+          $sw = [Diagnostics.Stopwatch]::StartNew()
+          $ready = $false
+          while ($sw.Elapsed.TotalSeconds -lt 180)
+          {
+              $r = Try-Open 'tcp:127.0.0.1,1433' 'master'
+              if ($r.StartsWith('OK')) { $ready = $true; break }
+              Start-Sleep -Seconds 5
+          }
+          "ready via 127.0.0.1 : $ready after {0:N0} s" -f $sw.Elapsed.TotalSeconds
+          "--- netstat 1433"
+          netstat -ano | Select-String ':1433'
+          "--- hosts"
+          Get-Content "$env:SystemRoot\System32\drivers\etc\hosts" | Select-String -NotMatch '^\s*#'
+          "--- name resolution"
+          [Net.Dns]::GetHostAddresses('localhost') | ForEach-Object { $_.ToString() }
+          "--- SqlClient (3 rounds, 10 s apart)"
+          foreach ($round in 1, 2, 3)
+          {
+              foreach ($ds in 'localhost', 'tcp:localhost,1433', 'tcp:127.0.0.1,1433', '127.0.0.1', '.', '(local)', 'tcp:[::1],1433')
+              {
+                  foreach ($db in 'master', 'Northwind')
+                  {
+                      "round {0} : {1} / {2} : {3}" -f $round, $ds, $db, (Try-Open $ds $db)
+                  }
+              }
+              Start-Sleep -Seconds 10
+          }
+          "--- docker logs (tail)"
+          wsl -d Ubuntu-24.04 -u root -- bash -c "docker logs --tail 15 localservicesondocker-sqlserver-1 2>&1"
 
       # 基盤だけをビルドする（TestPublicDb が参照する。1_BuildAll.ps1 -Only の基盤の 11 ステップ。SelectTargets.ps1 が出すもの）
       - name: Build the base
