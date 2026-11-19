@@ -873,15 +873,29 @@ jobs:
           wsl -d Ubuntu-24.04 -u root -- docker version --format '{{.Server.Version}}'
 
       # **診断（一時）**：Windows から SQL Server のコンテナへ届かない原因を調べる（run 44472982251 で、MySQL・Oracle は届くが SQL Server だけ届かなかった）。
-      #   原因が分かって直したら、このステップを外す。**run: の中は ASCII だけ**（Windows PowerShell 5.1 が BOM 無しの一時ファイルを Shift_JIS で読むため）。
+      #   起動は pwsh（LocalServicesOnDocker の WSL2 版は、Windows PowerShell 5.1 では native の stderr で止まる。run 44482175965）、接続の確認は
+      #   Windows PowerShell 5.1（.NET Framework の SqlClient。TestPublicDb の net48 と同じ）。原因が分かって直したら、この 2 ステップを外す。
+      #   **5.1 の run: の中は ASCII だけ**（BOM 無しの一時ファイルを Shift_JIS で読むため）。
+      - name: Start SQL Server for the diagnosis (temporary)
+        shell: pwsh
+        continue-on-error: true
+        working-directory: LocalServicesOnDocker
+        run: |
+          ./tools/Start-Services_wsl2.ps1 up sqlserver -NoPause
+          Start-Sleep -Seconds 30
+
       - name: Diagnose SQL Server connectivity (temporary)
         shell: powershell
         continue-on-error: true
         run: |
-          & "$env:GITHUB_WORKSPACE/LocalServicesOnDocker/tools/Start-Services_wsl2.ps1" up sqlserver -NoPause
-          Start-Sleep -Seconds 30
           "--- netstat 1433"
           netstat -ano | Select-String ':1433'
+          "--- Test-NetConnection"
+          foreach ($h in 'localhost', '127.0.0.1', '::1')
+          {
+              $r = Test-NetConnection -ComputerName $h -Port 1433 -WarningAction SilentlyContinue
+              "{0} -> {1} (remote {2})" -f $h, $r.TcpTestSucceeded, $r.RemoteAddress
+          }
           "--- SqlClient"
           foreach ($ds in 'localhost', 'tcp:localhost,1433', 'tcp:127.0.0.1,1433', 'tcp:[::1],1433')
           {
@@ -895,9 +909,9 @@ jobs:
               catch { "{0} : NG {1}" -f $ds, $_.Exception.GetBaseException().Message }
           }
           "--- docker logs"
-          wsl -d Ubuntu-24.04 -u root -- bash -c "docker logs --tail 25 localservicesondocker-sqlserver-1 2>&1"
-          "--- SA password in compose"
-          Select-String -Path "$env:GITHUB_WORKSPACE/LocalServicesOnDocker/docker-compose.yml" -Pattern 'SA_PASSWORD|MSSQL_SA|COLLATION' | ForEach-Object { $_.Line }
+          wsl -d Ubuntu-24.04 -u root -- bash -c "docker ps -a --format '{{.Names}} {{.Status}}'; docker logs --tail 25 localservicesondocker-sqlserver-1 2>&1"
+          "--- WSL ss 1433"
+          wsl -d Ubuntu-24.04 -u root -- bash -c "ss -ltnp | grep 1433 || true"
 
       # 基盤だけをビルドする（TestPublicDb が参照する。1_BuildAll.ps1 -Only の基盤の 11 ステップ。SelectTargets.ps1 が出すもの）
       - name: Build the base
