@@ -40,6 +40,7 @@
 //*                                メタデータの要素名・属性名、ID の接頭辞を追加
 //*  2026/10/30  玄人 幸道         RSA-PSS・ECDSA の SigAlg の URI を追加し、RSA の注記を RFC 9231 にした（#643）
 //*  2026/11/14  玄人 幸道         AudienceRestriction の XPath、要素名 Audience、属性名 Destination を追加（#693）
+//*  2026/11/20  玄人 幸道         要素名 Issuer・NameID・SubjectConfirmationData を追加（応答の値を DOM の API で入れるため。#700）
 //**********************************************************************************
 
 namespace Touryo.Infrastructure.Framework.Authentication
@@ -307,6 +308,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>属性名：Destination（AuthnRequest / Response。署名した要求・応答には要る。SAML Bindings 3.4.5.2・3.5.5.2）</summary>
         public const string AttrDestination = "Destination";
+
+        /// <summary>要素名：Issuer（Response / Assertion）</summary>
+        public const string ElementIssuer = "Issuer";
+
+        /// <summary>要素名：NameID（Subject）</summary>
+        public const string ElementNameID = "NameID";
+
+        /// <summary>要素名：SubjectConfirmationData（Subject）</summary>
+        public const string ElementSubjectConfirmationData = "SubjectConfirmationData";
 
         /// <summary>要素名：Audience（AudienceRestriction）</summary>
         public const string ElementAudience = "Audience";

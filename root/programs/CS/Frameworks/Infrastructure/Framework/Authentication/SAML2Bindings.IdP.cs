@@ -28,6 +28,7 @@
 //*  2026/10/22  玄人 幸道         メタデータに署名用の証明書を書き足す AppendSigningCertificates を追加（汎用認証サイトから移した。#634）
 //*  2026/10/22  玄人 幸道         AppendSigningCertificates に、証明書を設定（CmnServerParams.PreviousSigningCerFilePaths）から読む版を追加
 //*  2026/11/14  玄人 幸道         CreateAssertion に、Audience（SP の entityID）を指定する版を追加（受けない版は従来どおり recipient。#693）
+//*  2026/11/20  玄人 幸道         CreateResponse・CreateAssertion の値を、文字列の置換ではなく DOM の API で入れるようにした（特殊な文字のエスケープ。inResponseTo が空なら属性ごと省く。#700）
 //**********************************************************************************
 
 using System;
@@ -59,6 +60,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="statusCode">SAML2Enum.StatusCode</param>
         /// <param name="id">string</param>
         /// <returns>SAMLResponse</returns>
+        /// <remarks>
+        /// issuer・destination・inResponseTo の値は、文字列の置換ではなく、読み込んだ後に DOM の API で入れる（#700）。
+        /// **特殊な文字（引用符・&lt;・&amp;）を含む値も、構造を変えず、エスケープされて入る。**
+        /// inResponseTo が null・空なら、InResponseTo 属性ごと省く（SAML 2.0 Core 3.2.2 で任意）。
+        /// </remarks>
         public static XmlDocument CreateResponse(
             string issuer, string destination, string inResponseTo,
             SAML2Enum.StatusCode statusCode, out string id)
@@ -80,17 +86,25 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // - 共通
             xmlString = xmlString.Replace("{ID}", id);
             xmlString = xmlString.Replace("{IssueInstant}", FormatConverter.ToW3cTimestamp(DateTime.UtcNow));
-            xmlString = xmlString.Replace("{Issuer}", issuer);
 
             // - Response固有
-            xmlString = xmlString.Replace("{Destination}", destination);
-            xmlString = xmlString.Replace("{InResponseTo}", inResponseTo);
             xmlString = xmlString.Replace("{UrnStatusCode}", urnStatusCodeString);
+
+            // 呼び出し側の値（issuer・destination・inResponseTo）は、文字列の置換では入れない（#700）。
+            // 特殊な文字（引用符・<・&）で、署名する前の応答の構造が変わるため、読み込んだ後に DOM の API で入れる。
+            xmlString = xmlString.Replace("{Issuer}", "");
+            xmlString = xmlString.Replace("{Destination}", "");
+            xmlString = xmlString.Replace("{InResponseTo}", "");
 
             // XmlDocument化
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.PreserveWhitespace = false;
             xmlDoc.LoadXml(xmlString);
+
+            // - 呼び出し側の値（DOM の API。特殊な文字もエスケープされる）
+            SAML2Bindings.SetElementText(xmlDoc, SAML2Const.ElementIssuer, issuer);
+            SAML2Bindings.SetAttributeValue(xmlDoc.DocumentElement, SAML2Const.AttrDestination, destination, false);
+            SAML2Bindings.SetAttributeValue(xmlDoc.DocumentElement, SAML2Const.AttrInResponseTo, inResponseTo, true);
             #endregion
 
             return xmlDoc;
@@ -107,6 +121,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="id">string</param>
         /// <param name="rsa">RSA</param>
         /// <returns>SAMLAssertion</returns>
+        /// <remarks>
+        /// issuer・nameID・inResponseTo・recipient・Audience の値は、文字列の置換ではなく、読み込んだ後に DOM の API で入れる（#700）。
+        /// **特殊な文字（引用符・&lt;・&amp;）を含む値も、構造を変えず、エスケープされて入る。**
+        /// inResponseTo が null・空なら、InResponseTo 属性ごと省く（SAML 2.0 Core 3.2.2 で任意）。
+        /// </remarks>
         public static XmlDocument CreateAssertion(
             string inResponseTo, string issuer, string nameID,
             SAML2Enum.NameIDFormat nameIDFormat,
@@ -135,6 +154,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// **Audience には、SP の一意の識別子（entityID）を入れる**（SAML Profiles 4.1.4.2）。
         /// 受けない版は、Audience に recipient（ACS URL）を入れる（従来の振る舞い）。
         /// 値は、XML を組み立てた後に要素の値として入れる（文字列の置換ではないので、特殊な文字もエスケープされる）。
+        /// issuer・nameID・inResponseTo・recipient の値も同じ（#700。引用符・&lt;・&amp;を含む値も、構造を変えずに入る）。
+        /// inResponseTo が null・空なら、InResponseTo 属性ごと省く（SAML 2.0 Core 3.2.2 で任意）。
         /// </remarks>
         public static XmlDocument CreateAssertion(
             string inResponseTo, string issuer, string nameID,
@@ -159,6 +180,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="id">string</param>
         /// <param name="rsa">RSA</param>
         /// <returns>SAMLAssertion</returns>
+        /// <remarks>
+        /// issuer・nameID・inResponseTo・recipient・Audience の値は、文字列の置換ではなく、読み込んだ後に DOM の API で入れる（#700）。
+        /// **特殊な文字（引用符・&lt;・&amp;）を含む値も、構造を変えず、エスケープされて入る。**
+        /// inResponseTo が null・空なら、InResponseTo 属性ごと省く（SAML 2.0 Core 3.2.2 で任意）。
+        /// </remarks>
         private static XmlDocument CreateAssertionCore(
             string inResponseTo, string issuer, string nameID,
             SAML2Enum.NameIDFormat nameIDFormat,
@@ -184,11 +210,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
             // 可変値
             // - ID
             xmlString = xmlString.Replace("{ID}", id);
-            xmlString = xmlString.Replace("{InResponseTo}", inResponseTo);
-            xmlString = xmlString.Replace("{Issuer}", issuer);
 
             // - 認証関連
-            xmlString = xmlString.Replace("{NameID}", nameID);
             xmlString = xmlString.Replace("{UrnNameIDFormat}", urnNameIDFormatString);
             xmlString = xmlString.Replace("{UrnAuthnContextClassRef}", urnAuthnContextClassRefString);
 
@@ -201,21 +224,32 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string utcExpires = FormatConverter.ToW3cTimestamp(DateTime.UtcNow.AddSeconds(expiresFromSecond));
             xmlString = xmlString.Replace("{NotOnOrAfter}", utcExpires);
 
-            // - SP関連
-            xmlString = xmlString.Replace("{Recipient}", recipient);
-            xmlString = xmlString.Replace("{Audience}", recipient); // recipientのFQDNまでらしい
+            // 呼び出し側の値（inResponseTo・issuer・nameID・recipient・audience）は、文字列の置換では入れない（#700）。
+            // 特殊な文字（引用符・<・&）で、署名する前のアサーションの構造が変わるため、読み込んだ後に DOM の API で入れる。
+            xmlString = xmlString.Replace("{InResponseTo}", "");
+            xmlString = xmlString.Replace("{Issuer}", "");
+            xmlString = xmlString.Replace("{NameID}", "");
+            xmlString = xmlString.Replace("{Recipient}", "");
+            xmlString = xmlString.Replace("{Audience}", "");
 
             // XmlDocument化
             XmlDocument xmlDoc = new XmlDocument();
             xmlDoc.PreserveWhitespace = false;
             xmlDoc.LoadXml(xmlString);
 
+            // - 呼び出し側の値（DOM の API。特殊な文字もエスケープされる）。署名の前に入れる
+            SAML2Bindings.SetElementText(xmlDoc, SAML2Const.ElementIssuer, issuer);
+            SAML2Bindings.SetElementText(xmlDoc, SAML2Const.ElementNameID, nameID);
+
+            XmlNode confirmationData = xmlDoc.GetElementsByTagName(
+                SAML2Const.ElementSubjectConfirmationData, SAML2Const.UrnAssertion)[0];
+            SAML2Bindings.SetAttributeValue(confirmationData, SAML2Const.AttrInResponseTo, inResponseTo, true);
+            SAML2Bindings.SetAttributeValue(confirmationData, SAML2Const.AttrRecipient, recipient, false);
+
             // - Audience（SP の entityID。SAML Profiles 4.1.4.2。#693）
-            //   **要素の値として入れる**（特殊な文字もエスケープされる）。署名の前に入れる
-            if (!string.IsNullOrEmpty(audience))
-            {
-                xmlDoc.GetElementsByTagName(SAML2Const.ElementAudience, SAML2Const.UrnAssertion)[0].InnerText = audience;
-            }
+            //   audience を指定しなければ、従来どおり recipient（recipientのFQDNまでらしい）
+            SAML2Bindings.SetElementText(xmlDoc, SAML2Const.ElementAudience,
+                string.IsNullOrEmpty(audience) ? recipient : audience);
             #endregion
 
             #region Sign
@@ -227,6 +261,33 @@ namespace Touryo.Infrastructure.Framework.Authentication
             #endregion
 
             return xmlDoc;
+        }
+
+        /// <summary>要素の値として入れる（特殊な文字もエスケープされる。#700）</summary>
+        /// <param name="xmlDoc">XmlDocument（SAML の名前空間の要素を 1 つ持つ）</param>
+        /// <param name="elementName">string（要素名。saml の名前空間）</param>
+        /// <param name="value">string（null は空として扱う）</param>
+        private static void SetElementText(XmlDocument xmlDoc, string elementName, string value)
+        {
+            xmlDoc.GetElementsByTagName(elementName, SAML2Const.UrnAssertion)[0].InnerText = value ?? "";
+        }
+
+        /// <summary>属性の値として入れる（特殊な文字もエスケープされる。#700）</summary>
+        /// <param name="node">XmlNode（要素）</param>
+        /// <param name="attributeName">string</param>
+        /// <param name="value">string（null は空として扱う）</param>
+        /// <param name="omitIfEmpty">bool（true なら、null・空のとき、属性ごと省く）</param>
+        private static void SetAttributeValue(XmlNode node, string attributeName, string value, bool omitIfEmpty)
+        {
+            XmlElement element = (XmlElement)node;
+            if (omitIfEmpty && string.IsNullOrEmpty(value))
+            {
+                element.RemoveAttribute(attributeName);
+            }
+            else
+            {
+                element.SetAttribute(attributeName, value ?? "");
+            }
         }
 
         /// <summary>CreateMetadata</summary>

@@ -32,6 +32,7 @@
 //*  2026/10/31  玄人 幸道         VerifyPkce：大文字小文字の根拠を RFC 6749 1.9 を主にして書き分けた（RFC 7636 6.2.1 は登録名の規定。#643）
 //*  2026/11/14  玄人 幸道         仕様どおりの IdP・SP との相互運用（要求の Destination・応答の Audience に SP の entityID）のテストを足した。
 //*                                Destination を受けない要求の作成（Obsolete）の警告（CS0618）を抑えた（#693）
+//*  2026/11/20  玄人 幸道         応答・アサーションに入れる値の特殊な文字のエスケープ、inResponseTo が空のときの省略のテストを追加（#700）
 //**********************************************************************************
 
 using System;
@@ -386,6 +387,111 @@ namespace TestFramework.Authentication
 
             Assert.That(SAML2Client.VerifyResponseWithReason(null, post, new RSA[] { TestCertificates.RsaPublicKey() },
                 IdPEntityId, special, Acs, "req01", null, null, null).IsValid, Is.True);
+        }
+
+        /// <summary>
+        /// 応答・アサーションに入れる値（issuer・destination・inResponseTo・nameID・recipient）は、特殊な文字（引用符・&lt;・&amp;）を含んでも、
+        /// 構造を変えず、エスケープされて入る（読み戻すと同じ値。署名も通る）。#700
+        /// </summary>
+        [Test]
+        [Basis("設計：SAML2Bindings.CreateResponse・CreateAssertion の remarks（値は DOM の API で入れるので、特殊な文字もエスケープされる）")]
+        public void Response_ValuesEscaped()
+        {
+            const string issuer = "urn:idp:a&b<c>\"d'";
+            const string destination = "https://sp.example.com/acs?a=1&b=\"2\"";
+            const string inResponseTo = "req\" injected=\"1";
+            const string nameId = "u<ser>&\"01'@example.com";
+            RSA idp = TestCertificates.RsaPrivateKey();
+
+            string post = SAML2Client.CreatePostResponse(issuer, destination, inResponseTo, SAML2Enum.StatusCode.Success,
+                nameId, SAML2Enum.NameIDFormat.Persistent, SAML2Enum.AuthnContextClassRef.Unspecified, 3600, null, idp);
+
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(SAML2Bindings.DecodePost(post));
+
+            // 構造：Response の根の要素に、属性が増えていない
+            XmlElement root = doc.DocumentElement;
+            List<string> names = new List<string>();
+            foreach (XmlAttribute a in root.Attributes) names.Add(a.Name);
+            Assert.That(names, Is.EquivalentTo(new[] { "Version", "ID", "IssueInstant", "InResponseTo", "Destination", "xmlns:saml", "xmlns:samlp" }));
+            Assert.That(root.GetAttribute("InResponseTo"), Is.EqualTo(inResponseTo));
+            Assert.That(root.GetAttribute("Destination"), Is.EqualTo(destination));
+
+            XmlNamespaceManager mgr = SAML2Bindings.CreateNamespaceManager(doc);
+            Assert.That(SAML2Bindings.GetIssuerInResponse(doc, mgr), Is.EqualTo(issuer));
+
+            XmlNode confirmation = doc.GetElementsByTagName("SubjectConfirmationData", SAML2Const.UrnAssertion)[0];
+            Assert.That(confirmation.Attributes.Count, Is.EqualTo(3), "InResponseTo・NotOnOrAfter・Recipient だけ");
+            Assert.That(confirmation.Attributes["InResponseTo"].Value, Is.EqualTo(inResponseTo));
+            Assert.That(doc.GetElementsByTagName("NameID", SAML2Const.UrnAssertion)[0].InnerText, Is.EqualTo(nameId));
+
+            Assert.That(SAML2Client.VerifyResponseWithReason(null, post, new RSA[] { TestCertificates.RsaPublicKey() },
+                issuer, destination, inResponseTo, null, null).IsValid, Is.True);
+        }
+
+        /// <summary>
+        /// 特殊な文字を含む値は、Redirect 版・エラー応答（Assertion を作らない経路）・nameID が null の場合でも、構造を変えずに入る。#700
+        /// </summary>
+        [Test]
+        [Basis("設計：SAML2Bindings.CreateResponse・CreateAssertion の remarks（値は DOM の API で入れるので、特殊な文字もエスケープされる）")]
+        public void Response_ValuesEscaped_OtherPaths()
+        {
+            const string issuer = "urn:idp:a&b<c>\"d'";
+            const string destination = "https://sp.example.com/acs?a=1&b=\"2\"";
+            RSA idp = TestCertificates.RsaPrivateKey();
+            RSA[] idpPublic = new RSA[] { TestCertificates.RsaPublicKey() };
+
+            // エラー応答（Assertion を作らない）
+            string error = SAML2Client.CreatePostResponse(issuer, destination, "req\" x=\"1", SAML2Enum.StatusCode.Requester,
+                null, SAML2Enum.NameIDFormat.Unspecified, SAML2Enum.AuthnContextClassRef.Unspecified, 3600, null, idp);
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(SAML2Bindings.DecodePost(error));
+            Assert.That(doc.DocumentElement.Attributes.Count, Is.EqualTo(7), "Version・ID・IssueInstant・InResponseTo・Destination と xmlns の 2 つだけ");
+            Assert.That(SAML2Bindings.GetIssuerInResponse(doc, SAML2Bindings.CreateNamespaceManager(doc)), Is.EqualTo(issuer));
+            Assert.That(doc.GetElementsByTagName("Assertion", SAML2Const.UrnAssertion).Count, Is.EqualTo(0));
+
+            // Redirect 版（nameID は null。空として入る）
+            string query = SAML2Client.CreateRedirectResponse(issuer, destination, "req01", SAML2Enum.StatusCode.Success,
+                null, SAML2Enum.NameIDFormat.Unspecified, SAML2Enum.AuthnContextClassRef.Unspecified, 3600, null, "relay01", Signer(idp));
+            Assert.That(query, Is.Not.Empty);
+            SAML2VerifyResult r = SAML2Client.VerifyResponseWithReason(query, null, idpPublic,
+                issuer, destination, "req01", "relay01", "relay01");
+            Assert.That(r.IsValid, Is.True, r.ReasonDescription);
+        }
+
+        /// <summary>
+        /// inResponseTo が null・空なら、属性ごと省く（SAML Core 3.2.2・Profiles 4.1.4.2 で任意）。SP は、省かれた応答も検証できる。#700
+        /// 特殊な文字の無い値では、従来と同じ出力（値がそのまま入る）。
+        /// </summary>
+        [Test]
+        [Basis("SAML 2.0 Core 3.2.2（Response の InResponseTo は任意）")]
+        public void Response_EmptyInResponseToOmitted()
+        {
+            RSA idp = TestCertificates.RsaPrivateKey();
+
+            foreach (string empty in new string[] { null, "" })
+            {
+                string post = SAML2Client.CreatePostResponse(IdPEntityId, Acs, empty, SAML2Enum.StatusCode.Success,
+                    "user01", SAML2Enum.NameIDFormat.Persistent, SAML2Enum.AuthnContextClassRef.Unspecified, 3600, null, idp);
+
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(SAML2Bindings.DecodePost(post));
+                Assert.That(doc.DocumentElement.HasAttribute("InResponseTo"), Is.False);
+                Assert.That(doc.GetElementsByTagName("SubjectConfirmationData", SAML2Const.UrnAssertion)[0]
+                    .Attributes["InResponseTo"], Is.Null);
+
+                Assert.That(SAML2Client.VerifyResponseWithReason(null, post, new RSA[] { TestCertificates.RsaPublicKey() },
+                    IdPEntityId, Acs, null, null, null).IsValid, Is.True);
+            }
+
+            // 特殊な文字の無い値は、そのまま入る（従来と同じ）
+            string ok = SAML2Client.CreatePostResponse(IdPEntityId, Acs, "req01", SAML2Enum.StatusCode.Success,
+                "user01", SAML2Enum.NameIDFormat.Persistent, SAML2Enum.AuthnContextClassRef.Unspecified, 3600, null, idp);
+            XmlDocument d2 = new XmlDocument();
+            d2.LoadXml(SAML2Bindings.DecodePost(ok));
+            Assert.That(d2.DocumentElement.GetAttribute("InResponseTo"), Is.EqualTo("req01"));
+            Assert.That(d2.DocumentElement.GetAttribute("Destination"), Is.EqualTo(Acs));
+            Assert.That(d2.GetElementsByTagName("Audience", SAML2Const.UrnAssertion)[0].InnerText, Is.EqualTo(Acs), "audience を渡さなければ recipient");
         }
 
         /// <summary>
