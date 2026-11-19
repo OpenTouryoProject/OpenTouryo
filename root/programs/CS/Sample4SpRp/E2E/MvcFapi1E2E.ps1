@@ -9,7 +9,7 @@
 
       | flow | response_mode | 正常 | 対照（書き換えると NG になること） |
       |---|---|---|---|
-      | oauth2（private_key_jwt ＋ PKCE） | query | access_token を得る | state を書き換える |
+      | oauth2（private_key_jwt ＋ PKCE） | query | access_token を得る（**スタブは、JARM でない認可要求を断る**（MPAS#381）ので、断ることを見る） | state を書き換える |
       | oidc（private_key_jwt ＋ PKCE） | query | ＋ id_token の検証・UserInfo | state を書き換える / **code_challenge を書き換える** |
       | oidc（private_key_jwt ＋ PKCE） | query.jwt（JARM） | 同上 | 応答（JWT）の署名を書き換える / 素の応答に落とす |
       | pkce（PKCE S256） | query | 同上 | state を書き換える / **code_challenge を書き換える** |
@@ -86,6 +86,8 @@
      2026/11/13  玄人 幸道         RepoPath.ps1・SummaryTable.ps1 を root/files/tools/PowerShell の下（RepoPaths・Verify）から読む（#687）
      2026/11/13  玄人 幸道         -Idp KCK（Keycloak）を足した。IdP の違いは Idp.ps1 にまとめた（#690）
      2026/11/18  玄人 幸道         Linux の上でも回せるようにした（窓の指定・TEMP・C:/root のパスの読み替え。#703）
+     2026/11/19  玄人 幸道         MPAS のスタブの同意画面の送信を、フォームの action へ送るようにした（MPAS#359 で、送信の口が <認可の口>/consent に移った。#710）
+     2026/11/19  玄人 幸道         スタブでは、response_mode=query の正常を、JARM でない認可要求を IdP が断る対照（NonJarm）に替えた（MPAS#381。#710）
 #>
 [CmdletBinding()]
 param(
@@ -139,6 +141,7 @@ $appDll = Join-Path $here '..\DotNet\MVC\SpRp_MVC\bin\Debug\net10.0\SpRp_MVC.dll
 # ------------------------------------------------------------------
 #   Tamper : None（正常）/ State（state を書き換える）/ Signature（JARM の署名を書き換える）/ Plain（JARM を素の応答に落とす）
 #            / Challenge（認可要求の code_challenge を書き換える。#670）
+#            / NonJarm（**スタブだけ**。JARM でない認可要求（response_mode=query）を、IdP が断ること。#710）
 #   Expect : 結果の画面の NG の理由に含まれるべき文言（対照が、狙った確認で落ちたことを見る）
 $cases = @(
     @{ Flow = 'oauth2'; Mode = '';          Tamper = 'None' }
@@ -155,6 +158,18 @@ $cases = @(
     @{ Flow = 'pkce';   Mode = 'query.jwt'; Tamper = 'None' }
     @{ Flow = 'pkce';   Mode = 'query.jwt'; Tamper = 'Signature'; Expect = '応答（JARM）の検証に失敗' }
 )
+
+# **MPAS のスタブは、fapi1 の登録に JARM の認可要求だけを受ける**（MPAS#381。FAPI 1.0 Advanced §5.2.2 の 2）。
+#   だから response_mode=query のケースは、正常（コードを受ける）にならない。**正常は「IdP が断る」対照（NonJarm）に替え、
+#   query での state・code_challenge の書き換えは省く**（query では、そこまで進まないので意味が無い）。Keycloak は query も通すので、そのまま回す
+if ($Idp -eq 'Stub')
+{
+    $cases = @($cases | Where-Object { $_.Mode -ne '' -or $_.Tamper -eq 'None' })
+    foreach ($c in $cases)
+    {
+        if ($c.Mode -eq '') { $c.Tamper = 'NonJarm'; $c.Expect = 'IdP がエラーを返しました : invalid_request' }
+    }
+}
 
 foreach ($c in $cases)
 {
@@ -276,7 +291,7 @@ function Invoke-UntilCallback($client, $res, [string]$password)
         }
         elseif ($res.Body -match 'name="submit.Grant"')
         {
-            $res = Send-Http $client 'POST' $res.Url @{
+            $res = Send-Http $client 'POST' (Get-StubConsentUrl $res) @{
                 'submit.Grant' = 'Grant'
                 __RequestVerificationToken = (Get-Field $res.Body '__RequestVerificationToken')
             }

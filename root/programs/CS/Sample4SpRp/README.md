@@ -259,6 +259,8 @@ cd ..\..\E2E
 | ropc の対照の理由 | `access_denied` | **`invalid_grant`**（同上） |
 | `jwtbearer` | 回す | **回さない**（Keycloak に、JWT Bearer の認可グラント（RFC 7523 §2.1）が無い。クライアント認証の `private_key_jwt` はある） |
 | `Device_Client` の PKCE | — | **強制しない**（Keycloak は、PKCE を強制したクライアントには、Device の要求にも `code_challenge` を求める。`pkce` は S256 を付けて送る） |
+| FAPI1 の `response_mode=query`（JARM でない認可要求） | **IdP が断ることを見る**（対照 `NonJarm`。MPAS#381 から、fapi1 の登録は JARM の認可要求だけを受ける。FAPI 1.0 Advanced §5.2.2 の 2。state・code_challenge の書き換えは省く） | 正常に通す（Keycloak は query も受ける） |
+| 同意画面の送信先 | **フォームの `action`（`<認可の口>/consent`）**（MPAS#359 から。認可の URL へ送ると `invalid_request`（A parameter is included more than once.）。E2E は `Idp.ps1` の `Get-StubConsentUrl` で読む。#710） | `kc-form-login`・`/login-actions/consent` |
 | FAPI2 の `ros` | 回す | **回さない**（`/ros` は MPAS 独自。Keycloak の Discovery に `request_object_endpoint` が無い） |
 | FAPI2 の `par_mtls` | `StubCompose.ps1 -Mtls` で起動したとき | **常に**（`-Mtls` を付けるだけ）。登録は `client-x509`（Subject DN と発行者の DN を照合） |
 | FAPI2 の id_token | 暗号化（JWE。RSA-OAEP・A256GCM） | **同じく暗号化させる**（同じ公開鍵を `use=enc` でも登録した）。PAR は必須にしてある |

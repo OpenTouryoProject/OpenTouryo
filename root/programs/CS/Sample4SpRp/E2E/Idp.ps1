@@ -33,6 +33,7 @@
      2026/11/13  玄人 幸道         新規（Keycloak の KCK を足した。#690）
      2026/11/13  玄人 幸道         外部ログインのサンプル用の差し替え（WebConfig）と、SAML2 の口（Saml2Path）を足した（#692）
      2026/11/18  玄人 幸道         Linux の上で動かすときの違い（窓・C:/root のパス）を足した（#703）
+     2026/11/19  玄人 幸道         MPAS のスタブの同意画面の送信を、フォームの action へ送るようにした（MPAS#359 で、送信の口が <認可の口>/consent に移った。#710）
 #>
 
 # IdP の値を返す。$e2eDir : E2E フォルダ（container\KCK の場所を決める）
@@ -140,6 +141,27 @@ function Get-KckPassword($idpInfo, [string]$userName)
     $u = @($realm.users | Where-Object { $_.username -eq $userName })
     if ($u.Count -eq 0) { return $null }
     return [string]$u[0].credentials[0].value
+}
+
+# **MPAS のスタブの同意画面（name="submit.Grant"）の送信先を返す**（ブラウザと同じく、フォームの action を読む）。
+#   **MPAS#359 から、同意の送信は <認可の口>/consent（フォームの action）が受ける。** 認可の URL へ送ると、
+#   クエリとフォームでパラメタが重なり、invalid_request（A parameter is included more than once.）になる（#710）。
+#   $res   : Send-Http の戻り値（Status・Url・Body）
+#   戻り値 : 送信先の URL（action が無ければ、従来どおり画面の URL）
+function Get-StubConsentUrl($res)
+{
+    foreach ($form in [regex]::Matches($res.Body, '(?is)<form\b[^>]*>.*?</form>'))
+    {
+        if ($form.Value -notmatch 'name="submit\.Grant"') { continue }
+
+        $m = [regex]::Match($form.Value, '(?is)^<form\b[^>]*?\baction="([^"]*)"')
+        if ($m.Success -and $m.Groups[1].Value -ne '')
+        {
+            return (New-Object Uri((New-Object Uri($res.Url)), [System.Net.WebUtility]::HtmlDecode($m.Groups[1].Value))).AbsoluteUri
+        }
+    }
+
+    return $res.Url
 }
 
 # **Keycloak の画面（ログイン・同意）なら、送る先と値を返す**（それ以外の画面なら $null）。

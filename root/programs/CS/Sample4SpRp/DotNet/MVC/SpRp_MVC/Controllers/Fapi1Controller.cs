@@ -28,6 +28,7 @@
 //*  2026/11/07  玄人 幸道         Start は、照合した後に入力の文字列ではなく定数を使う（code scanning #59。振る舞いは変えない）
 //*  2026/11/09  玄人 幸道         補助（client_assertion・JSON・クエリ）を Fapi2Controller と共有する（internal に。振る舞いは変えない。#668 の追加）
 //*  2026/11/19  玄人 幸道         client_assertion・Request Object の署名を PS256 にした（MPAS の FAPI の登録は PS256・ES256 に限る。#709）
+//*  2026/11/19  玄人 幸道         トークン要求の client_assertion の aud を issuer にした（RFC 10070。MPAS#398 から、トークン エンドポイントの URL は受けない。#710）
 //**********************************************************************************
 
 using System;
@@ -293,11 +294,12 @@ namespace SpRp_MVC.Controllers
             }
             else
             {
-                // **private_key_jwt**（RFC 7523 §2.2。aud はトークン エンドポイント。§3）**＋ PKCE の code_verifier**（RFC 7636 §4.5。#670）
+                // **private_key_jwt**（RFC 7523 §2.2）**＋ PKCE の code_verifier**（RFC 7636 §4.5。#670）
+                //   **aud は issuer**（RFC 10070 §4・§5。MPAS#398 から、トークン エンドポイントの URL は受けない。Keycloak も issuer を受ける）
                 result.AuthMethod = "private_key_jwt ＋ PKCE（S256）";
                 tokenResponse = await OAuth2AndOIDCClient.GetAccessTokenByCodeWithPkceAsync(
                     discovery.TokenEndpoint, CmnClientParams.SpRp_RedirectUri, code, s.CodeVerifier,
-                    Fapi1Controller.CreateClientAssertion(clientId, discovery.TokenEndpoint.AbsoluteUri));
+                    Fapi1Controller.CreateClientAssertion(clientId, CmnClientParams.Isser));
             }
 
             JObject token = Fapi1Controller.ParseJson(tokenResponse);

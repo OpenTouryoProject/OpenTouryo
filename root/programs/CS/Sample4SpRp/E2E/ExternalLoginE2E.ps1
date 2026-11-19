@@ -87,6 +87,7 @@
      2026/11/14  玄人 幸道         Keycloak でも SAML2 を回す。対象ごとの SP の entityID（SpRp_Saml2SpEntityId）を差し替える（#693）
      2026/11/18  玄人 幸道         Linux の上で net10.0 の対象を回せるようにした。前提から SQL Server を外した（辿る画面は DB を読まない。#703）
      2026/11/19  玄人 幸道         スタブの SAML2 の Audience が entityID になった（MPAS#389）ので、サンプルの既定値を entityID にし、スタブでは差し替えない旨を直した
+     2026/11/19  玄人 幸道         MPAS のスタブの同意画面の送信を、フォームの action へ送るようにした（MPAS#359 で、送信の口が <認可の口>/consent に移った。#710）
 #>
 [CmdletBinding()]
 param(
@@ -277,7 +278,7 @@ function Invoke-IdpScreens($client, $res, [string]$password)
         }
         elseif ($res.Body -match 'name="submit.Grant"')
         {
-            $res = Send-Http $client 'POST' $res.Url @{
+            $res = Send-Http $client 'POST' (Get-StubConsentUrl $res) @{
                 'submit.Grant' = 'Grant'
                 __RequestVerificationToken = (Get-Field $res.Body '__RequestVerificationToken')
             }

@@ -100,6 +100,7 @@
      2026/11/13  玄人 幸道         RepoPath.ps1・SummaryTable.ps1 を root/files/tools/PowerShell の下（RepoPaths・Verify）から読む（#687）
      2026/11/13  玄人 幸道         -Idp KCK（Keycloak）を足した。IdP の違いは Idp.ps1 にまとめた（#690）
      2026/11/18  玄人 幸道         Linux の上では net10.0 の CLI だけを回す。TEMP・C:/root のパスの読み替え（#703）
+     2026/11/19  玄人 幸道         MPAS のスタブの同意画面の送信を、フォームの action へ送るようにした（MPAS#359 で、送信の口が <認可の口>/consent に移った。#710）
 #>
 [CmdletBinding()]
 param(
@@ -309,7 +310,7 @@ function Invoke-IdpScreens($client, $res, [string]$password, [string]$user = '',
         }
         elseif ($res.Body -match 'name="submit.Grant"')
         {
-            $res = Send-Http $client 'POST' $res.Url @{
+            $res = Send-Http $client 'POST' (Get-StubConsentUrl $res) @{
                 'submit.Grant' = 'Grant'
                 __RequestVerificationToken = (Get-Field $res.Body '__RequestVerificationToken')
             }
