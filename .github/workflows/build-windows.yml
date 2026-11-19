@@ -827,6 +827,7 @@ jobs:
       # systemd を有効にして、Docker（docker.io）が WSL の起動で自動的に上がるようにする
       # （LocalServicesOnDocker の WSL2 版は、Docker が動いている前提）
       - name: Install Docker in WSL2
+        timeout-minutes: 25
         shell: pwsh
         run: |
           $script = @'
@@ -840,8 +841,18 @@ jobs:
           # Windows の here-string は CRLF なので、LF にして書く（bash が行末の CR で落ちる）
           [IO.File]::WriteAllText("$env:RUNNER_TEMP/docker-install.sh", $script.Replace("`r`n", "`n"))
           $unix = (wsl -d Ubuntu-24.04 -u root -- wslpath -a ($env:RUNNER_TEMP -replace '\\','/')).Trim()
-          wsl -d Ubuntu-24.04 -u root -- bash "$unix/docker-install.sh"
-          if ($LASTEXITCODE -ne 0) { throw "docker のインストールに失敗（$LASTEXITCODE）" }
+          # wsl が応答しなくなることがある（run 44476229163 で、このステップが 20 分止まった）ので、打ち切って 1 回やり直す
+          $done = $false
+          foreach ($attempt in 1, 2)
+          {
+              $p = Start-Process -FilePath wsl -ArgumentList @('-d','Ubuntu-24.04','-u','root','--','bash',"$unix/docker-install.sh") -PassThru -NoNewWindow
+              if ($p.WaitForExit(420000) -and $p.ExitCode -eq 0) { $done = $true; break }
+              "attempt $attempt failed (exited: $($p.HasExited))"
+              if (-not $p.HasExited) { try { $p.Kill($true) } catch { } }
+              wsl --shutdown
+              Start-Sleep -Seconds 5
+          }
+          if (-not $done) { throw 'docker のインストールに失敗（2 回とも）' }
           # systemd を有効にするため、再起動する
           wsl --terminate Ubuntu-24.04
           Start-Sleep -Seconds 5
