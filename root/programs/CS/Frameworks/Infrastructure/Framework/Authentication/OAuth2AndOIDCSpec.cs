@@ -29,6 +29,7 @@
 //*  2026/10/29  玄人 幸道         response_type の仕様の節番号の誤りを直した（3 → 1.2。#640）
 //*  2026/10/30  玄人 幸道         response_type・prompt・PKCE のメソッド名の大文字小文字を区別するようにした（RFC・OIDC どおり。#643）
 //*  2026/10/31  玄人 幸道         VerifyPkce の remarks：大文字小文字の根拠を RFC 6749 1.9 を主にして書き分けた（#643）
+//*  2026/11/20  玄人 幸道         GetClientAssertion：client_assertion_type の無い client_assertion を受け付けないようにした（RFC 7521 4.2。#688）
 //**********************************************************************************
 
 using System;
@@ -414,16 +415,21 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// ただし、Open棟梁 の OAuth2AndOIDCClient は、#592 より前は assertion だけを送っていた
         /// （現在は両方を送る）。**その互換は、送り手の部品の側で持つ**（#634 の H-2）。
         ///
-        /// - client_assertion を優先する。client_assertion_type が来ていて値が違えば、受け付けない
-        /// - 無ければ assertion を読む（grant_type が JWT Bearer の要求では、呼び出し側が使い分けること）
+        /// - client_assertion を優先する。**client_assertion_type が無い（null・空）か、値が違えば、受け付けない**
+        ///   （RFC 7521 4.2：client_assertion_type は REQUIRED。値は RFC 7523 2.2 の urn:ietf:params:oauth:client-assertion-type:jwt-bearer）
+        /// - client_assertion が無ければ assertion を読む（型は見ない。grant_type が JWT Bearer の要求では、呼び出し側が使い分けること）
+        ///
+        /// 型の無い client_assertion を受け付けるのは、仕様の MUST を強制しない不適合だった（#688）。
+        /// 署名・iss・sub・aud の検証は呼び出し側で行うので、正しい署名の無いアサーションが通ることはなかった。
+        /// **利用者への影響：型を付けずに client_assertion を送るクライアントは、認証されなくなる。**
+        /// Open棟梁 の OAuth2AndOIDCClient は、常に型を付けて送る。assertion だけを送る旧い送り手（#592 より前）は、client_assertion を使わないので影響しない。
         /// </remarks>
         public static string GetClientAssertion(
             string client_assertion, string client_assertion_type, string assertion)
         {
             if (!string.IsNullOrEmpty(client_assertion))
             {
-                if (!string.IsNullOrEmpty(client_assertion_type)
-                    && client_assertion_type != OAuth2AndOIDCConst.JwtBearerClientAssertionType)
+                if (client_assertion_type != OAuth2AndOIDCConst.JwtBearerClientAssertionType)
                 {
                     return "";
                 }
