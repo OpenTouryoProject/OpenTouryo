@@ -840,6 +840,10 @@ jobs:
           set -e
           export DEBIAN_FRONTEND=noninteractive
           printf '[boot]\nsystemd=true\n' > /etc/wsl.conf
+          # archive.ubuntu.com が、ランナーから「接続がタイムアウト」で届かないことがある（run 44521316550。Canonical のアドレスへ 2 回とも）ので、
+          # Azure の Ubuntu のミラー（Azure のランナーから届く）に替える
+          sed -i 's|http://archive.ubuntu.com/ubuntu|http://azure.archive.ubuntu.com/ubuntu|g; s|http://security.ubuntu.com/ubuntu|http://azure.archive.ubuntu.com/ubuntu|g' /etc/apt/sources.list.d/ubuntu.sources /etc/apt/sources.list 2>/dev/null || true
+          grep -h -E '^(URIs|deb )' /etc/apt/sources.list.d/ubuntu.sources /etc/apt/sources.list 2>/dev/null | head -4 || true
           # apt が 7 分以上止まることがある（run 44479764197。2 回とも）ので、IPv4 に固定し、タイムアウトと再試行を付け、進み具合を表示する
           APT='-o Acquire::ForceIPv4=true -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30'
           echo "== apt-get update : $(date)"
@@ -1037,6 +1041,10 @@ jobs:
           set -e
           export DEBIAN_FRONTEND=noninteractive
           printf '[boot]\nsystemd=true\n' > /etc/wsl.conf
+          # archive.ubuntu.com が、ランナーから「接続がタイムアウト」で届かないことがある（run 44521316550。Canonical のアドレスへ 2 回とも）ので、
+          # Azure の Ubuntu のミラー（Azure のランナーから届く）に替える
+          sed -i 's|http://archive.ubuntu.com/ubuntu|http://azure.archive.ubuntu.com/ubuntu|g; s|http://security.ubuntu.com/ubuntu|http://azure.archive.ubuntu.com/ubuntu|g' /etc/apt/sources.list.d/ubuntu.sources /etc/apt/sources.list 2>/dev/null || true
+          grep -h -E '^(URIs|deb )' /etc/apt/sources.list.d/ubuntu.sources /etc/apt/sources.list 2>/dev/null | head -4 || true
           APT='-o Acquire::ForceIPv4=true -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30'
           apt-get $APT update
           apt-get $APT install -y docker.io docker-compose-v2
