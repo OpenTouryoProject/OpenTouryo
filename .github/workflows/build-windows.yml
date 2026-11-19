@@ -948,45 +948,65 @@ jobs:
           "--- iisexpress version"
           (Get-Item "$env:ProgramFiles\IIS Express\iisexpress.exe").VersionInfo.FileVersion
 
+      # IIS Express の HTTPS：1 回目・2 回目（run 44514441245・44519103461）は、既存の証明書（CN=localhost。0.0.0.0:44300〜 に登録済み）で、
+      # localhost・127.0.0.1・[::1] のどれも「接続が強制的に閉じられた」で落ちた。**証明書の秘密鍵があるか**を見て、
+      # 自分で作った自己署名の証明書（秘密鍵つき。LocalMachine\My と \Root）を 44333・44334 に登録し直して、もう一度試す
       - name: IIS Express over HTTPS (minimal site)
         shell: pwsh
         continue-on-error: true
         run: |
-          "--- sslcert bindings for IPv6 and 44333/44334"
-          netsh http show sslcert | Select-String -Pattern '\[::\]|:44333|:44334' | Select-Object -First 10
-          $site = Join-Path $env:RUNNER_TEMP 'site'
-          New-Item -ItemType Directory -Force $site | Out-Null
-          Set-Content -Path (Join-Path $site 'index.html') -Value 'hello iis express'
-          $iis = Join-Path $env:ProgramFiles 'IIS Express\iisexpress.exe'
-          $template = Join-Path $env:ProgramFiles 'IIS Express\config\templates\PersonalWebServer\applicationhost.config'
-          $xmlSite = '<site name="E2E" id="1" serverAutoStart="true"><application path="/" applicationPool="Clr4IntegratedAppPool"><virtualDirectory path="/" physicalPath="' + $site + '" /></application><bindings><binding protocol="https" bindingInformation="*:44333:localhost" /></bindings></site>'
-          $xml = [IO.File]::ReadAllText($template)
-          $xml = [regex]::Replace($xml, '<site name="WebSite1"[\s\S]*?</site>', $xmlSite.Replace('$', '$$'))
-          $config = Join-Path $env:RUNNER_TEMP 'applicationhost.config'
-          [IO.File]::WriteAllText($config, $xml, (New-Object Text.UTF8Encoding $false))
-          $log = Join-Path $env:RUNNER_TEMP 'iis.log'
-          $p = Start-Process $iis -ArgumentList "/config:`"$config`"", '/site:E2E', '/systray:false' -PassThru -WindowStyle Hidden -RedirectStandardOutput $log -RedirectStandardError "$log.err"
-          Start-Sleep -Seconds 10
-          "iisexpress exited: $($p.HasExited)"
-          "--- netstat 44333"
-          netstat -ano | Select-String ':44333'
-          "--- name resolution"
-          [Net.Dns]::GetHostAddresses('localhost') | ForEach-Object { $_.ToString() }
-          foreach ($hostname in 'localhost', '127.0.0.1', '[::1]')
-          {
-              try
-              {
-                  $r = Invoke-WebRequest -Uri "https://${hostname}:44333/index.html" -Headers @{ Host = 'localhost:44333' } -SkipCertificateCheck -TimeoutSec 15
-                  "https://${hostname}:44333 : $($r.StatusCode) $($r.Content.Trim())"
-              }
-              catch { "https://${hostname}:44333 : NG $($_.Exception.Message) / $($_.Exception.InnerException.Message)" }
-          }
-          "--- iis.log"
-          Get-Content $log, "$log.err" -ErrorAction SilentlyContinue | Select-Object -First 30
-          if (-not $p.HasExited) { $p.Kill() }
+          "--- bound certificate (0.0.0.0:44333)"
+          netsh http show sslcert ipport=0.0.0.0:44333
+          Get-ChildItem Cert:\LocalMachine\My | Where-Object { $_.Subject -eq 'CN=localhost' } | ForEach-Object { "{0} HasPrivateKey={1} NotAfter={2}" -f $_.Thumbprint, $_.HasPrivateKey, $_.NotAfter }
 
-      # 開発用証明書を作り、Windows の信頼（LocalMachine\Root）に入れる。dotnet dev-certs --trust は、Windows では確認のダイアログが出るので使わない
-      - name: Development certificate (create, export, trust)
+          function Test-Iis([string]$label)
+          {
+              $site = Join-Path $env:RUNNER_TEMP 'site'
+              New-Item -ItemType Directory -Force $site | Out-Null
+              Set-Content -Path (Join-Path $site 'index.html') -Value 'hello iis express'
+              $iis = Join-Path $env:ProgramFiles 'IIS Express\iisexpress.exe'
+              $template = Join-Path $env:ProgramFiles 'IIS Express\config\templates\PersonalWebServer\applicationhost.config'
+              $xmlSite = '<site name="E2E" id="1" serverAutoStart="true"><application path="/" applicationPool="Clr4IntegratedAppPool"><virtualDirectory path="/" physicalPath="' + $site + '" /></application><bindings><binding protocol="https" bindingInformation="*:44333:localhost" /></bindings></site>'
+              $xml = [IO.File]::ReadAllText($template)
+              $xml = [regex]::Replace($xml, '<site name="WebSite1"[\s\S]*?</site>', $xmlSite.Replace('$', '$$'))
+              $config = Join-Path $env:RUNNER_TEMP 'applicationhost.config'
+              [IO.File]::WriteAllText($config, $xml, (New-Object Text.UTF8Encoding $false))
+              $log = Join-Path $env:RUNNER_TEMP 'iis.log'
+              $p = Start-Process $iis -ArgumentList "/config:`"$config`"", '/site:E2E', '/systray:false' -PassThru -WindowStyle Hidden -RedirectStandardOutput $log -RedirectStandardError "$log.err"
+              Start-Sleep -Seconds 10
+              "[$label] iisexpress exited: $($p.HasExited)"
+              foreach ($skip in $true, $false)
+              {
+                  try
+                  {
+                      if ($skip) { $r = Invoke-WebRequest -Uri 'https://localhost:44333/index.html' -SkipCertificateCheck -TimeoutSec 15 }
+                      else { $r = Invoke-WebRequest -Uri 'https://localhost:44333/index.html' -TimeoutSec 15 }
+                      "[$label] https://localhost:44333 (skip cert check = $skip) : $($r.StatusCode) $($r.Content.Trim())"
+                  }
+                  catch { "[$label] https://localhost:44333 (skip cert check = $skip) : NG $($_.Exception.Message) / $($_.Exception.InnerException.Message)" }
+              }
+              if (-not $p.HasExited) { $p.Kill() }
+              Start-Sleep -Seconds 2
+          }
+
+          Test-Iis 'existing certificate'
+
+          "--- own self-signed certificate"
+          $cert = New-SelfSignedCertificate -DnsName 'localhost' -CertStoreLocation 'Cert:\LocalMachine\My' -NotAfter (Get-Date).AddYears(1) -FriendlyName 'ci-localhost'
+          "created : $($cert.Thumbprint) HasPrivateKey=$($cert.HasPrivateKey)"
+          $root = New-Object Security.Cryptography.X509Certificates.X509Store('Root', 'LocalMachine')
+          $root.Open('ReadWrite')
+          $root.Add($cert)
+          $root.Close()
+          foreach ($port in 44333, 44334)
+          {
+              netsh http delete sslcert ipport=0.0.0.0:$port | Out-Null
+              netsh http add sslcert ipport=0.0.0.0:$port certhash=$($cert.Thumbprint) appid='{214124cd-d05b-4309-9af9-9caa44b2b74a}'
+          }
+          Test-Iis 'own certificate'
+
+      # 開発用証明書（Keycloak の証明書の元）を作り、PEM で書き出す。Windows の信頼は、上の自己署名の証明書で足りる見込み
+      - name: Development certificate (create, export)
         shell: pwsh
         continue-on-error: true
         working-directory: root/programs/CS/Sample4SpRp/container/KCK
@@ -994,16 +1014,6 @@ jobs:
           New-Item -ItemType Directory -Force cert | Out-Null
           dotnet dev-certs https --export-path (Join-Path $PWD 'cert/localhost.pem') --format PEM --no-password
           Get-ChildItem cert | Format-Table Name, Length -AutoSize
-          $pfx = Join-Path $env:RUNNER_TEMP 'devcert.pfx'
-          dotnet dev-certs https --export-path $pfx --password 'ci-test' --format Pfx
-          "exported pfx: $(Test-Path $pfx)"
-          $cert = New-Object Security.Cryptography.X509Certificates.X509Certificate2($pfx, 'ci-test')
-          "dev cert: $($cert.Subject) $($cert.Thumbprint)"
-          $store = New-Object Security.Cryptography.X509Certificates.X509Store('Root', 'LocalMachine')
-          $store.Open('ReadWrite')
-          $store.Add((New-Object Security.Cryptography.X509Certificates.X509Certificate2($cert.RawData)))
-          $store.Close()
-          "trusted in LocalMachine\Root: $((Get-ChildItem Cert:\LocalMachine\Root | Where-Object { $_.Thumbprint -eq $cert.Thumbprint }).Count -gt 0)"
           # 公開の証明書（Keycloak のクライアント証明書の信頼先）を写す
           Copy-Item (Join-Path $env:GITHUB_WORKSPACE 'root/files/resource/X509/SHA256RSAClientCert.cer') (Join-Path $PWD 'cert/mpas-test-client.pem') -Force
 
@@ -1058,8 +1068,9 @@ jobs:
           if (-not $active) { throw 'docker did not start in WSL2' }
 
       # KckCompose.ps1 は Windows の docker を呼ぶので、この実験では wsl 経由で docker compose を直接呼ぶ（WSL2 対応は ph2）
-      # 1 回目（run 44514441245）：Keycloak が 5 分待っても上がらず、docker stats に出なかった。コンテナの状態（終了・OOM）とログを見て、
-      # 上がらなければ、メモリの上限を上げて（3g）もう一度試す
+      # 1・2 回目（run 44514441245・44519103461）：Keycloak が 2 分ほどで Exited (143)（SIGTERM。OOM ではない）になり、上がらなかった。
+      # WSL2 の VM は、wsl のプロセスが無いとアイドルで停止する（LocalServicesOnDocker の WSL2 版が、キープアライブを立てる理由）ので、
+      # sleep infinity を動かし続けて、VM を止めない
       - name: Keycloak in WSL2, reachable from Windows
         if: ${{ steps.docker.outcome == 'success' }}
         shell: pwsh
@@ -1069,48 +1080,28 @@ jobs:
           $compose = ((Resolve-Path 'docker-compose.yml').Path -replace '\\','/')
           $unix = (wsl -d Ubuntu-24.04 -u root -- wslpath -a $compose).Trim()
           "compose : $unix"
-          $override = Join-Path $env:RUNNER_TEMP 'kc-override.yml'
-          [IO.File]::WriteAllText($override, "services:`n  keycloak:`n    mem_limit: 3g`n")
-          $overrideUnix = (wsl -d Ubuntu-24.04 -u root -- wslpath -a ($override -replace '\\','/')).Trim()
-
-          function Wait-Keycloak([int]$seconds)
-          {
-              $sw = [Diagnostics.Stopwatch]::StartNew()
-              while ($sw.Elapsed.TotalSeconds -lt $seconds)
-              {
-                  foreach ($skip in $true, $false)
-                  {
-                      try
-                      {
-                          if ($skip) { $r = Invoke-WebRequest -Uri 'https://localhost:44320/realms/sprp/.well-known/openid-configuration' -SkipCertificateCheck -TimeoutSec 10 }
-                          else { $r = Invoke-WebRequest -Uri 'https://localhost:44320/realms/sprp/.well-known/openid-configuration' -TimeoutSec 10 }
-                          "keycloak discovery (skip cert check = $skip) : $($r.StatusCode) after $([int]$sw.Elapsed.TotalSeconds) s"
-                          if (-not $skip) { return $true }
-                      }
-                      catch { }
-                  }
-                  Start-Sleep -Seconds 5
-              }
-              return $false
-          }
-
-          function Show-State
-          {
-              wsl -d Ubuntu-24.04 -u root -- bash -c "free -m; docker ps -a --format '{{.Names}} {{.Status}}'; docker inspect -f 'oom={{.State.OOMKilled}} exit={{.State.ExitCode}} running={{.State.Running}}' sprp-kck-keycloak-1; docker stats --no-stream --format '{{.Name}} {{.MemUsage}} {{.CPUPerc}}'; docker logs --tail 25 sprp-kck-keycloak-1 2>&1; dmesg | tail -5"
-          }
-
-          "=== attempt 1 : mem_limit 1g (as in the repository)"
+          $keep = Start-Process -FilePath wsl -ArgumentList @('-d','Ubuntu-24.04','-u','root','--','sleep','infinity') -PassThru -WindowStyle Hidden
+          Start-Sleep -Seconds 3
           wsl -d Ubuntu-24.04 -u root -- docker compose -f $unix up -d
-          $ok = Wait-Keycloak 150
-          "attempt 1 result : $ok"
-          Show-State
-          wsl -d Ubuntu-24.04 -u root -- docker compose -f $unix down
-          if (-not $ok)
+
+          $sw = [Diagnostics.Stopwatch]::StartNew()
+          $ok = $false
+          while ($sw.Elapsed.TotalSeconds -lt 240 -and -not $ok)
           {
-              "=== attempt 2 : mem_limit 3g"
-              wsl -d Ubuntu-24.04 -u root -- docker compose -f $unix -f $overrideUnix up -d
-              $ok = Wait-Keycloak 240
-              "attempt 2 result : $ok"
-              Show-State
-              wsl -d Ubuntu-24.04 -u root -- docker compose -f $unix -f $overrideUnix down
+              foreach ($skip in $true, $false)
+              {
+                  try
+                  {
+                      if ($skip) { $r = Invoke-WebRequest -Uri 'https://localhost:44320/realms/sprp/.well-known/openid-configuration' -SkipCertificateCheck -TimeoutSec 10 }
+                      else { $r = Invoke-WebRequest -Uri 'https://localhost:44320/realms/sprp/.well-known/openid-configuration' -TimeoutSec 10 }
+                      "keycloak discovery (skip cert check = $skip) : $($r.StatusCode) after $([int]$sw.Elapsed.TotalSeconds) s"
+                      if (-not $skip) { $ok = $true }
+                  }
+                  catch { }
+              }
+              if (-not $ok) { Start-Sleep -Seconds 5 }
           }
+          "keycloak result : $ok after $([int]$sw.Elapsed.TotalSeconds) s"
+          wsl -d Ubuntu-24.04 -u root -- bash -c "free -m; docker ps -a --format '{{.Names}} {{.Status}}'; docker inspect -f 'oom={{.State.OOMKilled}} exit={{.State.ExitCode}} running={{.State.Running}}' sprp-kck-keycloak-1; docker stats --no-stream --format '{{.Name}} {{.MemUsage}} {{.CPUPerc}}'; docker logs --tail 12 sprp-kck-keycloak-1 2>&1"
+          wsl -d Ubuntu-24.04 -u root -- docker compose -f $unix down
+          if (-not $keep.HasExited) { $keep.Kill() }
