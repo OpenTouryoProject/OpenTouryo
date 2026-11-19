@@ -13,11 +13,11 @@
 #   （2_RunAllTests.ps1 -Linux と同じ対象。#703）。
 #   クロス DB のジョブ（linux-crossdb）が、TestPublicDb の net10.0 を Oracle・MySQL・PostgreSQL で回す
 #   （2_RunAllTests.ps1 -CrossDb の net10.0 の分。#703）。
-#   認証の E2E のジョブ（linux-sts）が、SpRp のサンプルの E2E（Sample4SpRp\E2E）の net10.0 を、IdP（STS）を Keycloak にして回す（#703）。
+#   認証の E2E のジョブ（linux-kck・linux-stub）が、SpRp のサンプルの E2E（Sample4SpRp\E2E）の net10.0 を、IdP（STS）を Keycloak・MPAS のスタブにして回す（#703）。
 #
 # ＜対象外＞
 #   ・GUI アプリケーション（WinForms / WPF / 各ツールの画面）… RELEASE.md 4 節の手作業
-#   ・SpRp の E2E の net48 と、IdP を MPAS のスタブにした回 … 手元で回す（スタブは Linux で起動できない。MultiPurposeAuthSite#401）
+#   ・SpRp の E2E の net48・WebForms … 手元で回す（Windows とコンテナが同じ機械に要る）
 #   ・SQL Server 以外の DBMS への接続（net48 と、Golden の TestDataAccess）… Windows のジョブは /Dap SQL のみを使う
 #     （TestSQLUtility は 4 DBMS の SQL 生成を検証するが、接続はしない。net48 のクロス DB は
 #     Windows とコンテナが同じ機械に要るので、手元の -CrossDb で回す）
@@ -323,7 +323,7 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-      # 認証の E2E のジョブ（下の linux-sts）へ、SpRp の E2E が動かすサンプルの net10.0 の出力を渡す（#703 ph3）。
+      # 認証の E2E のジョブ（下の linux-kck・linux-stub）へ、SpRp の E2E が動かすサンプルの net10.0 の出力を渡す（#703 ph3）。
       # 1_BuildAll.ps1 がビルドしたもの（11_Build_SpRp_sample.bat・5_Build_CLICore_sample.bat・10_Build_WebAppCore_sample.bat）。
       - name: Upload net10.0 samples for Linux STS E2E
         if: always()
@@ -517,12 +517,11 @@ jobs:
           if-no-files-found: warn
 
   # --------------------------------------------------------------------
-  # 認証（STS）の E2E の net10.0（#703 ph3）
+  # 認証（STS）の E2E の net10.0：IdP が Keycloak（linux-kck。#703 ph3）
   # --------------------------------------------------------------------
   # Sample4SpRp\E2E の 4 本を、IdP（STS）を Keycloak（-Idp KCK）にして回す。Linux の上では、各 E2E が net10.0 の対象だけに絞る。
   # 判定は各 E2E が行う（終了コード 0 = 全部 OK、1 = NG あり、2 = 前提が足りない）。
-  # MPAS のスタブは、Linux で起動する手段が無いので回さない（MultiPurposeAuthSite#401）。
-  # Keycloak で回らないケース（CLI の jwtbearer・FAPI2 の ros）は、手元のスタブで回す。
+  # Keycloak で回らないケース（CLI の jwtbearer・FAPI2 の ros）は、MPAS のスタブの回（linux-stub）で回す。
   # **DB は使わない**（4 本とも、辿る画面は DB を読まない）。
   #
   # ＜MTLS のテスト用のクライアント証明書＞
@@ -535,7 +534,7 @@ jobs:
   #
   # ＜回す契機＞
   #   linux-crossdb と同じ（ワークフローの契機すべて。認証まわりの依存の更新を deps で捕まえるため）。
-  linux-sts:
+  linux-kck:
     needs: build
     # Windows の回が NG でも回す（出力が渡っていなければ、受け取りで落ちる）
     if: ${{ !cancelled() }}
@@ -551,7 +550,7 @@ jobs:
         with:
           dotnet-version: '10.0.x'
 
-      # 上の「Upload net10.0 samples for Linux STS E2E」が、CS の下の相対パスで置いたもの
+      # 上の「Upload net10.0 samples for Linux STS E2E」が、CS の下の相対パスで置いたもの（linux-kck・linux-stub が同じ成果物を使う）
       - name: Download net10.0 samples
         uses: actions/download-artifact@v8
         with:
@@ -615,6 +614,142 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: sts-logs-linux
+          name: kck-logs-linux
+          path: ${{ runner.temp }}/E2E
+          if-no-files-found: warn
+
+  # --------------------------------------------------------------------
+  # 認証（STS）の E2E の net10.0：IdP が MPAS のスタブ（linux-stub。#703）
+  # --------------------------------------------------------------------
+  # Sample4SpRp\E2E の 4 本を、IdP を MPAS のスタブ（-Idp Stub。既定）にして回す。Keycloak で回らない CLI の jwtbearer・FAPI2 の ros も、ここで回る。
+  # スタブは、MPAS の container/Stub を pwsh で起動する（MultiPurposeAuthSite#401）。MPAS の場所は環境変数 OT_MPAS_PATH。
+  # **DB は使わない**（スタブは組み込みのストアで動く）。
+  #
+  # ＜取ってくるもの（コミットで固定する。上げるときは、手元で回してから）＞
+  #   ・MultiPurposeAuthSite（MPAS_REF）… スタブの publish に、ソース一式が要る
+  #
+  # ＜テスト用の設定＞
+  #   スタブの設定の土台は、MPAS の雛形（_appsettings.json）。TestUserPWD が雛形のままの文字列なので、CI で生成した値に替えた写しを使う
+  #   （STUB_APPSETTINGS と、E2E の -StubAppSettings の両方に、その写しを渡す）。値はテスト専用で、秘密ではない。
+  linux-stub:
+    needs: build
+    # Windows の回が NG でも回す（出力が渡っていなければ、受け取りで落ちる）
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      MPAS_REPO: OpenTouryoProject/MultiPurposeAuthSite
+      MPAS_REF: 3e914592241ec10fdac35e6c5426e52d28777fe8
+      STUB_TEST_USER_PWD: 'Test-User-Pwd-1!'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Checkout MultiPurposeAuthSite
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ env.MPAS_REPO }}
+          ref: ${{ env.MPAS_REF }}
+          path: MultiPurposeAuthSite
+          persist-credentials: false
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Download net10.0 samples
+        uses: actions/download-artifact@v8
+        with:
+          name: linux-sts-input
+          path: root/programs/CS
+
+      # linux-kck と同じ（理由もそちら）。MPAS の 1_PublishStub.ps1 は、この開発用証明書を書き出す
+      - name: Trust the development certificate
+        shell: bash
+        run: |
+          rc=0
+          dotnet dev-certs https --trust || rc=$?
+          if [ "$rc" -ne 0 ] && [ "$rc" -ne 4 ]; then exit "$rc"; fi
+          trust="$HOME/.aspnet/dev-certs/trust"
+          ls -l "$trust"
+          if [ -z "$(ls -A "$trust" 2>/dev/null)" ]; then echo "::error::No certificate in $trust"; exit 1; fi
+          echo "SSL_CERT_DIR=$trust:/usr/lib/ssl/certs" >> "$GITHUB_ENV"
+
+      - name: Publish the stub (MPAS)
+        shell: pwsh
+        working-directory: MultiPurposeAuthSite/container/Stub
+        run: ./1_PublishStub.ps1
+
+      # 雛形（_appsettings.json）の TestUserPWD だけを、テスト用の値に替える
+      - name: Prepare the stub settings
+        shell: pwsh
+        run: |
+          $src = Join-Path $env:GITHUB_WORKSPACE 'MultiPurposeAuthSite/root/programs/MultiPurposeAuthSiteCore/MultiPurposeAuthSiteCore/_appsettings.json'
+          $dst = Join-Path $env:RUNNER_TEMP 'stub-appsettings.json'
+          $json = [IO.File]::ReadAllText($src)
+          if (-not $json.Contains('[password of TestUser]')) { throw "TestUserPWD の雛形の値が見つかりません : $src" }
+          [IO.File]::WriteAllText($dst, $json.Replace('[password of TestUser]', $env:STUB_TEST_USER_PWD))
+          "STUB_APPSETTINGS=$dst" >> $env:GITHUB_ENV
+          "OT_MPAS_PATH=$env:GITHUB_WORKSPACE/MultiPurposeAuthSite" >> $env:GITHUB_ENV
+
+      - name: Start the stub
+        id: stub
+        shell: pwsh
+        working-directory: root/programs/CS/Sample4SpRp/container/Stub
+        run: |
+          ./StubCompose.ps1 -Mtls
+          # 起動の完了を待つ（Discovery が 200 を返すまで。最大 3 分）
+          $ok = $false
+          for ($i = 0; $i -lt 36; $i++)
+          {
+              try
+              {
+                  $r = Invoke-WebRequest -Uri 'https://localhost:44310/.well-known/openid-configuration' -SkipCertificateCheck -TimeoutSec 5
+                  if ($r.StatusCode -eq 200) { $ok = $true; break }
+              }
+              catch { }
+              Start-Sleep -Seconds 5
+          }
+          if (-not $ok) { throw 'スタブが起動しませんでした（Discovery が 200 を返さない）' }
+
+      # 4 本は、どれかが落ちても残りを回す（結果を全部見るため）
+      - name: E2E FAPI 1.0 (SpRp_MVC)
+        if: ${{ !cancelled() && steps.stub.outcome == 'success' }}
+        shell: pwsh
+        working-directory: root/programs/CS/Sample4SpRp/E2E
+        run: ./MvcFapi1E2E.ps1 -StubAppSettings "$env:STUB_APPSETTINGS" -OutputDir "${{ runner.temp }}/E2E/fapi1"
+
+      - name: E2E FAPI 2.0 (SpRp_MVC)
+        if: ${{ !cancelled() && steps.stub.outcome == 'success' }}
+        shell: pwsh
+        working-directory: root/programs/CS/Sample4SpRp/E2E
+        run: ./MvcFapi2E2E.ps1 -Mtls -StubAppSettings "$env:STUB_APPSETTINGS" -OutputDir "${{ runner.temp }}/E2E/fapi2"
+
+      - name: E2E CLI login
+        if: ${{ !cancelled() && steps.stub.outcome == 'success' }}
+        shell: pwsh
+        working-directory: root/programs/CS/Sample4SpRp/E2E
+        run: ./CliLoginE2E.ps1 -StubAppSettings "$env:STUB_APPSETTINGS" -OutputDir "${{ runner.temp }}/E2E/cli"
+
+      - name: E2E external login (MVC_Sample)
+        if: ${{ !cancelled() && steps.stub.outcome == 'success' }}
+        shell: pwsh
+        working-directory: root/programs/CS/Sample4SpRp/E2E
+        run: ./ExternalLoginE2E.ps1 -Lang CS -StubAppSettings "$env:STUB_APPSETTINGS" -OutputDir "${{ runner.temp }}/E2E/external"
+
+      - name: Collect the stub log
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p "${{ runner.temp }}/E2E"
+          docker compose -f MultiPurposeAuthSite/container/Stub/docker-compose.yml logs --no-color > "${{ runner.temp }}/E2E/stub.log" 2>&1 || true
+
+      - name: Upload E2E logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: stub-logs-linux
           path: ${{ runner.temp }}/E2E
           if-no-files-found: warn

@@ -311,7 +311,7 @@ allow_rebase_merge   false   … 同上
 
 | ファイル | 役割 |
 |---|---|
-| [`workflows/build-windows.yml`](.github/workflows/build-windows.yml) | 検証 3 本（ビルド・単体テスト・疎通）を windows-latest で。ビルドの後に依存パッケージの脆弱性も見る（#681）。続けて、コンテナが要る検証の net10.0 の分（`-Linux`・クロス DB・SpRp の E2E）を ubuntu-latest のジョブ（`linux`・`linux-crossdb`・`linux-sts`）で回す（#703。[`BUILDING.md`](root/programs/BUILDING.md) 9 節） |
+| [`workflows/build-windows.yml`](.github/workflows/build-windows.yml) | 検証 3 本（ビルド・単体テスト・疎通）を windows-latest で。ビルドの後に依存パッケージの脆弱性も見る（#681）。続けて、コンテナが要る検証の net10.0 の分（`-Linux`・クロス DB・SpRp の E2E）を ubuntu-latest のジョブ（`linux`・`linux-crossdb`・`linux-kck`・`linux-stub`）で回す（#703。[`BUILDING.md`](root/programs/BUILDING.md) 9 節） |
 | [`workflows/build-windows-vb.yml`](.github/workflows/build-windows-vb.yml) | **VB 版**のビルドと疎通を windows-latest で（手動のみ） |
 | [`workflows/dependabot-retarget.yml`](.github/workflows/dependabot-retarget.yml) | Dependabot PR の向き先を `deps` へ変更 |
 | [`workflows/expectation-change.yml`](.github/workflows/expectation-change.yml) | PR のコミットに、トレーラーの無い期待値の変更が無いかを確かめる（#640。[`QUALITY.md`](QUALITY.md) 3 節の段 3） |

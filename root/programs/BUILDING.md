@@ -481,7 +481,7 @@ Dependabot が起こしたイベントでは `GITHUB_TOKEN` が既定で read-on
 |---|---|---|
 | `2_RunAllTests.ps1 -Linux` | `linux` | Golden の EncAndDecUtilCUI・NUnit の TestPublic |
 | `2_RunAllTests.ps1 -CrossDb` の net10.0 | `linux-crossdb` | NUnit の TestPublicDb を Oracle・MySQL・PostgreSQL で |
-| SpRp のサンプルの E2E（`Sample4SpRp\E2E`）の net10.0 | `linux-sts` | IdP（STS）は Keycloak。DB は使わない |
+| SpRp のサンプルの E2E（`Sample4SpRp\E2E`）の net10.0 | `linux-kck`・`linux-stub` | IdP（STS）は、`linux-kck` が Keycloak、`linux-stub` が MPAS のスタブ（Keycloak で回らない CLI の jwtbearer・FAPI2 の ros は、スタブの回で回る）。DB は使わない |
 | `2_RunAllTests.ps1 -Coverage` | × | NUnit の全部とクロス DB を 1 回の実行で回して合算する作りなので、ジョブに分けられない。手元で取る |
 
 **対象外は明示しておく。**
@@ -489,8 +489,7 @@ Dependabot が起こしたイベントでは `GITHUB_TOKEN` が既定で read-on
 - **GUI アプリケーション**（WinForms / WPF / 各ツールの画面）… `RELEASE.md` 4 節の手作業
 - **SQL Server 以外の DBMS への net48 での接続と、Golden の `TestDataAccess` のクロス DB** … Windows のジョブは `/Dap SQL` しか使わない
   （`TestSQLUtility` は 4 DBMS 分の SQL 生成を検証するが、**接続はしない**ので対象内）。net48 は Windows とコンテナが同じ機械に要るので、手元の `-CrossDb` で回す
-- **SpRp の E2E の net48・WebForms と、IdP を MPAS のスタブにした回** … 手元で回す
-  （スタブは Linux で起動する手段が無い。MultiPurposeAuthSite#401。Keycloak で回らない CLI の jwtbearer・FAPI2 の ros も手元のスタブで回す）
+- **SpRp の E2E の net48・WebForms** … 手元で回す（Windows とコンテナが同じ機械に要る）
 
 ### Linux のジョブ（#703）
 
@@ -510,12 +509,13 @@ Dependabot が起こしたイベントでは `GITHUB_TOKEN` が既定で read-on
 | ジョブ | 取るもの | 値 |
 |---|---|---|
 | `linux-crossdb` | LocalServicesOnDocker（DB の compose と `tools/Start-Services.ps1`） | `LSOD_REF` |
+| `linux-stub` | MultiPurposeAuthSite（スタブの publish にソース一式が要る。`develop` の HEAD の時点のコミット） | `MPAS_REF` |
 
-**MTLS のテスト用のクライアント証明書（`root/files/resource/X509/SHA256RSAClientCert.pfx`・`.cer`）は、このリポジトリのものを使う**（#705。以前は `linux-sts` が MPAS から取って置き換えていた）。
+**MTLS のテスト用のクライアント証明書（`root/files/resource/X509/SHA256RSAClientCert.pfx`・`.cer`）は、このリポジトリのものを使う**（#705。以前は CI が MPAS から取って置き換えていた）。
 MPAS（`root/files/resource/X509`）の現行のものと同じで、自己署名（`CN=MPAS Test Client`）・2126 年まで有効。
 **MPAS が作り直したら、`.pfx`・`.cer` を手で写す**（MPAS が正本。作り直す手順は同じフォルダの `GenClientCertByOpenSSL.bat`）。ずれたことを知らせる仕組みは置いていない。
 
-**`linux-sts` の HTTPS の信頼。** サンプル（Kestrel）と Keycloak は ASP.NET Core の開発用証明書で待ち受ける。
+**`linux-kck`・`linux-stub` の HTTPS の信頼。** サンプル（Kestrel）・Keycloak・MPAS のスタブは ASP.NET Core の開発用証明書で待ち受ける。
 `dotnet dev-certs https --trust` で信頼させ、`SSL_CERT_DIR` で .NET に見せる。
 **`--trust` は Linux では終了コード 4 で終わる**（ブラウザ（NSS）向けの登録だけが失敗する。.NET が使う OpenSSL 向けの `~/.aspnet/dev-certs/trust` には置かれる）。
 ワークフローは 4 では止めず、そのフォルダに証明書が無ければ止める。
