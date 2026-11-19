@@ -1034,12 +1034,13 @@ jobs:
               if ($LASTEXITCODE -ne 0) { throw "netsh http add sslcert failed for $port ($LASTEXITCODE)" }
           }
 
-      # 基盤と、サンプル（net48・WebForms。C#・VB）だけをビルドする（1_BuildAll.ps1 -Lang Both -Only）
+      # 基盤と、サンプル（net48・WebForms。C#・VB）だけをビルドする（1_BuildAll.ps1 -Lang Both -Only）。
+      # WebForms_Sample・MVC_Sample は、WS_sample\Build の WSIFType_sample.dll（WSSrv_sample・Framework_WS が作る）を参照するので、その 2 ステップも要る（run 44528868918）
       - name: Build the base and the web samples (net48)
         shell: pwsh
         working-directory: root/programs
         run: |
-          .\1_BuildAll.ps1 -Lang Both -OutputDir "${{ runner.temp }}\BuildLogs" -Only 'Clean (net48 基盤)', 'Clean files (net48 基盤)', 'NuGet (net48)', 'Business (net48)', 'Business.RichClient (net48)', 'Clean (core 基盤)', 'Clean files (core 基盤)', 'NuGet (netcore100)', 'Business (netcore100)', 'Business.RichClient (core)', 'CopyAssemblies', 'Clean (net48 サンプル)', 'Clean files (net48 サンプル)', 'WebApp_sample (net48)', 'VB : NuGet (net48, CS 側)', 'VB : Clean', 'VB : Clean files', 'VB : GetLibrariesFromCS', 'VB : Business (net48)', 'VB : Business.RichClient', 'VB : CopyAssemblies', 'VB : WebApp_sample'
+          .\1_BuildAll.ps1 -Lang Both -OutputDir "${{ runner.temp }}\BuildLogs" -Only 'Clean (net48 基盤)', 'Clean files (net48 基盤)', 'NuGet (net48)', 'Business (net48)', 'Business.RichClient (net48)', 'Clean (core 基盤)', 'Clean files (core 基盤)', 'NuGet (netcore100)', 'Business (netcore100)', 'Business.RichClient (core)', 'CopyAssemblies', 'Clean (net48 サンプル)', 'Clean files (net48 サンプル)', 'WSSrv_sample (net48)', 'Framework_WS (net48)', 'WebApp_sample (net48)', 'VB : NuGet (net48, CS 側)', 'VB : Clean', 'VB : Clean files', 'VB : GetLibrariesFromCS', 'VB : Business (net48)', 'VB : Business.RichClient', 'VB : CopyAssemblies', 'VB : WSSrv_sample', 'VB : Framework_WS', 'VB : WebApp_sample'
 
       - name: Start Keycloak (WSL2)
         id: kck
