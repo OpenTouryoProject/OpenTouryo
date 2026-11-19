@@ -14,10 +14,12 @@
 #   クロス DB のジョブ（linux-crossdb）が、TestPublicDb の net10.0 を Oracle・MySQL・PostgreSQL で回す
 #   （2_RunAllTests.ps1 -CrossDb の net10.0 の分。#703）。
 #   認証の E2E のジョブ（linux-kck・linux-stub）が、SpRp のサンプルの E2E（Sample4SpRp\E2E）の net10.0 を、IdP（STS）を Keycloak・MPAS のスタブにして回す（#703）。
+#   Windows ランナー＋WSL2 の Docker のジョブ（win-crossdb・win-sts）が、Windows でしか動かない net48 を回す（#712）。
+#     win-crossdb … TestPublicDb のクロス DB（net48・net10.0）。win-sts … 外部ログインの E2E の net48・WebForms（IdP は Keycloak）
 #
 # ＜対象外＞
 #   ・GUI アプリケーション（WinForms / WPF / 各ツールの画面）… RELEASE.md 4 節の手作業
-#   ・SpRp の E2E の net48・WebForms … 手元で回す（Windows とコンテナが同じ機械に要る）
+#   ・SpRp の E2E の net48・WebForms のうち、外部ログインの E2E（IdP は Keycloak）は win-sts が回す（#712）。MPAS のスタブの回と、CLI・FAPI の E2E の net48 は手元で回す
 #   ・Golden の TestDataAccess のクロス DB … 手元で回す（build は /Dap SQL のみを使う。TestSQLUtility は 4 DBMS の SQL 生成を検証するが、接続はしない）
 #   ・net48 の NUnit TestPublicDb のクロス DB は、win-crossdb（Windows ランナー＋WSL2 の Docker。#712）が回す
 #

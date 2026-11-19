@@ -59,7 +59,7 @@ cd root\programs
 - **CI（GitHub Actions）の Windows のジョブは、オプション無しの通常の実行だけ**を回す（windows-latest は Linux のコンテナを動かせない）。
   **`-Linux` と、`-CrossDb` の net10.0 の分は、Linux のジョブ（`linux`・`linux-crossdb`）が回す**（Windows でビルドした出力を受け取り、
   Linux の上で `2_RunAllTests.ps1 -Linux` / `-CrossDb` を直接回す。#703。[`BUILDING.md`](BUILDING.md) 9 節）。
-  `-CrossDb` の net48 と、カバレッジは手元で回す
+  `-CrossDb` の net48 は、Windows ランナー＋WSL2 のジョブ（`win-crossdb`。`-CrossDb -Wsl2`。#712）が回す。カバレッジは手元で回す
 
 ---
 
