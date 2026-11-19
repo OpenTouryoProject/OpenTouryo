@@ -52,6 +52,11 @@ on:
   pull_request:
     branches: [master]
   workflow_dispatch:
+    inputs:
+      probe_win_sts:
+        description: '#712 の実験（Windows ランナーで IIS Express と WSL2 の Keycloak）だけを回す（一時。実験が終わったら外す）'
+        type: boolean
+        default: false
   # 依存パッケージの脆弱性に、PR が無い間も気付くため（#681。下の「Check vulnerable packages」）。
   # 毎週月曜 09:00 JST（00:00 UTC）。schedule は既定のブランチ（develop）の版で動く。
   # 見つけたら、この実行は落ちる（失敗の通知で気付く）。通しも回るので、develop の健康診断を兼ねる。
@@ -63,6 +68,7 @@ permissions:
 
 jobs:
   build:
+    if: ${{ !inputs.probe_win_sts }}
     runs-on: windows-latest
     # ローカルの実測はビルド 5.8 分＋テスト 1.3 分。DB の導入と初期化を足して余裕を持たせる。
     timeout-minutes: 120
@@ -430,7 +436,7 @@ jobs:
   linux:
     needs: build
     # Windows の回が NG でも回す（出力が渡っていなければ、受け取りで落ちる）
-    if: ${{ !cancelled() }}
+    if: ${{ !cancelled() && !inputs.probe_win_sts }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -484,7 +490,7 @@ jobs:
   linux-crossdb:
     needs: build
     # Windows の回が NG でも回す（出力が渡っていなければ、受け取りで落ちる）
-    if: ${{ !cancelled() }}
+    if: ${{ !cancelled() && !inputs.probe_win_sts }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
     env:
@@ -551,7 +557,7 @@ jobs:
   linux-kck:
     needs: build
     # Windows の回が NG でも回す（出力が渡っていなければ、受け取りで落ちる）
-    if: ${{ !cancelled() }}
+    if: ${{ !cancelled() && !inputs.probe_win_sts }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
 
@@ -649,7 +655,7 @@ jobs:
   linux-stub:
     needs: build
     # Windows の回が NG でも回す（出力が渡っていなければ、受け取りで落ちる）
-    if: ${{ !cancelled() }}
+    if: ${{ !cancelled() && !inputs.probe_win_sts }}
     runs-on: ubuntu-latest
     timeout-minutes: 40
     env:
@@ -786,6 +792,7 @@ jobs:
   # **build とは別の Windows ランナーで、基盤だけをビルドして回す**（build が作った出力は渡さない。net48 の TestPublicDb は、csproj を --no-build で回すため）。
   # 実験の結果は #711・#712。WSL2 の VM のメモリは 7940MB で、SQL Server と Oracle を合わせて約 5GB（1 つずつ起動する）。
   win-crossdb:
+    if: ${{ !inputs.probe_win_sts }}
     runs-on: windows-latest
     timeout-minutes: 75
     env:
@@ -907,3 +914,171 @@ jobs:
             ${{ runner.temp }}/TestResults
             root/programs/CS/Frameworks/Tests/NUnit/TestResults/CrossDb/**
           if-no-files-found: warn
+
+  # --------------------------------------------------------------------
+  # #712 の実験（一時）：Windows ランナーで IIS Express（HTTPS）と、WSL2 の Keycloak が使えるか（win-sts の前）
+  # --------------------------------------------------------------------
+  # 手動で probe_win_sts を true にしたときだけ回る（ほかのジョブは回らない）。
+  # **実験が終わったら、このジョブと probe_win_sts の入力、ほかのジョブの `!inputs.probe_win_sts` を外す。**
+  #   ・aspnet_state を起動できるか
+  #   ・IIS Express の HTTPS（44300〜44399 の証明書の登録）が使えるか
+  #   ・開発用証明書を、Windows の信頼に入れられるか
+  #   ・Keycloak を WSL2 の Docker で起動して、Windows から https://localhost:44320 に届くか
+  probe-win-sts:
+    if: ${{ inputs.probe_win_sts }}
+    runs-on: windows-latest
+    timeout-minutes: 40
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: aspnet_state and IIS Express registrations
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          "--- aspnet_state before"
+          Get-Service aspnet_state | Format-Table Name, Status, StartType -AutoSize
+          try { Start-Service aspnet_state -ErrorAction Stop; "started" } catch { "start failed: $($_.Exception.Message)" }
+          Get-Service aspnet_state | Format-Table Name, Status, StartType -AutoSize
+          "--- netsh http sslcert (4433xx / 4430xx)"
+          netsh http show sslcert | Select-String -Pattern ':443[0-9][0-9]|IIS Express|Certificate Hash|Application ID' | Select-Object -First 30
+          "--- certificates (LocalMachine\My / CurrentUser\My)"
+          Get-ChildItem Cert:\LocalMachine\My, Cert:\CurrentUser\My | Select-Object PSParentPath, Subject, Thumbprint, NotAfter | Format-List
+          "--- iisexpress version"
+          (Get-Item "$env:ProgramFiles\IIS Express\iisexpress.exe").VersionInfo.FileVersion
+
+      - name: IIS Express over HTTPS (minimal site)
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          $site = Join-Path $env:RUNNER_TEMP 'site'
+          New-Item -ItemType Directory -Force $site | Out-Null
+          Set-Content -Path (Join-Path $site 'index.html') -Value 'hello iis express'
+          $iis = Join-Path $env:ProgramFiles 'IIS Express\iisexpress.exe'
+          $template = Join-Path $env:ProgramFiles 'IIS Express\config\templates\PersonalWebServer\applicationhost.config'
+          $xmlSite = '<site name="E2E" id="1" serverAutoStart="true"><application path="/" applicationPool="Clr4IntegratedAppPool"><virtualDirectory path="/" physicalPath="' + $site + '" /></application><bindings><binding protocol="https" bindingInformation="*:44333:localhost" /></bindings></site>'
+          $xml = [IO.File]::ReadAllText($template)
+          $xml = [regex]::Replace($xml, '<site name="WebSite1"[\s\S]*?</site>', $xmlSite.Replace('$', '$$'))
+          $config = Join-Path $env:RUNNER_TEMP 'applicationhost.config'
+          [IO.File]::WriteAllText($config, $xml, (New-Object Text.UTF8Encoding $false))
+          $log = Join-Path $env:RUNNER_TEMP 'iis.log'
+          $p = Start-Process $iis -ArgumentList "/config:`"$config`"", '/site:E2E', '/systray:false' -PassThru -WindowStyle Hidden -RedirectStandardOutput $log -RedirectStandardError "$log.err"
+          Start-Sleep -Seconds 10
+          "iisexpress exited: $($p.HasExited)"
+          foreach ($skip in $true, $false)
+          {
+              try
+              {
+                  if ($skip) { $r = Invoke-WebRequest -Uri 'https://localhost:44333/index.html' -SkipCertificateCheck -TimeoutSec 15 }
+                  else { $r = Invoke-WebRequest -Uri 'https://localhost:44333/index.html' -TimeoutSec 15 }
+                  "https 44333 (skip cert check = $skip) : $($r.StatusCode) $($r.Content.Trim())"
+              }
+              catch { "https 44333 (skip cert check = $skip) : NG $($_.Exception.Message)" }
+          }
+          "--- iis.log"
+          Get-Content $log, "$log.err" -ErrorAction SilentlyContinue | Select-Object -First 30
+          if (-not $p.HasExited) { $p.Kill() }
+
+      # 開発用証明書を作り、Windows の信頼（LocalMachine\Root）に入れる。dotnet dev-certs --trust は、Windows では確認のダイアログが出るので使わない
+      - name: Development certificate (create, export, trust)
+        shell: pwsh
+        continue-on-error: true
+        working-directory: root/programs/CS/Sample4SpRp/container/KCK
+        run: |
+          New-Item -ItemType Directory -Force cert | Out-Null
+          dotnet dev-certs https --export-path (Join-Path $PWD 'cert/localhost.pem') --format PEM --no-password
+          Get-ChildItem cert | Format-Table Name, Length -AutoSize
+          $cer = Join-Path $env:RUNNER_TEMP 'devcert.cer'
+          dotnet dev-certs https --export-path $cer --format Pfx --no-password
+          "exported: $(Test-Path $cer)"
+          $cert = New-Object Security.Cryptography.X509Certificates.X509Certificate2($cer)
+          "dev cert: $($cert.Subject) $($cert.Thumbprint)"
+          $store = New-Object Security.Cryptography.X509Certificates.X509Store('Root', 'LocalMachine')
+          $store.Open('ReadWrite')
+          $store.Add((New-Object Security.Cryptography.X509Certificates.X509Certificate2($cert.RawData)))
+          $store.Close()
+          "trusted in LocalMachine\Root: $((Get-ChildItem Cert:\LocalMachine\Root | Where-Object { $_.Thumbprint -eq $cert.Thumbprint }).Count -gt 0)"
+          # 公開の証明書（Keycloak のクライアント証明書の信頼先）を写す
+          Copy-Item (Join-Path $env:GITHUB_WORKSPACE 'root/files/resource/X509/SHA256RSAClientCert.cer') (Join-Path $PWD 'cert/mpas-test-client.pem') -Force
+
+      - name: Install WSL2 and Ubuntu
+        id: wsl
+        shell: pwsh
+        run: |
+          wsl --update --web-download
+          wsl --set-default-version 2
+          wsl --install -d Ubuntu-24.04 --no-launch --web-download
+          wsl --set-default Ubuntu-24.04
+          wsl -d Ubuntu-24.04 -u root -- bash -c "uname -r; nproc; free -m"
+
+      - name: Install Docker in WSL2
+        id: docker
+        if: ${{ steps.wsl.outcome == 'success' }}
+        timeout-minutes: 25
+        shell: pwsh
+        run: |
+          $script = @'
+          set -e
+          export DEBIAN_FRONTEND=noninteractive
+          printf '[boot]\nsystemd=true\n' > /etc/wsl.conf
+          APT='-o Acquire::ForceIPv4=true -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30'
+          apt-get $APT update
+          apt-get $APT install -y docker.io docker-compose-v2
+          systemctl enable docker || true
+          '@
+          [IO.File]::WriteAllText("$env:RUNNER_TEMP/docker-install.sh", $script.Replace("`r`n", "`n"))
+          $unix = (wsl -d Ubuntu-24.04 -u root -- wslpath -a ($env:RUNNER_TEMP -replace '\\','/')).Trim()
+          $done = $false
+          foreach ($attempt in 1, 2)
+          {
+              $p = Start-Process -FilePath wsl -ArgumentList @('-d','Ubuntu-24.04','-u','root','--','bash',"$unix/docker-install.sh") -PassThru -NoNewWindow
+              if ($p.WaitForExit(420000) -and $p.ExitCode -eq 0) { $done = $true; break }
+              "attempt $attempt failed (exited: $($p.HasExited))"
+              if (-not $p.HasExited) { try { $p.Kill($true) } catch { } }
+              wsl --shutdown
+              Start-Sleep -Seconds 5
+          }
+          if (-not $done) { throw 'docker install failed (2 attempts)' }
+          wsl --terminate Ubuntu-24.04
+          Start-Sleep -Seconds 5
+          $active = $false
+          for ($i = 0; $i -lt 20; $i++)
+          {
+              $s = (wsl -d Ubuntu-24.04 -u root -- bash -c "systemctl is-active docker" 2>$null)
+              "docker : $s"
+              if ($s -eq 'active') { $active = $true; break }
+              Start-Sleep -Seconds 3
+          }
+          if (-not $active) { throw 'docker did not start in WSL2' }
+
+      # KckCompose.ps1 は Windows の docker を呼ぶので、この実験では wsl 経由で docker compose を直接呼ぶ（WSL2 対応は ph2）
+      - name: Keycloak in WSL2, reachable from Windows
+        if: ${{ steps.docker.outcome == 'success' }}
+        shell: pwsh
+        continue-on-error: true
+        working-directory: root/programs/CS/Sample4SpRp/container/KCK
+        run: |
+          $compose = ((Resolve-Path 'docker-compose.yml').Path -replace '\\','/')
+          $unix = (wsl -d Ubuntu-24.04 -u root -- wslpath -a $compose).Trim()
+          "compose : $unix"
+          wsl -d Ubuntu-24.04 -u root -- docker compose -f $unix up -d
+          $ok = $false
+          for ($i = 0; $i -lt 60; $i++)
+          {
+              foreach ($skip in $true, $false)
+              {
+                  try
+                  {
+                      if ($skip) { $r = Invoke-WebRequest -Uri 'https://localhost:44320/realms/sprp/.well-known/openid-configuration' -SkipCertificateCheck -TimeoutSec 10 }
+                      else { $r = Invoke-WebRequest -Uri 'https://localhost:44320/realms/sprp/.well-known/openid-configuration' -TimeoutSec 10 }
+                      "keycloak discovery (skip cert check = $skip) : $($r.StatusCode) after $($i * 5) s"
+                      if (-not $skip) { $ok = $true }
+                  }
+                  catch { if ($i % 6 -eq 0) { "keycloak (skip cert check = $skip) : NG $($_.Exception.Message)" } }
+              }
+              if ($ok) { break }
+              Start-Sleep -Seconds 5
+          }
+          wsl -d Ubuntu-24.04 -u root -- bash -c "free -m; docker stats --no-stream --format '{{.Name}} {{.MemUsage}}'; docker logs --tail 15 sprp-kck-keycloak-1 2>&1"
+          wsl -d Ubuntu-24.04 -u root -- docker compose -f $unix down
