@@ -952,6 +952,8 @@ jobs:
         shell: pwsh
         continue-on-error: true
         run: |
+          "--- sslcert bindings for IPv6 and 44333/44334"
+          netsh http show sslcert | Select-String -Pattern '\[::\]|:44333|:44334' | Select-Object -First 10
           $site = Join-Path $env:RUNNER_TEMP 'site'
           New-Item -ItemType Directory -Force $site | Out-Null
           Set-Content -Path (Join-Path $site 'index.html') -Value 'hello iis express'
@@ -966,15 +968,18 @@ jobs:
           $p = Start-Process $iis -ArgumentList "/config:`"$config`"", '/site:E2E', '/systray:false' -PassThru -WindowStyle Hidden -RedirectStandardOutput $log -RedirectStandardError "$log.err"
           Start-Sleep -Seconds 10
           "iisexpress exited: $($p.HasExited)"
-          foreach ($skip in $true, $false)
+          "--- netstat 44333"
+          netstat -ano | Select-String ':44333'
+          "--- name resolution"
+          [Net.Dns]::GetHostAddresses('localhost') | ForEach-Object { $_.ToString() }
+          foreach ($hostname in 'localhost', '127.0.0.1', '[::1]')
           {
               try
               {
-                  if ($skip) { $r = Invoke-WebRequest -Uri 'https://localhost:44333/index.html' -SkipCertificateCheck -TimeoutSec 15 }
-                  else { $r = Invoke-WebRequest -Uri 'https://localhost:44333/index.html' -TimeoutSec 15 }
-                  "https 44333 (skip cert check = $skip) : $($r.StatusCode) $($r.Content.Trim())"
+                  $r = Invoke-WebRequest -Uri "https://${hostname}:44333/index.html" -Headers @{ Host = 'localhost:44333' } -SkipCertificateCheck -TimeoutSec 15
+                  "https://${hostname}:44333 : $($r.StatusCode) $($r.Content.Trim())"
               }
-              catch { "https 44333 (skip cert check = $skip) : NG $($_.Exception.Message)" }
+              catch { "https://${hostname}:44333 : NG $($_.Exception.Message) / $($_.Exception.InnerException.Message)" }
           }
           "--- iis.log"
           Get-Content $log, "$log.err" -ErrorAction SilentlyContinue | Select-Object -First 30
@@ -989,10 +994,10 @@ jobs:
           New-Item -ItemType Directory -Force cert | Out-Null
           dotnet dev-certs https --export-path (Join-Path $PWD 'cert/localhost.pem') --format PEM --no-password
           Get-ChildItem cert | Format-Table Name, Length -AutoSize
-          $cer = Join-Path $env:RUNNER_TEMP 'devcert.cer'
-          dotnet dev-certs https --export-path $cer --format Pfx --no-password
-          "exported: $(Test-Path $cer)"
-          $cert = New-Object Security.Cryptography.X509Certificates.X509Certificate2($cer)
+          $pfx = Join-Path $env:RUNNER_TEMP 'devcert.pfx'
+          dotnet dev-certs https --export-path $pfx --password 'ci-test' --format Pfx
+          "exported pfx: $(Test-Path $pfx)"
+          $cert = New-Object Security.Cryptography.X509Certificates.X509Certificate2($pfx, 'ci-test')
           "dev cert: $($cert.Subject) $($cert.Thumbprint)"
           $store = New-Object Security.Cryptography.X509Certificates.X509Store('Root', 'LocalMachine')
           $store.Open('ReadWrite')
@@ -1053,6 +1058,8 @@ jobs:
           if (-not $active) { throw 'docker did not start in WSL2' }
 
       # KckCompose.ps1 は Windows の docker を呼ぶので、この実験では wsl 経由で docker compose を直接呼ぶ（WSL2 対応は ph2）
+      # 1 回目（run 44514441245）：Keycloak が 5 分待っても上がらず、docker stats に出なかった。コンテナの状態（終了・OOM）とログを見て、
+      # 上がらなければ、メモリの上限を上げて（3g）もう一度試す
       - name: Keycloak in WSL2, reachable from Windows
         if: ${{ steps.docker.outcome == 'success' }}
         shell: pwsh
@@ -1062,23 +1069,48 @@ jobs:
           $compose = ((Resolve-Path 'docker-compose.yml').Path -replace '\\','/')
           $unix = (wsl -d Ubuntu-24.04 -u root -- wslpath -a $compose).Trim()
           "compose : $unix"
-          wsl -d Ubuntu-24.04 -u root -- docker compose -f $unix up -d
-          $ok = $false
-          for ($i = 0; $i -lt 60; $i++)
+          $override = Join-Path $env:RUNNER_TEMP 'kc-override.yml'
+          [IO.File]::WriteAllText($override, "services:`n  keycloak:`n    mem_limit: 3g`n")
+          $overrideUnix = (wsl -d Ubuntu-24.04 -u root -- wslpath -a ($override -replace '\\','/')).Trim()
+
+          function Wait-Keycloak([int]$seconds)
           {
-              foreach ($skip in $true, $false)
+              $sw = [Diagnostics.Stopwatch]::StartNew()
+              while ($sw.Elapsed.TotalSeconds -lt $seconds)
               {
-                  try
+                  foreach ($skip in $true, $false)
                   {
-                      if ($skip) { $r = Invoke-WebRequest -Uri 'https://localhost:44320/realms/sprp/.well-known/openid-configuration' -SkipCertificateCheck -TimeoutSec 10 }
-                      else { $r = Invoke-WebRequest -Uri 'https://localhost:44320/realms/sprp/.well-known/openid-configuration' -TimeoutSec 10 }
-                      "keycloak discovery (skip cert check = $skip) : $($r.StatusCode) after $($i * 5) s"
-                      if (-not $skip) { $ok = $true }
+                      try
+                      {
+                          if ($skip) { $r = Invoke-WebRequest -Uri 'https://localhost:44320/realms/sprp/.well-known/openid-configuration' -SkipCertificateCheck -TimeoutSec 10 }
+                          else { $r = Invoke-WebRequest -Uri 'https://localhost:44320/realms/sprp/.well-known/openid-configuration' -TimeoutSec 10 }
+                          "keycloak discovery (skip cert check = $skip) : $($r.StatusCode) after $([int]$sw.Elapsed.TotalSeconds) s"
+                          if (-not $skip) { return $true }
+                      }
+                      catch { }
                   }
-                  catch { if ($i % 6 -eq 0) { "keycloak (skip cert check = $skip) : NG $($_.Exception.Message)" } }
+                  Start-Sleep -Seconds 5
               }
-              if ($ok) { break }
-              Start-Sleep -Seconds 5
+              return $false
           }
-          wsl -d Ubuntu-24.04 -u root -- bash -c "free -m; docker stats --no-stream --format '{{.Name}} {{.MemUsage}}'; docker logs --tail 15 sprp-kck-keycloak-1 2>&1"
+
+          function Show-State
+          {
+              wsl -d Ubuntu-24.04 -u root -- bash -c "free -m; docker ps -a --format '{{.Names}} {{.Status}}'; docker inspect -f 'oom={{.State.OOMKilled}} exit={{.State.ExitCode}} running={{.State.Running}}' sprp-kck-keycloak-1; docker stats --no-stream --format '{{.Name}} {{.MemUsage}} {{.CPUPerc}}'; docker logs --tail 25 sprp-kck-keycloak-1 2>&1; dmesg | tail -5"
+          }
+
+          "=== attempt 1 : mem_limit 1g (as in the repository)"
+          wsl -d Ubuntu-24.04 -u root -- docker compose -f $unix up -d
+          $ok = Wait-Keycloak 150
+          "attempt 1 result : $ok"
+          Show-State
           wsl -d Ubuntu-24.04 -u root -- docker compose -f $unix down
+          if (-not $ok)
+          {
+              "=== attempt 2 : mem_limit 3g"
+              wsl -d Ubuntu-24.04 -u root -- docker compose -f $unix -f $overrideUnix up -d
+              $ok = Wait-Keycloak 240
+              "attempt 2 result : $ok"
+              Show-State
+              wsl -d Ubuntu-24.04 -u root -- docker compose -f $unix -f $overrideUnix down
+          }
