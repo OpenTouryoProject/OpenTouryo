@@ -28,6 +28,7 @@
 //*  2026/10/22  玄人 幸道         設定（JwkSetUri / SpRp_DiscoveryUri / SpRp_Isser）を読む版を追加
 //*  2026/11/06  玄人 幸道         remarks の設定キーを、改名後の名前（SpRp_JwkSetUri・SpRp_Issuer）にした（#666）
 //*  2026/11/20  玄人 幸道         jwks_uri などを取りに行く HttpClient を差し替える HttpClient プロパティを追加（#707）
+//*  2026/11/20  玄人 幸道         同じ URL の取得を同時に 1 本にまとめた（重なった要求は完了を待つ。#686）
 //**********************************************************************************
 
 using System;
@@ -64,7 +65,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// そこでキャッシュを読むだけにして、足りなければ背景で補充する（その 1 本は断り、次で通す）。
     ///
     /// **取得は外から起こせる**（kid を偽った JWT を並べる）ので、
-    /// 同じ URL の取得は MinRefetchInterval に 1 回まで、同時に 1 本までに抑える。
+    /// 同じ URL の取得は MinRefetchInterval に 1 回まで、同時に 1 本までに抑える
+    /// （GetJwkAsync・GetJwkByDiscoveryAsync・RefillInBackground。
+    /// 取得中に来た要求は、重ねて取りに行かず、その取得の完了を待ってキャッシュを引く。#686）。
+    /// WarmUpAsync は、外から起こせない経路なので、取得中でも自分で取りに行く（入れ替えた直後の鍵を取りこぼさないため）。
     ///
     /// 引けなければ null（空）を返し、例外にしない（呼び出し側が別の手段に倒せるように）。
     /// 返す JWK は複製であり、キャッシュを書き換えない。
@@ -87,8 +91,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>取得した JWK Set（鍵は JWK Set の URL、または discovery の URL）</summary>
         private static readonly Dictionary<string, Entry> _cache = new Dictionary<string, Entry>();
 
-        /// <summary>取得中の URL</summary>
-        private static readonly HashSet<string> _fetching = new HashSet<string>();
+        /// <summary>取得中の URL と、その取得の完了を待つ Task（#686）</summary>
+        private static readonly Dictionary<string, Task> _fetching = new Dictionary<string, Task>();
 
         /// <summary>_cache / _fetching の排他</summary>
         private static readonly object _lock = new object();
@@ -179,6 +183,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <remarks>
         /// 自由に利用できる。
         /// まずキャッシュから引き、無ければ（下限を過ぎていれば）取り直す（鍵のロールオーバー）。
+        /// 同じ URL を取得中なら、重ねて取りに行かず、その取得の完了を待ってから引く（#686）。
         /// discovery を読まないので、issuer の照合は無い。信頼の根拠は、この URL を設定した人である。
         /// </remarks>
         public static async Task<JObject> GetJwkAsync(string jwkSetUrl, string kid)
@@ -192,7 +197,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             if (jwk == null && canRefetch)
             {
-                await RemoteJwkSetStore.FetchJwkSetAsync(jwkSetUrl).ConfigureAwait(false);
+                await RemoteJwkSetStore.FetchOnceAsync(
+                    jwkSetUrl, () => RemoteJwkSetStore.FetchJwkSetAsync(jwkSetUrl)).ConfigureAwait(false);
                 jwk = RemoteJwkSetStore.PickOne(jwkSetUrl, kid, out bool _);
             }
 
@@ -223,17 +229,22 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             if (jwk == null && canRefetch)
             {
-                string jwksUri = await RemoteJwkSetStore.ResolveJwksUriAsync(
-                    discoveryUrl, expectedIssuer).ConfigureAwait(false);
-
-                if (string.IsNullOrEmpty(jwksUri))
+                // discovery の取得から jwks_uri の取得・キャッシュまでを、1 本にまとめる（#686）。
+                // 発行者が違う・読めないときは、Store(null) で時刻だけ進め、PickOne が null を返す（従来と同じ結果）。
+                await RemoteJwkSetStore.FetchOnceAsync(discoveryUrl, async () =>
                 {
-                    RemoteJwkSetStore.Store(discoveryUrl, null);
-                    return null;
-                }
+                    string jwksUri = await RemoteJwkSetStore.ResolveJwksUriAsync(
+                        discoveryUrl, expectedIssuer).ConfigureAwait(false);
 
-                JObject jwkSet = await RemoteJwkSetStore.GetJsonAsync(jwksUri).ConfigureAwait(false);
-                RemoteJwkSetStore.Store(discoveryUrl, jwkSet);
+                    if (string.IsNullOrEmpty(jwksUri))
+                    {
+                        RemoteJwkSetStore.Store(discoveryUrl, null);
+                        return;
+                    }
+
+                    JObject jwkSet = await RemoteJwkSetStore.GetJsonAsync(jwksUri).ConfigureAwait(false);
+                    RemoteJwkSetStore.Store(discoveryUrl, jwkSet);
+                }).ConfigureAwait(false);
 
                 jwk = RemoteJwkSetStore.PickOne(discoveryUrl, kid, out bool _);
             }
@@ -273,6 +284,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// クライアントの登録のときなど、**待てて、かつ外から自由に起こせない経路**で使う
         /// （鍵を入れ替えた相手が、その場で反映できる）。
         /// 外から起こせる経路では、下限を見る GetJwkAsync / RefillInBackground を使うこと。
+        /// **取得中かどうかは見ない**（取得中でも、自分で取りに行く）。取得中の取得は、鍵を入れ替える前に始まっていて、
+        /// 古い鍵を受け取りうる。この口は、入れ替えた相手の新しい鍵を、その場で反映するためのものである（#686 で、この扱いを残した）。
         /// </remarks>
         public static async Task<bool> WarmUpAsync(string jwkSetUrl)
         {
@@ -382,9 +395,11 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 return;
             }
 
+            TaskCompletionSource<bool> owned;
+
             lock (RemoteJwkSetStore._lock)
             {
-                if (RemoteJwkSetStore._fetching.Contains(jwkSetUrl))
+                if (RemoteJwkSetStore._fetching.ContainsKey(jwkSetUrl))
                 {
                     return;
                 }
@@ -395,21 +410,20 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     return;
                 }
 
-                RemoteJwkSetStore._fetching.Add(jwkSetUrl);
+                // 取得中として、ここで（ロックの中で）登録する。Task.Run の始まりを待たないので、続けて呼ばれても重ならない。
+                owned = RemoteJwkSetStore.RegisterFetchLocked(jwkSetUrl);
             }
 
             Task.Run(async () =>
             {
                 try
                 {
-                    await RemoteJwkSetStore.FetchJwkSetAsync(jwkSetUrl).ConfigureAwait(false);
+                    await RemoteJwkSetStore.RunFetchAsync(
+                        jwkSetUrl, () => RemoteJwkSetStore.FetchJwkSetAsync(jwkSetUrl), owned).ConfigureAwait(false);
                 }
-                finally
+                catch (Exception ex)
                 {
-                    lock (RemoteJwkSetStore._lock)
-                    {
-                        RemoteJwkSetStore._fetching.Remove(jwkSetUrl);
-                    }
+                    Debug.WriteLine("RemoteJwkSetStore: " + ex.GetType().Name);
                 }
             });
         }
@@ -468,6 +482,65 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             List<JObject> jwks = RemoteJwkSetStore.PickJwksFromCache(key, kid, 1);
             return (jwks.Count == 0) ? null : jwks[0];
+        }
+
+        /// <summary>取得中として登録する（_lock を持った状態で呼ぶ）</summary>
+        /// <param name="key">string（キャッシュの鍵）</param>
+        /// <returns>取得を終えたときに完了させる TaskCompletionSource（呼んだ側が持ち主）</returns>
+        private static TaskCompletionSource<bool> RegisterFetchLocked(string key)
+        {
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>(
+                TaskCreationOptions.RunContinuationsAsynchronously);
+
+            RemoteJwkSetStore._fetching[key] = tcs.Task;
+            return tcs;
+        }
+
+        /// <summary>同じ URL の取得を、同時に 1 本にまとめる（#686）</summary>
+        /// <param name="key">string（キャッシュの鍵）</param>
+        /// <param name="fetch">Func&lt;Task&gt;（取得してキャッシュへ入れる処理）</param>
+        /// <returns>
+        /// 取得中でなければ、取得を行う Task（例外はそのまま伝わる）。
+        /// 取得中なら、その取得の完了を待つ Task（取得が失敗しても正常に完了する。結果はキャッシュを引いて確かめる）
+        /// </returns>
+        private static Task FetchOnceAsync(string key, Func<Task> fetch)
+        {
+            TaskCompletionSource<bool> owned;
+
+            lock (RemoteJwkSetStore._lock)
+            {
+                if (RemoteJwkSetStore._fetching.TryGetValue(key, out Task running))
+                {
+                    return running;
+                }
+
+                owned = RemoteJwkSetStore.RegisterFetchLocked(key);
+            }
+
+            return RemoteJwkSetStore.RunFetchAsync(key, fetch, owned);
+        }
+
+        /// <summary>取得を行い、終えたら取得中の印を外して、待っている側を起こす</summary>
+        /// <param name="key">string（キャッシュの鍵）</param>
+        /// <param name="fetch">Func&lt;Task&gt;</param>
+        /// <param name="owned">TaskCompletionSource&lt;bool&gt;（RegisterFetchLocked の戻り値）</param>
+        /// <returns>Task</returns>
+        /// <remarks>失敗しても、必ず印を外して完了させる（待っている側を止めない）。</remarks>
+        private static async Task RunFetchAsync(string key, Func<Task> fetch, TaskCompletionSource<bool> owned)
+        {
+            try
+            {
+                await fetch().ConfigureAwait(false);
+            }
+            finally
+            {
+                lock (RemoteJwkSetStore._lock)
+                {
+                    RemoteJwkSetStore._fetching.Remove(key);
+                }
+
+                owned.TrySetResult(true);
+            }
         }
 
         /// <summary>JWK Set を取ってキャッシュする</summary>
