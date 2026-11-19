@@ -876,6 +876,21 @@ jobs:
       #   起動は pwsh（LocalServicesOnDocker の WSL2 版は、Windows PowerShell 5.1 では native の stderr で止まる。run 44482175965）、接続の確認は
       #   Windows PowerShell 5.1（.NET Framework の SqlClient。TestPublicDb の net48 と同じ）。原因が分かって直したら、この 2 ステップを外す。
       #   **5.1 の run: の中は ASCII だけ**（BOM 無しの一時ファイルを Shift_JIS で読むため）。
+      # **SQL Server を、Windows のこの機械のアドレス（NIC）でも受けられるようにする**（run 44492153200 の診断）。
+      #   SqlClient（.NET Framework）は、Data Source=localhost（と . と (local)）を「この機械」として、**ループバックではなく NIC のアドレスへ**つなぐ。
+      #   WSL2 の Docker の公開ポートは、Windows ではループバック（127.0.0.1・::1）にだけ転送される（wslrelay）ので、localhost は拒否され、
+      #   127.0.0.1・tcp:[::1],1433 は通る。手元（Rancher Desktop など）では、公開ポートが全アドレスで待ち受けるので、localhost が通る。
+      #   テストの構成は Data Source=localhost のまま（build と同じ値を保つため）、NIC のアドレスの 1433 を、ループバックの 1433 へ転送する。
+      - name: Forward the NIC address to WSL2 for SQL Server
+        shell: pwsh
+        run: |
+          $ip = ([Net.Dns]::GetHostAddresses($env:COMPUTERNAME) | Where-Object { $_.AddressFamily -eq 'InterNetwork' } | Select-Object -First 1).IPAddressToString
+          "NIC address : $ip"
+          netsh interface portproxy add v4tov4 listenaddress=$ip listenport=1433 connectaddress=127.0.0.1 connectport=1433
+          if ($LASTEXITCODE -ne 0) { throw "netsh portproxy failed ($LASTEXITCODE)" }
+          New-NetFirewallRule -DisplayName 'sqlserver-wsl2' -Direction Inbound -Protocol TCP -LocalPort 1433 -Action Allow | Out-Null
+          netsh interface portproxy show all
+
       - name: Start SQL Server for the diagnosis (temporary)
         shell: pwsh
         continue-on-error: true
@@ -916,8 +931,8 @@ jobs:
           Get-Content "$env:SystemRoot\System32\drivers\etc\hosts" | Select-String -NotMatch '^\s*#'
           "--- name resolution"
           [Net.Dns]::GetHostAddresses('localhost') | ForEach-Object { $_.ToString() }
-          "--- SqlClient (3 rounds, 10 s apart)"
-          foreach ($round in 1, 2, 3)
+          "--- SqlClient (1 round)"
+          foreach ($round in 1)
           {
               foreach ($ds in 'localhost', 'tcp:localhost,1433', 'tcp:127.0.0.1,1433', '127.0.0.1', '.', '(local)', 'tcp:[::1],1433')
               {
