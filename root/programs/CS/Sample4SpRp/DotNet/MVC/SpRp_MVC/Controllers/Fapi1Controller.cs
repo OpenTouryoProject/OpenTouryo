@@ -27,6 +27,7 @@
 //*  2026/11/07  玄人 幸道         oauth2・oidc は private_key_jwt に PKCE を併せた（GetAccessTokenByCodeWithPkceAsync。#670）
 //*  2026/11/07  玄人 幸道         Start は、照合した後に入力の文字列ではなく定数を使う（code scanning #59。振る舞いは変えない）
 //*  2026/11/09  玄人 幸道         補助（client_assertion・JSON・クエリ）を Fapi2Controller と共有する（internal に。振る舞いは変えない。#668 の追加）
+//*  2026/11/19  玄人 幸道         client_assertion・Request Object の署名を PS256 にした（MPAS の FAPI の登録は PS256・ES256 に限る。#709）
 //**********************************************************************************
 
 using System;
@@ -42,6 +43,7 @@ using Newtonsoft.Json.Linq;
 
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Public.Security;
+using Touryo.Infrastructure.Public.Security.Jwt;
 using Touryo.Infrastructure.Public.Security.Pwd;
 using Touryo.Infrastructure.Public.Util;
 
@@ -389,6 +391,8 @@ namespace SpRp_MVC.Controllers
         /// <returns>署名付き JWT</returns>
         /// <remarks>
         /// **鍵は SpRp_RsaPfxFilePath（クライアントの秘密鍵）。** IdP には、その公開鍵（JWK）を登録してある。
+        /// **署名の alg は PS256**（RSASSA-PSS。FAPI の登録は、client_assertion の署名を PS256 か ES256 に限る。FAPI 2.0 Security Profile §5.4.1。#709）。
+        /// 同じ RSA の鍵で、PS256 の署名ができる。
         /// **有効期間は短くする**（使い回されても、すぐ使えなくなるように）。
         /// </remarks>
         internal static string CreateClientAssertion(string clientId, string aud)
@@ -398,7 +402,7 @@ namespace SpRp_MVC.Controllers
 
             RSAParameters rsa = ((RSA)dsX509.AsymmetricAlgorithm).ExportParameters(true);
 
-            return JwtAssertion.CreateByRsa(clientId, aud, TimeSpan.FromMinutes(1), "", rsa);
+            return JwtAssertion.CreateByRsa(clientId, aud, TimeSpan.FromMinutes(1), "", rsa, JwtConst.PS256);
         }
 
         /// <summary>JSON を読む（読めなければ null）</summary>

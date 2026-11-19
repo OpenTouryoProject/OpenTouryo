@@ -44,6 +44,7 @@
 //*  2026/11/06  玄人 幸道         remarks に、登録どおりの鍵の型だけを渡すことを書いた（#664 のレビューの指摘 2）
 //*  2026/11/14  玄人 幸道         aud を唯一の値に限る根拠を、改訂案（draft-ietf-oauth-rfc7523bis）から、発行された RFC 10070 4 に書き換えた。
 //*                                振る舞いは変えていない（issuer を含む、要素 2 つ以上の配列の aud は、唯一の値ではないので受けない。#697）
+//*  2026/11/19  玄人 幸道         CreateByRsa に、署名の alg（RS* / PS*）を選べるオーバーロードを追加（FAPI の登録は PS256・ES256 に限る。#709）
 //**********************************************************************************
 
 using System;
@@ -108,6 +109,32 @@ namespace Touryo.Infrastructure.Framework.Authentication
         public static string CreateByRsa(
             string iss, string aud, TimeSpan forExp, string scopes, RSAParameters rsaPrivateKey)
         {
+            return JwtAssertion.CreateByRsa(iss, aud, forExp, scopes, rsaPrivateKey, JwtConst.RS256);
+        }
+
+        /// <summary>CreateByRsa（署名の alg を選ぶ）</summary>
+        /// <param name="iss">client_id</param>
+        /// <param name="aud">Token2 EndPointのuri</param>
+        /// <param name="forExp">DateTimeOffset</param>
+        /// <param name="scopes">scopes</param>
+        /// <param name="rsaPrivateKey">RSAParameters秘密鍵</param>
+        /// <param name="alg">署名の alg（JwtConst の RS256・RS384・RS512・PS256・PS384・PS512）</param>
+        /// <returns>JwtAssertion</returns>
+        /// <remarks>
+        /// - **署名の alg 以外は、alg を受けない版と同じ**。alg に JwtConst.RS256 を渡せば、その版と同じ assertion ができる（既存の版は変えていない）
+        /// - **FAPI の登録は、client_assertion の署名を PS256 か ES256 に限る**（FAPI 2.0 Security Profile 5.4.1）。
+        ///   RSA の鍵なら、JwtConst.PS256（RSASSA-PSS using SHA-256。RFC 7518 3.5）を渡す。同じ RSA の鍵で、RS256 と PS256 を使い分けられる
+        /// - **alg が RSA の alg（RS* / PS*）でなければ ArgumentException**（null・空・ES256・HS256 など。黙って RS256 にしない）
+        /// </remarks>
+        public static string CreateByRsa(
+            string iss, string aud, TimeSpan forExp, string scopes, RSAParameters rsaPrivateKey, string alg)
+        {
+            JWS jws = JwsFactory.CreateFromRsaParameters(alg, rsaPrivateKey);
+            if (jws == null)
+            {
+                throw new ArgumentException("The alg must be an RSA alg (RS256, RS384, RS512, PS256, PS384 or PS512).", "alg");
+            }
+
             string json = "";
             //string jws = "";
 
@@ -131,8 +158,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             #region JWT化
 
-            JWS_RS256_Param jwtRS256 = new JWS_RS256_Param(rsaPrivateKey);
-            return jwtRS256.Create(json);
+            return jws.Create(json);
 
             #endregion
         }

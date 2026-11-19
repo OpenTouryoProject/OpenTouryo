@@ -32,11 +32,13 @@
 //*  2026/11/05  玄人 幸道         aud を唯一の値に限ったことのテストを足した（#654 のレビューの指摘 1）
 //*  2026/11/06  玄人 幸道         検証鍵（JWS）を受ける Verify のテストを追加（#664）
 //*  2026/11/14  玄人 幸道         aud の根拠を、改訂案から発行された RFC 10070 4 に書き換え、issuer を含む配列を断るケースを足した（#697）
+//*  2026/11/19  玄人 幸道         署名の alg（RS* / PS*）を選べる CreateByRsa のテストを追加（#709）
 //**********************************************************************************
 
 using System;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
+using System.Text;
 
 using Newtonsoft.Json.Linq;
 
@@ -46,6 +48,7 @@ using TestCommon;
 
 using Touryo.Infrastructure.Framework.Authentication;
 using Touryo.Infrastructure.Public.Security.Jwt;
+using Touryo.Infrastructure.Public.Str;
 
 // iss・aud を受けない Verify・VerifyByRsa・VerifyByECDsa は Obsolete（#654）だが、利用者が使い続ける版なので、振る舞いを確かめ続ける。
 #pragma warning disable CS0618
@@ -529,6 +532,91 @@ namespace TestFramework.Authentication
             Assert.Throws<ArgumentNullException>(() => JwtAssertion.Verify(ps256, Iss, auds, out sub, out scopes, out jobj, (JWS)null), "jws が null");
             Assert.Throws<ArgumentNullException>(() => JwtAssertion.Verify(ps256, null, auds, out sub, out scopes, out jobj, new JWS_PS256_Param(pub)),
                 "期待する iss が null");
+        }
+
+        #endregion
+
+        #region 署名の alg を選ぶ CreateByRsa（#709）
+
+        /// <summary>
+        /// 署名の alg を選ぶ CreateByRsa：RS* ・PS* で署名でき、ヘッダの alg がそれになる。
+        /// 同じ RSA の鍵で、alg ごとの検証鍵（JWS）だけが通り、別の alg の検証鍵では通らない。
+        /// 作る assertion の iss・sub・scope は、alg を受けない版と同じ。PS256 は .NET の RSA（RSASSA-PSS）でも検証できる。
+        /// </summary>
+        [Test]
+        [Basis("RFC 7518 3.5（PS256 は RSASSA-PSS using SHA-256 and MGF1 with SHA-256）")]
+        [Basis("RFC 7515 4.1.1（ヘッダの alg は署名の alg）")]
+        [Basis("RFC 7523 3 の 1・2・3（iss・sub・aud を持つ）")]
+        [Basis("別実装：.NET の RSA.VerifyData（RSASignaturePadding.Pss）で PS256 の署名を検証できる")]
+        [Basis("#709")]
+        public void CreateByRsa_Alg()
+        {
+            using (RSA rsa = RSA.Create(2048))
+            {
+                RSAParameters priv = rsa.ExportParameters(true);
+                RSAParameters pub = rsa.ExportParameters(false);
+                string[] auds = new string[] { Aud };
+
+                foreach (string alg in new string[] {
+                    JwtConst.RS256, JwtConst.RS384, JwtConst.RS512, JwtConst.PS256, JwtConst.PS384, JwtConst.PS512 })
+                {
+                    string jwt = JwtAssertion.CreateByRsa(Iss, Aud, TimeSpan.FromMinutes(5), Scopes, priv, alg);
+
+                    string[] parts = jwt.Split('.');
+                    JObject header = JObject.Parse(Encoding.UTF8.GetString(CustomEncode.FromBase64UrlString(parts[0])));
+                    Assert.That((string)header["alg"], Is.EqualTo(alg), alg + "：ヘッダの alg");
+
+                    string sub, scopes; JObject jobj;
+                    Assert.That(JwtAssertion.Verify(jwt, Iss, auds, out sub, out scopes, out jobj,
+                        JwsFactory.CreateFromRsaParameters(alg, pub)), Is.True, alg + "：同じ alg の検証鍵");
+                    Assert.That(sub, Is.EqualTo(Iss));
+                    Assert.That(scopes, Is.EqualTo(Scopes));
+                    Assert.That((string)jobj[OAuth2AndOIDCConst.iss], Is.EqualTo(Iss));
+
+                    string otherAlg = (alg == JwtConst.PS256) ? JwtConst.RS256 : JwtConst.PS256;
+                    Assert.That(JwtAssertion.Verify(jwt, Iss, auds, out sub, out scopes, out jobj,
+                        JwsFactory.CreateFromRsaParameters(otherAlg, pub)), Is.False, alg + "：別の alg の検証鍵（" + otherAlg + "）");
+                }
+
+                // PS256 の署名を、.NET の RSA（別実装）で検証する
+                string ps = JwtAssertion.CreateByRsa(Iss, Aud, TimeSpan.FromMinutes(5), Scopes, priv, JwtConst.PS256);
+                string[] p = ps.Split('.');
+                Assert.That(rsa.VerifyData(Encoding.ASCII.GetBytes(p[0] + "." + p[1]),
+                    CustomEncode.FromBase64UrlString(p[2]), HashAlgorithmName.SHA256, RSASignaturePadding.Pss), Is.True,
+                    ".NET の RSA（PSS）で検証できる");
+            }
+        }
+
+        /// <summary>
+        /// 署名の alg を選ぶ CreateByRsa：alg に RS256 を渡した版は、alg を受けない版と同じ（ヘッダが同じで、同じ検証で通る）。
+        /// RSA の alg でなければ ArgumentException（黙って RS256 にしない）。
+        /// </summary>
+        [Test]
+        [Basis("設計：JwtAssertion.CreateByRsa（alg を選ぶ版）の remarks（RS256 は alg を受けない版と同じ。RSA の alg でなければ ArgumentException）")]
+        [Basis("#709")]
+        public void CreateByRsa_Alg_Rs256_SameAsDefault_And_InvalidAlg()
+        {
+            using (RSA rsa = RSA.Create(2048))
+            {
+                RSAParameters priv = rsa.ExportParameters(true);
+
+                string withAlg = JwtAssertion.CreateByRsa(Iss, Aud, TimeSpan.FromMinutes(5), Scopes, priv, JwtConst.RS256);
+                string withoutAlg = JwtAssertion.CreateByRsa(Iss, Aud, TimeSpan.FromMinutes(5), Scopes, priv);
+
+                Assert.That(withAlg.Split('.')[0], Is.EqualTo(withoutAlg.Split('.')[0]), "ヘッダが同じ");
+
+                string iss, aud, scopes; JObject jobj;
+                Assert.That(JwtAssertion.VerifyByRsa(withAlg, out iss, out aud, out scopes, out jobj, rsa.ExportParameters(false)),
+                    Is.True, "alg を受けない版の検証（RS256）で通る");
+
+                foreach (string bad in new string[] { null, "", JwtConst.ES256, JwtConst.HS256, "none" })
+                {
+                    ArgumentException ex = Assert.Throws<ArgumentException>(
+                        () => JwtAssertion.CreateByRsa(Iss, Aud, TimeSpan.FromMinutes(5), Scopes, priv, bad),
+                        "alg = " + (bad ?? "null"));
+                    Assert.That(ex.ParamName, Is.EqualTo("alg"));
+                }
+            }
         }
 
         #endregion
