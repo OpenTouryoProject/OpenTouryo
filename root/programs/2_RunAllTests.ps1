@@ -111,6 +111,11 @@
     **省けば、環境変数 OT_LSOD_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**（root\files\tools\PowerShell\RepoPaths\RepoPath.ps1。#652）。
     **docker コマンドが使えれば Rancher Desktop 版（*.ps1）、使えなければ WSL2 版（*_wsl2.ps1）を使う。**
     スクリプトは tools\ の下を先に探し、無ければ直下を探す（LocalServicesOnDocker の 331bba5 で tools\ に移った。#704）。
+.PARAMETER Wsl2
+    LocalServicesOnDocker を、**WSL2 版（*_wsl2.ps1）で動かす**（-CrossDb / -Coverage で使う。#712）。
+    **付けなければ、docker コマンドが使えれば Rancher Desktop 版、使えなければ WSL2 版**（上の -LocalServicesDir）。
+    **Windows に docker コマンドが在っても、WSL2 の Docker を使いたいとき**に付ける
+    （GitHub Actions の windows-latest は Windows コンテナ用の docker を持つので、自動の判定では Rancher Desktop 版を選んでしまう）。
 .PARAMETER Linux
     Windows でのビルドとテストの後に、**net10.0 の出力をそのまま Linux のコンテナで回す**（#632）。
     対象は EncAndDecUtilCUI（期待値は ResultCore100OnLinux.txt）と NUnit の TestPublic。
@@ -188,6 +193,7 @@
      2026/11/17  玄人 幸道         Linux の上では、-Linux の対象を docker を使わずに直接回すようにした（#703）
      2026/11/17  玄人 幸道         LocalServicesOnDocker のスクリプトを tools\ の下から探すようにした（無ければ直下。#704）
      2026/11/17  玄人 幸道         Linux の上でも -CrossDb の net10.0 の回を、ビルドせずに直接回せるようにした（#703）
+     2026/11/19  玄人 幸道         -Wsl2 を追加した（docker コマンドが在っても、LocalServicesOnDocker を WSL2 版で動かす。windows-latest 用。#712）
 #>
 [CmdletBinding()]
 param(
@@ -200,6 +206,7 @@ param(
     [switch]$CrossDb,
     [switch]$Coverage,
     [string]$LocalServicesDir,
+    [switch]$Wsl2,
     [switch]$Linux,
     [string]$LinuxImage = "mcr.microsoft.com/dotnet/sdk:10.0",
     [string]$LinuxMemory = "4g"
@@ -604,10 +611,10 @@ if ($crossDbRun)
         Write-Host ("  -CrossDb : 対象を {0} の {1} 件に絞りました" -f $crossDbProject, $tests.Count) -ForegroundColor Yellow
     }
 
-    # **docker コマンドが使えれば Rancher Desktop 版、使えなければ WSL2 版。**
+    # **docker コマンドが使えれば Rancher Desktop 版、使えなければ WSL2 版。** -Wsl2 なら、常に WSL2 版（#712）。
     #   2 つは別の Docker を見るので、混ぜると同じサービスが二重に立つ。
     $suffix = "_wsl2"
-    if (Get-Command docker -EA SilentlyContinue)
+    if (-not $Wsl2 -and (Get-Command docker -EA SilentlyContinue))
     {
         & docker info *> $null
         if ($LASTEXITCODE -eq 0) { $suffix = "" }

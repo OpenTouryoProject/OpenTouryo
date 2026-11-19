@@ -776,3 +776,103 @@ jobs:
           name: stub-logs-linux
           path: ${{ runner.temp }}/E2E
           if-no-files-found: warn
+
+  # --------------------------------------------------------------------
+  # クロス DB の net48（#712）：Windows ランナー＋WSL2 の Docker
+  # --------------------------------------------------------------------
+  # 2_RunAllTests.ps1 -CrossDb -Wsl2 を回す。TestPublicDb を、SQL Server（必須）に Oracle・MySQL（net48・net10.0）・PostgreSQL（net10.0）を
+  # 1 つずつ足して回す（linux-crossdb が回す net10.0 に加えて、Windows でしか動かない net48 を回す）。
+  # DB のコンテナは、WSL2 の Ubuntu に入れた Docker（systemd）で、LocalServicesOnDocker の Start-Services_wsl2.ps1 が起動する。
+  # windows-latest は Windows コンテナ用の docker を持つので、-Wsl2 で WSL2 版を選ばせる（自動の判定は Rancher Desktop 版を選ぶ）。
+  # **build とは別の Windows ランナーで、基盤だけをビルドして回す**（build が作った出力は渡さない。net48 の TestPublicDb は、csproj を --no-build で回すため）。
+  # 実験の結果は #711・#712。WSL2 の VM のメモリは 7940MB で、SQL Server と Oracle を合わせて約 5GB（1 つずつ起動する）。
+  win-crossdb:
+    runs-on: windows-latest
+    timeout-minutes: 75
+    env:
+      LSOD_REPO: NetDevInfraWGinOSSConsortium/LocalServicesOnDocker
+      LSOD_REF: 269e717939033e230835d0325eec255c1e03f71a
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Checkout LocalServicesOnDocker
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ env.LSOD_REPO }}
+          ref: ${{ env.LSOD_REF }}
+          path: LocalServicesOnDocker
+          persist-credentials: false
+
+      # build と同じ（理由もそちら）。構成ファイルが C:\root\files\... を絶対パスで参照する
+      - name: Set up C:\root
+        shell: pwsh
+        run: |
+          if (-not (Test-Path 'C:\root'))
+          {
+              New-Item -ItemType Junction -Path 'C:\root' -Target (Join-Path $env:GITHUB_WORKSPACE 'root') | Out-Null
+          }
+          Set-Culture ja-JP
+
+      - name: Install WSL2 and Ubuntu
+        shell: pwsh
+        run: |
+          wsl --update --web-download
+          wsl --set-default-version 2
+          wsl --install -d Ubuntu-24.04 --no-launch --web-download
+          wsl --set-default Ubuntu-24.04
+          wsl -d Ubuntu-24.04 -u root -- bash -c "uname -r; nproc; free -m"
+
+      # systemd を有効にして、Docker（docker.io）が WSL の起動で自動的に上がるようにする
+      # （LocalServicesOnDocker の WSL2 版は、Docker が動いている前提）
+      - name: Install Docker in WSL2
+        shell: pwsh
+        run: |
+          $script = @'
+          set -e
+          export DEBIAN_FRONTEND=noninteractive
+          printf '[boot]\nsystemd=true\n' > /etc/wsl.conf
+          apt-get update -qq
+          apt-get install -y -qq docker.io docker-compose-v2 >/dev/null
+          systemctl enable docker || true
+          '@
+          # Windows の here-string は CRLF なので、LF にして書く（bash が行末の CR で落ちる）
+          [IO.File]::WriteAllText("$env:RUNNER_TEMP/docker-install.sh", $script.Replace("`r`n", "`n"))
+          $unix = (wsl -d Ubuntu-24.04 -u root -- wslpath -a ($env:RUNNER_TEMP -replace '\\','/')).Trim()
+          wsl -d Ubuntu-24.04 -u root -- bash "$unix/docker-install.sh"
+          if ($LASTEXITCODE -ne 0) { throw "docker のインストールに失敗（$LASTEXITCODE）" }
+          # systemd を有効にするため、再起動する
+          wsl --terminate Ubuntu-24.04
+          Start-Sleep -Seconds 5
+          $active = $false
+          for ($i = 0; $i -lt 20; $i++)
+          {
+              $s = (wsl -d Ubuntu-24.04 -u root -- bash -c "systemctl is-active docker" 2>$null)
+              "docker : $s"
+              if ($s -eq 'active') { $active = $true; break }
+              Start-Sleep -Seconds 3
+          }
+          if (-not $active) { throw 'WSL2 の docker が起動しませんでした' }
+          wsl -d Ubuntu-24.04 -u root -- docker version --format '{{.Server.Version}}'
+
+      # 基盤だけをビルドする（TestPublicDb が参照する。1_BuildAll.ps1 -Only の基盤の 11 ステップ。SelectTargets.ps1 が出すもの）
+      - name: Build the base
+        shell: pwsh
+        working-directory: root/programs
+        run: .\1_BuildAll.ps1 -OutputDir "${{ runner.temp }}\BuildLogs" -Only 'Clean (net48 基盤)', 'Clean files (net48 基盤)', 'NuGet (net48)', 'Business (net48)', 'Business.RichClient (net48)', 'Clean (core 基盤)', 'Clean files (core 基盤)', 'NuGet (netcore100)', 'Business (netcore100)', 'Business.RichClient (core)', 'CopyAssemblies'
+
+      - name: Run cross DB tests (net48 and net10.0)
+        shell: pwsh
+        working-directory: root/programs
+        run: .\2_RunAllTests.ps1 -CrossDb -Wsl2 -LocalServicesDir "${{ github.workspace }}\LocalServicesOnDocker" -OutputDir "${{ runner.temp }}\TestResults"
+
+      - name: Upload test results (cross DB, Windows)
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-crossdb-windows
+          path: |
+            ${{ runner.temp }}/TestResults
+            root/programs/CS/Frameworks/Tests/NUnit/TestResults/CrossDb/**
+          if-no-files-found: warn
