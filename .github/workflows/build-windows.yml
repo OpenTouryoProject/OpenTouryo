@@ -18,9 +18,8 @@
 # ＜対象外＞
 #   ・GUI アプリケーション（WinForms / WPF / 各ツールの画面）… RELEASE.md 4 節の手作業
 #   ・SpRp の E2E の net48・WebForms … 手元で回す（Windows とコンテナが同じ機械に要る）
-#   ・SQL Server 以外の DBMS への接続（net48 と、Golden の TestDataAccess）… Windows のジョブは /Dap SQL のみを使う
-#     （TestSQLUtility は 4 DBMS の SQL 生成を検証するが、接続はしない。net48 のクロス DB は
-#     Windows とコンテナが同じ機械に要るので、手元の -CrossDb で回す）
+#   ・Golden の TestDataAccess のクロス DB … 手元で回す（build は /Dap SQL のみを使う。TestSQLUtility は 4 DBMS の SQL 生成を検証するが、接続はしない）
+#   ・net48 の NUnit TestPublicDb のクロス DB は、win-crossdb（Windows ランナー＋WSL2 の Docker。#712）が回す
 #
 # ＜署名エラーを除外している理由＞
 #   WSClientWinCone_sample.csproj は ClickOnce の署名が有効で、証明書を拇印で指定し、
@@ -124,7 +123,7 @@ jobs:
       # ------------------------------------------------------------------
       # LocalServicesOnDocker の docker-compose はそのままでは使えない。
       # sqlserver サービスが Linux イメージ（mcr.microsoft.com/mssql/server）で、
-      # windows-latest は Linux コンテナを動かせないため（多段のネストができない）。
+      # windows-latest は Windows コンテナ用の docker だけを持つため（Linux コンテナは WSL2 経由なら動くと、#711 で分かった。build は、このまま直接入れる。net48 のクロス DB は win-crossdb が WSL2 で回す）。
       # 代わりに runner へ直接 SQL Server を入れ、同リポジトリの instnwnd.sql だけを使う。
       #
       # Developer の ISO を直接取り、ハッシュを確かめてから導入する。
@@ -473,7 +472,7 @@ jobs:
   # TestPublicDb（net10.0）を、Oracle・MySQL・PostgreSQL で回す。手元の 2_RunAllTests.ps1 -CrossDb と同じ。
   # DB は LocalServicesOnDocker の Start-Services.ps1 で、SQL Server（必須）に 1 つずつ足して起動・停止する
   # （手元と同じ経路。起動・準備完了の待ち・停止は 2_RunAllTests.ps1 が行う）。
-  # net48 は Windows とコンテナが同じ機械に要るので、ここでは回さない（#703 の「扱わないもの」）。
+  # net48 は Windows とコンテナが同じ機械に要るので、ここでは回さない（win-crossdb が回す。#712）。
   #
   # ＜LocalServicesOnDocker はコミットで固定する＞
   #   向こうの変更（スクリプトの場所・初期化の SQL）が、こちらの CI に黙って届かないようにする。
@@ -872,15 +871,12 @@ jobs:
           if (-not $active) { throw 'WSL2 の docker が起動しませんでした' }
           wsl -d Ubuntu-24.04 -u root -- docker version --format '{{.Server.Version}}'
 
-      # **診断（一時）**：Windows から SQL Server のコンテナへ届かない原因を調べる（run 44472982251 で、MySQL・Oracle は届くが SQL Server だけ届かなかった）。
-      #   起動は pwsh（LocalServicesOnDocker の WSL2 版は、Windows PowerShell 5.1 では native の stderr で止まる。run 44482175965）、接続の確認は
-      #   Windows PowerShell 5.1（.NET Framework の SqlClient。TestPublicDb の net48 と同じ）。原因が分かって直したら、この 2 ステップを外す。
-      #   **5.1 の run: の中は ASCII だけ**（BOM 無しの一時ファイルを Shift_JIS で読むため）。
       # **SQL Server を、Windows のこの機械のアドレス（NIC）でも受けられるようにする**（run 44492153200 の診断）。
       #   SqlClient（.NET Framework）は、Data Source=localhost（と . と (local)）を「この機械」として、**ループバックではなく NIC のアドレスへ**つなぐ。
       #   WSL2 の Docker の公開ポートは、Windows ではループバック（127.0.0.1・::1）にだけ転送される（wslrelay）ので、localhost は拒否され、
       #   127.0.0.1・tcp:[::1],1433 は通る。手元（Rancher Desktop など）では、公開ポートが全アドレスで待ち受けるので、localhost が通る。
       #   テストの構成は Data Source=localhost のまま（build と同じ値を保つため）、NIC のアドレスの 1433 を、ループバックの 1433 へ転送する。
+      #   **診断で確かめた**（run 44496978059）：転送の後は、localhost・.・(local)・tcp:localhost,1433・127.0.0.1・tcp:[::1],1433 のすべてが通り、TestPublicDb の SQL Server 22 件が通った。
       - name: Forward the NIC address to WSL2 for SQL Server
         shell: pwsh
         run: |
@@ -890,61 +886,6 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw "netsh portproxy failed ($LASTEXITCODE)" }
           New-NetFirewallRule -DisplayName 'sqlserver-wsl2' -Direction Inbound -Protocol TCP -LocalPort 1433 -Action Allow | Out-Null
           netsh interface portproxy show all
-
-      - name: Start SQL Server for the diagnosis (temporary)
-        shell: pwsh
-        continue-on-error: true
-        working-directory: LocalServicesOnDocker
-        run: |
-          ./tools/Start-Services_wsl2.ps1 up sqlserver -NoPause
-          Start-Sleep -Seconds 30
-
-      - name: Diagnose SQL Server connectivity (temporary)
-        shell: powershell
-        continue-on-error: true
-        run: |
-          function Try-Open($ds, $db)
-          {
-              try
-              {
-                  $c = New-Object System.Data.SqlClient.SqlConnection ("Data Source=$ds;Initial Catalog=$db;User ID=sa;Password=seigi@123;Encrypt=false;Connect Timeout=15")
-                  $c.Open()
-                  $v = $c.ServerVersion
-                  $c.Close()
-                  return "OK $v"
-              }
-              catch { return "NG " + $_.Exception.GetBaseException().Message }
-          }
-          # wait until SQL Server answers on 127.0.0.1 (up to 3 min); right after start only the port forwarding is open and refuses
-          $sw = [Diagnostics.Stopwatch]::StartNew()
-          $ready = $false
-          while ($sw.Elapsed.TotalSeconds -lt 180)
-          {
-              $r = Try-Open 'tcp:127.0.0.1,1433' 'master'
-              if ($r.StartsWith('OK')) { $ready = $true; break }
-              Start-Sleep -Seconds 5
-          }
-          "ready via 127.0.0.1 : $ready after {0:N0} s" -f $sw.Elapsed.TotalSeconds
-          "--- netstat 1433"
-          netstat -ano | Select-String ':1433'
-          "--- hosts"
-          Get-Content "$env:SystemRoot\System32\drivers\etc\hosts" | Select-String -NotMatch '^\s*#'
-          "--- name resolution"
-          [Net.Dns]::GetHostAddresses('localhost') | ForEach-Object { $_.ToString() }
-          "--- SqlClient (1 round)"
-          foreach ($round in 1)
-          {
-              foreach ($ds in 'localhost', 'tcp:localhost,1433', 'tcp:127.0.0.1,1433', '127.0.0.1', '.', '(local)', 'tcp:[::1],1433')
-              {
-                  foreach ($db in 'master', 'Northwind')
-                  {
-                      "round {0} : {1} / {2} : {3}" -f $round, $ds, $db, (Try-Open $ds $db)
-                  }
-              }
-              Start-Sleep -Seconds 10
-          }
-          "--- docker logs (tail)"
-          wsl -d Ubuntu-24.04 -u root -- bash -c "docker logs --tail 15 localservicesondocker-sqlserver-1 2>&1"
 
       # 基盤だけをビルドする（TestPublicDb が参照する。1_BuildAll.ps1 -Only の基盤の 11 ステップ。SelectTargets.ps1 が出すもの）
       - name: Build the base

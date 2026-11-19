@@ -438,9 +438,9 @@ Actions → Build and test（#703 の前は Build on Windows）→ Run workflow 
 選んでも動かない。先に `develop` を取り込むこと。
 
 > **Windows のジョブ（`build`）の対象は `SQLONLY`（SQL Server のみ）のまま。**
-> 各 DBMS は Linux コンテナで、`windows-latest` では動かせない。
-> **クロス DB のうち NUnit の `TestPublicDb`（net10.0）は、Linux のジョブ（`linux-crossdb`）が回す**（下の「Linux のジョブ」。#703）。
-> net48 と Golden の `TestDataAccess` のクロス DB は手元で行う（[`TESTING.md`](TESTING.md)）。
+> 各 DBMS は Linux コンテナで、`build` の `windows-latest` では動かさない（SQL Server は直接入れる）。
+> **クロス DB のうち NUnit の `TestPublicDb` は、net10.0 を Linux のジョブ（`linux-crossdb`）が、net48 を Windows のジョブ（`win-crossdb`）が回す**（下の「Linux のジョブ」「Windows ランナー＋WSL2 のジョブ」。#703・#712）。
+> Golden の `TestDataAccess` のクロス DB は手元で行う（[`TESTING.md`](TESTING.md)）。
 
 ### ワークフローの前提
 
@@ -481,15 +481,28 @@ Dependabot が起こしたイベントでは `GITHUB_TOKEN` が既定で read-on
 |---|---|---|
 | `2_RunAllTests.ps1 -Linux` | `linux` | Golden の EncAndDecUtilCUI・NUnit の TestPublic |
 | `2_RunAllTests.ps1 -CrossDb` の net10.0 | `linux-crossdb` | NUnit の TestPublicDb を Oracle・MySQL・PostgreSQL で |
+| `2_RunAllTests.ps1 -CrossDb -Wsl2`（net48 と net10.0） | `win-crossdb` | Windows ランナー＋WSL2 の Docker（#712）。SQL Server に Oracle・MySQL（net48・net10.0）・PostgreSQL（net10.0）を 1 つずつ足す |
 | SpRp のサンプルの E2E（`Sample4SpRp\E2E`）の net10.0 | `linux-kck`・`linux-stub` | IdP（STS）は、`linux-kck` が Keycloak、`linux-stub` が MPAS のスタブ（Keycloak で回らない CLI の jwtbearer・FAPI2 の ros は、スタブの回で回る）。DB は使わない |
 | `2_RunAllTests.ps1 -Coverage` | × | NUnit の全部とクロス DB を 1 回の実行で回して合算する作りなので、ジョブに分けられない。手元で取る |
 
 **対象外は明示しておく。**
 
 - **GUI アプリケーション**（WinForms / WPF / 各ツールの画面）… `RELEASE.md` 4 節の手作業
-- **SQL Server 以外の DBMS への net48 での接続と、Golden の `TestDataAccess` のクロス DB** … Windows のジョブは `/Dap SQL` しか使わない
-  （`TestSQLUtility` は 4 DBMS 分の SQL 生成を検証するが、**接続はしない**ので対象内）。net48 は Windows とコンテナが同じ機械に要るので、手元の `-CrossDb` で回す
+- **Golden の `TestDataAccess` のクロス DB** … `build` は `/Dap SQL` しか使わない
+  （`TestSQLUtility` は 4 DBMS 分の SQL 生成を検証するが、**接続はしない**ので対象内）。手元の `-CrossDb` で回す。NUnit の `TestPublicDb` の net48 のクロス DB は、`win-crossdb` が回す
 - **SpRp の E2E の net48・WebForms** … 手元で回す（Windows とコンテナが同じ機械に要る）
+
+### Windows ランナー＋WSL2 のジョブ（#711・#712）
+
+**`windows-latest` では、WSL2 が動く**（Windows Server 2025・Hyper-V 上の VM・4 vCPU・16GB。#711 で確かめた）。
+Windows の net48 と Linux のコンテナを、同じランナーで使える。**`win-crossdb`** が、net48 のクロス DB を回す。
+
+- **WSL2 に Ubuntu-24.04 と `docker.io`・`docker-compose-v2` を入れ、systemd で Docker を自動起動する。** LocalServicesOnDocker の WSL2 版（`Start-Services_wsl2.ps1`）は、Docker が動いている前提で、DB を起動して準備完了まで待つ
+- **`2_RunAllTests.ps1` に `-Wsl2` を付ける。** `windows-latest` は Windows コンテナ用の `docker` コマンドを持つので、自動の判定（`docker` が使えれば Rancher Desktop 版）では、WSL2 版を選ばない
+- **apt は IPv4 に固定する**（`Acquire::ForceIPv4=true`）。固定しないと、`apt-get` が 7 分以上止まることがあった（#712）。`docker-install.sh` の実行は 420 秒で打ち切り、1 回やり直す
+- **SQL Server は、NIC のアドレスの 1433 を、`netsh interface portproxy` でループバックへ転送する。** WSL2 の Docker の公開ポートは、Windows ではループバックにだけ転送される。一方、SqlClient（.NET Framework）は、`Data Source=localhost`（と `.`・`(local)`）を NIC のアドレスへつなぐので、転送しないと拒否される（`127.0.0.1` と書けば通る）。Oracle・MySQL は `localhost` をループバックで引くので、転送は要らない。手元（Rancher Desktop）は、公開ポートが全アドレスで待ち受けるので、起きない。テストの構成は `Data Source=localhost` のまま
+- **WSL2 の VM のメモリは 7940MB**（ランナーの半分）。SQL Server と Oracle を合わせて約 5GB（1 つずつ起動する）
+- ほかに、このランナーで確かめたこと：IIS Express（x64・x86）あり、`aspnet_state` は Stopped（Manual。SpRp の WebForms の E2E には起動が要る）。SpRp の E2E の net48・WebForms は、別の作業（#712 の続き）
 
 ### Linux のジョブ（#703）
 
