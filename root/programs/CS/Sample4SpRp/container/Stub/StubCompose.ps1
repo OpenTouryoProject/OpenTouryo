@@ -76,6 +76,7 @@
      2026/11/10  玄人 幸道         -Mtls を足した（スタブにクライアント証明書を受け付けさせる。MultiPurposeAuthSite#351。#668 の追加）
      2026/11/13  玄人 幸道         RepoPath.ps1 を root/files/tools/PowerShell/RepoPaths から読む（#687）
      2026/11/13  玄人 幸道         Sample4SpRp\Stub から Sample4SpRp\container\Stub へ移した（Keycloak の KCK と並べる。#690）
+     2026/11/19  玄人 幸道         Linux でも起動・停止できるようにした（MPAS の pwsh 版を呼ぶ。STUB_RESOURCE_DIR・STUB_APPSETTINGS の既定を差し替える。#703）
 #>
 [CmdletBinding()]
 param(
@@ -106,17 +107,21 @@ if (-not $MpasDefault -and [string]::IsNullOrEmpty($Settings))
 
 # **MPAS の場所は、引数 ＞ 環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**（#652）
 #   パスの既定値は param() に書かない（5.1 の -File で $PSScriptRoot が空になる。CODING.md 5 節）
-. (Join-Path (Split-Path -Parent $PSCommandPath) '..\..\..\..\..\files\tools\PowerShell\RepoPaths\RepoPath.ps1')
+. (Join-Path (Split-Path -Parent $PSCommandPath) '../../../../../files/tools/PowerShell/RepoPaths/RepoPath.ps1')
 $MpasRoot = Resolve-RepoPath -Variable OT_MPAS_PATH -Argument $MpasRoot -ArgumentName '-MpasRoot'
 if (-not $MpasRoot)
 {
     throw "MPAS の場所が決まりません（-MpasRoot で渡すか、環境変数 OT_MPAS_PATH を登録してください）。"
 }
 
-$stubDir = Join-Path $MpasRoot 'container\Stub'
+$stubDir = Join-Path $MpasRoot 'container/Stub'
 $compose = Join-Path $stubDir 'docker-compose.yml'
-$upBat = Join-Path $stubDir '2_DockerComposeUp.bat'
-$downBat = Join-Path $stubDir '3_DockerComposeDown.bat'
+
+# **Linux では、MPAS の pwsh 版（2_DockerComposeUp.ps1・3_DockerComposeDown.ps1。MultiPurposeAuthSite#401）を呼ぶ**（.bat は Windows だけ。#703）
+$onUnix = ([Environment]::OSVersion.Platform -eq 'Unix')
+$ext = if ($onUnix) { 'ps1' } else { 'bat' }
+$upBat = Join-Path $stubDir "2_DockerComposeUp.$ext"
+$downBat = Join-Path $stubDir "3_DockerComposeDown.$ext"
 
 if (-not (Test-Path $compose))
 {
@@ -131,8 +136,8 @@ if (($Action -ne 'Config') -and (-not (Test-Path $upBat) -or -not (Test-Path $do
 if ($Action -eq 'Up')
 {
     # **publish と証明書が無いと、イメージを作れない・HTTPS で待ち受けられない**
-    $published = Join-Path $stubDir 'app\publish\MultiPurposeAuthSite.dll'
-    $cert = Join-Path $stubDir 'cert\aspnetapp.pfx'
+    $published = Join-Path $stubDir 'app/publish/MultiPurposeAuthSite.dll'
+    $cert = Join-Path $stubDir 'cert/aspnetapp.pfx'
 
     if (-not (Test-Path $published) -or -not (Test-Path $cert))
     {
@@ -161,7 +166,7 @@ else
 #   **前の実行で残った値を使わないよう、付けないときは消す**（STUB_SETTINGS と同じ）。
 if ($Mtls)
 {
-    $hook = Join-Path $stubDir 'hooks\MtlsTestHook.dll'
+    $hook = Join-Path $stubDir 'hooks/MtlsTestHook.dll'
     if (($Action -eq 'Up') -and -not (Test-Path $hook))
     {
         throw "MTLS のフックがありません : $hook（MPAS の $stubDir\1_PublishStub.ps1 を実行し直してください。MultiPurposeAuthSite#351 より前の版です）"
@@ -174,6 +179,29 @@ else
     Remove-Item Env:\STUB_MTLS_HOOK -ErrorAction SilentlyContinue
 }
 
+# **Linux では、MPAS の .env の既定（Windows の手元向け）を、環境変数で差し替える**（MultiPurposeAuthSite の container/Stub/README.md 1 節。#703）。
+#   STUB_RESOURCE_DIR : 署名鍵などのリソース（既定は C:/root/files/resource）→ MPAS の root/files/resource
+#   STUB_APPSETTINGS  : アプリの設定の土台（既定は開発者の手元の appsettings.json。CI には無い）→ 在ればそれ、無ければ雛形（_appsettings.json）
+#   **呼んだ側が環境変数を決めていれば、それを使う**
+if ($onUnix)
+{
+    if (-not $env:STUB_RESOURCE_DIR)
+    {
+        $env:STUB_RESOURCE_DIR = Join-Path $MpasRoot 'root/files/resource'
+    }
+
+    if (-not $env:STUB_APPSETTINGS)
+    {
+        $coreDir = Join-Path $MpasRoot 'root/programs/MultiPurposeAuthSiteCore/MultiPurposeAuthSiteCore'
+        $base = Join-Path $coreDir 'appsettings.json'
+        if (-not (Test-Path $base)) { $base = Join-Path $coreDir '_appsettings.json' }
+        $env:STUB_APPSETTINGS = $base
+    }
+
+    Write-Output "  Linux : STUB_RESOURCE_DIR=$($env:STUB_RESOURCE_DIR)"
+    Write-Output "          STUB_APPSETTINGS=$($env:STUB_APPSETTINGS)"
+}
+
 # **MPAS のバッチを呼ぶ間だけ、コンソールを UTF-8（65001）にする**（#668）。
 #   MPAS の 2_DockerComposeUp.bat などは、日本語の echo を UTF-8 で書いている。
 #   **cmd は、バッチをコンソールの出力のコード ページで読む**ので、既定の 932 のままだと、その行が化ける。
@@ -181,7 +209,10 @@ else
 $oldEncoding = [Console]::OutputEncoding
 try
 {
-    [Console]::OutputEncoding = New-Object Text.UTF8Encoding $false
+    if (-not $onUnix)
+    {
+        [Console]::OutputEncoding = New-Object Text.UTF8Encoding $false
+    }
 
     switch ($Action)
     {
@@ -192,7 +223,10 @@ try
 }
 finally
 {
-    [Console]::OutputEncoding = $oldEncoding
+    if (-not $onUnix)
+    {
+        [Console]::OutputEncoding = $oldEncoding
+    }
 }
 
 if ($LASTEXITCODE -ne 0)

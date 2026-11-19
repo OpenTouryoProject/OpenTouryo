@@ -15,6 +15,7 @@
 > - **必須でないコンテナを同時に複数起動しない。** クロス DB は、SQL Server（必須）に 1 つずつ足して回し、測り終えたら止める
 >   （`2_RunAllTests.ps1 -CrossDb` がこれを自動で行う。下の `TestPublicDb` の説明）
 > - **使い終わったら止める**（`Stop-Services.ps1 <サービス名>`）。状態は `Show-Services.ps1`（読み取り専用）で確かめる
+> - スクリプトは LocalServicesOnDocker の **`tools\` の下**にある（331bba5 で直下から移った。#704）
 > - Rancher Desktop 版（`*.ps1`）と WSL2 版（`*_wsl2.ps1`）は**別の Docker を見る。** 混ぜて使うと、同じサービスが二重に立つ
 > - `oracle` と `sqlserver` は特に大きい
 
@@ -55,8 +56,10 @@ cd root\programs
 - **コンテナを起動するのは `-Linux` / `-CrossDb` / `-Coverage` を付けたときだけ。** 付けなければ、今までどおり手元の DB を使うだけ
 - `-Coverage` は `-Only` / `-SkipBuild` / `-Linux` / `-CrossDb` と、`-Linux` は `-CrossDb` と、同時に指定できない
 - Linux のコンテナのイメージとメモリの上限は `-LinuxImage` / `-LinuxMemory` で変えられる（既定は `mcr.microsoft.com/dotnet/sdk:10.0` / `4g`）
-- **CI（GitHub Actions）は、オプション無しの通常の実行だけ**を回す（windows-latest は Linux のコンテナを動かせない）。
-  Linux・クロス DB・カバレッジは手元で回す
+- **CI（GitHub Actions）の Windows のジョブは、オプション無しの通常の実行だけ**を回す（windows-latest は Linux のコンテナを動かせない）。
+  **`-Linux` と、`-CrossDb` の net10.0 の分は、Linux のジョブ（`linux`・`linux-crossdb`）が回す**（Windows でビルドした出力を受け取り、
+  Linux の上で `2_RunAllTests.ps1 -Linux` / `-CrossDb` を直接回す。#703。[`BUILDING.md`](BUILDING.md) 9 節）。
+  `-CrossDb` の net48 は、Windows ランナー＋WSL2 のジョブ（`win-crossdb`。`-CrossDb -Wsl2`。#712）が回す。カバレッジは手元で回す
 
 ---
 
@@ -218,8 +221,9 @@ net10.0 の DLL は OS によらないので、Windows で作ったものを Lin
 
 ### `TestDataAccess` の実行モード
 
-**クロス DB は CI では実行できない。** LocalServicesOnDocker の各 DBMS は Linux コンテナで、
-`windows-latest` は Linux コンテナを動かせないため（[`BUILDING.md`](BUILDING.md) 9 節）。
+**`TestDataAccess` のクロス DB は CI では実行できない。** LocalServicesOnDocker の各 DBMS は Linux コンテナで、
+`windows-latest` は Linux コンテナを動かせないため（[`BUILDING.md`](BUILDING.md) 9 節。
+CI の Linux のジョブ `linux-crossdb` が回すのは、NUnit の `TestPublicDb` の net10.0 だけ。#703）。
 このため `/MODE` で対象を切り替える。**期待値は `SQLONLY`（SQL Server のみ）で記録している。**
 
 ```
@@ -438,7 +442,7 @@ Northwind は起動のたびに `start-up.sh` が再作成するため、
 | WSL2 内の Docker を使う場合 | `Stop-Services_wsl2.ps1 sqlserver` → `Start-Services_wsl2.ps1 sqlserver` |
 
 ```powershell
-cd <LocalServicesOnDocker>
+cd <LocalServicesOnDocker>\tools
 .\Stop-Services.ps1 sqlserver      # docker compose down（コンテナを破棄）
 .\Start-Services.ps1 sqlserver     # docker compose up -d ＋ DB 初期化完了待ち
 ```

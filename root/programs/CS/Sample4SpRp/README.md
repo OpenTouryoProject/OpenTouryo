@@ -97,7 +97,7 @@ cd root\programs\CS\Sample4SpRp\E2E
 3. スタブのログイン画面・同意画面を、テスト利用者で通す
 4. アプリへ戻り、**認証が要る画面が 200 を返す**
 
-- **前提（起動はしない）** : スタブ、SQL Server（MVC の `/Crud1/Index` が DB を読む）、ASP.NET 状態サービス（WebForms）、ビルド。
+- **前提（起動はしない）** : スタブ、ASP.NET 状態サービス（WebForms）、ビルド。**SQL Server は要らない**（辿る画面は DB を読まない。#703）。
   **足りなければ終了コード 2**（0 = すべて OK、1 = NG あり）
 - **戻り先は MPAS に登録された URL なので、アプリをその URL で動かす。** **ポートが使用中なら、その対象は NG**（Visual Studio で動かしていないか）
 - **ブラウザの代わりは HttpClient**（リダイレクトは自分で辿る。**Cookie の入れ物は 1 つ** — スタブとアプリは同じ localhost なので、ブラウザと同じく Cookie を共有する）
@@ -259,17 +259,19 @@ cd ..\..\E2E
 | ropc の対照の理由 | `access_denied` | **`invalid_grant`**（同上） |
 | `jwtbearer` | 回す | **回さない**（Keycloak に、JWT Bearer の認可グラント（RFC 7523 §2.1）が無い。クライアント認証の `private_key_jwt` はある） |
 | `Device_Client` の PKCE | — | **強制しない**（Keycloak は、PKCE を強制したクライアントには、Device の要求にも `code_challenge` を求める。`pkce` は S256 を付けて送る） |
+| FAPI1 の `response_mode=query`（JARM でない認可要求） | **IdP が断ることを見る**（対照 `NonJarm`。MPAS#381 から、fapi1 の登録は JARM の認可要求だけを受ける。FAPI 1.0 Advanced §5.2.2 の 2。state・code_challenge の書き換えは省く） | 正常に通す（Keycloak は query も受ける） |
+| 同意画面の送信先 | **フォームの `action`（`<認可の口>/consent`）**（MPAS#359 から。認可の URL へ送ると `invalid_request`（A parameter is included more than once.）。E2E は `Idp.ps1` の `Get-StubConsentUrl` で読む。#710） | `kc-form-login`・`/login-actions/consent` |
 | FAPI2 の `ros` | 回す | **回さない**（`/ros` は MPAS 独自。Keycloak の Discovery に `request_object_endpoint` が無い） |
 | FAPI2 の `par_mtls` | `StubCompose.ps1 -Mtls` で起動したとき | **常に**（`-Mtls` を付けるだけ）。登録は `client-x509`（Subject DN と発行者の DN を照合） |
 | FAPI2 の id_token | 暗号化（JWE。RSA-OAEP・A256GCM） | **同じく暗号化させる**（同じ公開鍵を `use=enc` でも登録した）。PAR は必須にしてある |
 | FAPI2 の IdP の対照（Reuse・ClientId） | スタブのエラー画面 | Keycloak の「Invalid Request」（400）。理由はサーバのログ（`PAR not found, not issued or used multiple times`・`PAR was issued for a different client`） |
-| 外部ログインの SAML2 の Audience | ACS の URL（`SpRp_Saml2SpEntityId` は空のまま） | **SP の entityID**（SAML 2.0 Profiles §4.1.4.2）。E2E が、対象ごとに `SpRp_Saml2SpEntityId` を `http://` ＋ client_id に差し替える（#693） |
+| 外部ログインの SAML2 の Audience | **SP の entityID**（MPAS#389 から。以前は ACS の URL）。サンプルの既定の `SpRp_Saml2SpEntityId`（`http://` ＋ client_id）のままで通る | **SP の entityID**（SAML 2.0 Profiles §4.1.4.2）。E2E が、対象ごとに `SpRp_Saml2SpEntityId` を `http://` ＋ client_id に差し替える（#693。既定値と同じ） |
 | 外部ログインの SAML2 の SP の登録 | — | `http://` ＋ client_id。要求の署名を確かめ、`mail` の属性を出す。**`saml.authnstatement` を `true` にする**（JSON で取り込むと既定で入らず、assertion に `AuthnStatement` が無くなる。Profiles §4.1.4.2 で必須） |
 
-- **要求の `Destination`**（SAML 2.0 Bindings §3.4.5.2）は、サンプルが常に入れる（#693）。Keycloak は、無いと `missing_required_destination` で断る。スタブは見ない
+- **要求の `Destination`**（SAML 2.0 Bindings §3.4.5.2）は、サンプルが常に入れる（#693）。Keycloak は、無いと `missing_required_destination` で断る。スタブも、MPAS#392 から、メタデータの口と合わなければ捨てる（署名した要求に無くても捨てる）
 - **MPAS のスタブとは、ポート（44320）もプロジェクト名（`sprp-kck`）も分けてあるが、同時には起動しない**（メモリ。`TESTING.md` の冒頭）
 - **realm を変えたら、`-Action Down` してから起動し直す**（取り込みは、realm が無いときだけ行われる）
-- **外部ログインの前提はスタブのときと同じ**（SQL Server・ASP.NET 状態サービス・ビルド。2.1 節）。`-OutputDir` に、net48 のサイトの写し（1 サイト約 58MB）ができる
+- **外部ログインの前提はスタブのときと同じ**（ASP.NET 状態サービス・ビルド。2.1 節）。`-OutputDir` に、net48 のサイトの写し（1 サイト約 58MB）ができる
 
 ## 3. 設定（サンプルと IdP で揃える値）
 
@@ -523,9 +525,13 @@ cd root\programs\CS\Sample4SpRp\DotNet\MVC
 - **コンテナを勝手に起動・停止しない**（`AGENTS.md`）。`StubCompose.ps1 -Action Config` は起動しないので、設定の確認に使える
 - **ビルドは `CS\11_Build_SpRp_sample.bat` に詰める**（`1_BuildAll.ps1` の `SpRp_sample`、`CS\0_ExecAllBat.bat` から呼ばれる）。
   **SpRp のサンプルを足したら、このバッチに足す**（net48 と net10.0 の両方。`SpRp_MVC` は、いまは net10.0 だけ）
-- **単体テスト（`2_RunAllTests.ps1`）・疎通テスト（`3_SmokeTest.ps1`）・CI には載っていない。**
-  外部の IdP（スタブ）が要るため。**WebApp のサンプルの外部ログインは `E2E/ExternalLoginE2E.ps1` で確かめる**（2.1 節。
-  スタブと SQL Server の起動が要るので、**施主に確かめてから回す**）。**CLI は `E2E/CliLoginE2E.ps1` で確かめる**（2.2 節。スタブだけが要る。`cc`・`jwtbearer`・`ropc` は `Sample4SpRp.stub.json` を渡したスタブ）。
+- **単体テスト（`2_RunAllTests.ps1`）・疎通テスト（`3_SmokeTest.ps1`）には載っていない。**
+  外部の IdP（スタブ）が要るため。
+  **CI では、Linux のジョブ `linux-kck` が、E2E の 4 本の net10.0 の対象を、IdP を Keycloak（`-Idp KCK`）にして回し、`linux-stub` が、IdP を MPAS のスタブにして回す**（スタブでだけ回る CLI の jwtbearer・FAPI2 の ros を含む。#703。[`BUILDING.md`](../../BUILDING.md) 9 節）。
+  **net48・WebForms のうち、外部ログインの E2E（`ExternalLoginE2E.ps1 -Idp KCK -Only net48`。C#・VB の MVC・WebForms。OIDC・SAML2）は、Windows ランナー＋WSL2 の Docker のジョブ `win-sts` が、Keycloak（`KckCompose.ps1 -Wsl2`）で回す**（#712）。
+  MPAS のスタブの回（net48）と、CLI・FAPI の E2E の net48 は手元で回す。
+  **E2E は Linux の上でも動く**（`E2E/Idp.ps1`）。net10.0 の対象だけに絞り、サンプルの設定の `C:/root/...` を、ソースを変えずにこのリポジトリの `root/...` へ読み替えて渡す。**WebApp のサンプルの外部ログインは `E2E/ExternalLoginE2E.ps1` で確かめる**（2.1 節。
+  スタブの起動が要るので、**施主に確かめてから回す**）。**CLI は `E2E/CliLoginE2E.ps1` で確かめる**（2.2 節。スタブだけが要る。`cc`・`jwtbearer`・`ropc` は `Sample4SpRp.stub.json` を渡したスタブ）。
   **MVC（FAPI 1.0）は `E2E/MvcFapi1E2E.ps1` で確かめる**（2.3 節。スタブには `Sample4SpRp.stub.json` が要る）。
   **MVC（FAPI 2.0）は `E2E/MvcFapi2E2E.ps1`**（2.4 節。MultiPurposeAuthSite#352 が直るまで、正常の側は NG）
 - **`SelectTargets.ps1` は、ここを変えると「バッチ : 11_Build_SpRp_sample.bat ＋ 手で確かめる（SpRp）」に分ける**

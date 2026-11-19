@@ -45,6 +45,7 @@
 //*  2026/11/06  玄人 幸道         remarks に、登録どおりの鍵の型だけを渡すことを書いた（#664 のレビューの指摘 2）
 //*  2026/11/08  玄人 幸道         Create に、code_challenge・code_challenge_method（PKCE）を入れるオーバーロードを追加（#675）
 //*  2026/11/08  玄人 幸道         有効期間の検査を CreateCore にまとめた（#675 のレビューの指摘 1。例外の型・引数名・メッセージは変えていない）
+//*  2026/11/19  玄人 幸道         Create に、署名の alg（RS* / PS*）を選べるオーバーロードを追加（FAPI の登録は PS256・ES256 に限る。#709）
 //**********************************************************************************
 
 using System;
@@ -319,6 +320,63 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 lifetime, rsaPrivateKey);
         }
 
+        /// <summary>Create（署名の alg を選ぶ。code_challenge（PKCE）と、exp・nbf・iat を入れる）</summary>
+        /// <param name="iss">string</param>
+        /// <param name="aud">string</param>
+        /// <param name="response_type">string</param>
+        /// <param name="response_mode">string</param>
+        /// <param name="redirect_uri">string</param>
+        /// <param name="scopes">string</param>
+        /// <param name="state">string</param>
+        /// <param name="nonce">string</param>
+        /// <param name="max_age">string</param>
+        /// <param name="prompt">string</param>
+        /// <param name="login_hint">string</param>
+        /// <param name="claims">ClaimsInRO</param>
+        /// <param name="code_challenge">code_challenge（空なら PKCE のクレームを入れない）</param>
+        /// <param name="code_challenge_method">code_challenge_method（空なら S256）</param>
+        /// <param name="lifetime">有効期間（1 秒以上。exp = nbf + 有効期間）</param>
+        /// <param name="rsaPrivateKey">RSAParameters秘密鍵</param>
+        /// <param name="alg">署名の alg（JwtConst の RS256・RS384・RS512・PS256・PS384・PS512）</param>
+        /// <returns>RequestObject</returns>
+        /// <remarks>
+        /// - **署名の alg 以外は、alg を受けない版（RSAParameters を受ける、code_challenge を受けるもの）と同じ**。
+        ///   alg に JwtConst.RS256 を渡せば、その版と同じ Request Object ができる（既存の版は変えていない）
+        /// - **FAPI は、JWS の署名に PS256 か ES256 を使うとする**（FAPI 1.0 Advanced 8.6、FAPI 2.0 Security Profile 5.4.1）。
+        ///   汎用認証サイト（MPAS）は、FAPI の登録の Request Object の署名を、それに限る。
+        ///   RSA の鍵なら、JwtConst.PS256（RSASSA-PSS using SHA-256。RFC 7518 3.5）を渡す。同じ RSA の鍵で、RS256 と PS256 を使い分けられる
+        /// - **この版は RSA の鍵だけ**（ES256 の口は無い。ES256 が要るなら、別に足す。JwtAssertion には CreateByECDsa がある）
+        /// - **alg が RSA の alg（RS* / PS*）でなければ ArgumentException**（null・空・ES256・HS256 など。黙って RS256 にしない）
+        /// </remarks>
+        public static string Create(
+            string iss, string aud, string response_type, string response_mode,
+            string redirect_uri, string scopes, string state, string nonce,
+            string max_age, string prompt, string login_hint, ClaimsInRO claims,
+            string code_challenge, string code_challenge_method,
+            TimeSpan lifetime, RSAParameters rsaPrivateKey, string alg)
+        {
+            // 1 秒未満の有効期間は、CreateCore で断る
+            if (string.IsNullOrEmpty(code_challenge))
+            {
+                if (!string.IsNullOrEmpty(code_challenge_method))
+                {
+                    throw new ArgumentException("The code_challenge is required when the code_challenge_method is specified.", "code_challenge");
+                }
+            }
+            else if (string.IsNullOrEmpty(code_challenge_method))
+            {
+                // 省くと plain として扱われる（RFC 7636 4.3）ので、S256 を明示する
+                code_challenge_method = OAuth2AndOIDCConst.PKCE_S256;
+            }
+
+            return RequestObject.CreateCore(
+                iss, aud, response_type, response_mode,
+                redirect_uri, scopes, state, nonce,
+                max_age, prompt, login_hint, claims,
+                code_challenge, code_challenge_method,
+                lifetime, rsaPrivateKey, alg);
+        }
+
         /// <summary>Create の本体</summary>
         /// <param name="code_challenge">空なら code_challenge・code_challenge_method を入れない</param>
         /// <param name="code_challenge_method">code_challenge が空でないときに入れる（呼び出し側で既定を決めておく）</param>
@@ -328,8 +386,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
             string redirect_uri, string scopes, string state, string nonce,
             string max_age, string prompt, string login_hint, ClaimsInRO claims,
             string code_challenge, string code_challenge_method,
-            TimeSpan? lifetime, RSAParameters rsaPrivateKey)
+            TimeSpan? lifetime, RSAParameters rsaPrivateKey, string alg = JwtConst.RS256)
         {
+            // **署名の alg は RSA のものだけ**（黙って RS256 にしない。Create の前に確かめ、不正な alg で署名の鍵を作らない）
+            JWS jws = JwsFactory.CreateFromRsaParameters(alg, rsaPrivateKey);
+            if (jws == null)
+            {
+                throw new ArgumentException("The alg must be an RSA alg (RS256, RS384, RS512, PS256, PS384 or PS512).", "alg");
+            }
+
             // **有効期間の検査は、ここ 1 か所で行う**（有効期間を受ける版のすべてが通る。#675 のレビューの指摘 1）
             if (lifetime.HasValue && lifetime.Value < TimeSpan.FromSeconds(1))
             {
@@ -389,8 +454,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             #region JWT化
 
-            JWS_RS256_Param jwtRS256 = new JWS_RS256_Param(rsaPrivateKey);
-            return jwtRS256.Create(json);
+            return jws.Create(json);
 
             #endregion
         }

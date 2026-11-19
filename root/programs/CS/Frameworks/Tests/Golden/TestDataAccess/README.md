@@ -15,8 +15,9 @@
 
 ## 実行モード（`/MODE`）
 
-**クロス DB は CI では実行できない。** LocalServicesOnDocker の各 DBMS は Linux コンテナで、
-`windows-latest` は Linux コンテナを動かせないため（[`BUILDING.md`](../../../../../BUILDING.md) 9 節）。
+**このテストのクロス DB は CI では実行できない。** LocalServicesOnDocker の各 DBMS は Linux コンテナで、
+`windows-latest` は Linux コンテナを動かせないため（[`BUILDING.md`](../../../../../BUILDING.md) 9 節。
+CI の Linux のジョブ `linux-crossdb` が回すのは、NUnit の `TestPublicDb` の net10.0 だけ。#703）。
 このため対象を切り替えられるようにしてある。
 
 ```
@@ -325,7 +326,7 @@ PostgreSQL は `:` から `@` に変更された経緯がある（`DamPstGrS.cs`
 > （`LOCAL` は起動している DBMS だけを対象にするので、1 つずつでも漏れなく確かめられる）。
 
 ```powershell
-cd <LocalServicesOnDocker のパス>
+cd <LocalServicesOnDocker のパス>\tools   # スクリプトは tools\ の下（#704）
 .\Start-Services.ps1 oracle      # 1 つだけ。引数なしは全サービスを起動するので使わない
 # … ②・③ を回す …
 .\Stop-Services.ps1 oracle       # 終わったら止めてから、次の DBMS へ

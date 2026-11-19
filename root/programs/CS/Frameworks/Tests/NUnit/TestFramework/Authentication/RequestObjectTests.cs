@@ -35,6 +35,7 @@
 //*  2026/11/06  玄人 幸道         nbf の範囲を Create の前後の時刻で挟み、TimeSpan.MaxValue を足した（#660 のレビューの指摘 3・4）
 //*  2026/11/06  玄人 幸道         検証鍵（JWS）を受ける Verify・VerifyCiba のテストを追加（#664）
 //*  2026/11/08  玄人 幸道         code_challenge・code_challenge_method を受ける Create のテストを追加（#675）
+//*  2026/11/19  玄人 幸道         署名の alg（RS* / PS*）を選べる Create のテストを追加（#709）
 //**********************************************************************************
 
 using System;
@@ -908,6 +909,103 @@ namespace TestFramework.Authentication
             Assert.Throws<ArgumentNullException>(() => RequestObject.VerifyCiba(es384, op, out iss, (JWS)null), "jws が null");
             Assert.Throws<ArgumentNullException>(() => RequestObject.VerifyCiba(es384, null, out iss,
                 JwsFactory.CreateFromEcParameters(JwtConst.ES384, pub384)), "期待する aud が null");
+        }
+
+        #endregion
+
+        #region 署名の alg を選ぶ Create（#709）
+
+        /// <summary>
+        /// 署名の alg を選ぶ Create：RS* ・PS* で署名でき、ヘッダの alg がそれになる。
+        /// 同じ RSA の鍵で、alg ごとの検証鍵（JWS）だけが通り、別の alg の検証鍵では通らない。
+        /// PS256 は、.NET の RSA（RSASSA-PSS）でも検証できる（部品とは別の実装）。
+        /// </summary>
+        [Test]
+        [Basis("RFC 7518 3.5（PS256 は RSASSA-PSS using SHA-256 and MGF1 with SHA-256）")]
+        [Basis("RFC 7515 4.1.1（ヘッダの alg は署名の alg）")]
+        [Basis("別実装：.NET の RSA.VerifyData（RSASignaturePadding.Pss）で PS256 の署名を検証できる")]
+        [Basis("#709")]
+        public void Create_Alg_Rsa()
+        {
+            using (RSA rsa = RSA.Create(2048))
+            {
+                RSAParameters priv = rsa.ExportParameters(true);
+                RSAParameters pub = rsa.ExportParameters(false);
+
+                foreach (string alg in new string[] {
+                    JwtConst.RS256, JwtConst.RS384, JwtConst.RS512, JwtConst.PS256, JwtConst.PS384, JwtConst.PS512 })
+                {
+                    string ro = RequestObject.Create("client01", "https://op.example.com",
+                        "code", "", "https://rp.example.com/cb", "openid", "state01", "nonce01",
+                        "", "", "", new ClaimsInRO(null, null, null),
+                        "", "", TimeSpan.FromMinutes(5), priv, alg);
+
+                    string[] parts = ro.Split('.');
+                    JObject header = JObject.Parse(Encoding.UTF8.GetString(CustomEncode.FromBase64UrlString(parts[0])));
+                    Assert.That((string)header["alg"], Is.EqualTo(alg), alg + "：ヘッダの alg");
+
+                    string iss;
+                    Assert.That(RequestObject.Verify(ro, "https://op.example.com", out iss,
+                        JwsFactory.CreateFromRsaParameters(alg, pub)), Is.True, alg + "：同じ alg の検証鍵");
+                    Assert.That(iss, Is.EqualTo("client01"));
+
+                    string otherAlg = (alg == JwtConst.PS256) ? JwtConst.RS256 : JwtConst.PS256;
+                    Assert.That(RequestObject.Verify(ro, "https://op.example.com", out iss,
+                        JwsFactory.CreateFromRsaParameters(otherAlg, pub)), Is.False, alg + "：別の alg の検証鍵（" + otherAlg + "）");
+                }
+
+                // PS256 の署名を、.NET の RSA（別実装）で検証する
+                string ps = RequestObject.Create("client01", "https://op.example.com",
+                    "code", "", "https://rp.example.com/cb", "openid", "state01", "nonce01",
+                    "", "", "", new ClaimsInRO(null, null, null),
+                    "", "", TimeSpan.FromMinutes(5), priv, JwtConst.PS256);
+                string[] p = ps.Split('.');
+                Assert.That(rsa.VerifyData(Encoding.ASCII.GetBytes(p[0] + "." + p[1]),
+                    CustomEncode.FromBase64UrlString(p[2]), HashAlgorithmName.SHA256, RSASignaturePadding.Pss), Is.True,
+                    ".NET の RSA（PSS）で検証できる");
+            }
+        }
+
+        /// <summary>
+        /// 署名の alg を選ぶ Create：alg に RS256 を渡した版は、alg を受けない版と、署名の alg・クレームの形が同じ。
+        /// RSA の alg でなければ ArgumentException（黙って RS256 にしない）。
+        /// </summary>
+        [Test]
+        [Basis("設計：RequestObject.Create（alg を選ぶ版）の remarks（RS256 は alg を受けない版と同じ。RSA の alg でなければ ArgumentException）")]
+        [Basis("#709")]
+        public void Create_Alg_Rs256_SameAsDefault_And_InvalidAlg()
+        {
+            using (RSA rsa = RSA.Create(2048))
+            {
+                RSAParameters priv = rsa.ExportParameters(true);
+                ClaimsInRO claims = new ClaimsInRO(null, null, null);
+
+                string withAlg = RequestObject.Create("client01", "https://op.example.com",
+                    "code", "", "https://rp.example.com/cb", "openid", "state01", "nonce01",
+                    "", "", "", claims, "", "", TimeSpan.FromMinutes(5), priv, JwtConst.RS256);
+                string withoutAlg = RequestObject.Create("client01", "https://op.example.com",
+                    "code", "", "https://rp.example.com/cb", "openid", "state01", "nonce01",
+                    "", "", "", claims, "", "", TimeSpan.FromMinutes(5), priv);
+
+                Assert.That(withAlg.Split('.')[0], Is.EqualTo(withoutAlg.Split('.')[0]), "ヘッダが同じ");
+                string iss;
+                Assert.That(RequestObject.Verify(withAlg, "https://op.example.com", out iss, rsa.ExportParameters(false)), Is.True,
+                    "alg を受けない版の検証（RS256）で通る");
+
+                foreach (string bad in new string[] { null, "", JwtConst.ES256, JwtConst.HS256, "none" })
+                {
+                    ArgumentException ex = Assert.Throws<ArgumentException>(() => RequestObject.Create(
+                        "client01", "https://op.example.com", "code", "", "https://rp.example.com/cb", "openid",
+                        "state01", "nonce01", "", "", "", claims, "", "", TimeSpan.FromMinutes(5), priv, bad),
+                        "alg = " + (bad ?? "null"));
+                    Assert.That(ex.ParamName, Is.EqualTo("alg"));
+                }
+
+                Assert.Throws<ArgumentException>(() => RequestObject.Create(
+                    "client01", "https://op.example.com", "code", "", "https://rp.example.com/cb", "openid",
+                    "state01", "nonce01", "", "", "", claims, "", "S256", TimeSpan.FromMinutes(5), priv, JwtConst.PS256),
+                    "code_challenge が無く code_challenge_method だけ（alg を選ぶ版も、先に確かめる）");
+            }
         }
 
         #endregion

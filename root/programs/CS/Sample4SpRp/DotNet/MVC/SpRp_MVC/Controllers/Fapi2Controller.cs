@@ -26,6 +26,7 @@
 //*  2026/11/09  玄人 幸道         新規作成（#668 の追加。汎用認証サイトの自己テストの FAPI2（CIBA を除く）を移した）
 //*  2026/11/10  玄人 幸道         暗号化した id_token は JWE のまま IdToken.Verify に渡す（復号は鍵を引くためだけ）。par_mtls（tls_client_auth）を足した
 //*  2026/11/13  玄人 幸道         id_token の検証のコメントを、今の部品（JWE の中でも RS256・ES256 を受ける。#683）に合わせた（#692）
+//*  2026/11/19  玄人 幸道         client_assertion・Request Object の署名を PS256 にした（MPAS の FAPI の登録は PS256・ES256 に限る。#709）
 //**********************************************************************************
 
 using System;
@@ -151,7 +152,7 @@ namespace SpRp_MVC.Controllers
                 Fapi2Controller.RedirectUri, GetConfigParameter.GetConfigValue("SpRp_Scope"), s.State, s.Nonce,
                 "", "", "", new ClaimsInRO(null, null, null),
                 OAuth2AndOIDCClient.PKCE_S256_CodeChallengeMethod(s.CodeVerifier), "",
-                Fapi2Controller.RequestObjectLifetime, Fapi2Controller.ClientRsaPrivateKey());
+                Fapi2Controller.RequestObjectLifetime, Fapi2Controller.ClientRsaPrivateKey(), JwtConst.PS256);
 
             #endregion
 

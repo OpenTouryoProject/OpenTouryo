@@ -51,7 +51,7 @@
     Tests\CoverageHtml（ReportGenerator の HTML）も作り直す。こちらは Git 管理外（.gitignore）。
 
 .PARAMETER OutputDir
-    HEAD 版の期待値とビルド ログの出力先。既定は %TEMP%\OpenTouryoTestResults。
+    HEAD 版の期待値とビルド ログの出力先。既定は %TEMP%\OpenTouryoTestResults（Linux では /tmp/OpenTouryoTestResults）。
 
 .PARAMETER Only
     対象名の部分一致で絞る（例: -Only "TestBatch"）。複数指定できる。
@@ -81,6 +81,12 @@
 
     **始める前から動いていた DBMS は、起動も停止もしない。**
     **起動したのに、その DBMS のテストが 1 件も実行されなければ NG にする**（スキップのまま OK にしない）。
+
+    ＜Linux の上で動かしたとき（#703 ph2）＞
+      上の 3. の net10.0 の回だけを、ビルドせずに回す。受け取った出力（NUnit\TestPublicDb\bin\Debug\net10.0）の
+      DLL を、dotnet test で直接回す（CI の build-windows.yml の linux-crossdb が artifact で渡す）。
+      net48 と 2.（SQL Server だけの回）は回さない。カバレッジは取らない。
+      -Linux・-Coverage とは同時に指定できない（-Only も、対象が無いので空振りで止まる）。
 .PARAMETER Coverage
     **カバレッジを測る専用の実行。** 結果を Tests\COVERAGE.md に書く。**-LocalServicesDir が必須。**
 
@@ -104,10 +110,23 @@
     LocalServicesOnDocker のフォルダ（-CrossDb / -Coverage で使う）。
     **省けば、環境変数 OT_LSOD_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**（root\files\tools\PowerShell\RepoPaths\RepoPath.ps1。#652）。
     **docker コマンドが使えれば Rancher Desktop 版（*.ps1）、使えなければ WSL2 版（*_wsl2.ps1）を使う。**
+    スクリプトは tools\ の下を先に探し、無ければ直下を探す（LocalServicesOnDocker の 331bba5 で tools\ に移った。#704）。
+.PARAMETER Wsl2
+    LocalServicesOnDocker を、**WSL2 版（*_wsl2.ps1）で動かす**（-CrossDb / -Coverage で使う。#712）。
+    **付けなければ、docker コマンドが使えれば Rancher Desktop 版、使えなければ WSL2 版**（上の -LocalServicesDir）。
+    **Windows に docker コマンドが在っても、WSL2 の Docker を使いたいとき**に付ける
+    （GitHub Actions の windows-latest は Windows コンテナ用の docker を持つので、自動の判定では Rancher Desktop 版を選んでしまう）。
 .PARAMETER Linux
     Windows でのビルドとテストの後に、**net10.0 の出力をそのまま Linux のコンテナで回す**（#632）。
     対象は EncAndDecUtilCUI（期待値は ResultCore100OnLinux.txt）と NUnit の TestPublic。
     **docker コマンドが要る**（Rancher Desktop）。指定しなければ、既定の動きは変わらない。
+
+    ＜Linux の上で動かしたとき（#703）＞
+      **docker を使わずに、この機械で直接回す。** 対象は上の 2 件だけで、ビルドはしない
+      （Windows の対象は外す。ビルドしないまま比べると、回していないのに OK になるため）。
+      net10.0 の出力（Golden\EncAndDecUtilCUI\core100\bin・NUnit\TestPublic\bin）は、
+      Windows でビルドしたものを置いておく（CI の build-windows.yml が artifact で渡す）。
+      -Coverage は指定できない。-CrossDb は、-Linux を付けずに指定する（-CrossDb の説明）。
 
     ＜なぜビルドした出力をそのまま使うか＞
       net10.0 の DLL は OS によらない。Windows で作ったものを Linux へ配置する、という
@@ -171,10 +190,15 @@
      2026/10/29  玄人 幸道         -List -PassThru に Result・Kind・SkipLog4net・NormBase64 を加え、-List では chcp しないようにした（#640）
      2026/11/07  玄人 幸道         -LocalServicesDir を省いたら、環境変数 OT_LSOD_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定 で決める（#652）
      2026/11/13  玄人 幸道         RepoPath.ps1 を root/files/tools/PowerShell/RepoPaths から読む（#687）
+     2026/11/17  玄人 幸道         Linux の上では、-Linux の対象を docker を使わずに直接回すようにした（#703）
+     2026/11/17  玄人 幸道         LocalServicesOnDocker のスクリプトを tools\ の下から探すようにした（無ければ直下。#704）
+     2026/11/17  玄人 幸道         Linux の上でも -CrossDb の net10.0 の回を、ビルドせずに直接回せるようにした（#703）
+     2026/11/19  玄人 幸道         -Wsl2 を追加した（docker コマンドが在っても、LocalServicesOnDocker を WSL2 版で動かす。windows-latest 用。#712）
 #>
 [CmdletBinding()]
 param(
-    [string]$OutputDir = (Join-Path $env:TEMP "OpenTouryoTestResults"),
+    # Linux には TEMP が無い（#703）
+    [string]$OutputDir = (Join-Path $(if ($env:TEMP) { $env:TEMP } else { [IO.Path]::GetTempPath() }) "OpenTouryoTestResults"),
     [string[]]$Only,
     [switch]$List,
     [switch]$PassThru,
@@ -182,12 +206,17 @@ param(
     [switch]$CrossDb,
     [switch]$Coverage,
     [string]$LocalServicesDir,
+    [switch]$Wsl2,
     [switch]$Linux,
     [string]$LinuxImage = "mcr.microsoft.com/dotnet/sdk:10.0",
     [string]$LinuxMemory = "4g"
 )
 
 $ErrorActionPreference = "Continue"
+
+# **Linux の上で動いているか**（#703）。-Linux の対象を、docker を通さずに、この機械で直接回す。
+#   $IsLinux は PowerShell 6 以降にだけある（Windows PowerShell 5.1 では $null ＝ Windows）。
+$onLinux = [bool]$IsLinux
 
 # ------------------------------------------------------------------
 # カレント ディレクトリからの実行を許可する
@@ -233,7 +262,8 @@ $coverageHtml  = Join-Path $testsRoot "CoverageHtml"
 # 何も表示していない今のうちに切り替えておけば、実行中は変化しない。
 # 戻さないのは、戻す操作でも再描画が起きてサマリが消えるため。
 # **-List では切り替えない。** バッチを動かさず、commit-msg フック（#640）からも呼ばれるため。
-if (-not $List -and ((cmd /c chcp) -notmatch '65001'))
+# Linux には cmd も chcp も無い（端末は UTF-8）。#703
+if (-not $List -and -not $onLinux -and ((cmd /c chcp) -notmatch '65001'))
 {
     cmd /c chcp 65001 | Out-Null
 }
@@ -466,6 +496,32 @@ if (-not ($Linux -or $Coverage))
     $tests = @($tests | Where-Object { -not $_.Linux })
 }
 
+# **Linux の上では、-Linux の対象だけを、ビルドせずに回す。**（#703）
+#   Windows の対象（バッチでビルドして回すもの）は外す。外さないと、ビルドしないまま
+#   ワーキング ツリーの Result*.txt（取りたての作業ツリーでは HEAD と同じ）と比べ、回していないのに OK になる。
+#   ビルドの出力（net10.0）は、Windows でビルドしたものを受け取って置いておく（CI の build-windows.yml）。
+#   -CrossDb も回せる（#703 ph2）。対象は TestPublicDb の net10.0 だけで、DBMS ごとの回（下の「クロス DB」）だけを回す
+#   （net48 は Windows でしか動かない。SQL Server だけの回は、DBMS ごとの回が SQL Server の分も含むので回さない）。
+if ($onLinux)
+{
+    if ($Coverage -or ($Linux -eq $CrossDb))
+    {
+        Write-Host "  **Linux の上では、-Linux か -CrossDb のどちらか 1 つだけを指定できます。**（Windows でビルドした net10.0 の出力を、この機械で回す）" -ForegroundColor Red
+        exit 1
+    }
+    $SkipBuild = $true
+    if ($Linux)
+    {
+        $tests = @($tests | Where-Object { $_.Linux })
+        Write-Host ("  Linux : -Linux の対象 {0} 件を、この機械で直接回します（ビルドはしない）" -f $tests.Count) -ForegroundColor Yellow
+    }
+    else
+    {
+        $tests = @()
+        Write-Host "  Linux : -CrossDb の net10.0 の回だけを、この機械で直接回します（ビルドはしない）" -ForegroundColor Yellow
+    }
+}
+
 # **-Only は複数指定できる。どれかに当たれば対象。**（#610）
 #   1 つでも空振りしたら止める（打ち間違いが緑になるのを防ぐ。#576）。
 if ($Only)
@@ -519,10 +575,21 @@ if ($crossDbRun)
     . (Join-Path $PSScriptRoot '..\files\tools\PowerShell\RepoPaths\RepoPath.ps1')
     $LocalServicesDir = Resolve-RepoPath -Variable OT_LSOD_PATH -Argument $LocalServicesDir -ArgumentName '-LocalServicesDir'
 
-    if (-not $LocalServicesDir -or -not (Test-Path (Join-Path $LocalServicesDir "Start-Services.ps1")))
+    # **スクリプトは tools\ の下を先に探し、無ければ直下を探す**（#704）。
+    #   LocalServicesOnDocker は 331bba5（2026-11-13）で *.ps1 を直下から tools\ に移した。
+    #   移す前の版を使っている手元でも動くよう、直下も残す。
+    $svcDir = $null
+    if ($LocalServicesDir)
+    {
+        foreach ($cand in @((Join-Path $LocalServicesDir "tools"), $LocalServicesDir))
+        {
+            if (Test-Path (Join-Path $cand "Start-Services.ps1")) { $svcDir = $cand; break }
+        }
+    }
+    if (-not $svcDir)
     {
         Write-Host ("  **{0} には -LocalServicesDir（LocalServicesOnDocker のフォルダ。環境変数 OT_LSOD_PATH でもよい）が要ります。**" -f $crossDbMode) -ForegroundColor Red
-        Write-Host ("  指定 : '{0}'（Start-Services.ps1 が見つかりません）" -f $LocalServicesDir) -ForegroundColor Yellow
+        Write-Host ("  指定 : '{0}'（tools\Start-Services.ps1 も Start-Services.ps1 も見つかりません）" -f $LocalServicesDir) -ForegroundColor Yellow
         exit 1
     }
 
@@ -532,7 +599,7 @@ if ($crossDbRun)
         $tests = @($tests | Where-Object { $_.Kind -eq "NUnit" })
         Write-Host ("  -Coverage : 対象を NUnit の {0} 件に絞りました（Linux の回を含む。続けてクロス DB を回します）" -f $tests.Count) -ForegroundColor Yellow
     }
-    else
+    elseif (-not $onLinux)
     {
         # **対象は TestPublicDb だけにする。** 他のテストは DBMS を切り替えても結果が変わらない。
         $tests = @($tests | Where-Object { $_.Name -like "*$crossDbProject*" })
@@ -544,16 +611,16 @@ if ($crossDbRun)
         Write-Host ("  -CrossDb : 対象を {0} の {1} 件に絞りました" -f $crossDbProject, $tests.Count) -ForegroundColor Yellow
     }
 
-    # **docker コマンドが使えれば Rancher Desktop 版、使えなければ WSL2 版。**
+    # **docker コマンドが使えれば Rancher Desktop 版、使えなければ WSL2 版。** -Wsl2 なら、常に WSL2 版（#712）。
     #   2 つは別の Docker を見るので、混ぜると同じサービスが二重に立つ。
     $suffix = "_wsl2"
-    if (Get-Command docker -EA SilentlyContinue)
+    if (-not $Wsl2 -and (Get-Command docker -EA SilentlyContinue))
     {
         & docker info *> $null
         if ($LASTEXITCODE -eq 0) { $suffix = "" }
     }
-    $svcStart = Join-Path $LocalServicesDir ("Start-Services{0}.ps1" -f $suffix)
-    $svcStop  = Join-Path $LocalServicesDir ("Stop-Services{0}.ps1" -f $suffix)
+    $svcStart = Join-Path $svcDir ("Start-Services{0}.ps1" -f $suffix)
+    $svcStop  = Join-Path $svcDir ("Stop-Services{0}.ps1" -f $suffix)
     Write-Host ("  {0} : {1} を使います" -f $crossDbMode, $(if ($suffix) { "WSL2 版（*_wsl2.ps1）" } else { "Rancher Desktop 版（*.ps1）" })) -ForegroundColor Yellow
 
     foreach ($s in @($svcStart, $svcStop))
@@ -583,8 +650,9 @@ if ($Linux -or $Coverage)
     # -Coverage も Linux の回を含む（OpenSSL 系など、Linux でしか通らない行を数えるため）
     $linuxMode = $(if ($Coverage) { "-Coverage" } else { "-Linux" })
 
-    $dockerOk = $false
-    if (Get-Command docker -EA SilentlyContinue)
+    # Linux の上では docker を使わない（この機械で直接回す。#703）
+    $dockerOk = $onLinux
+    if (-not $onLinux -and (Get-Command docker -EA SilentlyContinue))
     {
         & docker info *> $null
         $dockerOk = ($LASTEXITCODE -eq 0)
@@ -596,11 +664,14 @@ if ($Linux -or $Coverage)
     }
 
     # **同じ名前のコンテナがあれば触らない。** 前回の残りか、人が動かしているもの。
-    $existing = (& docker ps -a --filter "name=^$linuxContainer`$" --format "{{.Names}}" 2>$null)
-    if ($existing)
+    if (-not $onLinux)
     {
-        Write-Host ("  **コンテナ '{0}' が既にあります。** 触らずに止めます（docker ps -a で確かめてください）。" -f $linuxContainer) -ForegroundColor Red
-        exit 1
+        $existing = (& docker ps -a --filter "name=^$linuxContainer`$" --format "{{.Names}}" 2>$null)
+        if ($existing)
+        {
+            Write-Host ("  **コンテナ '{0}' が既にあります。** 触らずに止めます（docker ps -a で確かめてください）。" -f $linuxContainer) -ForegroundColor Red
+            exit 1
+        }
     }
 
     if ($Linux -and @($tests | Where-Object { $_.Linux }).Count -eq 0)
@@ -608,7 +679,10 @@ if ($Linux -or $Coverage)
         Write-Host "  **-Linux の対象が、-Only で外れています。**" -ForegroundColor Red
         exit 1
     }
-    Write-Host ("  -Linux : {0} を使います（メモリ上限 {1}）" -f $LinuxImage, $LinuxMemory) -ForegroundColor Yellow
+    if (-not $onLinux)
+    {
+        Write-Host ("  -Linux : {0} を使います（メモリ上限 {1}）" -f $LinuxImage, $LinuxMemory) -ForegroundColor Yellow
+    }
 }
 
 # サービスの起動・停止（#623）
@@ -696,7 +770,15 @@ foreach ($t in $tests)
 
     # バイト列を保つため cmd のリダイレクトで受ける
     # （PowerShell のパイプを経由すると再エンコードされる）
-    cmd /c "git -C `"$repoRoot`" show `"HEAD:$rel`" > `"$dst`" 2>nul"
+    # Linux には cmd が無いので、bash のリダイレクトで受ける（#703）
+    if ($onLinux)
+    {
+        & bash -c 'git -C "$1" show "HEAD:$2" > "$3" 2>/dev/null' bash $repoRoot $rel $dst
+    }
+    else
+    {
+        cmd /c "git -C `"$repoRoot`" show `"HEAD:$rel`" > `"$dst`" 2>nul"
+    }
 
     if ((Test-Path $dst) -and (Get-Item $dst).Length -gt 0)
     {
@@ -851,7 +933,7 @@ $linuxFailed = @{}
 if ($linuxTests.Count -gt 0)
 {
     Write-Host ""
-    Write-Host "=== Linux : コンテナで実行 ===" -ForegroundColor Cyan
+    Write-Host ("=== Linux : {0}で実行 ===" -f $(if ($onLinux) { "この機械" } else { "コンテナ" })) -ForegroundColor Cyan
 
     $linuxOut = Join-Path $OutputDir "linux"
     if (Test-Path $linuxOut) { Remove-Item $linuxOut -Recurse -Force }
@@ -863,42 +945,69 @@ if ($linuxTests.Count -gt 0)
     $goldenBin = Join-Path $testsRoot "Golden\EncAndDecUtilCUI\core100\bin\Debug\net10.0"
     $nunitBin  = Join-Path $testsRoot "NUnit\TestPublic\bin\Debug\net10.0"
 
+    # **スクリプトの中のパス。** コンテナではマウントした先、この機械（Linux の上。#703）では元の場所をそのまま使う。
+    #   どちらも、出力のフォルダを作業の場所（Work）に写してから動かす（出力のフォルダには書かない）。
+    if ($onLinux)
+    {
+        $lx = @{ Out = $linuxOut; Nunit = $nunitBin; Golden = $goldenBin; Work = (Join-Path $linuxOut "work") }
+    }
+    else
+    {
+        $lx = @{ Out = "/out"; Nunit = "/nunit"; Golden = "/golden"; Work = "/tmp" }
+    }
+
     $dockerArgs = @("run", "--rm", "--name", $linuxContainer, "--memory", $LinuxMemory, "-v", ("{0}:/out" -f $linuxOut))
-    $sh = @("set -u")
+    $sh = @("set -u", ("mkdir -p '{0}'" -f $lx.Work))
     if ($nunit)
     {
         $dockerArgs += @("-v", ("{0}:/nunit:ro" -f $nunitBin))
-        $sh += "cp -r /nunit /tmp/nunit"
+        $sh += "cp -r '{0}' '{1}/nunit'" -f $lx.Nunit, $lx.Work
 
         # カバレッジ（上の＜カバレッジ＞）。portable の基盤で差し替えてから回す。
         $covArgs = ""
         $linuxCov = Get-LinuxCoverageSetup $linuxOut
         if ($linuxCov)
         {
-            $dockerArgs += @("-v", ("{0}:/base:ro" -f $linuxCov.Base), "-v", ("{0}:/coverlet:ro" -f $linuxCov.Collector))
-            $sh += "cp /base/OpenTouryo.* /tmp/nunit/"
-            $covArgs = " --test-adapter-path /coverlet --collect 'XPlat Code Coverage' --settings /out/coverlet.runsettings --results-directory /out/cov"
+            if ($onLinux)
+            {
+                $covBase = $linuxCov.Base; $covCollector = $linuxCov.Collector
+            }
+            else
+            {
+                $dockerArgs += @("-v", ("{0}:/base:ro" -f $linuxCov.Base), "-v", ("{0}:/coverlet:ro" -f $linuxCov.Collector))
+                $covBase = "/base"; $covCollector = "/coverlet"
+            }
+            $sh += "cp '{0}'/OpenTouryo.* '{1}/nunit/'" -f $covBase, $lx.Work
+            $covArgs = " --test-adapter-path '{0}' --collect 'XPlat Code Coverage' --settings '{1}/coverlet.runsettings' --results-directory '{1}/cov'" -f $covCollector, $lx.Out
         }
-        $sh += "dotnet test /tmp/nunit/TestPublic.dll --logger 'trx;LogFileName=/out/TestPublic_linux.trx'$covArgs > /out/nunit.log 2>&1"
+        $sh += "dotnet test '{0}/nunit/TestPublic.dll' --logger 'trx;LogFileName={1}/TestPublic_linux.trx'{2} > '{1}/nunit.log' 2>&1" -f $lx.Work, $lx.Out, $covArgs
     }
     if ($golden)
     {
         $dockerArgs += @("-v", ("{0}:/golden:ro" -f $goldenBin))
-        $sh += "cp -r /golden /tmp/golden"
+        $sh += "cp -r '{0}' '{1}/golden'" -f $lx.Golden, $lx.Work
         # 最後に Console.ReadKey を呼ぶので、標準入力を閉じておく
-        $sh += "cd /tmp/golden && dotnet EncAndDecUtilCUICore.dll < /dev/null > /out/golden.txt 2>&1"
+        $sh += "cd '{0}/golden' && dotnet EncAndDecUtilCUICore.dll < /dev/null > '{1}/golden.txt' 2>&1" -f $lx.Work, $lx.Out
     }
 
     # **スクリプトはファイルで渡す**（LF・BOM 無し）。引数で渡すと、5.1 は中の引用符を落とす。
-    [IO.File]::WriteAllText((Join-Path $linuxOut "run.sh"), (($sh -join "`n") + "`n"), (New-Object Text.UTF8Encoding $false))
+    $runSh = Join-Path $linuxOut "run.sh"
+    [IO.File]::WriteAllText($runSh, (($sh -join "`n") + "`n"), (New-Object Text.UTF8Encoding $false))
     $dockerArgs += @($LinuxImage, "bash", "/out/run.sh")
 
     $log = Join-Path $OutputDir "linux_docker.log"
     $sw  = [Diagnostics.Stopwatch]::StartNew()
-    & docker @dockerArgs *>&1 | Out-File $log -Encoding UTF8
-    $dockerExit = $LASTEXITCODE
+    if ($onLinux)
+    {
+        & bash $runSh *>&1 | Out-File $log -Encoding UTF8
+    }
+    else
+    {
+        & docker @dockerArgs *>&1 | Out-File $log -Encoding UTF8
+    }
+    $runExit = $LASTEXITCODE
     $sw.Stop()
-    Write-Host ("  完了 ({0:N1} 秒、終了コード {1})  ログ : {2}" -f $sw.Elapsed.TotalSeconds, $dockerExit, $log)
+    Write-Host ("  完了 ({0:N1} 秒、終了コード {1})  ログ : {2}" -f $sw.Elapsed.TotalSeconds, $runExit, $log)
 
     # 結果を、Windows の回と同じ場所へ置く。**無ければ置かない**（比較で「結果無し」になる）。
     if ($golden)
@@ -914,7 +1023,7 @@ if ($linuxTests.Count -gt 0)
         else
         {
             # **前回の結果ファイルと比べて OK にしない。** ワーキング ツリーのファイルは消さずに、NG として扱う。
-            $linuxFailed[$golden.Name] = "コンテナで結果が出ませんでした（ログ : $log）"
+            $linuxFailed[$golden.Name] = "Linux の回で結果が出ませんでした（ログ : $log）"
         }
     }
     if ($nunit)
@@ -1132,6 +1241,9 @@ elseif ($crossDbRun)
         Write-Host ""
         Write-Host ("=== クロス DB : {0}（{1}） ===" -f $db.Service, $db.Dbms) -ForegroundColor Cyan
 
+        # Linux の上では net10.0 だけ（#703 ph2。net48 は Windows でしか動かない）
+        $tfms = @($db.Tfms | Where-Object { -not $onLinux -or $_ -eq "net10.0" })
+
         # **始める前から動いていたものは、起動も停止もしない。**（人の作業状態を変えない）
         $wasRunning = Test-LocalPort $db.Port
         if ($wasRunning)
@@ -1146,7 +1258,7 @@ elseif ($crossDbRun)
                 Write-Host ("  **{0} を起動できませんでした。**" -f $db.Service) -ForegroundColor Red
                 # 中途半端に立ったものを残さない
                 Invoke-LocalService $svcStop $db.Service | Out-Null
-                foreach ($tfm in $db.Tfms)
+                foreach ($tfm in $tfms)
                 {
                     $results += [pscustomobject]@{ テスト = ("{0} ({1}) [{2}]" -f $crossDbProject, $tfm, $db.Service); 結果 = "起動失敗"; 差分 = "-" }
                 }
@@ -1174,23 +1286,35 @@ elseif ($crossDbRun)
             $resDir = Join-Path $nunitDir ("TestResults\CrossDb\{0}" -f $db.Service)
             if (Test-Path $resDir) { Remove-Item $resDir -Recurse -Force }
 
-            foreach ($tfm in $db.Tfms)
+            foreach ($tfm in $tfms)
             {
                 $name = "{0} ({1}) [{2}]" -f $crossDbProject, $tfm, $db.Service
                 $trxName = "{0}_{1}.trx" -f $crossDbProject, $tfm
                 Write-Host ""
                 Write-Host ("=== {0} ===" -f $name) -ForegroundColor Cyan
 
-                $testArgs = @("test", $csproj, "--no-build", "-c", "Debug", "-f", $tfm,
-                    "--results-directory", $resDir, "--logger", "trx;LogFileName=$trxName")
+                # **Linux の上では、受け取ったビルドの出力（DLL）を直接回す**（#703 ph2）。
+                #   csproj を --no-build で回すには obj（Windows のパスを持つ）が要る。
+                #   カバレッジは取らない（Windows 形式の PDB を Linux の coverlet が読めない。-Linux の節）。
+                $withCoverage = ($tfm -eq "net10.0" -and -not $onLinux)
+                if ($onLinux)
+                {
+                    $dll = Join-Path $nunitDir ("{0}\bin\Debug\{1}\{0}.dll" -f $crossDbProject, $tfm)
+                    $testArgs = @("test", $dll, "--results-directory", $resDir, "--logger", "trx;LogFileName=$trxName")
+                }
+                else
+                {
+                    $testArgs = @("test", $csproj, "--no-build", "-c", "Debug", "-f", $tfm,
+                        "--results-directory", $resDir, "--logger", "trx;LogFileName=$trxName")
+                }
                 # カバレッジは net10.0 だけで取る（y_Build_TestCode_NUnit.bat と同じ）
-                if ($tfm -eq "net10.0") { $testArgs += @("--settings", $runsettings, "--collect", "XPlat Code Coverage") }
+                if ($withCoverage) { $testArgs += @("--settings", $runsettings, "--collect", "XPlat Code Coverage") }
 
                 $log = Join-Path $OutputDir ("crossdb_{0}_{1}.log" -f $db.Service, ($tfm -replace '[^A-Za-z0-9]', '_'))
                 & dotnet @testArgs *>&1 | Out-File $log -Encoding UTF8
 
                 $results += Get-NUnitResult -Name $name -Trx (Join-Path $resDir $trxName) `
-                    -ShowCoverage ($tfm -eq "net10.0") -RequireDbms $db.Dbms
+                    -ShowCoverage $withCoverage -RequireDbms $db.Dbms
             }
         }
         finally

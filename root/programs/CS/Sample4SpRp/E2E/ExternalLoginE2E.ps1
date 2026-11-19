@@ -17,7 +17,6 @@
       | 前提 | 確かめ方 |
       |---|---|
       | MPAS のスタブ | https://localhost:44310 の Discovery が 200（..\README.md の 2 節。StubCompose.ps1） |
-      | SQL Server（Northwind） | localhost:1433 に繋がる（MVC の /Crud1/Index が DB を読む） |
       | ASP.NET 状態サービス | aspnet_state が動いている（WebForms のセッション） |
       | ビルド | 1_BuildAll.ps1（C#・VB の WebApp_sample、WebAppCore_sample） |
       | SAML2 | **MPAS の雛形のクライアントに redirect_uri_saml が要る**（無いと IdP は応答を返さない） |
@@ -34,7 +33,8 @@
       | IIS Express（net48） | サイトのフォルダ（obj を除く）を -OutputDir に写し、写しの app.config の値を書き換える |
       | Kestrel（net10.0） | 環境変数 appSettings__<キー>（Host.CreateDefaultBuilder が、appsettings.json より優先する） |
       **SAML2 は、SpRp_Saml2SpEntityId（自分（SP）の entityID）も差し替える**（対象ごと。要求の Issuer と同じ http:// ＋ client_id。#693）。
-        - Keycloak は、応答の Audience に SP の entityID を入れる（SAML 2.0 Profiles §4.1.4.2）。スタブは ACS の URL を入れるので、スタブでは差し替えない（空のまま）
+        - Keycloak も MPAS のスタブも、応答の Audience に SP の entityID を入れる（SAML 2.0 Profiles §4.1.4.2。スタブは MPAS#389 から）。
+          **サンプルの既定値も同じ値**にしてあるので、スタブでは差し替えず、その値で通る（差し替えは -Idp KCK のときだけ）
         - 要求の Destination（SAML 2.0 Bindings §3.4.5.2）は、サンプルが常に入れる（Keycloak は、無いと missing_required_destination で断る）
 
     ＜ブラウザの代わり＞
@@ -85,6 +85,9 @@
      2026/11/13  玄人 幸道         RepoPath.ps1・SummaryTable.ps1 を root/files/tools/PowerShell の下（RepoPaths・Verify）から読む（#687）
      2026/11/13  玄人 幸道         -Idp KCK（Keycloak）を足した。IdP の違いは Idp.ps1 にまとめた（#692）
      2026/11/14  玄人 幸道         Keycloak でも SAML2 を回す。対象ごとの SP の entityID（SpRp_Saml2SpEntityId）を差し替える（#693）
+     2026/11/18  玄人 幸道         Linux の上で net10.0 の対象を回せるようにした。前提から SQL Server を外した（辿る画面は DB を読まない。#703）
+     2026/11/19  玄人 幸道         スタブの SAML2 の Audience が entityID になった（MPAS#389）ので、サンプルの既定値を entityID にし、スタブでは差し替えない旨を直した
+     2026/11/19  玄人 幸道         MPAS のスタブの同意画面の送信を、フォームの action へ送るようにした（MPAS#359 で、送信の口が <認可の口>/consent に移った。#710）
 #>
 [CmdletBinding()]
 param(
@@ -103,7 +106,8 @@ param(
 
     [string] $StubAppSettings = '',
 
-    [string] $OutputDir = (Join-Path $env:TEMP 'OpenTouryoE2E')
+    # Linux には TEMP が無い（#703）
+    [string] $OutputDir = (Join-Path $(if ($env:TEMP) { $env:TEMP } else { [IO.Path]::GetTempPath() }) 'OpenTouryoE2E')
 )
 
 $ErrorActionPreference = 'Stop'
@@ -153,6 +157,8 @@ $targets = @(
 )
 
 $targets = @($targets | Where-Object { $Lang -eq 'Both' -or $_.Lang -eq $Lang })
+# **Linux の上では、net10.0（Kestrel）だけ**（IIS Express は Windows でしか動かない。#703）
+if (Test-E2EOnLinux) { $targets = @($targets | Where-Object { $_.Host -eq 'Kestrel' }) }
 if ($Only)
 {
     $targets = @($targets | Where-Object { $t = $_; @($Only | Where-Object { $t.Name -like "*$_*" }).Count -gt 0 })
@@ -272,7 +278,7 @@ function Invoke-IdpScreens($client, $res, [string]$password)
         }
         elseif ($res.Body -match 'name="submit.Grant"')
         {
-            $res = Send-Http $client 'POST' $res.Url @{
+            $res = Send-Http $client 'POST' (Get-StubConsentUrl $res) @{
                 'submit.Grant' = 'Grant'
                 __RequestVerificationToken = (Get-Field $res.Body '__RequestVerificationToken')
             }
@@ -402,12 +408,16 @@ function Start-App($t)
         if (-not (Test-Path $t.Path)) { throw "ビルドされていません : $($t.Path)" }
 
         # **IdP がスタブでなければ、設定を環境変数で差し替える**（appSettings__<キー>。起動したら、このプロセスからは消す）
+        #   **Linux の上では、設定の C:/root/... も、このリポジトリの root/... に差し替える**（Idp.ps1 の Get-E2EPathConfig。#703）
+        $pathConfig = Get-E2EPathConfig (Join-Path (Split-Path $t.Path) 'appsettings.json') $here
+        foreach ($k in $pathConfig.Keys) { if (-not $appSettings.ContainsKey($k)) { $appSettings[$k] = $pathConfig[$k] } }
         foreach ($k in $appSettings.Keys) { [Environment]::SetEnvironmentVariable("appSettings__$k", $appSettings[$k]) }
         try
         {
             # コンテンツ ルートを合わせるため、出力フォルダを作業ディレクトリにする（st_Server.ps1 と同じ）
+            $hidden = Get-E2EHiddenWindow
             return Start-Process 'dotnet' -ArgumentList "`"$($t.Path)`"", '--urls', "https://localhost:$($t.Port)" `
-                -PassThru -WindowStyle Hidden -WorkingDirectory (Split-Path $t.Path) `
+                -PassThru @hidden -WorkingDirectory (Split-Path $t.Path) `
                 -RedirectStandardOutput $log -RedirectStandardError "$log.err"
         }
         finally
@@ -498,7 +508,7 @@ $d = Send-Http $probe 'GET' $idpInfo.Discovery $null
 $probe.Dispose()
 if ($d.Status -ne 200) { $lack += "$($idpInfo.Name) が応答しません（$($idpInfo.Discovery)。$($idpInfo.StartHint)）" }
 
-if (-not (Test-PortInUse 1433)) { $lack += 'SQL Server（localhost:1433）に繋がりません（LocalServicesOnDocker の Start-Services.ps1 sqlserver）' }
+#   **SQL Server は要らない**（#703）。辿る画面（ログイン・戻り先・/Crud1/Index の GET・menu.aspx）は DB を読まない
 
 if (@($targets | Where-Object { $_.Kind -eq 'WebForms' }).Count -gt 0)
 {
@@ -539,7 +549,7 @@ if ($lack.Count -gt 0)
     foreach ($l in $lack) { Write-Output "  NG  $l" }
     exit 2
 }
-Write-Output "  OK  $($idpInfo.Name)（$($idpInfo.Issuer)）・SQL Server・状態サービス・テスト利用者"
+Write-Output "  OK  $($idpInfo.Name)（$($idpInfo.Issuer)）・状態サービス・テスト利用者"
 if ($Idp -eq 'KCK') { Write-Output "      （アプリの設定（SAML2 の SP の entityID を含む）を差し替えて動かす。net48 はサイトの写し（$OutputDir\site_*）、net10.0 は環境変数）" }
 
 # ------------------------------------------------------------------

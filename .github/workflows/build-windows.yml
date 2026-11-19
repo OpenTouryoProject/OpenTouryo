@@ -9,10 +9,19 @@
 #   ここには判定を書かない（書くと二重管理になる）。
 #   順序も入れ替えない（1 のクリーンとアセンブリ配置が 2・3 の前提になる）。
 #
+#   続けて、Linux のジョブ（linux）が、net10.0 の出力を ubuntu-latest で回す
+#   （2_RunAllTests.ps1 -Linux と同じ対象。#703）。
+#   クロス DB のジョブ（linux-crossdb）が、TestPublicDb の net10.0 を Oracle・MySQL・PostgreSQL で回す
+#   （2_RunAllTests.ps1 -CrossDb の net10.0 の分。#703）。
+#   認証の E2E のジョブ（linux-kck・linux-stub）が、SpRp のサンプルの E2E（Sample4SpRp\E2E）の net10.0 を、IdP（STS）を Keycloak・MPAS のスタブにして回す（#703）。
+#   Windows ランナー＋WSL2 の Docker のジョブ（win-crossdb・win-sts）が、Windows でしか動かない net48 を回す（#712）。
+#     win-crossdb … TestPublicDb のクロス DB（net48・net10.0）。win-sts … 外部ログインの E2E の net48・WebForms（IdP は Keycloak）
+#
 # ＜対象外＞
 #   ・GUI アプリケーション（WinForms / WPF / 各ツールの画面）… RELEASE.md 4 節の手作業
-#   ・SQL Server 以外の DBMS への接続 … 自動テストは /Dap SQL のみを使う
-#     （TestSQLUtility は 4 DBMS の SQL 生成を検証するが、接続はしない）
+#   ・SpRp の E2E の net48・WebForms のうち、外部ログインの E2E（IdP は Keycloak）は win-sts が回す（#712）。MPAS のスタブの回と、CLI・FAPI の E2E の net48 は手元で回す
+#   ・Golden の TestDataAccess のクロス DB … 手元で回す（build は /Dap SQL のみを使う。TestSQLUtility は 4 DBMS の SQL 生成を検証するが、接続はしない）
+#   ・net48 の NUnit TestPublicDb のクロス DB は、win-crossdb（Windows ランナー＋WSL2 の Docker。#712）が回す
 #
 # ＜署名エラーを除外している理由＞
 #   WSClientWinCone_sample.csproj は ClickOnce の署名が有効で、証明書を拇印で指定し、
@@ -27,7 +36,9 @@
 #   このため 3 つのコードを対象にし、さらに当該プロジェクトに限定する。
 #   除外した内容はログに一覧されるので、握り潰しにはならない。
 
-name: Build on Windows
+# Linux のジョブ（#703）を足したので、名前は「Build and test」にした。
+# ファイル名は変えない（必須のチェックはジョブ名の build、文書の参照・実行の履歴を壊さないため）。
+name: Build and test
 
 on:
   push:
@@ -114,7 +125,7 @@ jobs:
       # ------------------------------------------------------------------
       # LocalServicesOnDocker の docker-compose はそのままでは使えない。
       # sqlserver サービスが Linux イメージ（mcr.microsoft.com/mssql/server）で、
-      # windows-latest は Linux コンテナを動かせないため（多段のネストができない）。
+      # windows-latest は Windows コンテナ用の docker だけを持つため（Linux コンテナは WSL2 経由なら動くと、#711 で分かった。build は、このまま直接入れる。net48 のクロス DB は win-crossdb が WSL2 で回す）。
       # 代わりに runner へ直接 SQL Server を入れ、同リポジトリの instnwnd.sql だけを使う。
       #
       # Developer の ISO を直接取り、ハッシュを確かめてから導入する。
@@ -297,6 +308,53 @@ jobs:
         working-directory: root/programs
         run: .\2_RunAllTests.ps1 -OutputDir "${{ runner.temp }}\TestResults"
 
+      # Linux のジョブ（下の linux・linux-crossdb）へ、net10.0 の出力を渡す（#703）。
+      # 2_RunAllTests.ps1 -Linux がコンテナで回しているものと同じ 2 つ（EncAndDecUtilCUI・TestPublic）と、
+      # -CrossDb が回す TestPublicDb。
+      # テストが NG でも渡す（Linux の回は、Windows の回とは別に結果を出す）。
+      - name: Upload net10.0 output for Linux
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-input
+          path: |
+            root/programs/CS/Frameworks/Tests/Golden/EncAndDecUtilCUI/core100/bin/Debug/net10.0/
+            root/programs/CS/Frameworks/Tests/NUnit/TestPublic/bin/Debug/net10.0/
+            root/programs/CS/Frameworks/Tests/NUnit/TestPublicDb/bin/Debug/net10.0/
+          if-no-files-found: error
+          retention-days: 1
+
+      # 認証の E2E のジョブ（下の linux-kck・linux-stub）へ、SpRp の E2E が動かすサンプルの net10.0 の出力を渡す（#703 ph3）。
+      # 1_BuildAll.ps1 がビルドしたもの（11_Build_SpRp_sample.bat・5_Build_CLICore_sample.bat・10_Build_WebAppCore_sample.bat）。
+      - name: Upload net10.0 samples for Linux STS E2E
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-sts-input
+          path: |
+            root/programs/CS/Sample4SpRp/DotNet/MVC/SpRp_MVC/bin/Debug/net10.0/
+            root/programs/CS/Sample4SpRp/DotNet/CLI/SpRp_CLI/bin/Debug/net10.0/
+            root/programs/CS/Samples4NetCore/Legacy/CLI_sample/DAG_Login_CLI/DAG_Login_CLI/bin/Debug/net10.0/
+            root/programs/CS/Samples4NetCore/Legacy/CLI_sample/LIR_Login_CLI/LIR_Login_CLI/bin/Debug/net10.0/
+            root/programs/CS/Samples4NetCore/Backend/MVC_Sample/MVC_Sample/bin/Debug/net10.0/
+          if-no-files-found: error
+          retention-days: 1
+
+      # MPAS のスタブの回（linux-stub）へ、このリポジトリがビルドした部品（net10.0）を渡す。
+      # MPAS は、部品を OpenTouryoAssemblies/（.gitignore）から参照する。**取ってきた MPAS をビルドするのに、いまのこのリポジトリの部品を使う**（#703）。
+      - name: Upload net10.0 assemblies for the Linux stub
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: linux-stub-input
+          path: |
+            root/programs/CS/Frameworks/Infrastructure/Build_netcore100/net10.0/OpenTouryo.Business.dll
+            root/programs/CS/Frameworks/Infrastructure/Build_netcore100/net10.0/OpenTouryo.Framework.dll
+            root/programs/CS/Frameworks/Infrastructure/Build_netcore100/net10.0/OpenTouryo.Public.dll
+            root/programs/CS/Frameworks/Infrastructure/Build_netcore100/net10.0/OpenTouryo.Public.Security.dll
+          if-no-files-found: error
+          retention-days: 1
+
       # ------------------------------------------------------------------
       # 疎通（3_SmokeTest.ps1）
       # ------------------------------------------------------------------
@@ -361,3 +419,663 @@ jobs:
         run: |
           Write-Host "::error::Vulnerable packages were found (or could not be checked). See the 'Check vulnerable packages' step and the job summary."
           exit 1
+
+  # --------------------------------------------------------------------
+  # Linux（#703）
+  # --------------------------------------------------------------------
+  # Windows でビルドした net10.0 の出力を、Linux のランナーでそのまま回す。
+  # 手元の 2_RunAllTests.ps1 -Linux が、Linux のコンテナで回しているものと同じ。
+  # windows-latest は Linux のコンテナを動かせないため、ランナーを分ける。
+  # 判定は 2_RunAllTests.ps1 が行う（Linux の上で -Linux を付けると、docker を使わずに直接回す）。
+  #
+  # ビルドの出力は同じ実行の中でしか渡せないので、別のファイルにせず、このワークフローに置く。
+  linux:
+    needs: build
+    # Windows の回が NG でも回す（出力が渡っていなければ、受け取りで落ちる）
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      # 上の「Upload net10.0 output for Linux」が、Tests の下の相対パスで置いたもの
+      - name: Download net10.0 output
+        uses: actions/download-artifact@v8
+        with:
+          name: linux-input
+          path: root/programs/CS/Frameworks/Tests
+
+      - name: Run tests on Linux
+        shell: pwsh
+        working-directory: root/programs
+        run: ./2_RunAllTests.ps1 -Linux -OutputDir "${{ runner.temp }}/TestResults"
+
+      - name: Upload test results (Linux)
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-linux
+          path: |
+            ${{ runner.temp }}/TestResults
+            root/programs/CS/Frameworks/Tests/Golden/EncAndDecUtilCUI/ResultCore100OnLinux.txt
+            root/programs/CS/Frameworks/Tests/NUnit/TestResults/Linux/**
+          if-no-files-found: warn
+
+  # --------------------------------------------------------------------
+  # クロス DB の net10.0（#703 ph2）
+  # --------------------------------------------------------------------
+  # TestPublicDb（net10.0）を、Oracle・MySQL・PostgreSQL で回す。手元の 2_RunAllTests.ps1 -CrossDb と同じ。
+  # DB は LocalServicesOnDocker の Start-Services.ps1 で、SQL Server（必須）に 1 つずつ足して起動・停止する
+  # （手元と同じ経路。起動・準備完了の待ち・停止は 2_RunAllTests.ps1 が行う）。
+  # net48 は Windows とコンテナが同じ機械に要るので、ここでは回さない（win-crossdb が回す。#712）。
+  #
+  # ＜LocalServicesOnDocker はコミットで固定する＞
+  #   向こうの変更（スクリプトの場所・初期化の SQL）が、こちらの CI に黙って届かないようにする。
+  #   上げるときは、手元の -CrossDb で確かめてから LSOD_REF を変える。
+  #
+  # ＜回す契機＞
+  #   ワークフローの契機すべて（deps への push・master 宛の PR・手動・週 1 回）。
+  #   DB のドライバの更新（deps）で壊れたものを、その場で捕まえるため。
+  linux-crossdb:
+    needs: build
+    # Windows の回が NG でも回す（出力が渡っていなければ、受け取りで落ちる）
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      LSOD_REPO: NetDevInfraWGinOSSConsortium/LocalServicesOnDocker
+      LSOD_REF: 269e717939033e230835d0325eec255c1e03f71a
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Checkout LocalServicesOnDocker
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ env.LSOD_REPO }}
+          ref: ${{ env.LSOD_REF }}
+          path: LocalServicesOnDocker
+          persist-credentials: false
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      # 上の「Upload net10.0 output for Linux」が、Tests の下の相対パスで置いたもの
+      - name: Download net10.0 output
+        uses: actions/download-artifact@v8
+        with:
+          name: linux-input
+          path: root/programs/CS/Frameworks/Tests
+
+      - name: Run cross DB tests on Linux
+        shell: pwsh
+        working-directory: root/programs
+        run: ./2_RunAllTests.ps1 -CrossDb -LocalServicesDir "${{ github.workspace }}/LocalServicesOnDocker" -OutputDir "${{ runner.temp }}/TestResults"
+
+      - name: Upload test results (cross DB)
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-crossdb
+          path: |
+            ${{ runner.temp }}/TestResults
+            root/programs/CS/Frameworks/Tests/NUnit/TestResults/CrossDb/**
+          if-no-files-found: warn
+
+  # --------------------------------------------------------------------
+  # 認証（STS）の E2E の net10.0：IdP が Keycloak（linux-kck。#703 ph3）
+  # --------------------------------------------------------------------
+  # Sample4SpRp\E2E の 4 本を、IdP（STS）を Keycloak（-Idp KCK）にして回す。Linux の上では、各 E2E が net10.0 の対象だけに絞る。
+  # 判定は各 E2E が行う（終了コード 0 = 全部 OK、1 = NG あり、2 = 前提が足りない）。
+  # Keycloak で回らないケース（CLI の jwtbearer・FAPI2 の ros）は、MPAS のスタブの回（linux-stub）で回す。
+  # **DB は使わない**（4 本とも、辿る画面は DB を読まない）。
+  #
+  # ＜MTLS のテスト用のクライアント証明書＞
+  #   このリポジトリの root/files/resource/X509/SHA256RSAClientCert.{pfx,cer} を使う（Keycloak が信頼し、SpRp_MVC が FAPI2 の par_mtls で出す）。
+  #   MPAS の現行のものと同じ（#705。以前は MPAS から取って置き換えていた）。MPAS が作り直したら、手で写す（BUILDING.md 9 節）。
+  #
+  # ＜HTTPS の信頼＞
+  #   サンプル（Kestrel）と Keycloak は、ASP.NET Core の開発用証明書で待ち受ける（KckCompose.ps1 が書き出す）。
+  #   dotnet dev-certs https --trust で信頼させ、SSL_CERT_DIR で .NET（E2E の HttpClient・サンプル）に見せる。
+  #
+  # ＜回す契機＞
+  #   linux-crossdb と同じ（ワークフローの契機すべて。認証まわりの依存の更新を deps で捕まえるため）。
+  linux-kck:
+    needs: build
+    # Windows の回が NG でも回す（出力が渡っていなければ、受け取りで落ちる）
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      # 上の「Upload net10.0 samples for Linux STS E2E」が、CS の下の相対パスで置いたもの（linux-kck・linux-stub が同じ成果物を使う）
+      - name: Download net10.0 samples
+        uses: actions/download-artifact@v8
+        with:
+          name: linux-sts-input
+          path: root/programs/CS
+
+      # **終了コード 4 は「一部のクライアントでは信頼できなかった」で、ここでは止めない**。
+      #   Linux の dev-certs は、OpenSSL（.NET が使う）向けに ~/.aspnet/dev-certs/trust へ置き、
+      #   ブラウザ（NSS）向けの登録は、ランナーにブラウザのプロファイルが無いので失敗する（4 になる）。
+      #   .NET が信頼できるかは、trust のフォルダに証明書が置かれたかで確かめる（無ければ止める）。
+      - name: Trust the development certificate
+        shell: bash
+        run: |
+          rc=0
+          dotnet dev-certs https --trust || rc=$?
+          if [ "$rc" -ne 0 ] && [ "$rc" -ne 4 ]; then exit "$rc"; fi
+          trust="$HOME/.aspnet/dev-certs/trust"
+          ls -l "$trust"
+          if [ -z "$(ls -A "$trust" 2>/dev/null)" ]; then echo "::error::No certificate in $trust"; exit 1; fi
+          echo "SSL_CERT_DIR=$trust:/usr/lib/ssl/certs" >> "$GITHUB_ENV"
+
+      - name: Start Keycloak
+        id: kck
+        shell: pwsh
+        working-directory: root/programs/CS/Sample4SpRp/container/KCK
+        run: ./KckCompose.ps1
+
+      # 4 本は、どれかが落ちても残りを回す（結果を全部見るため）
+      - name: E2E FAPI 1.0 (SpRp_MVC)
+        if: ${{ !cancelled() && steps.kck.outcome == 'success' }}
+        shell: pwsh
+        working-directory: root/programs/CS/Sample4SpRp/E2E
+        run: ./MvcFapi1E2E.ps1 -Idp KCK -OutputDir "${{ runner.temp }}/E2E/fapi1"
+
+      - name: E2E FAPI 2.0 (SpRp_MVC)
+        if: ${{ !cancelled() && steps.kck.outcome == 'success' }}
+        shell: pwsh
+        working-directory: root/programs/CS/Sample4SpRp/E2E
+        run: ./MvcFapi2E2E.ps1 -Idp KCK -Mtls -OutputDir "${{ runner.temp }}/E2E/fapi2"
+
+      - name: E2E CLI login
+        if: ${{ !cancelled() && steps.kck.outcome == 'success' }}
+        shell: pwsh
+        working-directory: root/programs/CS/Sample4SpRp/E2E
+        run: ./CliLoginE2E.ps1 -Idp KCK -OutputDir "${{ runner.temp }}/E2E/cli"
+
+      - name: E2E external login (MVC_Sample)
+        if: ${{ !cancelled() && steps.kck.outcome == 'success' }}
+        shell: pwsh
+        working-directory: root/programs/CS/Sample4SpRp/E2E
+        run: ./ExternalLoginE2E.ps1 -Idp KCK -Lang CS -OutputDir "${{ runner.temp }}/E2E/external"
+
+      - name: Collect Keycloak log
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p "${{ runner.temp }}/E2E"
+          docker compose -f root/programs/CS/Sample4SpRp/container/KCK/docker-compose.yml logs --no-color > "${{ runner.temp }}/E2E/keycloak.log" 2>&1 || true
+
+      - name: Upload E2E logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: kck-logs-linux
+          path: ${{ runner.temp }}/E2E
+          if-no-files-found: warn
+
+  # --------------------------------------------------------------------
+  # 認証（STS）の E2E の net10.0：IdP が MPAS のスタブ（linux-stub。#703）
+  # --------------------------------------------------------------------
+  # Sample4SpRp\E2E の 4 本を、IdP を MPAS のスタブ（-Idp Stub。既定）にして回す。Keycloak で回らない CLI の jwtbearer・FAPI2 の ros も、ここで回る。
+  # スタブは、MPAS の container/Stub を pwsh で起動する（MultiPurposeAuthSite#401）。MPAS の場所は環境変数 OT_MPAS_PATH。
+  # **DB は使わない**（スタブは組み込みのストアで動く）。
+  #
+  # ＜取ってくるもの（コミットで固定する。上げるときは、手元で回してから）＞
+  #   ・MultiPurposeAuthSite（MPAS_REF）… スタブの publish に、ソース一式が要る。
+  #     MPAS がビルドで参照する部品（OpenTouryoAssemblies/）は、build が作った、いまのこのリポジトリの net10.0 の部品を置く（linux-stub-input）
+  #
+  # ＜テスト用の設定＞
+  #   スタブの設定の土台は、MPAS の雛形（_appsettings.json）。TestUserPWD が雛形のままの文字列なので、CI で生成した値に替えた写しを使う
+  #   （STUB_APPSETTINGS と、E2E の -StubAppSettings の両方に、その写しを渡す）。値はテスト専用で、秘密ではない。
+  linux-stub:
+    needs: build
+    # Windows の回が NG でも回す（出力が渡っていなければ、受け取りで落ちる）
+    if: ${{ !cancelled() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      MPAS_REPO: OpenTouryoProject/MultiPurposeAuthSite
+      MPAS_REF: 3e914592241ec10fdac35e6c5426e52d28777fe8
+      STUB_TEST_USER_PWD: 'Test-User-Pwd-1!'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Checkout MultiPurposeAuthSite
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ env.MPAS_REPO }}
+          ref: ${{ env.MPAS_REF }}
+          path: MultiPurposeAuthSite
+          persist-credentials: false
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Download net10.0 samples
+        uses: actions/download-artifact@v8
+        with:
+          name: linux-sts-input
+          path: root/programs/CS
+
+      # MPAS は、部品を OpenTouryoAssemblies/（.gitignore）から参照する。build が作った、いまのこのリポジトリの部品を置く
+      - name: Download net10.0 assemblies
+        uses: actions/download-artifact@v8
+        with:
+          name: linux-stub-input
+          path: MultiPurposeAuthSite/root/programs/OpenTouryoAssemblies/Build_netcore100/net10.0
+
+      # linux-kck と同じ（理由もそちら）。MPAS の 1_PublishStub.ps1 は、この開発用証明書を書き出す
+      - name: Trust the development certificate
+        shell: bash
+        run: |
+          rc=0
+          dotnet dev-certs https --trust || rc=$?
+          if [ "$rc" -ne 0 ] && [ "$rc" -ne 4 ]; then exit "$rc"; fi
+          trust="$HOME/.aspnet/dev-certs/trust"
+          ls -l "$trust"
+          if [ -z "$(ls -A "$trust" 2>/dev/null)" ]; then echo "::error::No certificate in $trust"; exit 1; fi
+          echo "SSL_CERT_DIR=$trust:/usr/lib/ssl/certs" >> "$GITHUB_ENV"
+
+      - name: Publish the stub (MPAS)
+        shell: pwsh
+        working-directory: MultiPurposeAuthSite/container/Stub
+        run: ./1_PublishStub.ps1
+
+      # 雛形（_appsettings.json）の TestUserPWD だけを、テスト用の値に替える
+      - name: Prepare the stub settings
+        shell: pwsh
+        run: |
+          $src = Join-Path $env:GITHUB_WORKSPACE 'MultiPurposeAuthSite/root/programs/MultiPurposeAuthSiteCore/MultiPurposeAuthSiteCore/_appsettings.json'
+          $dst = Join-Path $env:RUNNER_TEMP 'stub-appsettings.json'
+          $json = [IO.File]::ReadAllText($src)
+          if (-not $json.Contains('[password of TestUser]')) { throw "TestUserPWD の雛形の値が見つかりません : $src" }
+          [IO.File]::WriteAllText($dst, $json.Replace('[password of TestUser]', $env:STUB_TEST_USER_PWD))
+          "STUB_APPSETTINGS=$dst" >> $env:GITHUB_ENV
+          "OT_MPAS_PATH=$env:GITHUB_WORKSPACE/MultiPurposeAuthSite" >> $env:GITHUB_ENV
+
+      - name: Start the stub
+        id: stub
+        shell: pwsh
+        working-directory: root/programs/CS/Sample4SpRp/container/Stub
+        run: |
+          ./StubCompose.ps1 -Mtls
+          # 起動の完了を待つ（Discovery が 200 を返すまで。最大 3 分）
+          $ok = $false
+          for ($i = 0; $i -lt 36; $i++)
+          {
+              try
+              {
+                  $r = Invoke-WebRequest -Uri 'https://localhost:44310/.well-known/openid-configuration' -SkipCertificateCheck -TimeoutSec 5
+                  if ($r.StatusCode -eq 200) { $ok = $true; break }
+              }
+              catch { }
+              Start-Sleep -Seconds 5
+          }
+          if (-not $ok) { throw 'スタブが起動しませんでした（Discovery が 200 を返さない）' }
+
+      # 4 本は、どれかが落ちても残りを回す（結果を全部見るため）
+      - name: E2E FAPI 1.0 (SpRp_MVC)
+        if: ${{ !cancelled() && steps.stub.outcome == 'success' }}
+        shell: pwsh
+        working-directory: root/programs/CS/Sample4SpRp/E2E
+        run: ./MvcFapi1E2E.ps1 -StubAppSettings "$env:STUB_APPSETTINGS" -OutputDir "${{ runner.temp }}/E2E/fapi1"
+
+      - name: E2E FAPI 2.0 (SpRp_MVC)
+        if: ${{ !cancelled() && steps.stub.outcome == 'success' }}
+        shell: pwsh
+        working-directory: root/programs/CS/Sample4SpRp/E2E
+        run: ./MvcFapi2E2E.ps1 -Mtls -StubAppSettings "$env:STUB_APPSETTINGS" -OutputDir "${{ runner.temp }}/E2E/fapi2"
+
+      - name: E2E CLI login
+        if: ${{ !cancelled() && steps.stub.outcome == 'success' }}
+        shell: pwsh
+        working-directory: root/programs/CS/Sample4SpRp/E2E
+        run: ./CliLoginE2E.ps1 -StubAppSettings "$env:STUB_APPSETTINGS" -OutputDir "${{ runner.temp }}/E2E/cli"
+
+      - name: E2E external login (MVC_Sample)
+        if: ${{ !cancelled() && steps.stub.outcome == 'success' }}
+        shell: pwsh
+        working-directory: root/programs/CS/Sample4SpRp/E2E
+        run: ./ExternalLoginE2E.ps1 -Lang CS -StubAppSettings "$env:STUB_APPSETTINGS" -OutputDir "${{ runner.temp }}/E2E/external"
+
+      - name: Collect the stub log
+        if: always()
+        shell: bash
+        run: |
+          mkdir -p "${{ runner.temp }}/E2E"
+          docker compose -f MultiPurposeAuthSite/container/Stub/docker-compose.yml logs --no-color > "${{ runner.temp }}/E2E/stub.log" 2>&1 || true
+
+      - name: Upload E2E logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: stub-logs-linux
+          path: ${{ runner.temp }}/E2E
+          if-no-files-found: warn
+
+  # --------------------------------------------------------------------
+  # クロス DB の net48（#712）：Windows ランナー＋WSL2 の Docker
+  # --------------------------------------------------------------------
+  # 2_RunAllTests.ps1 -CrossDb -Wsl2 を回す。TestPublicDb を、SQL Server（必須）に Oracle・MySQL（net48・net10.0）・PostgreSQL（net10.0）を
+  # 1 つずつ足して回す（linux-crossdb が回す net10.0 に加えて、Windows でしか動かない net48 を回す）。
+  # DB のコンテナは、WSL2 の Ubuntu に入れた Docker（systemd）で、LocalServicesOnDocker の Start-Services_wsl2.ps1 が起動する。
+  # windows-latest は Windows コンテナ用の docker を持つので、-Wsl2 で WSL2 版を選ばせる（自動の判定は Rancher Desktop 版を選ぶ）。
+  # **build とは別の Windows ランナーで、基盤だけをビルドして回す**（build が作った出力は渡さない。net48 の TestPublicDb は、csproj を --no-build で回すため）。
+  # 実験の結果は #711・#712。WSL2 の VM のメモリは 7940MB で、SQL Server と Oracle を合わせて約 5GB（1 つずつ起動する）。
+  win-crossdb:
+    runs-on: windows-latest
+    timeout-minutes: 75
+    env:
+      LSOD_REPO: NetDevInfraWGinOSSConsortium/LocalServicesOnDocker
+      LSOD_REF: 269e717939033e230835d0325eec255c1e03f71a
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Checkout LocalServicesOnDocker
+        uses: actions/checkout@v7
+        with:
+          repository: ${{ env.LSOD_REPO }}
+          ref: ${{ env.LSOD_REF }}
+          path: LocalServicesOnDocker
+          persist-credentials: false
+
+      # build と同じ（理由もそちら）。構成ファイルが C:\root\files\... を絶対パスで参照する
+      - name: Set up C:\root
+        shell: pwsh
+        run: |
+          if (-not (Test-Path 'C:\root'))
+          {
+              New-Item -ItemType Junction -Path 'C:\root' -Target (Join-Path $env:GITHUB_WORKSPACE 'root') | Out-Null
+          }
+          Set-Culture ja-JP
+
+      - name: Install WSL2 and Ubuntu
+        shell: pwsh
+        run: |
+          wsl --update --web-download
+          wsl --set-default-version 2
+          wsl --install -d Ubuntu-24.04 --no-launch --web-download
+          wsl --set-default Ubuntu-24.04
+          wsl -d Ubuntu-24.04 -u root -- bash -c "uname -r; nproc; free -m"
+
+      # systemd を有効にして、Docker（docker.io）が WSL の起動で自動的に上がるようにする
+      # （LocalServicesOnDocker の WSL2 版は、Docker が動いている前提）
+      - name: Install Docker in WSL2
+        timeout-minutes: 25
+        shell: pwsh
+        run: |
+          $script = @'
+          set -e
+          export DEBIAN_FRONTEND=noninteractive
+          printf '[boot]\nsystemd=true\n' > /etc/wsl.conf
+          # archive.ubuntu.com が、ランナーから「接続がタイムアウト」で届かないことがある（run 44521316550。Canonical のアドレスへ 2 回とも）ので、
+          # Azure の Ubuntu のミラー（Azure のランナーから届く）に替える
+          sed -i 's|http://archive.ubuntu.com/ubuntu|http://azure.archive.ubuntu.com/ubuntu|g; s|http://security.ubuntu.com/ubuntu|http://azure.archive.ubuntu.com/ubuntu|g' /etc/apt/sources.list.d/ubuntu.sources /etc/apt/sources.list 2>/dev/null || true
+          grep -h -E '^(URIs|deb )' /etc/apt/sources.list.d/ubuntu.sources /etc/apt/sources.list 2>/dev/null | head -4 || true
+          # apt が 7 分以上止まることがある（run 44479764197。2 回とも）ので、IPv4 に固定し、タイムアウトと再試行を付け、進み具合を表示する
+          APT='-o Acquire::ForceIPv4=true -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30'
+          echo "== apt-get update : $(date)"
+          apt-get $APT update
+          echo "== apt-get install : $(date)"
+          apt-get $APT install -y docker.io docker-compose-v2
+          echo "== done : $(date)"
+          systemctl enable docker || true
+          '@
+          # Windows の here-string は CRLF なので、LF にして書く（bash が行末の CR で落ちる）
+          [IO.File]::WriteAllText("$env:RUNNER_TEMP/docker-install.sh", $script.Replace("`r`n", "`n"))
+          $unix = (wsl -d Ubuntu-24.04 -u root -- wslpath -a ($env:RUNNER_TEMP -replace '\\','/')).Trim()
+          # wsl が応答しなくなることがある（run 44476229163 で、このステップが 20 分止まった）ので、打ち切って 1 回やり直す
+          $done = $false
+          foreach ($attempt in 1, 2)
+          {
+              $p = Start-Process -FilePath wsl -ArgumentList @('-d','Ubuntu-24.04','-u','root','--','bash',"$unix/docker-install.sh") -PassThru -NoNewWindow
+              if ($p.WaitForExit(420000) -and $p.ExitCode -eq 0) { $done = $true; break }
+              "attempt $attempt failed (exited: $($p.HasExited))"
+              if (-not $p.HasExited) { try { $p.Kill($true) } catch { } }
+              wsl --shutdown
+              Start-Sleep -Seconds 5
+          }
+          if (-not $done) { throw 'docker のインストールに失敗（2 回とも）' }
+          # systemd を有効にするため、再起動する
+          wsl --terminate Ubuntu-24.04
+          Start-Sleep -Seconds 5
+          $active = $false
+          for ($i = 0; $i -lt 20; $i++)
+          {
+              $s = (wsl -d Ubuntu-24.04 -u root -- bash -c "systemctl is-active docker" 2>$null)
+              "docker : $s"
+              if ($s -eq 'active') { $active = $true; break }
+              Start-Sleep -Seconds 3
+          }
+          if (-not $active) { throw 'WSL2 の docker が起動しませんでした' }
+          wsl -d Ubuntu-24.04 -u root -- docker version --format '{{.Server.Version}}'
+
+      # **SQL Server を、Windows のこの機械のアドレス（NIC）でも受けられるようにする**（run 44492153200 の診断）。
+      #   SqlClient（.NET Framework）は、Data Source=localhost（と . と (local)）を「この機械」として、**ループバックではなく NIC のアドレスへ**つなぐ。
+      #   WSL2 の Docker の公開ポートは、Windows ではループバック（127.0.0.1・::1）にだけ転送される（wslrelay）ので、localhost は拒否され、
+      #   127.0.0.1・tcp:[::1],1433 は通る。手元（Rancher Desktop など）では、公開ポートが全アドレスで待ち受けるので、localhost が通る。
+      #   テストの構成は Data Source=localhost のまま（build と同じ値を保つため）、NIC のアドレスの 1433 を、ループバックの 1433 へ転送する。
+      #   **診断で確かめた**（run 44496978059）：転送の後は、localhost・.・(local)・tcp:localhost,1433・127.0.0.1・tcp:[::1],1433 のすべてが通り、TestPublicDb の SQL Server 22 件が通った。
+      - name: Forward the NIC address to WSL2 for SQL Server
+        shell: pwsh
+        run: |
+          $ip = ([Net.Dns]::GetHostAddresses($env:COMPUTERNAME) | Where-Object { $_.AddressFamily -eq 'InterNetwork' } | Select-Object -First 1).IPAddressToString
+          "NIC address : $ip"
+          netsh interface portproxy add v4tov4 listenaddress=$ip listenport=1433 connectaddress=127.0.0.1 connectport=1433
+          if ($LASTEXITCODE -ne 0) { throw "netsh portproxy failed ($LASTEXITCODE)" }
+          New-NetFirewallRule -DisplayName 'sqlserver-wsl2' -Direction Inbound -Protocol TCP -LocalPort 1433 -Action Allow | Out-Null
+          netsh interface portproxy show all
+
+      # 基盤だけをビルドする（TestPublicDb が参照する。1_BuildAll.ps1 -Only の基盤の 11 ステップ。SelectTargets.ps1 が出すもの）
+      - name: Build the base
+        shell: pwsh
+        working-directory: root/programs
+        run: .\1_BuildAll.ps1 -OutputDir "${{ runner.temp }}\BuildLogs" -Only 'Clean (net48 基盤)', 'Clean files (net48 基盤)', 'NuGet (net48)', 'Business (net48)', 'Business.RichClient (net48)', 'Clean (core 基盤)', 'Clean files (core 基盤)', 'NuGet (netcore100)', 'Business (netcore100)', 'Business.RichClient (core)', 'CopyAssemblies'
+
+      - name: Run cross DB tests (net48 and net10.0)
+        shell: pwsh
+        working-directory: root/programs
+        run: .\2_RunAllTests.ps1 -CrossDb -Wsl2 -LocalServicesDir "${{ github.workspace }}\LocalServicesOnDocker" -OutputDir "${{ runner.temp }}\TestResults"
+
+      - name: Upload test results (cross DB, Windows)
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-results-crossdb-windows
+          path: |
+            ${{ runner.temp }}/TestResults
+            root/programs/CS/Frameworks/Tests/NUnit/TestResults/CrossDb/**
+          if-no-files-found: warn
+
+  # --------------------------------------------------------------------
+  # 認証（STS）の E2E の net48・WebForms：IdP が Keycloak（win-sts。#712）
+  # --------------------------------------------------------------------
+  # Sample4SpRp\E2E の ExternalLoginE2E.ps1 を、IdP を Keycloak（-Idp KCK）にして、net48 の対象（MVC_Sample・WebForms_Sample。C#・VB。IIS Express）で回す。
+  # Keycloak は、WSL2 の Docker で動かす（KckCompose.ps1 -Wsl2）。Windows ランナーの IIS Express から、localhost:44320 に届く。
+  # **build とは別の Windows ランナーで、基盤とサンプル（net48・WebForms。C#・VB）だけをビルドして回す**（IIS Express が動かすサイトのフォルダは大きいので、成果物では渡さない）。
+  #
+  # ＜実験の結果（#712。run 44514441245〜44525873179）＞
+  #   ・aspnet_state は Stopped（Manual）で、Start-Service で起動できる（WebForms のセッションに要る）
+  #   ・IIS Express の HTTPS 用の既存の証明書（0.0.0.0:44300〜）は、ハンドシェイクで接続が閉じられる。自分で作った自己署名の証明書
+  #     （LocalMachine\My と \Root）を 44333・44334 に登録し直せば、検証ありでも届く（E2E の MVC は 44334、WebForms は 44333）
+  #   ・Keycloak は、WSL2 の Docker で約 40 秒で上がり、Windows から届く（メモリ約 530MiB）。WSL2 の VM が止まらないよう、常駐のプロセスが要る
+  #   ・Windows が Keycloak の開発用証明書（localhost）を信頼しないと、E2E と Discovery の待ちが検証で落ちるので、LocalMachine\Root に入れる
+  win-sts:
+    runs-on: windows-latest
+    timeout-minutes: 75
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      # build と同じ（理由もそちら）。サンプルの構成が C:\root\files\... を絶対パスで参照する（SpRp_RsaPfxFilePath など）
+      - name: Set up C:\root
+        shell: pwsh
+        run: |
+          if (-not (Test-Path 'C:\root'))
+          {
+              New-Item -ItemType Junction -Path 'C:\root' -Target (Join-Path $env:GITHUB_WORKSPACE 'root') | Out-Null
+          }
+          Set-Culture ja-JP
+
+      - name: Install WSL2 and Ubuntu
+        shell: pwsh
+        run: |
+          wsl --update --web-download
+          wsl --set-default-version 2
+          wsl --install -d Ubuntu-24.04 --no-launch --web-download
+          wsl --set-default Ubuntu-24.04
+          wsl -d Ubuntu-24.04 -u root -- bash -c "uname -r; nproc; free -m"
+
+      # win-crossdb と同じ
+      - name: Install Docker in WSL2
+        timeout-minutes: 25
+        shell: pwsh
+        run: |
+          $script = @'
+          set -e
+          export DEBIAN_FRONTEND=noninteractive
+          printf '[boot]\nsystemd=true\n' > /etc/wsl.conf
+          # archive.ubuntu.com が、ランナーから「接続がタイムアウト」で届かないことがある（run 44521316550。Canonical のアドレスへ 2 回とも）ので、
+          # Azure の Ubuntu のミラー（Azure のランナーから届く）に替える
+          sed -i 's|http://archive.ubuntu.com/ubuntu|http://azure.archive.ubuntu.com/ubuntu|g; s|http://security.ubuntu.com/ubuntu|http://azure.archive.ubuntu.com/ubuntu|g' /etc/apt/sources.list.d/ubuntu.sources /etc/apt/sources.list 2>/dev/null || true
+          grep -h -E '^(URIs|deb )' /etc/apt/sources.list.d/ubuntu.sources /etc/apt/sources.list 2>/dev/null | head -4 || true
+          APT='-o Acquire::ForceIPv4=true -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30'
+          echo "== apt-get update : $(date)"
+          apt-get $APT update
+          echo "== apt-get install : $(date)"
+          apt-get $APT install -y docker.io docker-compose-v2
+          echo "== done : $(date)"
+          systemctl enable docker || true
+          '@
+          # Windows の here-string は CRLF なので、LF にして書く（bash が行末の CR で落ちる）
+          [IO.File]::WriteAllText("$env:RUNNER_TEMP/docker-install.sh", $script.Replace("`r`n", "`n"))
+          $unix = (wsl -d Ubuntu-24.04 -u root -- wslpath -a ($env:RUNNER_TEMP -replace '\\','/')).Trim()
+          $done = $false
+          foreach ($attempt in 1, 2)
+          {
+              $p = Start-Process -FilePath wsl -ArgumentList @('-d','Ubuntu-24.04','-u','root','--','bash',"$unix/docker-install.sh") -PassThru -NoNewWindow
+              if ($p.WaitForExit(420000) -and $p.ExitCode -eq 0) { $done = $true; break }
+              "attempt $attempt failed (exited: $($p.HasExited))"
+              if (-not $p.HasExited) { try { $p.Kill($true) } catch { } }
+              wsl --shutdown
+              Start-Sleep -Seconds 5
+          }
+          if (-not $done) { throw 'docker のインストールに失敗（2 回とも）' }
+          wsl --terminate Ubuntu-24.04
+          Start-Sleep -Seconds 5
+          $active = $false
+          for ($i = 0; $i -lt 20; $i++)
+          {
+              $s = (wsl -d Ubuntu-24.04 -u root -- bash -c "systemctl is-active docker" 2>$null)
+              "docker : $s"
+              if ($s -eq 'active') { $active = $true; break }
+              Start-Sleep -Seconds 3
+          }
+          if (-not $active) { throw 'WSL2 の docker が起動しませんでした' }
+          wsl -d Ubuntu-24.04 -u root -- docker version --format '{{.Server.Version}}'
+
+      # WebForms のセッション（aspnet_state）を起動する
+      - name: Start ASP.NET state service
+        shell: pwsh
+        run: |
+          Start-Service aspnet_state
+          Get-Service aspnet_state | Format-Table Name, Status, StartType -AutoSize
+
+      # 開発用証明書（Keycloak の証明書の元）を作り、Windows の信頼（LocalMachine\Root）に入れる。
+      # dotnet dev-certs --trust は、Windows では確認のダイアログが出るので使わない。
+      # IIS Express は、自分で作った自己署名の証明書（localhost）を、44333・44334 に登録し直し、同じく信頼に入れる（既存の証明書は、ハンドシェイクで切られる）
+      - name: Trust certificates and register IIS Express certificates
+        shell: pwsh
+        run: |
+          dotnet dev-certs https
+          $pfx = Join-Path $env:RUNNER_TEMP 'devcert.pfx'
+          dotnet dev-certs https --export-path $pfx --password 'ci-test' --format Pfx
+          $dev = [Security.Cryptography.X509Certificates.X509Certificate2]::new($pfx, 'ci-test')
+          "dev cert : $($dev.Subject) $($dev.Thumbprint)"
+
+          $root = [Security.Cryptography.X509Certificates.X509Store]::new('Root', 'LocalMachine')
+          $root.Open('ReadWrite')
+          $root.Add([Security.Cryptography.X509Certificates.X509Certificate2]::new($dev.RawData))
+
+          $iisCert = New-SelfSignedCertificate -DnsName 'localhost' -CertStoreLocation 'Cert:\LocalMachine\My' -NotAfter (Get-Date).AddYears(1) -FriendlyName 'ci-iisexpress-localhost'
+          $root.Add([Security.Cryptography.X509Certificates.X509Certificate2]::new($iisCert.RawData))
+          $root.Close()
+          "IIS Express cert : $($iisCert.Thumbprint)"
+          foreach ($port in 44333, 44334)
+          {
+              netsh http delete sslcert ipport=0.0.0.0:$port | Out-Null
+              netsh http add sslcert ipport=0.0.0.0:$port certhash=$($iisCert.Thumbprint) appid='{214124cd-d05b-4309-9af9-9caa44b2b74a}'
+              if ($LASTEXITCODE -ne 0) { throw "netsh http add sslcert failed for $port ($LASTEXITCODE)" }
+          }
+
+      # 基盤と、サンプル（net48・WebForms。C#・VB）だけをビルドする（1_BuildAll.ps1 -Lang Both -Only）。
+      # WebForms_Sample・MVC_Sample は、WS_sample\Build の WSIFType_sample.dll（WSSrv_sample・Framework_WS が作る）を参照するので、その 2 ステップも要る（run 44528868918）
+      - name: Build the base and the web samples (net48)
+        shell: pwsh
+        working-directory: root/programs
+        run: |
+          .\1_BuildAll.ps1 -Lang Both -OutputDir "${{ runner.temp }}\BuildLogs" -Only 'Clean (net48 基盤)', 'Clean files (net48 基盤)', 'NuGet (net48)', 'Business (net48)', 'Business.RichClient (net48)', 'Clean (core 基盤)', 'Clean files (core 基盤)', 'NuGet (netcore100)', 'Business (netcore100)', 'Business.RichClient (core)', 'CopyAssemblies', 'Clean (net48 サンプル)', 'Clean files (net48 サンプル)', 'WSSrv_sample (net48)', 'Framework_WS (net48)', 'WebApp_sample (net48)', 'VB : NuGet (net48, CS 側)', 'VB : Clean', 'VB : Clean files', 'VB : GetLibrariesFromCS', 'VB : Business (net48)', 'VB : Business.RichClient', 'VB : CopyAssemblies', 'VB : WSSrv_sample', 'VB : Framework_WS', 'VB : WebApp_sample'
+
+      - name: Start Keycloak (WSL2)
+        id: kck
+        shell: pwsh
+        working-directory: root/programs/CS/Sample4SpRp/container/KCK
+        run: ./KckCompose.ps1 -Wsl2
+
+      # net48 の対象（MVC_Sample・WebForms_Sample。C#・VB。OIDC・SAML2）。net10.0 の対象は、linux-kck が回す
+      - name: E2E external login (net48)
+        if: ${{ !cancelled() && steps.kck.outcome == 'success' }}
+        shell: pwsh
+        working-directory: root/programs/CS/Sample4SpRp/E2E
+        run: ./ExternalLoginE2E.ps1 -Idp KCK -Only 'net48' -OutputDir "${{ runner.temp }}/E2E/external"
+
+      - name: Collect Keycloak log
+        if: always()
+        shell: pwsh
+        continue-on-error: true
+        run: |
+          New-Item -ItemType Directory -Force "${{ runner.temp }}/E2E" | Out-Null
+          wsl -d Ubuntu-24.04 -u root -- bash -c "docker logs sprp-kck-keycloak-1 2>&1" | Out-File "${{ runner.temp }}/E2E/keycloak.log" -Encoding utf8
+
+      - name: Stop Keycloak (WSL2)
+        if: always()
+        shell: pwsh
+        continue-on-error: true
+        working-directory: root/programs/CS/Sample4SpRp/container/KCK
+        run: ./KckCompose.ps1 -Wsl2 -Action Down
+
+      - name: Upload E2E logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: win-sts-logs
+          path: ${{ runner.temp }}/E2E
+          if-no-files-found: warn

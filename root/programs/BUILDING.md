@@ -421,7 +421,7 @@ Dependabot は**古い PR を閉じて新しい PR を開く**。既にマージ
 `build-windows.yml` は `workflow_dispatch` を持つので、**`deps` 以外のブランチでも同じ検証を回せる。**
 
 ```
-Actions → Build on Windows → Run workflow → Branch: <任意のブランチ>
+Actions → Build and test（#703 の前は Build on Windows）→ Run workflow → Branch: <任意のブランチ>
 ```
 
 実行されるのは**選んだブランチ側の定義**。`deps` への push と同じ内容
@@ -437,9 +437,10 @@ Actions → Build on Windows → Run workflow → Branch: <任意のブランチ
 2 つ目が実務上の注意になる。**`develop` より前に分岐した古いブランチにはファイルが無い**ので、
 選んでも動かない。先に `develop` を取り込むこと。
 
-> **手動実行でもクロス DB にはならない。** 対象は `SQLONLY`（SQL Server のみ）のまま。
-> 各 DBMS は Linux コンテナで、`windows-latest` では動かせない。
-> クロス DB は手元で行う（[`TESTING.md`](TESTING.md)）。
+> **Windows のジョブ（`build`）の対象は `SQLONLY`（SQL Server のみ）のまま。**
+> 各 DBMS は Linux コンテナで、`build` の `windows-latest` では動かさない（SQL Server は直接入れる）。
+> **クロス DB のうち NUnit の `TestPublicDb` は、net10.0 を Linux のジョブ（`linux-crossdb`）が、net48 を Windows のジョブ（`win-crossdb`）が回す**（下の「Linux のジョブ」「Windows ランナー＋WSL2 のジョブ」。#703・#712）。
+> Golden の `TestDataAccess` のクロス DB は手元で行う（[`TESTING.md`](TESTING.md)）。
 
 ### ワークフローの前提
 
@@ -474,11 +475,75 @@ Dependabot が起こしたイベントでは `GITHUB_TOKEN` が既定で read-on
 
 **リリース時の検証 3 本が、そのまま同じ順で回っている。**
 
+続けて、**Linux のジョブ**が、コンテナが要る検証のうち net10.0 の分を回す（下の「Linux のジョブ」。#703）。
+
+| 検証 | ジョブ | 備考 |
+|---|---|---|
+| `2_RunAllTests.ps1 -Linux` | `linux` | Golden の EncAndDecUtilCUI・NUnit の TestPublic |
+| `2_RunAllTests.ps1 -CrossDb` の net10.0 | `linux-crossdb` | NUnit の TestPublicDb を Oracle・MySQL・PostgreSQL で |
+| `2_RunAllTests.ps1 -CrossDb -Wsl2`（net48 と net10.0） | `win-crossdb` | Windows ランナー＋WSL2 の Docker（#712）。SQL Server に Oracle・MySQL（net48・net10.0）・PostgreSQL（net10.0）を 1 つずつ足す |
+| SpRp の外部ログインの E2E（`ExternalLoginE2E.ps1 -Idp KCK -Only net48`）の net48・WebForms | `win-sts` | Windows ランナー＋WSL2 の Docker（#712）。IdP は Keycloak（`KckCompose.ps1 -Wsl2`）。C#・VB の MVC・WebForms（OIDC・SAML2 の 8 件） |
+| SpRp のサンプルの E2E（`Sample4SpRp\E2E`）の net10.0 | `linux-kck`・`linux-stub` | IdP（STS）は、`linux-kck` が Keycloak、`linux-stub` が MPAS のスタブ（Keycloak で回らない CLI の jwtbearer・FAPI2 の ros は、スタブの回で回る）。DB は使わない |
+| `2_RunAllTests.ps1 -Coverage` | × | NUnit の全部とクロス DB を 1 回の実行で回して合算する作りなので、ジョブに分けられない。手元で取る |
+
 **対象外は明示しておく。**
 
 - **GUI アプリケーション**（WinForms / WPF / 各ツールの画面）… `RELEASE.md` 4 節の手作業
-- **SQL Server 以外の DBMS への接続** … 自動テストは `/Dap SQL` しか使わない
-  （`TestSQLUtility` は 4 DBMS 分の SQL 生成を検証するが、**接続はしない**ので対象内）
+- **Golden の `TestDataAccess` のクロス DB** … `build` は `/Dap SQL` しか使わない
+  （`TestSQLUtility` は 4 DBMS 分の SQL 生成を検証するが、**接続はしない**ので対象内）。手元の `-CrossDb` で回す。NUnit の `TestPublicDb` の net48 のクロス DB は、`win-crossdb` が回す
+- **SpRp の E2E のうち、MPAS のスタブの回（net48）と、CLI・FAPI の E2E の net48** … 手元で回す。外部ログインの E2E の net48・WebForms は、`win-sts` が Keycloak で回す
+
+### Windows ランナー＋WSL2 のジョブ（#711・#712）
+
+**`windows-latest` では、WSL2 が動く**（Windows Server 2025・Hyper-V 上の VM・4 vCPU・16GB。#711 で確かめた）。
+Windows の net48 と Linux のコンテナを、同じランナーで使える。**`win-crossdb`** が、net48 のクロス DB を回す。
+
+- **WSL2 に Ubuntu-24.04 と `docker.io`・`docker-compose-v2` を入れ、systemd で Docker を自動起動する。** LocalServicesOnDocker の WSL2 版（`Start-Services_wsl2.ps1`）は、Docker が動いている前提で、DB を起動して準備完了まで待つ
+- **`2_RunAllTests.ps1` に `-Wsl2` を付ける。** `windows-latest` は Windows コンテナ用の `docker` コマンドを持つので、自動の判定（`docker` が使えれば Rancher Desktop 版）では、WSL2 版を選ばない
+- **apt は IPv4 に固定する**（`Acquire::ForceIPv4=true`）。固定しないと、`apt-get` が 7 分以上止まることがあった（#712）。`docker-install.sh` の実行は 420 秒で打ち切り、1 回やり直す
+- **SQL Server は、NIC のアドレスの 1433 を、`netsh interface portproxy` でループバックへ転送する。** WSL2 の Docker の公開ポートは、Windows ではループバックにだけ転送される。一方、SqlClient（.NET Framework）は、`Data Source=localhost`（と `.`・`(local)`）を NIC のアドレスへつなぐので、転送しないと拒否される（`127.0.0.1` と書けば通る）。Oracle・MySQL は `localhost` をループバックで引くので、転送は要らない。手元（Rancher Desktop）は、公開ポートが全アドレスで待ち受けるので、起きない。テストの構成は `Data Source=localhost` のまま
+- **WSL2 の VM のメモリは 7940MB**（ランナーの半分）。SQL Server と Oracle を合わせて約 5GB（1 つずつ起動する）
+- ほかに、このランナーで確かめたこと：IIS Express（x64・x86）あり、`aspnet_state` は Stopped（Manual）で、`Start-Service` で起動できる
+
+**`win-sts`（SpRp の外部ログインの E2E の net48・WebForms。IdP は Keycloak）の作り**（#712）
+
+- **Keycloak は、WSL2 の Docker で動かす**（`KckCompose.ps1 -Wsl2`）。`docker compose` を `wsl` 経由で呼び、compose のパスは `wslpath` で WSL のパスにする。
+  **`Up` で、WSL2 の VM が止まらないよう、常駐のプロセス（`sleep infinity`）を立てる**。立てないと、VM がアイドルで止まり、コンテナに SIGTERM（`Exited (143)`）が届いて、約 2 分で落ちる（LocalServicesOnDocker の WSL2 版が、キープアライブを立てるのと同じ理由）。約 40〜50 秒で Discovery が 200 になる（メモリ約 530MiB）
+- **apt は、Azure の Ubuntu のミラー（`azure.archive.ubuntu.com`）に替える。** Canonical のアドレス（`archive.ubuntu.com`）へ、ランナーから届かないことがあり（接続のタイムアウト）、`win-crossdb`・`win-sts` の Docker の導入が止まった。IPv4 の固定と、`apt` のタイムアウト・再試行と合わせて、安定した
+- **IIS Express の HTTPS は、既存の証明書では、ハンドシェイクで接続が閉じられる**（`0.0.0.0:44300〜` に登録済みの `CN=localhost`。秘密鍵はある）。**自分で作った自己署名の証明書**（`New-SelfSignedCertificate`。`LocalMachine\My` と `\Root`）を、`netsh http add sslcert` で 44333（WebForms）・44334（MVC）に登録し直すと、検証ありでも届く
+- **開発用証明書（Keycloak の証明書の元）を、`LocalMachine\Root` に入れる。** `dotnet dev-certs https --trust` は、Windows では確認のダイアログが出るので使わない。入れないと、Discovery の待ちと E2E の HTTPS が、検証で落ちる
+- **`aspnet_state` は `Start-Service` で起動する**（WebForms のセッション）
+- **サンプルのビルドには、`WSSrv_sample`・`Framework_WS`（`WS_sample\Build\WSIFType_sample.dll` を作る）も要る。** WebForms_Sample・MVC_Sample が参照するため（C#・VB の両方）
+- net10.0 の対象は、`linux-kck` が回す（`win-sts` は `-Only net48`）
+
+### Linux のジョブ（#703）
+
+**`windows-latest` は Linux コンテナを動かせない**（下の「SQL Server をどう用意するか」）。そこで、コンテナが要る検証は `ubuntu-latest` のジョブで回す。
+
+- **同じワークフロー（`build-windows.yml`）に置く。** Windows のジョブ（`build`）がビルドした net10.0 の出力を artifact にし、
+  Linux のジョブが受け取ってそのまま回す（`needs: build`）。**artifact は同じ実行の中でしか渡せない**ので、ファイルを分けない
+- **Linux ではビルドしない。** net10.0 の DLL は OS によらないので、Windows で作ったものを Linux へ配置する実際の使われ方をそのまま確かめられる
+- **判定は各スクリプトが行う**（`2_RunAllTests.ps1` は Linux の上では `-Linux` か `-CrossDb` を直接回す。E2E は Linux の上では net10.0 の対象だけに絞る）
+- `build` が NG でも回す（`if: !cancelled()`）。出力が渡っていなければ、受け取りで落ちる
+- 回す契機は、ワークフローの契機すべて（`deps` への push・master 宛の PR・手動・週 1 回）。DB のドライバや認証まわりの依存の更新を、`deps` で捕まえるため
+- **必須のチェックは `build` のまま**（[`GitHubUsage.md`](../../GitHubUsage.md) 2 節）。Linux のジョブは必須にしていない
+
+**ほかのリポジトリから取るものは、コミットで固定する。** 向こうの変更が、こちらの CI に黙って届かないようにするため。
+**上げるときは、手元で同じ検証を回してから、ワークフローの値を変える。**
+
+| ジョブ | 取るもの | 値 |
+|---|---|---|
+| `linux-crossdb` | LocalServicesOnDocker（DB の compose と `tools/Start-Services.ps1`） | `LSOD_REF` |
+| `linux-stub` | MultiPurposeAuthSite（スタブの publish にソース一式が要る。`develop` の HEAD の時点のコミット） | `MPAS_REF` |
+
+**MTLS のテスト用のクライアント証明書（`root/files/resource/X509/SHA256RSAClientCert.pfx`・`.cer`）は、このリポジトリのものを使う**（#705。以前は CI が MPAS から取って置き換えていた）。
+MPAS（`root/files/resource/X509`）の現行のものと同じで、自己署名（`CN=MPAS Test Client`）・2126 年まで有効。
+**MPAS が作り直したら、`.pfx`・`.cer` を手で写す**（MPAS が正本。作り直す手順は同じフォルダの `GenClientCertByOpenSSL.bat`）。ずれたことを知らせる仕組みは置いていない。
+
+**`linux-kck`・`linux-stub` の HTTPS の信頼。** サンプル（Kestrel）・Keycloak・MPAS のスタブは ASP.NET Core の開発用証明書で待ち受ける。
+`dotnet dev-certs https --trust` で信頼させ、`SSL_CERT_DIR` で .NET に見せる。
+**`--trust` は Linux では終了コード 4 で終わる**（ブラウザ（NSS）向けの登録だけが失敗する。.NET が使う OpenSSL 向けの `~/.aspnet/dev-certs/trust` には置かれる）。
+ワークフローは 4 では止めず、そのフォルダに証明書が無ければ止める。
 
 ### SQL Server をどう用意するか
 

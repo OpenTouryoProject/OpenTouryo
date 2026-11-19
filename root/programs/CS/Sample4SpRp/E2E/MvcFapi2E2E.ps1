@@ -91,6 +91,8 @@
      2026/11/10  玄人 幸道         -Mtls（par_mtls のケース）を足した（MultiPurposeAuthSite#351）
      2026/11/13  玄人 幸道         RepoPath.ps1・SummaryTable.ps1 を root/files/tools/PowerShell の下（RepoPaths・Verify）から読む（#687）
      2026/11/13  玄人 幸道         -Idp KCK（Keycloak）を足した。IdP の違いは Idp.ps1 にまとめた（#690）
+     2026/11/18  玄人 幸道         Linux の上でも回せるようにした（窓の指定・TEMP・C:/root のパスの読み替え。#703）
+     2026/11/19  玄人 幸道         MPAS のスタブの同意画面の送信を、フォームの action へ送るようにした（MPAS#359 で、送信の口が <認可の口>/consent に移った。#710）
 #>
 [CmdletBinding()]
 param(
@@ -107,7 +109,8 @@ param(
 
     [string] $StubAppSettings = '',
 
-    [string] $OutputDir = (Join-Path $env:TEMP 'OpenTouryoE2E')
+    # Linux には TEMP が無い（#703）
+    [string] $OutputDir = (Join-Path $(if ($env:TEMP) { $env:TEMP } else { [IO.Path]::GetTempPath() }) 'OpenTouryoE2E')
 )
 
 $ErrorActionPreference = 'Stop'
@@ -297,7 +300,7 @@ function Invoke-UntilCallback($client, $res, [string]$password)
         }
         elseif ($res.Body -match 'name="submit.Grant"')
         {
-            $res = Send-Http $client 'POST' $res.Url @{
+            $res = Send-Http $client 'POST' (Get-StubConsentUrl $res) @{
                 'submit.Grant' = 'Grant'
                 __RequestVerificationToken = (Get-Field $res.Body '__RequestVerificationToken')
             }
@@ -545,16 +548,20 @@ try
     $dllFull = (Resolve-Path $appDll).Path
 
     # **IdP がスタブでなければ、issuer・Discovery を環境変数で差し替える**（MvcFapi1E2E.ps1 と同じ。起動したら、このプロセスからは消す）
-    foreach ($k in $idpInfo.Config.Keys) { [Environment]::SetEnvironmentVariable("appSettings__$k", $idpInfo.Config[$k]) }
+    #   **Linux の上では、設定の C:/root/... も、このリポジトリの root/... に差し替える**（Idp.ps1 の Get-E2EPathConfig。#703）
+    $envConfig = Get-E2EPathConfig (Join-Path (Split-Path $dllFull) 'appsettings.json') $here
+    foreach ($k in $idpInfo.Config.Keys) { $envConfig[$k] = $idpInfo.Config[$k] }
+    foreach ($k in $envConfig.Keys) { [Environment]::SetEnvironmentVariable("appSettings__$k", $envConfig[$k]) }
     try
     {
+        $hidden = Get-E2EHiddenWindow
         $proc = Start-Process 'dotnet' -ArgumentList "`"$dllFull`"" `
-            -PassThru -WindowStyle Hidden -WorkingDirectory (Split-Path $dllFull) `
+            -PassThru @hidden -WorkingDirectory (Split-Path $dllFull) `
             -RedirectStandardOutput $log -RedirectStandardError "$log.err"
     }
     finally
     {
-        foreach ($k in $idpInfo.Config.Keys) { [Environment]::SetEnvironmentVariable("appSettings__$k", $null) }
+        foreach ($k in $envConfig.Keys) { [Environment]::SetEnvironmentVariable("appSettings__$k", $null) }
     }
 
     $up = $false
