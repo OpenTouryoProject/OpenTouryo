@@ -37,6 +37,7 @@
 //*  2026/11/10  玄人 幸道         CmnJwtToken.Verify：扱わない alg は例外ではなく false にした（UnexpectedAlg の期待値を変えた）。
 //*                                素の JWS・JWE の中の、扱う非対称の alg が通ること、alg と鍵の不一致、壊れた入力のテストを足した（#683）
 //*  2026/11/14  玄人 幸道         AccessToken.Verify・IdToken.Verify（鍵を受ける版）で、暗号化しない ES・PS・RS384 が通ることの回帰テストを足した（#695）
+//*  2026/11/20  玄人 幸道         時計のずれの許容幅（ClockSkewSeconds・VerifyNbfClaimWithClockSkew・VerifyIatClaim）のテストを追加（#689）
 //**********************************************************************************
 
 using System;
@@ -931,6 +932,63 @@ namespace TestFramework.Authentication
             finally
             {
                 System.Threading.Thread.CurrentThread.CurrentCulture = saved;
+            }
+        }
+
+        /// <summary>
+        /// CmnJwtToken.ClockSkewSeconds：nbf・iat が、許容幅（既定 10 秒）までは未来でも通り、それより先は断る。
+        /// 0 にすると従来どおり許容しない。上限は 60 秒で、範囲外は ArgumentOutOfRangeException。exp は対象外。
+        /// </summary>
+        [Test]
+        [Basis("FAPI 2.0 Security Profile 5.3.2.1 の 13・Note 3（iat・nbf が 0〜10 秒先の JWT は受け付ける。60 秒より先は断る。10〜60 秒は受けてもよい）")]
+        [Basis("#689")]
+        public void ClockSkew_NbfAndIat()
+        {
+            int original = CmnJwtToken.ClockSkewSeconds;
+            try
+            {
+                Assert.That(CmnJwtToken.DefaultClockSkewSeconds, Is.EqualTo(10));
+                CmnJwtToken.ClockSkewSeconds = CmnJwtToken.DefaultClockSkewSeconds;
+                const long now = 1000;
+
+                // 既定 10 秒
+                foreach (Func<JToken, long, bool> verify in new Func<JToken, long, bool>[] {
+                    CmnJwtToken.VerifyNbfClaimWithClockSkew, CmnJwtToken.VerifyIatClaim })
+                {
+                    Assert.That(verify(new JValue(now - 100), now), Is.True, "過去");
+                    Assert.That(verify(new JValue(now), now), Is.True, "いま");
+                    Assert.That(verify(new JValue(now + 8), now), Is.True, "8 秒先");
+                    Assert.That(verify(new JValue(now + 10), now), Is.True, "10 秒先（許容の境界）");
+                    Assert.That(verify(new JValue(now + 10.5), now), Is.False, "10.5 秒先（小数はそのまま比べる）");
+                    Assert.That(verify(new JValue(now + 11), now), Is.False, "11 秒先");
+                    Assert.That(verify(new JValue((now + 8).ToString()), now), Is.True, "文字列（8 秒先）");
+                    Assert.That(verify(new JValue("abc"), now), Is.False, "読めない");
+                    Assert.That(verify(null, now), Is.False, "無い");
+                }
+
+                // 0 にすると、従来どおり許容しない
+                CmnJwtToken.ClockSkewSeconds = 0;
+                Assert.That(CmnJwtToken.VerifyNbfClaimWithClockSkew(new JValue(now), now), Is.True, "0：いま");
+                Assert.That(CmnJwtToken.VerifyNbfClaimWithClockSkew(new JValue(now + 1), now), Is.False, "0：1 秒先");
+                Assert.That(CmnJwtToken.VerifyIatClaim(new JValue(now + 1), now), Is.False, "0：iat が 1 秒先");
+
+                // 上限 60 秒
+                CmnJwtToken.ClockSkewSeconds = 60;
+                Assert.That(CmnJwtToken.VerifyNbfClaimWithClockSkew(new JValue(now + 60), now), Is.True, "60：60 秒先");
+                Assert.That(CmnJwtToken.VerifyNbfClaimWithClockSkew(new JValue(now + 61), now), Is.False, "60：61 秒先");
+                Assert.That(CmnJwtToken.VerifyIatClaim(new JValue(now + 61), now), Is.False, "60：iat が 61 秒先");
+
+                // exp は対象外（過ぎた exp は、ずれで救わない）
+                Assert.That(CmnJwtToken.VerifyExpClaim(new JValue(now - 1), now), Is.False, "exp は許容しない");
+
+                // 範囲外は例外で、値は変わらない
+                Assert.Throws<ArgumentOutOfRangeException>(() => CmnJwtToken.ClockSkewSeconds = -1);
+                Assert.Throws<ArgumentOutOfRangeException>(() => CmnJwtToken.ClockSkewSeconds = 61);
+                Assert.That(CmnJwtToken.ClockSkewSeconds, Is.EqualTo(60));
+            }
+            finally
+            {
+                CmnJwtToken.ClockSkewSeconds = original;
             }
         }
 

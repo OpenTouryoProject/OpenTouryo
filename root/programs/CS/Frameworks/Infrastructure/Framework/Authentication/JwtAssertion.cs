@@ -45,6 +45,7 @@
 //*  2026/11/14  玄人 幸道         aud を唯一の値に限る根拠を、改訂案（draft-ietf-oauth-rfc7523bis）から、発行された RFC 10070 4 に書き換えた。
 //*                                振る舞いは変えていない（issuer を含む、要素 2 つ以上の配列の aud は、唯一の値ではないので受けない。#697）
 //*  2026/11/19  玄人 幸道         CreateByRsa に、署名の alg（RS* / PS*）を選べるオーバーロードを追加（FAPI の登録は PS256・ES256 に限る。#709）
+//*  2026/11/20  玄人 幸道         Verify（iss・aud を受ける版）：nbf の時計のずれを許容し（CmnJwtToken.ClockSkewSeconds。既定 10 秒）、未来の iat を断る（#689）
 //**********************************************************************************
 
 using System;
@@ -460,7 +461,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// | sub | 在る（2）。**client_id と一致するかは見ない**（クライアント認証なら client_id、認可グラントなら利用者。2 の A・B）。**クライアント認証に使うなら、out sub が iss と一致することを、呼び出し側で必ず照合する**（照合しないと、別の sub の JWT が通る） |
         /// | aud | **唯一の値**（文字列か、要素 1 つの配列）で、それが期待する値のいずれかと一致する（3。RFC 10070 4 で置き換えられた 3） |
         /// | exp | 在り、過ぎていない（4） |
-        /// | nbf | 在れば、その時刻以後である（5） |
+        /// | nbf | 在れば、その時刻以後である（5）。**時計のずれの許容幅（CmnJwtToken.ClockSkewSeconds。既定 10 秒）までは、未来でも受ける**（#689） |
+        /// | iat | 在れば、読めて、「いま＋許容幅」以前である（**どれだけ古いかは見ない**。FAPI 2.0 Security Profile 5.3.2.1 の 13。#689） |
         ///
         /// - **aud は唯一の値に限る。** ほかの値も並べた aud（例：issuer とトークン エンドポイントの URL）は断る。
         ///   RFC 7523 3 の 3 は、自分を含めば受けるとしていたが、別の用途の JWT を流用される攻撃（audience injection）があるため、
@@ -470,7 +472,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         ///   （クライアント認証では、トークン エンドポイントの URL を audience にしてはならない。RFC 10070 4）
         /// - 認可グラント（JWT Bearer）の JWT は、RFC 10070 4 が配列を断ることを求めていないが、この版は用途を問わず唯一の値に限る
         /// - 比較は大文字・小文字を区別する完全一致で、**正規化しない**（末尾のスラッシュの有無も別物）
-        /// - **時計のずれは許さない**（許容幅 0。IdToken などと同じ。#647）
+        /// - **nbf・iat は、時計のずれを許容する**（CmnJwtToken.ClockSkewSeconds。既定 10 秒、0〜60。0 なら従来どおり許容しない。#689）。
+        ///   **exp は許容しない**（許容幅 0。IdToken などと同じ。#647）
         /// - **jti の使い回しは見ない**（7。MAY。状態を持つので、呼び出し側の台帳で行う）
         /// - 文字列のクレームが日付の形でも、日付に変えずに読む（DateParseHandling.None。#653）
         /// - 欠けている・読めない・型の違う値は false（例外にしない）
@@ -628,9 +631,16 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
 
             JToken nbf = payload[OAuth2AndOIDCConst.nbf];
-            if (nbf != null && !CmnJwtToken.VerifyNbfClaim(nbf, unixTimeSeconds))
+            if (nbf != null && !CmnJwtToken.VerifyNbfClaimWithClockSkew(nbf, unixTimeSeconds))
             {
-                // まだ使えない・読めない
+                // まだ使えない（時計のずれの許容幅を超えて未来）・読めない
+                return false;
+            }
+
+            JToken iat = payload[OAuth2AndOIDCConst.iat];
+            if (iat != null && !CmnJwtToken.VerifyIatClaim(iat, unixTimeSeconds))
+            {
+                // 未来すぎる（時計のずれの許容幅を超える）・読めない（#689）
                 return false;
             }
 

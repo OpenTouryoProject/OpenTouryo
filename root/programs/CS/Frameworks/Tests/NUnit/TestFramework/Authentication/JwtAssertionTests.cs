@@ -33,6 +33,7 @@
 //*  2026/11/06  玄人 幸道         検証鍵（JWS）を受ける Verify のテストを追加（#664）
 //*  2026/11/14  玄人 幸道         aud の根拠を、改訂案から発行された RFC 10070 4 に書き換え、issuer を含む配列を断るケースを足した（#697）
 //*  2026/11/19  玄人 幸道         署名の alg（RS* / PS*）を選べる CreateByRsa のテストを追加（#709）
+//*  2026/11/20  玄人 幸道         nbf・iat の時計のずれ（Rsa_ClockSkew）のテストを追加（#689）
 //**********************************************************************************
 
 using System;
@@ -285,6 +286,61 @@ namespace TestFramework.Authentication
                     rsa.ExportParameters(true)))[OAuth2AndOIDCConst.sub], Is.EqualTo(Iss), "RSAParameters");
                 Assert.That((string)payloadOf(JwtAssertion.Create(Iss, Aud, TimeSpan.FromMinutes(5), Scopes,
                     new RsaPrivateKeyConverter().ParamToJwk(rsa.ExportParameters(true))))[OAuth2AndOIDCConst.sub], Is.EqualTo(Iss), "JWK");
+            }
+        }
+
+        /// <summary>
+        /// RSA：期待する iss・aud を受ける版は、nbf・iat が数秒（既定 10 秒）先なら通し、それより先は断る。
+        /// 時計のずれの許容幅を 0 にすれば、従来どおり nbf が先なら断る。iat が読めなければ断る。
+        /// </summary>
+        [Test]
+        [Basis("FAPI 2.0 Security Profile 5.3.2.1 の 13・Note 3（iat・nbf が 0〜10 秒先の JWT は受け付ける。60 秒より先は断る。10〜60 秒は受けてもよい）")]
+        [Basis("#689")]
+        public void Rsa_ClockSkew()
+        {
+            string[] auds = new string[] { AsIssuer, Aud };
+            long now = DateTimeOffset.Now.ToUnixTimeSeconds();
+            int original = CmnJwtToken.ClockSkewSeconds;
+
+            using (RSA rsa = RSA.Create(2048))
+            {
+                JWS_RS256_Param signer = new JWS_RS256_Param(rsa.ExportParameters(true));
+                RSAParameters pub = rsa.ExportParameters(false);
+
+                Func<Action<JObject>, bool> verify = m =>
+                {
+                    string sub, scopes; JObject jobj;
+                    JObject p = JwtAssertionTests.Payload();
+                    m(p);
+                    return JwtAssertion.VerifyByRsa(signer.Create(p.ToString(Newtonsoft.Json.Formatting.None)),
+                        Iss, auds, out sub, out scopes, out jobj, pub);
+                };
+
+                try
+                {
+                    CmnJwtToken.ClockSkewSeconds = CmnJwtToken.DefaultClockSkewSeconds;
+
+                    // 検証の側の「いま」が進む分は、緩む方に動くので、境界から離した値で確かめる
+                    Assert.That(verify(p => p[OAuth2AndOIDCConst.nbf] = now + 8), Is.True, "nbf が 8 秒先（適合性テストの値）");
+                    Assert.That(verify(p => p[OAuth2AndOIDCConst.iat] = now + 8), Is.True, "iat が 8 秒先");
+                    Assert.That(verify(p => { p[OAuth2AndOIDCConst.nbf] = now + 8; p[OAuth2AndOIDCConst.iat] = now + 8; }), Is.True, "nbf・iat が 8 秒先");
+                    Assert.That(verify(p => p[OAuth2AndOIDCConst.iat] = now - 3600), Is.True, "iat が古い（古さは見ない）");
+                    Assert.That(verify(p => p[OAuth2AndOIDCConst.nbf] = now + 20), Is.False, "nbf が 20 秒先");
+                    Assert.That(verify(p => p[OAuth2AndOIDCConst.iat] = now + 20), Is.False, "iat が 20 秒先");
+                    Assert.That(verify(p => p[OAuth2AndOIDCConst.nbf] = now + 70), Is.False, "nbf が 70 秒先（60 秒より先）");
+                    Assert.That(verify(p => p[OAuth2AndOIDCConst.iat] = now + 70), Is.False, "iat が 70 秒先（60 秒より先）");
+                    Assert.That(verify(p => p[OAuth2AndOIDCConst.iat] = "abc"), Is.False, "iat が読めない");
+
+                    // 0 にすると、従来どおり許容しない
+                    CmnJwtToken.ClockSkewSeconds = 0;
+                    Assert.That(verify(p => p[OAuth2AndOIDCConst.nbf] = now + 8), Is.False, "許容 0：nbf が 8 秒先");
+                    Assert.That(verify(p => p[OAuth2AndOIDCConst.iat] = now + 8), Is.False, "許容 0：iat が 8 秒先");
+                    Assert.That(verify(p => { }), Is.True, "許容 0：必須だけ");
+                }
+                finally
+                {
+                    CmnJwtToken.ClockSkewSeconds = original;
+                }
             }
         }
 
