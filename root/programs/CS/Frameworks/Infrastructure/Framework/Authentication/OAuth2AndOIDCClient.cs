@@ -43,6 +43,7 @@
 //*  2026/11/08  玄人 幸道         SetClientAuthentication で、空では認証として成り立たない値を送る前に ArgumentNullException にした（#678）
 //*  2026/11/09  玄人 幸道         SetClientAuthentication の remarks の根拠に、RFC 6749 §2.3.1 を足した（#678 の追補。#680 のレビューの指摘）
 //*  2026/11/20  玄人 幸道         GetStringAsync（internal）に、使う HttpClient を指定できる版を追加（RemoteJwkSetStore.HttpClient のため。#707）
+//*  2026/11/20  玄人 幸道         SendAsync に使う HttpClient を指定できる版を追加。送信を SendCoreAsync に寄せた（#719）
 //**********************************************************************************
 
 using System;
@@ -105,14 +106,41 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// ライブラリが口を持たない要求（ヘッダを足したい・状態コードを見たいなど）を、
         /// 同じ HttpClient で送るために使う。
         /// </remarks>
-        public static async Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage)
+        public static Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage)
+        {
+            return OAuth2AndOIDCClient.SendAsync(httpRequestMessage, null);
+        }
+
+        /// <summary>この HttpClient で送る（使う HttpClient を指定する版。#719）</summary>
+        /// <param name="httpRequestMessage">HttpRequestMessage</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>HttpResponseMessage</returns>
+        /// <remarks>
+        /// 自由に利用できる。動作は SendAsync(httpRequestMessage) と同じで、送る HttpClient だけを呼び出しごとに選べる。
+        /// 行き先の種類ごとに HttpClient を使い分けたいとき（登録できる相手が与えた URL は絞った HttpClient、
+        /// 上流の IdP は共有の HttpClient、など）に使う。引数の HttpClient が失敗しても、共有には倒さない。
+        /// </remarks>
+        public static async Task<HttpResponseMessage> SendAsync(HttpRequestMessage httpRequestMessage, HttpClient httpClient)
         {
             if (httpRequestMessage == null)
             {
                 throw new ArgumentNullException(nameof(httpRequestMessage));
             }
 
-            return await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            return await OAuth2AndOIDCClient.SendCoreAsync(httpRequestMessage, httpClient).ConfigureAwait(false);
+        }
+
+        /// <summary>送る（引数の HttpClient、無ければ HttpClient プロパティの共有のもの）</summary>
+        /// <param name="httpRequestMessage">HttpRequestMessage</param>
+        /// <param name="httpClient">HttpClient（null なら、共有のもの）</param>
+        /// <returns>HttpResponseMessage</returns>
+        /// <remarks>
+        /// 各口の送信は、ここを通す（#719）。どちらも null なら、従来どおり NullReferenceException になる（挙動は変えない）。
+        /// 引数の HttpClient が失敗しても、共有には倒さない（絞った行き先を、共有で迂回しない。#707・#718 と同じ）。
+        /// </remarks>
+        private static Task<HttpResponseMessage> SendCoreAsync(HttpRequestMessage httpRequestMessage, HttpClient httpClient)
+        {
+            return (httpClient ?? OAuth2AndOIDCClient._HttpClient).SendAsync(httpRequestMessage);
         }
 
         /// <summary>URL を GET して、本文を返す（失敗しても例外にしない）</summary>

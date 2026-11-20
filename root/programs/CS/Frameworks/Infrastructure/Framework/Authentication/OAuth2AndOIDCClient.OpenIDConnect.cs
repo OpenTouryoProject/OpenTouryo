@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（OAuth2AndOIDCClient.cs から処理区分ごとに分割した）
 //*  2026/10/22  玄人 幸道         GetJwkSetAsyncの取得をGetStringAsyncへ寄せ、GetDiscoveryDocumentAsyncを追加
+//*  2026/11/20  玄人 幸道         GetUserInfoAsync・GetJwkSetAsync・GetDiscoveryDocumentAsync・GetRegistrationEndpointAsyncに、使う HttpClient を指定できる版を追加（#719）
 //**********************************************************************************
 
 using System;
@@ -45,7 +46,18 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="userInfoEndpointUri">Uri</param>
         /// <param name="accessToken">accessToken</param>
         /// <returns>結果のJSON文字列（認可したユーザのClaim情報）</returns>
-        public static async Task<string> GetUserInfoAsync(Uri userInfoEndpointUri, string accessToken)
+        public static Task<string> GetUserInfoAsync(Uri userInfoEndpointUri, string accessToken)
+        {
+            return OAuth2AndOIDCClient.GetUserInfoAsync(userInfoEndpointUri, accessToken, (HttpClient)null);
+        }
+
+        /// <summary>認可したユーザのClaim情報を取得するWebAPIを呼び出す（使う HttpClient を指定する版。#719）</summary>
+        /// <param name="userInfoEndpointUri">Uri</param>
+        /// <param name="accessToken">accessToken</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列（認可したユーザのClaim情報）</returns>
+        /// <remarks>自由に利用できる。動作は GetUserInfoAsync(userInfoEndpointUri, accessToken) と同じ。</remarks>
+        public static async Task<string> GetUserInfoAsync(Uri userInfoEndpointUri, string accessToken, HttpClient httpClient)
         {
             // 通信用の変数
             HttpRequestMessage httpRequestMessage = null;
@@ -62,7 +74,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             httpRequestMessage.Headers.Authorization = AuthenticationHeader.CreateBearerAuthenticationHeaderValue(accessToken);
 
             // HttpResponseMessage
-            httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            httpResponseMessage = await OAuth2AndOIDCClient.SendCoreAsync(httpRequestMessage, httpClient).ConfigureAwait(false);
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
@@ -76,9 +88,19 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <remarks>
         /// 取得は GetStringAsync（共有基盤）に委ねる。失敗しても例外にせず、空文字を返す（従来どおり）。
         /// </remarks>
-        public static async Task<string> GetJwkSetAsync(Uri jwkSetEndpointUri)
+        public static Task<string> GetJwkSetAsync(Uri jwkSetEndpointUri)
         {
-            return await OAuth2AndOIDCClient.GetStringAsync(jwkSetEndpointUri).ConfigureAwait(false);
+            return OAuth2AndOIDCClient.GetJwkSetAsync(jwkSetEndpointUri, null);
+        }
+
+        /// <summary>JwkSetのWebAPIを呼び出す（使う HttpClient を指定する版。#719）</summary>
+        /// <param name="jwkSetEndpointUri">Uri</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで取りに行くもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>JwkSetのJSON文字列（失敗しても例外にせず、空文字）</returns>
+        /// <remarks>自由に利用できる。動作は GetJwkSetAsync(jwkSetEndpointUri) と同じ。</remarks>
+        public static async Task<string> GetJwkSetAsync(Uri jwkSetEndpointUri, HttpClient httpClient)
+        {
+            return await OAuth2AndOIDCClient.GetStringAsync(jwkSetEndpointUri, httpClient).ConfigureAwait(false);
         }
 
         #endregion
@@ -94,9 +116,19 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// 失敗しても例外にせず、空文字を返す（GetJwkSetAsync と同じ）。
         /// issuer が期待値と一致するかは、呼び出し側で照合すること（OIDC Discovery 4.3）。
         /// </remarks>
-        public static async Task<string> GetDiscoveryDocumentAsync(Uri discoveryUri)
+        public static Task<string> GetDiscoveryDocumentAsync(Uri discoveryUri)
         {
-            return await OAuth2AndOIDCClient.GetStringAsync(discoveryUri).ConfigureAwait(false);
+            return OAuth2AndOIDCClient.GetDiscoveryDocumentAsync(discoveryUri, null);
+        }
+
+        /// <summary>Discovery のメタデータを取得する（使う HttpClient を指定する版。#719）</summary>
+        /// <param name="discoveryUri">Uri（/.well-known/openid-configuration など）</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで取りに行くもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>メタデータのJSON文字列（取得できなければ空文字）</returns>
+        /// <remarks>自由に利用できる。動作は GetDiscoveryDocumentAsync(discoveryUri) と同じ。</remarks>
+        public static async Task<string> GetDiscoveryDocumentAsync(Uri discoveryUri, HttpClient httpClient)
+        {
+            return await OAuth2AndOIDCClient.GetStringAsync(discoveryUri, httpClient).ConfigureAwait(false);
         }
 
         /// <summary>Discovery から registration_endpoint を引く</summary>
@@ -106,12 +138,22 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// 自由に利用できる（#634 の F-1）。
         /// RegisterRequestObjectAsync は /ros（RFC 9101 の Request Object）で、DCR ではない。
         /// </remarks>
-        public static async Task<string> GetRegistrationEndpointAsync(Uri discoveryUri)
+        public static Task<string> GetRegistrationEndpointAsync(Uri discoveryUri)
+        {
+            return OAuth2AndOIDCClient.GetRegistrationEndpointAsync(discoveryUri, null);
+        }
+
+        /// <summary>Discovery から registration_endpoint を引く（使う HttpClient を指定する版。#719）</summary>
+        /// <param name="discoveryUri">Uri（/.well-known/openid-configuration）</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで取りに行くもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>registration_endpoint（広告が無い・読めなければ空文字）</returns>
+        /// <remarks>自由に利用できる。動作は GetRegistrationEndpointAsync(discoveryUri) と同じ。</remarks>
+        public static async Task<string> GetRegistrationEndpointAsync(Uri discoveryUri, HttpClient httpClient)
         {
             try
             {
                 JObject discovery = JToken.Parse(
-                    await OAuth2AndOIDCClient.GetDiscoveryDocumentAsync(discoveryUri).ConfigureAwait(false)) as JObject;
+                    await OAuth2AndOIDCClient.GetDiscoveryDocumentAsync(discoveryUri, httpClient).ConfigureAwait(false)) as JObject;
 
                 JToken endpoint = (discovery == null) ? null : discovery[OAuth2AndOIDCConst.registration_endpoint];
                 return (endpoint != null && endpoint.Type == JTokenType.String) ? (string)endpoint : "";

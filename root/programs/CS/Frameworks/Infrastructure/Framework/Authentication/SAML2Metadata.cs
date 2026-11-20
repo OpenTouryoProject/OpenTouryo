@@ -28,11 +28,13 @@
 //*  2026/10/22  玄人 幸道         XPath・接頭辞・属性名の直書きを SAML2Const に寄せた
 //*  2026/10/22  玄人 幸道         設定（SpRp_Saml2MetadataUri / SpRp_Saml2EntityId）を読む版を追加
 //*  2026/10/30  玄人 幸道         remarks に、use の無い KeyDescriptor の根拠（Errata E62）を書き足した（#640）
+//*  2026/11/20  玄人 幸道         GetAsync に、取りに行く HttpClient を指定できる版を追加（#719）
 //**********************************************************************************
 
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net.Http;
 using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
@@ -164,7 +166,24 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="expectedEntityId">string（期待する entityID。メタデータの entityID と違えば null を返す）</param>
         /// <returns>SAML2Metadata（引けなければ null）</returns>
         /// <remarks>自由に利用できる。</remarks>
-        public static async Task<SAML2Metadata> GetAsync(string metadataUrl, string expectedEntityId)
+        public static Task<SAML2Metadata> GetAsync(string metadataUrl, string expectedEntityId)
+        {
+            return SAML2Metadata.GetAsync(metadataUrl, expectedEntityId, null);
+        }
+
+        /// <summary>メタデータを読む（キャッシュを使う。取りに行く HttpClient を指定する版。#719）</summary>
+        /// <param name="metadataUrl">string（相手のメタデータの URL）</param>
+        /// <param name="expectedEntityId">string（期待する entityID。メタデータの entityID と違えば null を返す）</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで取りに行くもの。null なら共有の OAuth2AndOIDCClient.HttpClient）</param>
+        /// <returns>SAML2Metadata（引けなければ null）</returns>
+        /// <remarks>
+        /// 自由に利用できる。動作は GetAsync(metadataUrl, expectedEntityId) と同じで、取りに行く HttpClient だけを呼び出しごとに選べる。
+        /// **キャッシュは URL ごとで、HttpClient が違っても共有する**（同じ URL・同じ entityID なら同じ中身なので）。
+        /// そのため、ある HttpClient で取れたメタデータを、同じ URL を別の HttpClient で呼んだ呼び出しも、取りに行かずに引ける
+        /// （メタデータは公開情報だが、「絞った HttpClient では、その URL の内容を読めない」とは言えない）。
+        /// 引数の HttpClient が失敗しても、共有には倒さない（前に取れたものが在れば、それを使い続ける）。
+        /// </remarks>
+        public static async Task<SAML2Metadata> GetAsync(string metadataUrl, string expectedEntityId, HttpClient httpClient)
         {
             if (string.IsNullOrEmpty(metadataUrl) || string.IsNullOrEmpty(expectedEntityId))
             {
@@ -189,7 +208,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             try
             {
-                string xml = await OAuth2AndOIDCClient.GetStringAsync(new Uri(metadataUrl)).ConfigureAwait(false);
+                string xml = await OAuth2AndOIDCClient.GetStringAsync(new Uri(metadataUrl), httpClient).ConfigureAwait(false);
                 fetched = SAML2Metadata.Parse(xml);
             }
             catch (Exception ex)
