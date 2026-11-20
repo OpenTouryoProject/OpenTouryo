@@ -1,11 +1,11 @@
-# TESTING.md — 単体テストの実行と判定
+# 14_TESTING.md — 単体テストの実行と判定
 
 対象: `root/programs/CS/Frameworks/Tests/Golden`（C# 側。フォルダの分け方は [`Tests/README.md`](CS/Frameworks/Tests/README.md)）
 配置: `root/programs`
 本書は、リリース時に行っていた「単体テスト スクリプトの実行結果を diff で目視」を、
 **機械判定に置き換える**ための手順と判定基準を記述する（#513 段階 1）。
 
-リリース時の作業全体は [`RELEASE.md`](RELEASE.md) を参照。
+リリース時の作業全体は [`16_RELEASE.md`](16_RELEASE.md) を参照。
 実行順は `1_BuildAll.ps1` → `2_RunAllTests.ps1` → `3_SmokeTest.ps1`。
 
 > **DB のコンテナは、LocalServicesOnDocker の [`CHEATSHEET.md`](https://github.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker/blob/master/CHEATSHEET.md) に従って起動・停止する。**
@@ -58,7 +58,7 @@ cd root\programs
 - Linux のコンテナのイメージとメモリの上限は `-LinuxImage` / `-LinuxMemory` で変えられる（既定は `mcr.microsoft.com/dotnet/sdk:10.0` / `4g`）
 - **CI（GitHub Actions）の Windows のジョブは、オプション無しの通常の実行だけ**を回す（windows-latest は Linux のコンテナを動かせない）。
   **`-Linux` と、`-CrossDb` の net10.0 の分は、Linux のジョブ（`linux`・`linux-crossdb`）が回す**（Windows でビルドした出力を受け取り、
-  Linux の上で `2_RunAllTests.ps1 -Linux` / `-CrossDb` を直接回す。#703。[`BUILDING.md`](BUILDING.md) 9 節）。
+  Linux の上で `2_RunAllTests.ps1 -Linux` / `-CrossDb` を直接回す。#703。[`12_BUILDING.md`](12_BUILDING.md) 9 節）。
   `-CrossDb` の net48 は、Windows ランナー＋WSL2 のジョブ（`win-crossdb`。`-CrossDb -Wsl2`。#712）が回す。カバレッジは手元で回す
 
 ---
@@ -222,7 +222,7 @@ net10.0 の DLL は OS によらないので、Windows で作ったものを Lin
 ### `TestDataAccess` の実行モード
 
 **`TestDataAccess` のクロス DB は CI では実行できない。** LocalServicesOnDocker の各 DBMS は Linux コンテナで、
-`windows-latest` は Linux コンテナを動かせないため（[`BUILDING.md`](BUILDING.md) 9 節。
+`windows-latest` は Linux コンテナを動かせないため（[`12_BUILDING.md`](12_BUILDING.md) 9 節。
 CI の Linux のジョブ `linux-crossdb` が回すのは、NUnit の `TestPublicDb` の net10.0 だけ。#703）。
 このため `/MODE` で対象を切り替える。**期待値は `SQLONLY`（SQL Server のみ）で記録している。**
 
@@ -288,7 +288,7 @@ SimpleBatch.exe /Dap SQL ... > ..\..\..\ResultSimpleBatch48.txt
 
 - **接続文字列は `TestDataAccess\App.config` から読む**（対象が実際に使う設定）
 - **サービス名では見ない。** 理由とタイムアウトの扱いは
-  [`SMOKETEST.md`](SMOKETEST.md) 4 節と共通（実体も `Prerequisite.ps1` で共有）
+  [`15_SMOKETEST.md`](15_SMOKETEST.md) 4 節と共通（実体も `Prerequisite.ps1` で共有）
 - **表示だけで、判定は変えない。** 足りなくても止めない
 
 > **ASP.NET 状態サービス（`aspnet_state`）は要らない。**
@@ -298,7 +298,7 @@ SimpleBatch.exe /Dap SQL ... > ..\..\..\ResultSimpleBatch48.txt
 > （`build-and-test.yml`）。要るのは `3_SmokeTest.ps1` の Web アプリだけ。
 
 > **GitHub Actions でも実行している。** 前提の揃え方（SQL Server の導入、Northwind の
-> ロード、照合順序）は [`BUILDING.md`](BUILDING.md) 9 節が一次情報。
+> ロード、照合順序）は [`12_BUILDING.md`](12_BUILDING.md) 9 節が一次情報。
 > **期待値は開発環境で生成されたもの**なので、CI 側の環境がずれると差分が出る。
 > そのため CI は期待値と実測値の両方を artifact に残す。
 

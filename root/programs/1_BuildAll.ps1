@@ -605,7 +605,7 @@ if (@($allErrors | Where-Object { $_ -match 'MSB3021|MSB3027' }).Count -gt 0)
         '          Get-CimInstance Win32_Process -Filter "Name=''dotnet.exe''" |'
         '            Where-Object { $_.CommandLine -like ''*OpenTouryo*'' } |'
         '            Select-Object ProcessId, CreationDate, CommandLine'
-        '          詳細は BUILDING.md 4 節「既知の環境依存」。'
+        '          詳細は 12_BUILDING.md 4 節「既知の環境依存」。'
     ) | ForEach-Object { Write-Host $_ -ForegroundColor Yellow }
 }
 

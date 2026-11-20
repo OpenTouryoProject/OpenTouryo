@@ -70,7 +70,7 @@
 ### 2.3 `Tests/` — テスト（**`Golden` / `Else` は xUnit/NUnit ではない**）
 
 **判定の方式でフォルダを分けている**（#610）。区分ごとの中身と、置き場の決め方は
-[`Tests/README.md`](Tests/README.md) が一次情報。運用（何をいつ回すか）は [`TESTING.md`](../../TESTING.md)。
+[`Tests/README.md`](Tests/README.md) が一次情報。運用（何をいつ回すか）は [`14_TESTING.md`](../../14_TESTING.md)。
 
 **テスト プロジェクトはフレームワークを `ProjectReference` ではなく `HintPath` で参照する。**
 → **フレームワークを先にビルドしないとテストは古い DLL を見る。**
@@ -256,7 +256,7 @@ UOC_ConnectionOpen で Dam を作り、コネクションとトランザクシ�
 ## 5. 設定（XML 定義ファイル ＋ appSettings）
 
 **設定ファイルの仕組み（種類・読み込み順・環境変数での上書き・`%変数%` の展開・パスの落とし穴）は
-[`CONFIGURATION.md`](../../CONFIGURATION.md) が一次情報。** 本節は、フレームワークが読む定義ファイルとキーの俯瞰に留める。
+[`13_CONFIGURATION.md`](../../13_CONFIGURATION.md) が一次情報。** 本節は、フレームワークが読む定義ファイルとキーの俯瞰に留める。
 
 ### 5.1 XML 定義ファイル（`root/files/resource/Xml/`）
 
@@ -270,7 +270,7 @@ UOC_ConnectionOpen で Dam を作り、コネクションとトランザクシ�
 | `FxXMLTMProtocolDefinition` | `TMProtocolDefinition.xml` | プロトコル／URL／タイムアウト／プロパティ |
 
 読み込み順は **埋め込みリソース → 物理ファイル → 未設定なら空 XML（OFF 扱い）→ それ以外はエラー**。
-パスには `%ENV%` 形式の環境変数を展開できる（[`CONFIGURATION.md`](../../CONFIGURATION.md) 5 節）。
+パスには `%ENV%` 形式の環境変数を展開できる（[`13_CONFIGURATION.md`](../../13_CONFIGURATION.md) 5 節）。
 
 ### 5.2 主な appSettings キー（`Fx` プレフィクス）
 
@@ -280,7 +280,7 @@ UOC_ConnectionOpen で Dam を作り、コネクションとトランザクシ�
 | DB | `FxSqlCacheSwitch` `FxSqlCommandTimeout` `FxSqlTraceLog` / `sqlTextFilePath` / `ConnectionString_*` | `Public/Db`・`MyBaseDao` |
 | ログ | `FxLog4NetConfFile` / `LogLib`（`"nlog"` で NLog、既定は log4net） | `Public/Log` |
 | 国際化 | `FxExceptionMessageCulture` `FxBusinessMessageCulture` | `Framework` |
-| 実行環境 | `FxContainerization`（**true のとき環境変数を appSettings より優先**） | `GetConfigParameter`（[`CONFIGURATION.md`](../../CONFIGURATION.md) 4-2） |
+| 実行環境 | `FxContainerization`（**true のとき環境変数を appSettings より優先**） | `GetConfigParameter`（[`13_CONFIGURATION.md`](../../13_CONFIGURATION.md) 4-2） |
 | `_3TierEngine` | `MethodNameHeaderS/FooterS` `MethodLabel_*` `UpdateParamHeader/Footer` `LikeParamHeader/Footer` | `Business`（net48） |
 
 **キーの全量は各サンプルの `app.config` / `appsettings.json` を見る。** 本表は目安である。
@@ -385,7 +385,7 @@ SDK 形式 csproj はワイルドカード込みなので、**プラットフォ
 
 ## 7. ビルド
 
-**検証としてのビルドの手順（`1_BuildAll.ps1`、判定基準、既知のエラー）は [`BUILDING.md`](../../BUILDING.md) が一次情報。**
+**検証としてのビルドの手順（`1_BuildAll.ps1`、判定基準、既知のエラー）は [`12_BUILDING.md`](../../12_BUILDING.md) が一次情報。**
 本節は、その下にある bat の構成と、ビルド順・バージョン管理の仕組みを扱う。
 
 `root/programs/CS/` 直下の連番 `.bat` をダブルクリック実行する運用（`_Please run with a double-click...txt`）。
@@ -490,7 +490,7 @@ net48 のサンプルとツールが一切ビルドできない。**
 </PropertyGroup>
 ```
 
-**手で書き換えない。** `0_SetVersion.ps1` が、ここと net48 の `AssemblyInfo.cs` を一括で書き換える（手順は [`RELEASE.md`](../../RELEASE.md) フェーズ 0）。
+**手で書き換えない。** `0_SetVersion.ps1` が、ここと net48 の `AssemblyInfo.cs` を一括で書き換える（手順は [`16_RELEASE.md`](../../16_RELEASE.md) フェーズ 0）。
 
 | 反映先 | 仕組み |
 |---|---|
@@ -521,7 +521,7 @@ net48 のサンプルとツールが一切ビルドできない。**
 
 ## 8. コーディング規約
 
-**[`CODING.md`](../../CODING.md) に移した（`root/programs/CODING.md`）。**
+**[`11_CODING.md`](../../11_CODING.md) に移した（`root/programs/11_CODING.md`）。**
 
 ファイル ヘッダの書式と更新者名、`ArgumentException` 系の引数の順、
 `.bat` / `.ps1` の文字コードは、いずれもそちらが一次情報である。
@@ -529,7 +529,7 @@ net48 のサンプルとツールが一切ビルドできない。**
 `root/programs/` 配下に共通で効く規約であり、
 本書（Frameworks の分析）に置くと他領域から参照しにくいため分離した。
 
-| | `CODING.md` の節 |
+| | `11_CODING.md` の節 |
 |---|---|
 | ファイル ヘッダ（**新規と既存で書式が違う**） | 1 |
 | その他の規約（コメント・リソース・命名） | 2 |
@@ -596,7 +596,7 @@ Dependabot が 1 プロジェクトずつしか上げないため、放ってお
 **注意 3:** 部品の依存を上げたら、**`HintPath` で部品を拾うサンプル（`Samples4NetCore`）の csproj と、
 net48 の `packages.config`・`bindingRedirect` も見る**（`ComparePackage.ps1` / `CompareRedirect.ps1`。
 [`Samples4NetCore/Legacy/ANALYSIS.md`](../Samples4NetCore/Legacy/ANALYSIS.md) 6 節）。
-脆弱性の警告を見つけたときの扱いは `AGENTS.md`「依存パッケージの脆弱性を見つけたら」と [`BUILDING.md`](../../BUILDING.md) 13 節。
+脆弱性の警告を見つけたときの扱いは `AGENTS.md`「依存パッケージの脆弱性を見つけたら」と [`12_BUILDING.md`](../../12_BUILDING.md) 13 節。
 
 ---
 
@@ -626,7 +626,7 @@ net48 の `packages.config`・`bindingRedirect` も見る**（`ComparePackage.ps
     上げ、#510 がテスト プロジェクトだけを上げたため、一時 4 箇所が 3 通りの版に割れていた（84 警告）。
     **セキュリティ更新は、Dependabot の PR を取り込んだら他の参照も揃えること。**
     揃えておけば「もう脆弱でない」ため、同じ箇所への PR が後から来て競合することも無い
-    （運用は [`BUILDING.md`](../../BUILDING.md) 9 節）。
+    （運用は [`12_BUILDING.md`](../../12_BUILDING.md) 9 節）。
     4 箇所と、net48 がこのパッケージを参照しない（BCL を使う）ことは
     [`Public/Security/ANALYSIS.md`](Infrastructure/Public/Security/ANALYSIS.md) 7 節。
 12. **結果ファイル比較のテストは、検算しないと不具合を「正」として固定する。**
@@ -680,7 +680,7 @@ net48 の `packages.config`・`bindingRedirect` も見る**（`ComparePackage.ps
 - [ ] 条件コンパイルは **`#if NETCOREAPP`（＝非 net48）を使う**。
       `#if NETSTD` は `Framework` / `Public.Security` / `Dam*` でしか真にならないので新規には使わない（6.2 節）
 - [ ] 新規 .cs にはヘッダ コメント（Apache License / クラス名・日本語名・更新履歴）を付与。
-      **Copyright ブロックは新規には付けない**（[`CODING.md`](../../CODING.md) 1 節）
+      **Copyright ブロックは新規には付けない**（[`11_CODING.md`](../../11_CODING.md) 1 節）
 - [ ] 既存 .cs 変更時は更新履歴に 1 行追記
 - [ ] public/protected メンバに日本語 `<summary>` を付与（DocumentationFile 出力のため）
 - [ ] 文字列リテラルは `FxLiteral` / `MyLiteral` / `PubLiteral` に定数として追加

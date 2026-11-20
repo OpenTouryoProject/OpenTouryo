@@ -121,7 +121,7 @@ function Convert-E2EPath([string]$path, [string]$e2eDir)
 
 # **サンプルの appsettings.json のうち、C:/root/... を指す値を、読み替えた値で返す**（Linux の上だけ。Windows では空）。
 #   差し替えは、ソースを変えずに環境変数 appSettings__<キー>（Kestrel）か、写しの appsettings.json（CLI）で行う
-#   （サンプルの appsettings.json に書いてある、別の環境へ移すときのやり方。CONFIGURATION.md 3〜7 節）。
+#   （サンプルの appsettings.json に書いてある、別の環境へ移すときのやり方。13_CONFIGURATION.md 3〜7 節）。
 function Get-E2EPathConfig([string]$appSettingsJson, [string]$e2eDir)
 {
     $config = @{}

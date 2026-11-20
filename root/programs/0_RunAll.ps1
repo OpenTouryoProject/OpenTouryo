@@ -4,7 +4,7 @@
 #
 # **既定で ClickOnce の署名エラーを除外する。**（#555）
 #   WSClientWinCone_sample.csproj は証明書の拇印を直接指定しているため、
-#   その証明書が無い環境では必ず失敗する（BUILDING.md 4 節）。
+#   その証明書が無い環境では必ず失敗する（12_BUILDING.md 4 節）。
 #   既定で除外しないと、**「NG が 1 本ある」が常態になり、本物の失敗と見分けが付かない。**
 #
 #   除外したものは 1_BuildAll.ps1 が件数と内容を別枠で表示するので、黙って消えはしない。
@@ -19,7 +19,7 @@ param(
 # --- 処理部 ---
 # 1 → 2 → 3 を順に実行する。**その前に、設定ファイルの突き合わせを警告として行う**（#553）。
 # ※ ダブル クリック起動でもカレント ディレクトリに依存しないよう $PSScriptRoot を使う。
-# ※ 順序は固定（RELEASE.md 3 節）。1 のクリーンとアセンブリ配置が 2・3 の前提になる。
+# ※ 順序は固定（16_RELEASE.md 3 節）。1 のクリーンとアセンブリ配置が 2・3 の前提になる。
 #
 # UseLang = $true のものにだけ -Lang を渡す。
 # 2_RunAllTests.ps1 に渡さないのは、VB 側にテスト プロジェクトが無く（#542）、
@@ -181,7 +181,7 @@ if (-not $configOk)
 {
     Write-Host ""
     Write-Host "【警告】設定ファイルに想定外の差分があります（CompareConfig.ps1 -Check）。" -ForegroundColor Yellow
-    Write-Host "        合否には数えていません。CONFIGURATION.md 11 節を参照。"
+    Write-Host "        合否には数えていません。13_CONFIGURATION.md 11 節を参照。"
 }
 
 if ($null -ne $redirectOk -and -not $redirectOk)

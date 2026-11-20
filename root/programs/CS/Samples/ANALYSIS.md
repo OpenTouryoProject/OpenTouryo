@@ -184,7 +184,7 @@ object ret = cc.Invoke("testInProcess", parameterValue);   // 論理名で解決
 ## 7. 設定ファイル
 
 **設定ファイルの仕組み（種類・読み込み順・`%変数%` の展開・パスの落とし穴）は
-[`CONFIGURATION.md`](../../CONFIGURATION.md) が一次情報。** 本節は、サンプルに共通する置き方に留める。
+[`13_CONFIGURATION.md`](../../13_CONFIGURATION.md) が一次情報。** 本節は、サンプルに共通する置き方に留める。
 
 ### 7-1. コンソール / WinForms / WPF — `app.config`
 
@@ -226,7 +226,7 @@ P層（Web Forms）専用の設定群:
 
 ### ビルド
 
-`root/programs/CS/` 直下の bat（`z_Common.bat` が MSBuild を解決）。検証としてのビルドは [`BUILDING.md`](../../BUILDING.md)。
+`root/programs/CS/` 直下の bat（`z_Common.bat` が MSBuild を解決）。検証としてのビルドは [`12_BUILDING.md`](../../12_BUILDING.md)。
 
 | bat | 対象 |
 |---|---|
@@ -254,7 +254,7 @@ Web 系は `packages.config` 方式（NuGet classic）なので、**`nuget.exe r
 | WS クライアント（リモート） | 先に `ServiceInterface`（WCF/WebAPI ホスト）を起動 | [`WS_sample/ANALYSIS.md`](WS_sample/ANALYSIS.md) 2.3 節 |
 
 **サービスやホストを勝手に起動しない**（`AGENTS.md`）。止まっていたら報告する。
-GUI のサンプルは疎通テストの対象外（[`SMOKETEST.md`](../../SMOKETEST.md)）。
+GUI のサンプルは疎通テストの対象外（[`15_SMOKETEST.md`](../../15_SMOKETEST.md)）。
 
 ---
 
@@ -345,7 +345,7 @@ switch ((testParameter.ActionType.Split('%'))[1])
 - [ ] `Frameworks` を先にビルド → `4_Build_CopyAssemblies.bat` を実行（`Build\` を作る）
 - [ ] Web 系を触るなら `nuget.exe restore`（`packages.config` 方式）
 - [ ] 新規 .cs にはヘッダ コメント（Apache License / クラス名・日本語名・更新履歴）を付与、既存変更時は履歴に 1 行追記。
-      **Copyright ブロックは新規には付けない**（[`CODING.md`](../../CODING.md) 1 節）
+      **Copyright ブロックは新規には付けない**（[`11_CODING.md`](../../11_CODING.md) 1 節）
 - [ ] `UOC_` メソッドの冒頭で `this.ReturnValue = ...` を設定
 - [ ] `ActionType` の `%` 区切り規約を壊さない（6 節）
 - [ ] 設定キーを増やしたら `app.config`（Web は `app.config` 側）に追記

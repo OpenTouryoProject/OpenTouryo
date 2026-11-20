@@ -159,7 +159,7 @@ de-DE などでは `1.5` が `1,5` に（SQL の区切りと衝突して値の�
 - `GetConfigValue` / `GetConnectionString` / `GetAnyConfigValue`（net10.0 のみ。`:` 区切りの任意のキー）
 - **`FxContainerization` が真なら、環境変数を設定ファイルより優先する**（`checkContainerization` 引数で止められる）
 - 初期化を忘れると `NOT_INITIALIZED` の `ArgumentException`。**例外を握る API（`Exists` など）では黙って false になる**
-- 仕組みの全体（読み込み順、`%変数%` の展開、環境変数による上書き）は [`CONFIGURATION.md`](../../../../CONFIGURATION.md)
+- 仕組みの全体（読み込み順、`%変数%` の展開、環境変数による上書き）は [`13_CONFIGURATION.md`](../../../../13_CONFIGURATION.md)
 
 ### 6.2 その他
 

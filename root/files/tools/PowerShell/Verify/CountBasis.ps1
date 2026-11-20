@@ -44,7 +44,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-# パスの既定値は param() に書かない（5.1 の -File で $PSScriptRoot が空になる。CODING.md 5 節）
+# パスの既定値は param() に書かない（5.1 の -File で $PSScriptRoot が空になる。11_CODING.md 5 節）
 if (-not $Root)
 {
     # 本スクリプトは root\files\tools\PowerShell\Verify に置く（#687）。NUnit のテストは root\programs の下にある。

@@ -613,7 +613,7 @@ namespace TestFramework.Authentication
         /// 順は、新しい名前（環境変数 → 設定ファイル）→ 改名前の名前（環境変数 → 設定ファイル）（#666）。
         /// </summary>
         [Test]
-        [Basis("設計：CmnClientParams.RenamedKeys の remarks（環境変数も名前ごとに読む）・CONFIGURATION.md 4-3")]
+        [Basis("設計：CmnClientParams.RenamedKeys の remarks（環境変数も名前ごとに読む）・13_CONFIGURATION.md 4-3")]
         [Basis("#666")]
         public void RenamedKeys_Containerization()
         {

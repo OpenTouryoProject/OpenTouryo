@@ -14,7 +14,7 @@
         Clean (net48 基盤)  OK   10.7   Clean (net48 基盤)        OK       10.70
 
       利用者は 5.1（powershell.exe）で実行するため、こちらに合わせる必要がある
-      （CODING.md 5 節）。-AutoSize や -Wrap の指定では直らない。
+      （11_CODING.md 5 節）。-AutoSize や -Wrap の指定では直らない。
 
     ＜対処＞
       表示桁数を自前で数え、PadRight ではなく空白の連結で桁を合わせる。

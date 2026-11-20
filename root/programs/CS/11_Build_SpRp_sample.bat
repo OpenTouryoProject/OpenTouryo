@@ -1,7 +1,7 @@
 setlocal
 
 @rem --------------------------------------------------
-@rem NOTE: keep this file pure ASCII (root/programs/CODING.md section 4).
+@rem NOTE: keep this file pure ASCII (root/programs/11_CODING.md section 4).
 @rem       Japanese explanations are in Sample4SpRp\README.md.
 @rem --------------------------------------------------
 

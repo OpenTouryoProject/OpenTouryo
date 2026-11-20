@@ -68,7 +68,7 @@ ASP.NET（.NET Framework）の Web アプリのサンプル 2 本。
 - B 層・D 層は `Logic/{Business, Common, Dao}`。**`LayerB` は `WS_sample/WSServer_sample` のものとは別のコピー**である
   （`WS_sample/ASPNETWebService` の `JsonController` は `WSServer_sample` 側を使う。[`WS_sample/ANALYSIS.md`](../WS_sample/ANALYSIS.md)）
 - `sessionState` は `StateServer`（Cookie 名 `mvc_session`）。`appSettings` は `app.config`
-- 複数台に配備するなら `machineKey` が要る（`Web.config` のコメント。仕組みは [`CONFIGURATION.md`](../../../CONFIGURATION.md) 8 節）
+- 複数台に配備するなら `machineKey` が要る（`Web.config` のコメント。仕組みは [`13_CONFIGURATION.md`](../../../13_CONFIGURATION.md) 8 節）
 
 ---
 
@@ -83,7 +83,7 @@ ASP.NET（.NET Framework）の Web アプリのサンプル 2 本。
 | `WebForms_Sample (net48)` | 51082 | `login.aspx` を GET → `__VIEWSTATE` などを付けて POST → **`menu.aspx` が 200**（未認証なら 302） |
 | `MVC_Sample (net48)` | 51081 | `/Home/Login` を GET → 偽造防止トークンを付けて POST → **`/Crud1/Index` が 200** |
 
-どちらも `aspnet_state` と DB（Northwind）が要る（[`SMOKETEST.md`](../../../SMOKETEST.md)「Web アプリ」）。
+どちらも `aspnet_state` と DB（Northwind）が要る（[`15_SMOKETEST.md`](../../../15_SMOKETEST.md)「Web アプリ」）。
 **疎通テストが見ているのはログインと 1 画面だけである。** P 層の機能（`testFxLayerP` など）は手で確かめる。
 
 ---
@@ -104,7 +104,7 @@ ASP.NET（.NET Framework）の Web アプリのサンプル 2 本。
 3. **`packages.config` 方式**。版を上げたら `packages.config`・csproj・`bindingRedirect` の 3 か所を揃える（`ComparePackage.ps1` / `CompareRedirect.ps1`）。
 4. **疎通テストが通っても、P 層の機能は確かめていない**（4 節）。
 5. **`MVC_Sample` の B 層は `WSServer_sample` と別のコピー**（3 節）。片方を直しても、もう片方は変わらない。
-6. **判定は状態コードで行う。** 本文の部分一致だと、IIS Express のエラー画面（500.19）の HTML に一致してしまったことがある（[`SMOKETEST.md`](../../../SMOKETEST.md)）。
+6. **判定は状態コードで行う。** 本文の部分一致だと、IIS Express のエラー画面（500.19）の HTML に一致してしまったことがある（[`15_SMOKETEST.md`](../../../15_SMOKETEST.md)）。
 
 ---
 

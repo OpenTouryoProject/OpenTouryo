@@ -1,7 +1,7 @@
 # 受けブランチ（deps）に入った変更を windows-latest で検証する。
 #
 # ＜位置づけ＞
-#   リリース時の検証 3 本（RELEASE.md 3 節）を、そのまま順に実行する。
+#   リリース時の検証 3 本（16_RELEASE.md 3 節）を、そのまま順に実行する。
 #     1_BuildAll.ps1    全ビルド
 #     2_RunAllTests.ps1 単体テスト
 #     3_SmokeTest.ps1   サンプルの疎通
@@ -19,7 +19,7 @@
 #     win-stub … 外部ログインの E2E の net48・WebForms と、CLI の net48（IdP は MPAS のスタブ。#713）
 #
 # ＜対象外＞
-#   ・GUI アプリケーション（WinForms / WPF / 各ツールの画面）… RELEASE.md 4 節の手作業
+#   ・GUI アプリケーション（WinForms / WPF / 各ツールの画面）… 16_RELEASE.md 4 節の手作業
 #   ・SpRp の E2E の net48・WebForms のうち、外部ログインの E2E は win-kck（Keycloak）と win-stub（MPAS のスタブ）が、CLI の net48 は win-stub が回す（#712・#713）
 #   ・Golden の TestDataAccess のクロス DB … 手元で回す（build は /Dap SQL のみを使う。TestSQLUtility は 4 DBMS の SQL 生成を検証するが、接続はしない）
 #   ・net48 の NUnit TestPublicDb のクロス DB は、win-crossdb（Windows ランナー＋WSL2 の Docker。#712）が回す
@@ -49,7 +49,7 @@ on:
   #
   #   ・master へのマージは develop からのリリース時だけで、往復しない。
   #     1 回あたり 10 分前後の待ちは受け入れられる。
-  #   ・RELEASE.md フェーズ 1 の「検証 3 本」を機械的に担保する。
+  #   ・16_RELEASE.md フェーズ 1 の「検証 3 本」を機械的に担保する。
   #
   # develop は対象にしない。deps ⇔ develop ⇔ feature と往復が多く、
   # 毎回のマージが CI 待ちになる。deps 由来の変更は deps で検証済みでもある。
@@ -102,7 +102,7 @@ jobs:
       #   ・schedule・手動 … 最後の「Fail on vulnerable packages」で落とす（失敗の通知で気付く）
       # どちらでも、後続の単体テスト・疎通は最後まで回す。
       # 脆弱性データを取れなかった（終了コード 2）ときも、見つけたときと同じに扱う（確かめられていないため）。
-      # **run: の中は ASCII だけにする**（Windows PowerShell 5.1 が BOM 無しの一時ファイルを Shift_JIS で読むため。CODING.md 5 節）。
+      # **run: の中は ASCII だけにする**（Windows PowerShell 5.1 が BOM 無しの一時ファイルを Shift_JIS で読むため。11_CODING.md 5 節）。
       - name: Check vulnerable packages
         id: vuln
         shell: powershell
@@ -249,7 +249,7 @@ jobs:
           $orders2 = 'root/programs/CS/Samples/Bat_sample/RerunnableBatch_sample/CREATE ORDERS2.sql'
           Invoke-Sql -Password $env:SA_PASSWORD -Database Northwind -File $orders2 *> $null
 
-          # 初期状態の確認（RELEASE.md 2 節と同じ観点）。
+          # 初期状態の確認（16_RELEASE.md 2 節と同じ観点）。
           $orders = (Invoke-Sql -Password $env:SA_PASSWORD -Database Northwind -Raw `
                      -Query "SET NOCOUNT ON; SELECT COUNT(*) FROM dbo.Orders") -join ''
           Write-Host ("Northwind 準備完了 : Shippers=3  Orders={0}" -f $orders.Trim())
@@ -291,7 +291,7 @@ jobs:
           #   1977/4/24 の形にしか一致しない。
           #
           # ＜CurrentUICulture（言語）＞
-          #   ここでは直せない。試して駄目だったものは BUILDING.md 9 節に記録した。
+          #   ここでは直せない。試して駄目だったものは 12_BUILDING.md 9 節に記録した。
           #     Install-Language              … ハング（run 30976630947）
           #     Set-WinUILanguageOverride     … 言語パックの導入が前提
           #     PreferredUILanguages を直書き … 未インストールの言語は無視される
@@ -544,7 +544,7 @@ jobs:
   #
   # ＜MTLS のテスト用のクライアント証明書＞
   #   このリポジトリの root/files/resource/X509/SHA256RSAClientCert.{pfx,cer} を使う（Keycloak が信頼し、SpRp_MVC が FAPI2 の par_mtls で出す）。
-  #   MPAS の現行のものと同じ（#705。以前は MPAS から取って置き換えていた）。MPAS が作り直したら、手で写す（BUILDING.md 9 節）。
+  #   MPAS の現行のものと同じ（#705。以前は MPAS から取って置き換えていた）。MPAS が作り直したら、手で写す（12_BUILDING.md 9 節）。
   #
   # ＜HTTPS の信頼＞
   #   サンプル（Kestrel）と Keycloak は、ASP.NET Core の開発用証明書で待ち受ける（KckCompose.ps1 が書き出す）。

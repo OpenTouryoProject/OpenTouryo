@@ -663,7 +663,7 @@ DotNetZip（非推奨・既知脆弱性 `GHSA-xhg6-9j5j-w4vf`）から移行し�
 
 ## 8. 制約
 
-- **GUI の確認は手作業**（`RELEASE.md` 4 節）。CUI は `/MFTGEN` と `/CUI` で
+- **GUI の確認は手作業**（`16_RELEASE.md` 4 節）。CUI は `/MFTGEN` と `/CUI` で
   生成から配置まで通せるため、疎通確認に載せられる
 - 文言は `Resources\Resource.resx` / `Resource.ja-JP.resx` に置く。**直書きしない**
   （例外メッセージは `MSGDefinition.xml` / `MSGDefinition_ja-JP.xml` 側）

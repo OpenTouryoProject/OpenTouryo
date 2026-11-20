@@ -158,7 +158,7 @@ because the clean and the assembly deployment done by `1_` are prerequisites of 
 
 `2_RunAllTests.ps1` has options such as running in a Linux container (`-Linux`), running against each DBMS (`-CrossDb`),
 and measuring coverage (`-Coverage`). The list is in section 1 of
-[`programs/CHEATSHEET.md`](programs/CHEATSHEET.md), and the details are in [`programs/TESTING.md`](programs/TESTING.md).
+[`programs/10_CHEATSHEET.md`](programs/10_CHEATSHEET.md), and the details are in [`programs/14_TESTING.md`](programs/14_TESTING.md).
 
 If you changed only samples or tests, `SelectTargets.ps1` narrows down what to run.
 It examines the changes since the last verification and selects only the builds, tests and smoke tests that are needed.
@@ -170,9 +170,9 @@ It examines the changes since the last verification and selects only the builds,
 ```
 
 For the procedures and the criteria, refer to
-[`BUILDING.md`](programs/BUILDING.md) / [`TESTING.md`](programs/TESTING.md) /
-[`SMOKETEST.md`](programs/SMOKETEST.md) in the same folder.
-The whole release procedure is summarized in [`RELEASE.md`](programs/RELEASE.md).
+[`12_BUILDING.md`](programs/12_BUILDING.md) / [`14_TESTING.md`](programs/14_TESTING.md) /
+[`15_SMOKETEST.md`](programs/15_SMOKETEST.md) in the same folder.
+The whole release procedure is summarized in [`16_RELEASE.md`](programs/16_RELEASE.md).
 
 ### Start the ASP.NET state service
 Open a command prompt as an administrator and execute the following commands.  

@@ -1,4 +1,4 @@
-﻿# CONFIGURATION.md — 設定ファイルの扱い
+﻿# 13_CONFIGURATION.md — 設定ファイルの扱い
 
 対象: `root/programs` 配下（CS / VB、net48 / net10.0）
 配置: `root/programs`
@@ -539,7 +539,7 @@ VB : <add key="SqlTextFilePath" value="GenDaoAndBatUpd_sample" />
 **どちらもビルドは通る。** だから検査でしか見つからない。
 
 > `packages.config` の見方（サテライト・コンテンツ・メタ パッケージの区別）は
-> [`BUILDING.md`](BUILDING.md) 11 節。**「参照が無い＝不要」ではない。**
+> [`12_BUILDING.md`](12_BUILDING.md) 11 節。**「参照が無い＝不要」ではない。**
 
 ### 揃えるときの原則
 

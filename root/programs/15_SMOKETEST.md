@@ -1,4 +1,4 @@
-﻿# SMOKETEST.md — サンプルの疎通確認
+﻿# 15_SMOKETEST.md — サンプルの疎通確認
 
 対象: `root/programs/CS`（C# 側、既定）／ `root/programs/VB`（VB 側、`-Lang VB`）
 配置: `root/programs`
@@ -46,7 +46,7 @@ cd root\programs
 疎通テストは期待結果ファイルを持たず、判定条件を `3_SmokeTest.ps1` の対象定義に書く。
 
 **実行順は `1_BuildAll.ps1` → `2_RunAllTests.ps1` → `3_SmokeTest.ps1`。**
-リリース時の作業全体は [`RELEASE.md`](RELEASE.md) を参照。
+リリース時の作業全体は [`16_RELEASE.md`](16_RELEASE.md) を参照。
 
 ### 判定は「今回の出力」だけで行う（#550 で一般化）
 
@@ -540,7 +540,7 @@ WinForms / WPF 系は、リリース チェックリスト（段階 4）の**手
 
 > **GitHub Actions でも実行している。** 前提の揃え方（SQL Server の導入と Northwind の
 > ロード、`C:\root`、ロケール、`aspnet_state` の開始）は
-> [`BUILDING.md`](BUILDING.md) 9 節が一次情報。
+> [`12_BUILDING.md`](12_BUILDING.md) 9 節が一次情報。
 > IIS Express は `windows-latest` に同梱されているため、追加の導入は要らない。
 
 ### ASP.NET 状態サービス
@@ -645,7 +645,7 @@ UI を実際に操作するテストはキー入力やフォーカスを奪う�
 
 **リポジトリ既定のビルド バッチを呼ぶ。** 理由は `2_RunAllTests.ps1` と同じで、
 `csproj` を直接 MSBuild すると `nuget.exe restore` が行うネイティブ DLL の配置が漏れ、
-**ビルドは成功するのに実行時に落ちる**（`TESTING.md` の「ビルドをバッチに委ねている理由」）。
+**ビルドは成功するのに実行時に落ちる**（`14_TESTING.md` の「ビルドをバッチに委ねている理由」）。
 
 ### `1_BuildAll.ps1` の後にバイナリが残らない理由
 
@@ -891,7 +891,7 @@ $client.Connect("localhost", $port)
 利用者が `powershell.exe`（5.1）で実行したときに落ちる。
 
 > **規約の実体は
-> [`CODING.md`](CODING.md) の 5 節**にある。
+> [`11_CODING.md`](11_CODING.md) の 5 節**にある。
 > 落とし穴の一覧と対処方法は、そちらを参照すること。
 
 本スクリプト群は、次の 4 点を**実際に踏んだ**うえで対処してある。
@@ -906,7 +906,7 @@ $client.Connect("localhost", $port)
 
 ### PowerShell から `.bat` を呼ぶときの注意
 
-`TESTING.md` と同じく、`NoDefaultCurrentDirectoryInExePath` を解除している。
+`14_TESTING.md` と同じく、`NoDefaultCurrentDirectoryInExePath` を解除している。
 解除しないと、バッチ内でパス区切りを含まない名前で起動している exe が動かない。
 
 ---
@@ -918,7 +918,7 @@ $client.Connect("localhost", $port)
 .\3_SmokeTest.ps1 -Lang Both   # C# 30 件 ＋ VB 6 件
 ```
 
-**既定に VB を含めない。** リリース時の検証（[`RELEASE.md`](RELEASE.md) 3 節）は
+**既定に VB を含めない。** リリース時の検証（[`16_RELEASE.md`](16_RELEASE.md) 3 節）は
 C# 側が対象で、VB を含めると毎回 VB のビルドが乗るためである。
 
 ### 対象は 6 件
@@ -984,4 +984,4 @@ VB のサンプル ビルド バッチが `nuget restore` を呼んでおらず�
 **ビルドは通り、実行時にだけ `System.DllNotFoundException` で落ちる。**
 
 この疎通確認を用意して初めて分かった不具合である。経緯は
-[`BUILDING.md`](BUILDING.md) 10 節。
+[`12_BUILDING.md`](12_BUILDING.md) 10 節。

@@ -1,6 +1,6 @@
 @echo off
 rem NOTE: keep this file pure ASCII. cmd.exe reads a batch file by byte offset, so non-ASCII text
-rem       can break lines depending on the console code page (root/CODING.md section 4. #342).
+rem       can break lines depending on the console code page (root/programs/11_CODING.md section 4. #342).
 rem
 rem Recreate the client certificate (for mTLS).
 rem
@@ -11,7 +11,7 @@ rem   - The subject must match tls_client_auth_subject_dn of the client registra
 rem     (in the template, the value of FAPI1_Client / FAPI2_Client)
 rem   - PKCS#12 uses the legacy encryption, so that net48 (.NET Framework) can read it
 rem
-rem Details: root/CONFIGURATION.md section 8.
+rem Details: root/programs/13_CONFIGURATION.md section 8.
 
 where openssl >nul 2>&1
 if errorlevel 1 (

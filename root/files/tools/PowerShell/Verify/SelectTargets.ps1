@@ -42,7 +42,7 @@
       **docker が要る。** 無ければ 2 が NG になる（黙って省かない）。fixing では後回しにする。
 
     ＜検証スクリプト自身の変更＞
-      .ps1 は表示だけの変更でも実行する（CODING.md 5 節）。
+      .ps1 は表示だけの変更でも実行する（11_CODING.md 5 節）。
       変えたスクリプトが他の対象で回らないときは、軽い対象を 1 件だけ選んで回す。
 
     ＜段階（-Stage）＞
@@ -621,7 +621,7 @@ if ($Stage -eq "fixing")
     #   ツール・サンプル・VB は疎通と一緒に fixed で建てる。
     if ($plan.ContainsKey(1) -and $plan[1].Only.Count -eq 0)
     {
-        # **基盤のクリーンも含める。**（CHEATSHEET.md 1 節「-Only ＋ -SkipClean は万能ではない」、#574）
+        # **基盤のクリーンも含める。**（10_CHEATSHEET.md 1 節「-Only ＋ -SkipClean は万能ではない」、#574）
         #   net48 版と core 版のプロジェクトが同じフォルダにあり、前回の通しで最後に建てた
         #   core 版の restore 結果（obj）が残っていると、Business.RichClient (net48) が
         #   「does not reference .NETFramework,Version=v4.8」で落ちる（#610 で実際に踏んだ）。
@@ -677,7 +677,7 @@ function Get-Splat([int]$no)
     if ($p.Only.Count -gt 0) { $s.Only = $p.Only }
     if ($no -eq 2 -and $p.Linux) { $s.Linux = $true }
 
-    # **絞ったビルドは Clean を挟まない。**（CHEATSHEET.md 1 節）
+    # **絞ったビルドは Clean を挟まない。**（10_CHEATSHEET.md 1 節）
     #   Clean は bin を再帰的に消すため、絞った範囲の外の成果物まで失う。
     if ($no -eq 1)
     {

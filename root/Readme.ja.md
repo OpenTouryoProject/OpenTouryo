@@ -156,7 +156,7 @@ cd C:\root\programs
 
 `2_RunAllTests.ps1` には、Linux のコンテナでも回す（`-Linux`）、DBMS ごとに回す（`-CrossDb`）、
 カバレッジを測る（`-Coverage`）などのオプションがあります。一覧は
-[`programs/CHEATSHEET.md`](programs/CHEATSHEET.md) 1 節、詳細は [`programs/TESTING.md`](programs/TESTING.md) にあります。
+[`programs/10_CHEATSHEET.md`](programs/10_CHEATSHEET.md) 1 節、詳細は [`programs/14_TESTING.md`](programs/14_TESTING.md) にあります。
 
 変更がサンプルやテストだけなら、`SelectTargets.ps1` で回す範囲を絞れます。
 前回の検証からの変更を調べ、必要なビルド・テスト・疎通だけを選びます。
@@ -168,9 +168,9 @@ cd C:\root\programs
 ```
 
 手順と判定基準は、同じフォルダの
-[`BUILDING.md`](programs/BUILDING.md) / [`TESTING.md`](programs/TESTING.md) /
-[`SMOKETEST.md`](programs/SMOKETEST.md) を参照してください。
-リリース時の作業全体は [`RELEASE.md`](programs/RELEASE.md) にまとめています。
+[`12_BUILDING.md`](programs/12_BUILDING.md) / [`14_TESTING.md`](programs/14_TESTING.md) /
+[`15_SMOKETEST.md`](programs/15_SMOKETEST.md) を参照してください。
+リリース時の作業全体は [`16_RELEASE.md`](programs/16_RELEASE.md) にまとめています。
 
 ### ASP.NET 状態サービスの準備
 管理者としてコマンドプロンプトを起動し、下記コマンドを実行します。  

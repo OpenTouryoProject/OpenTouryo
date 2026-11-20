@@ -55,7 +55,7 @@
 | なぜ毎回 publish し直すのか（`rmdir` をやめてはいけない理由） | `MVC_Sample/README.md`「毎回 publish とイメージ ビルドが走る」 |
 | ファイル構成（`Dockerfile` / `docker-compose.yml` / `appsettings.Container.json` / `conf/`） | `MVC_Sample/README.md`「ファイル構成」 |
 | 設定の読み込み順（`appsettings.json` → `appsettings.Container.json` → 環境変数）と、置き場所の分担 | `MVC_Sample/README.md`「設定をどこに書くか」 |
-| `%OT_RESOURCE_ROOT%` を展開しているのは誰か | `MVC_Sample/README.md`（`ResourceLoader.ResolveFilePath`。仕組みは [`CONFIGURATION.md`](../root/programs/CONFIGURATION.md) 5 節） |
+| `%OT_RESOURCE_ROOT%` を展開しているのは誰か | `MVC_Sample/README.md`（`ResourceLoader.ResolveFilePath`。仕組みは [`13_CONFIGURATION.md`](../root/programs/13_CONFIGURATION.md) 5 節） |
 | 踏みやすいところ（`WORKDIR`、`Xml` の大文字小文字、`Data Source=sqlserver`、読み取り専用のリソース、非 root、鍵のボリューム） | `MVC_Sample/README.md`「踏みやすいところ」 |
 | 証明書とパスワード、秘密を渡す口 | `MVC_Sample/README.md`「証明書とパスワード」 |
 | 本番へ持って行くときに変わるもの（`UseHttpsRedirection` / `UseForwardedHeaders` など） | `MVC_Sample/README.md`「本番へ持って行くとき」 |

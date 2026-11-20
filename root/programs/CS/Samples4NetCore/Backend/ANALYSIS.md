@@ -95,7 +95,7 @@ app.UseSession(...);             // セッションを使うなら（MVC_Sample 
 - `MVC_Sample` と違い、**Cookie 認証・セッション・データ保護を持たない**（`AddMvc` も不要。#582）。
   一方、**CORS を持つのはこちらだけ**
 - `appsettings.json` の定義ファイルのパスは `C:/root/files/resource/XML/...`（**`XML` が大文字**）。
-  Windows では通るが、Linux では開けない（[`CONFIGURATION.md`](../../../CONFIGURATION.md) 7-1。コンテナでは別の設定で上書きしている）
+  Windows では通るが、Linux では開けない（[`13_CONFIGURATION.md`](../../../13_CONFIGURATION.md) 7-1。コンテナでは別の設定で上書きしている）
 
 ---
 
@@ -109,7 +109,7 @@ connectionStrings__ConnectionString_SQL=Data Source=db;...
 ```
 
 > **`FxContainerization` は要らない。** あちらは ON のとき「接頭辞なしのキー名」で環境変数を読む別の仕組みである
-> （[`CONFIGURATION.md`](../../../CONFIGURATION.md) 4 節）。
+> （[`13_CONFIGURATION.md`](../../../13_CONFIGURATION.md) 4 節）。
 
 両サンプルとも、環境ごとに変えたい振る舞いを `appSettings` のキーで切り替える口を持つ
 （`Startup.cs` 冒頭のコメントに一覧がある）。**既定はいずれも従来どおり**（サンプルは平文 HTTP で動かすため）。
@@ -177,7 +177,7 @@ net48 側の対応物は `machineKey`（`Samples/WebApp_sample/MVC_Sample` の `
 > 逆に無条件に信用すると、**クライアントがヘッダを詐称できる**。前段だけが到達できるネットワークに閉じてから使うこと。
 
 net48 側はコードから変えられない（`Request.IsSecureConnection` は読み取り専用）ため、
-IIS ＋ ARR の URL Rewrite で `HTTPS` サーバ変数を立てる（[`CONFIGURATION.md`](../../../CONFIGURATION.md) 8 節）。
+IIS ＋ ARR の URL Rewrite で `HTTPS` サーバ変数を立てる（[`13_CONFIGURATION.md`](../../../13_CONFIGURATION.md) 8 節）。
 
 ---
 
@@ -194,7 +194,7 @@ IIS ＋ ARR の URL Rewrite で `HTTPS` サーバ変数を立てる（[`CONFIGUR
 | `TestWebAPIClient (net10.0)` | Kestrel（51088） | `ASPNETWebService` に対して CRUD の一巡・DTO の往復・楽観排他 |
 | `OpenAPI (net10.0)` | Kestrel（51093） | `/openapi/v1.json` が仕様として読める（版・`paths`・代表的な API が**名前で**載っている） |
 
-どれも DB（Northwind）が要る（OpenAPI を除く）。詳細は [`SMOKETEST.md`](../../../SMOKETEST.md)。
+どれも DB（Northwind）が要る（OpenAPI を除く）。詳細は [`15_SMOKETEST.md`](../../../15_SMOKETEST.md)。
 
 ---
 

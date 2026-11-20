@@ -7,7 +7,7 @@
 >
 > | 内容 | 一次情報 |
 > |---|---|
-> | リリース時の作業全体 | [`RELEASE.md`](../../RELEASE.md) |
+> | リリース時の作業全体 | [`16_RELEASE.md`](../../16_RELEASE.md) |
 > | ビルド構成・バージョン管理 | [`Frameworks/ANALYSIS.md`](../Frameworks/ANALYSIS.md) 7 章 |
 > | リリース・エンジニアリング | [Open 棟梁 Wiki](https://opentouryo.osscons.jp/index.php?%E3%83%AA%E3%83%AA%E3%83%BC%E3%82%B9%E3%83%BB%E3%82%A8%E3%83%B3%E3%82%B8%E3%83%8B%E3%82%A2%E3%83%AA%E3%83%B3%E3%82%B0) |
 > | パッケージ作成 | [Wiki : HowToCreateOpenTouryoNuGetPackages.ja](https://github.com/OpenTouryoProject/OpenTouryo/wiki/HowToCreateOpenTouryoNuGetPackages.ja) |
@@ -49,7 +49,7 @@ develop 段階で先に詰めると、次の 2 点で困る。
 
 ### （1）リリース・エンジニアリングの手順を実施する
 
-[`RELEASE.md`](../../RELEASE.md) に従い、検証 3 本を通しておく。
+[`16_RELEASE.md`](../../16_RELEASE.md) に従い、検証 3 本を通しておく。
 
 ### （2）ビルドを行う
 

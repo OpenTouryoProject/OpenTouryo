@@ -4,19 +4,19 @@
 
 | | |
 |---|---|
-| 実行と判定 | [`root/programs/TESTING.md`](../../../../../TESTING.md)（`2_RunAllTests.ps1` が回す） |
-| CI での前提の揃え方 | [`root/programs/BUILDING.md`](../../../../../BUILDING.md) 9 節 |
+| 実行と判定 | [`root/programs/14_TESTING.md`](../../../../../14_TESTING.md)（`2_RunAllTests.ps1` が回す） |
+| CI での前提の揃え方 | [`root/programs/12_BUILDING.md`](../../../../../12_BUILDING.md) 9 節 |
 | SQL 定義ファイルの書式 | `opentouryo-query-definition` スキル |
 
 **本書は、このプロジェクトが何をどう確認しているかを述べる。**
-`TESTING.md` は 8 ケース全体の運用を扱い、こちらの詳細は持たない。
+`14_TESTING.md` は 8 ケース全体の運用を扱い、こちらの詳細は持たない。
 
 ---
 
 ## 実行モード（`/MODE`）
 
 **このテストのクロス DB は CI では実行できない。** LocalServicesOnDocker の各 DBMS は Linux コンテナで、
-`windows-latest` は Linux コンテナを動かせないため（[`BUILDING.md`](../../../../../BUILDING.md) 9 節。
+`windows-latest` は Linux コンテナを動かせないため（[`12_BUILDING.md`](../../../../../12_BUILDING.md) 9 節。
 CI の Linux のジョブ `linux-crossdb` が回すのは、NUnit の `TestPublicDb` の net10.0 だけ。#703）。
 このため対象を切り替えられるようにしてある。
 
@@ -140,7 +140,7 @@ Oracle と PostgreSQL は、囲わずに表を作ると生成された SQL の `
 
 > **接続できない場合も落とさない。** `LOCAL` でコンテナが起動していないときは、
 > 例外の**型名だけ**を出して次のデータ プロバイダへ進む。
-> メッセージを出さないのは、OS の表示言語で変わり差分になるため（`BUILDING.md` 9 節）。
+> メッセージを出さないのは、OS の表示言語で変わり差分になるため（`12_BUILDING.md` 9 節）。
 >
 > ```
 > [ODP]

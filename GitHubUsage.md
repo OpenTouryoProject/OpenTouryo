@@ -13,7 +13,7 @@
 |---|---|
 | CodeQL のトリアージと、**利用者に影響する変更** | [#536](https://github.com/OpenTouryoProject/OpenTouryo/issues/536) |
 | Secret scanning の除外パス | [`.github/secret_scanning.yml`](.github/secret_scanning.yml) |
-| 手順の早見 | [`CHEATSHEET.md`](root/programs/CHEATSHEET.md) |
+| 手順の早見 | [`10_CHEATSHEET.md`](root/programs/10_CHEATSHEET.md) |
 
 最終更新: 2026-10-29
 
@@ -311,7 +311,7 @@ allow_rebase_merge   false   … 同上
 
 | ファイル | 役割 |
 |---|---|
-| [`workflows/build-and-test.yml`](.github/workflows/build-and-test.yml) | 検証 3 本（ビルド・単体テスト・疎通）を windows-latest で。ビルドの後に依存パッケージの脆弱性も見る（#681）。続けて、コンテナが要る検証の net10.0 の分（`-Linux`・クロス DB・SpRp の E2E）を ubuntu-latest のジョブ（`linux`・`linux-crossdb`・`linux-kck`・`linux-stub`）で、net48 のクロス DB と、SpRp の外部ログイン・CLI の E2E の net48・WebForms を、Windows ランナー＋WSL2 のジョブ（`win-crossdb`・`win-kck`・`win-stub`）で回す（#703。[`BUILDING.md`](root/programs/BUILDING.md) 9 節） |
+| [`workflows/build-and-test.yml`](.github/workflows/build-and-test.yml) | 検証 3 本（ビルド・単体テスト・疎通）を windows-latest で。ビルドの後に依存パッケージの脆弱性も見る（#681）。続けて、コンテナが要る検証の net10.0 の分（`-Linux`・クロス DB・SpRp の E2E）を ubuntu-latest のジョブ（`linux`・`linux-crossdb`・`linux-kck`・`linux-stub`）で、net48 のクロス DB と、SpRp の外部ログイン・CLI の E2E の net48・WebForms を、Windows ランナー＋WSL2 のジョブ（`win-crossdb`・`win-kck`・`win-stub`）で回す（#703。[`12_BUILDING.md`](root/programs/12_BUILDING.md) 9 節） |
 | [`workflows/build-and-test-vb.yml`](.github/workflows/build-and-test-vb.yml) | **VB 版**のビルドと疎通を windows-latest で（手動のみ） |
 | [`workflows/dependabot-retarget.yml`](.github/workflows/dependabot-retarget.yml) | Dependabot PR の向き先を `deps` へ変更 |
 | [`workflows/expectation-change.yml`](.github/workflows/expectation-change.yml) | PR のコミットに、トレーラーの無い期待値の変更が無いかを確かめる（#640。[`QUALITY.md`](QUALITY.md) 3 節の段 3） |
@@ -759,5 +759,5 @@ expectation-change.yml・publish-wiki-site.yml は SHA で固定済み（3 節�
 >
 > **`master` は往復しない。** `develop` からのマージはリリース時だけで、
 > 1 回あたり 9 分程度の待ちは受け入れられる。
-> `RELEASE.md` フェーズ 1 の「検証 3 本」を、機械的に担保できる。
+> `16_RELEASE.md` フェーズ 1 の「検証 3 本」を、機械的に担保できる。
 

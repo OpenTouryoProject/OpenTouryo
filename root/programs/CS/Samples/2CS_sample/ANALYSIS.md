@@ -13,7 +13,7 @@ B 層は `Business.RichClient` の `MyFcBaseLogic2CS`、画面は `MyBaseControl
 （[`Business/RichClient/ANALYSIS.md`](../../Frameworks/Infrastructure/Business/RichClient/ANALYSIS.md)）。
 
 **すべて GUI なので、疎通テスト（`3_SmokeTest.ps1`）の対象外**である。
-ビルドが通ることまでしか自動では確かめられず、動作はリリースの手作業項目で見る（[`SMOKETEST.md`](../../../SMOKETEST.md)「対象外」）。
+ビルドが通ることまでしか自動では確かめられず、動作はリリースの手作業項目で見る（[`15_SMOKETEST.md`](../../../15_SMOKETEST.md)「対象外」）。
 
 ---
 

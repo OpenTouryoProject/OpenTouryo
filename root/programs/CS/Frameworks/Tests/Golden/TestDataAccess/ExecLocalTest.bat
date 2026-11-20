@@ -10,7 +10,7 @@ setlocal
 @rem
 @rem Start the containers of LocalServicesOnDocker first.
 @rem This can not run on the CI because each DBMS runs on a Linux container.
-@rem See root\programs\TESTING.md for the details.
+@rem See root\programs\14_TESTING.md for the details.
 @rem --------------------------------------------------
 
 @rem --------------------------------------------------

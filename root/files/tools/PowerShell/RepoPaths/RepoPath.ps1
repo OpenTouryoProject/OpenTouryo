@@ -32,7 +32,7 @@
      2026/11/13  玄人 幸道         root/files/tools/PowerShell/RepoPaths に移した（CSV と同じフォルダ。#687）
 #>
 
-# **CSV の場所は、読み込んだ時点で決める**（関数の中の $PSScriptRoot に頼らない。5.1 との差を避ける。CODING.md 5 節）
+# **CSV の場所は、読み込んだ時点で決める**（関数の中の $PSScriptRoot に頼らない。5.1 との差を避ける。11_CODING.md 5 節）
 #   手元用の RepoPaths.csv が在ればそれ、無ければ雛形の _RepoPaths.csv
 $script:RepoPathsCsv = Join-Path $PSScriptRoot 'RepoPaths.csv'
 if (-not (Test-Path $script:RepoPathsCsv))

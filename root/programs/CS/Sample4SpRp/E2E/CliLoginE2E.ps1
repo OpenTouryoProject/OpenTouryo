@@ -124,7 +124,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-# コンソールの出力を UTF-8 に（CODING.md 5 節）。
+# コンソールの出力を UTF-8 に（11_CODING.md 5 節）。
 #   **CLI は、このコンソールを引き継ぐ**（下の Start-Cli）。ここで UTF-8 にしておくと、CLI の出力も UTF-8 で読める。
 if ([Console]::OutputEncoding.CodePage -ne 65001)
 {
@@ -136,7 +136,7 @@ if ([Console]::OutputEncoding.CodePage -ne 65001)
 #   net10.0 の CLI は、それをパスワードの先頭の 1 文字として読む（net48 の CLI は読み飛ばす）。
 [Console]::InputEncoding = New-Object Text.UTF8Encoding $false
 
-# パスの既定値は param() に書かない（5.1 の -File で $PSScriptRoot が空になる。CODING.md 5 節）
+# パスの既定値は param() に書かない（5.1 の -File で $PSScriptRoot が空になる。11_CODING.md 5 節）
 $here = Split-Path -Parent $PSCommandPath
 $progRoot = (Resolve-Path (Join-Path $here '..\..\..')).Path   # root\programs（E2E → Sample4SpRp → CS → programs）
 . (Join-Path $progRoot '..\files\tools\PowerShell\Verify\SummaryTable.ps1')  # #687 で移した

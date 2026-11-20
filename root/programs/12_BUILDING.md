@@ -1,4 +1,4 @@
-# BUILDING.md — 全ビルドの実行と判定
+# 12_BUILDING.md — 全ビルドの実行と判定
 
 対象: `root/programs/CS`（C# 側、既定）／ `root/programs/VB`（VB 側、`-Lang VB`）
 配置: `root/programs`
@@ -207,7 +207,7 @@ Get-CimInstance Win32_Process -Filter "Name='dotnet.exe'" |
 
 **プロセスの停止は、スクリプトは行わない。** システムの状態を変える操作であり、
 利用者が意図して動かしているものを黙って落とすべきではないため
-（[`SMOKETEST.md`](SMOKETEST.md) 4 節と同じ線引き）。
+（[`15_SMOKETEST.md`](15_SMOKETEST.md) 4 節と同じ線引き）。
 
 **CI では起きない。** `windows-latest` は使い捨てで回をまたげず、
 回の中でも疎通はビルドの後なので、出力をロックしようがない。
@@ -283,7 +283,7 @@ WSClnt_sample (net48)        NG        1    0    0 21.20
 ## 7. 単体テストとの関係
 
 ビルドが通ったら、単体テストの実行と判定を行う。
-手順は [`TESTING.md`](TESTING.md) を参照。
+手順は [`14_TESTING.md`](14_TESTING.md) を参照。
 
 ```powershell
 .\2_RunAllTests.ps1
@@ -300,7 +300,7 @@ WSClnt_sample (net48)        NG        1    0    0 21.20
 ## 8. サンプルの疎通確認
 
 単体テストが通ったら、サンプル アプリの疎通を確認する。
-手順は [`SMOKETEST.md`](SMOKETEST.md) を参照。
+手順は [`15_SMOKETEST.md`](15_SMOKETEST.md) を参照。
 
 ```powershell
 .\3_SmokeTest.ps1
@@ -440,7 +440,7 @@ Actions → Build and test（#703 の前は Build on Windows。#716 の前のフ
 > **Windows のジョブ（`build`）の対象は `SQLONLY`（SQL Server のみ）のまま。**
 > 各 DBMS は Linux コンテナで、`build` の `windows-latest` では動かさない（SQL Server は直接入れる）。
 > **クロス DB のうち NUnit の `TestPublicDb` は、net10.0 を Linux のジョブ（`linux-crossdb`）が、net48 を Windows のジョブ（`win-crossdb`）が回す**（下の「Linux のジョブ」「Windows ランナー＋WSL2 のジョブ」。#703・#712）。
-> Golden の `TestDataAccess` のクロス DB は手元で行う（[`TESTING.md`](TESTING.md)）。
+> Golden の `TestDataAccess` のクロス DB は手元で行う（[`14_TESTING.md`](14_TESTING.md)）。
 
 ### ワークフローの前提
 
@@ -489,7 +489,7 @@ Dependabot が起こしたイベントでは `GITHUB_TOKEN` が既定で read-on
 
 **対象外は明示しておく。**
 
-- **GUI アプリケーション**（WinForms / WPF / 各ツールの画面）… `RELEASE.md` 4 節の手作業
+- **GUI アプリケーション**（WinForms / WPF / 各ツールの画面）… `16_RELEASE.md` 4 節の手作業
 - **Golden の `TestDataAccess` のクロス DB** … `build` は `/Dap SQL` しか使わない
   （`TestSQLUtility` は 4 DBMS 分の SQL 生成を検証するが、**接続はしない**ので対象内）。手元の `-CrossDb` で回す。NUnit の `TestPublicDb` の net48 のクロス DB は、`win-crossdb` が回す
 - **SpRp の E2E のうち、FAPI の E2E の net48** … 手元で回す（SpRp_MVC は net10.0 だけなので、実質、対象が無い。FAPI は `linux-stub` が回す）。外部ログインの E2E の net48・WebForms は `win-kck`（Keycloak）と `win-stub`（スタブ）、CLI の net48 は `win-stub` が回す

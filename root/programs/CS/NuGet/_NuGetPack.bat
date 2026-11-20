@@ -142,7 +142,7 @@ echo [ERROR] The net48 AssemblyVersion does not match %OT_VERPREFIX%
 echo         ^(OpenTouryoVersion = %OT_VERSION%^)
 echo         Update Properties\AssemblyInfo.cs in the projects marked NG above,
 echo         rebuild with 0_Release4Nuget.bat, then run this again.
-echo         See RELEASE.md phase 0.
+echo         See 16_RELEASE.md phase 0.
 pause
 exit /b 1
 
@@ -153,6 +153,6 @@ echo         ^(OpenTouryoVersion = %OT_VERSION%^)
 echo         The sources say the right version but the binaries do not,
 echo         so the rebuild was skipped. Run CS\0_Release4Nuget.bat,
 echo         then run this again.
-echo         See RELEASE.md phase 0 and phase 3.
+echo         See 16_RELEASE.md phase 0 and phase 3.
 pause
 exit /b 1

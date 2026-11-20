@@ -45,7 +45,7 @@
     ・書き換え後は 0_Release4Nuget.bat でのリビルドが必要。
       OpenTouryoVersion はアセンブリに焼き込まれるため、
       先にパッケージ化すると古いアセンブリに新しい版番号が付く。
-    ・手順の全体は RELEASE.md フェーズ 0 を参照。
+    ・手順の全体は 16_RELEASE.md フェーズ 0 を参照。
 #>
 [CmdletBinding(SupportsShouldProcess = $true)]
 param(
@@ -57,7 +57,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 # --------------------------------------------------
-# コンソールのコード ページと、PowerShell の出力エンコードは別物（CODING.md 5 節）。
+# コンソールのコード ページと、PowerShell の出力エンコードは別物（11_CODING.md 5 節）。
 # 判定を分けること。
 # --------------------------------------------------
 if ((cmd /c chcp) -notmatch '65001')
@@ -107,7 +107,7 @@ $net48Projects = @(
 # 読み書きのヘルパ
 #
 # BOM の有無を保って書き戻す。5.1 の Get-Content / Set-Content は
-# 既定のエンコードが ANSI のため使わない（CODING.md 5 節）。
+# 既定のエンコードが ANSI のため使わない（11_CODING.md 5 節）。
 # --------------------------------------------------
 function Read-TextFile
 {
@@ -265,7 +265,7 @@ Write-Host "  2. コミットして push する（Source Link はこのコミッ
 Write-Host "  3. CS\0_Release4Nuget.bat でリビルドする（版はアセンブリに焼き込まれる）"
 Write-Host "  4. CS\NuGet\_NuGetPack.bat でパッケージ化する（版の一致が再検査される）"
 Write-Host ""
-Write-Host "  詳細は RELEASE.md フェーズ 0 を参照。"
+Write-Host "  詳細は 16_RELEASE.md フェーズ 0 を参照。"
 Write-Host ""
 
 exit 0

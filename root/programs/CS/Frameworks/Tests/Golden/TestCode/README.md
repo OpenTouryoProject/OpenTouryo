@@ -5,7 +5,7 @@
 
 コンソール EXE で、`Program.cs` が `Test*.Root()` を順に呼び、
 出力を `Result48.txt` / `ResultCore100.txt` に書く。
-判定はこのファイルとの比較で行う（[`TESTING.md`](../../../../../TESTING.md) が一次情報）。
+判定はこのファイルとの比較で行う（[`14_TESTING.md`](../../../../../14_TESTING.md) が一次情報）。
 
 ```
 y_Build_TestCode_Public.bat     … ビルド → 実行 → 結果ファイル出力
@@ -202,4 +202,4 @@ net48 側は `4_Build_CopyAssemblies.bat` が依存 DLL を `Build_net48` へ並
 
 **合否（OK / NG）は正しい。誤るのは件数と一覧の見え方だけ。**
 実差分を見たいときは `-SyncWindow` を外して突き合わせる。詳細は
-[`TESTING.md`](../../../../../TESTING.md) の「差分の『件数』は当てにならないことがある」。
+[`14_TESTING.md`](../../../../../14_TESTING.md) の「差分の『件数』は当てにならないことがある」。

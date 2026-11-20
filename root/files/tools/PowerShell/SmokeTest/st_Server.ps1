@@ -55,7 +55,7 @@ function Start-ApiWeb([string]$kind, [int]$port)
             -RedirectStandardOutput $log -RedirectStandardError "$log.err"
     }
 
-    # **TCP で繋がるかだけを見る。**（SMOKETEST.md 9 節）
+    # **TCP で繋がるかだけを見る。**（15_SMOKETEST.md 9 節）
     for ($i = 0; $i -lt 40; $i++)
     {
         Start-Sleep -Milliseconds 500

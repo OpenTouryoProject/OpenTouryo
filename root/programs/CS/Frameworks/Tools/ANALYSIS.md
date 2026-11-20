@@ -9,7 +9,7 @@
 ## 1. これは何か
 
 フレームワークを使う開発を助ける **WinForms のツール**（3 本）。どれも net48 版と net10.0 版を持つ。
-**依存の末端**であり、ここを変えても基盤やサンプルは変わらない（回す範囲は [`CHEATSHEET.md`](../../../CHEATSHEET.md) 1 節）。
+**依存の末端**であり、ここを変えても基盤やサンプルは変わらない（回す範囲は [`10_CHEATSHEET.md`](../../../10_CHEATSHEET.md) 1 節）。
 
 | ツール | 何をするか | CLI | 実行する人向けの文書 |
 |---|---|---|---|
@@ -48,7 +48,7 @@
 | `DeployZipPackWithHTTP` | あり（8 件） | マニフェストの生成・配置・プロキシ経由・プロキシ認証を net48 / net10.0 で。IIS Express で配信する |
 | `DPQuery_Tool` | **なし** | GUI のみのため、ビルドが通ることまでしか確かめられない |
 
-詳細は [`SMOKETEST.md`](../../../SMOKETEST.md)（「DaoGen_Tool（墨壺）の CUI モード」「DeployZipPackWithHTTP の CUI モード」）。
+詳細は [`15_SMOKETEST.md`](../../../15_SMOKETEST.md)（「DaoGen_Tool（墨壺）の CUI モード」「DeployZipPackWithHTTP の CUI モード」）。
 
 **`DPQuery_Tool` を変えたら、GUI で確かめていないことを報告する。**
 
@@ -72,4 +72,4 @@
 - [ ] 部品を先にビルドする（net48 は `4_Build_CopyAssemblies.bat` まで）
 - [ ] 変えたツールだけを、`-Only` で疎通する（依存の末端なので、他は回さなくてよい）
 - [ ] `DPQuery_Tool` は GUI でしか確かめられない。確かめていなければ、そう報告する
-- [ ] 新しい CLI を足したら、README を置き、`AGENTS.md` と `CHEATSHEET.md` の表に足す
+- [ ] 新しい CLI を足したら、README を置き、`AGENTS.md` と `10_CHEATSHEET.md` の表に足す

@@ -161,7 +161,7 @@ $tmpl = "C:/OpenTouryo/root/files/tools/DGenTemplates"
 net48 / .NET 10 の両方で実行している。
 **動く引数の組み合わせを確かめたい場合は、そちらの定義が参考になる。**
 
-詳細は [`SMOKETEST.md`](../../../../SMOKETEST.md)。
+詳細は [`15_SMOKETEST.md`](../../../../15_SMOKETEST.md)。
 
-なお **GUI の確認は手作業**として残している（[`RELEASE.md`](../../../../RELEASE.md)）。
+なお **GUI の確認は手作業**として残している（[`16_RELEASE.md`](../../../../16_RELEASE.md)）。
 CUI で確認できるのは生成ロジックまでで、画面の動作は含まない。

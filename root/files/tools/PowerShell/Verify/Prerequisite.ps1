@@ -12,7 +12,7 @@
     足りなくても止めず、終了コードにも影響しない。
     **開始も停止もしない。** システムの状態を変える操作だからで、
     CI は専用のステップで開始している
-    （SMOKETEST.md 4 節・AGENTS.md の線引き）。
+    （15_SMOKETEST.md 4 節・AGENTS.md の線引き）。
 #>
 
 # ------------------------------------------------------------------
@@ -130,7 +130,7 @@ function Show-Prerequisites
         Write-Host ("  {0,-12} {1}" -f "SQL Server", $db.Detail) `
             -ForegroundColor $(if ($db.Ok) { "Green" } else { "Yellow" })
 
-        if (-not $db.Ok) { $missing += "SQL Server の Northwind に接続できること（SMOKETEST.md 4 節）" }
+        if (-not $db.Ok) { $missing += "SQL Server の Northwind に接続できること（15_SMOKETEST.md 4 節）" }
     }
 
     if ($missing.Count -gt 0)

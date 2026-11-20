@@ -34,8 +34,8 @@
 
 | 内容 | 一次情報 |
 |---|---|
-| 検証の手順・回す範囲 | [`CHEATSHEET.md`](root/programs/CHEATSHEET.md) 1 節、[`TESTING.md`](root/programs/TESTING.md) |
-| コーディング規約 | [`CODING.md`](root/programs/CODING.md) |
+| 検証の手順・回す範囲 | [`10_CHEATSHEET.md`](root/programs/10_CHEATSHEET.md) 1 節、[`14_TESTING.md`](root/programs/14_TESTING.md) |
+| コーディング規約 | [`11_CODING.md`](root/programs/11_CODING.md) |
 | カバレッジの値 | [`Tests/COVERAGE.md`](root/programs/CS/Frameworks/Tests/COVERAGE.md) |
 | セキュリティの指摘の扱い | [`AGENTS.md`](AGENTS.md)「セキュリティの指摘は、公開される前に確認を取る」、[`Security.ja.md`](Security.ja.md) |
 
@@ -57,7 +57,7 @@
 | `CustomControl`・`Framework.RichClient` など、UI 寄りの部品 | 低 | — | 疎通 | 原則として見ない |
 | ツール・サンプル（`Frameworks/Tools`・`Samples`・`Samples4NetCore`） | 低 | — | 疎通 | 原則として見ない（使い捨てが効く） |
 
-- 検証の手段の具体（どのスクリプトを、どの引数で回すか）は [`CHEATSHEET.md`](root/programs/CHEATSHEET.md) 1 節の対応表による
+- 検証の手段の具体（どのスクリプトを、どの引数で回すか）は [`10_CHEATSHEET.md`](root/programs/10_CHEATSHEET.md) 1 節の対応表による
 
 ---
 
@@ -80,7 +80,7 @@
 | Golden（`root/programs/*/Frameworks/Tests/Golden/**/Result*.txt`） | **正規化しても差分が残る変更**（正規化は `CompareResult.ps1`。`2_RunAllTests.ps1` が判定に使うものと同じ） |
 | NUnit（`root/programs/*/Frameworks/Tests/NUnit/**/*.cs`） | テストの削除（`[Test]`・`[TestCase]`・`[TestCaseSource]` の行の削除）、`[Ignore]`・`[Explicit]`・`Assert.Ignore` の追加、**`[Basis]` の削除**（検証から観測への格下げ。7 節）、**検証の削除**（`Assert.` の行の削除。`Assert.Ignore` を除く。#671） |
 
-- **Golden は、実行のたびに書き換わる。** 日時・スレッド ID・署名値などの揺れは、期待値の変更に数えない（`QUALITY.common.md` 3 節）。揺れの戻し方は [`CHEATSHEET.md`](root/programs/CHEATSHEET.md)
+- **Golden は、実行のたびに書き換わる。** 日時・スレッド ID・署名値などの揺れは、期待値の変更に数えない（`QUALITY.common.md` 3 節）。揺れの戻し方は [`10_CHEATSHEET.md`](root/programs/10_CHEATSHEET.md)
 - `Assert.Ignore` の正当な使い方：管理者権限が無い、DB に接続できない
 - **行の数のファイルごとの差し引き**（`QUALITY.common.md` 3 節）は、#671 で、導入の後の 97 コミットに当てて過検出が 0 件であることを確かめた
 - **仕組みのファイル**には、共通のものに加えて `CompareResult.ps1`・`CompareGolden.ps1` が当たる（`rules.psd1` が足した）
@@ -94,7 +94,7 @@
 
 - 写し（本体・共通の規則・判定の用例・フック・突き合わせ役）は `QUALITY.common.md` 3 節の表のとおり。汎用認証サイトも同じ本体を写して使う
 - **要確認**の範囲（`rules.psd1` の `ReviewScope`）は書かない＝リポジトリ全体（`DiffScope` はテストの範囲で、要確認には使わない）
-- 段 2 の有効化・PR の前の確かめ・CI で止まったときは `QUALITY.common.md` 3 節。手元のコマンドの一覧は [`CHEATSHEET.md`](root/programs/CHEATSHEET.md)
+- 段 2 の有効化・PR の前の確かめ・CI で止まったときは `QUALITY.common.md` 3 節。手元のコマンドの一覧は [`10_CHEATSHEET.md`](root/programs/10_CHEATSHEET.md)
 
 ---
 

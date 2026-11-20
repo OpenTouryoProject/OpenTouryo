@@ -1,5 +1,5 @@
 @echo off
-rem NOTE: keep this file pure ASCII (root/programs/CODING.md section 4).
+rem NOTE: keep this file pure ASCII (root/programs/11_CODING.md section 4).
 rem
 rem Folders and files under node_modules are skipped (#669):
 rem   npm packages keep their executables in "bin" (vite, typescript, ...), and deleting them

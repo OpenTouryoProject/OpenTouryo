@@ -29,7 +29,7 @@
 
 - `5_Build_CLI_sample.bat` は**何もビルドしない**（メッセージを出して `pause` するだけ）。
   `1_BuildAll.ps1` の段として残してある
-- 疎通テストの対象は .NET 10 版の `Simple_CLI` だけ（`Simple_CLI (net10.0)`。[`SMOKETEST.md`](../../../SMOKETEST.md)）
+- 疎通テストの対象は .NET 10 版の `Simple_CLI` だけ（`Simple_CLI (net10.0)`。[`15_SMOKETEST.md`](../../../15_SMOKETEST.md)）
 
 ---
 

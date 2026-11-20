@@ -22,7 +22,7 @@
       opentouryo-project-setup*     アプリの新規構築手順
       opentouryo-project-policy     プロジェクト方針。**本体は AGENTS.md が正**
       opentouryo-project-transform  既存資産の移行。本体側では別の話
-      opentouryo-comment-convention コメント規約。**本体は CODING.md が正**
+      opentouryo-comment-convention コメント規約。**本体は 11_CODING.md が正**
       opentouryo-base2-customize    利用者による基底クラスの改造
 
 .PARAMETER Ref

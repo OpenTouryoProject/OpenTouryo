@@ -22,7 +22,7 @@ cd root\programs
 
 - **普通の実行（`-Coverage` なし）は、本書を書き換えない。** カバレッジは画面に表示するだけ
 - **1 つでも NG があれば書かない**（前の値のまま）。`-Only` / `-SkipBuild` / `-Linux` / `-CrossDb` とは同時に指定できない
-- DB のコンテナは LocalServicesOnDocker の CHEATSHEET に従って扱われる（[`TESTING.md`](../../../TESTING.md) の冒頭）
+- DB のコンテナは LocalServicesOnDocker の CHEATSHEET に従って扱われる（[`14_TESTING.md`](../../../14_TESTING.md) の冒頭）
 - 本書が書き換わるのは `Result*.txt` と同じ副作用である。**コミットするかは人が決める**
 
 ## 読み方

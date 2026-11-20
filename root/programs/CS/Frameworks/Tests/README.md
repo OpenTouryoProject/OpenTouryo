@@ -1,14 +1,14 @@
 # Tests — フレームワークのテスト
 
 **判定の方式でフォルダを分けている**（#610）。
-実行と判定の手順は [`TESTING.md`](../../../TESTING.md)（`Golden` / `NUnit`）と
-[`SMOKETEST.md`](../../../SMOKETEST.md)（`Else` の一部）が一次情報。
+実行と判定の手順は [`14_TESTING.md`](../../../14_TESTING.md)（`Golden` / `NUnit`）と
+[`15_SMOKETEST.md`](../../../15_SMOKETEST.md)（`Else` の一部）が一次情報。
 
 > **DB を使うテスト（`TestDataAccess` / `TestPublicDb`）のコンテナは、LocalServicesOnDocker の
 > [`CHEATSHEET.md`](https://github.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker/blob/master/CHEATSHEET.md) に従って扱う。**
 > **メモリを節約しないと、最悪の場合、コンテナがシステムごとハングさせる。**
 > 必要なものだけを名前で起動し、必須でないものを同時に複数起動せず、使い終わったら止める
-> （要点は [`TESTING.md`](../../../TESTING.md) の冒頭）。
+> （要点は [`14_TESTING.md`](../../../14_TESTING.md) の冒頭）。
 
 | フォルダ | 判定の方式 | 回すもの |
 |---|---|---|
@@ -32,15 +32,15 @@
 | `NUnit` | `TestPublicNLog` | `LogIF` を NLog に切り替えた状態のテスト（#610）。**使うライブラリはプロセスで 1 回しか決まらない**ため、別プロジェクト（別プロセス）にしている | 本書 |
 | `NUnit` | `TestPublicDb` | Dam のクロス DB テスト（#610）。**DB に接続する**ので別プロジェクト。SQL Server は必須、他の DBMS は接続できなければスキップ | 本書 |
 | `NUnit` | `TestFramework` | `OpenTouryo.Framework` のうち**単体で使える部品**（`Authentication` の鍵・値を引数で受ける版、`Exceptions`）。親クラスは組み合わせて使うので疎通に任せる | 本書 |
-| `Else` | `TestTransmission` | 通信制御の接続オプション（#546）。**オリジンとプロキシを自前で立て**、`CallController` から呼んで、要求に反映されているかを見る。**期待値ファイルを持たず、自分で合否を出す**（疎通テストから呼ばれる） | [`SMOKETEST.md`](../../../SMOKETEST.md) 3 節 |
-| `Else` | `TestWebAPIClient` | Web API の非ブラウザ クライアント（疎通テストから呼ばれる） | [`SMOKETEST.md`](../../../SMOKETEST.md) |
+| `Else` | `TestTransmission` | 通信制御の接続オプション（#546）。**オリジンとプロキシを自前で立て**、`CallController` から呼んで、要求に反映されているかを見る。**期待値ファイルを持たず、自分で合否を出す**（疎通テストから呼ばれる） | [`15_SMOKETEST.md`](../../../15_SMOKETEST.md) 3 節 |
+| `Else` | `TestWebAPIClient` | Web API の非ブラウザ クライアント（疎通テストから呼ばれる） | [`15_SMOKETEST.md`](../../../15_SMOKETEST.md) |
 | `Else` | `TestLog` | ログ出力の確認（log4net / NLog、1〜3） | — |
 | `Else` | `EncAndDecUtil` | 暗号・署名ユーティリティの GUI 確認 | — |
 | `Else` | `LaunchJson` | リモート デバッグ用の `launch.json` の例（テストではない） | — |
 
 **`TestCode` と `TestDataAccess` は専用の `README.md` を持つ。**
 「何をテストしているか」「ケースを書き足すときの決まり」「ケース設計の根拠」はそちらが一次情報。
-[`TESTING.md`](../../../TESTING.md) は Golden と NUnit を含む全体の運用を扱い、この詳細は持たない。
+[`14_TESTING.md`](../../../14_TESTING.md) は Golden と NUnit を含む全体の運用を扱い、この詳細は持たない。
 
 **Golden のテストを書き足す前に `TestCode/README.md` を読むこと。**
 結果ファイルとの比較で判定するため、**環境で変わる値を出してはならない**という制約がある

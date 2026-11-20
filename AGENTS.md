@@ -13,7 +13,7 @@ https://github.com/OpenTouryoProject/OpenTouryo/
 "プルリクエスト" の粒度は、人もエージェントも同じ規約による。
 本書は、そこに書かれていない**エージェント固有の制約**を扱う。
 
-> **手順を思い出したいだけなら [`CHEATSHEET.md`](root/programs/CHEATSHEET.md) を見る。**
+> **手順を思い出したいだけなら [`10_CHEATSHEET.md`](root/programs/10_CHEATSHEET.md) を見る。**
 > 検証・リリース・VB ビルド・ツール・規約の要点と、よく踏む落とし穴を 1 枚にまとめてある。
 > **理由や判断が要ることは書いていない**ので、迷ったらそこからリンク先へ辿ること。
 
@@ -40,7 +40,7 @@ https://github.com/OpenTouryoProject/OpenTouryo/
 ### Issue に対応する流れ
 
 **施主が「#NNN に着手して」と投入してから、Issue を閉じるまでの型。** 各段の詳細は、下の各節が一次情報である。
-**コマンドは [`CHEATSHEET.md`](root/programs/CHEATSHEET.md) 1 節**（「Issue の完了の手順」）。
+**コマンドは [`10_CHEATSHEET.md`](root/programs/10_CHEATSHEET.md) 1 節**（「Issue の完了の手順」）。
 
 | 段 | エージェント | 施主 |
 |---|---|---|
@@ -238,7 +238,7 @@ https://github.com/OpenTouryoProject/OpenTouryo/security/advisories/new
 **ビルドの警告（NU1901〜NU1904）を、件数として流さない。** ビルドは成功扱いなので、
 誰かが拾わない限り直らない。**Dependabot は推移的な依存を見ず、直接の依存でもアラートが遅れることがある**
 （#610 の時点で、レビュー済みのアドバイザリから 1.5 日経ってもアラートが出ていなかった）。
-仕組みは [`BUILDING.md`](root/programs/BUILDING.md) 13 節。
+仕組みは [`12_BUILDING.md`](root/programs/12_BUILDING.md) 13 節。
 
 **CI（`build-and-test.yml`）も、ビルドの後に `CheckVulnerability.ps1` を回す**（#681）。
 `deps` への push・master 宛の PR では警告（ジョブのまとめ）に留め、**週 1 回・手動の実行では落とす**（失敗の通知で気付く）。
@@ -313,14 +313,14 @@ gh auth switch --user OsscJpDevInfra  # 異なる場合は切り替え
 > **自分が出した PR は、自分で承認できない。**
 > レビュアーの構成は [`GitHubUsage.md`](GitHubUsage.md) 2 節。
 
-### コーディング規約は CODING.md、領域ごとの事情は ANALYSIS.md に従う
+### コーディング規約は 11_CODING.md、領域ごとの事情は ANALYSIS.md に従う
 
 **規約は全領域に共通、分析は領域ごと**に分かれている。
 
 | 内容 | 読む文書 |
 |---|---|
-| **コーディング規約（全領域共通）** | [`CODING.md`](root/programs/CODING.md) |
-| **設定ファイルの扱い（全領域共通）** | [`CONFIGURATION.md`](root/programs/CONFIGURATION.md) |
+| **コーディング規約（全領域共通）** | [`11_CODING.md`](root/programs/11_CODING.md) |
+| **設定ファイルの扱い（全領域共通）** | [`13_CONFIGURATION.md`](root/programs/13_CONFIGURATION.md) |
 | `root/programs/CS/Frameworks/` の分析 | [`Frameworks/ANALYSIS.md`](root/programs/CS/Frameworks/ANALYSIS.md) |
 | `root/programs/CS/Samples/` の分析 | [`Samples/ANALYSIS.md`](root/programs/CS/Samples/ANALYSIS.md) |
 | `root/programs/CS/Samples4NetCore/` の分析 | [`Samples4NetCore/ANALYSIS.md`](root/programs/CS/Samples4NetCore/ANALYSIS.md) |
@@ -328,15 +328,15 @@ gh auth switch --user OsscJpDevInfra  # 異なる場合は切り替え
 **上の 3 つは俯瞰であり、詳細はアセンブリ・サンプルごとの下位の `ANALYSIS.md` にある**（#613）。
 下位の文書は、各文書の冒頭にある案内表から辿る。
 
-**設定ファイルに「仕組み」を書き足したくなったら、[`CONFIGURATION.md`](root/programs/CONFIGURATION.md)
+**設定ファイルに「仕組み」を書き足したくなったら、[`13_CONFIGURATION.md`](root/programs/13_CONFIGURATION.md)
 に書く。** 設定ファイルは 86 個あり、一部にだけ詳しい説明があると、
 **書かれていないファイルを「該当しない」と誤読させる。**
 値の隣に書くのは「そのキーが何か」までにする（分担は同書 0 節）。
 
-**コードを変更する前に、[`CODING.md`](root/programs/CODING.md) と、
+**コードを変更する前に、[`11_CODING.md`](root/programs/11_CODING.md) と、
 作業対象を所管する `ANALYSIS.md` の両方を読むこと。**
 
-`CODING.md` には、ファイル ヘッダの書式と**更新者名**、新規ファイルにおける
+`11_CODING.md` には、ファイル ヘッダの書式と**更新者名**、新規ファイルにおける
 Copyright ブロックの扱い、`ArgumentException` 系の引数の順、`.bat` / `.ps1` の
 文字コードなど、**エージェントが見落としやすい指定**が含まれる。
 
@@ -352,10 +352,10 @@ Copyright ブロックの扱い、`ArgumentException` 系の引数の順、`.bat
 **検証の手順そのものは、人もエージェントも同じである。**
 入口は [root/Readme.ja.md](root/Readme.ja.md) の「ビルド後の検証」で、
 3 本のスクリプト（ビルド → 単体テスト → 疎通）と、その一次情報
-（`BUILDING.md` / `TESTING.md` / `SMOKETEST.md`、リリース時の作業全体は `RELEASE.md`）は、
+（`12_BUILDING.md` / `14_TESTING.md` / `15_SMOKETEST.md`、リリース時の作業全体は `16_RELEASE.md`）は、
 そこから辿れる。**本節は、その上で残るエージェント固有の判断だけを扱う。**
 
-**手順だけを引くなら [`CHEATSHEET.md`](root/programs/CHEATSHEET.md) 1 節。**
+**手順だけを引くなら [`10_CHEATSHEET.md`](root/programs/10_CHEATSHEET.md) 1 節。**
 引数（`-IgnoreErrors` / `-Only` / `-List` / `-Lang`）・合格の目安・
 実行順（**固定**。1 のクリーンとアセンブリ配置が 2・3 の前提）は、そこが一次情報である。
 
@@ -378,18 +378,18 @@ Copyright ブロックの扱い、`ArgumentException` 系の引数の順、`.bat
 `2_RunAllTests.ps1` の対象は**フレームワークのテストだけ**で、
 ツールやサンプルを変えても動かない。**回す理由が無い。**
 
-**どこまで回すかは [`CHEATSHEET.md`](root/programs/CHEATSHEET.md) 1 節の対応表で決める。**
+**どこまで回すかは [`10_CHEATSHEET.md`](root/programs/10_CHEATSHEET.md) 1 節の対応表で決める。**
 
 **その判断は `SelectTargets.ps1` で機械的に行える**（#610）。
 検証の済んだコミットからの差分（未コミット・未追跡を含む）を読み、
 回す対象を 1 / 2 / 3 ごとに割り出す。**まずこれを回し、結果を見てから実行する。**
 「手で確かめるもの」が出たら、**回せていないものとして報告する。**
-使い方は同じく [`CHEATSHEET.md`](root/programs/CHEATSHEET.md) 1 節。
+使い方は同じく [`10_CHEATSHEET.md`](root/programs/10_CHEATSHEET.md) 1 節。
 
 通しを回すのは次の場合。
 
 - **基盤（`Infrastructure/`）に触れたとき**
-- **リリース前**（[`RELEASE.md`](root/programs/RELEASE.md)）
+- **リリース前**（[`16_RELEASE.md`](root/programs/16_RELEASE.md)）
 - **絞り込みで妙なエラーが出たとき**（再現するかを見る。制約による誤検知が実際にある）
 
 **判断に迷ったら通しでよい。** ただし**迷っていないのに通すのは、ただの浪費である。**
@@ -404,7 +404,7 @@ Copyright ブロックの扱い、`ArgumentException` 系の引数の順、`.bat
 | 編集中 | 直しては確かめる反復 | **変えたテストだけ**を直接回す（秒〜数十秒） |
 | fixing | 途中のコミットの前 | `SelectTargets.ps1 -Stage fixing -Run`。**重いものは後回し**になる |
 | fixed | 完了のコミットの前 | `SelectTargets.ps1 -Run`（既定の fixed）。**後回しの分も含めて回す**。通れば記録が進む |
-| リリース | [`RELEASE.md`](root/programs/RELEASE.md) | 全部（VB・クロス DB・GUI の手作業を含む） |
+| リリース | [`16_RELEASE.md`](root/programs/16_RELEASE.md) | 全部（VB・クロス DB・GUI の手作業を含む） |
 
 **fixing で後回しにするもの**（`SelectTargets.ps1` が一覧に出す）。
 
@@ -427,13 +427,13 @@ Copyright ブロックの扱い、`ArgumentException` 系の引数の順、`.bat
 [`CHEATSHEET.md`](https://github.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker/blob/master/CHEATSHEET.md)
 に従って扱う。** **メモリを節約しないと、最悪の場合、コンテナがシステムごとハングさせる。**
 必須でないものを同時に複数起動せず、1 つずつ起動して測り、終わったら止める。
-手順の要点は [`TESTING.md`](root/programs/TESTING.md) の冒頭。
+手順の要点は [`14_TESTING.md`](root/programs/14_TESTING.md) の冒頭。
 
 **次のコミットがどちらの段階か分からなければ、施主に確かめるか、fixed として回す。**
 **報告には、どの段階で回したかと、後回しにしたものを書く。**
 後回しのまま「検証済み」と書かない。
 
-**コマンドと表示の読み方は [`CHEATSHEET.md`](root/programs/CHEATSHEET.md) 1 節。**
+**コマンドと表示の読み方は [`10_CHEATSHEET.md`](root/programs/10_CHEATSHEET.md) 1 節。**
 
 #### 簡易な変更なら、毎回は回さないという選択もある
 
@@ -450,7 +450,7 @@ Copyright ブロックの扱い、`ArgumentException` 系の引数の順、`.bat
 
 **ただし、`.ps1` を変えたなら、表示だけの変更でも実行すること。**
 構文エラーは読んでも分からず、**5.1 と 7 で振る舞いが違う**
-（[`CODING.md`](root/programs/CODING.md) 5 節）。
+（[`11_CODING.md`](root/programs/11_CODING.md) 5 節）。
 
 **回さなかったなら、そう報告する。** 「検証済み」と書かない。
 **回していないのに回したように読める報告が、一番危い。**
@@ -462,15 +462,15 @@ Copyright ブロックの扱い、`ArgumentException` 系の引数の順、`.bat
 > 実行されるコードを変えたなら、手元で見てから渡すこと。
 
 **上記の既定は C# 側である。VB 側に手を入れたときは `-Lang` で回す。**
-理由と対象は [`BUILDING.md`](root/programs/BUILDING.md) 10 節・
-[`SMOKETEST.md`](root/programs/SMOKETEST.md) 10 節。
+理由と対象は [`12_BUILDING.md`](root/programs/12_BUILDING.md) 10 節・
+[`15_SMOKETEST.md`](root/programs/15_SMOKETEST.md) 10 節。
 
 **`.ps1` は Windows PowerShell 5.1 と PowerShell 7 の両方で動くこと。**
 エージェントの実行環境は 7 だが、利用者は 5.1（`powershell.exe`）で実行するため、
 7 だけで確認すると 5.1 で落ちる。**変更したら 5.1 でも実行して確かめること。**
 
 規約の実体は
-[`CODING.md`](root/programs/CODING.md) の
+[`11_CODING.md`](root/programs/11_CODING.md) の
 **5 節「ps1 の文字コードと PowerShell 5.1 / 7 の両対応」**にある。
 
 前提となるサービスや DB の状態が足りない場合は、**勝手に変えず、対処方法とともに報告する。**
@@ -509,7 +509,7 @@ cd root\files\tools\PowerShell\Dev
 | `opentouryo-project-setup*`（6 件） | アプリの新規構築手順。本体の開発では使わない |
 | `opentouryo-project-policy` | **プロジェクト方針は本書（`AGENTS.md`）が正** |
 | `opentouryo-project-transform` | 既存資産の移行。本体側では別の話 |
-| `opentouryo-comment-convention` | **コメント規約は [`CODING.md`](root/programs/CODING.md) が正** |
+| `opentouryo-comment-convention` | **コメント規約は [`11_CODING.md`](root/programs/11_CODING.md) が正** |
 | `opentouryo-base2-customize` | 利用者による基底クラスの改造。本体側では別の話 |
 
 **除外を増やしたら、取得し直せば取り残しも消える。**
@@ -518,7 +518,7 @@ cd root\files\tools\PowerShell\Dev
 
 **規約が競合したら、本体の文書が優先である。**
 スキルはアプリ開発を前提に書かれているため、
-[`CODING.md`](root/programs/CODING.md) や各 `ANALYSIS.md` と食い違うことがある。
+[`11_CODING.md`](root/programs/11_CODING.md) や各 `ANALYSIS.md` と食い違うことがある。
 
 ### 付属ツールを CLI で使うときは、各ツールの README に従う
 

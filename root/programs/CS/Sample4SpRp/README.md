@@ -269,7 +269,7 @@ cd ..\..\E2E
 | 外部ログインの SAML2 の SP の登録 | — | `http://` ＋ client_id。要求の署名を確かめ、`mail` の属性を出す。**`saml.authnstatement` を `true` にする**（JSON で取り込むと既定で入らず、assertion に `AuthnStatement` が無くなる。Profiles §4.1.4.2 で必須） |
 
 - **要求の `Destination`**（SAML 2.0 Bindings §3.4.5.2）は、サンプルが常に入れる（#693）。Keycloak は、無いと `missing_required_destination` で断る。スタブも、MPAS#392 から、メタデータの口と合わなければ捨てる（署名した要求に無くても捨てる）
-- **MPAS のスタブとは、ポート（44320）もプロジェクト名（`sprp-kck`）も分けてあるが、同時には起動しない**（メモリ。`TESTING.md` の冒頭）
+- **MPAS のスタブとは、ポート（44320）もプロジェクト名（`sprp-kck`）も分けてあるが、同時には起動しない**（メモリ。`14_TESTING.md` の冒頭）
 - **realm を変えたら、`-Action Down` してから起動し直す**（取り込みは、realm が無いときだけ行われる）
 - **外部ログインの前提はスタブのときと同じ**（ASP.NET 状態サービス・ビルド。2.1 節）。`-OutputDir` に、net48 のサイトの写し（1 サイト約 58MB）ができる
 
@@ -527,7 +527,7 @@ cd root\programs\CS\Sample4SpRp\DotNet\MVC
   **SpRp のサンプルを足したら、このバッチに足す**（net48 と net10.0 の両方。`SpRp_MVC` は、いまは net10.0 だけ）
 - **単体テスト（`2_RunAllTests.ps1`）・疎通テスト（`3_SmokeTest.ps1`）には載っていない。**
   外部の IdP（スタブ）が要るため。
-  **CI では、Linux のジョブ `linux-kck` が、E2E の 4 本の net10.0 の対象を、IdP を Keycloak（`-Idp KCK`）にして回し、`linux-stub` が、IdP を MPAS のスタブにして回す**（スタブでだけ回る CLI の jwtbearer・FAPI2 の ros を含む。#703。[`BUILDING.md`](../../BUILDING.md) 9 節）。
+  **CI では、Linux のジョブ `linux-kck` が、E2E の 4 本の net10.0 の対象を、IdP を Keycloak（`-Idp KCK`）にして回し、`linux-stub` が、IdP を MPAS のスタブにして回す**（スタブでだけ回る CLI の jwtbearer・FAPI2 の ros を含む。#703。[`12_BUILDING.md`](../../12_BUILDING.md) 9 節）。
   **net48・WebForms のうち、外部ログインの E2E（`ExternalLoginE2E.ps1 -Idp KCK -Only net48`。C#・VB の MVC・WebForms。OIDC・SAML2）は、Windows ランナー＋WSL2 の Docker のジョブ `win-kck` が、Keycloak（`KckCompose.ps1 -Wsl2`）で回す**（#712）。
   **MPAS のスタブでの外部ログイン・CLI の E2E の net48（`ExternalLoginE2E.ps1 -Only net48`・`CliLoginE2E.ps1 -Only net48`）は、ジョブ `win-stub` が、スタブ（`StubCompose.ps1 -Wsl2`）で回す**（#713）。
   FAPI の E2E は、SpRp_MVC が net10.0 だけなので `linux-stub` が回す。

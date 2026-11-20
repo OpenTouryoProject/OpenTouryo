@@ -285,6 +285,6 @@ powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.
 ```
 
 検証スクリプト側での具体的な適用例は
-[`SMOKETEST.md`](SMOKETEST.md) 「PowerShell 5.1 と 7 の両対応」を参照。
+[`15_SMOKETEST.md`](15_SMOKETEST.md) 「PowerShell 5.1 と 7 の両対応」を参照。
 
 ---

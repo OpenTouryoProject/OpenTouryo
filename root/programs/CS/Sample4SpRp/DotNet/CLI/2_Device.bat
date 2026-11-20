@@ -1,5 +1,5 @@
 @echo off
-rem NOTE: keep this file pure ASCII (root/programs/CODING.md section 4).
+rem NOTE: keep this file pure ASCII (root/programs/11_CODING.md section 4).
 rem       Japanese explanations are in ..\..\README.md (section 4).
 rem
 rem Device Authorization Grant (RFC 8628) with SpRp_CLI (#649).

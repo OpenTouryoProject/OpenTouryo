@@ -24,7 +24,7 @@
 #   2_RunAllTests.ps1 は Windows 前提であり、利用者と同じ Windows PowerShell 5.1 で動かす。
 #
 # **run: の中は ASCII だけにする。** Windows PowerShell 5.1 は、Actions が書き出す BOM 無しの一時ファイルを
-# ANSI（日本語の Windows では Shift_JIS）として読み、日本語の文字列で構文エラーになる（CODING.md 5 節。#640 の最初の実行で踏んだ）。
+# ANSI（日本語の Windows では Shift_JIS）として読み、日本語の文字列で構文エラーになる（11_CODING.md 5 節。#640 の最初の実行で踏んだ）。
 
 name: Expectation change
 

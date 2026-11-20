@@ -41,7 +41,7 @@
 .PARAMETER Lang
     対象の言語。CS（既定）/ VB / Both。
 
-    ※ 既定に VB を含めない。リリース時の検証（RELEASE.md 3 節）は C# 版が対象で、
+    ※ 既定に VB を含めない。リリース時の検証（16_RELEASE.md 3 節）は C# 版が対象で、
     　 VB を含めると毎回 VB のビルドが乗るため。
 
 .PARAMETER Only
@@ -107,7 +107,7 @@ $ErrorActionPreference = "Continue"
 # PowerShell は子プロセスに NoDefaultCurrentDirectoryInExePath=1 を渡すが、
 # ビルド バッチは出力フォルダへ cd したうえでパス区切りを含まない名前で
 # 実行するため、これが効いていると exe を起動できない。
-# （TESTING.md の「PowerShell から .bat を呼ぶときの注意」と同じ）
+# （14_TESTING.md の「PowerShell から .bat を呼ぶときの注意」と同じ）
 Remove-Item Env:\NoDefaultCurrentDirectoryInExePath -EA SilentlyContinue
 
 # 本スクリプトは root\programs に置き、その配下の CS / VB を対象とする。

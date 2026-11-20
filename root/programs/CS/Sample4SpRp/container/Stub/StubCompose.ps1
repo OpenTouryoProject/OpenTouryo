@@ -119,14 +119,14 @@ if ($MpasDefault -and -not [string]::IsNullOrEmpty($Settings))
     throw '-Settings と -MpasDefault は、併せて使えません。'
 }
 
-# **既定は、このフォルダの Sample4SpRp.stub.json**（パスの既定値は param() に書かない。5.1 の -File で $PSScriptRoot が空になる。CODING.md 5 節）
+# **既定は、このフォルダの Sample4SpRp.stub.json**（パスの既定値は param() に書かない。5.1 の -File で $PSScriptRoot が空になる。11_CODING.md 5 節）
 if (-not $MpasDefault -and [string]::IsNullOrEmpty($Settings))
 {
     $Settings = Join-Path (Split-Path -Parent $PSCommandPath) 'Sample4SpRp.stub.json'
 }
 
 # **MPAS の場所は、引数 ＞ 環境変数 OT_MPAS_PATH ＞ RepoPaths.csv（無ければ _RepoPaths.csv）の既定**（#652）
-#   パスの既定値は param() に書かない（5.1 の -File で $PSScriptRoot が空になる。CODING.md 5 節）
+#   パスの既定値は param() に書かない（5.1 の -File で $PSScriptRoot が空になる。11_CODING.md 5 節）
 . (Join-Path (Split-Path -Parent $PSCommandPath) '../../../../../files/tools/PowerShell/RepoPaths/RepoPath.ps1')
 $MpasRoot = Resolve-RepoPath -Variable OT_MPAS_PATH -Argument $MpasRoot -ArgumentName '-MpasRoot'
 if (-not $MpasRoot)

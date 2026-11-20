@@ -52,10 +52,10 @@
 
 | やりたいこと | コマンド | 節 |
 |---|---|---|
-| 2 つの結果ファイルを比べる（終了コード `0` = 差分無し、`1` = 差分あり、`2` = ファイル無し） | `.\CompareResult.ps1 -Expected <期待> -Actual <実測>` | [`TESTING.md`](TESTING.md) 1 節 |
-| 書き換わった Golden の、コミット済みの版を取り出す（**`cmd /c` で、バイトのまま。** PowerShell の `>` は 5.1 で UTF-16 になる） | `cmd /c "git show HEAD:./CS/Frameworks/Tests/Golden/TestCode/Result48.txt > %TEMP%\Result48.txt"` | [`TESTING.md`](TESTING.md) 1 節 |
+| 2 つの結果ファイルを比べる（終了コード `0` = 差分無し、`1` = 差分あり、`2` = ファイル無し） | `.\CompareResult.ps1 -Expected <期待> -Actual <実測>` | [`14_TESTING.md`](14_TESTING.md) 1 節 |
+| 書き換わった Golden の、コミット済みの版を取り出す（**`cmd /c` で、バイトのまま。** PowerShell の `>` は 5.1 で UTF-16 になる） | `cmd /c "git show HEAD:./CS/Frameworks/Tests/Golden/TestCode/Result48.txt > %TEMP%\Result48.txt"` | [`14_TESTING.md`](14_TESTING.md) 1 節 |
 | 取り出した版と比べる（OK なら揺れだけ。期待値の変更に数えない） | `.\CompareResult.ps1 -Expected $env:TEMP\Result48.txt -Actual CS\Frameworks\Tests\Golden\TestCode\Result48.txt` | [`QUALITY.md`](../../QUALITY.md) 3 節 |
-| TestBatch：log4net の内部トレースを除く | 上の比べる行に `-SkipLog4netTrace` を足す | [`TESTING.md`](TESTING.md) 4 節 |
+| TestBatch：log4net の内部トレースを除く | 上の比べる行に `-SkipLog4netTrace` を足す | [`14_TESTING.md`](14_TESTING.md) 4 節 |
 | EncAndDecUtilCUI：Base64 らしき値（鍵・署名・IV）を伏せる | 上の比べる行に `-NormalizeBase64` を足す | `Get-Help .\CompareResult.ps1 -Detailed` |
 | 差分を全件出す（既定は先頭 20 件） | 上の比べる行に `-ShowAll` を足す | `Get-Help .\CompareResult.ps1 -Detailed` |
 
@@ -64,7 +64,7 @@
 | やりたいこと | コマンド | 節 |
 |---|---|---|
 | 脆弱性のある依存を見る（ビルドの後に） | `..\files\tools\PowerShell\Verify\CheckVulnerability.ps1 -Detail` | 1 |
-| その場で直せないときに、Issue の文面の下書きを書き出す（投稿はしない） | `..\files\tools\PowerShell\Verify\CheckVulnerability.ps1 -Detail -IssueDraft "$env:TEMP\vuln_issue.md"` | [`BUILDING.md`](BUILDING.md) 13 節 |
+| その場で直せないときに、Issue の文面の下書きを書き出す（投稿はしない） | `..\files\tools\PowerShell\Verify\CheckVulnerability.ps1 -Detail -IssueDraft "$env:TEMP\vuln_issue.md"` | [`12_BUILDING.md`](12_BUILDING.md) 13 節 |
 | packages.config と csproj の版を突き合わせる | `..\files\tools\PowerShell\Verify\ComparePackage.ps1 -Check` | 1 |
 | bindingRedirect と配布物の版を突き合わせる | `..\files\tools\PowerShell\Verify\CompareRedirect.ps1 -Check` | 1 |
 
@@ -86,8 +86,8 @@
 | 期待値の変更の commit-msg フックを有効にする（手元で 1 回） | `git config core.hooksPath .githooks` | [`QUALITY.common.md`](../../QUALITY.common.md) 3 節 |
 | コミットに、トレーラーの無い期待値の変更が無いかを見る | `.\CheckExpectationChange.ps1 -Commit <コミット>` | [`QUALITY.common.md`](../../QUALITY.common.md) 3 節 |
 | コミットの前に、ステージした変更を見る（commit-msg フックと同じ判定） | `.\CheckExpectationChange.ps1 -Staged -MessageFile <メッセージのファイル>` | [`QUALITY.common.md`](../../QUALITY.common.md) 3 節 |
-| CS 版と VB 版の設定ファイルを突き合わせる（想定外の差分があれば 1） | `..\files\tools\PowerShell\Verify\CompareConfig.ps1 -Check` | [`CONFIGURATION.md`](CONFIGURATION.md) 11 節 |
-| 設定ファイルの差分の内訳を見る | `..\files\tools\PowerShell\Verify\CompareConfig.ps1 -Detail -Only "WebApp_sample"` | [`CONFIGURATION.md`](CONFIGURATION.md) 11 節 |
+| CS 版と VB 版の設定ファイルを突き合わせる（想定外の差分があれば 1） | `..\files\tools\PowerShell\Verify\CompareConfig.ps1 -Check` | [`13_CONFIGURATION.md`](13_CONFIGURATION.md) 11 節 |
+| 設定ファイルの差分の内訳を見る | `..\files\tools\PowerShell\Verify\CompareConfig.ps1 -Detail -Only "WebApp_sample"` | [`13_CONFIGURATION.md`](13_CONFIGURATION.md) 11 節 |
 | PR を出す前に、ブランチのコミットをまとめて見る（CI と同じ） | `.\CheckExpectationChange.ps1 -Range develop..HEAD` | [`QUALITY.common.md`](../../QUALITY.common.md) 3 節 |
 | 期待値の変更の検出器の、判定の用例を回す（CI と同じ） | `..\files\tools\ExpectationGuard.Tests\Run-Tests.ps1` | [`QUALITY.common.md`](../../QUALITY.common.md) 3 節 |
 | 検出器の写しが、手で直されていないかを見る | `.\CheckExpectationChange.ps1 -VerifyCopy` | [`QUALITY.common.md`](../../QUALITY.common.md) 3 節 |
@@ -112,13 +112,13 @@ cd root\programs
 
 | | 合格の目安 | 詳細 |
 |---|---|---|
-| ビルド | 全ステップ OK | [`BUILDING.md`](BUILDING.md) |
-| 単体テスト | 16/16 OK、差分 0（Golden 8 ＋ NUnit 8。NUnit は失敗 0） | [`TESTING.md`](TESTING.md) |
-| 疎通 | 30/30 OK | [`SMOKETEST.md`](SMOKETEST.md) |
+| ビルド | 全ステップ OK | [`12_BUILDING.md`](12_BUILDING.md) |
+| 単体テスト | 16/16 OK、差分 0（Golden 8 ＋ NUnit 8。NUnit は失敗 0） | [`14_TESTING.md`](14_TESTING.md) |
+| 疎通 | 30/30 OK | [`15_SMOKETEST.md`](15_SMOKETEST.md) |
 
 **既定は C# 側。VB 側は `-Lang` で回す**（3 節）。
 
-**`2_RunAllTests.ps1` のオプション**（詳細は [`TESTING.md`](TESTING.md)。**コンテナを使うものは、付けたときだけ起動する**）
+**`2_RunAllTests.ps1` のオプション**（詳細は [`14_TESTING.md`](14_TESTING.md)。**コンテナを使うものは、付けたときだけ起動する**）
 
 | オプション | 何をするか | 要るもの |
 |---|---|---|
@@ -137,11 +137,11 @@ cd root\programs
 
 - **`1_BuildAll.ps1` を単体で回すときは `-IgnoreErrors` を付ける。**
   ClickOnce の署名（`MSB3482`）で、証明書が無い環境では必ず出る
-  （[`BUILDING.md`](BUILDING.md) 4 節）。
+  （[`12_BUILDING.md`](12_BUILDING.md) 4 節）。
   **`0_RunAll.ps1` は既定でこれを渡すので、付けなくてよい**（#555）。
   除外した内容は件数つきで別枠に出るため、そちらは目を通すこと
 - `2_RunAllTests.ps1` は `Result*.txt` を書き換える。**差分 0 なら中身は同じ**
-- 前提（DB・サービス・IIS Express）は [`RELEASE.md`](RELEASE.md) 2 節
+- 前提（DB・サービス・IIS Express）は [`16_RELEASE.md`](16_RELEASE.md) 2 節
 - **`0_RunAll.ps1` は 1・2・3 の実行時間を出す**（#571）
 
 ### 通しは長い。反復では絞り込む（#571）
@@ -226,17 +226,17 @@ dotnet test CS\Frameworks\Tests\NUnit\TestPublic\TestPublic.csproj -f net10.0 --
 - クロス DB・VB・管理者権限は、触れたときだけ回す（[`AGENTS.md`](../../AGENTS.md) の表）
 - **DB のコンテナは LocalServicesOnDocker の [`CHEATSHEET.md`](https://github.com/NetDevInfraWGinOSSConsortium/LocalServicesOnDocker/blob/master/CHEATSHEET.md) に従う。**
   必要なものだけを名前で起動し、**必須でないものを同時に複数起動しない**（クロス DB は SQL Server に 1 つずつ足す）。
-  使い終わったら止める。**メモリを使い切ると、コンテナがシステムごとハングさせる**（[`TESTING.md`](TESTING.md) の冒頭）
+  使い終わったら止める。**メモリを使い切ると、コンテナがシステムごとハングさせる**（[`14_TESTING.md`](14_TESTING.md) の冒頭）
 - **クロス DB（`TestPublicDb`）は `.\2_RunAllTests.ps1 -CrossDb` で回す**（#623）。LocalServicesOnDocker の場所は、`-LocalServicesDir` ＞ 環境変数 `OT_LSOD_PATH` ＞ `RepoPaths.csv`（無ければ `_RepoPaths.csv`）の既定（#652）。
   DBMS を 1 つずつ起動 → 回す → 停止まで自動で行う（`docker` が使えれば Rancher 版、使えなければ WSL2 版）。
   始める前から動いていた DBMS には触らない。`-CrossDb` を付けなければ、コンテナは起動も停止もしない。
-  **CI では、net10.0 の分を Linux のジョブ `linux-crossdb` が回す**（net48 は手元。#703。[`BUILDING.md`](BUILDING.md) 9 節）
+  **CI では、net10.0 の分を Linux のジョブ `linux-crossdb` が回す**（net48 は手元。#703。[`12_BUILDING.md`](12_BUILDING.md) 9 節）
 - **カバレッジを [`Tests/COVERAGE.md`](CS/Frameworks/Tests/COVERAGE.md) に残すなら `.\2_RunAllTests.ps1 -Coverage -LocalServicesDir <LocalServicesOnDocker>`。**
   NUnit の全部（Linux の回を含む）とクロス DB を 1 回で回し、全部 OK ならアセンブリごとに合算して書く
   （`OpenTouryo.Framework` だけは、TestFramework の対象モジュールごと）。`docker` が要る。普通の実行は COVERAGE.md を書かない。
   同じ計測から HTML（`Tests/CoverageHtml`。Git 管理外）も作る。ReportGenerator はローカル ツール（`.config/dotnet-tools.json`）で、導入は要らない
 - **Linux（Golden の EncAndDecUtilCUI と NUnit の TestPublic）は `.\2_RunAllTests.ps1 -Linux` で回す**（#632）。
-  Windows でビルドした net10.0 の出力を、Linux のコンテナ（1 つ、`--rm`）でそのまま動かす。`docker` が要る（[`TESTING.md`](TESTING.md) 2 節）。
+  Windows でビルドした net10.0 の出力を、Linux のコンテナ（1 つ、`--rm`）でそのまま動かす。`docker` が要る（[`14_TESTING.md`](14_TESTING.md) 2 節）。
   **Public・Public.Security に触れた fixed では、`SelectTargets.ps1` が自動で付ける**（fixing では後回し）。
   **CI では、Linux のジョブ `linux` が同じ対象を ubuntu-latest で直接回す**（#703）
 - `dotnet test` の `-f net10.0` を外すと net48 も回る。**net48 / net10.0 で実装が違う箇所は両方回す**
@@ -295,7 +295,7 @@ fixed  : 通し（ビルド 8.8 分 ＋ 単体テスト 14 件 約 4 分 ＋ 疎
 
 **`.ps1` は、表示だけの変更でも実行する**（#588）。
 構文エラーは読んでも分からず、**5.1 と 7 で振る舞いが違う**
-（[`CODING.md`](CODING.md) 5 節）。
+（[`11_CODING.md`](11_CODING.md) 5 節）。
 **回さなかったなら、そう報告する（「検証済み」と書かない）。**
 
 **`2_RunAllTests.ps1` の対象はフレームワークのテストだけ**で、
@@ -346,7 +346,7 @@ Framework_Tool 系だけ     74.8 秒     ← ツールの変更で必要なの�
 ```
 
 - **ビルドの後に回す。** restore 結果が無いと推移的な依存を見られない（「未リストア」として件数が出る）
-- ビルドの NU1901〜NU1904 は restore のときにしか出ず、**Dependabot は推移的な依存を見ない**（[`BUILDING.md`](BUILDING.md) 13 節）
+- ビルドの NU1901〜NU1904 は restore のときにしか出ず、**Dependabot は推移的な依存を見ない**（[`12_BUILDING.md`](12_BUILDING.md) 13 節）
 - **見つけたら Issue を起こさずにその場で直す**（[`AGENTS.md`](../../AGENTS.md)「依存パッケージの脆弱性を見つけたら」）。`-IssueDraft` は直せないときだけ
 
 **どちらもビルドの後に回す。** 復元された DLL を読むため。
@@ -354,13 +354,13 @@ Framework_Tool 系だけ     74.8 秒     ← ツールの変更で必要なの�
 
 `CompareRedirect.ps1` の**「判定不能」は不一致ではない。**
 分類のうち**「要調査」だけ**を見ればよい（他は実行時に読まれない）。
-読み方は [`BUILDING.md`](BUILDING.md) 12 節。
+読み方は [`12_BUILDING.md`](12_BUILDING.md) 12 節。
 
 ---
 
 ## 2. リリース（NuGet 公開）
 
-**一次情報は [`RELEASE.md`](RELEASE.md) と [`CS/NuGet/README.md`](CS/NuGet/README.md)。**
+**一次情報は [`16_RELEASE.md`](16_RELEASE.md) と [`CS/NuGet/README.md`](CS/NuGet/README.md)。**
 
 ```
 1. develop → master へ PR を出し、マージ（--no-ff）してタグをプッシュ
@@ -385,7 +385,7 @@ cd root\programs
 
 `Directory.Build.props` と net48 6 本の `AssemblyInfo.cs` を一括更新する。
 **プレリリース サフィックスはアセンブリの版には入らない。**
-→ [`RELEASE.md`](RELEASE.md) フェーズ 0
+→ [`16_RELEASE.md`](16_RELEASE.md) フェーズ 0
 
 ### 公開前の確認 5 点
 
@@ -446,7 +446,7 @@ root\programs\VB\0_ExecAllBat.bat           ← 通し（先に CS 側を建て�
 
 > **VB のサンプルは `nuget restore` が要る。** しないと
 > `Microsoft.Data.SqlClient.SNI.x64.dll` が出力に入らず、**ビルドは通って実行時に落ちる**。
-> [`BUILDING.md`](BUILDING.md) 10 節・[`SMOKETEST.md`](SMOKETEST.md) 10 節。
+> [`12_BUILDING.md`](12_BUILDING.md) 10 節・[`15_SMOKETEST.md`](15_SMOKETEST.md) 10 節。
 
 ---
 
@@ -465,12 +465,12 @@ root\programs\VB\0_ExecAllBat.bat           ← 通し（先に CS 側を建て�
 
 ## 5. コードを書く前に
 
-**規約は [`CODING.md`](CODING.md)、領域ごとの事情は各 `ANALYSIS.md`。**
+**規約は [`11_CODING.md`](11_CODING.md)、領域ごとの事情は各 `ANALYSIS.md`。**
 
 | | |
 |---|---|
-| ファイル ヘッダ・更新者名・Copyright ブロック | [`CODING.md`](CODING.md) 1 節 |
-| `ArgumentException` だけ引数の順が違う | [`CODING.md`](CODING.md) 3 節 |
+| ファイル ヘッダ・更新者名・Copyright ブロック | [`11_CODING.md`](11_CODING.md) 1 節 |
+| `ArgumentException` だけ引数の順が違う | [`11_CODING.md`](11_CODING.md) 3 節 |
 | フレームワーク本体 | [`CS/Frameworks/ANALYSIS.md`](CS/Frameworks/ANALYSIS.md) |
 | net48 サンプル | [`CS/Samples/ANALYSIS.md`](CS/Samples/ANALYSIS.md) |
 | netcore サンプル | [`CS/Samples4NetCore/ANALYSIS.md`](CS/Samples4NetCore/ANALYSIS.md) |
@@ -486,7 +486,7 @@ root\programs\VB\0_ExecAllBat.bat           ← 通し（先に CS 側を建て�
   コンソールのコード ページに合わせる（Shift-JIS・BOM なし）
 - 改行は **CRLF**
 
-→ [`CODING.md`](CODING.md) 4 節
+→ [`11_CODING.md`](11_CODING.md) 4 節
 
 ### `.ps1` を書くとき
 
@@ -497,7 +497,7 @@ root\programs\VB\0_ExecAllBat.bat           ← 通し（先に CS 側を建て�
 powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.ps1"
 ```
 
-→ [`CODING.md`](CODING.md) 5 節
+→ [`11_CODING.md`](11_CODING.md) 5 節
 
 ---
 
@@ -505,12 +505,12 @@ powershell.exe -NoProfile -Command "Set-Location 'root\programs'; .\3_SmokeTest.
 
 | 症状 | 原因 | 対処 |
 |---|---|---|
-| `'xxx' is not recognized` が大量に出る | bat の非 ASCII とコード ページ | ASCII 化。[`CODING.md`](CODING.md) 4 節 |
+| `'xxx' is not recognized` が大量に出る | bat の非 ASCII とコード ページ | ASCII 化。[`11_CODING.md`](11_CODING.md) 4 節 |
 | `MSB4226`（`Microsoft.WebApplication.targets`） | nuget が別製品の MSBuild を拾った | `nuget.exe restore ... %NUGET_MSBUILD%` |
-| ビルドは通るのに `DllNotFoundException`（`...SNI...`） | `nuget restore` を呼んでおらず、ネイティブ DLL が出力に入らない | 該当 sln に restore を足す。[`BUILDING.md`](BUILDING.md) 10 節 |
-| `packages.config` の id が `csproj` に無い＝不要に見える | サテライト（`.ja`）とコンテンツ パッケージは**出なくて正常**（48 件中 44 件） | 消す前に [`BUILDING.md`](BUILDING.md) 11 節 |
-| ビルドは通るのに実行時 `FileNotFoundException` | **版は 4 か所に散らばる。** `<Reference>` の `Version=` がずれると、警告だけ出て参照が落ちる | `..\files\tools\PowerShell\Verify\ComparePackage.ps1 -Check`。[`BUILDING.md`](BUILDING.md) 12 節 |
-| `MSB3021` / `MSB3027`（コピーできない・ロック）。`error CS` は 0 件 | **前回の疎通テストの残骸**（中断されたときに残る）が出力を掴んでいる。**疎通の「ポートが開かない」まで連鎖する** | 起動時刻で残存を見分けて停止。[`BUILDING.md`](BUILDING.md) 4 節 |
+| ビルドは通るのに `DllNotFoundException`（`...SNI...`） | `nuget restore` を呼んでおらず、ネイティブ DLL が出力に入らない | 該当 sln に restore を足す。[`12_BUILDING.md`](12_BUILDING.md) 10 節 |
+| `packages.config` の id が `csproj` に無い＝不要に見える | サテライト（`.ja`）とコンテンツ パッケージは**出なくて正常**（48 件中 44 件） | 消す前に [`12_BUILDING.md`](12_BUILDING.md) 11 節 |
+| ビルドは通るのに実行時 `FileNotFoundException` | **版は 4 か所に散らばる。** `<Reference>` の `Version=` がずれると、警告だけ出て参照が落ちる | `..\files\tools\PowerShell\Verify\ComparePackage.ps1 -Check`。[`12_BUILDING.md`](12_BUILDING.md) 12 節 |
+| `MSB3021` / `MSB3027`（コピーできない・ロック）。`error CS` は 0 件 | **前回の疎通テストの残骸**（中断されたときに残る）が出力を掴んでいる。**疎通の「ポートが開かない」まで連鎖する** | 起動時刻で残存を見分けて停止。[`12_BUILDING.md`](12_BUILDING.md) 4 節 |
 
 **NuGet パッケージ作成の落とし穴は
 [`CS/NuGet/README.md`](CS/NuGet/README.md) 9 節**にまとめてある。

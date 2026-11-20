@@ -165,7 +165,7 @@ net48 は各 `Properties\AssemblyInfo.cs` が持ち、`Business` 系は `1.0.0.0
 - 引数と戻り値は `BinarySerialize`（net48 専用。`Public/IO`）でバイト列にして受け渡す。
   **net10.0 にリモート プロトコルが無いのは、これを廃止したためである**
 - 疎通テストが使う Web サービスは、こちらではなく `Samples/WS_sample/ASPNETWebService`（net48）と
-  `Samples4NetCore/Backend/ASPNETWebService`（net10.0）である（[`SMOKETEST.md`](../../../SMOKETEST.md)）
+  `Samples4NetCore/Backend/ASPNETWebService`（net10.0）である（[`15_SMOKETEST.md`](../../../15_SMOKETEST.md)）
 
 ---
 
@@ -176,7 +176,7 @@ net48 は各 `Properties\AssemblyInfo.cs` が持ち、`Business` 系は `1.0.0.0
 **部品（`Public` / `Framework` など）は C# 版の DLL を共有する**ので、VB 版は無い。
 
 **テンプレートの仕様を変えたら、VB 版の追随が要るかを報告すること。**
-ビルドと疎通は `-Lang VB` で回す（[`BUILDING.md`](../../../BUILDING.md) 10 節）。
+ビルドと疎通は `-Lang VB` で回す（[`12_BUILDING.md`](../../../12_BUILDING.md) 10 節）。
 
 ---
 

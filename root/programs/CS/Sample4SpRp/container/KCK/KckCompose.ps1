@@ -28,7 +28,7 @@
       **start-dev で動かし、Down でコンテナごと消す**（利用者・同意・セッションは、再起動で realm の定義に戻る）。
 
     ＜前提＞
-      Docker（compose v2）、.NET SDK（dev-certs）。**MPAS のスタブとは同時に起動しない**（メモリ。TESTING.md の冒頭）。
+      Docker（compose v2）、.NET SDK（dev-certs）。**MPAS のスタブとは同時に起動しない**（メモリ。14_TESTING.md の冒頭）。
 
     ＜WSL2 の Docker で動かす（-Wsl2。#712）＞
       **Windows に docker コマンドが無い（または Windows コンテナ用の docker しか無い）ときに、WSL2 の中の Docker で動かす。**
@@ -83,7 +83,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-# パスの既定値は param() に書かない（5.1 の -File で $PSScriptRoot が空になる。CODING.md 5 節）
+# パスの既定値は param() に書かない（5.1 の -File で $PSScriptRoot が空になる。11_CODING.md 5 節）
 $here = Split-Path -Parent $PSCommandPath
 $compose = Join-Path $here 'docker-compose.yml'
 $certDir = Join-Path $here 'cert'
@@ -128,7 +128,7 @@ if ($Action -eq 'Up')
 
     # **クライアント証明書（MTLS）の信頼先を写す**（テスト用の自己署名の証明書。FAPI2 の par_mtls。毎回写して、元と揃える）
     #   **C:\root に無ければ（Linux など）、このリポジトリの root\files\resource から写す**（#703）。
-    #   このリポジトリの .cer は、MPAS の現行のものと同じ（#705。MPAS が作り直したら手で写す。BUILDING.md 9 節）
+    #   このリポジトリの .cer は、MPAS の現行のものと同じ（#705。MPAS が作り直したら手で写す。12_BUILDING.md 9 節）
     $clientCer = 'C:\root\files\resource\X509\SHA256RSAClientCert.cer'
     if (-not (Test-Path $clientCer))
     {

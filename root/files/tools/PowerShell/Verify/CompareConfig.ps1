@@ -21,7 +21,7 @@
 
       自動生成（`startup` / `bindingRedirect`）は、そもそも同期の対象ではない。
       **同じにすると壊れる差分**もある（埋め込みリソース名。CS はフォルダ名を含み、
-      VB は含まない）。判断の材料は [`CONFIGURATION.md`](CONFIGURATION.md) 11 節。
+      VB は含まない）。判断の材料は [`13_CONFIGURATION.md`](../../../../programs/13_CONFIGURATION.md) 11 節。
 
       **`packages.config` は対象である。**
       拡張子が `.config` なので元から突き合わせており、`$allowed` にも入れていない。
@@ -60,7 +60,7 @@
       appSettings の ClientSettingsProvider.*  VS のテンプレート由来
 
     **この一覧は「今そうなっている」ではなく「そうであってよい」を表す。**
-    増やすときは、なぜ違ってよいのかを CONFIGURATION.md 11 節にも書くこと。
+    増やすときは、なぜ違ってよいのかを 13_CONFIGURATION.md 11 節にも書くこと。
 
 .EXAMPLE
     .\CompareConfig.ps1
@@ -264,7 +264,7 @@ Write-SummaryTable -Rows $rows -Columns @("対象", "結果", "内容")
 
 Write-Host ""
 Write-Host ("  対象 {0} 組 : 同一 {1} / 差分 {2} / 読めない {3}" -f $pairs.Count, $same, $diff, $skipped)
-Write-Host "  違ってよい差分の判断は CONFIGURATION.md 11 節。"
+Write-Host "  違ってよい差分の判断は 13_CONFIGURATION.md 11 節。"
 
 # ------------------------------------------------------------------
 # 合否（-Check）
@@ -307,7 +307,7 @@ if ($Check)
         }
         Write-Host ""
         Write-Host "  意図した差分なら CompareConfig.ps1 の `$allowed に足し、"
-        Write-Host "  **なぜ違ってよいのかを CONFIGURATION.md 11 節にも書くこと。**"
+        Write-Host "  **なぜ違ってよいのかを 13_CONFIGURATION.md 11 節にも書くこと。**"
     }
 }
 

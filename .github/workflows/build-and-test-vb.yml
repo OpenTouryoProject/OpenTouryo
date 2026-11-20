@@ -16,7 +16,7 @@
 #   3_SmokeTest.ps1 -Lang VB   疎通（6 件）
 #
 #   2_RunAllTests.ps1 は無い。VB にテスト プロジェクトが無く、単体テストは
-#   C# の Frameworks\Tests に集約されているため（BUILDING.md 10 節）。
+#   C# の Frameworks\Tests に集約されているため（12_BUILDING.md 10 節）。
 #
 # ＜-IgnoreErrors が無い理由＞
 #   VB には ClickOnce 署名のプロジェクト（WSClientWinCone_sample）も .pfx も無い。
@@ -33,7 +33,7 @@
 #   ワークフローへ切り出すことになるが、それは build-and-test.yml（master の
 #   必須チェック）にも手を入れることを意味する。実際に CI を回して確かめるまでは
 #   触らない方針とし、まずは独立した形で置く。
-#   **準備の理由と経緯は build-and-test.yml と BUILDING.md 9 節が一次情報。**
+#   **準備の理由と経緯は build-and-test.yml と 12_BUILDING.md 9 節が一次情報。**
 
 # 名前・ファイル名は、build-and-test.yml に合わせた（#716。旧 Build VB on Windows・build-windows-vb.yml）。
 # 疎通（3_SmokeTest.ps1）も回すので、名前に test を含める。
@@ -67,7 +67,7 @@ jobs:
 
       # VB のステップ表は、先頭に C# 側の 2_Build_NuGet_net48.bat を含む。
       # VB\1_GetLibrariesFromCS.bat がその出力を取りに行くためで、
-      # VB\0_ExecAllBat.bat が cd "..\CS" しているのと同じ理由（BUILDING.md 10 節）。
+      # VB\0_ExecAllBat.bat が cd "..\CS" しているのと同じ理由（12_BUILDING.md 10 節）。
       - name: Build all (VB)
         shell: pwsh
         working-directory: root/programs

@@ -1,5 +1,5 @@
 @echo off
-rem NOTE: keep this file pure ASCII (root/programs/CODING.md section 4).
+rem NOTE: keep this file pure ASCII (root/programs/11_CODING.md section 4).
 rem       Japanese explanations are in ..\README.md.
 rem
 rem Starts SpRp_Blazor (Blazor WebAssembly dev server) on http://localhost:5173 (#649).

@@ -24,7 +24,7 @@
 
   <!--データ プロバイダは Golden の TestDataAccess と同じ版にそろえる。
       **net48 の SqlClient は PackageReference で入れる。** HintPath の DLL だけでは
-      ネイティブの SNI が配置されず、接続時に DllNotFoundException になる（TESTING.md 2 節）。-->
+      ネイティブの SNI が配置されず、接続時に DllNotFoundException になる（14_TESTING.md 2 節）。-->
   <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
     <PackageReference Include="log4net" Version="3.3.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />

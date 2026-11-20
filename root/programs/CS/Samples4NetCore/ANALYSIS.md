@@ -68,7 +68,7 @@ net48 側と違い **区切り文字が `/`**（JSON なのでエスケープ回
 
 `Legacy/` の残りは、定義ファイルをファイル名だけで指定して出力先へコピーするか、埋め込みリソースから読む
 （[`Legacy/ANALYSIS.md`](Legacy/ANALYSIS.md) 3.2 節）。コンテナでは `%OT_RESOURCE_ROOT%` で置き場を差し替える
-（[`CONFIGURATION.md`](../../CONFIGURATION.md) 5 節）。
+（[`13_CONFIGURATION.md`](../../13_CONFIGURATION.md) 5 節）。
 
 ### 2-3. データベース
 
@@ -116,7 +116,7 @@ CLI と WS の事情は [`Legacy/ANALYSIS.md`](Legacy/ANALYSIS.md)。
 ## 5. 設定（`appsettings.json`）
 
 **設定ファイルの仕組み（読み込み順、`__` 区切りの環境変数での上書き、`FxContainerization` との違い、`%変数%` の展開）は
-[`CONFIGURATION.md`](../../CONFIGURATION.md) が一次情報。**
+[`13_CONFIGURATION.md`](../../13_CONFIGURATION.md) が一次情報。**
 
 net48 の `app.config` → Core は `appsettings.json`。**`appSettings` / `connectionStrings` という
 セクション名を JSON でもそのまま使う**のが Open棟梁の流儀。
@@ -132,7 +132,7 @@ net48 の `app.config` → Core は `appsettings.json`。**`appSettings` / `conn
 
 ## 6. ビルド
 
-`root/programs/CS/` 直下の bat（内部は `dotnet restore` + `dotnet msbuild`）。検証としてのビルドは [`BUILDING.md`](../../BUILDING.md)。
+`root/programs/CS/` 直下の bat（内部は `dotnet restore` + `dotnet msbuild`）。検証としてのビルドは [`12_BUILDING.md`](../../12_BUILDING.md)。
 
 | bat | 対象 |
 |---|---|
@@ -217,7 +217,7 @@ bat を経由せず **`dotnet build <sln>` を直接叩いてよい**（Core 側
 - [ ] 定義 XML を追加したら `Legacy/*` の csproj に `CopyToOutputDirectory` を追記
 - [ ] パッケージ バージョンを変えるならフレームワーク本体との整合を確認（7 節）
 - [ ] 新規 .cs にはヘッダ コメント（Apache License / クラス名・日本語名・更新履歴）を付与、既存変更時は履歴に 1 行追記。
-      **Copyright ブロックは新規には付けない**（[`CODING.md`](../../CODING.md) 1 節）
+      **Copyright ブロックは新規には付けない**（[`11_CODING.md`](../../11_CODING.md) 1 節）
 - [ ] `UOC_` メソッドの冒頭で `this.ReturnValue = ...` を設定
 - [ ] 実行確認をするなら `C:\root\files` と Northwind DB の準備状況を先に確認
 - [ ] コンテナは勝手に起動しない（[`container/README.md`](../../../../container/README.md) 4 節）

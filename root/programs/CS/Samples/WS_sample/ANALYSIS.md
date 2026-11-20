@@ -76,7 +76,7 @@ WSServer_sample（B 層・D 層）── WSIFType_sample（引数・戻り値の
 ### 2.3 実行の前提
 
 - リモート（4・5）を使うなら、先に **`ServiceInterface` のホストを起動する**（`WCFService.exe`、または IIS 上の `ASPNETWebService`）
-- **GUI なので疎通テストの対象外**（[`SMOKETEST.md`](../../../SMOKETEST.md)「対象外」）。リリースの手作業項目
+- **GUI なので疎通テストの対象外**（[`15_SMOKETEST.md`](../../../15_SMOKETEST.md)「対象外」）。リリースの手作業項目
 
 ---
 
@@ -98,7 +98,7 @@ WSServer_sample（B 層・D 層）── WSIFType_sample（引数・戻り値の
 
 `TestWebAPIClient (net48)` が、IIS Express（ポート 51087）で本プロジェクトを起動し、1 本で 3 つを確かめる
 （CRUD の一巡で件数が戻る、DTO の往復で `RowState` / `Original` が残る、古い版の更新が弾かれる）。
-**DB（Northwind）が要る。** 詳細は [`SMOKETEST.md`](../../../SMOKETEST.md)「DTO を使用したバッチ更新（WebAPI Client）」。
+**DB（Northwind）が要る。** 詳細は [`15_SMOKETEST.md`](../../../15_SMOKETEST.md)「DTO を使用したバッチ更新（WebAPI Client）」。
 
 ---
 

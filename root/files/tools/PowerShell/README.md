@@ -8,8 +8,8 @@
 |---|---|---|
 | `Monitor/` | 開発機の監視（コンテナの状況 `Check-Containers.ps1`、CPU・メモリ `SystemMonitor.ps1`） | 本書 |
 | `RepoPaths/` | 関連リポジトリの場所（`Register-RepoPaths.ps1`・`RepoPath.ps1`・`_RepoPaths.csv`、手元用の `RepoPaths.csv`） | 本書、[`Readme.ja.md`](../../../Readme.ja.md)「関連リポジトリの場所」 |
-| `Verify/` | 検証の補助（回す範囲の割り出し `SelectTargets.ps1`、設定・版・脆弱性の点検 `Compare*.ps1`・`CheckVulnerability.ps1`、カバレッジ・根拠の集計、入口が読む部品 `SummaryTable.ps1`・`Prerequisite.ps1`） | [`CHEATSHEET.md`](../../../programs/CHEATSHEET.md) 0・1 節 |
-| `SmokeTest/` | 疎通（`root/programs/3_SmokeTest.ps1`）がドット ソースで読む部品（`st_*.ps1`）。**単体では動かない** | [`SMOKETEST.md`](../../../programs/SMOKETEST.md) 8.5 節 |
+| `Verify/` | 検証の補助（回す範囲の割り出し `SelectTargets.ps1`、設定・版・脆弱性の点検 `Compare*.ps1`・`CheckVulnerability.ps1`、カバレッジ・根拠の集計、入口が読む部品 `SummaryTable.ps1`・`Prerequisite.ps1`） | [`10_CHEATSHEET.md`](../../../programs/10_CHEATSHEET.md) 0・1 節 |
+| `SmokeTest/` | 疎通（`root/programs/3_SmokeTest.ps1`）がドット ソースで読む部品（`st_*.ps1`）。**単体では動かない** | [`15_SMOKETEST.md`](../../../programs/15_SMOKETEST.md) 8.5 節 |
 | `Dev/` | 開発環境の準備（エージェント用のスキルの取得 `GetAgentSkills.ps1`） | [`AGENTS.md`](../../../../AGENTS.md) |
 
 - **`Verify/`・`SmokeTest/`・`Dev/` のスクリプトは、`root/programs` を自分の場所からの相対パス（`..\..\..\..\programs`）で引く。** フォルダの深さを変えたら、そこを直す

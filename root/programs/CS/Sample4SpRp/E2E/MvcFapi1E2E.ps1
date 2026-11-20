@@ -108,13 +108,13 @@ param(
 
 $ErrorActionPreference = 'Stop'
 
-# コンソールの出力を UTF-8 に（CODING.md 5 節）
+# コンソールの出力を UTF-8 に（11_CODING.md 5 節）
 if ([Console]::OutputEncoding.CodePage -ne 65001)
 {
     [Console]::OutputEncoding = New-Object Text.UTF8Encoding $false
 }
 
-# パスの既定値は param() に書かない（5.1 の -File で $PSScriptRoot が空になる。CODING.md 5 節）
+# パスの既定値は param() に書かない（5.1 の -File で $PSScriptRoot が空になる。11_CODING.md 5 節）
 $here = Split-Path -Parent $PSCommandPath
 $progRoot = (Resolve-Path (Join-Path $here '..\..\..')).Path   # root\programs（E2E → Sample4SpRp → CS → programs）
 . (Join-Path $progRoot '..\files\tools\PowerShell\Verify\SummaryTable.ps1')  # #687 で移した

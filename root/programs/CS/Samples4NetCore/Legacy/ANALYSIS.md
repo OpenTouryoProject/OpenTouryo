@@ -66,7 +66,7 @@ GetConfigParameter.InitConfiguration("appsettings.json");
 - **コメント付きの JSON**（`//`）。`Microsoft.Extensions.Configuration.Json` は許すが、厳密な JSON パーサでは読めない
 - 定義ファイル（`MSGDefinition.xml` / `SPDefinition.xml` / `SampleLogConf2CS.xml` など）は**ファイル名だけ**で指定し、
   csproj の `CopyToOutputDirectory=Always` で出力先へ配る。**定義ファイルを足したら、csproj にもコピーの指定を足す**
-  （[`CONFIGURATION.md`](../../../CONFIGURATION.md) 7-3。`%変数%` にすると壊れる）
+  （[`13_CONFIGURATION.md`](../../../13_CONFIGURATION.md) 7-3。`%変数%` にすると壊れる）
 - 埋め込みリソースから読む書き方も、コメントで並べてある（`_2CSClientWin_sample.SPDefinition.xml` など。
   既定の名前空間 `RootNamespace` が数字で始まれないため `_` が付く）。切り替えるときは csproj の `EmbeddedResource` も要る
 

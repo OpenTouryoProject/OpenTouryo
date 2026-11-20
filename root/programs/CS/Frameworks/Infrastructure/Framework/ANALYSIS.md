@@ -87,7 +87,7 @@ CallController.Invoke(serviceName, parameterValue)
 - `HttpClient` / `HttpClientHandler` は**内部で都度作らず、`serviceName` ごとに持ち回る**。
   そのため **1 つの `CallController` を複数のスレッドから同時に使えない**
 - `props`（定義ファイルのプロパティ）から、タイムアウト・プロキシ（`ProxyUrl` / `NetworkCredentialToProxy`）・Cookie などを反映する
-- 接続オプションが要求に反映されることは、`Tests/Else/TestTransmission` が自前のオリジンとプロキシを立てて確かめる（#546。[`SMOKETEST.md`](../../../../SMOKETEST.md) 3 節）
+- 接続オプションが要求に反映されることは、`Tests/Else/TestTransmission` が自前のオリジンとプロキシを立てて確かめる（#546。[`15_SMOKETEST.md`](../../../../15_SMOKETEST.md) 3 節）
 
 ### 3.4 `~Async`
 
@@ -292,7 +292,7 @@ DCR の口の認可、クライアント登録の持ち方。
   | `CmnClientParams.OldKeysStillUsed()` | 改名前の名前だけが設定されているもの（動くが、書き換えを促す） |
   | `CmnClientParams.RenamedKeysInConflict()` | 新旧の両方に違う値があるもの（**使われるのは新しい名前の値**。書き間違いか、移行の途中） |
 
-- **環境変数で上書きしている配備は、変数の名前も合わせる**（CONFIGURATION.md 4 節）。設定ファイルだけを新しい名前にすると、改名前の名前の環境変数は読まれなくなる（`RenamedKeysInConflict` に出る）
+- **環境変数で上書きしている配備は、変数の名前も合わせる**（13_CONFIGURATION.md 4 節）。設定ファイルだけを新しい名前にすると、改名前の名前の環境変数は読まれなくなる（`RenamedKeysInConflict` に出る）
 - Golden の設定（`Tests/Golden/TestCode`）は、改名前の名前のまま残している（改名前の名前を読めることの確かめを兼ねる）
 
 **#634 の部品は、相手の値を引数で受ける版が基本である。** 設定を読む版（引数の少ない版）は、**相手が 1 つの配備**のための便宜で、
@@ -581,5 +581,5 @@ net10.0 のフレームワーク参照（`Microsoft.AspNetCore.App`）ではな�
 - [ ] net48 だけ・net10.0 だけのファイルではないか（10 節）
 - [ ] 公開 API を変えない（NuGet で配布している）。足すならオーバーロード
 - [ ] 文字列リテラルは `FxLiteral` に、例外メッセージは `FrameworkExceptionMessage` とリソース（既定と `ja-JP`）に足す
-- [ ] 通信を変えたら `TestTransmission` と疎通テスト（[`SMOKETEST.md`](../../../../SMOKETEST.md)）を回す
+- [ ] 通信を変えたら `TestTransmission` と疎通テスト（[`15_SMOKETEST.md`](../../../../15_SMOKETEST.md)）を回す
 - [ ] 認証を変えたら、サンプルの認可サーバ・クライアント（別リポジトリを含む）への影響を報告する

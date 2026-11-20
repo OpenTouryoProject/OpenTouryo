@@ -1,4 +1,4 @@
-﻿# RELEASE.md — リリース チェックリスト
+﻿# 16_RELEASE.md — リリース チェックリスト
 
 対象: `root/programs/CS`（C# 側）
 配置: `root/programs`
@@ -9,9 +9,9 @@
 > | 内容 | 一次情報 |
 > |---|---|
 > | ビルド構成・バージョン管理 | [`CS/Frameworks/ANALYSIS.md`](CS/Frameworks/ANALYSIS.md) 7 章 |
-> | 全ビルドの実行と判定 | [`BUILDING.md`](BUILDING.md) |
-> | 単体テストの実行と判定 | [`TESTING.md`](TESTING.md) |
-> | サンプルの疎通確認 | [`SMOKETEST.md`](SMOKETEST.md) |
+> | 全ビルドの実行と判定 | [`12_BUILDING.md`](12_BUILDING.md) |
+> | 単体テストの実行と判定 | [`14_TESTING.md`](14_TESTING.md) |
+> | サンプルの疎通確認 | [`15_SMOKETEST.md`](15_SMOKETEST.md) |
 > | NuGet パッケージ化・公開の手順 | [`CS/NuGet/README.md`](CS/NuGet/README.md) |
 
 ---
@@ -81,7 +81,7 @@ HTML（`Tests\CoverageHtml`）も作り直されるが、Git 管理外なので�
       … `1_DeleteDir.bat` が `.vs` を削除するため
 - [ ] **SQL Server の Northwind に接続できる**
 - [ ] **Northwind が初期状態**（`Shippers` 3 件 / `Orders` 830 件）  
-      … 汚れている場合の戻し方は [`TESTING.md`](TESTING.md) 「テスト データの戻し方」  
+      … 汚れている場合の戻し方は [`14_TESTING.md`](14_TESTING.md) 「テスト データの戻し方」  
       … `Orders2`（Northwind 標準ではない）は `3_SmokeTest.ps1` が無ければ作るため、事前準備は不要
 - [ ] **サービスが開始されている**（`Start-Service`、`aspnet_state`、要管理者権限）
   - Start-Service … アプリが 使うデータストア（Dockerコンテナ）を起動、初期化する。
@@ -185,9 +185,9 @@ HTML（`Tests\CoverageHtml`）も作り直されるが、Git 管理外なので�
 
 | スクリプト | 見るもの | 期待値 | 文書 |
 |---|---|---|---|
-| `1_BuildAll.ps1` | ビルドが通るか | エラー 0 件 | [`BUILDING.md`](BUILDING.md) |
-| `2_RunAllTests.ps1` | 出力が前回と同じか | HEAD の `Result*.txt` | [`TESTING.md`](TESTING.md) |
-| `3_SmokeTest.ps1` | 起動して想定どおり動くか | 定義側の判定条件 | [`SMOKETEST.md`](SMOKETEST.md) |
+| `1_BuildAll.ps1` | ビルドが通るか | エラー 0 件 | [`12_BUILDING.md`](12_BUILDING.md) |
+| `2_RunAllTests.ps1` | 出力が前回と同じか | HEAD の `Result*.txt` | [`14_TESTING.md`](14_TESTING.md) |
+| `3_SmokeTest.ps1` | 起動して想定どおり動くか | 定義側の判定条件 | [`15_SMOKETEST.md`](15_SMOKETEST.md) |
 
 - [ ] **`1_BuildAll.ps1` のエラーが「既知の 1 件」だけである**
       … `-SkipClean` は**使わない**。前回の成果物が残っていると通ったように見える
@@ -209,7 +209,7 @@ HTML（`Tests\CoverageHtml`）も作り直されるが、Git 管理外なので�
 >
 > `-IgnoreErrors "MSB3482"` を付けると判定から外れて 0 になる（除外内容は一覧に残る）。
 > **リリース判定では付けないこと。** 目視で 1 件だけであることを確かめるのが本筋で、
-> この引数は人が見ない CI（[`BUILDING.md`](BUILDING.md) 9 節）のためのもの。
+> この引数は人が見ない CI（[`12_BUILDING.md`](12_BUILDING.md) 9 節）のためのもの。
 
 所要時間の実測（クリーン ビルドから通しで **約 9.5 分**）。
 
@@ -232,7 +232,7 @@ HTML（`Tests\CoverageHtml`）も作り直されるが、Git 管理外なので�
 - 所要は全ビルド 4.3 分 ＋ 疎通 1.5 分（6 件）
 
 **リリースのたびに回す必要は無いが、VB 側に手を入れたリリースでは通すこと。**
-詳細は [`BUILDING.md`](BUILDING.md) 10 節と [`SMOKETEST.md`](SMOKETEST.md) 10 節。
+詳細は [`12_BUILDING.md`](12_BUILDING.md) 10 節と [`15_SMOKETEST.md`](15_SMOKETEST.md) 10 節。
 
 ### 順序を守る
 
@@ -250,7 +250,7 @@ HTML（`Tests\CoverageHtml`）も作り直されるが、Git 管理外なので�
 | `3_SmokeTest.ps1` | 起動時の失敗（構成・ネイティブ DLL・前提サービス）が多い |
 
 `2_RunAllTests.ps1` の「実測のみ／期待のみ」に**件数の差**が出た場合は、
-まずテスト データの汚染を疑う（`TESTING.md` 5 節）。
+まずテスト データの汚染を疑う（`14_TESTING.md` 5 節）。
 
 ### `Result*.txt` の扱い
 
@@ -327,7 +327,7 @@ HTML（`Tests\CoverageHtml`）も作り直されるが、Git 管理外なので�
 
 - [ ] `WSClientWinCone_sample` の ClickOnce 署名エラー（`MSB3482`）を確認した
       … 拇印で証明書ストアを検索するため、当該証明書が無い環境ではビルドできない。
-      **環境依存でありコード側の不具合ではない**（[`BUILDING.md`](BUILDING.md) 4 節）
+      **環境依存でありコード側の不具合ではない**（[`12_BUILDING.md`](12_BUILDING.md) 4 節）
 
 ---
 
@@ -411,7 +411,7 @@ GUI 側で見るのは画面が動くことだけになった。
 - [ ] 検証は **`1_BuildAll.ps1` → `2_RunAllTests.ps1` → `3_SmokeTest.ps1` の順**（3 節）
 - [ ] `1_BuildAll.ps1` に `-SkipClean` を付けない（リリース判定では前回成果物を残さない）
 - [ ] **NG を「既知」で片付けない。** 既知として扱ってよいのは
-      `WSClientWinCone_sample` の署名エラーと NuGet 脆弱性警告のみ（4 節・[`BUILDING.md`](BUILDING.md) 3 節）
+      `WSClientWinCone_sample` の署名エラーと NuGet 脆弱性警告のみ（4 節・[`12_BUILDING.md`](12_BUILDING.md) 3 節）
 - [ ] `2_RunAllTests.ps1` の NG は、退行／期待結果の陳腐化／テスト データの汚染を切り分けてから報告
 - [ ] **前提サービス・DB の状態を勝手に変えない。** 不足は対処方法とともに報告する
       （`3_SmokeTest.ps1` が `aspnet_state` を自動起動しないのと同じ理由）

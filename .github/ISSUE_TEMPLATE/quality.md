@@ -30,7 +30,7 @@ labels: quality improvement
 ## 検証
 
 <!--
-変更したら、影響範囲に応じて通します（CHEATSHEET.md 1 節）。
+変更したら、影響範囲に応じて通します（10_CHEATSHEET.md 1 節）。
 
   .\1_BuildAll.ps1 -IgnoreErrors 'error MSB(3482|3325|3321):.*WSClientWinCone_sample\.csproj'
   .\2_RunAllTests.ps1
