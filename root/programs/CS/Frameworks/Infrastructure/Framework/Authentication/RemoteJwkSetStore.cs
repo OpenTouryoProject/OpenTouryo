@@ -29,6 +29,7 @@
 //*  2026/11/06  玄人 幸道         remarks の設定キーを、改名後の名前（SpRp_JwkSetUri・SpRp_Issuer）にした（#666）
 //*  2026/11/20  玄人 幸道         jwks_uri などを取りに行く HttpClient を差し替える HttpClient プロパティを追加（#707）
 //*  2026/11/20  玄人 幸道         同じ URL の取得を同時に 1 本にまとめた（重なった要求は完了を待つ。#686）
+//*  2026/11/20  玄人 幸道         GetJwkByDiscoveryAsync が、キャッシュの鍵を引くときも expectedIssuer を照合するようにした（#715）
 //**********************************************************************************
 
 using System;
@@ -86,6 +87,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             /// <summary>取りに行った時刻（UTC。失敗も含む）</summary>
             public DateTime FetchedAt { get; set; }
+
+            /// <summary>この JWK Set を取ったときに、discovery の issuer と照合した Issuer（discovery を使わない口では null。#715）</summary>
+            public string Issuer { get; set; }
         }
 
         /// <summary>取得した JWK Set（鍵は JWK Set の URL、または discovery の URL）</summary>
@@ -214,6 +218,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// 自由に利用できる。
         /// **期待する Issuer を必ず受け取る。** 引いた鍵を、期待する発行者に結び付けるため。
         /// この確認が無いと、設定の URL を差し替えられた配備で、別の発行者の鍵を信じてしまう。
+        ///
+        /// **キャッシュから引くときも照合する**（#715）。キャッシュの 1 件は、取ったときに照合した Issuer を持つ。
+        /// 同じ discoveryUrl を別の expectedIssuer で呼んだときは、その鍵を使わない
+        /// （下限を過ぎていれば discovery を取り直し、そこで照合する。内側なら取りに行かず null）。
         /// </remarks>
         public static async Task<JObject> GetJwkByDiscoveryAsync(
             string discoveryUrl, string expectedIssuer, string kid)
@@ -225,7 +233,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 return null;
             }
 
-            JObject jwk = RemoteJwkSetStore.PickOne(discoveryUrl, kid, out bool canRefetch);
+            JObject jwk = RemoteJwkSetStore.PickOne(discoveryUrl, kid, out bool canRefetch, expectedIssuer);
 
             if (jwk == null && canRefetch)
             {
@@ -243,10 +251,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     }
 
                     JObject jwkSet = await RemoteJwkSetStore.GetJsonAsync(jwksUri).ConfigureAwait(false);
-                    RemoteJwkSetStore.Store(discoveryUrl, jwkSet);
+                    RemoteJwkSetStore.Store(discoveryUrl, jwkSet, expectedIssuer);
                 }).ConfigureAwait(false);
 
-                jwk = RemoteJwkSetStore.PickOne(discoveryUrl, kid, out bool _);
+                jwk = RemoteJwkSetStore.PickOne(discoveryUrl, kid, out bool _, expectedIssuer);
             }
 
             return jwk;
@@ -313,6 +321,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// kid は任意（RFC 7515 4.1.4）なので、書かない相手が居る。
         /// そのときは在る鍵を順に試すことになるので、本数に上限を置く。
         /// kty では絞らない（alg と鍵の対応は JwsFactory.CreateFromJwk が確かめる）。
+        /// **発行者（Issuer）の照合はしない**（Issuer を受け取らない口）。照合するのは GetJwkByDiscoveryAsync で、
+        /// discovery の URL で引くときは、先にその口で照合を通した URL にだけ使うこと（#715）。
         /// </remarks>
         public static List<JObject> PickJwksFromCache(string jwkSetUrl, string kid, int max)
         {
@@ -471,17 +481,25 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="key">string（キャッシュの鍵）</param>
         /// <param name="kid">string</param>
         /// <param name="canRefetch">out bool（取り直してよいか）</param>
+        /// <param name="expectedIssuer">string（null でなければ、キャッシュの 1 件の Issuer と一致するときだけ引く。#715）</param>
         /// <returns>JWK（無ければ null）</returns>
-        private static JObject PickOne(string key, string kid, out bool canRefetch)
+        private static JObject PickOne(string key, string kid, out bool canRefetch, string expectedIssuer = null)
         {
+            // 照合と引くのを同じロックの中で行う（間に Store が入って、別の Issuer の鍵を引かないように）。
             lock (RemoteJwkSetStore._lock)
             {
                 canRefetch = !RemoteJwkSetStore._cache.TryGetValue(key, out Entry entry)
                     || RemoteJwkSetStore._minRefetchInterval < (DateTime.UtcNow - entry.FetchedAt);
-            }
 
-            List<JObject> jwks = RemoteJwkSetStore.PickJwksFromCache(key, kid, 1);
-            return (jwks.Count == 0) ? null : jwks[0];
+                if (expectedIssuer != null && entry != null
+                    && !string.Equals(entry.Issuer, expectedIssuer, StringComparison.Ordinal))
+                {
+                    return null;
+                }
+
+                List<JObject> jwks = RemoteJwkSetStore.PickJwksFromCache(key, kid, 1);
+                return (jwks.Count == 0) ? null : jwks[0];
+            }
         }
 
         /// <summary>取得中として登録する（_lock を持った状態で呼ぶ）</summary>
@@ -556,20 +574,23 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>キャッシュへ入れる</summary>
         /// <param name="key">string</param>
         /// <param name="jwkSet">JObject（取れなかったときは null）</param>
-        /// <remarks>取れなかったときは、前に取れた JWK Set を残す（時刻だけ進める）。</remarks>
-        private static void Store(string key, JObject jwkSet)
+        /// <param name="issuer">string（discovery の issuer と照合した Issuer。discovery を使わない口では null。#715）</param>
+        /// <remarks>取れなかったときは、前に取れた JWK Set と、その Issuer を残す（時刻だけ進める）。</remarks>
+        private static void Store(string key, JObject jwkSet, string issuer = null)
         {
             lock (RemoteJwkSetStore._lock)
             {
                 if (jwkSet == null && RemoteJwkSetStore._cache.TryGetValue(key, out Entry old))
                 {
                     jwkSet = old.JwkSet;
+                    issuer = old.Issuer;
                 }
 
                 RemoteJwkSetStore._cache[key] = new Entry()
                 {
                     JwkSet = jwkSet,
-                    FetchedAt = DateTime.UtcNow
+                    FetchedAt = DateTime.UtcNow,
+                    Issuer = issuer
                 };
             }
         }

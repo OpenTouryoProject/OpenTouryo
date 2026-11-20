@@ -28,6 +28,7 @@
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //*  2026/11/20  玄人 幸道         HttpClient プロパティ（取得に使う HttpClient の差し替え）のテストを追加（#707）
 //*  2026/11/20  玄人 幸道         取得の重なり（同じ URL の取得を 1 本にまとめる）のテストを追加（#686）
+//*  2026/11/20  玄人 幸道         discovery のキャッシュを引くときの Issuer の照合のテストを追加（#715）
 //**********************************************************************************
 
 using System;
@@ -739,6 +740,106 @@ namespace TestFramework.Authentication
             }
 
             Assert.That(handler.Count, Is.EqualTo(1), "jwks_uri へは行かず、discovery は 1 回だけ");
+        }
+
+        #endregion
+
+        #region discovery のキャッシュと Issuer（#715）
+
+        /// <summary>
+        /// 同じ discoveryUrl を別の expectedIssuer で呼んでも、キャッシュの鍵を返さない（2 回目以降も、Issuer を照合する）。
+        /// 下限の内側なら、取りに行かない。同じ expectedIssuer なら、従来どおりキャッシュから引ける。
+        /// </summary>
+        [Test]
+        [Basis("OIDC Discovery 4.3（issuer は、取得に使った Issuer と同じでなければならない）")]
+        [Basis("#715（キャッシュから引くときも、expectedIssuer を照合する）")]
+        public void GetJwkByDiscoveryAsync_CachedKey_ChecksIssuer()
+        {
+            string kid = (string)this._jwk["kid"];
+
+            using (StubHttp http = this.Server(Issuer))
+            {
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, Issuer, kid).Result, Is.Not.Null);
+                Assert.That(http.Requests.Count, Is.EqualTo(2), "discovery と jwks_uri");
+
+                // 別の Issuer：キャッシュの鍵を返さない。下限の内側なので、取りに行かない。
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, "https://other.example.com", kid).Result, Is.Null);
+                Assert.That(http.Requests.Count, Is.EqualTo(2));
+
+                // 同じ Issuer：キャッシュから引ける（取りに行かない）。
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, Issuer, kid).Result, Is.Not.Null);
+                Assert.That(http.Requests.Count, Is.EqualTo(2));
+            }
+        }
+
+        /// <summary>
+        /// 別の expectedIssuer の呼び出しは、下限を過ぎていれば discovery を取り直し、そこで照合する。
+        /// 照合が通れば（discovery の issuer が、その expectedIssuer なら）、その Issuer の鍵として引ける。
+        /// </summary>
+        [Test]
+        [Basis("OIDC Discovery 4.3（issuer は、取得に使った Issuer と同じでなければならない）")]
+        [Basis("#715（別の expectedIssuer は、取り直して照合する）")]
+        public void GetJwkByDiscoveryAsync_OtherIssuer_RefetchesAndChecks()
+        {
+            string kid = (string)this._jwk["kid"];
+            using (StubHttp http = this.Server(Issuer))
+            {
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, Issuer, kid).Result, Is.Not.Null);
+            }
+
+            RemoteJwkSetStore.MinRefetchInterval = TimeSpan.Zero;
+            Thread.Sleep(20);
+
+            // 相手の issuer が変わった（別の発行者になった）。新しい Issuer の呼び出しは、キャッシュを使わず、
+            // 取り直して照合が通り、引ける。
+            using (StubHttp http = this.Server("https://new.example.com"))
+            {
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, "https://new.example.com", kid).Result, Is.Not.Null);
+                Assert.That(http.Requests.Count, Is.EqualTo(2), "discovery と jwks_uri を取り直した");
+
+                // 古い Issuer の呼び出しは、いまのキャッシュ（新しい Issuer のもの）を使わず、取り直して照合し、断られる。
+                Thread.Sleep(20);
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, Issuer, kid).Result, Is.Null);
+                Assert.That(http.Requests.Count, Is.EqualTo(3), "discovery だけ（issuer が違うので jwks_uri へは行かない）");
+            }
+        }
+
+
+        /// <summary>
+        /// 取り直しに失敗しても、前に取れた JWK Set と、その Issuer を残す（別の Issuer の呼び出しが、失敗を機に鍵を使えるようにはならない）。
+        /// Issuer の比較は、大文字小文字を区別する（OIDC Discovery 4.3 は、完全に同じ文字列）。
+        /// </summary>
+        [Test]
+        [Basis("OIDC Discovery 4.3（issuer は、取得に使った Issuer と同じでなければならない）")]
+        [Basis("#715（取得に失敗しても、前の Issuer を残す）")]
+        public void GetJwkByDiscoveryAsync_FailedRefetch_KeepsIssuer()
+        {
+            string kid = (string)this._jwk["kid"];
+
+            using (StubHttp http = this.Server(Issuer))
+            {
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, Issuer, kid).Result, Is.Not.Null);
+            }
+
+            RemoteJwkSetStore.MinRefetchInterval = TimeSpan.Zero;
+            Thread.Sleep(20);
+
+            using (StubHttp http = new StubHttp((req, b) => { throw new HttpRequestException("down"); }))
+            {
+                // 取り直しに失敗しても、前の Issuer の鍵は引ける。別の Issuer には使わない。
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, Issuer, kid).Result, Is.Not.Null);
+
+                Thread.Sleep(20);
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, "https://other.example.com", kid).Result, Is.Null);
+
+                // 大文字小文字だけ違う Issuer は、別の Issuer である
+                Thread.Sleep(20);
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, Issuer.ToUpperInvariant(), kid).Result, Is.Null);
+
+                // 失敗の後も、前の Issuer の鍵は残っている
+                Thread.Sleep(20);
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, Issuer, kid).Result, Is.Not.Null);
+            }
         }
 
         #endregion
