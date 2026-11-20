@@ -26,6 +26,7 @@
 //*  2026/10/22  玄人 幸道         新規作成（#634）
 //*  2026/10/22  玄人 幸道         メタデータの鍵の選び方・取り直しの失敗・属性の境界のテストを足した（カバレッジの拡充）
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
+//*  2026/11/20  玄人 幸道         GetAsync（HttpClient 引数）の、キャッシュが URL ごとに共有されることのテストを追加（#719 のレビュー）
 //**********************************************************************************
 
 using System;
@@ -112,6 +113,52 @@ namespace TestFramework.Authentication
                     Assert.That(http.Requests.Count, Is.EqualTo(1), "2 回目はキャッシュ");
 
                     Assert.That(SAML2Metadata.GetAsync(MetadataUrl, "https://other.example.com/").Result, Is.Null);
+                }
+            }
+            finally
+            {
+                SAML2Metadata.Clear();
+            }
+        }
+
+        /// <summary>要求を数え、通信の失敗を起こす HttpMessageHandler（引数の HttpClient が使われたかを見る）</summary>
+        private sealed class RejectingHandler : System.Net.Http.HttpMessageHandler
+        {
+            /// <summary>受けた要求の数</summary>
+            public int Count = 0;
+
+            protected override System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> SendAsync(
+                System.Net.Http.HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
+            {
+                this.Count++;
+                throw new System.Net.Http.HttpRequestException("rejected");
+            }
+        }
+
+        /// <summary>
+        /// GetAsync（HttpClient 引数）：キャッシュは URL ごとに共有する。共有の HttpClient で取れたメタデータを、
+        /// 別の HttpClient を引数にした同じ URL の呼び出しも、取りに行かずに引ける（引数の HttpClient は使われない）。#719
+        /// </summary>
+        [Test]
+        [Basis("設計：SAML2Metadata.GetAsync（HttpClient 引数）の remarks（キャッシュは URL ごとで、HttpClient が違っても共有する）")]
+        public void GetAsync_HttpClientArgument_CacheIsSharedByUrl()
+        {
+            SAML2Metadata.Clear();
+
+            try
+            {
+                using (StubHttp shared = new StubHttp((req, body) => StubHttp.Json(HttpStatusCode.OK, Metadata())))
+                {
+                    // 共有の HttpClient（引数が null）で取る
+                    Assert.That(SAML2Metadata.GetAsync(MetadataUrl, SAML2BindingsTests.Issuer, null).Result, Is.Not.Null);
+                    Assert.That(shared.Requests.Count, Is.EqualTo(1));
+
+                    // 必ず失敗する HttpClient を引数にしても、控えから引ける（取りに行かない）
+                    RejectingHandler rejecting = new RejectingHandler();
+                    Assert.That(SAML2Metadata.GetAsync(MetadataUrl, SAML2BindingsTests.Issuer,
+                        new System.Net.Http.HttpClient(rejecting, false)).Result, Is.Not.Null);
+                    Assert.That(rejecting.Count, Is.EqualTo(0), "控えから引けたので、引数の HttpClient は使われない");
+                    Assert.That(shared.Requests.Count, Is.EqualTo(1));
                 }
             }
             finally

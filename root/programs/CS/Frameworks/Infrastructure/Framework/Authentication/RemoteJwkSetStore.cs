@@ -30,6 +30,7 @@
 //*  2026/11/20  玄人 幸道         jwks_uri などを取りに行く HttpClient を差し替える HttpClient プロパティを追加（#707）
 //*  2026/11/20  玄人 幸道         同じ URL の取得を同時に 1 本にまとめた（重なった要求は完了を待つ。#686）
 //*  2026/11/20  玄人 幸道         GetJwkByDiscoveryAsync が、キャッシュの鍵を引くときも expectedIssuer を照合するようにした（#715）
+//*  2026/11/20  玄人 幸道         取得の口に、呼び出しごとに HttpClient を渡せる版を追加。取得中のまとめと取り直しの下限を、URL と HttpClient の組ごとにした（#718）
 //**********************************************************************************
 
 using System;
@@ -59,7 +60,22 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// | PickJwksFromCache | **同期の経路**から、キャッシュだけを読む（取りに行かない） |
     /// | RefillInBackground | 同期の経路で鍵が無かったとき、要求の外で補充する（待たない） |
     /// | WarmUpAsync | 登録のときなど、待てる経路で取りに行く |
-    /// | HttpClient（プロパティ） | 取りに行く HttpClient を差し替える（既定は null＝共有の OAuth2AndOIDCClient.HttpClient。#707） |
+    /// | HttpClient（プロパティ） | 取りに行く HttpClient を差し替える（既定は null＝共有の OAuth2AndOIDCClient.HttpClient。プロセス全体に効く。#707） |
+    /// | httpClient（引数） | GetJwkAsync・GetJwkByDiscoveryAsync・ResolveJwksUriAsync・WarmUpAsync・RefillInBackground の各オーバーロード。呼び出しごとに取りに行く HttpClient を選ぶ（#718） |
+    ///
+    /// **取りに行く HttpClient は、引数 → HttpClient プロパティ → 共有の OAuth2AndOIDCClient.HttpClient の順に決める**（引数が null なら、次へ）。
+    /// 同じプロセスで行き先の種類ごとに HttpClient を使い分けたいとき（動的登録でクライアントが登録した jwks_uri は絞った HttpClient、
+    /// 上流の IdP の jwks_uri は共有の HttpClient、など）は、引数で渡す。
+    /// **取得中のまとめと取り直しの下限は、（URL, HttpClient）の組ごと**に数える（絞った HttpClient の取得が断られても、
+    /// 共有の HttpClient の取得を巻き込まない）。**取れた鍵のキャッシュは URL ごとに共有する**（同じ URL なら同じ中身なので）。
+    ///
+    /// **共有の帰結**：ある HttpClient で取れた鍵は、同じ URL を別の HttpClient で呼んだ呼び出しも、取りに行かずに引ける。
+    /// 例えば、共有の HttpClient で上流の jwks_uri を取った後に、同じ URL を絞った HttpClient で呼んでも、取れた鍵を引ける
+    /// （取得先の絞りを迂回するわけではなく、鍵は公開情報だが、「絞った HttpClient では、その URL の内容を読めない」とは言えない）。
+    ///
+    /// **HttpClient は使い回すこと**（HttpClient の通常の使い方でもある）。取得中のまとめと下限は HttpClient の参照で数えるので、
+    /// 呼び出しのたびに新しい HttpClient を作って渡すと、毎回別の組になり、どちらも効かない（kid を偽った要求で取得を起こされうる）。
+    /// 下限を過ぎた組の記録は、取得のたびに掃除する（呼び出しごとの HttpClient を持ち続けない）。
     ///
     /// **同期の経路では待たない。** net48 の ASP.NET では、同期の経路で await を待つと、
     /// 継続が AspNetSynchronizationContext に積まれ、その順番を握っている自分が待つので止まる。
@@ -85,20 +101,58 @@ namespace Touryo.Infrastructure.Framework.Authentication
             /// <summary>JWK Set（keys の配列を持つ JSON。取れなかったときは null）</summary>
             public JObject JwkSet { get; set; }
 
-            /// <summary>取りに行った時刻（UTC。失敗も含む）</summary>
-            public DateTime FetchedAt { get; set; }
-
             /// <summary>この JWK Set を取ったときに、discovery の issuer と照合した Issuer（discovery を使わない口では null。#715）</summary>
             public string Issuer { get; set; }
         }
 
-        /// <summary>取得した JWK Set（鍵は JWK Set の URL、または discovery の URL）</summary>
+        /// <summary>取得の単位（URL と、取りに行く HttpClient の組。#718）</summary>
+        /// <remarks>
+        /// HttpClient は、引数 → HttpClient プロパティ の順で決めたもの（null は、共有の OAuth2AndOIDCClient.HttpClient）。
+        /// HttpClient は参照で比べる。
+        /// </remarks>
+        private struct FetchKey : IEquatable<FetchKey>
+        {
+            public FetchKey(string url, HttpClient httpClient)
+            {
+                this.Url = url;
+                this.HttpClient = httpClient;
+            }
+
+            public string Url { get; }
+
+            public HttpClient HttpClient { get; }
+
+            public bool Equals(FetchKey other)
+            {
+                return string.Equals(this.Url, other.Url, StringComparison.Ordinal)
+                    && object.ReferenceEquals(this.HttpClient, other.HttpClient);
+            }
+
+            public override bool Equals(object obj)
+            {
+                return (obj is FetchKey) && this.Equals((FetchKey)obj);
+            }
+
+            public override int GetHashCode()
+            {
+                return (this.Url == null ? 0 : this.Url.GetHashCode() * 31)
+                    ^ (this.HttpClient == null ? 0 : System.Runtime.CompilerServices.RuntimeHelpers.GetHashCode(this.HttpClient));
+            }
+        }
+
+        /// <summary>取得した JWK Set（鍵は JWK Set の URL、または discovery の URL。HttpClient が違っても共有する。#718）</summary>
         private static readonly Dictionary<string, Entry> _cache = new Dictionary<string, Entry>();
 
-        /// <summary>取得中の URL と、その取得の完了を待つ Task（#686）</summary>
-        private static readonly Dictionary<string, Task> _fetching = new Dictionary<string, Task>();
+        /// <summary>取得中の（URL, HttpClient）と、その取得の完了を待つ Task（#686。組ごと。#718）</summary>
+        private static readonly Dictionary<FetchKey, Task> _fetching = new Dictionary<FetchKey, Task>();
 
-        /// <summary>_cache / _fetching の排他</summary>
+        /// <summary>（URL, HttpClient）ごとに、取りに行った時刻（UTC。失敗も含む。取り直しの下限に使う。#718）</summary>
+        /// <remarks>
+        /// 絞った HttpClient の取得が断られて時刻が進んでも、共有の HttpClient の取得を下限で止めないよう、組ごとに持つ。
+        /// </remarks>
+        private static readonly Dictionary<FetchKey, DateTime> _attempted = new Dictionary<FetchKey, DateTime>();
+
+        /// <summary>_cache / _fetching / _attempted の排他</summary>
         private static readonly object _lock = new object();
 
         /// <summary>取り直しの下限</summary>
@@ -127,8 +181,10 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// 共有の HttpClient は、上流の IdP・Back-Channel Logout など正規の行き先も通るので、絞れない。
         ///
         /// **プロセス全体に効く**（OAuth2AndOIDCClient.HttpClient と同じ）。
-        /// **この部品が取りに行くものは、すべてこの HttpClient で取りに行く**（jwks_uri・discovery・GetJwkByDiscoveryAsync が読む jwks_uri）。
-        /// 上流の IdP の jwks_uri も同じ口を通るので、絞った HttpClient を渡すと、上流にも掛かる。
+        /// **呼び出しごとに HttpClient を渡さなければ、この部品が取りに行くものは、すべてこの HttpClient で取りに行く**
+        /// （jwks_uri・discovery・GetJwkByDiscoveryAsync が読む jwks_uri）。
+        /// 上流の IdP の jwks_uri も同じ口を通るので、絞った HttpClient をここへ渡すと、上流にも掛かる。
+        /// **行き先の種類ごとに使い分けたいときは、各口の httpClient 引数で渡す**（引数が先に使われる。#718）。
         /// **この部品を通らない取得には効かない**（OAuth2AndOIDCClient.GetJwkSetAsync・Discovery を直接読む口は、共有の HttpClient のまま）。
         ///
         /// 取得のたびに読むので、設定した後の取得から効く（取得済みのキャッシュは、そのまま）。
@@ -141,13 +197,22 @@ namespace Touryo.Infrastructure.Framework.Authentication
         }
 
         /// <summary>キャッシュを消す</summary>
-        /// <remarks>自由に利用できる（鍵の入れ替えを即座に反映したいとき、試験など）。</remarks>
+        /// <remarks>自由に利用できる（鍵の入れ替えを即座に反映したいとき、試験など）。取り直しの下限の記録も消す。</remarks>
         public static void Clear()
         {
             lock (RemoteJwkSetStore._lock)
             {
                 RemoteJwkSetStore._cache.Clear();
+                RemoteJwkSetStore._attempted.Clear();
             }
+        }
+
+        /// <summary>取りに行く HttpClient を決める（引数 → HttpClient プロパティ。どちらも null なら null＝共有）</summary>
+        /// <param name="httpClient">HttpClient（呼び出しごとに渡されたもの）</param>
+        /// <returns>HttpClient（null は、共有の OAuth2AndOIDCClient.HttpClient）</returns>
+        private static HttpClient Resolve(HttpClient httpClient)
+        {
+            return httpClient ?? RemoteJwkSetStore._httpClient;
         }
 
         #endregion
@@ -190,20 +255,36 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// 同じ URL を取得中なら、重ねて取りに行かず、その取得の完了を待ってから引く（#686）。
         /// discovery を読まないので、issuer の照合は無い。信頼の根拠は、この URL を設定した人である。
         /// </remarks>
-        public static async Task<JObject> GetJwkAsync(string jwkSetUrl, string kid)
+        public static Task<JObject> GetJwkAsync(string jwkSetUrl, string kid)
+        {
+            return RemoteJwkSetStore.GetJwkAsync(jwkSetUrl, kid, null);
+        }
+
+        /// <summary>JWK Set の URL から、kid の JWK を引く（取りに行く HttpClient を指定する版。#718）</summary>
+        /// <param name="jwkSetUrl">string（相手の JWK Set の URL）</param>
+        /// <param name="kid">string（JWT のヘッダの kid）</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで取りに行くもの。null なら HttpClient プロパティ、それも null なら共有の OAuth2AndOIDCClient.HttpClient）</param>
+        /// <returns>JWK（引けなければ null）</returns>
+        /// <remarks>
+        /// 自由に利用できる。動作は GetJwkAsync(jwkSetUrl, kid) と同じで、取りに行く HttpClient だけを呼び出しごとに選べる。
+        /// **取得中のまとめと、取り直しの下限は、（URL, HttpClient）の組ごと**に数える。
+        /// 取れた鍵のキャッシュは URL ごとに共有する（同じ URL なら同じ中身なので）。
+        /// </remarks>
+        public static async Task<JObject> GetJwkAsync(string jwkSetUrl, string kid, HttpClient httpClient)
         {
             if (string.IsNullOrEmpty(jwkSetUrl) || string.IsNullOrEmpty(kid))
             {
                 return null;
             }
 
-            JObject jwk = RemoteJwkSetStore.PickOne(jwkSetUrl, kid, out bool canRefetch);
+            HttpClient client = RemoteJwkSetStore.Resolve(httpClient);
+            JObject jwk = RemoteJwkSetStore.PickOne(jwkSetUrl, client, kid, out bool canRefetch);
 
             if (jwk == null && canRefetch)
             {
                 await RemoteJwkSetStore.FetchOnceAsync(
-                    jwkSetUrl, () => RemoteJwkSetStore.FetchJwkSetAsync(jwkSetUrl)).ConfigureAwait(false);
-                jwk = RemoteJwkSetStore.PickOne(jwkSetUrl, kid, out bool _);
+                    jwkSetUrl, client, () => RemoteJwkSetStore.FetchJwkSetAsync(jwkSetUrl, client)).ConfigureAwait(false);
+                jwk = RemoteJwkSetStore.PickOne(jwkSetUrl, client, kid, out bool _);
             }
 
             return jwk;
@@ -223,8 +304,26 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// 同じ discoveryUrl を別の expectedIssuer で呼んだときは、その鍵を使わない
         /// （下限を過ぎていれば discovery を取り直し、そこで照合する。内側なら取りに行かず null）。
         /// </remarks>
-        public static async Task<JObject> GetJwkByDiscoveryAsync(
+        public static Task<JObject> GetJwkByDiscoveryAsync(
             string discoveryUrl, string expectedIssuer, string kid)
+        {
+            return RemoteJwkSetStore.GetJwkByDiscoveryAsync(discoveryUrl, expectedIssuer, kid, null);
+        }
+
+        /// <summary>discovery から jwks_uri を引き、kid の JWK を引く（取りに行く HttpClient を指定する版。#718）</summary>
+        /// <param name="discoveryUrl">string（相手の discovery の URL）</param>
+        /// <param name="expectedIssuer">string（期待する Issuer。discovery の issuer と違えば、鍵を使わない）</param>
+        /// <param name="kid">string（JWT のヘッダの kid）</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで取りに行くもの。null なら HttpClient プロパティ、それも null なら共有の OAuth2AndOIDCClient.HttpClient）</param>
+        /// <returns>JWK（引けなければ null）</returns>
+        /// <remarks>
+        /// 自由に利用できる。動作は GetJwkByDiscoveryAsync(discoveryUrl, expectedIssuer, kid) と同じで、
+        /// **discovery と、そこから引いた jwks_uri の両方を、渡した HttpClient で取りに行く。**
+        /// 取得中のまとめと、取り直しの下限は、（discoveryUrl, HttpClient）の組ごとに数える。
+        /// 取れた鍵（と、照合した Issuer）のキャッシュは discoveryUrl ごとに共有する。
+        /// </remarks>
+        public static async Task<JObject> GetJwkByDiscoveryAsync(
+            string discoveryUrl, string expectedIssuer, string kid, HttpClient httpClient)
         {
             if (string.IsNullOrEmpty(discoveryUrl)
                 || string.IsNullOrEmpty(expectedIssuer)
@@ -233,28 +332,29 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 return null;
             }
 
-            JObject jwk = RemoteJwkSetStore.PickOne(discoveryUrl, kid, out bool canRefetch, expectedIssuer);
+            HttpClient client = RemoteJwkSetStore.Resolve(httpClient);
+            JObject jwk = RemoteJwkSetStore.PickOne(discoveryUrl, client, kid, out bool canRefetch, expectedIssuer);
 
             if (jwk == null && canRefetch)
             {
                 // discovery の取得から jwks_uri の取得・キャッシュまでを、1 本にまとめる（#686）。
                 // 発行者が違う・読めないときは、Store(null) で時刻だけ進め、PickOne が null を返す（従来と同じ結果）。
-                await RemoteJwkSetStore.FetchOnceAsync(discoveryUrl, async () =>
+                await RemoteJwkSetStore.FetchOnceAsync(discoveryUrl, client, async () =>
                 {
-                    string jwksUri = await RemoteJwkSetStore.ResolveJwksUriAsync(
-                        discoveryUrl, expectedIssuer).ConfigureAwait(false);
+                    string jwksUri = await RemoteJwkSetStore.ResolveJwksUriCoreAsync(
+                        discoveryUrl, expectedIssuer, client).ConfigureAwait(false);
 
                     if (string.IsNullOrEmpty(jwksUri))
                     {
-                        RemoteJwkSetStore.Store(discoveryUrl, null);
+                        RemoteJwkSetStore.Store(discoveryUrl, client, null);
                         return;
                     }
 
-                    JObject jwkSet = await RemoteJwkSetStore.GetJsonAsync(jwksUri).ConfigureAwait(false);
-                    RemoteJwkSetStore.Store(discoveryUrl, jwkSet, expectedIssuer);
+                    JObject jwkSet = await RemoteJwkSetStore.GetJsonAsync(jwksUri, client).ConfigureAwait(false);
+                    RemoteJwkSetStore.Store(discoveryUrl, client, jwkSet, expectedIssuer);
                 }).ConfigureAwait(false);
 
-                jwk = RemoteJwkSetStore.PickOne(discoveryUrl, kid, out bool _, expectedIssuer);
+                jwk = RemoteJwkSetStore.PickOne(discoveryUrl, client, kid, out bool _, expectedIssuer);
             }
 
             return jwk;
@@ -265,9 +365,33 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="expectedIssuer">string（期待する Issuer）</param>
         /// <returns>jwks_uri（issuer が違う・読めなければ空文字）</returns>
         /// <remarks>自由に利用できる。キャッシュしない。</remarks>
-        public static async Task<string> ResolveJwksUriAsync(string discoveryUrl, string expectedIssuer)
+        public static Task<string> ResolveJwksUriAsync(string discoveryUrl, string expectedIssuer)
         {
-            JObject discovery = await RemoteJwkSetStore.GetJsonAsync(discoveryUrl).ConfigureAwait(false);
+            return RemoteJwkSetStore.ResolveJwksUriAsync(discoveryUrl, expectedIssuer, null);
+        }
+
+        /// <summary>discovery を読み、jwks_uri を返す（取りに行く HttpClient を指定する版。#718）</summary>
+        /// <param name="discoveryUrl">string（相手の discovery の URL）</param>
+        /// <param name="expectedIssuer">string（期待する Issuer）</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで取りに行くもの。null なら HttpClient プロパティ、それも null なら共有の OAuth2AndOIDCClient.HttpClient）</param>
+        /// <returns>jwks_uri（issuer が違う・読めなければ空文字）</returns>
+        /// <remarks>自由に利用できる。キャッシュしない。</remarks>
+        public static Task<string> ResolveJwksUriAsync(
+            string discoveryUrl, string expectedIssuer, HttpClient httpClient)
+        {
+            return RemoteJwkSetStore.ResolveJwksUriCoreAsync(
+                discoveryUrl, expectedIssuer, RemoteJwkSetStore.Resolve(httpClient));
+        }
+
+        /// <summary>discovery を読み、jwks_uri を返す（HttpClient は解決済みのもの）</summary>
+        /// <param name="discoveryUrl">string</param>
+        /// <param name="expectedIssuer">string</param>
+        /// <param name="client">HttpClient（Resolve 済み。null は共有。ここで解決し直さない。組の定義とずれないように）</param>
+        /// <returns>jwks_uri（issuer が違う・読めなければ空文字）</returns>
+        private static async Task<string> ResolveJwksUriCoreAsync(
+            string discoveryUrl, string expectedIssuer, HttpClient client)
+        {
+            JObject discovery = await RemoteJwkSetStore.GetJsonAsync(discoveryUrl, client).ConfigureAwait(false);
 
             if (discovery == null)
             {
@@ -295,14 +419,28 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// **取得中かどうかは見ない**（取得中でも、自分で取りに行く）。取得中の取得は、鍵を入れ替える前に始まっていて、
         /// 古い鍵を受け取りうる。この口は、入れ替えた相手の新しい鍵を、その場で反映するためのものである（#686 で、この扱いを残した）。
         /// </remarks>
-        public static async Task<bool> WarmUpAsync(string jwkSetUrl)
+        public static Task<bool> WarmUpAsync(string jwkSetUrl)
+        {
+            return RemoteJwkSetStore.WarmUpAsync(jwkSetUrl, null);
+        }
+
+        /// <summary>取りに行って、キャッシュへ入れる（下限を見ない。取りに行く HttpClient を指定する版。#718）</summary>
+        /// <param name="jwkSetUrl">string（相手の JWK Set の URL）</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで取りに行くもの。null なら HttpClient プロパティ、それも null なら共有の OAuth2AndOIDCClient.HttpClient）</param>
+        /// <returns>鍵が 1 本でも載ったなら true</returns>
+        /// <remarks>
+        /// 自由に利用できる。動作は WarmUpAsync(jwkSetUrl) と同じ（取得中かどうかは見ない）。
+        /// 取れた鍵は URL ごとのキャッシュに入るので、別の HttpClient で取った同じ URL の鍵も、戻り値の判定（true）に含まれる。
+        /// </remarks>
+        public static async Task<bool> WarmUpAsync(string jwkSetUrl, HttpClient httpClient)
         {
             if (string.IsNullOrEmpty(jwkSetUrl))
             {
                 return false;
             }
 
-            await RemoteJwkSetStore.FetchJwkSetAsync(jwkSetUrl).ConfigureAwait(false);
+            await RemoteJwkSetStore.FetchJwkSetAsync(
+                jwkSetUrl, RemoteJwkSetStore.Resolve(httpClient)).ConfigureAwait(false);
 
             return RemoteJwkSetStore.HasKeysInCache(jwkSetUrl);
         }
@@ -400,28 +538,42 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// </remarks>
         public static void RefillInBackground(string jwkSetUrl)
         {
+            RemoteJwkSetStore.RefillInBackground(jwkSetUrl, null);
+        }
+
+        /// <summary>要求の外で、キャッシュを補充する（待たない。取りに行く HttpClient を指定する版。#718）</summary>
+        /// <param name="jwkSetUrl">string（相手の JWK Set の URL）</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで取りに行くもの。null なら HttpClient プロパティ、それも null なら共有の OAuth2AndOIDCClient.HttpClient）</param>
+        /// <remarks>
+        /// 自由に利用できる。動作は RefillInBackground(jwkSetUrl) と同じ。
+        /// 取得中かどうかと下限は、（URL, HttpClient）の組ごとに見る。
+        /// </remarks>
+        public static void RefillInBackground(string jwkSetUrl, HttpClient httpClient)
+        {
             if (string.IsNullOrEmpty(jwkSetUrl))
             {
                 return;
             }
 
+            HttpClient client = RemoteJwkSetStore.Resolve(httpClient);
+            FetchKey fetchKey = new FetchKey(jwkSetUrl, client);
             TaskCompletionSource<bool> owned;
 
             lock (RemoteJwkSetStore._lock)
             {
-                if (RemoteJwkSetStore._fetching.ContainsKey(jwkSetUrl))
+                if (RemoteJwkSetStore._fetching.ContainsKey(fetchKey))
                 {
                     return;
                 }
 
-                if (RemoteJwkSetStore._cache.TryGetValue(jwkSetUrl, out Entry entry)
-                    && (DateTime.UtcNow - entry.FetchedAt) <= RemoteJwkSetStore._minRefetchInterval)
+                if (RemoteJwkSetStore._attempted.TryGetValue(fetchKey, out DateTime attemptedAt)
+                    && (DateTime.UtcNow - attemptedAt) <= RemoteJwkSetStore._minRefetchInterval)
                 {
                     return;
                 }
 
                 // 取得中として、ここで（ロックの中で）登録する。Task.Run の始まりを待たないので、続けて呼ばれても重ならない。
-                owned = RemoteJwkSetStore.RegisterFetchLocked(jwkSetUrl);
+                owned = RemoteJwkSetStore.RegisterFetchLocked(fetchKey);
             }
 
             Task.Run(async () =>
@@ -429,7 +581,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 try
                 {
                     await RemoteJwkSetStore.RunFetchAsync(
-                        jwkSetUrl, () => RemoteJwkSetStore.FetchJwkSetAsync(jwkSetUrl), owned).ConfigureAwait(false);
+                        fetchKey, () => RemoteJwkSetStore.FetchJwkSetAsync(jwkSetUrl, client), owned).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -479,17 +631,22 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>キャッシュから kid の JWK を 1 本引く</summary>
         /// <param name="key">string（キャッシュの鍵）</param>
+        /// <param name="httpClient">HttpClient（取りに行くもの。取り直してよいかを、この組の取得時刻で決める。#718）</param>
         /// <param name="kid">string</param>
         /// <param name="canRefetch">out bool（取り直してよいか）</param>
         /// <param name="expectedIssuer">string（null でなければ、キャッシュの 1 件の Issuer と一致するときだけ引く。#715）</param>
         /// <returns>JWK（無ければ null）</returns>
-        private static JObject PickOne(string key, string kid, out bool canRefetch, string expectedIssuer = null)
+        private static JObject PickOne(
+            string key, HttpClient httpClient, string kid, out bool canRefetch, string expectedIssuer = null)
         {
             // 照合と引くのを同じロックの中で行う（間に Store が入って、別の Issuer の鍵を引かないように）。
             lock (RemoteJwkSetStore._lock)
             {
-                canRefetch = !RemoteJwkSetStore._cache.TryGetValue(key, out Entry entry)
-                    || RemoteJwkSetStore._minRefetchInterval < (DateTime.UtcNow - entry.FetchedAt);
+                // 取り直しの下限は、（URL, HttpClient）の組ごとに見る（別の HttpClient の失敗で、止めないため。#718）。
+                canRefetch = !RemoteJwkSetStore._attempted.TryGetValue(new FetchKey(key, httpClient), out DateTime attemptedAt)
+                    || RemoteJwkSetStore._minRefetchInterval < (DateTime.UtcNow - attemptedAt);
+
+                RemoteJwkSetStore._cache.TryGetValue(key, out Entry entry);
 
                 if (expectedIssuer != null && entry != null
                     && !string.Equals(entry.Issuer, expectedIssuer, StringComparison.Ordinal))
@@ -503,9 +660,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         }
 
         /// <summary>取得中として登録する（_lock を持った状態で呼ぶ）</summary>
-        /// <param name="key">string（キャッシュの鍵）</param>
+        /// <param name="key">FetchKey（URL と HttpClient の組）</param>
         /// <returns>取得を終えたときに完了させる TaskCompletionSource（呼んだ側が持ち主）</returns>
-        private static TaskCompletionSource<bool> RegisterFetchLocked(string key)
+        private static TaskCompletionSource<bool> RegisterFetchLocked(FetchKey key)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>(
                 TaskCreationOptions.RunContinuationsAsynchronously);
@@ -514,15 +671,17 @@ namespace Touryo.Infrastructure.Framework.Authentication
             return tcs;
         }
 
-        /// <summary>同じ URL の取得を、同時に 1 本にまとめる（#686）</summary>
-        /// <param name="key">string（キャッシュの鍵）</param>
+        /// <summary>同じ URL・同じ HttpClient の取得を、同時に 1 本にまとめる（#686。HttpClient が違えば別の取得。#718）</summary>
+        /// <param name="url">string（キャッシュの鍵）</param>
+        /// <param name="httpClient">HttpClient（取りに行くもの。null は共有）</param>
         /// <param name="fetch">Func&lt;Task&gt;（取得してキャッシュへ入れる処理）</param>
         /// <returns>
         /// 取得中でなければ、取得を行う Task（例外はそのまま伝わる）。
         /// 取得中なら、その取得の完了を待つ Task（取得が失敗しても正常に完了する。結果はキャッシュを引いて確かめる）
         /// </returns>
-        private static Task FetchOnceAsync(string key, Func<Task> fetch)
+        private static Task FetchOnceAsync(string url, HttpClient httpClient, Func<Task> fetch)
         {
+            FetchKey key = new FetchKey(url, httpClient);
             TaskCompletionSource<bool> owned;
 
             lock (RemoteJwkSetStore._lock)
@@ -539,12 +698,12 @@ namespace Touryo.Infrastructure.Framework.Authentication
         }
 
         /// <summary>取得を行い、終えたら取得中の印を外して、待っている側を起こす</summary>
-        /// <param name="key">string（キャッシュの鍵）</param>
+        /// <param name="key">FetchKey（URL と HttpClient の組）</param>
         /// <param name="fetch">Func&lt;Task&gt;</param>
         /// <param name="owned">TaskCompletionSource&lt;bool&gt;（RegisterFetchLocked の戻り値）</param>
         /// <returns>Task</returns>
         /// <remarks>失敗しても、必ず印を外して完了させる（待っている側を止めない）。</remarks>
-        private static async Task RunFetchAsync(string key, Func<Task> fetch, TaskCompletionSource<bool> owned)
+        private static async Task RunFetchAsync(FetchKey key, Func<Task> fetch, TaskCompletionSource<bool> owned)
         {
             try
             {
@@ -563,20 +722,25 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>JWK Set を取ってキャッシュする</summary>
         /// <param name="jwkSetUrl">string</param>
+        /// <param name="httpClient">HttpClient（取りに行くもの。null は共有）</param>
         /// <returns>Task</returns>
         /// <remarks>失敗しても取りに行った時刻は記録する（失敗した相手を叩き続けないため）。</remarks>
-        private static async Task FetchJwkSetAsync(string jwkSetUrl)
+        private static async Task FetchJwkSetAsync(string jwkSetUrl, HttpClient httpClient)
         {
-            JObject jwkSet = await RemoteJwkSetStore.GetJsonAsync(jwkSetUrl).ConfigureAwait(false);
-            RemoteJwkSetStore.Store(jwkSetUrl, jwkSet);
+            JObject jwkSet = await RemoteJwkSetStore.GetJsonAsync(jwkSetUrl, httpClient).ConfigureAwait(false);
+            RemoteJwkSetStore.Store(jwkSetUrl, httpClient, jwkSet);
         }
 
         /// <summary>キャッシュへ入れる</summary>
         /// <param name="key">string</param>
+        /// <param name="httpClient">HttpClient（取りに行ったもの。この組の取得時刻を進める。#718）</param>
         /// <param name="jwkSet">JObject（取れなかったときは null）</param>
         /// <param name="issuer">string（discovery の issuer と照合した Issuer。discovery を使わない口では null。#715）</param>
-        /// <remarks>取れなかったときは、前に取れた JWK Set と、その Issuer を残す（時刻だけ進める）。</remarks>
-        private static void Store(string key, JObject jwkSet, string issuer = null)
+        /// <remarks>
+        /// 取れなかったときは、前に取れた JWK Set と、その Issuer を残す（この組の時刻だけ進める）。
+        /// 鍵のキャッシュは URL ごとで、HttpClient が違っても共有する（#718）。
+        /// </remarks>
+        private static void Store(string key, HttpClient httpClient, JObject jwkSet, string issuer = null)
         {
             lock (RemoteJwkSetStore._lock)
             {
@@ -589,24 +753,49 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 RemoteJwkSetStore._cache[key] = new Entry()
                 {
                     JwkSet = jwkSet,
-                    FetchedAt = DateTime.UtcNow,
                     Issuer = issuer
                 };
+
+                DateTime now = DateTime.UtcNow;
+                RemoteJwkSetStore._attempted[new FetchKey(key, httpClient)] = now;
+
+                // 下限を過ぎた組は、消しても挙動が変わらない（どのみち取り直してよい）。増え続けて、
+                // 呼び出しごとに作られた HttpClient を持ち続けないよう、ここで掃除する（#718 のレビュー）。
+                List<FetchKey> expired = null;
+
+                foreach (KeyValuePair<FetchKey, DateTime> pair in RemoteJwkSetStore._attempted)
+                {
+                    if (RemoteJwkSetStore._minRefetchInterval < (now - pair.Value))
+                    {
+                        if (expired == null)
+                        {
+                            expired = new List<FetchKey>();
+                        }
+
+                        expired.Add(pair.Key);
+                    }
+                }
+
+                if (expired != null)
+                {
+                    foreach (FetchKey expiredKey in expired)
+                    {
+                        RemoteJwkSetStore._attempted.Remove(expiredKey);
+                    }
+                }
             }
         }
 
         /// <summary>URL を GET して、JSON のオブジェクトとして読む</summary>
         /// <param name="url">string</param>
+        /// <param name="httpClient">HttpClient（取りに行くもの。null なら、共有の OAuth2AndOIDCClient.HttpClient。TLS・プロキシの扱いが揃う）</param>
         /// <returns>JObject（読めなければ null）</returns>
-        /// <remarks>
-        /// 取得は、既定では OAuth2AndOIDCClient の HttpClient で行う（TLS・プロキシの扱いが揃う）。
-        /// RemoteJwkSetStore.HttpClient が設定されていれば、そちらで行う（#707）。
-        /// </remarks>
-        private static async Task<JObject> GetJsonAsync(string url)
+        /// <remarks>HttpClient は、呼び出し側で Resolve（引数 → HttpClient プロパティ）済みのものを受け取る（#707・#718）。</remarks>
+        private static async Task<JObject> GetJsonAsync(string url, HttpClient httpClient)
         {
             try
             {
-                string json = await OAuth2AndOIDCClient.GetStringAsync(new Uri(url), RemoteJwkSetStore._httpClient).ConfigureAwait(false);
+                string json = await OAuth2AndOIDCClient.GetStringAsync(new Uri(url), httpClient).ConfigureAwait(false);
 
                 if (string.IsNullOrEmpty(json))
                 {

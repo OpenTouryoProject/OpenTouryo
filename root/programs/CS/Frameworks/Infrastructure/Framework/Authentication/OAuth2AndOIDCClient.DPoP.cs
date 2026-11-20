@@ -25,6 +25,7 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/10/22  玄人 幸道         新規作成（OAuth2AndOIDCClient.cs から処理区分ごとに分割した）
 //*  2026/11/09  玄人 幸道         TokenRequestWithDPoPAsync（クライアント認証あり）の remarks に、空の値で ArgumentNullException になることを書いた（#678 の追補。#680 のレビューの指摘）
+//*  2026/11/20  玄人 幸道         SendWithDPoPAsync・TokenRequestWithDPoPAsync（2 形）・GetUserInfoAsync（DPoP）に、使う HttpClient を指定できる版を追加した（#719）
 //**********************************************************************************
 
 using System;
@@ -65,8 +66,26 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// - use_dpop_nonce で断られたら、受け取った nonce を入れて 1 回だけ送り直す
         /// 縛られたトークンを Bearer で送ると断られるので、リソースへの要求では accessToken を渡すこと。
         /// </remarks>
-        public static async Task<HttpResponseMessage> SendWithDPoPAsync(
+        public static Task<HttpResponseMessage> SendWithDPoPAsync(
             Func<HttpRequestMessage> createRequest, JWS signer, JObject publicJwk, string accessToken)
+        {
+            return OAuth2AndOIDCClient.SendWithDPoPAsync(createRequest, signer, publicJwk, accessToken, null);
+        }
+
+        /// <summary>DPoP の証明を添えて送る（使う HttpClient を指定する版。#719）</summary>
+        /// <param name="createRequest">Func（要求を作る。nonce を求められたら作り直して送り直すため、毎回新しく作ること）</param>
+        /// <param name="signer">JWS（クライアントの秘密鍵。JwsFactory.CreateFromPrivateJwk など）</param>
+        /// <param name="publicJwk">JObject（その鍵の公開鍵）</param>
+        /// <param name="accessToken">string（リソースへの要求なら access_token。Authorization: DPoP と ath を付ける。null なら付けない）</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの。nonce の送り直しも、同じ HttpClient で行う）</param>
+        /// <returns>HttpResponseMessage</returns>
+        /// <remarks>
+        /// 自由に利用できる。動作は SendWithDPoPAsync(createRequest, signer, publicJwk, accessToken) と同じ。
+        /// 応答の DPoP-Nonce は、HttpClient を問わず、オリジンごとに覚える（nonce はサーバが発行する値で、送る HttpClient に依らない）。
+        /// </remarks>
+        public static async Task<HttpResponseMessage> SendWithDPoPAsync(
+            Func<HttpRequestMessage> createRequest, JWS signer, JObject publicJwk, string accessToken,
+            HttpClient httpClient)
         {
             if (createRequest == null)
             {
@@ -97,7 +116,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                         AuthenticationHeader.CreateDPoPAuthenticationHeaderValue(accessToken);
                 }
 
-                httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+                httpResponseMessage = await OAuth2AndOIDCClient.SendCoreAsync(httpRequestMessage, httpClient).ConfigureAwait(false);
 
                 // 応答の DPoP-Nonce を覚える（成功の応答にも付くことがある）。
                 string nonce = OAuth2AndOIDCClient.GetDPoPNonce(httpResponseMessage);
@@ -135,15 +154,30 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// 認可コード（PKCE）・refresh_token など、grant_type を問わない。引数の Dictionary は変えない。
         /// 返る access_token は鍵に縛られる（cnf.jkt）ので、使うときも同じ鍵の証明が要る。
         /// </remarks>
-        public static async Task<string> TokenRequestWithDPoPAsync(
+        public static Task<string> TokenRequestWithDPoPAsync(
             Uri tokenEndpointUri, Dictionary<string, string> body, JWS signer, JObject publicJwk)
+        {
+            return OAuth2AndOIDCClient.TokenRequestWithDPoPAsync(tokenEndpointUri, body, signer, publicJwk, null);
+        }
+
+        /// <summary>DPoP の証明を添えて、Token エンドポイントへ要求する（パブリック クライアント。使う HttpClient を指定する版。#719）</summary>
+        /// <param name="tokenEndpointUri">Uri</param>
+        /// <param name="body">Dictionary（grant_type などの本文。client_id も入れること）</param>
+        /// <param name="signer">JWS（クライアントの秘密鍵）</param>
+        /// <param name="publicJwk">JObject（その鍵の公開鍵）</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列（token_type は DPoP になる）</returns>
+        /// <remarks>自由に利用できる。動作は、HttpClient を受けない同じ引数の版と同じ。</remarks>
+        public static async Task<string> TokenRequestWithDPoPAsync(
+            Uri tokenEndpointUri, Dictionary<string, string> body, JWS signer, JObject publicJwk,
+            HttpClient httpClient)
         {
             HttpResponseMessage httpResponseMessage = await OAuth2AndOIDCClient.SendWithDPoPAsync(
                 () => new HttpRequestMessage(HttpMethod.Post, tokenEndpointUri)
                 {
                     Content = new FormUrlEncodedContent(new Dictionary<string, string>(body))
                 },
-                signer, publicJwk, null).ConfigureAwait(false);
+                signer, publicJwk, null, httpClient).ConfigureAwait(false);
 
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
@@ -162,10 +196,34 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// 自由に利用できる。引数の Dictionary は変えない。
         /// 方式に必要な値が空なら、送らずに ArgumentNullException（jwt 系は client_assertion、client_secret_* と tls_client_auth は client_id。client_secret は検査しない。#678）。
         /// </remarks>
-        public static async Task<string> TokenRequestWithDPoPAsync(
+        public static Task<string> TokenRequestWithDPoPAsync(
             Uri tokenEndpointUri, Dictionary<string, string> body,
             string client_id, string client_secret, string client_assertion,
             OAuth2AndOIDCEnum.AuthMethods authMethod, JWS signer, JObject publicJwk)
+        {
+            return OAuth2AndOIDCClient.TokenRequestWithDPoPAsync(
+                tokenEndpointUri, body, client_id, client_secret, client_assertion, authMethod, signer, publicJwk, null);
+        }
+
+        /// <summary>DPoP の証明を添えて、Token エンドポイントへ要求する（クライアント認証あり。使う HttpClient を指定する版。#719）</summary>
+        /// <param name="tokenEndpointUri">Uri</param>
+        /// <param name="body">Dictionary（grant_type などの本文）</param>
+        /// <param name="client_id">client_id</param>
+        /// <param name="client_secret">client_secret（client_secret_basic / client_secret_postで使用）</param>
+        /// <param name="client_assertion">client_assertion（private_key_jwt / client_secret_jwtで使用）</param>
+        /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods</param>
+        /// <param name="signer">JWS（クライアントの DPoP の秘密鍵）</param>
+        /// <param name="publicJwk">JObject（その鍵の公開鍵）</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>
+        /// 自由に利用できる。動作は、HttpClient を受けない同じ引数の版と同じ。
+        /// tls_client_auth では、クライアント証明書を載せた HttpClient を、この引数か HttpClient プロパティに渡す。
+        /// </remarks>
+        public static async Task<string> TokenRequestWithDPoPAsync(
+            Uri tokenEndpointUri, Dictionary<string, string> body,
+            string client_id, string client_secret, string client_assertion,
+            OAuth2AndOIDCEnum.AuthMethods authMethod, JWS signer, JObject publicJwk, HttpClient httpClient)
         {
             HttpResponseMessage httpResponseMessage = await OAuth2AndOIDCClient.SendWithDPoPAsync(
                 () =>
@@ -179,7 +237,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     httpRequestMessage.Content = new FormUrlEncodedContent(b);
                     return httpRequestMessage;
                 },
-                signer, publicJwk, null).ConfigureAwait(false);
+                signer, publicJwk, null, httpClient).ConfigureAwait(false);
 
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
@@ -191,12 +249,26 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="publicJwk">JObject（その鍵の公開鍵）</param>
         /// <returns>結果のJSON文字列</returns>
         /// <remarks>自由に利用できる。Authorization: DPoP と、ath を入れた証明を添える（RFC 9449 7.1）。</remarks>
-        public static async Task<string> GetUserInfoAsync(
+        public static Task<string> GetUserInfoAsync(
             Uri userInfoEndpointUri, string accessToken, JWS signer, JObject publicJwk)
+        {
+            return OAuth2AndOIDCClient.GetUserInfoAsync(userInfoEndpointUri, accessToken, signer, publicJwk, null);
+        }
+
+        /// <summary>DPoP で縛られた access_token で、UserInfo を呼び出す（使う HttpClient を指定する版。#719）</summary>
+        /// <param name="userInfoEndpointUri">Uri</param>
+        /// <param name="accessToken">string</param>
+        /// <param name="signer">JWS（トークンを縛った鍵の秘密鍵）</param>
+        /// <param name="publicJwk">JObject（その鍵の公開鍵）</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>自由に利用できる。動作は、HttpClient を受けない同じ引数の版と同じ。</remarks>
+        public static async Task<string> GetUserInfoAsync(
+            Uri userInfoEndpointUri, string accessToken, JWS signer, JObject publicJwk, HttpClient httpClient)
         {
             HttpResponseMessage httpResponseMessage = await OAuth2AndOIDCClient.SendWithDPoPAsync(
                 () => new HttpRequestMessage(HttpMethod.Get, userInfoEndpointUri),
-                signer, publicJwk, accessToken).ConfigureAwait(false);
+                signer, publicJwk, accessToken, httpClient).ConfigureAwait(false);
 
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }

@@ -28,6 +28,7 @@
 //*                                （private_key_jwt / client_secret_jwt / tls_client_authで取れなかった）
 //*  2026/11/04  玄人 幸道         Device AuthZの認可リクエストに、scopeを受ける版を追加（#650）
 //*  2026/11/09  玄人 幸道         CIBA の remarks に、空の値で ArgumentNullException になることを書いた（#678 の追補。#680 のレビューの指摘）
+//*  2026/11/20  玄人 幸道         JWT Bearer・Device AuthZ・CIBA の各形に、使う HttpClient を指定できる版を追加した（#719）
 //**********************************************************************************
 
 using System;
@@ -51,7 +52,21 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="token2EndpointUri">Token2エンドポイントのUri</param>
         /// <param name="assertion">string</param>
         /// <returns>結果のJSON文字列</returns>
-        public static async Task<string> JwtBearerTokenFlowAsync(Uri token2EndpointUri, string assertion)
+        public static Task<string> JwtBearerTokenFlowAsync(Uri token2EndpointUri, string assertion)
+        {
+            return OAuth2AndOIDCClient.JwtBearerTokenFlowAsync(token2EndpointUri, assertion, null);
+        }
+
+        /// <summary>
+        /// Token2エンドポイントで、
+        /// JWT bearer token authorizationグラント種別の要求を行う。（使う HttpClient を指定する版。#719）</summary>
+        /// <param name="token2EndpointUri">Token2エンドポイントのUri</param>
+        /// <param name="assertion">string</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>自由に利用できる。動作は JwtBearerTokenFlowAsync(token2EndpointUri, assertion) と同じ。</remarks>
+        public static async Task<string> JwtBearerTokenFlowAsync(
+            Uri token2EndpointUri, string assertion, HttpClient httpClient)
         {
             // 通信用の変数
             HttpRequestMessage httpRequestMessage = null;
@@ -76,7 +91,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 });
 
             // HttpResponseMessage
-            httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            httpResponseMessage = await OAuth2AndOIDCClient.SendCoreAsync(httpRequestMessage, httpClient).ConfigureAwait(false);
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
@@ -91,9 +106,9 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <remarks>
         /// scope を送らない（client_id だけ）。scope を送るなら、scope を受ける版を使う（#650）。
         /// </remarks>
-        public static async Task<string> DeviceAuthZRequestAsync(Uri deviceAuthZUri, string clientId)
+        public static Task<string> DeviceAuthZRequestAsync(Uri deviceAuthZUri, string clientId)
         {
-            return await OAuth2AndOIDCClient.DeviceAuthZRequestAsync(deviceAuthZUri, clientId, null).ConfigureAwait(false);
+            return OAuth2AndOIDCClient.DeviceAuthZRequestAsync(deviceAuthZUri, clientId, null, null);
         }
 
         /// <summary>Device AuthZの認可リクエスト（WebAPI。scope を送る版）</summary>
@@ -111,7 +126,24 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// 含めないと、得たアクセス トークンで UserInfo を呼べない（insufficient_scope。#650）。
         /// 認可要求をブラウザから出さないので、nonce は無い。id_token は署名・iss・aud・exp で確かめる。
         /// </remarks>
-        public static async Task<string> DeviceAuthZRequestAsync(Uri deviceAuthZUri, string clientId, string scope)
+        public static Task<string> DeviceAuthZRequestAsync(Uri deviceAuthZUri, string clientId, string scope)
+        {
+            return OAuth2AndOIDCClient.DeviceAuthZRequestAsync(deviceAuthZUri, clientId, scope, null);
+        }
+
+        /// <summary>Device AuthZの認可リクエスト（WebAPI。scope を送る版。使う HttpClient を指定する版。#719）</summary>
+        /// <param name="deviceAuthZUri">Uri</param>
+        /// <param name="clientId">string</param>
+        /// <param name="scope">scope（空白区切り。null・空なら送らない）</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>
+        /// 自由に利用できる。動作は DeviceAuthZRequestAsync(deviceAuthZUri, clientId, scope) と同じ。
+        /// scope を送らないなら、scope に null を渡す（scope を受けない版に HttpClient 版は足さない。
+        /// 3 引数目が string の版と、null を渡す呼び出しが曖昧になるため）。
+        /// </remarks>
+        public static async Task<string> DeviceAuthZRequestAsync(
+            Uri deviceAuthZUri, string clientId, string scope, HttpClient httpClient)
         {
             // 通信用の変数
             HttpRequestMessage httpRequestMessage = null;
@@ -138,7 +170,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             httpRequestMessage.Content = new FormUrlEncodedContent(body);
 
             // HttpResponseMessage
-            httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            httpResponseMessage = await OAuth2AndOIDCClient.SendCoreAsync(httpRequestMessage, httpClient).ConfigureAwait(false);
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
@@ -147,8 +179,21 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="client_id">client_id</param>
         /// <param name="device_code">string</param>    
         /// <returns>結果のJSON文字列</returns>
-        public static async Task<string> GetAccessTokenByDeviceAuthZAsync(
+        public static Task<string> GetAccessTokenByDeviceAuthZAsync(
             Uri tokenEndpointUri, string client_id, string device_code)
+        {
+            return OAuth2AndOIDCClient.GetAccessTokenByDeviceAuthZAsync(tokenEndpointUri, client_id, device_code, null);
+        }
+
+        /// <summary>Device AuthZのTokenリクエスト（使う HttpClient を指定する版。#719）</summary>
+        /// <param name="tokenEndpointUri">Uri</param>
+        /// <param name="client_id">client_id</param>
+        /// <param name="device_code">string</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>自由に利用できる。動作は GetAccessTokenByDeviceAuthZAsync(tokenEndpointUri, client_id, device_code) と同じ。</remarks>
+        public static async Task<string> GetAccessTokenByDeviceAuthZAsync(
+            Uri tokenEndpointUri, string client_id, string device_code, HttpClient httpClient)
         {
             // 通信用の変数
             HttpRequestMessage httpRequestMessage = null;
@@ -174,7 +219,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             httpRequestMessage.Content = new FormUrlEncodedContent(body);
 
             // HttpResponseMessage
-            httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            httpResponseMessage = await OAuth2AndOIDCClient.SendCoreAsync(httpRequestMessage, httpClient).ConfigureAwait(false);
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
@@ -190,7 +235,19 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// request_uriでRequest Objectの在り処を渡す（CIBA Core 1.0 に無い、独自の形）。
         /// 標準の形（§7.1.1）で送るには、requestパラメタで送るオーバーロードを使用する。
         /// </remarks>
-        public static async Task<string> CibaAuthZRequestAsync(Uri cibaAuthZUri, string requestObjectUri)
+        public static Task<string> CibaAuthZRequestAsync(Uri cibaAuthZUri, string requestObjectUri)
+        {
+            return OAuth2AndOIDCClient.CibaAuthZRequestAsync(cibaAuthZUri, requestObjectUri, (HttpClient)null);
+        }
+
+        /// <summary>FAPI CIBAの認可リクエスト（WebAPI。使う HttpClient を指定する版。#719）</summary>
+        /// <param name="cibaAuthZUri">Uri</param>
+        /// <param name="requestObjectUri">string</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>自由に利用できる。動作は CibaAuthZRequestAsync(cibaAuthZUri, requestObjectUri) と同じ（request_uri で送る形）。</remarks>
+        public static async Task<string> CibaAuthZRequestAsync(
+            Uri cibaAuthZUri, string requestObjectUri, HttpClient httpClient)
         {
             // 通信用の変数
             HttpRequestMessage httpRequestMessage = null;
@@ -210,7 +267,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                    });
 
             // HttpResponseMessage
-            httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            httpResponseMessage = await OAuth2AndOIDCClient.SendCoreAsync(httpRequestMessage, httpClient).ConfigureAwait(false);
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
@@ -225,14 +282,32 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// private_key_jwt / client_secret_jwtには、client_assertionを取るオーバーロードを使用する。
         /// 方式に必要な値が空なら、送らずに ArgumentNullException（jwt 系は client_assertion、client_secret_* と tls_client_auth は client_id。client_secret は検査しない。#678）。
         /// </remarks>
-        public static async Task<string> CibaAuthZRequestAsync(
+        public static Task<string> CibaAuthZRequestAsync(
             Uri cibaAuthZUri, string requestObject,
             string client_id, string client_secret,
             OAuth2AndOIDCEnum.AuthMethods authMethod = OAuth2AndOIDCEnum.AuthMethods.client_secret_basic)
         {
-            return await OAuth2AndOIDCClient.CibaAuthZRequestAsync(
+            return OAuth2AndOIDCClient.CibaAuthZRequestAsync(
+                cibaAuthZUri, requestObject, client_id, client_secret, authMethod, (HttpClient)null);
+        }
+
+        /// <summary>FAPI CIBAの認可リクエスト（WebAPI、CIBA Core 1.0 §7.1.1。使う HttpClient を指定する版。#719）</summary>
+        /// <param name="cibaAuthZUri">Uri（バックチャネル認証エンドポイント）</param>
+        /// <param name="requestObject">string（Request Object＝署名付きJWT）</param>
+        /// <param name="client_id">client_id</param>
+        /// <param name="client_secret">client_secret（tls_client_authではnull）</param>
+        /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>自由に利用できる。動作は、HttpClient を受けない同じ引数の版と同じ。</remarks>
+        public static Task<string> CibaAuthZRequestAsync(
+            Uri cibaAuthZUri, string requestObject,
+            string client_id, string client_secret,
+            OAuth2AndOIDCEnum.AuthMethods authMethod, HttpClient httpClient)
+        {
+            return OAuth2AndOIDCClient.CibaAuthZRequestAsync(
                 cibaAuthZUri, requestObject,
-                client_id, client_secret, null, authMethod).ConfigureAwait(false);
+                client_id, client_secret, null, authMethod, httpClient);
         }
 
         /// <summary>FAPI CIBAの認可リクエスト（WebAPI、CIBA Core 1.0 §7.1.1）</summary>
@@ -249,10 +324,32 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// FAPI-CIBAは、この認証にprivate_key_jwt（またはMTLS）を要求する。
         /// 方式に必要な値が空なら、送らずに ArgumentNullException（jwt 系は client_assertion、client_secret_* と tls_client_auth は client_id。client_secret は検査しない。#678）。
         /// </remarks>
-        public static async Task<string> CibaAuthZRequestAsync(
+        public static Task<string> CibaAuthZRequestAsync(
             Uri cibaAuthZUri, string requestObject,
             string client_id, string client_secret, string client_assertion,
             OAuth2AndOIDCEnum.AuthMethods authMethod = OAuth2AndOIDCEnum.AuthMethods.client_secret_basic)
+        {
+            return OAuth2AndOIDCClient.CibaAuthZRequestAsync(
+                cibaAuthZUri, requestObject, client_id, client_secret, client_assertion, authMethod, (HttpClient)null);
+        }
+
+        /// <summary>FAPI CIBAの認可リクエスト（WebAPI、CIBA Core 1.0 §7.1.1。使う HttpClient を指定する版。#719）</summary>
+        /// <param name="cibaAuthZUri">Uri（バックチャネル認証エンドポイント）</param>
+        /// <param name="requestObject">string（Request Object＝署名付きJWT）</param>
+        /// <param name="client_id">client_id</param>
+        /// <param name="client_secret">client_secret（client_secret_basic / client_secret_postで使用）</param>
+        /// <param name="client_assertion">client_assertion（private_key_jwt / client_secret_jwtで使用）</param>
+        /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>
+        /// 自由に利用できる。動作は、HttpClient を受けない同じ引数の版と同じ。
+        /// tls_client_auth では、クライアント証明書を載せた HttpClient を、この引数か HttpClient プロパティに渡す。
+        /// </remarks>
+        public static async Task<string> CibaAuthZRequestAsync(
+            Uri cibaAuthZUri, string requestObject,
+            string client_id, string client_secret, string client_assertion,
+            OAuth2AndOIDCEnum.AuthMethods authMethod, HttpClient httpClient)
         {
             // 通信用の変数
             HttpRequestMessage httpRequestMessage = null;
@@ -279,7 +376,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             httpRequestMessage.Content = new FormUrlEncodedContent(body);
 
             // HttpResponseMessage
-            httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            httpResponseMessage = await OAuth2AndOIDCClient.SendCoreAsync(httpRequestMessage, httpClient).ConfigureAwait(false);
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
@@ -290,9 +387,26 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="auth_req_id">string</param>
         /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods</param>     
         /// <returns>結果のJSON文字列</returns>
-        public static async Task<string> GetAccessTokenByCibaAsync(
+        public static Task<string> GetAccessTokenByCibaAsync(
             Uri tokenEndpointUri, string client_id, string client_secret, string auth_req_id,
             OAuth2AndOIDCEnum.AuthMethods authMethod = OAuth2AndOIDCEnum.AuthMethods.client_secret_basic)
+        {
+            return OAuth2AndOIDCClient.GetAccessTokenByCibaAsync(
+                tokenEndpointUri, client_id, client_secret, auth_req_id, authMethod, (HttpClient)null);
+        }
+
+        /// <summary>FAPI CIBAのTokenリクエスト（使う HttpClient を指定する版。#719）</summary>
+        /// <param name="tokenEndpointUri">Uri</param>
+        /// <param name="client_id">client_id</param>
+        /// <param name="client_secret">client_secret</param>
+        /// <param name="auth_req_id">string</param>
+        /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>自由に利用できる。動作は、HttpClient を受けない同じ引数の版と同じ。</remarks>
+        public static async Task<string> GetAccessTokenByCibaAsync(
+            Uri tokenEndpointUri, string client_id, string client_secret, string auth_req_id,
+            OAuth2AndOIDCEnum.AuthMethods authMethod, HttpClient httpClient)
         {
             // 通信用の変数
             HttpRequestMessage httpRequestMessage = null;
@@ -332,7 +446,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             httpRequestMessage.Content = new FormUrlEncodedContent(body);
 
             // HttpResponseMessage
-            httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            httpResponseMessage = await OAuth2AndOIDCClient.SendCoreAsync(httpRequestMessage, httpClient).ConfigureAwait(false);
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
@@ -356,9 +470,30 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// 既存の版（client_assertion を受けない版）の振る舞いは変えていない。
         /// 方式に必要な値が空なら、送らずに ArgumentNullException（jwt 系は client_assertion、client_secret_* と tls_client_auth は client_id。client_secret は検査しない。#678）。
         /// </remarks>
-        public static async Task<string> GetAccessTokenByCibaAsync(
+        public static Task<string> GetAccessTokenByCibaAsync(
             Uri tokenEndpointUri, string client_id, string client_secret, string client_assertion, string auth_req_id,
             OAuth2AndOIDCEnum.AuthMethods authMethod = OAuth2AndOIDCEnum.AuthMethods.client_secret_basic)
+        {
+            return OAuth2AndOIDCClient.GetAccessTokenByCibaAsync(
+                tokenEndpointUri, client_id, client_secret, client_assertion, auth_req_id, authMethod, (HttpClient)null);
+        }
+
+        /// <summary>FAPI CIBAのTokenリクエスト（クライアント認証の方式を問わない。使う HttpClient を指定する版。#719）</summary>
+        /// <param name="tokenEndpointUri">Uri</param>
+        /// <param name="client_id">client_id</param>
+        /// <param name="client_secret">client_secret（client_secret_basic / client_secret_postで使用）</param>
+        /// <param name="client_assertion">client_assertion（private_key_jwt / client_secret_jwtで使用）</param>
+        /// <param name="auth_req_id">string</param>
+        /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>
+        /// 自由に利用できる。動作は、HttpClient を受けない同じ引数の版と同じ。
+        /// tls_client_auth では、クライアント証明書を載せた HttpClient を、この引数か HttpClient プロパティに渡す。
+        /// </remarks>
+        public static async Task<string> GetAccessTokenByCibaAsync(
+            Uri tokenEndpointUri, string client_id, string client_secret, string client_assertion, string auth_req_id,
+            OAuth2AndOIDCEnum.AuthMethods authMethod, HttpClient httpClient)
         {
             // 通信用の変数
             HttpRequestMessage httpRequestMessage = null;
@@ -385,7 +520,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             httpRequestMessage.Content = new FormUrlEncodedContent(body);
 
             // HttpResponseMessage
-            httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            httpResponseMessage = await OAuth2AndOIDCClient.SendCoreAsync(httpRequestMessage, httpClient).ConfigureAwait(false);
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 

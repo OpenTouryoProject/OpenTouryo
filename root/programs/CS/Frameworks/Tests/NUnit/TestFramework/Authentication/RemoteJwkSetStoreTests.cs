@@ -29,6 +29,7 @@
 //*  2026/11/20  玄人 幸道         HttpClient プロパティ（取得に使う HttpClient の差し替え）のテストを追加（#707）
 //*  2026/11/20  玄人 幸道         取得の重なり（同じ URL の取得を 1 本にまとめる）のテストを追加（#686）
 //*  2026/11/20  玄人 幸道         discovery のキャッシュを引くときの Issuer の照合のテストを追加（#715）
+//*  2026/11/20  玄人 幸道         呼び出しごとの HttpClient（引数）のテストを追加（#718）
 //**********************************************************************************
 
 using System;
@@ -840,6 +841,309 @@ namespace TestFramework.Authentication
                 Thread.Sleep(20);
                 Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, Issuer, kid).Result, Is.Not.Null);
             }
+        }
+
+        #endregion
+
+        #region 呼び出しごとの HttpClient（#718）
+
+        /// <summary>discovery と jwks_uri に答える CountingHandler</summary>
+        private CountingHandler OkHandler()
+        {
+            string jwks = new JObject(new JProperty("keys", new JArray(this._jwk))).ToString();
+
+            return new CountingHandler(req =>
+            {
+                if (req.RequestUri.AbsoluteUri == Discovery)
+                {
+                    return StubHttp.Json(HttpStatusCode.OK,
+                        new JObject(new JProperty("issuer", Issuer), new JProperty("jwks_uri", JwksUri)).ToString());
+                }
+
+                return StubHttp.Json(req.RequestUri.AbsoluteUri == JwksUri ? HttpStatusCode.OK : HttpStatusCode.NotFound, jwks);
+            });
+        }
+
+        /// <summary>要求を断る（絞った HttpClient が、行き先を断るときの形）CountingHandler</summary>
+        private CountingHandler RejectingHandler()
+        {
+            return new CountingHandler(req => { throw new HttpRequestException("rejected"); });
+        }
+
+        /// <summary>
+        /// 引数の HttpClient が、HttpClient プロパティ・共有の HttpClient より先に使われる。
+        /// 引数が null なら HttpClient プロパティ、それも null なら共有。口ごとに確かめる。
+        /// </summary>
+        [Test]
+        [Basis("#718（取りに行く HttpClient は、引数 → HttpClient プロパティ → 共有の OAuth2AndOIDCClient.HttpClient の順に決める）")]
+        [Basis("設計：RemoteJwkSetStore の remarks（httpClient 引数の各オーバーロード）")]
+        public void HttpClientArgument_TakesPrecedence()
+        {
+            string kid = (string)this._jwk["kid"];
+            CountingHandler arg = this.OkHandler();
+            CountingHandler prop = this.OkHandler();
+
+            using (StubHttp shared = this.Server(Issuer))
+            {
+                HttpClient argClient = new HttpClient(arg, false);
+                RemoteJwkSetStore.HttpClient = new HttpClient(prop, false);
+
+                // GetJwkAsync：引数が先
+                Assert.That(RemoteJwkSetStore.GetJwkAsync(JwksUri, kid, argClient).Result, Is.Not.Null);
+                Assert.That(arg.Urls, Is.EqualTo(new List<string> { JwksUri }));
+                Assert.That(prop.Urls.Count, Is.EqualTo(0), "HttpClient プロパティは使わない");
+                Assert.That(shared.Requests.Count, Is.EqualTo(0), "共有は使わない");
+
+                // GetJwkByDiscoveryAsync：discovery と、そこから引いた jwks_uri の両方が、引数の HttpClient
+                RemoteJwkSetStore.Clear();
+                arg.Urls.Clear();
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, Issuer, kid, argClient).Result, Is.Not.Null);
+                Assert.That(arg.Urls, Is.EqualTo(new List<string> { Discovery, JwksUri }));
+                Assert.That(prop.Urls.Count, Is.EqualTo(0));
+                Assert.That(shared.Requests.Count, Is.EqualTo(0));
+
+                // ResolveJwksUriAsync
+                arg.Urls.Clear();
+                Assert.That(RemoteJwkSetStore.ResolveJwksUriAsync(Discovery, Issuer, argClient).Result, Is.EqualTo(JwksUri));
+                Assert.That(arg.Urls, Is.EqualTo(new List<string> { Discovery }));
+                Assert.That(prop.Urls.Count, Is.EqualTo(0));
+
+                // WarmUpAsync
+                RemoteJwkSetStore.Clear();
+                arg.Urls.Clear();
+                Assert.That(RemoteJwkSetStore.WarmUpAsync(JwksUri, argClient).Result, Is.True);
+                Assert.That(arg.Urls, Is.EqualTo(new List<string> { JwksUri }));
+                Assert.That(prop.Urls.Count, Is.EqualTo(0));
+
+                // RefillInBackground
+                RemoteJwkSetStore.Clear();
+                arg.Urls.Clear();
+                RemoteJwkSetStore.RefillInBackground(JwksUri, argClient);
+
+                for (int i = 0; i < 100 && !RemoteJwkSetStore.HasKeysInCache(JwksUri); i++)
+                {
+                    Thread.Sleep(50);
+                }
+
+                Assert.That(RemoteJwkSetStore.HasKeysInCache(JwksUri), Is.True);
+                Assert.That(arg.Urls, Is.EqualTo(new List<string> { JwksUri }));
+                Assert.That(prop.Urls.Count, Is.EqualTo(0));
+
+                // 引数が null なら、HttpClient プロパティ
+                RemoteJwkSetStore.Clear();
+                Assert.That(RemoteJwkSetStore.GetJwkAsync(JwksUri, kid, null).Result, Is.Not.Null);
+                Assert.That(prop.Urls, Is.EqualTo(new List<string> { JwksUri }));
+                Assert.That(shared.Requests.Count, Is.EqualTo(0));
+
+                // どちらも null なら、共有
+                RemoteJwkSetStore.Clear();
+                RemoteJwkSetStore.HttpClient = null;
+                Assert.That(RemoteJwkSetStore.GetJwkAsync(JwksUri, kid, null).Result, Is.Not.Null);
+                Assert.That(shared.Requests.Count, Is.EqualTo(1));
+            }
+        }
+
+        /// <summary>
+        /// 引数の HttpClient が失敗しても、HttpClient プロパティにも共有にも倒さない（絞った行き先を、別の口で迂回しない）。
+        /// </summary>
+        [Test]
+        [Basis("設計：RemoteJwkSetStore.HttpClient の remarks（設定した HttpClient が失敗しても、共有には倒さない。#707）を、引数にも適用")]
+        public void HttpClientArgument_FailureDoesNotFallBack()
+        {
+            string kid = (string)this._jwk["kid"];
+            CountingHandler prop = this.OkHandler();
+
+            using (StubHttp shared = this.Server(Issuer))
+            {
+                RemoteJwkSetStore.HttpClient = new HttpClient(prop, false);
+
+                Assert.That(RemoteJwkSetStore.GetJwkAsync(
+                    JwksUri, kid, new HttpClient(this.RejectingHandler(), false)).Result, Is.Null);
+                Assert.That(prop.Urls.Count, Is.EqualTo(0), "HttpClient プロパティへ倒さない");
+                Assert.That(shared.Requests.Count, Is.EqualTo(0), "共有へ倒さない");
+            }
+        }
+
+        /// <summary>
+        /// 取れた鍵のキャッシュは URL ごとに共有する。ある HttpClient で取れた鍵を、別の HttpClient の呼び出しも引ける
+        /// （同じ URL なら同じ中身。取りに行かない）。
+        /// </summary>
+        [Test]
+        [Basis("#718 案 (a)（控え＝取れた鍵は URL ごとに共有する）")]
+        public void HttpClientArgument_CacheIsSharedByUrl()
+        {
+            string kid = (string)this._jwk["kid"];
+            CountingHandler a = this.OkHandler();
+            CountingHandler b = this.OkHandler();
+
+            Assert.That(RemoteJwkSetStore.GetJwkAsync(JwksUri, kid, new HttpClient(a, false)).Result, Is.Not.Null);
+            Assert.That(RemoteJwkSetStore.GetJwkAsync(JwksUri, kid, new HttpClient(b, false)).Result, Is.Not.Null,
+                "別の HttpClient の呼び出しも、共有の控えから引ける");
+            Assert.That(a.Urls.Count, Is.EqualTo(1));
+            Assert.That(b.Urls.Count, Is.EqualTo(0), "控えから引けたので、取りに行かない");
+        }
+
+        /// <summary>
+        /// 絞った HttpClient の取得が断られても、同じ URL を共有の HttpClient で取りに来た呼び出しを、下限（1 分）で止めない。
+        /// 取り直しの下限は、（URL, HttpClient）の組ごとに数える。
+        /// </summary>
+        [Test]
+        [Basis("#718 案 (a)（絞った HttpClient の取得が断られても、共有の HttpClient の呼び出しを巻き込まない）")]
+        public void HttpClientArgument_RejectedFetchDoesNotBlockOtherClient()
+        {
+            string kid = (string)this._jwk["kid"];
+            CountingHandler rejected = this.RejectingHandler();
+            CountingHandler ok = this.OkHandler();
+
+            HttpClient rejectedClient = new HttpClient(rejected, false);
+
+            // 絞った HttpClient：断られる（取得の時刻は進む）
+            Assert.That(RemoteJwkSetStore.GetJwkAsync(JwksUri, kid, rejectedClient).Result, Is.Null);
+            Assert.That(rejected.Urls.Count, Is.EqualTo(1));
+
+            // 同じ組は、下限の内側なので取りに行かない（失敗した相手を叩き続けない）
+            Assert.That(RemoteJwkSetStore.GetJwkAsync(JwksUri, kid, rejectedClient).Result, Is.Null);
+            Assert.That(rejected.Urls.Count, Is.EqualTo(1));
+
+            // 別の HttpClient（共有側）は、下限の内側でも取りに行ける
+            Assert.That(RemoteJwkSetStore.GetJwkAsync(JwksUri, kid, new HttpClient(ok, false)).Result, Is.Not.Null,
+                "断られた取得に引きずられない");
+            Assert.That(ok.Urls, Is.EqualTo(new List<string> { JwksUri }));
+        }
+
+        /// <summary>同じ HttpClient の組は、下限の内側なら取りに行かない（従来どおり。kid を偽った要求で叩かせない）。</summary>
+        [Test]
+        [Basis("設計：RemoteJwkSetStore の remarks（同じ URL の取得は MinRefetchInterval に 1 回まで。組ごとに数える）")]
+        public void HttpClientArgument_SamePair_RespectsMinRefetchInterval()
+        {
+            string kid = (string)this._jwk["kid"];
+            CountingHandler ok = this.OkHandler();
+            HttpClient client = new HttpClient(ok, false);
+
+            Assert.That(RemoteJwkSetStore.GetJwkAsync(JwksUri, kid, client).Result, Is.Not.Null);
+            Assert.That(RemoteJwkSetStore.GetJwkAsync(JwksUri, "unknown", client).Result, Is.Null);
+            Assert.That(ok.Urls.Count, Is.EqualTo(1), "同じ組は、下限の内側なので取りに行かない");
+
+            RemoteJwkSetStore.MinRefetchInterval = TimeSpan.Zero;
+            Thread.Sleep(20);
+            Assert.That(RemoteJwkSetStore.GetJwkAsync(JwksUri, "unknown", client).Result, Is.Null);
+            Assert.That(ok.Urls.Count, Is.EqualTo(2), "下限を過ぎれば取り直す");
+        }
+
+        /// <summary>
+        /// 取得中のまとめは、（URL, HttpClient）の組ごと。ある HttpClient の取得が止まっている間も、
+        /// 同じ URL を別の HttpClient で取りに来た呼び出しは、その完了を待たずに取りに行って戻る。
+        /// 同じ組の呼び出しは、従来どおり 1 本にまとまる。
+        /// </summary>
+        [Test]
+        [Basis("#718 案 (a)（取得中のまとめは、URL と HttpClient の組ごと。絞った HttpClient の取得が、共有の HttpClient の呼び出しを巻き込まない）")]
+        [Basis("#686（同じ組の取得は、同時に 1 本にまとめる）")]
+        public void HttpClientArgument_FetchingIsPerPair()
+        {
+            string kid = (string)this._jwk["kid"];
+            GateHandler slow = this.JwksHandler(() => this._jwk);
+            GateHandler fast = this.JwksHandler(() => this._jwk);
+            HttpClient slowClient = new HttpClient(slow, false);
+            HttpClient fastClient = new HttpClient(fast, false);
+
+            slow.Gate = new TaskCompletionSource<bool>();
+
+            // slow の取得を、取得中のまま止める。同じ組の 2 本目は、重ねて取りに行かない（#686）
+            Task<JObject> slow1 = Task.Run(() => RemoteJwkSetStore.GetJwkAsync(JwksUri, kid, slowClient));
+            WaitUntilRequested(slow, 1);
+            Task<JObject> slow2 = Task.Run(() => RemoteJwkSetStore.GetJwkAsync(JwksUri, kid, slowClient));
+            Thread.Sleep(300);
+            Assert.That(slow.Count, Is.EqualTo(1), "同じ組は、重ねて取りに行かない");
+
+            // 別の HttpClient は、slow の完了を待たずに取りに行って戻る
+            Task<JObject> other = Task.Run(() => RemoteJwkSetStore.GetJwkAsync(JwksUri, kid, fastClient));
+            Assert.That(other.Wait(TimeSpan.FromSeconds(5)), Is.True, "別の HttpClient の呼び出しが、止まっている取得を待っている");
+            Assert.That(other.Result, Is.Not.Null);
+            Assert.That(fast.Count, Is.EqualTo(1));
+
+            slow.Gate.SetResult(true);
+            Assert.That(Task.WaitAll(new Task[] { slow1, slow2 }, TimeSpan.FromSeconds(10)), Is.True);
+            Assert.That(slow1.Result, Is.Not.Null);
+            Assert.That(slow2.Result, Is.Not.Null);
+            Assert.That(slow.Count, Is.EqualTo(1), "slow の取得は 1 本のまま");
+        }
+
+        /// <summary>discovery の経路でも、絞った HttpClient が断られても、共有側の呼び出しを下限で止めない（#718 のレビュー）。</summary>
+        [Test]
+        [Basis("#718 案 (a)（絞った HttpClient の取得が断られても、共有の HttpClient の呼び出しを巻き込まない。discovery の経路）")]
+        public void HttpClientArgument_Discovery_RejectedDoesNotBlockOtherClient()
+        {
+            string kid = (string)this._jwk["kid"];
+            CountingHandler rejected = this.RejectingHandler();
+            CountingHandler ok = this.OkHandler();
+
+            Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(
+                Discovery, Issuer, kid, new HttpClient(rejected, false)).Result, Is.Null);
+            Assert.That(rejected.Urls, Is.EqualTo(new List<string> { Discovery }), "discovery で断られ、jwks_uri へは行かない");
+
+            Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(
+                Discovery, Issuer, kid, new HttpClient(ok, false)).Result, Is.Not.Null, "断られた取得に引きずられない");
+            Assert.That(ok.Urls, Is.EqualTo(new List<string> { Discovery, JwksUri }));
+        }
+
+        /// <summary>RefillInBackground も、取得中のまとめと下限は組ごと。別の HttpClient は、同じ URL でも取りに行く（#718 のレビュー）。</summary>
+        [Test]
+        [Basis("#718 案 (a)（組ごとのまとめ・下限）。RefillInBackground の口")]
+        public void HttpClientArgument_RefillInBackground_IsPerPair()
+        {
+            CountingHandler a = this.OkHandler();
+            CountingHandler b = this.OkHandler();
+            HttpClient clientA = new HttpClient(a, false);
+            HttpClient clientB = new HttpClient(b, false);
+
+            RemoteJwkSetStore.RefillInBackground(JwksUri, clientA);
+
+            for (int i = 0; i < 100 && a.Urls.Count < 1; i++)
+            {
+                Thread.Sleep(50);
+            }
+
+            Assert.That(a.Urls.Count, Is.EqualTo(1));
+
+            // 同じ組は、下限の内側なので取りに行かない
+            RemoteJwkSetStore.RefillInBackground(JwksUri, clientA);
+            Thread.Sleep(200);
+            Assert.That(a.Urls.Count, Is.EqualTo(1));
+
+            // 別の組は、下限の内側でも取りに行く
+            RemoteJwkSetStore.RefillInBackground(JwksUri, clientB);
+
+            for (int i = 0; i < 100 && b.Urls.Count < 1; i++)
+            {
+                Thread.Sleep(50);
+            }
+
+            Assert.That(b.Urls.Count, Is.EqualTo(1));
+        }
+
+        /// <summary>
+        /// 下限を過ぎた組の記録は、取得のたびに掃除する（呼び出しごとに作られた HttpClient を、持ち続けない）。
+        /// 内部の記録の件数を、リフレクションで数える。
+        /// </summary>
+        [Test]
+        [Observation("取り直しの記録（_attempted）が、下限を過ぎた組を掃除すること。内部の記録を数えるので、設計の約束ではなく今の実装を写した")]
+        public void HttpClientArgument_ExpiredPairs_AreSwept()
+        {
+            System.Reflection.FieldInfo field = typeof(RemoteJwkSetStore).GetField(
+                "_attempted", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+            Assert.That(field, Is.Not.Null);
+            System.Collections.ICollection attempted = (System.Collections.ICollection)field.GetValue(null);
+
+            RemoteJwkSetStore.MinRefetchInterval = TimeSpan.FromMilliseconds(50);
+
+            for (int i = 0; i < 5; i++)
+            {
+                // 呼び出しごとに HttpClient を作る（kid を偽って、毎回取りに行かせる）
+                RemoteJwkSetStore.GetJwkAsync(JwksUri, "unknown" + i, new HttpClient(this.OkHandler(), false)).Wait();
+                Thread.Sleep(80);
+            }
+
+            Assert.That(attempted.Count, Is.LessThanOrEqualTo(2), "下限を過ぎた組は掃除され、増え続けない");
         }
 
         #endregion

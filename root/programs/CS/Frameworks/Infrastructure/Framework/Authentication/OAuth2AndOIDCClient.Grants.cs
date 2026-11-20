@@ -28,6 +28,7 @@
 //*  2026/11/08  玄人 幸道         クライアント認証の方式を問わない GetAccessTokenByCodeAsync を追加（private_key_jwt・tls_client_auth。#676）。
 //*                                型の並びが同じになるため、private の本体を GetAccessTokenByCodeCoreAsync に改名した
 //*  2026/11/08  玄人 幸道         既存の GetAccessTokenByCodeAsync が redirect_uri を HtmlEncode して送っていたのをやめた（受けた値のまま送る。#677）
+//*  2026/11/20  玄人 幸道         各形に、使う HttpClient を指定できる版を追加した。private の本体 GetAccessTokenByCodeCoreAsync に HttpClient を渡す（#719）
 //**********************************************************************************
 
 using System;
@@ -57,12 +58,32 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="code">code</param>
         /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods</param>
         /// <returns>結果のJSON文字列</returns>
-        public static async Task<string> GetAccessTokenByCodeAsync(
+        public static Task<string> GetAccessTokenByCodeAsync(
             Uri tokenEndpointUri, string client_id, string client_secret, string redirect_uri, string code,
             OAuth2AndOIDCEnum.AuthMethods authMethod = OAuth2AndOIDCEnum.AuthMethods.client_secret_basic)
         {
+            return OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
+                tokenEndpointUri, client_id, client_secret, redirect_uri, code, authMethod, (HttpClient)null);
+        }
+
+        /// <summary>
+        /// Authentication Code : codeからAccess Tokenを取得する。（使う HttpClient を指定する版。#719）
+        /// </summary>
+        /// <param name="tokenEndpointUri">TokenエンドポイントのUri</param>
+        /// <param name="client_id">client_id</param>
+        /// <param name="client_secret">client_secret</param>
+        /// <param name="redirect_uri">redirect_uri</param>
+        /// <param name="code">code</param>
+        /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>自由に利用できる。動作は、HttpClient を受けない同じ引数の版と同じ。</remarks>
+        public static async Task<string> GetAccessTokenByCodeAsync(
+            Uri tokenEndpointUri, string client_id, string client_secret, string redirect_uri, string code,
+            OAuth2AndOIDCEnum.AuthMethods authMethod, HttpClient httpClient)
+        {
             return await OAuth2AndOIDCClient.GetAccessTokenByCodeCoreAsync(
-                tokenEndpointUri, client_id, client_secret, redirect_uri, code, null, null, authMethod);
+                tokenEndpointUri, client_id, client_secret, redirect_uri, code, null, null, authMethod, httpClient);
         }
 
         /// <summary>
@@ -76,12 +97,33 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="code_verifier">code_verifier</param>
         /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods</param>
         /// <returns>結果のJSON文字列</returns>
-        public static async Task<string> GetAccessTokenByCodeAsync(
+        public static Task<string> GetAccessTokenByCodeAsync(
             Uri tokenEndpointUri, string client_id, string client_secret, string redirect_uri, string code, string code_verifier,
             OAuth2AndOIDCEnum.AuthMethods authMethod = OAuth2AndOIDCEnum.AuthMethods.client_secret_post)
         {
+            return OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
+                tokenEndpointUri, client_id, client_secret, redirect_uri, code, code_verifier, authMethod, (HttpClient)null);
+        }
+
+        /// <summary>
+        ///PKCE : code, code_verifierからAccess Tokenを取得する。（使う HttpClient を指定する版。#719）
+        /// </summary>
+        /// <param name="tokenEndpointUri">TokenエンドポイントのUri</param>
+        /// <param name="client_id">client_id</param>
+        /// <param name="client_secret">client_secret</param>
+        /// <param name="redirect_uri">redirect_uri</param>
+        /// <param name="code">code</param>
+        /// <param name="code_verifier">code_verifier</param>
+        /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>自由に利用できる。動作は、HttpClient を受けない同じ引数の版と同じ。</remarks>
+        public static async Task<string> GetAccessTokenByCodeAsync(
+            Uri tokenEndpointUri, string client_id, string client_secret, string redirect_uri, string code, string code_verifier,
+            OAuth2AndOIDCEnum.AuthMethods authMethod, HttpClient httpClient)
+        {
             return await OAuth2AndOIDCClient.GetAccessTokenByCodeCoreAsync(
-                tokenEndpointUri, client_id, client_secret, redirect_uri, code, code_verifier, null, authMethod);
+                tokenEndpointUri, client_id, client_secret, redirect_uri, code, code_verifier, null, authMethod, httpClient);
         }
 
         /// <summary>
@@ -97,12 +139,31 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// アサーションは、RFC 7523 §2.2 のclient_assertion_type ＋ client_assertionと、
         /// 従来のassertionの両方で送る。どちらを読む認可サーバにも繋がる。
         /// </remarks>
-        public static async Task<string> GetAccessTokenByCodeAsync(
+        public static Task<string> GetAccessTokenByCodeAsync(
             Uri tokenEndpointUri, string redirect_uri, string code, string assertion,
             OAuth2AndOIDCEnum.AuthMethods authMethod = OAuth2AndOIDCEnum.AuthMethods.private_key_jwt)
         {
+            return OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
+                tokenEndpointUri, redirect_uri, code, assertion, authMethod, (HttpClient)null);
+        }
+
+        /// <summary>
+        /// FAPI1 : code, assertionからAccess Tokenを取得する。（使う HttpClient を指定する版。#719）
+        /// </summary>
+        /// <param name="tokenEndpointUri">TokenエンドポイントのUri</param>
+        /// <param name="redirect_uri">redirect_uri</param>
+        /// <param name="code">code</param>
+        /// <param name="assertion">assertion</param>
+        /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>自由に利用できる。動作は、HttpClient を受けない同じ引数の版と同じ。</remarks>
+        public static async Task<string> GetAccessTokenByCodeAsync(
+            Uri tokenEndpointUri, string redirect_uri, string code, string assertion,
+            OAuth2AndOIDCEnum.AuthMethods authMethod, HttpClient httpClient)
+        {
             return await OAuth2AndOIDCClient.GetAccessTokenByCodeCoreAsync(
-                tokenEndpointUri, null, null, redirect_uri, code, null, assertion, authMethod);
+                tokenEndpointUri, null, null, redirect_uri, code, null, assertion, authMethod, httpClient);
         }
 
         /// <summary>
@@ -128,8 +189,27 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// - **既存の版と同じ名前にしなかった**のは、(Uri, string × 4, AuthMethods) の版がすでに在り、
         ///   引数の型の並びが同じ版を足せないため（引数名と既定値は、シグネチャに含まれない）
         /// </remarks>
-        public static async Task<string> GetAccessTokenByCodeWithPkceAsync(
+        public static Task<string> GetAccessTokenByCodeWithPkceAsync(
             Uri tokenEndpointUri, string redirect_uri, string code, string code_verifier, string assertion)
+        {
+            return OAuth2AndOIDCClient.GetAccessTokenByCodeWithPkceAsync(
+                tokenEndpointUri, redirect_uri, code, code_verifier, assertion, null);
+        }
+
+        /// <summary>
+        /// PKCE ＋ アサーション : code, code_verifier, assertionからAccess Tokenを取得する。（使う HttpClient を指定する版。#719）
+        /// </summary>
+        /// <param name="tokenEndpointUri">TokenエンドポイントのUri</param>
+        /// <param name="redirect_uri">redirect_uri</param>
+        /// <param name="code">code</param>
+        /// <param name="code_verifier">code_verifier（必須）</param>
+        /// <param name="assertion">assertion（クライアント認証のアサーション。必須）</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>自由に利用できる。動作は、HttpClient を受けない同じ引数の版と同じ（code_verifier・assertion が空なら ArgumentNullException）。</remarks>
+        public static async Task<string> GetAccessTokenByCodeWithPkceAsync(
+            Uri tokenEndpointUri, string redirect_uri, string code, string code_verifier, string assertion,
+            HttpClient httpClient)
         {
             if (string.IsNullOrEmpty(code_verifier))
             {
@@ -142,7 +222,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             return await OAuth2AndOIDCClient.GetAccessTokenByCodeCoreAsync(
                 tokenEndpointUri, null, null, redirect_uri, code, code_verifier, assertion,
-                OAuth2AndOIDCEnum.AuthMethods.private_key_jwt);
+                OAuth2AndOIDCEnum.AuthMethods.private_key_jwt, httpClient);
         }
 
         /// <summary>
@@ -175,10 +255,37 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// - PKCE を受けない形を同じ名前で足さなかったのは、既存の (Uri, string × 5, AuthMethods) の版と型の並びが同じになるため
         /// - 既存の版の振る舞いは変えていない
         /// </remarks>
-        public static async Task<string> GetAccessTokenByCodeAsync(
+        public static Task<string> GetAccessTokenByCodeAsync(
             Uri tokenEndpointUri, string client_id, string client_secret, string client_assertion,
             string redirect_uri, string code, string code_verifier,
             OAuth2AndOIDCEnum.AuthMethods authMethod)
+        {
+            return OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
+                tokenEndpointUri, client_id, client_secret, client_assertion, redirect_uri, code, code_verifier,
+                authMethod, null);
+        }
+
+        /// <summary>
+        /// code（と code_verifier）からAccess Tokenを取得する（クライアント認証の方式を問わない。使う HttpClient を指定する版。#719）。
+        /// </summary>
+        /// <param name="tokenEndpointUri">TokenエンドポイントのUri</param>
+        /// <param name="client_id">client_id</param>
+        /// <param name="client_secret">client_secret（client_secret_basic / client_secret_postで使用）</param>
+        /// <param name="client_assertion">client_assertion（private_key_jwt / client_secret_jwtで使用）</param>
+        /// <param name="redirect_uri">redirect_uri</param>
+        /// <param name="code">code</param>
+        /// <param name="code_verifier">code_verifier（PKCE。空なら送らない）</param>
+        /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods（既定値は無い。必ず指定する）</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>
+        /// 自由に利用できる。動作は、HttpClient を受けない同じ引数の版と同じ。
+        /// tls_client_auth では、クライアント証明書を載せた HttpClient を、この引数か HttpClient プロパティに渡す。
+        /// </remarks>
+        public static async Task<string> GetAccessTokenByCodeAsync(
+            Uri tokenEndpointUri, string client_id, string client_secret, string client_assertion,
+            string redirect_uri, string code, string code_verifier,
+            OAuth2AndOIDCEnum.AuthMethods authMethod, HttpClient httpClient)
         {
             // body（RFC 6749 §4.1.3）
             Dictionary<string, string> body = new Dictionary<string, string>
@@ -196,7 +303,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
             // 認証情報を付けて送る（OAuth2AndOIDCClient.TokenManagement.cs）
             return await OAuth2AndOIDCClient.PostWithClientAuthenticationAsync(
-                tokenEndpointUri, body, client_id, client_secret, client_assertion, authMethod).ConfigureAwait(false);
+                tokenEndpointUri, body, client_id, client_secret, client_assertion, authMethod, httpClient).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -219,7 +326,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         private static async Task<string> GetAccessTokenByCodeCoreAsync(Uri tokenEndpointUri,
             string client_id, string client_secret, string redirect_uri,
             string code, string code_verifier, string assertion,
-            OAuth2AndOIDCEnum.AuthMethods authMethod = OAuth2AndOIDCEnum.AuthMethods.client_secret_basic)
+            OAuth2AndOIDCEnum.AuthMethods authMethod, HttpClient httpClient)
         {
             // 4.1.3.  アクセストークンリクエスト
             // http://openid-foundation-japan.github.io/rfc6749.ja.html#token-req
@@ -315,7 +422,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
 
             // HttpResponseMessage
-            httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            httpResponseMessage = await OAuth2AndOIDCClient.SendCoreAsync(httpRequestMessage, httpClient).ConfigureAwait(false);
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
@@ -346,8 +453,24 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="client_secret">string</param>
         /// <param name="scopes">string</param>
         /// <returns>結果のJSON文字列</returns>
-        public static async Task<string> ClientCredentialsGrantAsync(
+        public static Task<string> ClientCredentialsGrantAsync(
             Uri tokenEndpointUri, string client_id, string client_secret, string scopes)
+        {
+            return OAuth2AndOIDCClient.ClientCredentialsGrantAsync(tokenEndpointUri, client_id, client_secret, scopes, null);
+        }
+
+        /// <summary>
+        /// Client Credentials Grant（使う HttpClient を指定する版。#719）
+        /// </summary>
+        /// <param name="tokenEndpointUri">TokenエンドポイントのUri</param>
+        /// <param name="client_id">string</param>
+        /// <param name="client_secret">string</param>
+        /// <param name="scopes">string</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>自由に利用できる。動作は、HttpClient を受けない同じ引数の版と同じ。</remarks>
+        public static async Task<string> ClientCredentialsGrantAsync(
+            Uri tokenEndpointUri, string client_id, string client_secret, string scopes, HttpClient httpClient)
         {
             // 通信用の変数
             HttpRequestMessage httpRequestMessage = null;
@@ -372,7 +495,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 });
 
             // HttpResponseMessage
-            httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            httpResponseMessage = await OAuth2AndOIDCClient.SendCoreAsync(httpRequestMessage, httpClient).ConfigureAwait(false);
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
@@ -390,8 +513,28 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="password">password</param>
         /// <param name="scopes">scopes</param>
         /// <returns>結果のJSON文字列</returns>
-        public static async Task<string> ResourceOwnerPasswordCredentialsGrantAsync(
+        public static Task<string> ResourceOwnerPasswordCredentialsGrantAsync(
             Uri tokenEndpointUri, string client_id, string client_secret, string userId, string password, string scopes)
+        {
+            return OAuth2AndOIDCClient.ResourceOwnerPasswordCredentialsGrantAsync(
+                tokenEndpointUri, client_id, client_secret, userId, password, scopes, null);
+        }
+
+        /// <summary>
+        /// Resource Owner Password Credentials Grant（使う HttpClient を指定する版。#719）
+        /// </summary>
+        /// <param name="tokenEndpointUri">TokenエンドポイントのUri</param>
+        /// <param name="client_id">client_id</param>
+        /// <param name="client_secret">client_secret</param>
+        /// <param name="userId">userId</param>
+        /// <param name="password">password</param>
+        /// <param name="scopes">scopes</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列</returns>
+        /// <remarks>自由に利用できる。動作は、HttpClient を受けない同じ引数の版と同じ。</remarks>
+        public static async Task<string> ResourceOwnerPasswordCredentialsGrantAsync(
+            Uri tokenEndpointUri, string client_id, string client_secret, string userId, string password, string scopes,
+            HttpClient httpClient)
         {
             // 4.1.3.  アクセストークンリクエスト
             // http://openid-foundation-japan.github.io/rfc6749.ja.html#token-req
@@ -421,7 +564,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 });
 
             // HttpResponseMessage
-            httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            httpResponseMessage = await OAuth2AndOIDCClient.SendCoreAsync(httpRequestMessage, httpClient).ConfigureAwait(false);
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
