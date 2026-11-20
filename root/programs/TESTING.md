@@ -295,7 +295,7 @@ SimpleBatch.exe /Dap SQL ... > ..\..\..\ResultSimpleBatch48.txt
 > `System.Web` / `System.Web.Extensions` は csproj の**参照だけ**で、
 > `HttpContext` も `sessionState` も使っていない。
 > CI も、単体テストの**後**で `aspnet_state` を開始している
-> （`build-windows.yml`）。要るのは `3_SmokeTest.ps1` の Web アプリだけ。
+> （`build-and-test.yml`）。要るのは `3_SmokeTest.ps1` の Web アプリだけ。
 
 > **GitHub Actions でも実行している。** 前提の揃え方（SQL Server の導入、Northwind の
 > ロード、照合順序）は [`BUILDING.md`](BUILDING.md) 9 節が一次情報。

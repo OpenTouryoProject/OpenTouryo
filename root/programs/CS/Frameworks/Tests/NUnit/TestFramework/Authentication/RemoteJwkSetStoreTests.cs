@@ -26,6 +26,9 @@
 //*  2026/10/22  玄人 幸道         新規作成（#634）
 //*  2026/10/22  玄人 幸道         取れない・壊れた応答の扱いのテストを足した（カバレッジの拡充）
 //*  2026/10/30  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
+//*  2026/11/20  玄人 幸道         HttpClient プロパティ（取得に使う HttpClient の差し替え）のテストを追加（#707）
+//*  2026/11/20  玄人 幸道         取得の重なり（同じ URL の取得を 1 本にまとめる）のテストを追加（#686）
+//*  2026/11/20  玄人 幸道         discovery のキャッシュを引くときの Issuer の照合のテストを追加（#715）
 //**********************************************************************************
 
 using System;
@@ -34,6 +37,7 @@ using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Threading;
+using System.Threading.Tasks;
 
 using Newtonsoft.Json.Linq;
 
@@ -64,6 +68,7 @@ namespace TestFramework.Authentication
         {
             RemoteJwkSetStore.Clear();
             RemoteJwkSetStore.MinRefetchInterval = TimeSpan.FromMinutes(1);
+            RemoteJwkSetStore.HttpClient = null;
 
             using (RSA rsa = RSA.Create(2048))
             {
@@ -77,6 +82,7 @@ namespace TestFramework.Authentication
         {
             RemoteJwkSetStore.Clear();
             RemoteJwkSetStore.MinRefetchInterval = TimeSpan.FromMinutes(1);
+            RemoteJwkSetStore.HttpClient = null;
         }
 
         /// <summary>discovery と jwks_uri に答える</summary>
@@ -362,6 +368,79 @@ namespace TestFramework.Authentication
             Assert.That((string)RemoteJwkSetStore.PickJwksFromCache(JwksUri, "second", 5)[0]["kid"], Is.EqualTo("second"));
         }
 
+        /// <summary>RemoteJwkSetStore.HttpClient 用の、要求を数えて JWK Set・discovery に答える HttpMessageHandler</summary>
+        private sealed class CountingHandler : HttpMessageHandler
+        {
+            private readonly Func<HttpRequestMessage, HttpResponseMessage> _respond;
+
+            /// <summary>受けた要求の URL</summary>
+            public List<string> Urls = new List<string>();
+
+            public CountingHandler(Func<HttpRequestMessage, HttpResponseMessage> respond)
+            {
+                this._respond = respond;
+            }
+
+            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+            {
+                this.Urls.Add(request.RequestUri.AbsoluteUri);
+                return Task.FromResult(this._respond(request));
+            }
+        }
+
+        /// <summary>
+        /// HttpClient を設定すると、jwks_uri・discovery の取得はそちらで行い、共有の HttpClient は使わない。
+        /// null に戻せば共有に戻る。設定した HttpClient が失敗しても、共有には倒さない（絞った行き先を、共有で迂回しない）。#707
+        /// </summary>
+        [Test]
+        [Basis("設計：RemoteJwkSetStore.HttpClient の remarks（null なら共有の HttpClient。設定すれば jwks_uri・discovery の取得はそちら）")]
+        public void HttpClient_Dedicated()
+        {
+            string kid = (string)this._jwk["kid"];
+            string jwks = new JObject(new JProperty("keys", new JArray(this._jwk))).ToString();
+
+            CountingHandler dedicated = new CountingHandler(req =>
+            {
+                if (req.RequestUri.AbsoluteUri == Discovery)
+                {
+                    return StubHttp.Json(HttpStatusCode.OK,
+                        new JObject(new JProperty("issuer", Issuer), new JProperty("jwks_uri", JwksUri)).ToString());
+                }
+                return StubHttp.Json(req.RequestUri.AbsoluteUri == JwksUri ? HttpStatusCode.OK : HttpStatusCode.NotFound, jwks);
+            });
+
+            // 共有の HttpClient は、使われたら分かるようにしておく
+            using (StubHttp shared = this.Server(Issuer))
+            {
+                RemoteJwkSetStore.HttpClient = new HttpClient(dedicated, false);
+
+                // jwks_uri
+                Assert.That(RemoteJwkSetStore.GetJwkAsync(JwksUri, kid).Result, Is.Not.Null);
+                Assert.That(dedicated.Urls, Is.EqualTo(new List<string> { JwksUri }));
+                Assert.That(shared.Requests.Count, Is.EqualTo(0), "共有の HttpClient は使わない");
+
+                // discovery（と、そこから引いた jwks_uri）
+                RemoteJwkSetStore.Clear();
+                dedicated.Urls.Clear();
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, Issuer, kid).Result, Is.Not.Null);
+                Assert.That(dedicated.Urls, Is.EqualTo(new List<string> { Discovery, JwksUri }));
+                Assert.That(shared.Requests.Count, Is.EqualTo(0));
+
+                // 設定した HttpClient が失敗しても、共有には倒さない
+                RemoteJwkSetStore.Clear();
+                RemoteJwkSetStore.HttpClient = new HttpClient(new CountingHandler(
+                    req => { throw new HttpRequestException("down"); }), false);
+                Assert.That(RemoteJwkSetStore.GetJwkAsync(JwksUri, kid).Result, Is.Null);
+                Assert.That(shared.Requests.Count, Is.EqualTo(0), "共有に倒さない");
+
+                // null に戻せば、共有の HttpClient（既定）
+                RemoteJwkSetStore.HttpClient = null;
+                RemoteJwkSetStore.Clear();
+                Assert.That(RemoteJwkSetStore.GetJwkAsync(JwksUri, kid).Result, Is.Not.Null);
+                Assert.That(shared.Requests.Count, Is.EqualTo(1));
+            }
+        }
+
         /// <summary>取り直しに失敗しても、前に取れた JWK Set を残す（相手の一時的な障害で、鍵を失わない）。</summary>
         [Test]
         [Basis("設計：RemoteJwkSetStore.Store の remarks（取れなかったときは、前に取れた JWK Set を残す）")]
@@ -381,6 +460,386 @@ namespace TestFramework.Authentication
             }
 
             Assert.That(RemoteJwkSetStore.MinRefetchInterval, Is.EqualTo(TimeSpan.FromMinutes(1)));
+        }
+
+        #endregion
+
+        #region 取得の重なり（#686）
+
+        /// <summary>要求を数え、Gate が在れば、それが開くまで答えを返さない HttpMessageHandler（取得を「取得中」のまま止めるため）</summary>
+        private sealed class GateHandler : HttpMessageHandler
+        {
+            private readonly Func<HttpRequestMessage, HttpResponseMessage> _respond;
+            private int _count = 0;
+
+            /// <summary>null でなければ、開く（完了する）まで答えない</summary>
+            public volatile TaskCompletionSource<bool> Gate = null;
+
+            /// <summary>受けた要求の数</summary>
+            public int Count { get { return Volatile.Read(ref this._count); } }
+
+            public GateHandler(Func<HttpRequestMessage, HttpResponseMessage> respond)
+            {
+                this._respond = respond;
+            }
+
+            protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+            {
+                Interlocked.Increment(ref this._count);
+
+                TaskCompletionSource<bool> gate = this.Gate;
+
+                if (gate != null)
+                {
+                    await gate.Task.ConfigureAwait(false);
+                }
+
+                return this._respond(request);
+            }
+        }
+
+        /// <summary>要求が handler に届くまで待つ（最大 5 秒）</summary>
+        private static void WaitUntilRequested(GateHandler handler, int count)
+        {
+            for (int i = 0; i < 500 && handler.Count < count; i++)
+            {
+                Thread.Sleep(10);
+            }
+
+            Assert.That(handler.Count, Is.GreaterThanOrEqualTo(count), "取得が始まらない");
+        }
+
+        /// <summary>JWK Set（鍵 1 本）に答える</summary>
+        private GateHandler JwksHandler(Func<JObject> jwk)
+        {
+            return new GateHandler(req =>
+                StubHttp.Json(HttpStatusCode.OK, new JObject(new JProperty("keys", new JArray(jwk()))).ToString()));
+        }
+
+        /// <summary>
+        /// 鍵のロールオーバーの直後に、知らない kid の要求が同時に来ても、JWK Set の取得は 1 本で、全員が新しい鍵を引ける。
+        /// 取得中は下限の判定が「取り直してよい」のままなので、重ねて取りに行きやすい所である。
+        /// </summary>
+        [Test]
+        [Basis("#686（取得中の URL を重ねて取りに行かない。取得を 1 本にまとめ、待った要求も新しい鍵で通す）")]
+        [Basis("設計：RemoteJwkSetStore の remarks（同じ URL の取得は、同時に 1 本までに抑える）")]
+        public void GetJwkAsync_Concurrent_FetchesOnce()
+        {
+            JObject current = this._jwk;
+            JObject rolled = (JObject)this._jwk.DeepClone();
+            rolled["kid"] = "rolled";
+
+            GateHandler handler = this.JwksHandler(() => current);
+            RemoteJwkSetStore.HttpClient = new HttpClient(handler, false);
+
+            // 旧い鍵を取っておき、下限を 0 にして、新しい鍵へ入れ替わった相手を作る
+            Assert.That(RemoteJwkSetStore.WarmUpAsync(JwksUri).Result, Is.True);
+            Assert.That(handler.Count, Is.EqualTo(1));
+
+            RemoteJwkSetStore.MinRefetchInterval = TimeSpan.Zero;
+            Thread.Sleep(20);
+            current = rolled;
+            handler.Gate = new TaskCompletionSource<bool>();
+
+            const int N = 8;
+            List<Task<JObject>> tasks = new List<Task<JObject>>();
+
+            for (int i = 0; i < N; i++)
+            {
+                tasks.Add(Task.Run(() => RemoteJwkSetStore.GetJwkAsync(JwksUri, "rolled")));
+            }
+
+            WaitUntilRequested(handler, 2);
+            Thread.Sleep(300); // 残りの要求が、取得中の URL に行き当たるまで
+            handler.Gate.SetResult(true);
+
+            Assert.That(Task.WaitAll(tasks.ToArray(), TimeSpan.FromSeconds(10)), Is.True, "待っている要求が戻らない");
+
+            foreach (Task<JObject> task in tasks)
+            {
+                Assert.That(task.Result, Is.Not.Null, "待った要求も、新しい鍵を引ける");
+                Assert.That((string)task.Result["kid"], Is.EqualTo("rolled"));
+            }
+
+            Assert.That(handler.Count, Is.EqualTo(2), "最初の 1 本 + ロールオーバーの 1 本だけ（重ねて取りに行かない）");
+        }
+
+        /// <summary>discovery 経由でも、同時の要求は discovery と jwks_uri を 1 回ずつしか取りに行かない。</summary>
+        [Test]
+        [Basis("#686（GetJwkByDiscoveryAsync も、取得中の URL を重ねて取りに行かない）")]
+        public void GetJwkByDiscoveryAsync_Concurrent_FetchesOnce()
+        {
+            string kid = (string)this._jwk["kid"];
+            string jwks = new JObject(new JProperty("keys", new JArray(this._jwk))).ToString();
+
+            GateHandler handler = new GateHandler(req =>
+            {
+                if (req.RequestUri.AbsoluteUri == Discovery)
+                {
+                    return StubHttp.Json(HttpStatusCode.OK,
+                        new JObject(new JProperty("issuer", Issuer), new JProperty("jwks_uri", JwksUri)).ToString());
+                }
+
+                return StubHttp.Json(req.RequestUri.AbsoluteUri == JwksUri ? HttpStatusCode.OK : HttpStatusCode.NotFound, jwks);
+            });
+
+            handler.Gate = new TaskCompletionSource<bool>();
+            RemoteJwkSetStore.HttpClient = new HttpClient(handler, false);
+
+            const int N = 8;
+            List<Task<JObject>> tasks = new List<Task<JObject>>();
+
+            for (int i = 0; i < N; i++)
+            {
+                tasks.Add(Task.Run(() => RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, Issuer, kid)));
+            }
+
+            WaitUntilRequested(handler, 1);
+            Thread.Sleep(300);
+            handler.Gate.SetResult(true);
+
+            Assert.That(Task.WaitAll(tasks.ToArray(), TimeSpan.FromSeconds(10)), Is.True, "待っている要求が戻らない");
+
+            foreach (Task<JObject> task in tasks)
+            {
+                Assert.That(task.Result, Is.Not.Null);
+            }
+
+            Assert.That(handler.Count, Is.EqualTo(2), "discovery 1 回 + jwks_uri 1 回");
+        }
+
+        /// <summary>背景の補充が取得中なら、待てる経路の要求はそれに乗る（重ねて取りに行かず、補充された鍵を引く）。</summary>
+        [Test]
+        [Basis("#686（RefillInBackground の取得にも乗る。取得中の URL は、どの口からも重ねて取りに行かない）")]
+        public void GetJwkAsync_JoinsBackgroundRefill()
+        {
+            string kid = (string)this._jwk["kid"];
+            GateHandler handler = this.JwksHandler(() => this._jwk);
+            handler.Gate = new TaskCompletionSource<bool>();
+            RemoteJwkSetStore.HttpClient = new HttpClient(handler, false);
+
+            RemoteJwkSetStore.RefillInBackground(JwksUri);
+            WaitUntilRequested(handler, 1);
+
+            Task<JObject> waiting = Task.Run(() => RemoteJwkSetStore.GetJwkAsync(JwksUri, kid));
+            Thread.Sleep(300);
+            Assert.That(waiting.IsCompleted, Is.False, "取得の完了を待っている");
+
+            // 取得中の URL への、続けての補充は何もしない
+            RemoteJwkSetStore.RefillInBackground(JwksUri);
+
+            handler.Gate.SetResult(true);
+
+            Assert.That(waiting.Wait(TimeSpan.FromSeconds(10)), Is.True);
+            Assert.That(waiting.Result, Is.Not.Null);
+            Assert.That(handler.Count, Is.EqualTo(1));
+        }
+
+        /// <summary>取得が失敗しても、待っている要求は戻り（止まらず）、取得中の印は外れて、次は取り直せる。</summary>
+        [Test]
+        [Basis("#686（取得中の印は、失敗でも必ず外す。待っている要求を止めない）")]
+        [Basis("設計：RemoteJwkSetStore の remarks（引けなければ null を返し、例外にしない）")]
+        public void GetJwkAsync_Concurrent_FailedFetchDoesNotStall()
+        {
+            string kid = (string)this._jwk["kid"];
+            bool fail = true;
+            GateHandler handler = new GateHandler(req =>
+            {
+                if (fail) { throw new HttpRequestException("down"); }
+                return StubHttp.Json(HttpStatusCode.OK, new JObject(new JProperty("keys", new JArray(this._jwk))).ToString());
+            });
+
+            handler.Gate = new TaskCompletionSource<bool>();
+            RemoteJwkSetStore.HttpClient = new HttpClient(handler, false);
+
+            List<Task<JObject>> tasks = new List<Task<JObject>>();
+
+            for (int i = 0; i < 4; i++)
+            {
+                tasks.Add(Task.Run(() => RemoteJwkSetStore.GetJwkAsync(JwksUri, kid)));
+            }
+
+            WaitUntilRequested(handler, 1);
+            Thread.Sleep(300);
+            handler.Gate.SetResult(true);
+
+            Assert.That(Task.WaitAll(tasks.ToArray(), TimeSpan.FromSeconds(10)), Is.True, "失敗でも、待っている要求は戻る");
+
+            foreach (Task<JObject> task in tasks)
+            {
+                Assert.That(task.Result, Is.Null);
+            }
+
+            Assert.That(handler.Count, Is.EqualTo(1), "失敗した取得も 1 本");
+
+            // 取得中の印が残っていないこと：下限を過ぎれば、また取りに行ける
+            fail = false;
+            RemoteJwkSetStore.MinRefetchInterval = TimeSpan.Zero;
+            Thread.Sleep(20);
+            Assert.That(RemoteJwkSetStore.GetJwkAsync(JwksUri, kid).Wait(TimeSpan.FromSeconds(10)), Is.True);
+            Assert.That(handler.Count, Is.EqualTo(2));
+            Assert.That(RemoteJwkSetStore.HasKeysInCache(JwksUri), Is.True);
+        }
+
+
+        /// <summary>WarmUpAsync は、取得中の取得には乗らず、自分で取りに行く（入れ替えた直後の鍵を、取りこぼさない）。</summary>
+        [Test]
+        [Basis("設計：RemoteJwkSetStore.WarmUpAsync の remarks（取得中かどうかは見ない。入れ替えた相手の新しい鍵を、その場で反映する）")]
+        public void WarmUpAsync_DoesNotJoinRunningFetch()
+        {
+            JObject current = this._jwk;
+            JObject rolled = (JObject)this._jwk.DeepClone();
+            rolled["kid"] = "rolled";
+
+            GateHandler handler = this.JwksHandler(() => current);
+            RemoteJwkSetStore.HttpClient = new HttpClient(handler, false);
+
+            handler.Gate = new TaskCompletionSource<bool>();
+            RemoteJwkSetStore.RefillInBackground(JwksUri); // 入れ替え前の鍵を取りに行って、止まっている
+            WaitUntilRequested(handler, 1);
+
+            current = rolled; // 相手が鍵を入れ替えた
+            Task<bool> warmUp = Task.Run(() => RemoteJwkSetStore.WarmUpAsync(JwksUri));
+            WaitUntilRequested(handler, 2); // 乗らずに、自分で取りに行く
+
+            handler.Gate.SetResult(true);
+            Assert.That(warmUp.Wait(TimeSpan.FromSeconds(10)), Is.True);
+            Assert.That(warmUp.Result, Is.True);
+            Assert.That(handler.Count, Is.EqualTo(2));
+        }
+
+        /// <summary>discovery の発行者が違うときも、同時の要求は 1 回だけ取りに行き、待った要求は止まらずに null を得る。</summary>
+        [Test]
+        [Basis("OIDC Discovery 4.3（issuer は、取得に使った Issuer と同じでなければならない）")]
+        [Basis("#686（取得が実を結ばなくても、待っている要求を止めない）")]
+        public void GetJwkByDiscoveryAsync_Concurrent_IssuerMismatch()
+        {
+            string kid = (string)this._jwk["kid"];
+
+            GateHandler handler = new GateHandler(req => StubHttp.Json(HttpStatusCode.OK,
+                new JObject(new JProperty("issuer", "https://evil.example.com"), new JProperty("jwks_uri", JwksUri)).ToString()));
+            handler.Gate = new TaskCompletionSource<bool>();
+            RemoteJwkSetStore.HttpClient = new HttpClient(handler, false);
+
+            List<Task<JObject>> tasks = new List<Task<JObject>>();
+
+            for (int i = 0; i < 4; i++)
+            {
+                tasks.Add(Task.Run(() => RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, Issuer, kid)));
+            }
+
+            WaitUntilRequested(handler, 1);
+            Thread.Sleep(300);
+            handler.Gate.SetResult(true);
+
+            Assert.That(Task.WaitAll(tasks.ToArray(), TimeSpan.FromSeconds(10)), Is.True, "待っている要求が戻らない");
+
+            foreach (Task<JObject> task in tasks)
+            {
+                Assert.That(task.Result, Is.Null);
+            }
+
+            Assert.That(handler.Count, Is.EqualTo(1), "jwks_uri へは行かず、discovery は 1 回だけ");
+        }
+
+        #endregion
+
+        #region discovery のキャッシュと Issuer（#715）
+
+        /// <summary>
+        /// 同じ discoveryUrl を別の expectedIssuer で呼んでも、キャッシュの鍵を返さない（2 回目以降も、Issuer を照合する）。
+        /// 下限の内側なら、取りに行かない。同じ expectedIssuer なら、従来どおりキャッシュから引ける。
+        /// </summary>
+        [Test]
+        [Basis("OIDC Discovery 4.3（issuer は、取得に使った Issuer と同じでなければならない）")]
+        [Basis("#715（キャッシュから引くときも、expectedIssuer を照合する）")]
+        public void GetJwkByDiscoveryAsync_CachedKey_ChecksIssuer()
+        {
+            string kid = (string)this._jwk["kid"];
+
+            using (StubHttp http = this.Server(Issuer))
+            {
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, Issuer, kid).Result, Is.Not.Null);
+                Assert.That(http.Requests.Count, Is.EqualTo(2), "discovery と jwks_uri");
+
+                // 別の Issuer：キャッシュの鍵を返さない。下限の内側なので、取りに行かない。
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, "https://other.example.com", kid).Result, Is.Null);
+                Assert.That(http.Requests.Count, Is.EqualTo(2));
+
+                // 同じ Issuer：キャッシュから引ける（取りに行かない）。
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, Issuer, kid).Result, Is.Not.Null);
+                Assert.That(http.Requests.Count, Is.EqualTo(2));
+            }
+        }
+
+        /// <summary>
+        /// 別の expectedIssuer の呼び出しは、下限を過ぎていれば discovery を取り直し、そこで照合する。
+        /// 照合が通れば（discovery の issuer が、その expectedIssuer なら）、その Issuer の鍵として引ける。
+        /// </summary>
+        [Test]
+        [Basis("OIDC Discovery 4.3（issuer は、取得に使った Issuer と同じでなければならない）")]
+        [Basis("#715（別の expectedIssuer は、取り直して照合する）")]
+        public void GetJwkByDiscoveryAsync_OtherIssuer_RefetchesAndChecks()
+        {
+            string kid = (string)this._jwk["kid"];
+            using (StubHttp http = this.Server(Issuer))
+            {
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, Issuer, kid).Result, Is.Not.Null);
+            }
+
+            RemoteJwkSetStore.MinRefetchInterval = TimeSpan.Zero;
+            Thread.Sleep(20);
+
+            // 相手の issuer が変わった（別の発行者になった）。新しい Issuer の呼び出しは、キャッシュを使わず、
+            // 取り直して照合が通り、引ける。
+            using (StubHttp http = this.Server("https://new.example.com"))
+            {
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, "https://new.example.com", kid).Result, Is.Not.Null);
+                Assert.That(http.Requests.Count, Is.EqualTo(2), "discovery と jwks_uri を取り直した");
+
+                // 古い Issuer の呼び出しは、いまのキャッシュ（新しい Issuer のもの）を使わず、取り直して照合し、断られる。
+                Thread.Sleep(20);
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, Issuer, kid).Result, Is.Null);
+                Assert.That(http.Requests.Count, Is.EqualTo(3), "discovery だけ（issuer が違うので jwks_uri へは行かない）");
+            }
+        }
+
+
+        /// <summary>
+        /// 取り直しに失敗しても、前に取れた JWK Set と、その Issuer を残す（別の Issuer の呼び出しが、失敗を機に鍵を使えるようにはならない）。
+        /// Issuer の比較は、大文字小文字を区別する（OIDC Discovery 4.3 は、完全に同じ文字列）。
+        /// </summary>
+        [Test]
+        [Basis("OIDC Discovery 4.3（issuer は、取得に使った Issuer と同じでなければならない）")]
+        [Basis("#715（取得に失敗しても、前の Issuer を残す）")]
+        public void GetJwkByDiscoveryAsync_FailedRefetch_KeepsIssuer()
+        {
+            string kid = (string)this._jwk["kid"];
+
+            using (StubHttp http = this.Server(Issuer))
+            {
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, Issuer, kid).Result, Is.Not.Null);
+            }
+
+            RemoteJwkSetStore.MinRefetchInterval = TimeSpan.Zero;
+            Thread.Sleep(20);
+
+            using (StubHttp http = new StubHttp((req, b) => { throw new HttpRequestException("down"); }))
+            {
+                // 取り直しに失敗しても、前の Issuer の鍵は引ける。別の Issuer には使わない。
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, Issuer, kid).Result, Is.Not.Null);
+
+                Thread.Sleep(20);
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, "https://other.example.com", kid).Result, Is.Null);
+
+                // 大文字小文字だけ違う Issuer は、別の Issuer である
+                Thread.Sleep(20);
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, Issuer.ToUpperInvariant(), kid).Result, Is.Null);
+
+                // 失敗の後も、前の Issuer の鍵は残っている
+                Thread.Sleep(20);
+                Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(Discovery, Issuer, kid).Result, Is.Not.Null);
+            }
         }
 
         #endregion

@@ -336,7 +336,7 @@ Dependabot が PR を作成（base: develop）
       │ ⓪ 人が deps を develop の先端に合わせる ← マージの前に必ず行う
       │ ② 人がマージ
       ▼
-   deps ─── ③ .github/workflows/build-windows.yml が windows-latest で検証
+   deps ─── ③ .github/workflows/build-and-test.yml が windows-latest で検証
       │ ④ 結果が OK なら、人が PR を作って develop へマージ
       ▼
   develop
@@ -344,7 +344,7 @@ Dependabot が PR を作成（base: develop）
 
 ①③がワークフロー、⓪②④が人の作業。`AGENTS.md` の線引き（マージは人が行う）に従う。
 
-> **VB 側は別のワークフロー**（`.github/workflows/build-windows-vb.yml`）で、
+> **VB 側は別のワークフロー**（`.github/workflows/build-and-test-vb.yml`）で、
 > **手動実行（`workflow_dispatch`）だけ**である。この流れには載せていない。
 > 理由と、DB の準備を重複させている事情は 10 節と
 > [`GitHubUsage.md`](../../GitHubUsage.md) 3 節。
@@ -399,7 +399,7 @@ PR ─┘
 **ソースだけ先にコミットすると③が必ず赤くなる**（③は期待値を `HEAD` から取るため）。
 実際に `System.Security.Cryptography.Xml` は `EncAndDecUtilCUI` の期待値に影響し得る。
 
-**③ 同時実行を制御していない。** `build-windows.yml` に `concurrency` の指定が無いため、
+**③ 同時実行を制御していない。** `build-and-test.yml` に `concurrency` の指定が無いため、
 連続してマージすると**古いコミットの run も最後まで走る**（12 分 × 本数）。
 「まとめて最後だけ見る」を常用するなら次を足すと無駄が消える。
 
@@ -418,10 +418,10 @@ Dependabot は**古い PR を閉じて新しい PR を開く**。既にマージ
 
 ### 任意のブランチで手動実行する
 
-`build-windows.yml` は `workflow_dispatch` を持つので、**`deps` 以外のブランチでも同じ検証を回せる。**
+`build-and-test.yml` は `workflow_dispatch` を持つので、**`deps` 以外のブランチでも同じ検証を回せる。**
 
 ```
-Actions → Build and test（#703 の前は Build on Windows）→ Run workflow → Branch: <任意のブランチ>
+Actions → Build and test（#703 の前は Build on Windows。#716 の前のファイル名は build-windows.yml）→ Run workflow → Branch: <任意のブランチ>
 ```
 
 実行されるのは**選んだブランチ側の定義**。`deps` への push と同じ内容
@@ -432,7 +432,7 @@ Actions → Build and test（#703 の前は Build on Windows）→ Run workflow 
 | 条件 | 内容 |
 |---|---|
 | `develop`（既定ブランチ）に `workflow_dispatch` があること | 「Run workflow」ボタンの表示条件 |
-| **選ぶブランチにも `.github/workflows/build-windows.yml` があること** | 定義はそのブランチから読まれるため |
+| **選ぶブランチにも `.github/workflows/build-and-test.yml` があること** | 定義はそのブランチから読まれるため |
 
 2 つ目が実務上の注意になる。**`develop` より前に分岐した古いブランチにはファイルが無い**ので、
 選んでも動かない。先に `develop` を取り込むこと。
@@ -482,7 +482,8 @@ Dependabot が起こしたイベントでは `GITHUB_TOKEN` が既定で read-on
 | `2_RunAllTests.ps1 -Linux` | `linux` | Golden の EncAndDecUtilCUI・NUnit の TestPublic |
 | `2_RunAllTests.ps1 -CrossDb` の net10.0 | `linux-crossdb` | NUnit の TestPublicDb を Oracle・MySQL・PostgreSQL で |
 | `2_RunAllTests.ps1 -CrossDb -Wsl2`（net48 と net10.0） | `win-crossdb` | Windows ランナー＋WSL2 の Docker（#712）。SQL Server に Oracle・MySQL（net48・net10.0）・PostgreSQL（net10.0）を 1 つずつ足す |
-| SpRp の外部ログインの E2E（`ExternalLoginE2E.ps1 -Idp KCK -Only net48`）の net48・WebForms | `win-sts` | Windows ランナー＋WSL2 の Docker（#712）。IdP は Keycloak（`KckCompose.ps1 -Wsl2`）。C#・VB の MVC・WebForms（OIDC・SAML2 の 8 件） |
+| SpRp の外部ログインの E2E（`ExternalLoginE2E.ps1 -Idp KCK -Only net48`）の net48・WebForms | `win-kck` | Windows ランナー＋WSL2 の Docker（#712）。IdP は Keycloak（`KckCompose.ps1 -Wsl2`）。C#・VB の MVC・WebForms（OIDC・SAML2 の 8 件） |
+| SpRp の外部ログインの E2E（`ExternalLoginE2E.ps1 -Only net48`）と、CLI の E2E（`CliLoginE2E.ps1 -Only net48`）。IdP は MPAS のスタブ | `win-stub` | Windows ランナー＋WSL2 の Docker（#713）。スタブは `StubCompose.ps1 -Wsl2`。外部ログイン 8 件・CLI（SpRp_CLI の device・pkce・cc・jwtbearer・ropc）10 件 |
 | SpRp のサンプルの E2E（`Sample4SpRp\E2E`）の net10.0 | `linux-kck`・`linux-stub` | IdP（STS）は、`linux-kck` が Keycloak、`linux-stub` が MPAS のスタブ（Keycloak で回らない CLI の jwtbearer・FAPI2 の ros は、スタブの回で回る）。DB は使わない |
 | `2_RunAllTests.ps1 -Coverage` | × | NUnit の全部とクロス DB を 1 回の実行で回して合算する作りなので、ジョブに分けられない。手元で取る |
 
@@ -491,7 +492,7 @@ Dependabot が起こしたイベントでは `GITHUB_TOKEN` が既定で read-on
 - **GUI アプリケーション**（WinForms / WPF / 各ツールの画面）… `RELEASE.md` 4 節の手作業
 - **Golden の `TestDataAccess` のクロス DB** … `build` は `/Dap SQL` しか使わない
   （`TestSQLUtility` は 4 DBMS 分の SQL 生成を検証するが、**接続はしない**ので対象内）。手元の `-CrossDb` で回す。NUnit の `TestPublicDb` の net48 のクロス DB は、`win-crossdb` が回す
-- **SpRp の E2E のうち、MPAS のスタブの回（net48）と、CLI・FAPI の E2E の net48** … 手元で回す。外部ログインの E2E の net48・WebForms は、`win-sts` が Keycloak で回す
+- **SpRp の E2E のうち、FAPI の E2E の net48** … 手元で回す（SpRp_MVC は net10.0 だけなので、実質、対象が無い。FAPI は `linux-stub` が回す）。外部ログインの E2E の net48・WebForms は `win-kck`（Keycloak）と `win-stub`（スタブ）、CLI の net48 は `win-stub` が回す
 
 ### Windows ランナー＋WSL2 のジョブ（#711・#712）
 
@@ -505,22 +506,31 @@ Windows の net48 と Linux のコンテナを、同じランナーで使える�
 - **WSL2 の VM のメモリは 7940MB**（ランナーの半分）。SQL Server と Oracle を合わせて約 5GB（1 つずつ起動する）
 - ほかに、このランナーで確かめたこと：IIS Express（x64・x86）あり、`aspnet_state` は Stopped（Manual）で、`Start-Service` で起動できる
 
-**`win-sts`（SpRp の外部ログインの E2E の net48・WebForms。IdP は Keycloak）の作り**（#712）
+**`win-kck`（SpRp の外部ログインの E2E の net48・WebForms。IdP は Keycloak）の作り**（#712）
 
 - **Keycloak は、WSL2 の Docker で動かす**（`KckCompose.ps1 -Wsl2`）。`docker compose` を `wsl` 経由で呼び、compose のパスは `wslpath` で WSL のパスにする。
   **`Up` で、WSL2 の VM が止まらないよう、常駐のプロセス（`sleep infinity`）を立てる**。立てないと、VM がアイドルで止まり、コンテナに SIGTERM（`Exited (143)`）が届いて、約 2 分で落ちる（LocalServicesOnDocker の WSL2 版が、キープアライブを立てるのと同じ理由）。約 40〜50 秒で Discovery が 200 になる（メモリ約 530MiB）
-- **apt は、Azure の Ubuntu のミラー（`azure.archive.ubuntu.com`）に替える。** Canonical のアドレス（`archive.ubuntu.com`）へ、ランナーから届かないことがあり（接続のタイムアウト）、`win-crossdb`・`win-sts` の Docker の導入が止まった。IPv4 の固定と、`apt` のタイムアウト・再試行と合わせて、安定した
+- **apt は、Azure の Ubuntu のミラー（`azure.archive.ubuntu.com`）に替える。** Canonical のアドレス（`archive.ubuntu.com`）へ、ランナーから届かないことがあり（接続のタイムアウト）、`win-crossdb`・`win-kck` の Docker の導入が止まった。IPv4 の固定と、`apt` のタイムアウト・再試行と合わせて、安定した
 - **IIS Express の HTTPS は、既存の証明書では、ハンドシェイクで接続が閉じられる**（`0.0.0.0:44300〜` に登録済みの `CN=localhost`。秘密鍵はある）。**自分で作った自己署名の証明書**（`New-SelfSignedCertificate`。`LocalMachine\My` と `\Root`）を、`netsh http add sslcert` で 44333（WebForms）・44334（MVC）に登録し直すと、検証ありでも届く
 - **開発用証明書（Keycloak の証明書の元）を、`LocalMachine\Root` に入れる。** `dotnet dev-certs https --trust` は、Windows では確認のダイアログが出るので使わない。入れないと、Discovery の待ちと E2E の HTTPS が、検証で落ちる
 - **`aspnet_state` は `Start-Service` で起動する**（WebForms のセッション）
 - **サンプルのビルドには、`WSSrv_sample`・`Framework_WS`（`WS_sample\Build\WSIFType_sample.dll` を作る）も要る。** WebForms_Sample・MVC_Sample が参照するため（C#・VB の両方）
-- net10.0 の対象は、`linux-kck` が回す（`win-sts` は `-Only net48`）
+- net10.0 の対象は、`linux-kck` が回す（`win-kck` は `-Only net48`）
+
+**`win-stub`（SpRp の外部ログイン・CLI の E2E の net48。IdP は MPAS のスタブ）の作り**（#713）
+
+- WSL2・Docker・`aspnet_state`・証明書は、`win-kck` と同じ。**Keycloak とスタブを同時に起動しない**（メモリ）ので、別のジョブ（別のランナー）で並列に回す
+- **MPAS は、`MPAS_REF`（`linux-stub` と同じコミット）で取る。** ビルドした net10.0 の部品（`OpenTouryo.Business`・`Framework`・`Public`・`Public.Security`）を `OpenTouryoAssemblies/Build_netcore100/net10.0` に置く
+- **スタブの publish（`1_PublishStub.ps1`）は Windows の `dotnet` で行い、起動・停止だけを WSL2 で行う**（`StubCompose.ps1 -Wsl2`。MPAS の `.bat` は Windows の `docker` を呼ぶので使わない）。
+  `docker compose` を `wsl` 経由で呼び、`STUB_SETTINGS`・`STUB_APPSETTINGS`・`STUB_RESOURCE_DIR`・`STUB_MTLS_HOOK` は `env` で渡す（パスは `wslpath`）。`Up` で、WSL2 の VM が止まらないよう常駐のプロセスを立てる（`win-kck` と同じ理由）
+- 設定の土台は MPAS の `_appsettings.json`。`TestUserPWD` だけをテスト用の値に替えた写しを、`STUB_APPSETTINGS` と E2E の `-StubAppSettings` に渡す
+- FAPI の E2E は、SpRp_MVC が net10.0 だけなので `linux-stub` が回す
 
 ### Linux のジョブ（#703）
 
 **`windows-latest` は Linux コンテナを動かせない**（下の「SQL Server をどう用意するか」）。そこで、コンテナが要る検証は `ubuntu-latest` のジョブで回す。
 
-- **同じワークフロー（`build-windows.yml`）に置く。** Windows のジョブ（`build`）がビルドした net10.0 の出力を artifact にし、
+- **同じワークフロー（`build-and-test.yml`）に置く。** Windows のジョブ（`build`）がビルドした net10.0 の出力を artifact にし、
   Linux のジョブが受け取ってそのまま回す（`needs: build`）。**artifact は同じ実行の中でしか渡せない**ので、ファイルを分けない
 - **Linux ではビルドしない。** net10.0 の DLL は OS によらないので、Windows で作ったものを Linux へ配置する実際の使われ方をそのまま確かめられる
 - **判定は各スクリプトが行う**（`2_RunAllTests.ps1` は Linux の上では `-Linux` か `-CrossDb` を直接回す。E2E は Linux の上では net10.0 の対象だけに絞る）
@@ -1187,7 +1197,7 @@ Microsoft.Data.SqlClient.SNI                6.0.2   （SqlClient 7.0.0 でも据
 
 終了コードは `0` = 無し、`1` = あり（`-Check` のとき）、`2` = 脆弱性データを取得できない。
 **`0_RunAll.ps1` は最後に自動で回して警告する**（合否には数えない）。
-**CI（`build-windows.yml`）も、ビルドの後に回す**（#681）。`deps` への push・master 宛の PR では警告に留め、
+**CI（`build-and-test.yml`）も、ビルドの後に回す**（#681）。`deps` への push・master 宛の PR では警告に留め、
 週 1 回（`schedule`）・手動の実行では、終了コードが `0` でなければ（`2` を含む）ジョブを落とす。結果はジョブのまとめに出る。
 
 ### ビルドの警告（NU1901〜NU1904）だけでは足りない

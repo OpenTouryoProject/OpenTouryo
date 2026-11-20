@@ -46,6 +46,7 @@
 //*  2026/11/08  玄人 幸道         Create に、code_challenge・code_challenge_method（PKCE）を入れるオーバーロードを追加（#675）
 //*  2026/11/08  玄人 幸道         有効期間の検査を CreateCore にまとめた（#675 のレビューの指摘 1。例外の型・引数名・メッセージは変えていない）
 //*  2026/11/19  玄人 幸道         Create に、署名の alg（RS* / PS*）を選べるオーバーロードを追加（FAPI の登録は PS256・ES256 に限る。#709）
+//*  2026/11/20  玄人 幸道         Verify・VerifyCiba：nbf の時計のずれを許容し（CmnJwtToken.ClockSkewSeconds。既定 10 秒）、未来の iat を断る（#689）
 //**********************************************************************************
 
 using System;
@@ -206,7 +207,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// - **有効期間の上限は見ない。** FAPI の「60 分以内」はプロファイルの制約なので、呼び出し側が決める。
         ///   TimeSpan.MaxValue（約 9.2 × 10^11 秒）でも long は溢れない
         /// - **nbf は今の時刻ちょうどで、時計のずれの余裕を取らない。** 認可サーバの時計がクライアントより遅れていて、
-        ///   nbf を許容幅なしで確かめる相手（この基盤の Verify も許容幅は 0）なら、nbf で断られうる
+        ///   nbf を許容幅なしで確かめる相手なら、nbf で断られうる
+        ///   （この基盤の Verify・VerifyCiba は、既定で 10 秒先までの nbf を受ける。CmnJwtToken.ClockSkewSeconds。#689）
         /// - 1 秒未満の有効期間は ArgumentOutOfRangeException
         /// </remarks>
         public static string Create(
@@ -487,6 +489,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         ///   scope（OIDC Core 3.1.2.1）。**空の文字列は無いのと同じ**に扱う
         /// - **state・nonce は必須にしない**（どちらも RFC 6749・OIDC Core の認可コード フローでは任意。Create も空なら入れない）
         /// - exp・nbf は、**在れば**値を確かめる（RFC 7519 4.1.4・4.1.5。読み方は CmnJwtToken.TryReadNumericDate。#647）。
+        ///   **nbf は、時計のずれの許容幅（CmnJwtToken.ClockSkewSeconds。既定 10 秒）までは、未来でも受ける**。
+        ///   iat も、**在れば**、読めて「いま＋許容幅」以前であること（どれだけ古いかは見ない）（#689）
         ///   有効期間を受けない Create は exp を入れないので、無くてもよい（受ける版は入れる。#660）
         /// - **aud の値は照合しない**（期待する値を受けない版のため）。**照合するなら aud を受ける版を使う**（#653 ph2）
         /// 欠けている・読めない・期限の過ぎたものは false（例外にしない）。iss は、署名が正しければ読めた値を返す。
@@ -741,7 +745,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
         ///   scope（CIBA Core 7.1）。**空の文字列は無いのと同じ**に扱う
         /// - **ヒントは、login_hint_token・id_token_hint・login_hint のうち、ちょうど 1 つ**（CIBA Core 7.1 : one (and only one)）
         /// - exp・nbf は値を確かめる（RFC 7519 4.1.4・4.1.5。読み方は CmnJwtToken.TryReadNumericDate。#647）。
-        ///   iat は NumericDate として読めることだけを見る（どれだけ古いかは見ない）
+        ///   **nbf は、時計のずれの許容幅（CmnJwtToken.ClockSkewSeconds。既定 10 秒）までは、未来でも受ける**（#689）。
+        ///   iat は NumericDate として読めて、「いま＋許容幅」以前であることを見る（どれだけ古いかは見ない）
         /// - **client_notification_token・binding_message は必須にしない**（CIBA Core 7.1 : 前者は Ping・Push のときだけ必須、後者は任意。
         ///   どの方式で登録されたクライアントかは、この関数には分からない）
         /// - **aud の値は照合しない**（期待する値を受けない版のため）。**照合するなら aud を受ける版を使う**（#653 ph2）
@@ -912,11 +917,15 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>exp・nbf（と iat）を確かめる</summary>
         /// <param name="jobj">ペイロード</param>
         /// <param name="required">
-        /// true なら、exp・nbf・iat を必須とし、無いものも失敗にする（VerifyCiba）。iat は読めることだけを見る（どれだけ古いかは見ない）。
-        /// false なら、exp・nbf のうち在るものだけを確かめ、iat は見ない（Verify）
+        /// true なら、exp・nbf・iat を必須とし、無いものも失敗にする（VerifyCiba）。iat は読めて、未来すぎないことだけを見る（どれだけ古いかは見ない）。
+        /// false なら、exp・nbf・iat のうち在るものだけを確かめる（Verify）
         /// </param>
         /// <returns>bool</returns>
-        /// <remarks>**時計のずれは許さない**（許容幅 0。IdToken などの Verify と同じ。#647）。</remarks>
+        /// <remarks>
+        /// **nbf と iat は、時計のずれを許容する**（CmnJwtToken.ClockSkewSeconds。既定 10 秒。#689）。
+        /// iat は、在れば（読めて）「いま＋許容幅」以前でなければ false（どれだけ古いかは見ない）。
+        /// exp は許容しない（許容幅 0。IdToken などの Verify と同じ。#647）。
+        /// </remarks>
         private static bool VerifyTimeClaims(JObject jobj, bool required)
         {
             long now = DateTimeOffset.Now.ToUnixTimeSeconds();
@@ -929,16 +938,17 @@ namespace Touryo.Infrastructure.Framework.Authentication
             }
 
             JToken nbf = jobj[OAuth2AndOIDCConst.nbf];
-            if ((required || nbf != null) && !CmnJwtToken.VerifyNbfClaim(nbf, now))
+            if ((required || nbf != null) && !CmnJwtToken.VerifyNbfClaimWithClockSkew(nbf, now))
             {
-                // まだ使えない・読めない（・無い）
+                // まだ使えない（時計のずれの許容幅を超えて未来）・読めない（・無い）
                 return false;
             }
 
-            decimal iat;
-            if (required && !CmnJwtToken.TryReadNumericDate(jobj[OAuth2AndOIDCConst.iat], true, out iat))
+            // iat：必須なら無いものも false（読めることを見る）。在れば、未来すぎないこと（#689）
+            JToken iat = jobj[OAuth2AndOIDCConst.iat];
+            if ((required || iat != null) && !CmnJwtToken.VerifyIatClaim(iat, now))
             {
-                // iat が無い・読めない
+                // iat が無い・読めない・未来すぎる
                 return false;
             }
 

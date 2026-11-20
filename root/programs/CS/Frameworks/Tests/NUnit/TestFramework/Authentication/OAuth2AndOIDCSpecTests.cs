@@ -27,6 +27,7 @@
 //*  2026/10/29  玄人 幸道         期待値の根拠（Basis）を付けた（#640）
 //*  2026/10/30  玄人 幸道         response_type・prompt の大文字小文字を区別することにした（#643）
 //*  2026/11/06  玄人 幸道         #663 で足した定数の値を確かめるテストを追加
+//*  2026/11/20  玄人 幸道         GetClientAssertion：client_assertion_type の無い client_assertion は受け付けない（RFC 7521 4.2）に、期待値を直した（#688）
 //**********************************************************************************
 
 using System;
@@ -183,16 +184,20 @@ namespace TestFramework.Authentication
             Assert.That(OAuth2AndOIDCSpec.GetResourceErrorStatusCode(OAuth2AndOIDCConst.invalid_request), Is.EqualTo(400));
         }
 
-        /// <summary>GetClientAssertion：client_assertion を優先し、型が違えば受けない。無ければ assertion。</summary>
+        /// <summary>GetClientAssertion：client_assertion を優先し、型が無い・違えば受けない。client_assertion が無ければ assertion。</summary>
         [Test]
         [Basis("RFC 7523 2.2（client_assertion と client_assertion_type）")]
+        [Basis("RFC 7521 4.2（client_assertion_type は REQUIRED）")]
+        [Basis("#688")]
         [Basis("設計：OAuth2AndOIDCSpec.GetClientAssertion の remarks（無ければ assertion を読む。#634 の H-2）")]
         public void GetClientAssertion()
         {
             string type = OAuth2AndOIDCConst.JwtBearerClientAssertionType;
 
             Assert.That(OAuth2AndOIDCSpec.GetClientAssertion("ca", type, "a"), Is.EqualTo("ca"));
-            Assert.That(OAuth2AndOIDCSpec.GetClientAssertion("ca", "", null), Is.EqualTo("ca"));
+            Assert.That(OAuth2AndOIDCSpec.GetClientAssertion("ca", "", null), Is.Empty, "型が空なら受けない（RFC 7521 4.2）");
+            Assert.That(OAuth2AndOIDCSpec.GetClientAssertion("ca", null, null), Is.Empty, "型が無ければ受けない（RFC 7521 4.2）");
+            Assert.That(OAuth2AndOIDCSpec.GetClientAssertion("ca", null, "a"), Is.Empty, "client_assertion を優先するので、assertion には倒さない");
             Assert.That(OAuth2AndOIDCSpec.GetClientAssertion("ca", "urn:other", "a"), Is.Empty);
             Assert.That(OAuth2AndOIDCSpec.GetClientAssertion(null, null, "a"), Is.EqualTo("a"));
             Assert.That(OAuth2AndOIDCSpec.GetClientAssertion(null, null, null), Is.Empty);

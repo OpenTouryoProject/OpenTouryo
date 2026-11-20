@@ -36,6 +36,7 @@
 //*  2026/11/06  玄人 幸道         検証鍵（JWS）を受ける Verify・VerifyCiba のテストを追加（#664）
 //*  2026/11/08  玄人 幸道         code_challenge・code_challenge_method を受ける Create のテストを追加（#675）
 //*  2026/11/19  玄人 幸道         署名の alg（RS* / PS*）を選べる Create のテストを追加（#709）
+//*  2026/11/20  玄人 幸道         nbf・iat の時計のずれ（ClockSkew）のテストを追加（#689）
 //**********************************************************************************
 
 using System;
@@ -593,6 +594,76 @@ namespace TestFramework.Authentication
                 JObject p = RequestObjectTests.CibaPayload();
                 m.Apply(p);
                 Assert.That(RequestObject.VerifyCiba(jws.Create(p.ToString(Formatting.None)), out iss, pub), Is.False, m.Label);
+            }
+        }
+
+        /// <summary>
+        /// Verify（OIDC）・VerifyCiba：nbf・iat が数秒（既定 10 秒）先なら通し、それより先は断る。
+        /// Verify は iat が無くてもよい（在れば、読めて未来すぎないこと）。時計のずれの許容幅を 0 にすれば、従来どおり断る。
+        /// </summary>
+        [Test]
+        [Basis("FAPI 2.0 Security Profile 5.3.2.1 の 13・Note 3（iat・nbf が 0〜10 秒先の JWT は受け付ける。60 秒より先は断る。10〜60 秒は受けてもよい）")]
+        [Basis("#689")]
+        public void ClockSkew()
+        {
+            int original = CmnJwtToken.ClockSkewSeconds;
+
+            using (RSA rsa = RSA.Create(2048))
+            {
+                JWS_RS256_Param jws = new JWS_RS256_Param(rsa.ExportParameters(true));
+                RSAParameters pub = rsa.ExportParameters(false);
+                long now = RequestObjectTests.Now();
+
+                // CIBA は EC の鍵（ES256）で署名する
+                JWS_ES256_X509 jwsEc = new JWS_ES256_X509(TestCertificates.EcdsaPfx256, TestCertificates.Password);
+                ECParameters pubEc = TestCertificates.LoadPfx(TestCertificates.EcdsaPfx256).GetECDsaPublicKey().ExportParameters(false);
+
+                Func<Action<JObject>, bool> oidc = m =>
+                {
+                    string iss;
+                    JObject p = RequestObjectTests.OidcPayload();
+                    m(p);
+                    return RequestObject.Verify(jws.Create(p.ToString(Formatting.None)), out iss, pub);
+                };
+                Func<Action<JObject>, bool> ciba = m =>
+                {
+                    string iss;
+                    JObject p = RequestObjectTests.CibaPayload();
+                    m(p);
+                    return RequestObject.VerifyCiba(jwsEc.Create(p.ToString(Formatting.None)), out iss, pubEc);
+                };
+
+                try
+                {
+                    CmnJwtToken.ClockSkewSeconds = CmnJwtToken.DefaultClockSkewSeconds;
+
+                    // 検証の側の「いま」が進む分は、緩む方に動くので、境界から離した値で確かめる
+                    foreach (Func<Action<JObject>, bool> verify in new Func<Action<JObject>, bool>[] { oidc, ciba })
+                    {
+                        string kind = (verify == oidc) ? "Verify" : "VerifyCiba";
+                        Assert.That(verify(p => p[OAuth2AndOIDCConst.nbf] = now + 8), Is.True, kind + "：nbf が 8 秒先（適合性テストの値）");
+                        Assert.That(verify(p => p[OAuth2AndOIDCConst.iat] = now + 8), Is.True, kind + "：iat が 8 秒先");
+                        Assert.That(verify(p => p[OAuth2AndOIDCConst.nbf] = now + 20), Is.False, kind + "：nbf が 20 秒先");
+                        Assert.That(verify(p => p[OAuth2AndOIDCConst.iat] = now + 20), Is.False, kind + "：iat が 20 秒先");
+                        Assert.That(verify(p => p[OAuth2AndOIDCConst.nbf] = now + 70), Is.False, kind + "：nbf が 70 秒先（60 秒より先）");
+                        Assert.That(verify(p => p[OAuth2AndOIDCConst.iat] = now + 70), Is.False, kind + "：iat が 70 秒先（60 秒より先）");
+                        Assert.That(verify(p => p[OAuth2AndOIDCConst.iat] = "abc"), Is.False, kind + "：iat が読めない");
+                    }
+
+                    // Verify は iat が無くてもよい（CIBA は必須）
+                    Assert.That(oidc(p => p.Remove(OAuth2AndOIDCConst.iat)), Is.True, "Verify：iat が無い");
+                    Assert.That(ciba(p => p.Remove(OAuth2AndOIDCConst.iat)), Is.False, "VerifyCiba：iat が無い");
+
+                    // 0 にすると、従来どおり許容しない
+                    CmnJwtToken.ClockSkewSeconds = 0;
+                    Assert.That(oidc(p => p[OAuth2AndOIDCConst.nbf] = now + 8), Is.False, "許容 0：Verify の nbf が 8 秒先");
+                    Assert.That(ciba(p => p[OAuth2AndOIDCConst.nbf] = now + 8), Is.False, "許容 0：VerifyCiba の nbf が 8 秒先");
+                    Assert.That(oidc(p => { }), Is.True, "許容 0：必須だけ");
+                }
+                finally
+                {
+                    CmnJwtToken.ClockSkewSeconds = original;
+                }
             }
         }
 

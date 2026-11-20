@@ -54,6 +54,7 @@
 //*  2026/11/10  玄人 幸道         Verify：署名の alg を JWE の有無で決め打ちしない。鍵（jws）を渡せば、扱う非対称の alg（JwsFactory.IsSupported）で鍵と同じものを受け、
 //*                                渡さなければ RS256・ES256 だけ。受けない alg・復号できない JWE は、例外ではなく false にした。
 //*                                復号の鍵（JWE）を受ける版を追加し、それを渡したときは素の JWS を受けない（#683）
+//*  2026/11/20  玄人 幸道         未来の nbf・iat を受ける時計のずれの許容幅（ClockSkewSeconds。既定 10 秒）と、VerifyNbfClaimWithClockSkew・VerifyIatClaim を追加（#689）
 //**********************************************************************************
 
 using System;
@@ -496,6 +497,41 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 && CmnJwtToken.IsNotBefore(seconds, DateTimeOffset.Now.ToUnixTimeSeconds());
         }
 
+        /// <summary>時計のずれの許容幅（秒）の既定</summary>
+        public const int DefaultClockSkewSeconds = 10;
+
+        /// <summary>時計のずれの許容幅（秒）の上限</summary>
+        public const int MaxClockSkewSeconds = 60;
+
+        /// <summary>時計のずれの許容幅（秒）</summary>
+        private static volatile int _clockSkewSeconds = CmnJwtToken.DefaultClockSkewSeconds;
+
+        /// <summary>未来の nbf・iat を受ける、時計のずれの許容幅（秒。既定 10。0〜60。#689）</summary>
+        /// <remarks>
+        /// 自由に利用できる。**JwtAssertion.Verify（iss・aud を受ける版）・RequestObject.Verify・VerifyCiba が使う**
+        /// （VerifyNbfClaimWithClockSkew・VerifyIatClaim）。**プロセス全体に効く。**
+        /// 0 にすると、従来どおり許容しない（nbf が 1 秒でも先なら断る）。
+        ///
+        /// FAPI 2.0 Security Profile 5.3.2.1 の 13：認可サーバは、**iat・nbf が 0〜10 秒先の JWT を受け付けなければならず**、
+        /// **60 秒より先の JWT を断らなければならない**（10〜60 秒は受けてもよい。Note 3）。既定の 10 秒は前者、上限の 60 秒は後者に合わせた。
+        ///
+        /// 時計のずれは相互運用の問題で、許容は断る側の緩みになる。**必要より大きくしない。**
+        /// exp は、この値の対象外（過ぎた exp は、ずれで救わない。VerifyExpClaim は従来どおり）。
+        /// </remarks>
+        /// <exception cref="ArgumentOutOfRangeException">0〜60 の範囲外</exception>
+        public static int ClockSkewSeconds
+        {
+            get { return CmnJwtToken._clockSkewSeconds; }
+            set
+            {
+                if (value < 0 || value > CmnJwtToken.MaxClockSkewSeconds)
+                {
+                    throw new ArgumentOutOfRangeException("value", value, "The clock skew must be between 0 and 60 seconds.");
+                }
+                CmnJwtToken._clockSkewSeconds = value;
+            }
+        }
+
         /// <summary>exp のクレームを確かめる（トークンの検証の共通部分）</summary>
         /// <param name="exp">exp のクレーム（JToken。無ければ null）</param>
         /// <param name="unixTimeSeconds">いまの UNIX 時刻（秒）</param>
@@ -526,6 +562,34 @@ namespace Touryo.Infrastructure.Framework.Authentication
             decimal seconds;
             return CmnJwtToken.TryReadNumericDate(nbf, true, out seconds)
                 && CmnJwtToken.IsNotBefore(seconds, unixTimeSeconds);
+        }
+
+        /// <summary>nbf のクレームを、時計のずれの許容幅（ClockSkewSeconds）を見て確かめる</summary>
+        /// <param name="nbf">nbf のクレーム（JToken。無ければ null）</param>
+        /// <param name="unixTimeSeconds">いまの UNIX 時刻（秒）</param>
+        /// <returns>nbf が「いま＋許容幅」以前なら true。無い・読めない値は false</returns>
+        /// <remarks>
+        /// 自由に利用できる（#689）。VerifyNbfClaim に「いま＋ClockSkewSeconds」を渡すのと同じ。
+        /// **無い nbf も false** なので、nbf を任意とするなら、呼び出し側で null を先に見る。
+        /// </remarks>
+        public static bool VerifyNbfClaimWithClockSkew(JToken nbf, long unixTimeSeconds)
+        {
+            return CmnJwtToken.VerifyNbfClaim(nbf, unixTimeSeconds + CmnJwtToken.ClockSkewSeconds);
+        }
+
+        /// <summary>iat のクレームが、未来すぎないことを確かめる（時計のずれの許容幅 ClockSkewSeconds を見る）</summary>
+        /// <param name="iat">iat のクレーム（JToken。無ければ null）</param>
+        /// <param name="unixTimeSeconds">いまの UNIX 時刻（秒）</param>
+        /// <returns>iat が「いま＋許容幅」以前なら true。無い・読めない値は false</returns>
+        /// <remarks>
+        /// 自由に利用できる（#689）。**どれだけ古いかは見ない**（FAPI 2.0 Security Profile 5.3.2.1 の 13 は、未来の iat だけを求める）。
+        /// 読み方は VerifyNbfClaim と同じ（数値の文字列も受ける）。**無い iat も false** なので、iat を任意とするなら、呼び出し側で null を先に見る。
+        /// </remarks>
+        public static bool VerifyIatClaim(JToken iat, long unixTimeSeconds)
+        {
+            decimal seconds;
+            return CmnJwtToken.TryReadNumericDate(iat, true, out seconds)
+                && seconds <= unixTimeSeconds + CmnJwtToken.ClockSkewSeconds;
         }
 
         /// <summary>いまが exp より前（または同じ秒）か</summary>

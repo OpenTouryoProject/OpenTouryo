@@ -28,6 +28,7 @@
 //*  2026/10/30  玄人 幸道         remarks の節番号を直した（ACS URL は Core 3.4.1・Profiles 4.1.4.1。#640）
 //*  2026/11/14  玄人 幸道         CreateRedirectResponse / CreatePostResponse（鍵を受ける版）に、Audience（SP の entityID）を指定する版を追加。
 //*                                受けない版は従来どおり、Audience に ACS URL を入れる（#693）
+//*  2026/11/20  玄人 幸道         inResponseTo が空なら InResponseTo 属性を省くこと、値のエスケープを、説明に書いた（#700）
 //**********************************************************************************
 
 using System;
@@ -54,6 +55,8 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// | 属性 | 何を出すか（SAML2Attributes.AppendStatement の形で渡す） |
     /// | Binding | 要求の ProtocolBinding に合わせて、どちらの版を呼ぶかを決める |
     /// | 署名の鍵 | IdP 自身の秘密鍵 |
+    ///
+    /// 応答・アサーションに入れる値（issuer・応答先・要求の ID・NameID など）は、特殊な文字（引用符・&lt;・&amp;）を含んでも、構造を変えずにエスケープされて入る（#700）。
     /// </remarks>
     public partial class SAML2Client
     {
@@ -61,7 +64,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>CreateRedirectResponse（HTTP-Redirect で返す応答を作る。設定を読む版）</summary>
         /// <param name="acsUrl">string（応答を返す先。事前登録の ACS URL）</param>
-        /// <param name="inResponseTo">string（要求の ID）</param>
+        /// <param name="inResponseTo">string（要求の ID。null・空なら、InResponseTo 属性ごと省く。SAML 2.0 Core 3.2.2。#700）</param>
         /// <param name="statusCode">SAML2Enum.StatusCode</param>
         /// <param name="nameId">string（Assertion の NameID）</param>
         /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
@@ -94,7 +97,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
 
         /// <summary>CreatePostResponse（HTTP-POST で返す応答を作る。設定を読む版）</summary>
         /// <param name="acsUrl">string（応答を返す先。事前登録の ACS URL）</param>
-        /// <param name="inResponseTo">string（要求の ID）</param>
+        /// <param name="inResponseTo">string（要求の ID。null・空なら、InResponseTo 属性ごと省く。SAML 2.0 Core 3.2.2。#700）</param>
         /// <param name="statusCode">SAML2Enum.StatusCode</param>
         /// <param name="nameId">string（Assertion の NameID）</param>
         /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
@@ -129,7 +132,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>CreateRedirectResponse（HTTP-Redirect で返す応答を作る）</summary>
         /// <param name="issuer">string（IdP の entityID）</param>
         /// <param name="acsUrl">string（応答を返す先。事前登録の ACS URL。Destination・Recipient・Audience になる）</param>
-        /// <param name="inResponseTo">string（要求の ID）</param>
+        /// <param name="inResponseTo">string（要求の ID。null・空なら、InResponseTo 属性ごと省く。SAML 2.0 Core 3.2.2。#700）</param>
         /// <param name="statusCode">SAML2Enum.StatusCode（Success 以外なら Assertion を組み込まない）</param>
         /// <param name="nameId">string（Assertion の NameID）</param>
         /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
@@ -156,7 +159,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="issuer">string（IdP の entityID）</param>
         /// <param name="acsUrl">string（応答を返す先。事前登録の ACS URL。Destination・Recipient になる）</param>
         /// <param name="audience">string（Audience に入れる SP の entityID。null・空なら、従来どおり acsUrl）</param>
-        /// <param name="inResponseTo">string（要求の ID）</param>
+        /// <param name="inResponseTo">string（要求の ID。null・空なら、InResponseTo 属性ごと省く。SAML 2.0 Core 3.2.2。#700）</param>
         /// <param name="statusCode">SAML2Enum.StatusCode（Success 以外なら Assertion を組み込まない）</param>
         /// <param name="nameId">string（Assertion の NameID）</param>
         /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
@@ -194,7 +197,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <summary>CreatePostResponse（HTTP-POST で返す応答を作る）</summary>
         /// <param name="issuer">string（IdP の entityID）</param>
         /// <param name="acsUrl">string（応答を返す先。事前登録の ACS URL）</param>
-        /// <param name="inResponseTo">string（要求の ID）</param>
+        /// <param name="inResponseTo">string（要求の ID。null・空なら、InResponseTo 属性ごと省く。SAML 2.0 Core 3.2.2。#700）</param>
         /// <param name="statusCode">SAML2Enum.StatusCode（Success 以外なら Assertion を組み込まない）</param>
         /// <param name="nameId">string（Assertion の NameID）</param>
         /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>
@@ -218,7 +221,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="issuer">string（IdP の entityID）</param>
         /// <param name="acsUrl">string（応答を返す先。事前登録の ACS URL）</param>
         /// <param name="audience">string（Audience に入れる SP の entityID。null・空なら、従来どおり acsUrl）</param>
-        /// <param name="inResponseTo">string（要求の ID）</param>
+        /// <param name="inResponseTo">string（要求の ID。null・空なら、InResponseTo 属性ごと省く。SAML 2.0 Core 3.2.2。#700）</param>
         /// <param name="statusCode">SAML2Enum.StatusCode（Success 以外なら Assertion を組み込まない）</param>
         /// <param name="nameId">string（Assertion の NameID）</param>
         /// <param name="nameIDFormat">SAML2Enum.NameIDFormat</param>

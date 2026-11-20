@@ -311,11 +311,15 @@ allow_rebase_merge   false   … 同上
 
 | ファイル | 役割 |
 |---|---|
-| [`workflows/build-windows.yml`](.github/workflows/build-windows.yml) | 検証 3 本（ビルド・単体テスト・疎通）を windows-latest で。ビルドの後に依存パッケージの脆弱性も見る（#681）。続けて、コンテナが要る検証の net10.0 の分（`-Linux`・クロス DB・SpRp の E2E）を ubuntu-latest のジョブ（`linux`・`linux-crossdb`・`linux-kck`・`linux-stub`）で、net48 のクロス DB と、SpRp の外部ログインの E2E の net48・WebForms を、Windows ランナー＋WSL2 のジョブ（`win-crossdb`・`win-sts`）で回す（#703。[`BUILDING.md`](root/programs/BUILDING.md) 9 節） |
-| [`workflows/build-windows-vb.yml`](.github/workflows/build-windows-vb.yml) | **VB 版**のビルドと疎通を windows-latest で（手動のみ） |
+| [`workflows/build-and-test.yml`](.github/workflows/build-and-test.yml) | 検証 3 本（ビルド・単体テスト・疎通）を windows-latest で。ビルドの後に依存パッケージの脆弱性も見る（#681）。続けて、コンテナが要る検証の net10.0 の分（`-Linux`・クロス DB・SpRp の E2E）を ubuntu-latest のジョブ（`linux`・`linux-crossdb`・`linux-kck`・`linux-stub`）で、net48 のクロス DB と、SpRp の外部ログイン・CLI の E2E の net48・WebForms を、Windows ランナー＋WSL2 のジョブ（`win-crossdb`・`win-kck`・`win-stub`）で回す（#703。[`BUILDING.md`](root/programs/BUILDING.md) 9 節） |
+| [`workflows/build-and-test-vb.yml`](.github/workflows/build-and-test-vb.yml) | **VB 版**のビルドと疎通を windows-latest で（手動のみ） |
 | [`workflows/dependabot-retarget.yml`](.github/workflows/dependabot-retarget.yml) | Dependabot PR の向き先を `deps` へ変更 |
 | [`workflows/expectation-change.yml`](.github/workflows/expectation-change.yml) | PR のコミットに、トレーラーの無い期待値の変更が無いかを確かめる（#640。[`QUALITY.md`](QUALITY.md) 3 節の段 3） |
 | [`workflows/publish-wiki-site.yml`](.github/workflows/publish-wiki-site.yml) | Wiki を GitHub Pages へ公開する（変換は [`wiki-site/`](.github/wiki-site/README.md)） |
+
+> **ワークフローのファイル名と名前（`name:`）は揃えてある**（#716）。`build-and-test.yml`（`Build and test`）・`build-and-test-vb.yml`（`Build and test VB`）。
+> 旧い名前は、`build-windows.yml`・`build-windows-vb.yml`（名前は `Build VB on Windows`）。
+> **必須のチェックは、ファイル名でなくジョブ名 `build` なので、改名では外れない。** 実行の履歴は、旧い名前の側に残る（GitHub は、ファイルのパスで別のワークフローとして数える）。
 | [`secret_scanning.yml`](.github/secret_scanning.yml) | Secret scanning のアラートから除外するパス（1 節） |
 | [`ISSUE_TEMPLATE/`](.github/ISSUE_TEMPLATE) | Issue テンプレート 3 種 ＋ `config.yml`（5 節） |
 | [`pull_request_template.md`](.github/pull_request_template.md) | PR テンプレート（5 節） |
@@ -326,20 +330,20 @@ allow_rebase_merge   false   … 同上
 
 | ファイル | 発火 | `permissions` |
 |---|---|---|
-| `build-windows.yml` | `push: [deps]` / **`pull_request: [master]`** / 手動 / **週 1 回**（`schedule`。月曜 09:00 JST。既定のブランチ develop の版で動く。#681） | `contents: read` |
-| `build-windows-vb.yml` | **手動のみ**（`workflow_dispatch`） | `contents: read` |
+| `build-and-test.yml` | `push: [deps]` / **`pull_request: [master]`** / 手動 / **週 1 回**（`schedule`。月曜 09:00 JST。既定のブランチ develop の版で動く。#681） | `contents: read` |
+| `build-and-test-vb.yml` | **手動のみ**（`workflow_dispatch`） | `contents: read` |
 | `dependabot-retarget.yml` | `pull_request_target`（`opened`） | `pull-requests: write` |
 | `expectation-change.yml` | **`pull_request: [develop, master]`** | `contents: read` |
 | `publish-wiki-site.yml` | `gollum`（Wiki の更新） / `push: [develop]`（変換の更新のみ） / 手動 | `contents: read`。**配備のジョブだけ** `pages: write`・`id-token: write` |
 | CodeQL（既定セットアップ） | GitHub 管理。`push` / `pull_request` / 週次 | ワークフロー ファイルを持たない |
 
-`build-windows.yml` は既知の署名エラー（`MSB3482` / `MSB3325` / `MSB3321`）を除外する。
+`build-and-test.yml` は既知の署名エラー（`MSB3482` / `MSB3325` / `MSB3321`）を除外する。
 **ローカルと CI で出るコードが違う**理由はファイル冒頭のコメントにある。
 
-**`build-windows-vb.yml` を自動発火させていない理由**（#542）。
+**`build-and-test-vb.yml` を自動発火させていない理由**（#542）。
 
 - VB は C# からの移植で、**フレームワーク本体を共有している**。回帰は
-  `build-windows.yml` の 3 本でほぼ捕まる
+  `build-and-test.yml` の 3 本でほぼ捕まる
 - VB の疎通は C# 版と**同じ Northwind / Orders2 を使う**。同じジョブに入れるなら
   順次実行が必須で、並列にできない
 - `VB\1_DeleteDir.bat` は `bin` / `obj` に加えて `Build` / `Build_net48` も消す
@@ -347,9 +351,9 @@ allow_rebase_merge   false   … 同上
 除外条件（`-IgnoreErrors`）を持たないのは、**VB に ClickOnce 署名のプロジェクトも
 `.pfx` も無い**ため。単体テストの段が無いのは、VB にテスト プロジェクトが無いため。
 
-> **DB と `C:\root` の準備が `build-windows.yml` と重複している。意図的である。**
+> **DB と `C:\root` の準備が `build-and-test.yml` と重複している。意図的である。**
 > 共通化するには composite action か再利用可能ワークフローへ切り出すことになるが、
-> それは **master の必須チェックである `build-windows.yml` にも手を入れる**ことを意味する。
+> それは **master の必須チェックである `build-and-test.yml` にも手を入れる**ことを意味する。
 > 実際に CI を回して確かめるまでは触らない方針とし、まずは独立した形で置いた。
 
 **`expectation-change.yml` は数秒で終わる**（ビルドしない）。ジョブ名（チェック名）は `expectation-change`。
@@ -562,7 +566,7 @@ grep -A3 '^permissions:' .github/workflows/*.yml
 
 ### 2026-08-10 : master に必須チェックを設定
 
-`develop → master` の PR で `build-windows.yml` を発火させ（`pull_request: [master]`）、
+`develop → master` の PR で `build-and-test.yml` を発火させ（`pull_request: [master]`）、
 その成功をマージの条件にする。**リリースの関所。**
 
 **チェック名は `build`**（ワークフロー名 `Build and test`（#703 の前は `Build on Windows`）ではなく **ジョブ名**）。
@@ -719,18 +723,18 @@ PR #641 の `mergeStateStatus` は `CLEAN` のまま（必須のチェックを�
 #### 現状
 
 ```
-actions/checkout@v7                      GitHub 製・タグ（build-windows.yml・build-windows-vb.yml）
+actions/checkout@v7                      GitHub 製・タグ（build-and-test.yml・build-and-test-vb.yml）
 actions/upload-artifact@v7               GitHub 製・タグ（同上）
-actions/setup-dotnet@v6                  GitHub 製・タグ（build-windows.yml の Linux のジョブ。#703）
+actions/setup-dotnet@v6                  GitHub 製・タグ（build-and-test.yml の Linux のジョブ。#703）
 actions/download-artifact@v8             GitHub 製・タグ（同上）
 ```
 
 expectation-change.yml・publish-wiki-site.yml は SHA で固定済み（3 節）。
 
 **第三者製のアクションは使っていない**（SQL Server は、以前の `ankane/setup-sqlserver` をやめ、ISO を直接取って SHA-256 で確かめる）。
-**ほかのリポジトリ（LocalServicesOnDocker）を取るときは、コミットで固定する**（#703。`build-windows.yml` の `LSOD_REF`）。
+**ほかのリポジトリ（LocalServicesOnDocker）を取るときは、コミットで固定する**（#703。`build-and-test.yml` の `LSOD_REF`）。
 被害範囲も限定的である（`Secrets` は 0 件、`GITHUB_TOKEN` の既定は `read`、
-`build-windows.yml` の `permissions` は `contents: read`）。
+`build-and-test.yml` の `permissions` は `contents: read`）。
 
 #### 実施するときの順序
 
@@ -738,7 +742,7 @@ expectation-change.yml・publish-wiki-site.yml は SHA で固定済み（3 節�
 
 ```
 1. タグで指している actions/* を SHA へ書き換える（上の「現状」）
-2. build-windows.yml を手動実行して通ることを確かめる
+2. build-and-test.yml を手動実行して通ることを確かめる
 3. sha_pinning_required を true にする
 4. allowed_actions を selected にし、GitHub 製だけを許可する
 ```
