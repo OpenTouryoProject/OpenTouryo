@@ -26,6 +26,7 @@
 //*  2026/11/20  玄人 幸道         新規作成（#719。ph1：OpenIDConnect の 4 口・SendAsync・SAML2Metadata.GetAsync）
 //*  2026/11/20  玄人 幸道         ph2 の口（ClientRegistration・Grants・TokenManagement）を Cases に追加（#719）
 //*  2026/11/20  玄人 幸道         ph3 の口（AuthZRequest・DPoP・ExtensionGrants）を Cases に追加（#719）
+//*  2026/11/20  玄人 幸道         DPoP の nonce の送り直し・Device AuthZ の scope が null のテストを追加（#719 のレビュー）
 //**********************************************************************************
 
 using System;
@@ -266,6 +267,78 @@ namespace TestFramework.Authentication
                 Assert.That(arg.Count, Is.EqualTo(1), "引数の HttpClient で送ろうとした");
                 Assert.That(shared.Requests.Count, Is.EqualTo(0), "共有には倒さない");
             }
+        }
+
+        /// <summary>要求の本文を控え、順に決めた応答を返す HttpMessageHandler</summary>
+        private sealed class ScriptedHandler : HttpMessageHandler
+        {
+            private readonly Func<int, HttpResponseMessage> _respond;
+
+            /// <summary>受けた要求の本文</summary>
+            public List<string> Bodies = new List<string>();
+
+            public ScriptedHandler(Func<int, HttpResponseMessage> respond)
+            {
+                this._respond = respond;
+            }
+
+            protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+            {
+                this.Bodies.Add(request.Content == null ? null : await request.Content.ReadAsStringAsync());
+                return this._respond(this.Bodies.Count);
+            }
+        }
+
+        /// <summary>
+        /// SendWithDPoPAsync：use_dpop_nonce で断られたときの送り直しも、引数の HttpClient で行う（共有には倒さない）。
+        /// 送り直しが共有に倒れる退行を捕まえる。#719 のレビュー
+        /// </summary>
+        [Test]
+        [Basis("RFC 9449 8（use_dpop_nonce で断られたら、受け取った nonce を入れて送り直す）")]
+        [Basis("設計：OAuth2AndOIDCClient.SendWithDPoPAsync（HttpClient 引数）の remarks（nonce の送り直しも、同じ HttpClient で行う）")]
+        public void SendWithDPoPAsync_NonceRetry_UsesArgument()
+        {
+            // nonce は、オリジンごとに static に覚えられる。ほかのテストと干渉しないよう、このテストだけのオリジンを使う。
+            Uri uri = new Uri("https://dpop-" + Guid.NewGuid().ToString("N") + ".example.com/token");
+
+            ScriptedHandler arg = new ScriptedHandler(n =>
+            {
+                if (n == 1)
+                {
+                    HttpResponseMessage first = StubHttp.Json(HttpStatusCode.BadRequest, "{\"error\":\"use_dpop_nonce\"}");
+                    first.Headers.TryAddWithoutValidation("DPoP-Nonce", "n1");
+                    return first;
+                }
+
+                return StubHttp.Json(HttpStatusCode.OK, "{}");
+            });
+
+            using (StubHttp shared = new StubHttp((req, body) => StubHttp.Json(HttpStatusCode.OK, "{}")))
+            {
+                HttpResponseMessage res = OAuth2AndOIDCClient.SendWithDPoPAsync(
+                    () => new HttpRequestMessage(HttpMethod.Post, uri), DPoPKey.Signer, DPoPKey.Public, null,
+                    new HttpClient(arg, false)).Result;
+
+                Assert.That(res.StatusCode, Is.EqualTo(HttpStatusCode.OK), "送り直した 2 回目の応答");
+                Assert.That(arg.Bodies.Count, Is.EqualTo(2), "引数の HttpClient で、断られた分と送り直した分");
+                Assert.That(shared.Requests.Count, Is.EqualTo(0), "送り直しも、共有には倒さない");
+            }
+        }
+
+        /// <summary>
+        /// DeviceAuthZRequestAsync（HttpClient 引数）：scope に null を渡すと、scope を受けない版と同じ本文（client_id だけ）になる。
+        /// scope を受けない版に HttpClient 版を足していない代わりの確認。#719 のレビュー
+        /// </summary>
+        [Test]
+        [Basis("RFC 8628 3.1（scope は任意）")]
+        [Basis("設計：OAuth2AndOIDCClient.DeviceAuthZRequestAsync（HttpClient 引数）の remarks（scope に null を渡せば、scope を送らない）")]
+        public void DeviceAuthZRequestAsync_NullScope_SendsClientIdOnly()
+        {
+            ScriptedHandler arg = new ScriptedHandler(n => StubHttp.Json(HttpStatusCode.OK, "{}"));
+
+            OAuth2AndOIDCClient.DeviceAuthZRequestAsync(Endpoint, "cid", null, new HttpClient(arg, false)).Wait();
+
+            Assert.That(arg.Bodies, Is.EqualTo(new List<string> { "client_id=cid" }));
         }
 
         /// <summary>SendAsync(HttpRequestMessage, HttpClient)：request が null なら ArgumentNullException（従来の版と同じ）。</summary>
