@@ -24,6 +24,7 @@
 //*  日時        更新者            内容
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/11/20  玄人 幸道         新規作成（#719。ph1：OpenIDConnect の 4 口・SendAsync・SAML2Metadata.GetAsync）
+//*  2026/11/20  玄人 幸道         ph2 の口（ClientRegistration・Grants・TokenManagement）を Cases に追加（#719）
 //**********************************************************************************
 
 using System;
@@ -92,7 +93,47 @@ namespace TestFramework.Authentication
             yield return Case("GetDiscoveryDocumentAsync", c => OAuth2AndOIDCClient.GetDiscoveryDocumentAsync(Endpoint, c));
             yield return Case("GetRegistrationEndpointAsync", c => OAuth2AndOIDCClient.GetRegistrationEndpointAsync(Endpoint, c));
             yield return Case("SAML2Metadata.GetAsync", c => SAML2Metadata.GetAsync(Endpoint.AbsoluteUri, "https://op.example.com", c));
+
+            // ph2：ClientRegistration（DCR）
+            yield return Case("RegisterClientAsync", c => OAuth2AndOIDCClient.RegisterClientAsync(Endpoint, "{}", "iat", c));
+            yield return Case("ReadClientRegistrationAsync", c => OAuth2AndOIDCClient.ReadClientRegistrationAsync(Endpoint, "rat", c));
+            yield return Case("UpdateClientRegistrationAsync", c => OAuth2AndOIDCClient.UpdateClientRegistrationAsync(Endpoint, "rat", "{}", c));
+            yield return Case("DeleteClientRegistrationAsync", c => OAuth2AndOIDCClient.DeleteClientRegistrationAsync(Endpoint, "rat", c));
+
+            // ph2：Grants
+            yield return Case("GetAccessTokenByCodeAsync(secret)", c => OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
+                Endpoint, "cid", "sec", "https://rp/cb", "code", Basic, c));
+            yield return Case("GetAccessTokenByCodeAsync(PKCE)", c => OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
+                Endpoint, "cid", "sec", "https://rp/cb", "code", "verifier", Post, c));
+            yield return Case("GetAccessTokenByCodeAsync(assertion)", c => OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
+                Endpoint, "https://rp/cb", "code", "assertion", PrivateKeyJwt, c));
+            yield return Case("GetAccessTokenByCodeWithPkceAsync", c => OAuth2AndOIDCClient.GetAccessTokenByCodeWithPkceAsync(
+                Endpoint, "https://rp/cb", "code", "verifier", "assertion", c));
+            yield return Case("GetAccessTokenByCodeAsync(any method)", c => OAuth2AndOIDCClient.GetAccessTokenByCodeAsync(
+                Endpoint, "cid", "sec", "assertion", "https://rp/cb", "code", "verifier", Post, c));
+            yield return Case("ClientCredentialsGrantAsync", c => OAuth2AndOIDCClient.ClientCredentialsGrantAsync(
+                Endpoint, "cid", "sec", "scope", c));
+            yield return Case("ResourceOwnerPasswordCredentialsGrantAsync", c => OAuth2AndOIDCClient.ResourceOwnerPasswordCredentialsGrantAsync(
+                Endpoint, "cid", "sec", "user", "pass", "scope", c));
+
+            // ph2：TokenManagement
+            yield return Case("UpdateAccessTokenByRefreshTokenAsync(secret)", c => OAuth2AndOIDCClient.UpdateAccessTokenByRefreshTokenAsync(
+                Endpoint, "cid", "sec", "rt", c));
+            yield return Case("UpdateAccessTokenByRefreshTokenAsync(any method)", c => OAuth2AndOIDCClient.UpdateAccessTokenByRefreshTokenAsync(
+                Endpoint, "cid", "sec", "assertion", "rt", Post, c));
+            yield return Case("RevokeTokenAsync(secret)", c => OAuth2AndOIDCClient.RevokeTokenAsync(
+                Endpoint, "cid", "sec", "tok", "access_token", Basic, c));
+            yield return Case("RevokeTokenAsync(any method)", c => OAuth2AndOIDCClient.RevokeTokenAsync(
+                Endpoint, "cid", "sec", "assertion", "tok", "access_token", Post, c));
+            yield return Case("IntrospectTokenAsync(secret)", c => OAuth2AndOIDCClient.IntrospectTokenAsync(
+                Endpoint, "cid", "sec", "tok", "access_token", Basic, c));
+            yield return Case("IntrospectTokenAsync(any method)", c => OAuth2AndOIDCClient.IntrospectTokenAsync(
+                Endpoint, "cid", "sec", "assertion", "tok", "access_token", Post, c));
         }
+
+        private const OAuth2AndOIDCEnum.AuthMethods Basic = OAuth2AndOIDCEnum.AuthMethods.client_secret_basic;
+        private const OAuth2AndOIDCEnum.AuthMethods Post = OAuth2AndOIDCEnum.AuthMethods.client_secret_post;
+        private const OAuth2AndOIDCEnum.AuthMethods PrivateKeyJwt = OAuth2AndOIDCEnum.AuthMethods.private_key_jwt;
 
         private static TestCaseData Case(string name, Func<HttpClient, Task> call)
         {
