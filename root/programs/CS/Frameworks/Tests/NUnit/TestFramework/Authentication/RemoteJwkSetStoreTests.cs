@@ -1068,6 +1068,84 @@ namespace TestFramework.Authentication
             Assert.That(slow.Count, Is.EqualTo(1), "slow の取得は 1 本のまま");
         }
 
+        /// <summary>discovery の経路でも、絞った HttpClient が断られても、共有側の呼び出しを下限で止めない（#718 のレビュー）。</summary>
+        [Test]
+        [Basis("#718 案 (a)（絞った HttpClient の取得が断られても、共有の HttpClient の呼び出しを巻き込まない。discovery の経路）")]
+        public void HttpClientArgument_Discovery_RejectedDoesNotBlockOtherClient()
+        {
+            string kid = (string)this._jwk["kid"];
+            CountingHandler rejected = this.RejectingHandler();
+            CountingHandler ok = this.OkHandler();
+
+            Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(
+                Discovery, Issuer, kid, new HttpClient(rejected, false)).Result, Is.Null);
+            Assert.That(rejected.Urls, Is.EqualTo(new List<string> { Discovery }), "discovery で断られ、jwks_uri へは行かない");
+
+            Assert.That(RemoteJwkSetStore.GetJwkByDiscoveryAsync(
+                Discovery, Issuer, kid, new HttpClient(ok, false)).Result, Is.Not.Null, "断られた取得に引きずられない");
+            Assert.That(ok.Urls, Is.EqualTo(new List<string> { Discovery, JwksUri }));
+        }
+
+        /// <summary>RefillInBackground も、取得中のまとめと下限は組ごと。別の HttpClient は、同じ URL でも取りに行く（#718 のレビュー）。</summary>
+        [Test]
+        [Basis("#718 案 (a)（組ごとのまとめ・下限）。RefillInBackground の口")]
+        public void HttpClientArgument_RefillInBackground_IsPerPair()
+        {
+            CountingHandler a = this.OkHandler();
+            CountingHandler b = this.OkHandler();
+            HttpClient clientA = new HttpClient(a, false);
+            HttpClient clientB = new HttpClient(b, false);
+
+            RemoteJwkSetStore.RefillInBackground(JwksUri, clientA);
+
+            for (int i = 0; i < 100 && a.Urls.Count < 1; i++)
+            {
+                Thread.Sleep(50);
+            }
+
+            Assert.That(a.Urls.Count, Is.EqualTo(1));
+
+            // 同じ組は、下限の内側なので取りに行かない
+            RemoteJwkSetStore.RefillInBackground(JwksUri, clientA);
+            Thread.Sleep(200);
+            Assert.That(a.Urls.Count, Is.EqualTo(1));
+
+            // 別の組は、下限の内側でも取りに行く
+            RemoteJwkSetStore.RefillInBackground(JwksUri, clientB);
+
+            for (int i = 0; i < 100 && b.Urls.Count < 1; i++)
+            {
+                Thread.Sleep(50);
+            }
+
+            Assert.That(b.Urls.Count, Is.EqualTo(1));
+        }
+
+        /// <summary>
+        /// 下限を過ぎた組の記録は、取得のたびに掃除する（呼び出しごとに作られた HttpClient を、持ち続けない）。
+        /// 内部の記録の件数を、リフレクションで数える。
+        /// </summary>
+        [Test]
+        [Observation("取り直しの記録（_attempted）が、下限を過ぎた組を掃除すること。内部の記録を数えるので、設計の約束ではなく今の実装を写した")]
+        public void HttpClientArgument_ExpiredPairs_AreSwept()
+        {
+            System.Reflection.FieldInfo field = typeof(RemoteJwkSetStore).GetField(
+                "_attempted", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static);
+            Assert.That(field, Is.Not.Null);
+            System.Collections.ICollection attempted = (System.Collections.ICollection)field.GetValue(null);
+
+            RemoteJwkSetStore.MinRefetchInterval = TimeSpan.FromMilliseconds(50);
+
+            for (int i = 0; i < 5; i++)
+            {
+                // 呼び出しごとに HttpClient を作る（kid を偽って、毎回取りに行かせる）
+                RemoteJwkSetStore.GetJwkAsync(JwksUri, "unknown" + i, new HttpClient(this.OkHandler(), false)).Wait();
+                Thread.Sleep(80);
+            }
+
+            Assert.That(attempted.Count, Is.LessThanOrEqualTo(2), "下限を過ぎた組は掃除され、増え続けない");
+        }
+
         #endregion
     }
 }

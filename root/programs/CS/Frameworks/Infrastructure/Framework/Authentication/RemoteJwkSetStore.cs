@@ -69,6 +69,14 @@ namespace Touryo.Infrastructure.Framework.Authentication
     /// **取得中のまとめと取り直しの下限は、（URL, HttpClient）の組ごと**に数える（絞った HttpClient の取得が断られても、
     /// 共有の HttpClient の取得を巻き込まない）。**取れた鍵のキャッシュは URL ごとに共有する**（同じ URL なら同じ中身なので）。
     ///
+    /// **共有の帰結**：ある HttpClient で取れた鍵は、同じ URL を別の HttpClient で呼んだ呼び出しも、取りに行かずに引ける。
+    /// 例えば、共有の HttpClient で上流の jwks_uri を取った後に、同じ URL を絞った HttpClient で呼んでも、取れた鍵を引ける
+    /// （取得先の絞りを迂回するわけではなく、鍵は公開情報だが、「絞った HttpClient では、その URL の内容を読めない」とは言えない）。
+    ///
+    /// **HttpClient は使い回すこと**（HttpClient の通常の使い方でもある）。取得中のまとめと下限は HttpClient の参照で数えるので、
+    /// 呼び出しのたびに新しい HttpClient を作って渡すと、毎回別の組になり、どちらも効かない（kid を偽った要求で取得を起こされうる）。
+    /// 下限を過ぎた組の記録は、取得のたびに掃除する（呼び出しごとの HttpClient を持ち続けない）。
+    ///
     /// **同期の経路では待たない。** net48 の ASP.NET では、同期の経路で await を待つと、
     /// 継続が AspNetSynchronizationContext に積まれ、その順番を握っている自分が待つので止まる。
     /// そこでキャッシュを読むだけにして、足りなければ背景で補充する（その 1 本は断り、次で通す）。
@@ -333,7 +341,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 // 発行者が違う・読めないときは、Store(null) で時刻だけ進め、PickOne が null を返す（従来と同じ結果）。
                 await RemoteJwkSetStore.FetchOnceAsync(discoveryUrl, client, async () =>
                 {
-                    string jwksUri = await RemoteJwkSetStore.ResolveJwksUriAsync(
+                    string jwksUri = await RemoteJwkSetStore.ResolveJwksUriCoreAsync(
                         discoveryUrl, expectedIssuer, client).ConfigureAwait(false);
 
                     if (string.IsNullOrEmpty(jwksUri))
@@ -368,11 +376,22 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// <param name="httpClient">HttpClient（この呼び出しで取りに行くもの。null なら HttpClient プロパティ、それも null なら共有の OAuth2AndOIDCClient.HttpClient）</param>
         /// <returns>jwks_uri（issuer が違う・読めなければ空文字）</returns>
         /// <remarks>自由に利用できる。キャッシュしない。</remarks>
-        public static async Task<string> ResolveJwksUriAsync(
+        public static Task<string> ResolveJwksUriAsync(
             string discoveryUrl, string expectedIssuer, HttpClient httpClient)
         {
-            JObject discovery = await RemoteJwkSetStore.GetJsonAsync(
-                discoveryUrl, RemoteJwkSetStore.Resolve(httpClient)).ConfigureAwait(false);
+            return RemoteJwkSetStore.ResolveJwksUriCoreAsync(
+                discoveryUrl, expectedIssuer, RemoteJwkSetStore.Resolve(httpClient));
+        }
+
+        /// <summary>discovery を読み、jwks_uri を返す（HttpClient は解決済みのもの）</summary>
+        /// <param name="discoveryUrl">string</param>
+        /// <param name="expectedIssuer">string</param>
+        /// <param name="client">HttpClient（Resolve 済み。null は共有。ここで解決し直さない。組の定義とずれないように）</param>
+        /// <returns>jwks_uri（issuer が違う・読めなければ空文字）</returns>
+        private static async Task<string> ResolveJwksUriCoreAsync(
+            string discoveryUrl, string expectedIssuer, HttpClient client)
+        {
+            JObject discovery = await RemoteJwkSetStore.GetJsonAsync(discoveryUrl, client).ConfigureAwait(false);
 
             if (discovery == null)
             {
@@ -737,7 +756,33 @@ namespace Touryo.Infrastructure.Framework.Authentication
                     Issuer = issuer
                 };
 
-                RemoteJwkSetStore._attempted[new FetchKey(key, httpClient)] = DateTime.UtcNow;
+                DateTime now = DateTime.UtcNow;
+                RemoteJwkSetStore._attempted[new FetchKey(key, httpClient)] = now;
+
+                // 下限を過ぎた組は、消しても挙動が変わらない（どのみち取り直してよい）。増え続けて、
+                // 呼び出しごとに作られた HttpClient を持ち続けないよう、ここで掃除する（#718 のレビュー）。
+                List<FetchKey> expired = null;
+
+                foreach (KeyValuePair<FetchKey, DateTime> pair in RemoteJwkSetStore._attempted)
+                {
+                    if (RemoteJwkSetStore._minRefetchInterval < (now - pair.Value))
+                    {
+                        if (expired == null)
+                        {
+                            expired = new List<FetchKey>();
+                        }
+
+                        expired.Add(pair.Key);
+                    }
+                }
+
+                if (expired != null)
+                {
+                    foreach (FetchKey expiredKey in expired)
+                    {
+                        RemoteJwkSetStore._attempted.Remove(expiredKey);
+                    }
+                }
             }
         }
 
