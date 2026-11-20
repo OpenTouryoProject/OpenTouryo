@@ -336,7 +336,7 @@ Dependabot が PR を作成（base: develop）
       │ ⓪ 人が deps を develop の先端に合わせる ← マージの前に必ず行う
       │ ② 人がマージ
       ▼
-   deps ─── ③ .github/workflows/build-windows.yml が windows-latest で検証
+   deps ─── ③ .github/workflows/build-and-test.yml が windows-latest で検証
       │ ④ 結果が OK なら、人が PR を作って develop へマージ
       ▼
   develop
@@ -344,7 +344,7 @@ Dependabot が PR を作成（base: develop）
 
 ①③がワークフロー、⓪②④が人の作業。`AGENTS.md` の線引き（マージは人が行う）に従う。
 
-> **VB 側は別のワークフロー**（`.github/workflows/build-windows-vb.yml`）で、
+> **VB 側は別のワークフロー**（`.github/workflows/build-and-test-vb.yml`）で、
 > **手動実行（`workflow_dispatch`）だけ**である。この流れには載せていない。
 > 理由と、DB の準備を重複させている事情は 10 節と
 > [`GitHubUsage.md`](../../GitHubUsage.md) 3 節。
@@ -399,7 +399,7 @@ PR ─┘
 **ソースだけ先にコミットすると③が必ず赤くなる**（③は期待値を `HEAD` から取るため）。
 実際に `System.Security.Cryptography.Xml` は `EncAndDecUtilCUI` の期待値に影響し得る。
 
-**③ 同時実行を制御していない。** `build-windows.yml` に `concurrency` の指定が無いため、
+**③ 同時実行を制御していない。** `build-and-test.yml` に `concurrency` の指定が無いため、
 連続してマージすると**古いコミットの run も最後まで走る**（12 分 × 本数）。
 「まとめて最後だけ見る」を常用するなら次を足すと無駄が消える。
 
@@ -418,10 +418,10 @@ Dependabot は**古い PR を閉じて新しい PR を開く**。既にマージ
 
 ### 任意のブランチで手動実行する
 
-`build-windows.yml` は `workflow_dispatch` を持つので、**`deps` 以外のブランチでも同じ検証を回せる。**
+`build-and-test.yml` は `workflow_dispatch` を持つので、**`deps` 以外のブランチでも同じ検証を回せる。**
 
 ```
-Actions → Build and test（#703 の前は Build on Windows）→ Run workflow → Branch: <任意のブランチ>
+Actions → Build and test（#703 の前は Build on Windows。#716 の前のファイル名は build-windows.yml）→ Run workflow → Branch: <任意のブランチ>
 ```
 
 実行されるのは**選んだブランチ側の定義**。`deps` への push と同じ内容
@@ -432,7 +432,7 @@ Actions → Build and test（#703 の前は Build on Windows）→ Run workflow 
 | 条件 | 内容 |
 |---|---|
 | `develop`（既定ブランチ）に `workflow_dispatch` があること | 「Run workflow」ボタンの表示条件 |
-| **選ぶブランチにも `.github/workflows/build-windows.yml` があること** | 定義はそのブランチから読まれるため |
+| **選ぶブランチにも `.github/workflows/build-and-test.yml` があること** | 定義はそのブランチから読まれるため |
 
 2 つ目が実務上の注意になる。**`develop` より前に分岐した古いブランチにはファイルが無い**ので、
 選んでも動かない。先に `develop` を取り込むこと。
@@ -530,7 +530,7 @@ Windows の net48 と Linux のコンテナを、同じランナーで使える�
 
 **`windows-latest` は Linux コンテナを動かせない**（下の「SQL Server をどう用意するか」）。そこで、コンテナが要る検証は `ubuntu-latest` のジョブで回す。
 
-- **同じワークフロー（`build-windows.yml`）に置く。** Windows のジョブ（`build`）がビルドした net10.0 の出力を artifact にし、
+- **同じワークフロー（`build-and-test.yml`）に置く。** Windows のジョブ（`build`）がビルドした net10.0 の出力を artifact にし、
   Linux のジョブが受け取ってそのまま回す（`needs: build`）。**artifact は同じ実行の中でしか渡せない**ので、ファイルを分けない
 - **Linux ではビルドしない。** net10.0 の DLL は OS によらないので、Windows で作ったものを Linux へ配置する実際の使われ方をそのまま確かめられる
 - **判定は各スクリプトが行う**（`2_RunAllTests.ps1` は Linux の上では `-Linux` か `-CrossDb` を直接回す。E2E は Linux の上では net10.0 の対象だけに絞る）
@@ -1197,7 +1197,7 @@ Microsoft.Data.SqlClient.SNI                6.0.2   （SqlClient 7.0.0 でも据
 
 終了コードは `0` = 無し、`1` = あり（`-Check` のとき）、`2` = 脆弱性データを取得できない。
 **`0_RunAll.ps1` は最後に自動で回して警告する**（合否には数えない）。
-**CI（`build-windows.yml`）も、ビルドの後に回す**（#681）。`deps` への push・master 宛の PR では警告に留め、
+**CI（`build-and-test.yml`）も、ビルドの後に回す**（#681）。`deps` への push・master 宛の PR では警告に留め、
 週 1 回（`schedule`）・手動の実行では、終了コードが `0` でなければ（`2` を含む）ジョブを落とす。結果はジョブのまとめに出る。
 
 ### ビルドの警告（NU1901〜NU1904）だけでは足りない

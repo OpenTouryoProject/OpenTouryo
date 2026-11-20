@@ -240,7 +240,7 @@ https://github.com/OpenTouryoProject/OpenTouryo/security/advisories/new
 （#610 の時点で、レビュー済みのアドバイザリから 1.5 日経ってもアラートが出ていなかった）。
 仕組みは [`BUILDING.md`](root/programs/BUILDING.md) 13 節。
 
-**CI（`build-windows.yml`）も、ビルドの後に `CheckVulnerability.ps1` を回す**（#681）。
+**CI（`build-and-test.yml`）も、ビルドの後に `CheckVulnerability.ps1` を回す**（#681）。
 `deps` への push・master 宛の PR では警告（ジョブのまとめ）に留め、**週 1 回・手動の実行では落とす**（失敗の通知で気付く）。
 CI の警告・失敗で知ったときも、下の手順で直す。
 
@@ -417,7 +417,7 @@ Copyright ブロックの扱い、`ArgumentException` 系の引数の順、`.bat
 | リソース | 回すとき |
 |---|---|
 | クロス DB（Oracle / MySQL / PostgreSQL のコンテナ） | Dam・SQL の生成（`Public/Db`、`Dam*`）に触れた fixed と、リリース |
-| VB 側（`-Lang VB`） | **VB のソースに触れた fixed と、リリース**（C# の基盤だけなら回さない。回帰は C# の 3 本でほぼ捕まる。#542。リリースの前は GHA の `build-windows-vb.yml` を手動で回すか、手元で `-Lang VB`） |
+| VB 側（`-Lang VB`） | **VB のソースに触れた fixed と、リリース**（C# の基盤だけなら回さない。回帰は C# の 3 本でほぼ捕まる。#542。リリースの前は GHA の `build-and-test-vb.yml` を手動で回すか、手元で `-Lang VB`） |
 | Linux（`-Linux`。net10.0 の出力を Linux のコンテナで回す） | Public・Public.Security に触れた fixed と、リリース（`SelectTargets.ps1` が付ける。#632） |
 | 管理者権限（イベント ログの NUnit） | `CustomEventLog` に触れたとき。手元が管理者でなければ、回せていないと報告する |
 

@@ -42,7 +42,7 @@
       System.Web / System.Web.Extensions は csproj の参照だけで、
       HttpContext も sessionState も使っていない。
       CI も、このスクリプトの**後**で aspnet_state を開始している
-      （build-windows.yml）。要るのは 3_SmokeTest.ps1 の Web アプリだけ。
+      （build-and-test.yml）。要るのは 3_SmokeTest.ps1 の Web アプリだけ。
 
     ＜副作用＞
       ワーキング ツリーの Result*.txt が書き換わる。これは従来のバッチ運用と同じで、
@@ -84,7 +84,7 @@
 
     ＜Linux の上で動かしたとき（#703 ph2）＞
       上の 3. の net10.0 の回だけを、ビルドせずに回す。受け取った出力（NUnit\TestPublicDb\bin\Debug\net10.0）の
-      DLL を、dotnet test で直接回す（CI の build-windows.yml の linux-crossdb が artifact で渡す）。
+      DLL を、dotnet test で直接回す（CI の build-and-test.yml の linux-crossdb が artifact で渡す）。
       net48 と 2.（SQL Server だけの回）は回さない。カバレッジは取らない。
       -Linux・-Coverage とは同時に指定できない（-Only も、対象が無いので空振りで止まる）。
 .PARAMETER Coverage
@@ -125,7 +125,7 @@
       **docker を使わずに、この機械で直接回す。** 対象は上の 2 件だけで、ビルドはしない
       （Windows の対象は外す。ビルドしないまま比べると、回していないのに OK になるため）。
       net10.0 の出力（Golden\EncAndDecUtilCUI\core100\bin・NUnit\TestPublic\bin）は、
-      Windows でビルドしたものを置いておく（CI の build-windows.yml が artifact で渡す）。
+      Windows でビルドしたものを置いておく（CI の build-and-test.yml が artifact で渡す）。
       -Coverage は指定できない。-CrossDb は、-Linux を付けずに指定する（-CrossDb の説明）。
 
     ＜なぜビルドした出力をそのまま使うか＞
@@ -499,7 +499,7 @@ if (-not ($Linux -or $Coverage))
 # **Linux の上では、-Linux の対象だけを、ビルドせずに回す。**（#703）
 #   Windows の対象（バッチでビルドして回すもの）は外す。外さないと、ビルドしないまま
 #   ワーキング ツリーの Result*.txt（取りたての作業ツリーでは HEAD と同じ）と比べ、回していないのに OK になる。
-#   ビルドの出力（net10.0）は、Windows でビルドしたものを受け取って置いておく（CI の build-windows.yml）。
+#   ビルドの出力（net10.0）は、Windows でビルドしたものを受け取って置いておく（CI の build-and-test.yml）。
 #   -CrossDb も回せる（#703 ph2）。対象は TestPublicDb の net10.0 だけで、DBMS ごとの回（下の「クロス DB」）だけを回す
 #   （net48 は Windows でしか動かない。SQL Server だけの回は、DBMS ごとの回が SQL Server の分も含むので回さない）。
 if ($onLinux)

@@ -2,7 +2,7 @@
 #
 # ＜なぜ別ワークフローで、手動だけなのか＞（#542）
 #   ・VB は C# からの移植で、フレームワーク本体を共有している。回帰は
-#     build-windows.yml の 3 本でほぼ捕まる。VB 固有の回帰は「VB プロジェクトが
+#     build-and-test.yml の 3 本でほぼ捕まる。VB 固有の回帰は「VB プロジェクトが
 #     建つか」で、これはビルドで分かる。
 #   ・VB の疎通は C# 版と同じ Northwind / Orders2 を使う。同じジョブに入れるなら
 #     順次実行が必須で、並列にできない。
@@ -20,22 +20,24 @@
 #
 # ＜-IgnoreErrors が無い理由＞
 #   VB には ClickOnce 署名のプロジェクト（WSClientWinCone_sample）も .pfx も無い。
-#   build-windows.yml が除外している MSB3482 / MSB3325 / MSB3321 は出ない。
+#   build-and-test.yml が除外している MSB3482 / MSB3325 / MSB3321 は出ない。
 #
 # ＜Set-Culture をしない理由＞
-#   build-windows.yml のロケール設定は 2_RunAllTests.ps1 の期待値のためのもので、
+#   build-and-test.yml のロケール設定は 2_RunAllTests.ps1 の期待値のためのもので、
 #   本ワークフローには単体テストが無い。疎通の判定は状態コードと、
 #   サンプルのソースに直接書かれた文字列（"件のデータがあります"）を見るだけで、
 #   OS のロケールに依存しない。
 #
-# ＜DB と C:\root の準備が build-windows.yml と重複している＞
+# ＜DB と C:\root の準備が build-and-test.yml と重複している＞
 #   **意図的に写している。** 共通化するには composite action か再利用可能
-#   ワークフローへ切り出すことになるが、それは build-windows.yml（master の
+#   ワークフローへ切り出すことになるが、それは build-and-test.yml（master の
 #   必須チェック）にも手を入れることを意味する。実際に CI を回して確かめるまでは
 #   触らない方針とし、まずは独立した形で置く。
-#   **準備の理由と経緯は build-windows.yml と BUILDING.md 9 節が一次情報。**
+#   **準備の理由と経緯は build-and-test.yml と BUILDING.md 9 節が一次情報。**
 
-name: Build VB on Windows
+# 名前・ファイル名は、build-and-test.yml に合わせた（#716。旧 Build VB on Windows・build-windows-vb.yml）。
+# 疎通（3_SmokeTest.ps1）も回すので、名前に test を含める。
+name: Build and test VB
 
 on:
   workflow_dispatch:
@@ -74,7 +76,7 @@ jobs:
       # ------------------------------------------------------------------
       # 疎通のための SQL Server
       # ------------------------------------------------------------------
-      # build-windows.yml の同名のステップと同じ（理由もそちら）。
+      # build-and-test.yml の同名のステップと同じ（理由もそちら）。
       - name: Install SQL Server
         # 取得が止まると、打ち切られずにジョブ全体の timeout-minutes（90）まで待ち続けるため、ここで切る。
         timeout-minutes: 20
