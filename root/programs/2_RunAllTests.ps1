@@ -194,6 +194,7 @@
      2026/11/17  玄人 幸道         LocalServicesOnDocker のスクリプトを tools\ の下から探すようにした（無ければ直下。#704）
      2026/11/17  玄人 幸道         Linux の上でも -CrossDb の net10.0 の回を、ビルドせずに直接回せるようにした（#703）
      2026/11/19  玄人 幸道         -Wsl2 を追加した（docker コマンドが在っても、LocalServicesOnDocker を WSL2 版で動かす。windows-latest 用。#712）
+     2026/11/20  玄人 幸道         SQL Server を起動した直後に、接続を受けられるまで待つようにした（前提の確認が 5 秒で切れていた。#706）
 #>
 [CmdletBinding()]
 param(
@@ -711,6 +712,19 @@ function Test-LocalPort([int]$Port, [int]$TimeoutMs = 2000)
     finally { $c.Dispose() }
 }
 
+# SQL Server が接続を受けられるまで、数回まで待つ（#706）
+#   起動した直後は、準備待ちを終えていても、まだ接続を受けられないことがある（VM の負荷）。
+#   一度つながれば応答は戻るので、待ち直す。つながれば true、待ちきれなければ false。
+function Wait-SqlServer([string]$ConnString, [int]$Tries = 4, [int]$TimeoutSec = 15)
+{
+    for ($i = 1; $i -le $Tries; $i++)
+    {
+        if ((Test-SqlServer $ConnString $TimeoutSec).Ok) { return $true }
+        Write-Host ("  SQL Server の応答待ち（{0} 回目）..." -f $i) -ForegroundColor Yellow
+    }
+    return $false
+}
+
 # ------------------------------------------------------------------
 # 前提の確認（#588）
 # ------------------------------------------------------------------
@@ -739,6 +753,11 @@ if ($crossDbRun -and -not (Test-SqlServer (Get-ConnectionStringFromConfig $dbCon
         exit 1
     }
     $startedSqlServer = $true
+
+    # **起動した直後は、接続を受けられないことがある。** 前提の確認（Show-Prerequisites）は 1 回（5 秒）しか見ないので、
+    #   先に待つ（待たないと、結果は OK で終わるのに「前提が足りません」と出ていた。#706）。
+    #   待ちきれなければ、そのまま進み、前提の確認が不足を報告する。
+    [void](Wait-SqlServer (Get-ConnectionStringFromConfig $dbConfig))
 }
 
 if ($needDb)
@@ -1272,12 +1291,7 @@ elseif ($crossDbRun)
             #   DBMS を起動した直後は VM の負荷が高く、SQL Server のログインがタイムアウトして
             #   SQL Server 側のテストが落ちたことがある（2026-10-18、MySQL の起動直後）。
             #   一度つながれば応答は戻るので、数回まで待ってから回す。
-            $sqlOk = $false
-            for ($i = 1; $i -le 4 -and -not $sqlOk; $i++)
-            {
-                $sqlOk = (Test-SqlServer (Get-ConnectionStringFromConfig $dbConfig) 15).Ok
-                if (-not $sqlOk) { Write-Host ("  SQL Server の応答待ち（{0} 回目）..." -f $i) -ForegroundColor Yellow }
-            }
+            $sqlOk = Wait-SqlServer (Get-ConnectionStringFromConfig $dbConfig)
             if (-not $sqlOk)
             {
                 Write-Host "  **SQL Server が応答しません。この回の結果は当てになりません。**" -ForegroundColor Red
