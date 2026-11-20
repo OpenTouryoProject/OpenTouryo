@@ -25,20 +25,25 @@
 //*  ----------  ----------------  -------------------------------------------------
 //*  2026/11/20  玄人 幸道         新規作成（#719。ph1：OpenIDConnect の 4 口・SendAsync・SAML2Metadata.GetAsync）
 //*  2026/11/20  玄人 幸道         ph2 の口（ClientRegistration・Grants・TokenManagement）を Cases に追加（#719）
+//*  2026/11/20  玄人 幸道         ph3 の口（AuthZRequest・DPoP・ExtensionGrants）を Cases に追加（#719）
 //**********************************************************************************
 
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
+
+using Newtonsoft.Json.Linq;
 
 using NUnit.Framework;
 
 using TestCommon;
 
 using Touryo.Infrastructure.Framework.Authentication;
+using Touryo.Infrastructure.Public.Security.Jwt;
 
 namespace TestFramework.Authentication
 {
@@ -129,6 +134,65 @@ namespace TestFramework.Authentication
                 Endpoint, "cid", "sec", "tok", "access_token", Basic, c));
             yield return Case("IntrospectTokenAsync(any method)", c => OAuth2AndOIDCClient.IntrospectTokenAsync(
                 Endpoint, "cid", "sec", "assertion", "tok", "access_token", Post, c));
+
+            // ph3：AuthZRequest（Request Object の預け先・PAR）
+            yield return Case("RegisterRequestObjectAsync", c => OAuth2AndOIDCClient.RegisterRequestObjectAsync(Endpoint, "jwt", c));
+            yield return Case("PushAuthorizationRequestAsync(string, secret)", c => OAuth2AndOIDCClient.PushAuthorizationRequestAsync(
+                Endpoint, "jwt", "cid", "sec", Basic, c));
+            yield return Case("PushAuthorizationRequestAsync(string, assertion)", c => OAuth2AndOIDCClient.PushAuthorizationRequestAsync(
+                Endpoint, "jwt", "cid", "sec", "assertion", Post, c));
+            yield return Case("PushAuthorizationRequestAsync(Dictionary, secret)", c => OAuth2AndOIDCClient.PushAuthorizationRequestAsync(
+                Endpoint, new Dictionary<string, string> { { "scope", "openid" } }, "cid", "sec", Basic, c));
+            yield return Case("PushAuthorizationRequestAsync(Dictionary, assertion)", c => OAuth2AndOIDCClient.PushAuthorizationRequestAsync(
+                Endpoint, new Dictionary<string, string> { { "scope", "openid" } }, "cid", "sec", "assertion", Post, c));
+
+            // ph3：DPoP
+            yield return Case("SendWithDPoPAsync", c => OAuth2AndOIDCClient.SendWithDPoPAsync(
+                () => new HttpRequestMessage(HttpMethod.Get, Endpoint), DPoPKey.Signer, DPoPKey.Public, null, c));
+            yield return Case("TokenRequestWithDPoPAsync(public client)", c => OAuth2AndOIDCClient.TokenRequestWithDPoPAsync(
+                Endpoint, new Dictionary<string, string> { { "grant_type", "authorization_code" } }, DPoPKey.Signer, DPoPKey.Public, c));
+            yield return Case("TokenRequestWithDPoPAsync(client authentication)", c => OAuth2AndOIDCClient.TokenRequestWithDPoPAsync(
+                Endpoint, new Dictionary<string, string> { { "grant_type", "authorization_code" } },
+                "cid", "sec", "assertion", Post, DPoPKey.Signer, DPoPKey.Public, c));
+            yield return Case("GetUserInfoAsync(DPoP)", c => OAuth2AndOIDCClient.GetUserInfoAsync(
+                Endpoint, "tok", DPoPKey.Signer, DPoPKey.Public, c));
+
+            // ph3：ExtensionGrants（JWT Bearer・Device AuthZ・CIBA）
+            yield return Case("JwtBearerTokenFlowAsync", c => OAuth2AndOIDCClient.JwtBearerTokenFlowAsync(Endpoint, "assertion", c));
+            yield return Case("DeviceAuthZRequestAsync(scope)", c => OAuth2AndOIDCClient.DeviceAuthZRequestAsync(
+                Endpoint, "cid", "scope", c));
+            yield return Case("GetAccessTokenByDeviceAuthZAsync", c => OAuth2AndOIDCClient.GetAccessTokenByDeviceAuthZAsync(
+                Endpoint, "cid", "device_code", c));
+            yield return Case("CibaAuthZRequestAsync(request_uri)", c => OAuth2AndOIDCClient.CibaAuthZRequestAsync(
+                Endpoint, "https://rp.example.com/request.jwt", c));
+            yield return Case("CibaAuthZRequestAsync(secret)", c => OAuth2AndOIDCClient.CibaAuthZRequestAsync(
+                Endpoint, "jwt", "cid", "sec", Basic, c));
+            yield return Case("CibaAuthZRequestAsync(any method)", c => OAuth2AndOIDCClient.CibaAuthZRequestAsync(
+                Endpoint, "jwt", "cid", "sec", "assertion", Post, c));
+            yield return Case("GetAccessTokenByCibaAsync(secret)", c => OAuth2AndOIDCClient.GetAccessTokenByCibaAsync(
+                Endpoint, "cid", "sec", "auth_req_id", Basic, c));
+            yield return Case("GetAccessTokenByCibaAsync(any method)", c => OAuth2AndOIDCClient.GetAccessTokenByCibaAsync(
+                Endpoint, "cid", "sec", "assertion", "auth_req_id", Post, c));
+        }
+
+        /// <summary>DPoP の鍵（ES256。署名器と公開鍵。1 回だけ作る）</summary>
+        private static class DPoPKey
+        {
+            public static readonly JWS Signer;
+            public static readonly JObject Public;
+
+            static DPoPKey()
+            {
+                JObject priv;
+
+                using (ECDsa ecdsa = ECDsa.Create(ECCurve.NamedCurves.nistP256))
+                {
+                    priv = JObject.Parse(new EccPrivateKeyConverter().ParamToJwk(ecdsa.ExportParameters(true)));
+                }
+
+                Public = JwkOperator.ToPublic(priv);
+                Signer = JwsFactory.CreateFromPrivateJwk("ES256", priv);
+            }
         }
 
         private const OAuth2AndOIDCEnum.AuthMethods Basic = OAuth2AndOIDCEnum.AuthMethods.client_secret_basic;

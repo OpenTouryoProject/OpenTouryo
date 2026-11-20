@@ -26,6 +26,7 @@
 //*  2026/10/22  玄人 幸道         新規作成（OAuth2AndOIDCClient.cs から処理区分ごとに分割した）
 //*  2026/10/30  玄人 幸道         RegisterRequestObjectAsync の remarks を直した（RFC 9101 5.2.1 は例であり、登録の方式は範囲外。#640）
 //*  2026/11/09  玄人 幸道         PAR の remarks に、空の値で ArgumentNullException になることを書いた（#678 の追補。#680 のレビューの指摘）
+//*  2026/11/20  玄人 幸道         RegisterRequestObjectAsync・PAR の各形に、使う HttpClient を指定できる版を追加した（#719）
 //**********************************************************************************
 
 using System;
@@ -52,8 +53,20 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// 本文の形式もクライアント認証も異なるPAR（RFC 9126）には、
         /// PushAuthorizationRequestAsyncメソッドを使用する。
         /// </remarks>
-        public static async Task<string> RegisterRequestObjectAsync(
+        public static Task<string> RegisterRequestObjectAsync(
             Uri requestObjectRegUri, string requestObject)
+        {
+            return OAuth2AndOIDCClient.RegisterRequestObjectAsync(requestObjectRegUri, requestObject, null);
+        }
+
+        /// <summary>RequestObjectを登録する（使う HttpClient を指定する版。#719）</summary>
+        /// <param name="requestObjectRegUri">Uri</param>
+        /// <param name="requestObject">string</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>RequestObjectの登録結果</returns>
+        /// <remarks>自由に利用できる。動作は RegisterRequestObjectAsync(requestObjectRegUri, requestObject) と同じ。</remarks>
+        public static async Task<string> RegisterRequestObjectAsync(
+            Uri requestObjectRegUri, string requestObject, HttpClient httpClient)
         {
             // 通信用の変数
             HttpRequestMessage httpRequestMessage = null;
@@ -69,7 +82,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             httpRequestMessage.Content = new StringContent(requestObject);
 
             // HttpResponseMessage
-            httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            httpResponseMessage = await OAuth2AndOIDCClient.SendCoreAsync(httpRequestMessage, httpClient).ConfigureAwait(false);
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
@@ -89,14 +102,32 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// private_key_jwt / client_secret_jwtには、client_assertionを取るオーバーロードを使用する。
         /// 方式に必要な値が空なら、送らずに ArgumentNullException（client_id は方式によらず要る。jwt 系は client_assertion も。client_secret は検査しない。#678）。
         /// </remarks>
-        public static async Task<string> PushAuthorizationRequestAsync(
+        public static Task<string> PushAuthorizationRequestAsync(
             Uri authRequestPushUri, string requestObject,
             string client_id, string client_secret,
             OAuth2AndOIDCEnum.AuthMethods authMethod = OAuth2AndOIDCEnum.AuthMethods.client_secret_basic)
         {
-            return await OAuth2AndOIDCClient.PushAuthorizationRequestAsync(
+            return OAuth2AndOIDCClient.PushAuthorizationRequestAsync(
+                authRequestPushUri, requestObject, client_id, client_secret, authMethod, (HttpClient)null);
+        }
+
+        /// <summary>認可リクエストをPushする（PAR : RFC 9126。使う HttpClient を指定する版。#719）</summary>
+        /// <param name="authRequestPushUri">Uri（PARエンドポイント）</param>
+        /// <param name="requestObject">string（Request Object＝署名付きJWT）</param>
+        /// <param name="client_id">client_id</param>
+        /// <param name="client_secret">client_secret（tls_client_authではnull）</param>
+        /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列（request_uri と expires_in）</returns>
+        /// <remarks>自由に利用できる。動作は、HttpClient を受けない同じ引数の版と同じ。</remarks>
+        public static Task<string> PushAuthorizationRequestAsync(
+            Uri authRequestPushUri, string requestObject,
+            string client_id, string client_secret,
+            OAuth2AndOIDCEnum.AuthMethods authMethod, HttpClient httpClient)
+        {
+            return OAuth2AndOIDCClient.PushAuthorizationRequestAsync(
                 authRequestPushUri, requestObject,
-                client_id, client_secret, null, authMethod).ConfigureAwait(false);
+                client_id, client_secret, null, authMethod, httpClient);
         }
 
         /// <summary>認可リクエストをPushする（PAR : RFC 9126）</summary>
@@ -111,10 +142,30 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// Request Objectをrequestパラメタに載せて送る形（RFC 9126 §3、RFC 9101）。
         /// 方式に必要な値が空なら、送らずに ArgumentNullException（client_id は方式によらず要る。jwt 系は client_assertion も。client_secret は検査しない。#678）。
         /// </remarks>
-        public static async Task<string> PushAuthorizationRequestAsync(
+        public static Task<string> PushAuthorizationRequestAsync(
             Uri authRequestPushUri, string requestObject,
             string client_id, string client_secret, string client_assertion,
             OAuth2AndOIDCEnum.AuthMethods authMethod = OAuth2AndOIDCEnum.AuthMethods.client_secret_basic)
+        {
+            return OAuth2AndOIDCClient.PushAuthorizationRequestAsync(
+                authRequestPushUri, requestObject,
+                client_id, client_secret, client_assertion, authMethod, (HttpClient)null);
+        }
+
+        /// <summary>認可リクエストをPushする（PAR : RFC 9126。使う HttpClient を指定する版。#719）</summary>
+        /// <param name="authRequestPushUri">Uri（PARエンドポイント）</param>
+        /// <param name="requestObject">string（Request Object＝署名付きJWT）</param>
+        /// <param name="client_id">client_id</param>
+        /// <param name="client_secret">client_secret（client_secret_basic / client_secret_postで使用）</param>
+        /// <param name="client_assertion">client_assertion（private_key_jwt / client_secret_jwtで使用）</param>
+        /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列（request_uri と expires_in）</returns>
+        /// <remarks>自由に利用できる。動作は、HttpClient を受けない同じ引数の版と同じ。</remarks>
+        public static async Task<string> PushAuthorizationRequestAsync(
+            Uri authRequestPushUri, string requestObject,
+            string client_id, string client_secret, string client_assertion,
+            OAuth2AndOIDCEnum.AuthMethods authMethod, HttpClient httpClient)
         {
             return await OAuth2AndOIDCClient.PushAuthorizationRequestAsync(
                 authRequestPushUri,
@@ -122,7 +173,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
                 {
                     { OAuth2AndOIDCConst.request, requestObject }
                 },
-                client_id, client_secret, client_assertion, authMethod).ConfigureAwait(false);
+                client_id, client_secret, client_assertion, authMethod, httpClient).ConfigureAwait(false);
         }
 
         /// <summary>認可リクエストをPushする（PAR : RFC 9126）</summary>
@@ -136,14 +187,32 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// private_key_jwt / client_secret_jwtには、client_assertionを取るオーバーロードを使用する。
         /// 方式に必要な値が空なら、送らずに ArgumentNullException（client_id は方式によらず要る。jwt 系は client_assertion も。client_secret は検査しない。#678）。
         /// </remarks>
-        public static async Task<string> PushAuthorizationRequestAsync(
+        public static Task<string> PushAuthorizationRequestAsync(
             Uri authRequestPushUri, Dictionary<string, string> authZRequestParams,
             string client_id, string client_secret,
             OAuth2AndOIDCEnum.AuthMethods authMethod = OAuth2AndOIDCEnum.AuthMethods.client_secret_basic)
         {
-            return await OAuth2AndOIDCClient.PushAuthorizationRequestAsync(
+            return OAuth2AndOIDCClient.PushAuthorizationRequestAsync(
+                authRequestPushUri, authZRequestParams, client_id, client_secret, authMethod, (HttpClient)null);
+        }
+
+        /// <summary>認可リクエストをPushする（PAR : RFC 9126。使う HttpClient を指定する版。#719）</summary>
+        /// <param name="authRequestPushUri">Uri（PARエンドポイント）</param>
+        /// <param name="authZRequestParams">Dictionary（認可リクエストのパラメタ）</param>
+        /// <param name="client_id">client_id</param>
+        /// <param name="client_secret">client_secret（tls_client_authではnull）</param>
+        /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列（request_uri と expires_in）</returns>
+        /// <remarks>自由に利用できる。動作は、HttpClient を受けない同じ引数の版と同じ。</remarks>
+        public static Task<string> PushAuthorizationRequestAsync(
+            Uri authRequestPushUri, Dictionary<string, string> authZRequestParams,
+            string client_id, string client_secret,
+            OAuth2AndOIDCEnum.AuthMethods authMethod, HttpClient httpClient)
+        {
+            return OAuth2AndOIDCClient.PushAuthorizationRequestAsync(
                 authRequestPushUri, authZRequestParams,
-                client_id, client_secret, null, authMethod).ConfigureAwait(false);
+                client_id, client_secret, null, authMethod, httpClient);
         }
 
         /// <summary>認可リクエストをPushする（PAR : RFC 9126）</summary>
@@ -162,10 +231,33 @@ namespace Touryo.Infrastructure.Framework.Authentication
         /// 応答のrequest_uriを、認可リクエストのrequest_uriパラメタに指定して使用する。
         /// 方式に必要な値が空なら、送らずに ArgumentNullException（client_id は方式によらず要る。jwt 系は client_assertion も。client_secret は検査しない。#678）。
         /// </remarks>
-        public static async Task<string> PushAuthorizationRequestAsync(
+        public static Task<string> PushAuthorizationRequestAsync(
             Uri authRequestPushUri, Dictionary<string, string> authZRequestParams,
             string client_id, string client_secret, string client_assertion,
             OAuth2AndOIDCEnum.AuthMethods authMethod = OAuth2AndOIDCEnum.AuthMethods.client_secret_basic)
+        {
+            return OAuth2AndOIDCClient.PushAuthorizationRequestAsync(
+                authRequestPushUri, authZRequestParams,
+                client_id, client_secret, client_assertion, authMethod, (HttpClient)null);
+        }
+
+        /// <summary>認可リクエストをPushする（PAR : RFC 9126。使う HttpClient を指定する版。#719）</summary>
+        /// <param name="authRequestPushUri">Uri（PARエンドポイント）</param>
+        /// <param name="authZRequestParams">Dictionary（認可リクエストのパラメタ）</param>
+        /// <param name="client_id">client_id</param>
+        /// <param name="client_secret">client_secret（client_secret_basic / client_secret_postで使用）</param>
+        /// <param name="client_assertion">client_assertion（private_key_jwt / client_secret_jwtで使用）</param>
+        /// <param name="authMethod">OAuth2AndOIDCEnum.AuthMethods</param>
+        /// <param name="httpClient">HttpClient（この呼び出しで送るもの。null なら HttpClient プロパティの共有のもの）</param>
+        /// <returns>結果のJSON文字列（request_uri と expires_in）</returns>
+        /// <remarks>
+        /// 自由に利用できる。動作は、HttpClient を受けない同じ引数の版と同じ。
+        /// tls_client_auth では、クライアント証明書を載せた HttpClient を、この引数か HttpClient プロパティに渡す。
+        /// </remarks>
+        public static async Task<string> PushAuthorizationRequestAsync(
+            Uri authRequestPushUri, Dictionary<string, string> authZRequestParams,
+            string client_id, string client_secret, string client_assertion,
+            OAuth2AndOIDCEnum.AuthMethods authMethod, HttpClient httpClient)
         {
             // 通信用の変数
             HttpRequestMessage httpRequestMessage = null;
@@ -188,7 +280,7 @@ namespace Touryo.Infrastructure.Framework.Authentication
             httpRequestMessage.Content = new FormUrlEncodedContent(body);
 
             // HttpResponseMessage
-            httpResponseMessage = await OAuth2AndOIDCClient._HttpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            httpResponseMessage = await OAuth2AndOIDCClient.SendCoreAsync(httpRequestMessage, httpClient).ConfigureAwait(false);
             return await httpResponseMessage.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
 
