@@ -58,6 +58,8 @@
       appSettings の SqlTextFilePath           **同じにすると壊れる**（言語で
                                                　埋め込みリソース名の規則が違う）
       appSettings の ClientSettingsProvider.*  VS のテンプレート由来
+      appSettings の FxLog4NetConfFile         **違わないといけない**（ログの出力先を
+                                               　CS と VB で分けている。#722）
 
     **この一覧は「今そうなっている」ではなく「そうであってよい」を表す。**
     増やすときは、なぜ違ってよいのかを 13_CONFIGURATION.md 11 節にも書くこと。
@@ -80,6 +82,7 @@
      2026/08/16  玄人 幸道         -Check を追加（#553）
      2026/08/17  玄人 幸道         説明を訂正（#558）packages.config は対象である。
      2026/11/12  玄人 幸道         root/files/tools/PowerShell/Verify に移した（#687）
+     2026/11/28  玄人 幸道         違ってよい差分に FxLog4NetConfFile を足した（#722）
      　　　　　　　　　　　　　　　 対応づけは相対パスのみで、探しには行かない。
 
     -Check を付けない限り、終了コードは常に 0。
@@ -103,6 +106,8 @@ $allowed = @(
     '^/configuration/system\.web/compilation/assemblies'
     '^/configuration/appSettings/add \[key=SqlTextFilePath'
     '^/configuration/appSettings/add \[key=ClientSettingsProvider\.'
+    # ログの出力先を CS と VB で分けている（#722）。app.config は appSettings が根の形もある
+    '^(/configuration)?/appSettings/add \[key=FxLog4NetConfFile;'
 )
 
 $ErrorActionPreference = "Continue"

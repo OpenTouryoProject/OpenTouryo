@@ -506,6 +506,7 @@ dotnet dev-certs https --format Pem -ep ./https/aspnetapp.pem -np
 | `compilation/assemblies`（VB のみ） | 1 | **違ってよい**（VB は明示参照が要ることがある） |
 | 接続文字列の末尾の `;` | 1 | **要確認**（`ConnectionString_MCN`。CS だけ `;` が付く） |
 | 要素の順序だけ | 1 | 無視してよい（`MVC_Sample/app.config`） |
+| `FxLog4NetConfFile` の値（#722 で生じた） | 4 | **違わないといけない**（下記「ログの出力先」） |
 
 ### **違わないといけない**もの — 埋め込みリソースの名前
 
@@ -528,6 +529,27 @@ VB : <add key="SqlTextFilePath" value="GenDaoAndBatUpd_sample" />
 
 > `SqlTextFilePath` は「埋め込みリソースなら名前空間、通常のファイルならフォルダのパス」
 > という二役を持つ（`MyBaseDao.SetSqlByFile2`）。5 節・7-3 節も参照。
+
+### **違わないといけない**もの — ログの出力先（#722）
+
+`C:\root\files\resource\Log` に書く Web 系のサンプルは、**ランタイム（net48 / net10.0）・言語（CS / VB）と、
+ResourceServer かどうかで、log4net の定義を分けている。** 同じ名前のファイルに 2 つのプロセスが書くと、
+後に開いた方が `<名前>.<日付>.log.<日付>.log` に書く（日付のローリングが二重になる。手元で実測）。
+
+| 定義（`resource/Log`） | 使うもの | ログの名前 |
+|---|---|---|
+| `SampleLogConf.xml` | MVC_Sample・WebForms_Sample（CS。net48） | `ACCESS` など |
+| `SampleLogConf.Core.xml` | MVC_Sample（net10.0） | `ACCESS_Core` など |
+| `SampleLogConf.VB.xml` | MVC_Sample・WebForms_Sample（VB。net48） | `ACCESS_VB` など |
+| `SampleLogConfWebService.xml` | ServiceInterface の ASPNETWebService・WCFService（CS。net48） | `ACCESS_WS`・`SERVICE-IF` など |
+| `SampleLogConfWebService.VB.xml` | ServiceInterface の ASPNETWebService・WCFService（VB。net48） | `ACCESS_WS_VB`・`SERVICE-IF_VB` など |
+| `SampleLogConfResourceServer.xml` | ResourceServer（`WS_sample/ASPNETWebService`。net48） | `ACCESS_RS`・`SERVICE-IF_RS` など |
+| `SampleLogConfResourceServer.Core.xml` | ResourceServer（`Samples4NetCore/Backend/ASPNETWebService`。net10.0） | `ACCESS_RS_Core`・`SERVICE-IF_RS_Core` など |
+
+- 派生の定義は、元（`SampleLogConf.xml`・`SampleLogConfWebService.xml`）と**ファイル名だけ**が違う。形を変えるときは、すべて直す
+- 2CS・バッチ・Golden は、実行ファイルからの相対パス（`ACCESS_2CS`・`./Log/ACCESS`）に書くので、`bin\Debug\<tfm>` ごとに分かれている。
+  コンテナは定義が別（`container/*/conf`）。**アーキテクチャ（x86 / x64）では分けない**（固定したプロジェクトが無い）
+- `resource/Log` は `.gitignore` の `[Ll]og/` に当たる。**定義を足すときは `git add -f`**
 
 ### `packages.config` も突き合わせの対象である
 
